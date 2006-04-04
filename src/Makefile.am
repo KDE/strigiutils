@@ -1,5 +1,5 @@
 if HAVE_QT
-QT_SUBDIRS = qclient
+QT_SUBDIRS = archiveengine qclient
 endif
 if HAVE_CLUCENE
 LUCENE_SUBDIRS = luceneindexer

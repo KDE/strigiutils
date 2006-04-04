@@ -56,4 +56,4 @@ AC_PROG_CXX
 
 AC_OUTPUT(Makefile src/Makefile src/storage/Makefile src/streams/Makefile \
 	src/qclient/Makefile src/diskindexer/Makefile \
-	src/luceneindexer/Makefile)
+	src/archiveengine/Makefile src/luceneindexer/Makefile)
