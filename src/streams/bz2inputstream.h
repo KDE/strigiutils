@@ -8,6 +8,7 @@
 
 class BZ2InputStream : public InputStream {
 private:
+    bool allocatedBz;
     bool finishedInflating;
     bz_stream bzstream;
     InputStream *input;
@@ -16,6 +17,7 @@ private:
     void dealloc();
     void readFromStream();
     void decompressFromStream();
+    bool checkMagic();
 public:
     BZ2InputStream(InputStream *input);
     ~BZ2InputStream();

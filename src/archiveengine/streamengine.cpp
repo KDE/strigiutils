@@ -34,24 +34,12 @@ StreamEngine::open(QIODevice::OpenMode mode) {
     if (stream == 0) {
         stream = archive->getInputStream(entry);
     }
-    printf("open!\n");
-/*    if (stream) {
-        stream->mark(101);
-        const char *start; size_t nread;
-        InputStream::Status status;
-        status = stream->read(start, nread, 100);
-        if (status == InputStream::Ok) {
-            stream->reset();
-            printf("open: %i '%.*s'\n", nread, nread, start);
-        }
-    } */
     return stream;
 }
 qint64
 StreamEngine::read(char* data, qint64 maxlen) {
-        printf("read!!!\n");
     if (maxlen == 0) {
-        printf("maxlen == 0!!!\n");
+        qDebug("maxlen == 0!!!\n");
         return true;
     }
     if (stream) {
@@ -60,16 +48,13 @@ StreamEngine::read(char* data, qint64 maxlen) {
         InputStream::Status status;
         status = stream->read(start, nread, maxlen);
         if (status == InputStream::Ok) {
-            printf("read! %i %lli\n", nread, maxlen);
             bcopy(start, data, nread);
             return nread;
         }
         if (status == InputStream::Eof) {
-            printf("eof! %i\n", nread);
             return 0;
         }
     }
-    printf("read errorf!\n");
     return -1;
 }
 /*qint64

@@ -1,7 +1,7 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
-#include <QtGui/QSplitter>
+#include <QSplitter>
 
 class QDirModel;
 class QTreeView;
@@ -16,6 +16,7 @@ private:
     QTextBrowser *browser;
 public:
     FileBrowser();
+    ~FileBrowser();
 public slots:
     void clicked(const QModelIndex& index);
 };

@@ -10,10 +10,8 @@ ArchiveDirEngine::~ArchiveDirEngine() {
 StreamEngine*
 ArchiveDirEngine::openEntry(const QString &filename) {
     const FileEntry *fe;
-    int i = 0;
     do {
         fe = entry->getEntry(filename);
-        printf("openEntry %i %p\n", i++, fe);
         if (fe) {
             if (fe->fileFlags & QAbstractFileEngine::FileType) {
                 return new StreamEngine(fe, this);
@@ -51,14 +49,12 @@ ArchiveDirEngine::fileName(FileName file) const {
     default:
         name = parent->fileName(DefaultName)+"/"+entry->name;
     }
-    printf("------ get filename from dir %s\n", (const char*)name.toUtf8());
     return name;
 }
 QStringList
 ArchiveDirEngine::entryList(QDir::Filters /*filters*/,
         const QStringList& /*filterNames*/) const {
     readEntryNames();
-    printf("dir entrylist \n");
     // TODO: respect filters
     QStringList e;
     foreach (FileEntry *fe, entry->getEntries()) {

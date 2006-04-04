@@ -15,6 +15,7 @@ private:
     void dealloc();
     void readFromStream();
     void decompressFromStream();
+    bool checkMagic();
 public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
     GZipInputStream(InputStream *input, ZipFormat format=GZIPFORMAT);

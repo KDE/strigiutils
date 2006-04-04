@@ -3,6 +3,7 @@
 #include <QtGui/QDirModel>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QHeaderView>
+#include <QDebug>
 
 FileBrowser::FileBrowser() : QSplitter(Qt::Vertical) {
     model = new QDirModel();
@@ -23,6 +24,11 @@ FileBrowser::FileBrowser() : QSplitter(Qt::Vertical) {
     for (int i=0; i<cols; ++i) {
         view->resizeColumnToContents(i);
     }
+}
+FileBrowser::~FileBrowser() {
+//    delete browser;
+//    delete view;
+//    delete model;
 }
 void
 FileBrowser::clicked(const QModelIndex& index) {

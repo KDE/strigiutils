@@ -12,7 +12,7 @@ main(int argc, char **argv) {
     if (argc > 1) {
         QFile file(argv[1]);
         if (!file.open(QIODevice::ReadOnly)) {
-            printf("Could not open '%s'\n", argv[1]);
+            qDebug("Could not open '%s'\n", argv[1]);
             return 1;
         }
         const int bufsize=10;
@@ -32,8 +32,8 @@ main(int argc, char **argv) {
         printf("---\n"); */
         return 0;
     } else {
-        FileBrowser *fb = new FileBrowser();
-        fb->show();
+        FileBrowser fb;
+        fb.show();
     	return app.exec();
     }
 }

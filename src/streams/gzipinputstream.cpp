@@ -9,6 +9,14 @@ GZipInputStream::GZipInputStream(InputStream *input, ZipFormat format) {
 
     this->input = input;
 
+    // TODO: check first bytes of stream before allocating buffer
+    // 0x42 0x5a 0x68 0x39 0x31
+    if (format != GZIPFORMAT && !checkMagic()) {
+        error = "Magic bytes are wrong.";
+        status = Error;
+        return;
+    }
+
     // initialize the buffer
     buffer.setSize(262144);
 
@@ -52,6 +60,27 @@ GZipInputStream::dealloc() {
         free(zstream);
         zstream = 0;
     }
+}
+bool
+GZipInputStream::checkMagic() {
+    char buf[2];
+    input->mark(2);
+    const char *ptr;
+    size_t nread;
+    size_t total = 0;
+    do {
+        status = input->read(ptr, nread, 2-total);
+        if (status != Ok) {
+            error = input->getError();
+            return false;
+        }
+        for (size_t i=0; i<nread; i++) {
+            buf[i+total] = ptr[i];
+        }
+        total += nread;
+    } while (total < 2);
+    input->reset();
+    return buf[0] == 0x1f && buf[1] == 0x8b;
 }
 /**
  * Obtain small performance gain by reusing the object and its

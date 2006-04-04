@@ -97,7 +97,7 @@ ArchiveEngine::reopen() {
         return;
     }
     if (compressed->reset() != InputStream::Ok) {
-        printf("ArchiveEngine mark call is too small.\n");
+        qDebug("ArchiveEngine mark call is too small.");
         return;
     }
     delete zipstream;
@@ -108,7 +108,7 @@ ArchiveEngine::reopen() {
     }
     setError(QFile::FatalError, zipstream->getError().c_str());
     if (compressed->reset() != InputStream::Ok) {
-        printf("ArchiveEngine mark call is too small.\n");
+        qDebug("ArchiveEngine mark call is too small.");
         return;
     }
 }

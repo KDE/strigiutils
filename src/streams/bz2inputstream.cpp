@@ -7,6 +7,13 @@ BZ2InputStream::BZ2InputStream(InputStream *input) {
     this->input = input;
 
     // TODO: check first bytes of stream before allocating buffer
+    // 0x42 0x5a 0x68 0x39 0x31
+    if (!checkMagic()) {
+        error = "Magic bytes are wrong.";
+        status = Error;
+        allocatedBz = false;
+        return;
+    }
 
     // initialize the output buffer
     buffer.setSize(262144);
@@ -25,6 +32,7 @@ BZ2InputStream::BZ2InputStream(InputStream *input) {
         status = Error;
         return;
     }
+    allocatedBz = true;
     // signal that we need to read into the buffer
     bzstream.avail_out = 1;
 }
@@ -33,7 +41,35 @@ BZ2InputStream::~BZ2InputStream() {
 }
 void
 BZ2InputStream::dealloc() {
-    BZ2_bzDecompressEnd(&bzstream);
+    if (allocatedBz) {
+        BZ2_bzDecompressEnd(&bzstream);
+    }
+}
+bool
+BZ2InputStream::checkMagic() {
+    static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
+    char buf[5];
+    input->mark(5);
+    const char *ptr;
+    size_t nread;
+    size_t total = 0;
+    do {
+        status = input->read(ptr, nread, 5-total);
+        if (status != Ok) {
+            error = input->getError();
+            return false;
+        }
+        for (size_t i=0; i<nread; i++) {
+            buf[i+total] = ptr[i];
+        }
+        total += nread;
+    } while (total < 5);
+    input->reset();
+    bool ok = true;
+    for (int i=0; ok && i<5; ++i) {
+        ok &= magic[i] == buf[i];
+    }
+    return ok;
 }
 InputStream::Status
 BZ2InputStream::read(const char*& start, size_t& nread, size_t max) {
