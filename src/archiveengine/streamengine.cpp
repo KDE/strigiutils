@@ -28,6 +28,9 @@ StreamEngine::getInputStream() {
 }
 bool
 StreamEngine::open(QIODevice::OpenMode mode) {
+    if (mode != QIODevice::ReadOnly) {
+        return 0;
+    }
     if (stream == 0) {
         stream = archive->getInputStream(entry);
     }

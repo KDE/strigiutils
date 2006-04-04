@@ -51,11 +51,9 @@ ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QStr
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &file) const {
 
-   // if (file.contains(".zip")||file.contains(".jar"))
-    //printf("opening file '%s'\n", (const char*)file.toUtf8());
-
-    // try to open a normal file
+    // try to the deepest regular file in the file path
     QFSFileEngine* fse = 0;
+    // use the full path
     QString path = file;
     do {
         fse = new QFSFileEngine(path);
@@ -71,6 +69,8 @@ ArchiveEngineHandler::create(const QString &file) const {
         } else {
             delete fse;
             fse = 0;
+
+            // strip off the last part of the path
             int pos = path.lastIndexOf('/');
             if (pos == -1) {
                 path = "";
@@ -84,6 +84,7 @@ ArchiveEngineHandler::create(const QString &file) const {
         return 0;
     }
 
+    // try to open the file as an archive
     FSFileInputStream *ffis = new FSFileInputStream(fse);
     ArchiveEngineBase *ae = 0;
     ae = new ArchiveEngine(path, ffis);
@@ -92,32 +93,31 @@ ArchiveEngineHandler::create(const QString &file) const {
         return 0;
     }
 
-    // try to open an archive, a compressed stream or an archive
-    // directory here
     StreamEngine *se = 0;
-
     int len = path.length();
     int pos = file.indexOf('/', len+1);
     QString name;
     while (pos != -1) {
         name = file.mid(len+1, pos-len-1);
-        if (!open(&se, &ae, name)) return 0;
-
-//      printf(" %s %s\n", (const char*)path.toUtf8(), (const char*)name.toUtf8());
+        if (!open(&se, &ae, name)) {
+            return 0;
+        }
 
         path += '/'+name;
         len = pos;
         pos = file.indexOf('/', len+1);
     }
     if (file.length() > len+1) {
-       name = file.mid(len+1);
+        name = file.mid(len+1);
  //      printf(" %s %s\n", (const char*)path.toUtf8(), (const char*)name.toUtf8());
-       if (!open(&se, &ae, name)) return 0;
+        if (!open(&se, &ae, name)) {
+            return 0;
+        }
     }
 
-    QAbstractFileEngine *afe = 0;
-    if (se) afe = se;
-    if (ae) afe = ae;
-    if (afe) printf("-- opened file %s\n", (const char*)afe->fileName().toUtf8());
-    return afe;
+    // return the stream that is not 0
+    if (se) {
+        return se;
+    }
+    return ae;
 }

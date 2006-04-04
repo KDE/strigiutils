@@ -13,7 +13,7 @@ FileEntry::~FileEntry() {
 }
 FileEntry*
 FileEntry::add(const QString &name) {
-    printf("adding '%s' to '%s'\n", (const char*)name.toUtf8(), (const char*)this->name.toUtf8());
+//    printf("adding '%s' to '%s'\n", (const char*)name.toUtf8(), (const char*)this->name.toUtf8());
     FileEntry *fe = new FileEntry(name);
     entries.append(fe);
     return fe;
@@ -76,6 +76,7 @@ ArchiveEngine::reopen() {
         return;
     }
     parentstream->mark(100); // make sure this is enough
+
     zipstream = new ZipInputStream(parentstream);
     if (nextEntry()) {
 //        printf("zip for %s\n", (const char*)entry.name.toUtf8());

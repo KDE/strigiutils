@@ -39,14 +39,14 @@ public:
     virtual void releaseEngines() {};
     bool caseSensitive () const { return true; }
     bool close () { return true; }
-    bool copy ( const QString & newName ) { return false; }
+    bool copy ( const QString & /*newName*/ ) { return false; }
     bool isRelativePath () const {
         return false;
     }
     bool isSequential () const {
         return true;
     }
-    bool open ( QIODevice::OpenMode mode ) {
+    bool open ( QIODevice::OpenMode /*mode*/ ) {
         printf("open archive");
         return false;
     }

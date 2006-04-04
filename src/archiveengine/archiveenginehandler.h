@@ -6,6 +6,11 @@
 class StreamEngine;
 class ArchiveEngineBase;
 
+/**
+ * @short Class to register the custom file engine ArchiveEngine.
+ *
+ * This class is an implementation of QAbstractFileEngine.
+ */
 class ArchiveEngineHandler : public QAbstractFileEngineHandler {
 private:
     bool open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const;
