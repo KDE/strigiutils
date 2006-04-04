@@ -11,7 +11,7 @@
       <keyword>Code</keyword>
     </keywords>
     <ignoreparts/>
-    <projectdirectory>.</projectdirectory>
+    <projectdirectory>..</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description/>
   </general>
