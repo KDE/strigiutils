@@ -93,7 +93,6 @@ ArchiveEngine::reopen() {
 
     zipstream = new ZipInputStream(compressed);
     if (nextEntry()) {
-//        printf("zip for %s\n", (const char*)entry.name.toUtf8());
         setError(QFile::NoError, "");
         return;
     }
@@ -104,7 +103,6 @@ ArchiveEngine::reopen() {
     delete zipstream;
     zipstream = new TarInputStream(compressed);
     if (nextEntry()) {
-        //printf("tar for %s\n", (const char*)entry.name.toUtf8());
         setError(QFile::NoError, "");
         return;
     }
@@ -115,7 +113,7 @@ ArchiveEngine::reopen() {
     }
 }
 bool
-testStream(InputStream* is, size_t readsize) {
+ArchiveEngine::testStream(InputStream* is, size_t readsize) const {
     const char *start;
     size_t nread;
     is->mark(readsize);

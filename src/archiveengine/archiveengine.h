@@ -74,6 +74,7 @@ private:
     void reopen();
     void readEntryNames() const;
     InputStream* decompress(InputStream*, size_t bufsize) const;
+    bool ArchiveEngine::testStream(InputStream* is, size_t readsize) const;
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
 public:
