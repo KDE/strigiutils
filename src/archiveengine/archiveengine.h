@@ -1,7 +1,7 @@
 #ifndef ARCHIVEENGINE
 #define ARCHIVEENGINE
 
-#include <Qt/QAbstractFileEngineHandler>
+#include <QtCore/QAbstractFileEngineHandler>
 
 class FileEntry;
 class FileEntry {

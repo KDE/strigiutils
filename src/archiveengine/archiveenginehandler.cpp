@@ -3,7 +3,7 @@
 #include "archivedirengine.h"
 #include "streamengine.h"
 #include "fsfileinputstream.h"
-#include <Qt/QFSFileEngine>
+#include <QtCore/QFSFileEngine>
 #include <dirent.h>
 
 bool

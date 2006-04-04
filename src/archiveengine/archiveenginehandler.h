@@ -1,7 +1,7 @@
 #ifndef ARCHIVEENGINEHANDLER_H
 #define ARCHIVEENGINEHANDLER_H
 
-#include <Qt/QAbstractFileEngineHandler>
+#include <QtCore/QAbstractFileEngineHandler>
 
 class StreamEngine;
 class ArchiveEngineBase;

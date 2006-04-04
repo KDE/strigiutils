@@ -1,5 +1,5 @@
-#include <Qt/QAbstractFileEngineHandler>
-#include <Qt/QDateTime>
+#include <QtCore/QAbstractFileEngineHandler>
+#include <QtCore/QDateTime>
 #include "inputstream.h"
 #include "archiveengine.h"
 

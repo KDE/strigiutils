@@ -33,3 +33,5 @@ FileBrowser::clicked(const QModelIndex& index) {
     QString s = model->filePath(index);
     browser->setSource(s);
 }
+
+#include "filebrowser.moc"

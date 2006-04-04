@@ -1,5 +1,5 @@
 #include "fsfileinputstream.h"
-#include <Qt/QFSFileEngine>
+#include <QtCore/QFSFileEngine>
 
 const size_t FSFileInputStream::defaultBufferSize = 64;
 FSFileInputStream::FSFileInputStream(const QString &filename, size_t buffersize) {
