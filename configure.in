@@ -1,0 +1,59 @@
+AC_INIT(diskindexer, 0.1.0)
+AC_CONFIG_SRCDIR(src/streams/inputstream.h) 
+
+# use libtool
+AC_PROG_LIBTOOL
+
+AM_INIT_AUTOMAKE([1.9 tar-ustar])
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test "x$PKG_CONFIG" = "xno"; then
+        AC_MSG_ERROR(You have to install pkg-config to compile diskindexer.)
+fi
+
+# check if Qt gui should be used
+AC_ARG_WITH(qt, [  --with-qt               use Qt GUI toolkit ])
+if test "$with_qt" = "yes" -o "$enable_qt" = "yes" ; then 
+  if test "$withval" = "no" ; then
+    with_qt="no"
+  else
+    with_qt="yes"
+  fi
+fi
+
+# configure QT
+QT_REQUIRED_VERSION=4.0.0
+if test "$with_qt" = "yes"; then
+    # Qt has split over multiple libraries, so we must check
+    # for the all the modules we need
+    PKG_CHECK_MODULES(QT, QtGui >= $QT_REQUIRED_VERSION
+	QtXml >= $QT_REQUIRED_VERSION, have_qt="yes", have_qt="no")
+    # of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
+    if test "$have_qt" = "yes"; then
+        QT_INCLUDE_DIR=$($PKG_CONFIG --variable=includedir QtGui)
+        EXTRA_QT_INCLUDE_DIR="$QT_INCLUDE_DIR/Qt"
+        AC_CHECK_FILE([$QT_INCLUDE_DIR/QWidget],
+            AC_MSG_NOTICE([No extra QT_INCLUDE_DIR needed]),
+        AC_CHECK_FILE([$EXTRA_QT_INCLUDE_DIR/QWidget],
+            QT_CXXFLAGS="$QT_CXXFLAGS -I$EXTRA_QT_INCLUDE_DIR",
+            AC_MSG_WARN([QWidget not found])))
+        AC_MSG_NOTICE([Set QT_CXXFLAGS... $QT_CXXFLAGS])
+        AC_MSG_NOTICE([Set QT_LIBS... $QT_LIBS])
+        AC_CHECK_PROG(MOC, [moc], [moc])
+	AC_SUBST(QT_CXXFLAGS)
+	AC_SUBST(QT_LIBS)
+    else 
+        AC_MSG_ERROR([
+	The QtGui library >= [$QT_REQUIRED_VERSION] could not be found.
+        ])
+    fi
+fi
+AM_CONDITIONAL(HAVE_QT, test "$have_qt" = "yes")
+
+AM_CONDITIONAL(HAVE_CLUCENE, test 0)
+
+AC_PROG_CXX
+
+AC_OUTPUT(Makefile src/Makefile src/storage/Makefile src/streams/Makefile \
+	src/qclient/Makefile src/diskindexer/Makefile \
+	src/luceneindexer/Makefile)
