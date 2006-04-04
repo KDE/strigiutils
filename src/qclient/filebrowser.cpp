@@ -8,7 +8,7 @@ FileBrowser::FileBrowser() : QSplitter(Qt::Vertical) {
     model = new QDirModel();
     view = new QTreeView();
     view->setModel(model);
-    QModelIndex index = model->index("/home/oever/tmp/ziptest");
+    QModelIndex index = model->index(QDir::currentPath());
     view->setRootIndex(index);
 
     browser = new QTextBrowser();

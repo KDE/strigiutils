@@ -60,6 +60,7 @@ ArchiveEngineHandler::create(const QString &file) const {
         if (fse->open(QIODevice::ReadOnly)) {
             // make sure this is not a directory
             // cannot use Qt functions because of bugs
+            // (bug should be fixed in Qt 4.1.2
             DIR* dir = opendir(path.toUtf8());
             if (dir) {
                 closedir(dir);
