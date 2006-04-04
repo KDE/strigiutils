@@ -1,8 +1,8 @@
 
 bin_PROGRAMS = qclient
 qclient_SOURCES = filehandler.cpp fsfileinputstream.cpp fsfileinputstream.h \
-		archivedirengine.cpp archivedirengine.h archiveengine.cpp archiveengine.h streamengine.cpp \
-		streamengine.h filebrowser.cpp
+			archivedirengine.cpp archivedirengine.h archiveengine.cpp archiveengine.h streamengine.cpp \
+			streamengine.h filebrowser.cpp archiveenginehandler.cpp
 # moc files
 nodist_qclient_SOURCES =filebrowser_moc.cpp 
 
@@ -14,4 +14,4 @@ qclient_LDADD = $(QT_LIBS) $(top_builddir)/src/streams/libstreams.la
 %_moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-noinst_HEADERS = filebrowser.h
+noinst_HEADERS = filebrowser.h archiveenginehandler.h
