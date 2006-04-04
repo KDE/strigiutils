@@ -5,6 +5,8 @@
 #include "fsfileinputstream.h"
 #include "streamengine.h"
 #include "subinputstream.h"
+#include "bz2inputstream.h"
+#include "gzipinputstream.h"
 
 FileEntry::~FileEntry() {
     foreach(FileEntry *fe, entries) {
@@ -55,14 +57,17 @@ ArchiveEngine::ArchiveEngine(StreamEngine *se)
     reopen();
 }
 ArchiveEngine::~ArchiveEngine() {
+    if (zipstream) {
+        delete zipstream;
+    }
+    foreach(InputStream *is, compressedstreams) {
+        delete is;
+    }
     if (filestream) {
         delete filestream;
     }
     if (streamengine) {
         delete streamengine;
-    }
-    if (zipstream) {
-        delete zipstream;
     }
 }
 void
@@ -75,38 +80,75 @@ ArchiveEngine::reopen() {
         setError(QFile::FatalError, "no stream");
         return;
     }
-    parentstream->mark(100); // make sure this is enough
+    size_t bufsize = 100;
+    parentstream->mark(bufsize); // make sure this is enough
+    InputStream* compressed = parentstream;
+    InputStream* decompressed = decompress(compressed, bufsize);
+    while (decompressed) {
+        compressed = decompressed;
+        compressedstreams.append(compressed);
+        compressed->mark(bufsize);
+        decompressed = decompress(compressed, bufsize);
+    }
 
-    zipstream = new ZipInputStream(parentstream);
+    zipstream = new ZipInputStream(compressed);
     if (nextEntry()) {
 //        printf("zip for %s\n", (const char*)entry.name.toUtf8());
         setError(QFile::NoError, "");
         return;
     }
-    if (parentstream->reset() != InputStream::Ok) {
+    if (compressed->reset() != InputStream::Ok) {
         printf("ArchiveEngine mark call is too small.\n");
         return;
     }
     delete zipstream;
-    zipstream = new TarInputStream(parentstream);
+    zipstream = new TarInputStream(compressed);
     if (nextEntry()) {
-//        printf("zip for %s\n", (const char*)entry.name.toUtf8());
+        //printf("tar for %s\n", (const char*)entry.name.toUtf8());
         setError(QFile::NoError, "");
         return;
     }
     setError(QFile::FatalError, zipstream->getError().c_str());
-    if (parentstream->reset() != InputStream::Ok) {
+    if (compressed->reset() != InputStream::Ok) {
         printf("ArchiveEngine mark call is too small.\n");
         return;
     }
+}
+bool
+testStream(InputStream* is, size_t readsize) {
+    const char *start;
+    size_t nread;
+    is->mark(readsize);
+    return is->read(start, nread, readsize) == InputStream::Ok;
+}
+InputStream*
+ArchiveEngine::decompress(InputStream* is, size_t bufsize) const {
+    // try bzip
+    InputStream *dec = new BZ2InputStream(is);
+    if (testStream(dec, bufsize)) {
+        dec->reset();
+        return dec;
+    }
+    delete dec;
+    is->reset();
+
+    // try gzip
+    dec = new GZipInputStream(is);
+    if (testStream(dec, bufsize)) {
+        dec->reset();
+        return dec;
+    }
+    delete dec;
+    is->reset();
+    return 0;
 }
 void
 ArchiveEngine::readEntryNames() const {
     while (nextEntry()) {}
 }
 QStringList
-ArchiveEngine::entryList(QDir::Filters filters,
-        const QStringList& filterNames) const {
+ArchiveEngine::entryList(QDir::Filters /*filters*/,
+        const QStringList& /*filterNames*/) const {
     // TODO: respect filters
     readEntryNames();
     QStringList e;

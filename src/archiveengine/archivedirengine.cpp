@@ -55,8 +55,8 @@ ArchiveDirEngine::fileName(FileName file) const {
     return name;
 }
 QStringList
-ArchiveDirEngine::entryList(QDir::Filters filters,
-        const QStringList& filterNames) const {
+ArchiveDirEngine::entryList(QDir::Filters /*filters*/,
+        const QStringList& /*filterNames*/) const {
     readEntryNames();
     printf("dir entrylist \n");
     // TODO: respect filters

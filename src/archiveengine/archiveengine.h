@@ -63,6 +63,7 @@ private:
     StreamEngine *streamengine;
     InputStream *parentstream;
     FSFileInputStream *filestream;
+    QList<InputStream*> compressedstreams;
     SubStreamProvider *zipstream;
     mutable SubInputStream *entrystream;
     bool readAllEntryNames;
@@ -72,6 +73,7 @@ private:
     bool nextEntry() const;
     void reopen();
     void readEntryNames() const;
+    InputStream* decompress(InputStream*, size_t bufsize) const;
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
 public:

@@ -6,6 +6,8 @@ BZ2InputStream::BZ2InputStream(InputStream *input) {
     finishedInflating = false;
     this->input = input;
 
+    // TODO: check first bytes of stream before allocating buffer
+
     // initialize the output buffer
     buffer.setSize(262144);
 
@@ -50,6 +52,9 @@ BZ2InputStream::read(const char*& start, size_t& nread, size_t max) {
 
     // set the pointers to the available data
     buffer.read(start, nread, max);
+    if (nread == 0) {
+        return read(start, nread, max);
+    }
     return Ok;
 }
 void
