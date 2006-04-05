@@ -15,7 +15,7 @@ SubInputStream::read(const char*& start, size_t& nread, size_t max) {
     if (max > left || max == 0) max = left;
     status = input->read(start, nread, max);
     if (status) {
-        printf("suberror %s\n", input->getError().c_str());
+        //printf("suberror %s\n", input->getError().c_str());
         return status;
     }
     left -= nread;

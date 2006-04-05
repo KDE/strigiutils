@@ -73,8 +73,25 @@ class QFSFileEngine;
 class FSFileInputStream;
 class SubStreamProvider;
 
+class FileEntryCache {
+private:
+    struct Entry {
+        QDateTime lastUsed;
+        FileEntry* entry;
+    };
+    static QHash<QString, Entry> entrycache;
+    static int instances;
+    void prune();
+public:
+    FileEntryCache();
+    ~FileEntryCache();
+    void addEntry(const QString& key, FileEntry*e);
+    FileEntry* getEntry(const QString& key, const QDateTime &mtime);
+};
+
 class ArchiveEngine : public ArchiveEngineBase {
 private:
+    QString fullpath;
     QString path;
     StreamEngine *streamengine;
     InputStream *parentstream;
@@ -82,15 +99,17 @@ private:
     QList<InputStream*> compressedstreams;
     SubStreamProvider *zipstream;
     mutable SubInputStream *entrystream;
-    bool readAllEntryNames;
-    mutable FileEntry rootentry;
+    mutable bool readAllEntryNames;
+    FileEntry* rootentry;
     mutable FileEntry* current;
+    static FileEntryCache cache;
 
     bool nextEntry() const;
-    void reopen();
+    void open();
     void readEntryNames() const;
     InputStream* decompress(InputStream*, size_t bufsize) const;
     bool ArchiveEngine::testStream(InputStream* is, size_t readsize) const;
+    void getRootEntry(const QDateTime& mtime);
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
 public:

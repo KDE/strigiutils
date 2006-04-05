@@ -8,6 +8,8 @@
 #include "bz2inputstream.h"
 #include "gzipinputstream.h"
 #include <QtCore/QFSFileEngine>
+#include <QtCore/QHash>
+#include <QtDebug>
 
 FileEntry::~FileEntry() {
     foreach(FileEntry *fe, entries) {
@@ -40,6 +42,55 @@ FileEntry::getEntry(const QString &name) const {
     return 0;
 }
 
+QHash<QString, FileEntryCache::Entry> FileEntryCache::entrycache;
+
+FileEntryCache::FileEntryCache() {
+}
+FileEntryCache::~FileEntryCache() {
+    QHash<QString, Entry>::const_iterator i = entrycache.constBegin();
+    while (i != entrycache.constEnd()) {
+        delete i.value().entry;
+        ++i;
+    }
+}
+void
+FileEntryCache::addEntry(const QString& key, FileEntry*fe) {
+    Entry& e = entrycache[key];
+    e.lastUsed = QDateTime::currentDateTime();
+    e.entry = fe;
+    prune();
+}
+FileEntry*
+FileEntryCache::getEntry(const QString& key, const QDateTime &mtime) {
+    QHash<QString, Entry>::iterator e = entrycache.find(key);
+    if (e == entrycache.end()) {
+        return 0;
+    }
+    if (mtime != e.value().entry->mtime) {
+        qDebug() << "file " << key << " changed " << mtime.secsTo(e.value().entry->mtime);
+        delete e.value().entry;
+        entrycache.erase(e);
+        return 0;
+    }
+    e.value().lastUsed = QDateTime::currentDateTime();
+    prune();
+    return e.value().entry;
+}
+void
+FileEntryCache::prune() {
+    QHash<QString, Entry>::iterator i = entrycache.begin();
+    QDateTime now = QDateTime::currentDateTime();
+    while (i != entrycache.constEnd()) {
+        if (i.value().lastUsed.secsTo(now) > 600) {
+            delete i.value().entry;
+            i = entrycache.erase(i);
+        } else {
+            ++i;
+        }
+    }
+}
+
+FileEntryCache ArchiveEngine::cache;
 ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
     : streamengine(0), rootentry(0) {
     filestream = new FSFileInputStream(fse);
@@ -50,6 +101,8 @@ ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
     e->mtime = fse->fileTime(ModificationTime);
     e->atime = fse->fileTime(AccessTime);
     e->ctime = fse->fileTime(CreationTime);
+
+    fullpath = p;
     int pos = p.lastIndexOf('/');
     if (pos != -1) {
         e->name = p.mid(pos+1);
@@ -60,14 +113,17 @@ ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
     entry = e;
 
     zipstream = 0;
-    reopen();
+    getRootEntry(e->mtime);
+    open();
 }
 ArchiveEngine::ArchiveEngine(StreamEngine *se)
         : streamengine(se), parentstream(se->getInputStream()), filestream(0),
             rootentry(0) {
+    fullpath = se->fileName();
     entry = se->getFileEntry();
     zipstream = 0;
-    reopen();
+    getRootEntry(entry->mtime);
+    open();
 }
 ArchiveEngine::~ArchiveEngine() {
     if (zipstream) {
@@ -83,9 +139,23 @@ ArchiveEngine::~ArchiveEngine() {
     if (streamengine) {
         delete streamengine;
     }
+    if (!readAllEntryNames) {
+        delete rootentry;
+    }
 }
 void
-ArchiveEngine::reopen() {
+ArchiveEngine::getRootEntry(const QDateTime& mtime) {
+    rootentry = cache.getEntry(fullpath, mtime);
+    if (rootentry) {
+        readAllEntryNames = true;
+    } else {
+        readAllEntryNames = false;
+        rootentry = new FileEntry(0);
+        rootentry->mtime = mtime;
+    }
+}
+void
+ArchiveEngine::open() {
     if (zipstream) {
         delete zipstream;
     }
@@ -157,14 +227,18 @@ ArchiveEngine::decompress(InputStream* is, size_t bufsize) const {
 void
 ArchiveEngine::readEntryNames() const {
     while (nextEntry()) {}
+    readAllEntryNames = true;
+    cache.addEntry(fullpath, rootentry);
 }
 QStringList
 ArchiveEngine::entryList(QDir::Filters /*filters*/,
         const QStringList& /*filterNames*/) const {
     // TODO: respect filters
-    readEntryNames();
+    if (!readAllEntryNames) {
+        readEntryNames();
+    }
     QStringList e;
-    foreach (FileEntry *fe, rootentry.getEntries()) {
+    foreach (FileEntry *fe, rootentry->getEntries()) {
         e.append(fe->name);
     }
     return e;
@@ -176,10 +250,13 @@ ArchiveEngine::nextEntry() const {
         const EntryInfo& info = zipstream->getEntryInfo();
         QString name(info.filename.c_str());
         QStringList path = name.split("/", QString::SkipEmptyParts);
-        FileEntry* fe = &rootentry;
+        FileEntry* fe = rootentry;
         foreach(QString s, path) {
             current = fe->getEntry(s);
             if (current == 0) {
+                if (readAllEntryNames) {
+                    qDebug("Archive was modified between accesses.");
+                }
                 current = fe->add(s);
             }
             fe = current;
@@ -236,7 +313,7 @@ ArchiveEngine::fileName(FileName file) const {
     case DefaultName:
     default:
         if (path.isEmpty()) return entry->name;
-        return path+"/"+entry->name;
+        return fullpath;
     }
     return path;
 }
