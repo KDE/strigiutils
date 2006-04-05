@@ -22,4 +22,15 @@ public:
     qint64 read(char* data, qint64 maxlen);
 //    qint64 readLine(char *data, qint64 maxlen);
     qint64 size () const;
+    QDateTime fileTime ( FileTime time ) const {
+        if (time == ModificationTime) {
+            return entry->mtime;
+        } else if (time == AccessTime) {
+            return entry->atime;
+        }
+        return entry->ctime;
+    }
+    const FileEntry* getFileEntry() const {
+        return entry;
+    }
 };

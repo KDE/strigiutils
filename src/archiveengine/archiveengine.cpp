@@ -41,23 +41,31 @@ FileEntry::getEntry(const QString &name) const {
 }
 
 ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
-    : streamengine(0), entry(0) {
+    : streamengine(0), rootentry(0) {
     filestream = new FSFileInputStream(fse);
     parentstream = filestream;
-    entry.size = fse->size();
 
+    FileEntry* e = new FileEntry(0);
+    e->size = fse->size();
+    e->mtime = fse->fileTime(ModificationTime);
+    e->atime = fse->fileTime(AccessTime);
+    e->ctime = fse->fileTime(CreationTime);
     int pos = p.lastIndexOf('/');
     if (pos != -1) {
-        entry.name = p.mid(pos+1);
+        e->name = p.mid(pos+1);
         path = p.left(pos);
     } else {
-        entry.name = p;
+        e->name = p;
     }
+    entry = e;
+
     zipstream = 0;
     reopen();
 }
 ArchiveEngine::ArchiveEngine(StreamEngine *se)
-        : streamengine(se), parentstream(se->getInputStream()), filestream(0), entry(0) {
+        : streamengine(se), parentstream(se->getInputStream()), filestream(0),
+            rootentry(0) {
+    entry = se->getFileEntry();
     zipstream = 0;
     reopen();
 }
@@ -70,6 +78,7 @@ ArchiveEngine::~ArchiveEngine() {
     }
     if (filestream) {
         delete filestream;
+        delete entry;
     }
     if (streamengine) {
         delete streamengine;
@@ -155,7 +164,7 @@ ArchiveEngine::entryList(QDir::Filters /*filters*/,
     // TODO: respect filters
     readEntryNames();
     QStringList e;
-    foreach (FileEntry *fe, entry.getEntries()) {
+    foreach (FileEntry *fe, rootentry.getEntries()) {
         e.append(fe->name);
     }
     return e;
@@ -164,10 +173,10 @@ bool
 ArchiveEngine::nextEntry() const {
     entrystream = zipstream->nextEntry();
     if (entrystream) {
-        const EntryInfo info = zipstream->getEntryInfo();
+        const EntryInfo& info = zipstream->getEntryInfo();
         QString name(info.filename.c_str());
         QStringList path = name.split("/", QString::SkipEmptyParts);
-        FileEntry* fe = &entry;
+        FileEntry* fe = &rootentry;
         foreach(QString s, path) {
             current = fe->getEntry(s);
             if (current == 0) {
@@ -181,7 +190,8 @@ ArchiveEngine::nextEntry() const {
         } else  if (info.type == EntryInfo::Dir) {
             current->fileFlags |= QAbstractFileEngine::DirectoryType;
         }
-        current->size = entrystream->getSize();
+        current->size = info.size;
+        current->mtime.setTime_t(info.mtime);
     }
     return entrystream;
 }
@@ -222,11 +232,11 @@ ArchiveEngine::fileName(FileName file) const {
     case PathName:
         return path;
     case BaseName:
-        return entry.name;
+        return entry->name;
     case DefaultName:
     default:
-        if (path.isEmpty()) return entry.name;
-        return path+"/"+entry.name;
+        if (path.isEmpty()) return entry->name;
+        return path+"/"+entry->name;
     }
     return path;
 }

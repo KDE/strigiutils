@@ -2,7 +2,8 @@
 #include "streamengine.h"
 
 ArchiveDirEngine::ArchiveDirEngine(ArchiveEngineBase* p, const FileEntry*e)
-    : parent(p), entry(e) {
+    : parent(p) {
+    entry = e;
 }
 ArchiveDirEngine::~ArchiveDirEngine() {
     delete parent;

@@ -6,7 +6,7 @@
 class ArchiveDirEngine : public ArchiveEngineBase {
 private:
     ArchiveEngineBase* parent;
-    const FileEntry* const entry;
+//    const FileEntry* const entry;
 protected:
     bool nextEntry() const {
         return parent->nextEntry();
@@ -16,7 +16,7 @@ protected:
     }
 public:
     ArchiveDirEngine(ArchiveEngineBase* parent,
-        const FileEntry*e);
+        const FileEntry* e);
     ~ArchiveDirEngine();
     StreamEngine *openEntry(const QString &filename);
     ArchiveDirEngine *openDir(QString filename);
@@ -29,6 +29,14 @@ public:
         FileFlags flags =
             QAbstractFileEngine::DirectoryType;
         return flags & type;
+    }
+    QDateTime fileTime ( FileTime time ) const {
+        if (time == ModificationTime) {
+            return entry->mtime;
+        } else if (time == AccessTime) {
+            return entry->atime;
+        }
+        return entry->ctime;
     }
 };
 

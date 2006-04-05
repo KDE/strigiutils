@@ -2,6 +2,7 @@
 #define ARCHIVEENGINE
 
 #include <QtCore/QAbstractFileEngineHandler>
+#include <QtCore/QDateTime>
 
 class FileEntry;
 class FileEntry {
@@ -9,6 +10,9 @@ private:
     QList<FileEntry*> entries;
 public:
     QString name;
+    QDateTime mtime;
+    QDateTime ctime;
+    QDateTime atime;
     qint64 size;
     QAbstractFileEngine::FileFlags fileFlags;
 
@@ -31,6 +35,8 @@ friend class ArchiveDirEngine;
 private:
     virtual bool nextEntry() const= 0;
     virtual void readEntryNames() const = 0;
+protected:
+    const FileEntry* entry;
 public:
     virtual StreamEngine *openEntry(const QString &filename) = 0;
     virtual ArchiveDirEngine *openDir(QString filename) = 0;
@@ -50,6 +56,15 @@ public:
         printf("open archive");
         return false;
     }
+    qint64 size() const { return entry->size; }
+    QDateTime fileTime ( FileTime time ) const {
+        if (time == ModificationTime) {
+            return entry->mtime;
+        } else if (time == AccessTime) {
+            return entry->atime;
+        }
+        return entry->ctime;
+    }
 };
 
 class InputStream;
@@ -68,7 +83,7 @@ private:
     SubStreamProvider *zipstream;
     mutable SubInputStream *entrystream;
     bool readAllEntryNames;
-    mutable FileEntry entry;
+    mutable FileEntry rootentry;
     mutable FileEntry* current;
 
     bool nextEntry() const;
@@ -96,7 +111,6 @@ public:
             QAbstractFileEngine::DirectoryType|QAbstractFileEngine::FileType;
         return flags & type;
     }
-    qint64 size() const { return entry.size; }
 };
 
 #endif

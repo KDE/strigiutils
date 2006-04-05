@@ -1,7 +1,9 @@
 #include "zipinputstream.h"
 #include "gzipinputstream.h"
 #include "subinputstream.h"
-
+extern "C" {
+    #include "dostime.h"
+}
 ZipInputStream::ZipInputStream(InputStream *input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
@@ -47,9 +49,9 @@ ZipInputStream::nextEntry() {
                 GZipInputStream::ZIPFORMAT);
         }
         uncompressedEntryStream
-            = new SubInputStream(uncompressionStream, entrySize);
+            = new SubInputStream(uncompressionStream, entryinfo.size);
     } else {
-        uncompressedEntryStream = new SubInputStream(input, entrySize);
+        uncompressedEntryStream = new SubInputStream(input, entryinfo.size);
     }
     return uncompressedEntryStream;
 }
@@ -117,7 +119,7 @@ ZipInputStream::readHeader() {
         return;
     }
     // read 4 bytes into the length of the uncompressed size
-    entrySize = read4bytes(hb + 22);
+    entryinfo.size = read4bytes(hb + 22);
     // read 4 bytes into the length of the compressed size
     entryCompressedSize = read4bytes(hb + 18);
     compressionMethod = read2bytes(hb+8);
@@ -132,6 +134,8 @@ ZipInputStream::readHeader() {
         error = "This particular zip file format is not supported for reading "
             "as a stream.";
     }
+    unsigned long dost = read4bytes(hb+10);
+    entryinfo.mtime = dos2unixtime(dost);
 }
 void
 ZipInputStream::readFileName(size_t len) {

@@ -23,7 +23,7 @@ TarInputStream::nextEntry() {
     }
     parseHeader();
     if (status) return 0;
-    output = new SubInputStream(input, entrySize);
+    output = new SubInputStream(input, entryinfo.size);
     return output;
 }
 void
@@ -80,10 +80,12 @@ TarInputStream::parseHeader() {
     }
 
     // read the file size which is in octal format
-    entrySize = readSize(hb);
+    entryinfo.size = readOctalField(hb, 124);
+    if (status) return;
+    entryinfo.mtime = readOctalField(hb, 136);
     if (status) return;
 
-    numPaddingBytes = 512 - entrySize%512;
+    numPaddingBytes = 512 - entryinfo.size%512;
     if (numPaddingBytes == 512) {
         numPaddingBytes = 0;
     }
@@ -98,19 +100,19 @@ TarInputStream::parseHeader() {
     //printf("%s\n", entryfilename.c_str());
 }
 size_t
-TarInputStream::readSize(char *b) {
-    size_t size;
-    int r = sscanf(b+124, "%o", &size);
+TarInputStream::readOctalField(char *b, size_t offset) {
+    size_t val;
+    int r = sscanf(b+offset, "%o", &val);
     if (r != 1) {
         status = -2;
-        error = "Error reading header: size is not a valid integer.";
+        error = "Error reading header: octal field is not a valid integer.";
         return 0;
     }
-    return size;
+    return val;
 }
 void
 TarInputStream::readLongLink(char *b) {
-    size_t toread = readSize(b);
+    size_t toread = readOctalField(b, 124);
     size_t left = toread%512;
     if (left) {
         left = 512 - left;

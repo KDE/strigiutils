@@ -21,7 +21,6 @@ private:
     SubInputStream *compressedEntryStream;
     GZipInputStream *uncompressionStream;
     SubInputStream *uncompressedEntryStream;
-    size_t entrySize;
     size_t entryCompressedSize;
     size_t compressionMethod;
 
