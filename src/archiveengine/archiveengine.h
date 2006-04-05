@@ -54,6 +54,7 @@ public:
 
 class InputStream;
 class SubInputStream;
+class QFSFileEngine;
 class FSFileInputStream;
 class SubStreamProvider;
 
@@ -78,7 +79,7 @@ private:
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
 public:
-    ArchiveEngine(const QString& path, FSFileInputStream *fs);
+    ArchiveEngine(const QString& path, QFSFileEngine *fs);
     ArchiveEngine(StreamEngine *fs);
     ~ArchiveEngine();
     StreamEngine *openEntry(const QString &filename);
@@ -95,6 +96,7 @@ public:
             QAbstractFileEngine::DirectoryType|QAbstractFileEngine::FileType;
         return flags & type;
     }
+    qint64 size() const { return entry.size; }
 };
 
 #endif

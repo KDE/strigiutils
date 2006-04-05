@@ -7,6 +7,7 @@
 #include "subinputstream.h"
 #include "bz2inputstream.h"
 #include "gzipinputstream.h"
+#include <QtCore/QFSFileEngine>
 
 FileEntry::~FileEntry() {
     foreach(FileEntry *fe, entries) {
@@ -39,8 +40,12 @@ FileEntry::getEntry(const QString &name) const {
     return 0;
 }
 
-ArchiveEngine::ArchiveEngine(const QString &p, FSFileInputStream *fs)
-    : streamengine(0), parentstream(fs), filestream(fs), entry(0) {
+ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
+    : streamengine(0), entry(0) {
+    filestream = new FSFileInputStream(fse);
+    parentstream = filestream;
+    entry.size = fse->size();
+
     int pos = p.lastIndexOf('/');
     if (pos != -1) {
         entry.name = p.mid(pos+1);

@@ -2,7 +2,6 @@
 #include "archiveengine.h"
 #include "archivedirengine.h"
 #include "streamengine.h"
-#include "fsfileinputstream.h"
 #include <QtCore/QFSFileEngine>
 #include <dirent.h>
 
@@ -51,7 +50,7 @@ ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QStr
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &file) const {
 
-    // try to the deepest regular file in the file path
+    // try to open the deepest regular file in the file path
     QFSFileEngine* fse = 0;
     // use the full path
     QString path = file;
@@ -86,9 +85,9 @@ ArchiveEngineHandler::create(const QString &file) const {
     }
 
     // try to open the file as an archive
-    FSFileInputStream *ffis = new FSFileInputStream(fse);
+    //FSFileInputStream *ffis = new FSFileInputStream(fse);
     ArchiveEngineBase *ae = 0;
-    ae = new ArchiveEngine(path, ffis);
+    ae = new ArchiveEngine(path, fse);
     if (ae->error() != QFile::NoError) {
         delete ae;
         return 0;
