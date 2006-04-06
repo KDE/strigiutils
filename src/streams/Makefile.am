@@ -6,6 +6,7 @@ libstreams_la_SOURCES = bz2endanalyzer.cpp bz2inputstream.cpp \
 	subinputstream.cpp tarendanalyzer.cpp Reader.cpp \
 	tarinputstream.cpp zipinputstream.cpp inputstreambuffer.cpp dostime.c
 
+libstreams_la_CXXFLAGS = -pg
 libstreams_la_LDFLAGS = 
 libstreams_la_LIBADD = -lz -lcrypto -lbz2
 

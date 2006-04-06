@@ -3,11 +3,12 @@
 
 #include <QtCore/QAbstractFileEngineHandler>
 #include <QtCore/QDateTime>
+#include <QtCore/QHash>
 
 class FileEntry;
 class FileEntry {
 private:
-    QList<FileEntry*> entries;
+    QHash<const QString, FileEntry*> entries;
 public:
     QString name;
     QDateTime mtime;
@@ -22,7 +23,7 @@ public:
     FileEntry* getEntry(const QString &name);
     const FileEntry* getEntry(const QString &name) const;
     const QList<FileEntry*> getEntries() const {
-        return entries;
+        return entries.values();
     }
 };
 
@@ -88,7 +89,9 @@ public:
     void addEntry(const QString& key, FileEntry*e);
     FileEntry* getEntry(const QString& key, const QDateTime &mtime);
 };
-
+/**
+ * @short Implementation of QAbstractFileEngine that can open archives as directories.
+ */
 class ArchiveEngine : public ArchiveEngineBase {
 private:
     QString fullpath;

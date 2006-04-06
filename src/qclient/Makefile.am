@@ -12,7 +12,7 @@ qclient_LDADD = $(QT_LIBS) \
 	$(top_builddir)/archivereader/src/archiveengine/libarchiveengine.la
 
 archivecat_SOURCES = archivecat.cpp
-archivecat_CXXFLAGS = $(QT_CXXFLAGS) \
+archivecat_CXXFLAGS = -pg $(QT_CXXFLAGS) \
 	-I$(top_srcdir)/archivereader/src/archiveengine
 archivecat_LDFLAGS = $(QT_LIBS)
 archivecat_LDADD = $(QT_LIBS) \

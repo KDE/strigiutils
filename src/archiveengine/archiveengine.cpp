@@ -8,38 +8,29 @@
 #include "bz2inputstream.h"
 #include "gzipinputstream.h"
 #include <QtCore/QFSFileEngine>
-#include <QtCore/QHash>
 #include <QtDebug>
 
 FileEntry::~FileEntry() {
-    foreach(FileEntry *fe, entries) {
-        delete fe;
+    QHash<const QString, FileEntry*>::const_iterator i = entries.constBegin();
+    while (i != entries.constEnd()) {
+        delete i.value();
+        ++i;
     }
 }
 FileEntry*
 FileEntry::add(const QString &name) {
 //    printf("adding '%s' to '%s'\n", (const char*)name.toUtf8(), (const char*)this->name.toUtf8());
     FileEntry *fe = new FileEntry(name);
-    entries.append(fe);
+    entries.insert(name, fe);
     return fe;
 }
 FileEntry *
 FileEntry::getEntry(const QString &name) {
-    foreach(FileEntry *fe, entries) {
-        if (fe->name == name) {
-            return fe;
-        }
-    }
-    return 0;
+    return entries.value(name);
 }
 const FileEntry *
 FileEntry::getEntry(const QString &name) const {
-    foreach(FileEntry *fe, entries) {
-        if (fe->name == name) {
-            return fe;
-        }
-    }
-    return 0;
+    return entries.value(name);
 }
 
 QHash<QString, FileEntryCache::Entry> FileEntryCache::entrycache;
@@ -196,6 +187,27 @@ ArchiveEngine::open() {
         return;
     }
 }
+/*qint64
+ArchiveEngine::read(char* data, qint64 maxlen) {
+    if (maxlen == 0) {
+        qDebug("maxlen == 0!!!\n");
+        return true;
+    }
+    if (stream) {
+        const char *start;
+        size_t nread;
+        InputStream::Status status;
+        status = stream->read(start, nread, maxlen);
+        if (status == InputStream::Ok) {
+            bcopy(start, data, nread);
+            return nread;
+        }
+        if (status == InputStream::Eof) {
+            return 0;
+        }
+    }
+    return -1;
+}*/
 bool
 ArchiveEngine::testStream(InputStream* is, size_t readsize) const {
     const char *start;
