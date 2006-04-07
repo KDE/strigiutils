@@ -63,7 +63,7 @@ GZipInputStream::dealloc() {
 }
 bool
 GZipInputStream::checkMagic() {
-    char buf[2];
+    unsigned char buf[2];
     input->mark(2);
     const char *ptr;
     size_t nread;

@@ -60,9 +60,10 @@ ArchiveEngineHandler::create(const QString &file) const {
             // make sure this is not a directory
             // cannot use Qt functions because of bugs
             // (bug should be fixed in Qt 4.1.2
-            DIR* dir = opendir(path.toUtf8());
-            if (dir) {
-                closedir(dir);
+            if (fse->fileFlags(QAbstractFileEngine::DirectoryType)) {
+            //DIR* dir = opendir(path.toUtf8());
+            //if (dir) {
+            //    closedir(dir);
                 delete fse;
                 return 0;
             }
