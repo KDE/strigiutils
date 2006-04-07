@@ -1,0 +1,6 @@
+- documentation
+- enable reading from archives as normal files
+- add support for extended headers in tar files
+see e.g. http://www.ussg.iu.edu/hypermail/linux/kernel/0506.2/0417.html
+- add support for RPM files
+http://www.linuxbase.org/spec/refspecs/LSB_1.3.0/gLSB/gLSB/swinstall.html
