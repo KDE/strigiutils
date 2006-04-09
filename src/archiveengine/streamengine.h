@@ -5,7 +5,7 @@
 
 class StreamEngine : public QAbstractFileEngine {
 private:
-    size_t pos_;
+    int32_t pos_;
     InputStream *stream;
     const FileEntry* entry;
     ArchiveEngineBase *archive;

@@ -3,29 +3,31 @@
 
 #include <cstdio>
 
+typedef int int32_t;
+
 template <class T>
 class InputStreamBuffer {
 private:
 public:
     T *start;
-    size_t size;
+    int32_t size;
     T *curPos;
-    size_t avail;
+    int32_t avail;
     T *markPos;
 
     InputStreamBuffer();
     ~InputStreamBuffer();
-    void setSize(size_t size);
-    void mark(size_t readlimit);
+    void setSize(int32_t size);
+    void mark(int32_t readlimit);
     void reset();
-    void read(const T*& start, size_t& end, size_t max);
+    void read(const T*& start, int32_t& end, int32_t max);
 
     /**
      * This function prepares the buffer for a new write.
      * Any data not read since the last write is lost.
      * returns the number of available places.
      **/
-    size_t getWriteSpace();
+    int32_t getWriteSpace();
 };
 
 #endif

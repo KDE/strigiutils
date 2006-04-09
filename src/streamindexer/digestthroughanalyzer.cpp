@@ -4,16 +4,16 @@
 
 class DigestInputStream : public InputStream {
 private:
-    size_t sinceMark;
-    size_t ignoreBytes;
+    int32_t sinceMark;
+    int32_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
     InputStream *input;
 public:
     DigestInputStream(InputStream *input);
-    Status read(const char*& start, size_t& read, size_t max = 0);
-    Status skip(size_t ntoskip);
-    Status mark(size_t readlimit);
+    Status read(const char*& start, int32_t& read, int32_t max = 0);
+    Status skip(int32_t ntoskip);
+    Status mark(int32_t readlimit);
     Status reset();
     void printDigest();
 };
@@ -25,7 +25,7 @@ DigestInputStream::DigestInputStream(InputStream *input) {
     SHA1_Init(&sha1);
 }
 InputStream::Status
-DigestInputStream::read(const char*& start, size_t& read, size_t max) {
+DigestInputStream::read(const char*& start, int32_t& read, int32_t max) {
     if (status) return status;
     status = input->read(start, read, max);
     if (status == Error) {
@@ -45,15 +45,15 @@ DigestInputStream::read(const char*& start, size_t& read, size_t max) {
     return status;
 }
 InputStream::Status
-DigestInputStream::skip(size_t ntoskip) {
+DigestInputStream::skip(int32_t ntoskip) {
     if (status) return status;
     // we cannot just skip but must read the data
     const char*start;
-    size_t nread;
+    int32_t nread;
     return read(start, nread, ntoskip);
 }
 InputStream::Status
-DigestInputStream::mark(size_t readlimit) {
+DigestInputStream::mark(int32_t readlimit) {
     if (status) return status;
     sinceMark = 0;
     return input->mark(readlimit);

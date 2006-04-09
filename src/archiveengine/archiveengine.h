@@ -110,8 +110,8 @@ private:
     bool nextEntry() const;
     void open();
     void readEntryNames() const;
-    InputStream* decompress(InputStream*, size_t bufsize) const;
-    bool ArchiveEngine::testStream(InputStream* is, size_t readsize) const;
+    InputStream* decompress(InputStream*, int32_t bufsize) const;
+    bool ArchiveEngine::testStream(InputStream* is, int32_t readsize) const;
     void getRootEntry(const QDateTime& mtime);
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);

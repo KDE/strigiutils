@@ -38,7 +38,7 @@ long
 streamLen(InputStream *i) {
     long count = 0;
     const char *begin;
-    size_t nread;
+    int32_t nread;
     char r = i->read(begin, nread);
     while (r == 0) {
         count += nread;
@@ -65,7 +65,7 @@ analyze(InputStream *i, const char *path) {
 void
 printSigPositions(InputStream *i) {
     const char *begin;
-    size_t nread;
+    int32_t nread;
     i->read(begin, nread);
     printf("read: %i\n", nread);
     if (nread < 4) return;

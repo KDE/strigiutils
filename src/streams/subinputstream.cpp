@@ -1,12 +1,12 @@
 #include "subinputstream.h"
 
-SubInputStream::SubInputStream(InputStream *input, size_t length)
+SubInputStream::SubInputStream(InputStream *input, int32_t length)
         : size(length) {
     this->input = input;
     left = length;
 }
 InputStream::Status
-SubInputStream::read(const char*& start, size_t& nread, size_t max) {
+SubInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     if (left == 0) {
         nread = 0;
         return Eof;
@@ -22,7 +22,7 @@ SubInputStream::read(const char*& start, size_t& nread, size_t max) {
     return Ok;
 }
 InputStream::Status
-SubInputStream::mark(size_t readlimit) {
+SubInputStream::mark(int32_t readlimit) {
     markleft = left;
     return input->mark(readlimit);
 }

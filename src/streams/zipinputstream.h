@@ -21,13 +21,13 @@ private:
     SubInputStream *compressedEntryStream;
     GZipInputStream *uncompressionStream;
     SubInputStream *uncompressedEntryStream;
-    size_t entryCompressedSize;
-    size_t compressionMethod;
+    int32_t entryCompressedSize;
+    int32_t compressionMethod;
 
-    void readFileName(size_t len);
+    void readFileName(int32_t len);
     void readHeader();
-    static size_t read2bytes(const unsigned char *b);
-    static size_t read4bytes(const unsigned char *b);
+    static int32_t read2bytes(const unsigned char *b);
+    static int32_t read4bytes(const unsigned char *b);
 public:
     ZipInputStream(InputStream *input);
     ~ZipInputStream();

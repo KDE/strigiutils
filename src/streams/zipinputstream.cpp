@@ -55,11 +55,11 @@ ZipInputStream::nextEntry() {
     }
     return uncompressedEntryStream;
 }
-size_t
+int32_t
 ZipInputStream::read2bytes(const unsigned char *b) {
     return b[0] + (b[1]<<8);
 }
-size_t
+int32_t
 ZipInputStream::read4bytes(const unsigned char *b) {
     return b[0] + (b[1]<<8) + (b[2]<<16) + (b[3]<<24);
 }
@@ -69,7 +69,7 @@ ZipInputStream::readHeader() {
     unsigned char *bptr;
     int toread;
     const char *begin;
-    size_t nread;
+    int32_t nread;
 
     // read the first 30 characters
     toread = 30;
@@ -103,7 +103,7 @@ ZipInputStream::readHeader() {
         return;
     }
     // read 2 bytes into the filename size
-    size_t len = read2bytes(hb + 26);
+    int32_t len = read2bytes(hb + 26);
     readFileName(len);
     if (status) {
         status = -2;
@@ -124,7 +124,7 @@ ZipInputStream::readHeader() {
     entryCompressedSize = read4bytes(hb + 18);
     compressionMethod = read2bytes(hb+8);
 
-    size_t generalBitFlags = read2bytes(hb+6);
+    int32_t generalBitFlags = read2bytes(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
         // ohoh, the filesize and compressed file size are unknown at this point
         // in theory this is a solvable problem, but it's not easy:
@@ -138,10 +138,10 @@ ZipInputStream::readHeader() {
     entryinfo.mtime = dos2unixtime(dost);
 }
 void
-ZipInputStream::readFileName(size_t len) {
+ZipInputStream::readFileName(int32_t len) {
     entryinfo.filename.resize(0);
     const char *begin;
-    size_t nread;
+    int32_t nread;
     while (len) {
         char r = input->read(begin, nread, len);
         if (r) {

@@ -12,13 +12,13 @@ private:
 
     void readFromFile();
 public:
-    static const size_t defaultBufferSize;
-    FileInputStream(const char *filepath, size_t buffersize=defaultBufferSize);
+    static const int32_t defaultBufferSize;
+    FileInputStream(const char *filepath, int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
-    Status read(const char*& start, size_t& nread, size_t max = 0);
-    Status mark(size_t readlimit);
+    Status read(const char*& start, int32_t& nread, int32_t max = 0);
+    Status mark(int32_t readlimit);
     Status reset();
-//    char skip(size_t ntoskip);
+//    char skip(int32_t ntoskip);
 };
 
 #endif

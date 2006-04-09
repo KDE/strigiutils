@@ -3,6 +3,9 @@
 
 #include <string>
 
+typedef int int32_t;
+//typedef long int int64_t;
+
 /**
  * @short Base class for stream read access to many different file types.
  * 
@@ -35,14 +38,14 @@ public:
      * If an error occured, Error is returned.
      * No more than @param max data wil be read. If @param max == 0, there's no limit.
      **/
-    virtual Status read(const char*& start, size_t& read, size_t max = 0) = 0;
+    virtual Status read(const char*& start, int32_t& read, int32_t max = 0) = 0;
     /**
      * Skip @param ntoskip bytes. Unless an error occurs or the end of file is
      * encountered, this amount of bytes is skipped.
      * If the end of stream is reached, Eof is returned.
      * If an error occured, Error is returned.
      **/
-    virtual Status skip(size_t ntoskip);
+    virtual Status skip(int64_t ntoskip);
      /**
       * \short Marks the current position in this input stream.
       * A subsequent call to the reset method repositions this stream at the
@@ -59,7 +62,7 @@ public:
       * When calling the method mark more than once at the same position in the
       * stream, the call with the largest value for \p readlimit is defining.
       **/
-    virtual Status mark(size_t readlimit) = 0;
+    virtual Status mark(int32_t readlimit) = 0;
       /**
        * \short Repositions this stream to the position at the time the mark
        * method was last called on this input stream.

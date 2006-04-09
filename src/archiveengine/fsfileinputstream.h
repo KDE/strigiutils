@@ -15,13 +15,13 @@ private:
 
     void readFromFile();
 public:
-    static const size_t defaultBufferSize;
-    FSFileInputStream(const QString &filename, size_t buffersize=defaultBufferSize);
-    FSFileInputStream(QFSFileEngine *, size_t buffersize=defaultBufferSize);
+    static const int32_t defaultBufferSize;
+    FSFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
+    FSFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
     ~FSFileInputStream();
     Status reopen();
-    Status read(const char*& start, size_t& nread, size_t max = 0);
-    Status mark(size_t readlimit);
+    Status read(const char*& start, int32_t& nread, int32_t max = 0);
+    Status mark(int32_t readlimit);
     Status reset();
 };
 

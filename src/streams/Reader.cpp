@@ -4,7 +4,7 @@
 Reader::Status
 Reader::read(wchar_t& c) {
     const wchar_t *buf;
-    size_t numRead;
+    int32_t numRead;
     Status r;
     do {
         r = read(buf, numRead, 1);
@@ -13,9 +13,9 @@ Reader::read(wchar_t& c) {
     return r;
 }
 Reader::Status
-Reader::skip(size_t ntoskip) {
+Reader::skip(int32_t ntoskip) {
     const wchar_t *begin;
-    size_t nread;
+    int32_t nread;
     while (ntoskip) {
         Status r = read(begin, nread, ntoskip);
         if (r != Ok) return r;
@@ -50,7 +50,7 @@ InputStreamReader::~InputStreamReader() {
     }
 }
 Reader::Status
-InputStreamReader::read(const wchar_t*& start, size_t& nread, size_t max) {
+InputStreamReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
 
@@ -86,7 +86,7 @@ InputStreamReader::decode() {
     // decode from charbuf
     char *inbuf = charbuf.curPos;
     size_t inbytesleft = charbuf.avail;
-    size_t space = buffer.getWriteSpace();
+    int32_t space = buffer.getWriteSpace();
 //    printf("decode %p %i %i\n", buffer.curPos, space, buffer.size);
     size_t outbytesleft = sizeof(wchar_t)*space;
     char *outbuf = (char*)buffer.curPos;
@@ -133,7 +133,7 @@ InputStreamReader::decodeFromStream() {
     if (charbuf.curPos == charbuf.start) {
  //       printf("fill up charbuf\n");
         const char *begin;
-        size_t numRead;
+        int32_t numRead;
         InputStream::Status s;
         s = input->read(begin, numRead, charbuf.size);
         switch (s) {
@@ -162,7 +162,7 @@ InputStreamReader::decodeFromStream() {
     decode();
 }
 Reader::Status
-InputStreamReader::mark(size_t readlimit) {
+InputStreamReader::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
@@ -177,7 +177,7 @@ InputStreamReader::reset() {
     }
 }
 FileReader::FileReader(const char* fname, const char* encoding_scheme,
-        size_t cachelen, size_t cachebuff) {
+        int32_t cachelen, int32_t cachebuff) {
     input = new FileInputStream(fname, cachelen);
     reader = new InputStreamReader(input);
 }
@@ -186,13 +186,13 @@ FileReader::~FileReader() {
     if (input) delete input;
 }
 Reader::Status
-FileReader::read(const wchar_t*& start, size_t& nread, size_t max) {
+FileReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     status = reader->read(start, nread, max);
     if (status != Ok) error = reader->getError();
     return status;
 }
 Reader::Status
-FileReader::mark(size_t readlimit) {
+FileReader::mark(int32_t readlimit) {
     status = reader->mark(readlimit);
     if (status != Ok) error = reader->getError();
     return status;
@@ -203,7 +203,7 @@ FileReader::reset() {
     if (status != Ok) error = reader->getError();
     return status;
 }
-StringReader::StringReader(const wchar_t* value, const size_t length )
+StringReader::StringReader(const wchar_t* value, const int32_t length )
         : len(length) {
     this->data = new wchar_t[len+1];
     bcopy(value, data, len*sizeof(wchar_t));
@@ -218,7 +218,7 @@ StringReader::~StringReader(){
     close();
 }
 Reader::Status
-StringReader::read(const wchar_t*& start, size_t& nread, size_t max) {
+StringReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     if ( pt >= len )
         return Eof;
     nread = max;
@@ -241,7 +241,7 @@ StringReader::close(){
     }
 }
 Reader::Status
-StringReader::mark(size_t readlimit) {
+StringReader::mark(int32_t /*readlimit*/) {
     markpt = pt;
     return Ok;
 }

@@ -5,20 +5,20 @@
 
 class SubInputStream : public InputStream {
 private:
-    const size_t size;
-    size_t left;
-    size_t markleft;
+    const int32_t size;
+    int32_t left;
+    int32_t markleft;
     InputStream *input;
 public:
-    SubInputStream(InputStream *input, size_t size);
-    Status read(const char*& start, size_t& nread, size_t max = 0);
-    Status mark(size_t readlimit);
+    SubInputStream(InputStream *input, int32_t size);
+    Status read(const char*& start, int32_t& nread, int32_t max = 0);
+    Status mark(int32_t readlimit);
     Status reset();
     Status skipToEnd();
-    size_t pos() {
+    int32_t pos() {
         return size-left;
     }
-    size_t getSize() const {
+    int32_t getSize() const {
         return size;
     }
 };

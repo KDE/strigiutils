@@ -31,7 +31,7 @@ TarInputStream::readHeader(char *hb) {
     char *bptr;
     int toread;
     const char *begin;
-    size_t nread;
+    int32_t nread;
 
     // read the first 500 characters
     toread = 512;
@@ -54,7 +54,7 @@ TarInputStream::parseHeader() {
     readHeader(hb);
     if (status) return;
 
-    size_t len = 0;
+    int32_t len = 0;
     while (len < 108 && hb[len]) {
         len++;
     }
@@ -99,9 +99,9 @@ TarInputStream::parseHeader() {
     }
     //printf("%s\n", entryfilename.c_str());
 }
-size_t
-TarInputStream::readOctalField(char *b, size_t offset) {
-    size_t val;
+int32_t
+TarInputStream::readOctalField(char *b, int32_t offset) {
+    int32_t val;
     int r = sscanf(b+offset, "%o", &val);
     if (r != 1) {
         status = -2;
@@ -112,13 +112,13 @@ TarInputStream::readOctalField(char *b, size_t offset) {
 }
 void
 TarInputStream::readLongLink(char *b) {
-    size_t toread = readOctalField(b, 124);
-    size_t left = toread%512;
+    int32_t toread = readOctalField(b, 124);
+    int32_t left = toread%512;
     if (left) {
         left = 512 - left;
     }
     const char *begin;
-    size_t nread;
+    int32_t nread;
     if (status) return;
     while (toread) {
         char r = input->read(begin, nread, toread);

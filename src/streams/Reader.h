@@ -23,7 +23,7 @@ public:
      * nread is the number of _characters_ read.
      * max is the maximal number of characters to read
      **/
-    virtual Status read(const wchar_t*& start, size_t& nread, size_t max=0)= 0;
+    virtual Status read(const wchar_t*& start, int32_t& nread, int32_t max=0)= 0;
     /* the available value may be greater than the actual value if
       the encoding is a variable one (such as utf8 or unicode) */
     /**
@@ -32,8 +32,8 @@ public:
      * If the end of stream is reached, -1 is returned.
      * If an error occured, -2 is returned.
      **/
-    virtual Status skip(size_t ntoskip);
-    virtual Status mark(size_t readlimit) = 0;
+    virtual Status skip(int32_t ntoskip);
+    virtual Status mark(int32_t readlimit) = 0;
     virtual Status reset() = 0;
 };
 /**
@@ -47,8 +47,8 @@ private:
     bool finishedDecoding;
     InputStream* input;
     const char* inStart;
-    size_t inSize;
-    size_t charsLeft;
+    int32_t inSize;
+    int32_t charsLeft;
 
     InputStreamBuffer<char> charbuf;
     InputStreamBuffer<wchar_t> buffer;
@@ -58,8 +58,8 @@ private:
 public:
     InputStreamReader(InputStream *i, const char *enc=NULL);
     ~InputStreamReader();
-    Status read(const wchar_t*& start, size_t& nread, size_t max=0);
-    Status mark(size_t readlimit);
+    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    Status mark(int32_t readlimit);
     Status reset();
 };
 
@@ -68,28 +68,28 @@ class FileReader : public Reader {
     InputStreamReader* reader;
 public:
     FileReader(const char* fname, const char* encoding_scheme=NULL,
-        const size_t cachelen = 13,
-        const size_t cachebuff = 14 );
+        const int32_t cachelen = 13,
+        const int32_t cachebuff = 14 );
     ~FileReader();
-    Status read(const wchar_t*& start, size_t& nread, size_t max=0);
-    Status mark(size_t readlimit);
+    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    Status mark(int32_t readlimit);
     Status reset();
 };
 
 class StringReader:public Reader{
 private:
     wchar_t* data;
-    size_t pt;
-    size_t markpt;
-    size_t len;
+    int32_t pt;
+    int32_t markpt;
+    int32_t len;
 public:
     StringReader ( const wchar_t* value );
-    StringReader ( const wchar_t* value, const size_t length );
+    StringReader ( const wchar_t* value, const int32_t length );
     ~StringReader();
     void close();
     Status read(wchar_t&);
-    Status read(const wchar_t*& start, size_t& nread, size_t max=0);
-    Status mark(size_t readlimit);
+    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    Status mark(int32_t readlimit);
     Status reset();
 };
 

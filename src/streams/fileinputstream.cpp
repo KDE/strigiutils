@@ -1,8 +1,8 @@
 #include "fileinputstream.h"
 #include "errno.h"
 
-const size_t FileInputStream::defaultBufferSize = 64;
-FileInputStream::FileInputStream(const char *filepath, size_t buffersize) {
+const int32_t FileInputStream::defaultBufferSize = 64;
+FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     // initialize values that signal state
     status = Ok;
 
@@ -31,7 +31,7 @@ FileInputStream::~FileInputStream() {
     }
 }
 InputStream::Status
-FileInputStream::read(const char*& start, size_t& nread, size_t max) {
+FileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
 
@@ -51,7 +51,7 @@ FileInputStream::read(const char*& start, size_t& nread, size_t max) {
 void
 FileInputStream::readFromFile() {
     // prepare the buffer for writing
-    size_t bytesRead = buffer.getWriteSpace();
+    int32_t bytesRead = buffer.getWriteSpace();
     // read into the buffer
     bytesRead = fread(buffer.curPos, 1, bytesRead, file);
     buffer.avail = bytesRead;
@@ -70,7 +70,7 @@ FileInputStream::readFromFile() {
     }
 }
 InputStream::Status
-FileInputStream::mark(size_t readlimit) {
+FileInputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
@@ -80,7 +80,7 @@ FileInputStream::reset() {
     return Ok;
 }
 /*char
-FileInputStream::skip(size_t ntoskip) {
+FileInputStream::skip(int32_t ntoskip) {
     // if we want to skip further than we've already read,
     // use fseek
     // (this seems to not be a really relevant optimisation, for
@@ -89,7 +89,7 @@ FileInputStream::skip(size_t ntoskip) {
     if (buffer.avail >= ntoskip) {
         InputStream::skip(ntoskip);
     } else {
-        size_t skip = ntoskip - buffer.avail;
+        int32_t skip = ntoskip - buffer.avail;
         printf("fseek %i %i\n", skip, errno);
         buffer.avail = 0;
         buffer.markPos = 0; // would become invalid after normal reads too

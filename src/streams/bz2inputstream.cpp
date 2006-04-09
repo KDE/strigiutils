@@ -51,15 +51,15 @@ BZ2InputStream::checkMagic() {
     char buf[5];
     input->mark(5);
     const char *ptr;
-    size_t nread;
-    size_t total = 0;
+    int32_t nread;
+    int32_t total = 0;
     do {
         status = input->read(ptr, nread, 5-total);
         if (status != Ok) {
             error = input->getError();
             return false;
         }
-        for (size_t i=0; i<nread; i++) {
+        for (int32_t i=0; i<nread; i++) {
             buf[i+total] = ptr[i];
         }
         total += nread;
@@ -72,7 +72,7 @@ BZ2InputStream::checkMagic() {
     return ok;
 }
 InputStream::Status
-BZ2InputStream::read(const char*& start, size_t& nread, size_t max) {
+BZ2InputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
 
@@ -97,7 +97,7 @@ void
 BZ2InputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
-    size_t nread;
+    int32_t nread;
     status = input->read(inStart, nread);
     if (status == Error) {
         error = "Error reading bz2: " + input->getError();
@@ -139,7 +139,7 @@ BZ2InputStream::decompressFromStream() {
     }
 }
 InputStream::Status
-BZ2InputStream::mark(size_t readlimit) {
+BZ2InputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }

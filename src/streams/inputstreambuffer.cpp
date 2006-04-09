@@ -11,9 +11,9 @@ InputStreamBuffer<T>::~InputStreamBuffer() {
 }
 template <class T>
 void
-InputStreamBuffer<T>::setSize(size_t size) {
+InputStreamBuffer<T>::setSize(int32_t size) {
     // store pointer information
-    size_t offset = curPos - start;
+    int32_t offset = curPos - start;
     // allocate memory in the buffer
     start = (T*)realloc(start, size*sizeof(T));
     this->size = size;
@@ -22,9 +22,9 @@ InputStreamBuffer<T>::setSize(size_t size) {
 }
 template <class T>
 void
-InputStreamBuffer<T>::mark(size_t readlimit) {
+InputStreamBuffer<T>::mark(int32_t readlimit) {
     // if we have enough room, dont change anything
-    size_t offset = curPos - start;
+    int32_t offset = curPos - start;
     if (size - offset >= readlimit) {
         markPos = curPos;
         return;
@@ -56,12 +56,12 @@ InputStreamBuffer<T>::reset() {
     }
 }
 template <class T>
-size_t
+int32_t
 InputStreamBuffer<T>::getWriteSpace() {
     // advance the buffer to where the last write left off
     curPos += avail;
     // calculate how much space is left at the end of the buffer
-    size_t writeSpace = size - (curPos - start);
+    int32_t writeSpace = size - (curPos - start);
     if (markPos == NULL || writeSpace <= 0) {
         // if there is no mark or the buffer is full,
         // we set the next write to the start of the buffer
@@ -73,7 +73,7 @@ InputStreamBuffer<T>::getWriteSpace() {
 }
 template <class T>
 void
-InputStreamBuffer<T>::read(const T*& start, size_t& nread, size_t max) {
+InputStreamBuffer<T>::read(const T*& start, int32_t& nread, int32_t max) {
     start = curPos;
     if (max <= 0 || max > avail) {
         max = avail;

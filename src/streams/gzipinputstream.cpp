@@ -66,15 +66,15 @@ GZipInputStream::checkMagic() {
     unsigned char buf[2];
     input->mark(2);
     const char *ptr;
-    size_t nread;
-    size_t total = 0;
+    int32_t nread;
+    int32_t total = 0;
     do {
         status = input->read(ptr, nread, 2-total);
         if (status != Ok) {
             error = input->getError();
             return false;
         }
-        for (size_t i=0; i<nread; i++) {
+        for (int32_t i=0; i<nread; i++) {
             buf[i+total] = ptr[i];
         }
         total += nread;
@@ -105,7 +105,7 @@ GZipInputStream::restart(InputStream *input) {
     zstream->avail_out = 1;
 }
 InputStream::Status
-GZipInputStream::read(const char*& start, size_t& nread, size_t max) {
+GZipInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
 
@@ -127,7 +127,7 @@ void
 GZipInputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
-    size_t nread;
+    int32_t nread;
     status = input->read(inStart, nread);
     zstream->next_in = (Bytef*)inStart;
     zstream->avail_in = nread;
@@ -172,7 +172,7 @@ GZipInputStream::decompressFromStream() {
     }
 }
 InputStream::Status
-GZipInputStream::mark(size_t readlimit) {
+GZipInputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }

@@ -1,9 +1,9 @@
 #include "inputstream.h"
 
 InputStream::Status
-InputStream::skip(size_t ntoskip) {
+InputStream::skip(int64_t ntoskip) {
     const char *begin;
-    size_t nread;
+    int32_t nread;
     while (ntoskip) {
         Status r = read(begin, nread, ntoskip);
         if (r != Ok) return r;

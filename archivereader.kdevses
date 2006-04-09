@@ -1,7 +1,20 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="4" >
+  <Doc0 NumberOfViews="1" URL="file:///home/oever/tmp/svn/libs/archivereader/src/streamindexer/streamindexer.h" >
+   <View0 Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/oever/tmp/svn/libs/archivereader/src/streamindexer/digestthroughanalyzer.cpp" >
+   <View0 Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/oever/tmp/svn/libs/archivereader/src/streamindexer/digestthroughanalyzer.h" >
+   <View0 Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/oever/tmp/svn/libs/archivereader/src/streams/inputstreambuffer.cpp" >
+   <View0 line="36" Type="Source" />
+  </Doc3>
+ </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList/>

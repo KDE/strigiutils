@@ -17,7 +17,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/qclient/qclient</activetarget>
+      <activetarget>archivereader/src/streamindexer/libstreamindexer.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
@@ -47,7 +47,7 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O0 -g3 -Wall</cxxflags>
+        <cxxflags>-O0 -g3 -Wall -march=pentium-m</cxxflags>
         <envvars/>
         <topsourcedir/>
         <cppflags/>
@@ -55,7 +55,7 @@
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
-        <cflags/>
+        <cflags>-march=pentium-m</cflags>
         <f77flags/>
       </debug>
     </configurations>

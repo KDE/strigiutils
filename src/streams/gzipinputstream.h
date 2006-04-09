@@ -21,8 +21,8 @@ public:
     GZipInputStream(InputStream *input, ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
     void restart(InputStream *input);
-    Status read(const char*& start, size_t& nread, size_t max = 0);
-    Status mark(size_t readlimit);
+    Status read(const char*& start, int32_t& nread, int32_t max = 0);
+    Status mark(int32_t readlimit);
     Status reset();
 };
 

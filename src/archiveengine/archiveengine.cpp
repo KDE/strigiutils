@@ -155,7 +155,7 @@ ArchiveEngine::open() {
         setError(QFile::FatalError, "no stream");
         return;
     }
-    size_t bufsize = 100;
+    int32_t bufsize = 100;
     parentstream->mark(bufsize); // make sure this is enough
     InputStream* compressed = parentstream;
     InputStream* decompressed = decompress(compressed, bufsize);
@@ -195,7 +195,7 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
     }
     if (stream) {
         const char *start;
-        size_t nread;
+        int32_t nread;
         InputStream::Status status;
         status = stream->read(start, nread, maxlen);
         if (status == InputStream::Ok) {
@@ -209,14 +209,14 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
     return -1;
 }*/
 bool
-ArchiveEngine::testStream(InputStream* is, size_t readsize) const {
+ArchiveEngine::testStream(InputStream* is, int32_t readsize) const {
     const char *start;
-    size_t nread;
+    int32_t nread;
     is->mark(readsize);
     return is->read(start, nread, readsize) == InputStream::Ok;
 }
 InputStream*
-ArchiveEngine::decompress(InputStream* is, size_t bufsize) const {
+ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {
     // try bzip
     InputStream *dec = new BZ2InputStream(is);
     if (testStream(dec, bufsize)) {

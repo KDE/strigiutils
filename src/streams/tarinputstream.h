@@ -21,12 +21,12 @@ class TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     SubInputStream *output;
-    size_t numPaddingBytes;
+    int32_t numPaddingBytes;
 
-    void readFileName(size_t len);
+    void readFileName(int32_t len);
     void readHeader(char *);
     void parseHeader();
-    size_t readOctalField(char *b, size_t offset);
+    int32_t readOctalField(char *b, int32_t offset);
     void readLongLink(char *b);
 public:
     TarInputStream(InputStream *input);

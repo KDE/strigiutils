@@ -8,7 +8,7 @@ class SubInputStream;
 
 struct EntryInfo {
     std::string filename;
-    size_t size;
+    int32_t size;
     uint mtime;
     enum Type {Dir, File};
     Type type;
