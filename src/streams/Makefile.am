@@ -11,3 +11,4 @@ libstreams_la_LDFLAGS =
 libstreams_la_LIBADD = -lz -lbz2
 
 noinst_HEADERS = 
+SUBDIRS = tests
