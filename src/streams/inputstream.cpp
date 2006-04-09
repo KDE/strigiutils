@@ -1,5 +1,4 @@
 #include "inputstream.h"
-#include <limits>
 
 InputStream::Status
 InputStream::skip(int64_t ntoskip, int64_t* skipped) {

@@ -4,9 +4,11 @@
 #include <QtTest/QtTest>
 
 class TestInputStream : public QObject {
-	Q_OBJECT
+Q_OBJECT
 private slots:
+    void initTestCase();
 	void testStream();
+    void cleanupTestCase();
 };
 
 #endif
