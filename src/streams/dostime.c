@@ -63,19 +63,3 @@ dos2unixtime (unsigned long dostime)
 
   return mktime (&ltime);
 }
-
-unsigned long
-unix2dostime (time_t *time)
-{
-  struct tm *ltime = localtime (time);
-  int year = ltime->tm_year - 80;
-  if (year < 0)
-    year = 0;
-
-  return (year << 25
-	  | (ltime->tm_mon + 1) << 21
-	  | ltime->tm_mday << 16
-	  | ltime->tm_hour << 11
-	  | ltime->tm_min << 5
-	  | ltime->tm_sec >> 1);
-}

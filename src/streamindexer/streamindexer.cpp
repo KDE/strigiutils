@@ -35,15 +35,18 @@ StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    tIter->push_back(new DigestThroughAnalyzer());
+    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
+    tIter->push_back(ana);
 }
 void
 StreamIndexer::addEndAnalyzers() {
     end.resize(end.size()+1);
     std::vector<std::vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
     eIter = end.rbegin();
-    eIter->push_back(new BZ2EndAnalyzer());
-    eIter->push_back(new TarEndAnalyzer());
+    StreamEndAnalyzer* ana = new BZ2EndAnalyzer();
+    eIter->push_back(ana);
+    ana = new TarEndAnalyzer();
+    eIter->push_back(ana);
 }
 char
 StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
@@ -67,10 +70,10 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     input->mark(1024); // set to size required to determine file type
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
-        int r = (*es)->analyze(path, input, depth+1, this);
+        char r = (*es)->analyze(path, input, depth+1, this);
         if (r) {
-            r = input->reset();
-            if (r) { // could not reset
+            InputStream::Status ir = input->reset();
+            if (ir != InputStream::Ok) { // could not reset
                 printf("could not reset\n");
                 return -2;
             }
@@ -82,11 +85,11 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     if (!finished) {
         // no endanalyzer was found, or the analyzer did
         // not read all of the stream, so we do that here
-        char r;
+        InputStream::Status r;
         do {
             r = input->skip(1000000);
         } while (r == 0);
-        if (r == -2) {
+        if (r == InputStream::Error) {
             printf("%s\n", input->getError().c_str());
             return -2;
         }

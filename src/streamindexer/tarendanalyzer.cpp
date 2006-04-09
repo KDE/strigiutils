@@ -8,7 +8,8 @@ TarEndAnalyzer::analyze(std::string filename, InputStream *in, int depth, Stream
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
-        std::string file = filename+"/"+tar.getEntryInfo().filename;
+        std::string file = filename+"/";
+        file += tar.getEntryInfo().filename;
         //printf("%s\n", file.c_str());
         //testStream(s);
         indexer->analyze(file, s, depth);

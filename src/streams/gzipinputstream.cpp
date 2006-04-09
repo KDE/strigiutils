@@ -94,7 +94,7 @@ GZipInputStream::restart(InputStream *input) {
         return;
     }
     this->input = input;
-    char r = inflateReset(zstream);
+    int r = inflateReset(zstream);
     if (r != Z_OK) {
         status = Error;
         return;

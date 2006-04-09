@@ -12,7 +12,9 @@ SubInputStream::read(const char*& start, int32_t& nread, int32_t max) {
         return Eof;
     }
     // restrict the amount of data that can be read
-    if (max > left || max == 0) max = left;
+    if (max > left || max == 0) {
+        max = (int32_t)((left > INT32MAX) ?INT32MAX :left);
+    }
     status = input->read(start, nread, max);
     if (status) {
         //printf("suberror %s\n", input->getError().c_str());

@@ -75,9 +75,9 @@ ZipInputStream::readHeader() {
     toread = 30;
     bptr = hb;
     while (toread) {
-        char r = input->read(begin, nread, toread);
+        InputStream::Status r = input->read(begin, nread, toread);
         if (r) {
-            status = -2;
+            status = Error;
             error = "Error reading header: " + input->getError();
             return;
         }
@@ -89,7 +89,7 @@ ZipInputStream::readHeader() {
     // check the first half of the signature
     if (hb[0] != 0x50 || hb[1] != 0x4b) {
         // signature is invalid
-        status = -2;
+        status = Error;
         error = "Error: wrong zip signature.";
         return;
     }
@@ -99,22 +99,22 @@ ZipInputStream::readHeader() {
         if (hb[2] != 0x01 || hb[3] != 0x02) {
             printf("This is new: %x %x %x %x\n", hb[0], hb[1], hb[2], hb[3]);
         }
-        status = -1;
+        status = Eof;
         return;
     }
     // read 2 bytes into the filename size
     int32_t len = read2bytes(hb + 26);
     readFileName(len);
     if (status) {
-        status = -2;
+        status = Error;
         error = "Error reading file name.";
         return;
     }
     // read 2 bytes into the length of the extra field
     len = read2bytes(hb + 28);
-    char r = input->skip(len);
+    InputStream::Status r = input->skip(len);
     if (r) {
-        status = -2;
+        status = Error;
         error = "Error skipping extra field.";
         return;
     }
@@ -130,7 +130,7 @@ ZipInputStream::readHeader() {
         // in theory this is a solvable problem, but it's not easy:
         // one would need to keep a running crc32 and filesize and match it to the
         // data read so far
-        status = -2;
+        status = Error;
         error = "This particular zip file format is not supported for reading "
             "as a stream.";
     }
@@ -143,9 +143,9 @@ ZipInputStream::readFileName(int32_t len) {
     const char *begin;
     int32_t nread;
     while (len) {
-        char r = input->read(begin, nread, len);
+        InputStream::Status r = input->read(begin, nread, len);
         if (r) {
-            status = -2;
+            status = Error;
             return;
         }
         entryinfo.filename.append(begin, nread);

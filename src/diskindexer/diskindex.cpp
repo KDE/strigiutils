@@ -69,7 +69,7 @@ printSigPositions(InputStream *i) {
     i->read(begin, nread);
     printf("read: %i\n", nread);
     if (nread < 4) return;
-    for (uint j=0; j<nread-4; j++) {
+    for (int32_t j=0; j<nread-4; j++) {
         if (begin[j]==0x50&&begin[j+1]==0x4b&&begin[j+2]==0x03&&begin[j+3]==0x04) {
             printf("pos: %i\n", j);
         }

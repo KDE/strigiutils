@@ -58,6 +58,7 @@ private:
 public:
     InputStreamReader(InputStream *i, const char *enc=NULL);
     ~InputStreamReader();
+    using Reader::read;
     Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
     Status mark(int32_t readlimit);
     Status reset();
@@ -71,6 +72,7 @@ public:
         const int32_t cachelen = 13,
         const int32_t cachebuff = 14 );
     ~FileReader();
+    using Reader::read;
     Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
     Status mark(int32_t readlimit);
     Status reset();

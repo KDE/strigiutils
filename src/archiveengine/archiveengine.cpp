@@ -105,7 +105,7 @@ ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
 
     zipstream = 0;
     getRootEntry(e->mtime);
-    open();
+    openArchive();
 }
 ArchiveEngine::ArchiveEngine(StreamEngine *se)
         : streamengine(se), parentstream(se->getInputStream()), filestream(0),
@@ -114,7 +114,7 @@ ArchiveEngine::ArchiveEngine(StreamEngine *se)
     entry = se->getFileEntry();
     zipstream = 0;
     getRootEntry(entry->mtime);
-    open();
+    openArchive();
 }
 ArchiveEngine::~ArchiveEngine() {
     if (zipstream) {
@@ -146,7 +146,7 @@ ArchiveEngine::getRootEntry(const QDateTime& mtime) {
     }
 }
 void
-ArchiveEngine::open() {
+ArchiveEngine::openArchive() {
     if (zipstream) {
         delete zipstream;
     }
@@ -327,7 +327,6 @@ ArchiveEngine::fileName(FileName file) const {
         if (path.isEmpty()) return entry->name;
         return fullpath;
     }
-    return path;
 }
 InputStream *
 ArchiveEngine::getInputStream(const FileEntry* entry) {

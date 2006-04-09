@@ -70,7 +70,7 @@ FSFileInputStream::readFromFile() {
     // prepare the buffer for writing
     int32_t bytesRead = buffer.getWriteSpace();
     // read into the buffer
-    bytesRead = fse->read(buffer.curPos, bytesRead);
+    bytesRead = (int32_t)fse->read(buffer.curPos, bytesRead);
     buffer.avail = bytesRead;
     // check the file stream status
     if (bytesRead == (int32_t)-1) {

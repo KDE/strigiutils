@@ -3,8 +3,7 @@
 
 #include <string>
 
-typedef int int32_t;
-//typedef long int int64_t;
+#define INT32MAX 0x7FFFFFFFL
 
 /**
  * @short Base class for stream read access to many different file types.
@@ -42,10 +41,11 @@ public:
     /**
      * Skip @param ntoskip bytes. Unless an error occurs or the end of file is
      * encountered, this amount of bytes is skipped.
+     * The optional @param skipped can be use to find out how many bites were skipped.
      * If the end of stream is reached, Eof is returned.
      * If an error occured, Error is returned.
      **/
-    virtual Status skip(int64_t ntoskip);
+    virtual Status skip(int64_t ntoskip, int64_t* skipped=0);
      /**
       * \short Marks the current position in this input stream.
       * A subsequent call to the reset method repositions this stream at the

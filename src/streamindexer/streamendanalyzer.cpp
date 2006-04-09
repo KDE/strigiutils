@@ -6,17 +6,17 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     int32_t testsize = 1;
     const char *dummyptr;
     int32_t dummy;
-    char r = in->mark(testsize);
-    if (r) {
-        return r;
+    InputStream::Status r = in->mark(testsize);
+    if (r != InputStream::Ok) {
+        return -1;
     }
     r = in->read(dummyptr, dummy, testsize);
-    if (r) {
-        return r;
+    if (r != InputStream::Ok) {
+        return -1;
     }
     r = in->reset();
-    if (r) {
-        return r;
+    if (r != InputStream::Ok) {
+        return -1;
     }
     return 0;
 }

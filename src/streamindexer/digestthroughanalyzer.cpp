@@ -12,7 +12,7 @@ private:
 public:
     DigestInputStream(InputStream *input);
     Status read(const char*& start, int32_t& read, int32_t max = 0);
-    Status skip(int32_t ntoskip);
+    Status skip(int64_t ntoskip, int64_t* skipped = 0);
     Status mark(int32_t readlimit);
     Status reset();
     void printDigest();
@@ -45,12 +45,10 @@ DigestInputStream::read(const char*& start, int32_t& read, int32_t max) {
     return status;
 }
 InputStream::Status
-DigestInputStream::skip(int32_t ntoskip) {
-    if (status) return status;
-    // we cannot just skip but must read the data
-    const char*start;
-    int32_t nread;
-    return read(start, nread, ntoskip);
+DigestInputStream::skip(int64_t ntoskip, int64_t* skipped) {
+    // we call the default implementation because it calls
+    // read() which is required for updating the hash
+    return InputStream::skip(ntoskip, skipped);
 }
 InputStream::Status
 DigestInputStream::mark(int32_t readlimit) {

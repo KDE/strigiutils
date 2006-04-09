@@ -5,9 +5,9 @@
 
 class SubInputStream : public InputStream {
 private:
-    const int32_t size;
-    int32_t left;
-    int32_t markleft;
+    const int64_t size;
+    int64_t left;
+    int64_t markleft;
     InputStream *input;
 public:
     SubInputStream(InputStream *input, int32_t size);
@@ -15,10 +15,10 @@ public:
     Status mark(int32_t readlimit);
     Status reset();
     Status skipToEnd();
-    int32_t pos() {
+    int64_t pos() {
         return size-left;
     }
-    int32_t getSize() const {
+    int64_t getSize() const {
         return size;
     }
 };

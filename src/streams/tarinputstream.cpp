@@ -37,9 +37,9 @@ TarInputStream::readHeader(char *hb) {
     toread = 512;
     bptr = hb;
     while (toread) {
-        char r = input->read(begin, nread, toread);
+        InputStream::Status r = input->read(begin, nread, toread);
         if (r) {
-            status = -2;
+            status = Error;
             error = "Error reading header: " + input->getError();
             return;
         }
@@ -60,13 +60,13 @@ TarInputStream::parseHeader() {
     }
     if (len > 107) { // this is 107 because 100 + 7 (for the adjecent field)
                      // which may be merged by not having a proper '\0' at 100
-        status = -2;
+        status = Error;
         error = "Error reading header: file name is too long.";
         return;
     }
     if (len == 0) {
         // ready
-        status = -1;
+        status = Eof;
         return;
     }
     if (len > 100) len = 100;
@@ -104,7 +104,7 @@ TarInputStream::readOctalField(char *b, int32_t offset) {
     int32_t val;
     int r = sscanf(b+offset, "%o", &val);
     if (r != 1) {
-        status = -2;
+        status = Error;
         error = "Error reading header: octal field is not a valid integer.";
         return 0;
     }
@@ -121,11 +121,11 @@ TarInputStream::readLongLink(char *b) {
     int32_t nread;
     if (status) return;
     while (toread) {
-        char r = input->read(begin, nread, toread);
+        InputStream::Status r = input->read(begin, nread, toread);
         if (r) {
-            status = -2;
+            status = Error;
             error = "Error reading LongLink: ";
-            if (r == -2) {
+            if (r == Error) {
                 error += input->getError();
             } else {
                 error += " premature end of file.";
@@ -135,11 +135,11 @@ TarInputStream::readLongLink(char *b) {
         toread -= nread;
         entryinfo.filename.append(begin, nread);
     }
-    char r = input->skip(left);
+    InputStream::Status r = input->skip(left);
     if (r) {
-        status = -2;
+        status = Error;
         error = "Error reading LongLink: ";
-        if (r == -2) {
+        if (r == Error) {
             error += input->getError();
         } else {
             error += " premature end of file.";

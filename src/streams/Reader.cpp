@@ -176,8 +176,8 @@ InputStreamReader::reset() {
         return Error;
     }
 }
-FileReader::FileReader(const char* fname, const char* encoding_scheme,
-        int32_t cachelen, int32_t cachebuff) {
+FileReader::FileReader(const char* fname, const char* /*encoding_scheme*/,
+        int32_t cachelen, int32_t /*cachebuff*/) {
     input = new FileInputStream(fname, cachelen);
     reader = new InputStreamReader(input);
 }

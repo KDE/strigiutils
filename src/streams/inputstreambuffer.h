@@ -1,9 +1,7 @@
 #ifndef INPUTSTREAMBUFFER_H
 #define INPUTSTREAMBUFFER_H
 
-#include <cstdio>
-
-typedef int int32_t;
+#include <cstdlib>
 
 template <class T>
 class InputStreamBuffer {

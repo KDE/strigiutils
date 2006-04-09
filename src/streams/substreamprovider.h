@@ -16,14 +16,15 @@ struct EntryInfo {
 
 class SubStreamProvider {
 protected:
-    char status;
+    enum Status {Ok, Eof, Error};
+    Status status;
     std::string error;
     InputStream *input;
     EntryInfo entryinfo;
 public:
     SubStreamProvider(InputStream *input) {
         this->input = input; 
-        status = 0;
+        status = Ok;
     }
     virtual ~SubStreamProvider() {}
     virtual SubInputStream* nextEntry() = 0;
