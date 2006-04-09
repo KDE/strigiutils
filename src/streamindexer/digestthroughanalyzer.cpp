@@ -4,6 +4,8 @@
 
 class DigestInputStream : public InputStream {
 private:
+    size_t sinceMark;
+    size_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
     InputStream *input;
@@ -17,30 +19,52 @@ public:
 };
 DigestInputStream::DigestInputStream(InputStream *input) {
     this->input = input;
+    status = Ok;
+    sinceMark = 0;
+    ignoreBytes = 0;
     SHA1_Init(&sha1);
 }
 InputStream::Status
 DigestInputStream::read(const char*& start, size_t& read, size_t max) {
-    Status r = input->read(start, read, max);
-    if (r) return r;
-    SHA1_Update(&sha1, start, read);
-    return r;
+    if (status) return status;
+    status = input->read(start, read, max);
+    if (status == Error) {
+        error = input->getError();
+        return status;
+    }
+    if (status == Eof) {
+        return Eof;
+    }
+    sinceMark += read;
+    if (ignoreBytes < read) {
+        SHA1_Update(&sha1, start+ignoreBytes, read-ignoreBytes);
+        ignoreBytes = 0;
+    } else {
+        ignoreBytes -= read;
+    }
+    return status;
 }
 InputStream::Status
 DigestInputStream::skip(size_t ntoskip) {
+    if (status) return status;
     // we cannot just skip but must read the data
     const char*start;
-    size_t read;
-    return input->read(start, read, ntoskip);
+    size_t nread;
+    return read(start, nread, ntoskip);
 }
 InputStream::Status
 DigestInputStream::mark(size_t readlimit) {
-    // TODO fix this stream for rereading data
+    if (status) return status;
+    sinceMark = 0;
     return input->mark(readlimit);
 }
 InputStream::Status
 DigestInputStream::reset() {
-    // TODO fix this stream for rereading data
+    Status s = input->reset();
+    if (s == Ok) {
+        ignoreBytes += sinceMark;
+        sinceMark = 0;
+    }
     return input->reset();
 }
 void

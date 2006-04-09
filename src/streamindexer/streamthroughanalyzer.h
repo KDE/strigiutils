@@ -1,8 +1,6 @@
 #ifndef STREAMTHROUGHANALYZER_H
 #define STREAMTHROUGHANALYZER_H
 
-#include <string>
-
 class InputStream;
 class StreamIndexer;
 

@@ -8,7 +8,7 @@
 StreamIndexer::StreamIndexer() {
 }
 StreamIndexer::~StreamIndexer() {
-    // retrieve or construct the through analyzers and end analyzers
+    // delete the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     for (tIter = through.begin(); tIter != through.end(); ++tIter) {
         std::vector<StreamThroughAnalyzer*>::iterator t;
@@ -80,6 +80,8 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
         es++;
     }
     if (!finished) {
+        // no endanalyzer was found, or the analyzer did
+        // not read all of the stream, so we do that here
         char r;
         do {
             r = input->skip(1000000);
