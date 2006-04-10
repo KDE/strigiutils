@@ -7,7 +7,7 @@
 
 bool
 ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const {
-//    printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
+    // printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
     bool newstream = *se == 0;
     if (*ae) {
         *se = (*ae)->openEntry(name);
@@ -49,7 +49,6 @@ ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QStr
 }
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &file) const {
-
     // try to open the deepest regular file in the file path
     QFSFileEngine* fse = 0;
     // use the full path
@@ -61,7 +60,9 @@ ArchiveEngineHandler::create(const QString &file) const {
             // cannot use Qt functions because of bugs
             // (bug is fixed in Qt 4.1.2)
 #if QT_VERSION >= 0x040102
-            if (fse->fileFlags(QAbstractFileEngine::DirectoryType)) {
+            QAbstractFileEngine::FileFlags flags
+                = fse->fileFlags(QAbstractFileEngine::DirectoryType);
+            if (flags & QAbstractFileEngine::DirectoryType) {
 #else
             DIR* dir = opendir(path.toUtf8());
             if (dir) {
@@ -87,7 +88,6 @@ ArchiveEngineHandler::create(const QString &file) const {
         // no file could be opened
         return 0;
     }
-
     // try to open the file as an archive
     //FSFileInputStream *ffis = new FSFileInputStream(fse);
     ArchiveEngineBase *ae = 0;
