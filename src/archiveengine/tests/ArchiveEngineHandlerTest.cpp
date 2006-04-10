@@ -1,12 +1,11 @@
 #include "ArchiveEngineHandlerTest"
 #include "archiveenginehandler.h"
 #include <QtTest/QtTest>
-
+#include <QDebug>
 void
 ArchiveEngineHandlerTest::testFile() {
-    qDebug("hmm");
     ArchiveEngineHandler engine;
-    QFile f("hmm");
+    QFileInfo f("data/a.zip/file1");
     QVERIFY(f.exists());
 }
 

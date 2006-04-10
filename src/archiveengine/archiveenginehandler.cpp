@@ -7,7 +7,7 @@
 
 bool
 ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const {
-    // printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
+    //printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
     bool newstream = *se == 0;
     if (*ae) {
         *se = (*ae)->openEntry(name);
@@ -88,8 +88,8 @@ ArchiveEngineHandler::create(const QString &file) const {
         // no file could be opened
         return 0;
     }
+
     // try to open the file as an archive
-    //FSFileInputStream *ffis = new FSFileInputStream(fse);
     ArchiveEngineBase *ae = 0;
     ae = new ArchiveEngine(path, fse);
     if (ae->error() != QFile::NoError) {
@@ -123,5 +123,6 @@ ArchiveEngineHandler::create(const QString &file) const {
     if (se) {
         return se;
     }
+    //printf("return %p\n", ae);
     return ae;
 }

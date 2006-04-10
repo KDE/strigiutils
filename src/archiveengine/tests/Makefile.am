@@ -2,7 +2,7 @@ INCLUDES = $(all_includes)
 
 check_PROGRAMS = testrunner
 
-TESTS = $(check_PROGRAMS) $(srcdir)/valgrindtest.sh
+TESTS = $(srcdir)/valgrindtest.sh
 
 testrunner.cpp: makestestrunner.pl
 	perl $(srcdir)/makestestrunner.pl $(srcdir)

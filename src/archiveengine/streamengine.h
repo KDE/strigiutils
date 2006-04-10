@@ -15,7 +15,7 @@ public:
     ~StreamEngine();
     InputStream *getInputStream();
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
-        return type & QAbstractFileEngine::FileType;
+        return type & (QAbstractFileEngine::FileType|QAbstractFileEngine::ExistsFlag);
     }
     QString fileName ( FileName file = DefaultName ) const;
     bool open(QIODevice::OpenMode mode);

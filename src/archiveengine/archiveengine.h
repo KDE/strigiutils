@@ -130,7 +130,8 @@ public:
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"
         FileFlags flags =
-            QAbstractFileEngine::DirectoryType|QAbstractFileEngine::FileType;
+            QAbstractFileEngine::DirectoryType|QAbstractFileEngine::FileType
+            |QAbstractFileEngine::ExistsFlag;
         return flags & type;
     }
 };
