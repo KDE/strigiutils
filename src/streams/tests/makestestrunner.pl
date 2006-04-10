@@ -23,14 +23,13 @@ test(QObject* o) {
 THEEND
 ;
 
-foreach (glob("*Test.h")) {
+foreach (glob("*Test")) {
 	print FH "#include \"$_\"\n";
 }
 
 print FH "int main() {\n\tint leaked = 0;\n";
 
-foreach (glob("*Test.h")) {
-	s/.h$//;
+foreach (glob("*Test")) {
 	print FH "\tleaked += test(new $_());\n";
 }
 
