@@ -224,6 +224,7 @@ StringReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     nread = max;
     if (nread > len) nread = len;
     start = data + pt;
+    pt += nread;
     return Ok;
 }
 Reader::Status
