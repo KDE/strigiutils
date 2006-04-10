@@ -9,6 +9,6 @@ TESTS = $(check_PROGRAMS) $(top_srcdir)/archivereader/src/streams/tests/valgrind
 testrunner.cpp: makestestrunner.pl
 	perl $(top_srcdir)/archivereader/src/streams/tests/makestestrunner.pl
 
-testrunner_SOURCES = InputStreamTest.cpp testrunner.cpp
+testrunner_SOURCES = ArchiveEngineHandlerTest.cpp testrunner.cpp
 
 METASOURCES = AUTO
