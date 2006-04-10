@@ -125,7 +125,7 @@ TarInputStream::readLongLink(char *b) {
         if (r) {
             status = Error;
             error = "Error reading LongLink: ";
-            if (r == Error) {
+            if (r == InputStream::Error) {
                 error += input->getError();
             } else {
                 error += " premature end of file.";
@@ -139,7 +139,7 @@ TarInputStream::readLongLink(char *b) {
     if (r) {
         status = Error;
         error = "Error reading LongLink: ";
-        if (r == Error) {
+        if (r == InputStream::Error) {
             error += input->getError();
         } else {
             error += " premature end of file.";

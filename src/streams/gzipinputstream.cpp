@@ -38,6 +38,7 @@ GZipInputStream::GZipInputStream(InputStream *input, ZipFormat format) {
         r = inflateInit2(zstream, 15+16);
         break;
     case ZIPFORMAT:
+    default:
         r = inflateInit2(zstream, -MAX_WBITS);
         break;
     }
