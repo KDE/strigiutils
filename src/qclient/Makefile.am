@@ -6,7 +6,6 @@ CXXFLAGS = $(QT_CXXFLAGS) \
 	-I$(top_srcdir)/archivereader/src/archiveengine
 LDFLAGS = $(QT_LIBS)
 LDADD = $(QT_LIBS) \
-	$(top_builddir)/archivereader/src/streams/libstreams.la \
 	$(top_builddir)/archivereader/src/archiveengine/libarchiveengine.la
 
 qclient_SOURCES = filehandler.cpp filebrowser.cpp

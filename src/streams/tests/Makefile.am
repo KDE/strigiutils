@@ -1,14 +1,16 @@
 INCLUDES = $(all_includes)
 
-AM_LDFLAGS = $(QT_LDFLAGS) -lQtTest_debug
-
 check_PROGRAMS = testrunner
 
-TESTS = $(check_PROGRAMS) $(top_srcdir)/archivereader/src/streams/tests/valgrindtest.sh
+TESTS = $(check_PROGRAMS) $(srcdir)/valgrindtest.sh
 
 testrunner.cpp: makestestrunner.pl
-	perl $(top_srcdir)/archivereader/src/streams/tests/makestestrunner.pl
+	perl $(srcdir)/makestestrunner.pl $(srcdir)
 
-testrunner_SOURCES = InputStreamTest.cpp testrunner.cpp
+InputStreamTest_moc.cpp: InputStreamTest
+	$(MOC) -o InputStreamTest_moc.cpp $(srcdir)/InputStreamTest
+
+testrunner_SOURCES = InputStreamTest.cpp InputStreamTest_moc.cpp testrunner.cpp
+testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest_debug
 
 METASOURCES = AUTO
