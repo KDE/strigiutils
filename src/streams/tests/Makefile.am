@@ -11,6 +11,6 @@ InputStreamTest_moc.cpp: InputStreamTest
 	$(MOC) -o InputStreamTest_moc.cpp $(srcdir)/InputStreamTest
 
 testrunner_SOURCES = InputStreamTest.cpp InputStreamTest_moc.cpp testrunner.cpp
-testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest_debug
+testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 
 METASOURCES = AUTO

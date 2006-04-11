@@ -12,7 +12,7 @@ ArchiveEngineHandlerTest_moc.cpp: ArchiveEngineHandlerTest
 
 testrunner_SOURCES = ArchiveEngineHandlerTest.cpp ArchiveEngineHandlerTest_moc.cpp testrunner.cpp
 testrunner_CXXFLAGS = $(QT_CXXFLAGS) -I$(srcdir)/..
-testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest_debug
+testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 testrunner_LDADD = $(LIB_QT) \
         $(top_builddir)/archivereader/src/archiveengine/libarchiveengine.la
 
