@@ -1,5 +1,6 @@
-#include "inputstreameader.h"
+#include "inputstreamreader.h"
 #include <cerrno>
+using namespace jstreams;
 
 InputStreamReader::InputStreamReader(InputStream *i, const char* enc) {
     status = Ok;

@@ -4,6 +4,9 @@
 #include <string>
 #include <iconv.h>
 #include "fileinputstream.h"
+#include "Reader.h"
+
+namespace jstreams {
 
 /**
  * Info on conversions:
@@ -63,5 +66,7 @@ public:
     Status mark(int32_t readlimit);
     Status reset();
 };
+
+} // end namespace jstreams
 
 #endif

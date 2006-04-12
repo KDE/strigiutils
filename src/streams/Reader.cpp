@@ -1,4 +1,5 @@
 #include "Reader.h"
+using namespace jstreams;
 
 Reader::Status
 Reader::read(wchar_t& c) {

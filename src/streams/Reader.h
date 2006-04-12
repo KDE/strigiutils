@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace jstreams {
+
 // java mapping: long=int64, int=int32, byte=uint8_t
 class Reader {
 public:
@@ -34,4 +36,7 @@ public:
     virtual Status mark(int32_t readlimit) = 0;
     virtual Status reset() = 0;
 };
+
+} // end namespace jstreams
+
 #endif
