@@ -17,6 +17,8 @@
  * http://www.gnu.org/software/tar/manual/html_node/Standard.html
  **/
 
+namespace jstreams {
+
 class TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
@@ -33,5 +35,7 @@ public:
     ~TarInputStream();
     SubInputStream* nextEntry();
 };
+
+} // end namespace jstreams
 
 #endif

@@ -1,7 +1,8 @@
 #ifndef STREAMTHROUGHANALYZER_H
 #define STREAMTHROUGHANALYZER_H
 
-class InputStream;
+#include "inputstream.h"
+
 class StreamIndexer;
 
 /**
@@ -20,7 +21,7 @@ public:
      * is used in the analysis before being passed on to the
      * caller.
      **/
-    virtual InputStream *connectInputStream(InputStream *in) = 0;
+    virtual jstreams::InputStream *connectInputStream(jstreams::InputStream *in) = 0;
     virtual void printResults() = 0;
 };
 

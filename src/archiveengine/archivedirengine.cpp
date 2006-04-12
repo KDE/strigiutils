@@ -1,5 +1,6 @@
 #include "archivedirengine.h"
 #include "streamengine.h"
+using namespace jstreams;
 
 ArchiveDirEngine::ArchiveDirEngine(ArchiveEngineBase* p, const FileEntry*e)
     : parent(p) {

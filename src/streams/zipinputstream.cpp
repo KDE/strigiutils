@@ -4,6 +4,8 @@
 extern "C" {
     #include "dostime.h"
 }
+using namespace jstreams;
+
 ZipInputStream::ZipInputStream(InputStream *input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
@@ -75,7 +77,7 @@ ZipInputStream::readHeader() {
     toread = 30;
     bptr = hb;
     while (toread) {
-        InputStream::Status r = input->read(begin, nread, toread);
+        StreamStatus r = input->read(begin, nread, toread);
         if (r) {
             status = Error;
             error = "Error reading header: " + input->getError();
@@ -112,7 +114,7 @@ ZipInputStream::readHeader() {
     }
     // read 2 bytes into the length of the extra field
     len = read2bytes(hb + 28);
-    InputStream::Status r = input->skip(len);
+    StreamStatus r = input->skip(len);
     if (r) {
         status = Error;
         error = "Error skipping extra field.";
@@ -143,7 +145,7 @@ ZipInputStream::readFileName(int32_t len) {
     const char *begin;
     int32_t nread;
     while (len) {
-        InputStream::Status r = input->read(begin, nread, len);
+        StreamStatus r = input->read(begin, nread, len);
         if (r) {
             status = Error;
             return;

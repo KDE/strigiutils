@@ -1,4 +1,5 @@
 #include "streamengine.h"
+using namespace jstreams;
 
 StreamEngine::StreamEngine(const FileEntry* e, ArchiveEngineBase* engine)
     : entry(e), archive(engine) {
@@ -45,14 +46,14 @@ StreamEngine::read(char* data, qint64 maxlen) {
     if (stream) {
         const char *start;
         int32_t nread;
-        InputStream::Status status;
+        StreamStatus status;
         if (maxlen > INT32MAX) maxlen = INT32MAX;
         status = stream->read(start, nread, (int32_t)maxlen);
-        if (status == InputStream::Ok) {
+        if (status == Ok) {
             bcopy(start, data, nread);
             return nread;
         }
-        if (status == InputStream::Eof) {
+        if (status == Eof) {
             return 0;
         }
     }

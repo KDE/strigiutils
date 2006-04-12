@@ -2,9 +2,9 @@
 #define STREAMINDEXER_H
 
 #include <vector>
-#include <string>
 
-class InputStream;
+#include "inputstream.h"
+
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 
@@ -34,7 +34,7 @@ public:
     StreamIndexer();
     ~StreamIndexer();
     char indexFile(const char *filepath);
-    char analyze(std::string &path, InputStream *input, uint depth);
+    char analyze(std::string &path, jstreams::InputStream *input, uint depth);
 };
 
 #endif

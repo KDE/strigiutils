@@ -6,14 +6,14 @@
 class StreamEngine : public QAbstractFileEngine {
 private:
     int32_t pos_;
-    InputStream *stream;
+    jstreams::InputStream *stream;
     const FileEntry* entry;
     ArchiveEngineBase *archive;
 
 public:
     StreamEngine(const FileEntry* entry, ArchiveEngineBase* engine);
     ~StreamEngine();
-    InputStream *getInputStream();
+    jstreams::InputStream *getInputStream();
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         return type & (QAbstractFileEngine::FileType|QAbstractFileEngine::ExistsFlag);
     }

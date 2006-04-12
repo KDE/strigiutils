@@ -31,9 +31,9 @@ public:
     InputStreamReader(InputStream *i, const char *enc=NULL);
     ~InputStreamReader();
     using Reader::read;
-    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
 };
 
 class FileReader : public Reader {
@@ -45,9 +45,9 @@ public:
         const int32_t cachebuff = 14 );
     ~FileReader();
     using Reader::read;
-    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
 };
 
 class StringReader:public Reader{
@@ -61,10 +61,10 @@ public:
     StringReader ( const wchar_t* value, const int32_t length );
     ~StringReader();
     void close();
-    Status read(wchar_t&);
-    Status read(const wchar_t*& start, int32_t& nread, int32_t max=0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus read(wchar_t&);
+    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
 };
 
 } // end namespace jstreams

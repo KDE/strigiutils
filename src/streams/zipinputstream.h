@@ -2,8 +2,7 @@
 #define ZIPINPUTSTREAM_H
 
 #include "substreamprovider.h"
-
-class GZipInputStream;
+#include "gzipinputstream.h"
 
 /**
  * Partial implementation of the zip file format according to
@@ -14,6 +13,8 @@ class GZipInputStream;
  * - files using other compression as deflated
  * - encrypted files
  **/
+
+namespace jstreams {
 
 class ZipInputStream : public SubStreamProvider {
 private:
@@ -33,5 +34,7 @@ public:
     ~ZipInputStream();
     SubInputStream* nextEntry();
 };
+
+} // end namespace jstreams
 
 #endif

@@ -33,6 +33,7 @@
 #include "streamindexer.h"
 
 using namespace std;
+using namespace jstreams;
 
 long
 streamLen(InputStream *i) {

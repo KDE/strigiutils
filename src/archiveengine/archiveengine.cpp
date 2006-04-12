@@ -2,13 +2,13 @@
 #include "archivedirengine.h"
 #include "zipinputstream.h"
 #include "tarinputstream.h"
-#include "fsfileinputstream.h"
 #include "streamengine.h"
 #include "subinputstream.h"
 #include "bz2inputstream.h"
 #include "gzipinputstream.h"
 #include <QtCore/QFSFileEngine>
 #include <QtDebug>
+using namespace jstreams;
 
 FileEntry::~FileEntry() {
     QHash<const QString, FileEntry*>::const_iterator i = entries.constBegin();
@@ -171,7 +171,7 @@ ArchiveEngine::openArchive() {
         setError(QFile::NoError, "");
         return;
     }
-    if (compressed->reset() != InputStream::Ok) {
+    if (compressed->reset() != Ok) {
         qDebug("ArchiveEngine mark call is too small.");
         return;
     }
@@ -182,7 +182,7 @@ ArchiveEngine::openArchive() {
         return;
     }
     setError(QFile::FatalError, zipstream->getError().c_str());
-    if (compressed->reset() != InputStream::Ok) {
+    if (compressed->reset() != Ok) {
         qDebug("ArchiveEngine mark call is too small.");
         return;
     }
@@ -196,7 +196,7 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
     if (stream) {
         const char *start;
         int32_t nread;
-        InputStream::Status status;
+        StreamStatus status;
         status = stream->read(start, nread, maxlen);
         if (status == InputStream::Ok) {
             bcopy(start, data, nread);
@@ -213,7 +213,7 @@ ArchiveEngine::testStream(InputStream* is, int32_t readsize) const {
     const char *start;
     int32_t nread;
     is->mark(readsize);
-    return is->read(start, nread, readsize) == InputStream::Ok;
+    return is->read(start, nread, readsize) == Ok;
 }
 InputStream*
 ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {

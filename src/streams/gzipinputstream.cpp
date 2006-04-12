@@ -1,5 +1,6 @@
 #include "gzipinputstream.h"
 #include <zlib.h>
+using namespace jstreams;
 
 GZipInputStream::GZipInputStream(InputStream *input, ZipFormat format) {
     // initialize values that signal state
@@ -105,7 +106,7 @@ GZipInputStream::restart(InputStream *input) {
     // signal that we need to read into the buffer
     zstream->avail_out = 1;
 }
-InputStream::Status
+StreamStatus
 GZipInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -172,12 +173,12 @@ GZipInputStream::decompressFromStream() {
         break;
     }
 }
-InputStream::Status
+StreamStatus
 GZipInputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
-InputStream::Status
+StreamStatus
 GZipInputStream::reset() {
     if (buffer.markPos) {
         buffer.reset();

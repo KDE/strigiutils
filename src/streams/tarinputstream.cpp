@@ -1,6 +1,7 @@
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include <cstring>
+using namespace jstreams;
 
 TarInputStream::TarInputStream(InputStream *input)
         : SubStreamProvider(input) {
@@ -37,7 +38,7 @@ TarInputStream::readHeader(char *hb) {
     toread = 512;
     bptr = hb;
     while (toread) {
-        InputStream::Status r = input->read(begin, nread, toread);
+        StreamStatus r = input->read(begin, nread, toread);
         if (r) {
             status = Error;
             error = "Error reading header: " + input->getError();
@@ -121,11 +122,11 @@ TarInputStream::readLongLink(char *b) {
     int32_t nread;
     if (status) return;
     while (toread) {
-        InputStream::Status r = input->read(begin, nread, toread);
+        StreamStatus r = input->read(begin, nread, toread);
         if (r) {
             status = Error;
             error = "Error reading LongLink: ";
-            if (r == InputStream::Error) {
+            if (r == Error) {
                 error += input->getError();
             } else {
                 error += " premature end of file.";
@@ -135,11 +136,11 @@ TarInputStream::readLongLink(char *b) {
         toread -= nread;
         entryinfo.filename.append(begin, nread);
     }
-    InputStream::Status r = input->skip(left);
+    StreamStatus r = input->skip(left);
     if (r) {
         status = Error;
         error = "Error reading LongLink: ";
-        if (r == InputStream::Error) {
+        if (r == Error) {
             error += input->getError();
         } else {
             error += " premature end of file.";

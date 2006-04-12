@@ -1,11 +1,12 @@
 #include "subinputstream.h"
+using namespace jstreams;
 
 SubInputStream::SubInputStream(InputStream *input, int32_t length)
         : size(length) {
     this->input = input;
     left = length;
 }
-InputStream::Status
+StreamStatus
 SubInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     if (left == 0) {
         nread = 0;
@@ -23,17 +24,17 @@ SubInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     left -= nread;
     return Ok;
 }
-InputStream::Status
+StreamStatus
 SubInputStream::mark(int32_t readlimit) {
     markleft = left;
     return input->mark(readlimit);
 }
-InputStream::Status
+StreamStatus
 SubInputStream::reset() {
     left = markleft;
     return input->reset();
 }
-InputStream::Status
+StreamStatus
 SubInputStream::skipToEnd() {
     return skip(left);
 }

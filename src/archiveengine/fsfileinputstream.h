@@ -7,6 +7,8 @@
 class QFSFileEngine;
 class QString;
 
+namespace jstreams {
+
 class FSFileInputStream : public InputStream {
 private:
     bool open;
@@ -19,11 +21,12 @@ public:
     FSFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
     FSFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
     ~FSFileInputStream();
-    Status reopen();
-    Status read(const char*& start, int32_t& nread, int32_t max = 0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus reopen();
+    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
 };
 
+} // end namespace jstreams
 
 #endif

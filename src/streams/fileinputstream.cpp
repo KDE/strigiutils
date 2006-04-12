@@ -1,5 +1,6 @@
 #include "fileinputstream.h"
 #include "errno.h"
+using namespace jstreams;
 
 const int32_t FileInputStream::defaultBufferSize = 64;
 FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
@@ -30,7 +31,7 @@ FileInputStream::~FileInputStream() {
         }
     }
 }
-InputStream::Status
+StreamStatus
 FileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -69,12 +70,12 @@ FileInputStream::readFromFile() {
         }
     }
 }
-InputStream::Status
+StreamStatus
 FileInputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
-InputStream::Status
+StreamStatus
 FileInputStream::reset() {
     buffer.reset();
     return Ok;

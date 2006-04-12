@@ -2,6 +2,7 @@
 #include "tarinputstream.h"
 #include "streamindexer.h"
 #include "subinputstream.h"
+using namespace jstreams;
 
 char
 TarEndAnalyzer::analyze(std::string filename, InputStream *in, int depth, StreamIndexer *indexer) {

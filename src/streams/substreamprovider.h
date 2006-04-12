@@ -3,8 +3,9 @@
 
 #include <string>
 
-class InputStream;
-class SubInputStream;
+#include "subinputstream.h"
+
+namespace jstreams {
 
 struct EntryInfo {
     std::string filename;
@@ -16,8 +17,7 @@ struct EntryInfo {
 
 class SubStreamProvider {
 protected:
-    enum Status {Ok, Eof, Error};
-    Status status;
+    StreamStatus status;
     std::string error;
     InputStream *input;
     EntryInfo entryinfo;
@@ -34,5 +34,7 @@ public:
 //    std::string getEntryFileName() const { return entryfilename; }
     std::string getError() const { return error; }
 };
+
+} // end namespace jstreams
 
 #endif

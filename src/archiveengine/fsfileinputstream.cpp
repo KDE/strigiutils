@@ -1,5 +1,6 @@
 #include "fsfileinputstream.h"
 #include <QtCore/QFSFileEngine>
+using namespace jstreams;
 
 const int32_t FSFileInputStream::defaultBufferSize = 64;
 FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize) {
@@ -30,7 +31,7 @@ FSFileInputStream::FSFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
 FSFileInputStream::~FSFileInputStream() {
     delete fse;
 }
-InputStream::Status
+StreamStatus
 FSFileInputStream::reopen() {
     if (open) {
         if (!fse->seek(0)) {
@@ -47,7 +48,7 @@ FSFileInputStream::reopen() {
     buffer.avail = 0;
     return status;
 }
-InputStream::Status
+StreamStatus
 FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -83,12 +84,12 @@ FSFileInputStream::readFromFile() {
         open = false;
     }
 }
-InputStream::Status
+StreamStatus
 FSFileInputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
-InputStream::Status
+StreamStatus
 FSFileInputStream::reset() {
     buffer.reset();
     return Ok;

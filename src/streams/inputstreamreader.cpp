@@ -28,7 +28,7 @@ InputStreamReader::~InputStreamReader() {
         iconv_close(converter);
     }
 }
-Reader::Status
+StreamStatus
 InputStreamReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -50,15 +50,7 @@ InputStreamReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
 void
 InputStreamReader::readFromStream() {
     // read data from the input stream
-    InputStream::Status s = input->read(inStart, inSize);
-    switch (s) {
-    case InputStream::Ok:
-        status = Ok; break;
-    case InputStream::Eof:
-        status = Eof; break;
-    case InputStream::Error:
-        status = Error; break;
-    }
+    status = input->read(inStart, inSize);
 }
 void
 InputStreamReader::decode() {
@@ -113,15 +105,15 @@ InputStreamReader::decodeFromStream() {
  //       printf("fill up charbuf\n");
         const char *begin;
         int32_t numRead;
-        InputStream::Status s;
+        StreamStatus s;
         s = input->read(begin, numRead, charbuf.size);
         switch (s) {
-        case InputStream::Ok:
+        case Ok:
             // copy data into other buffer
             bcopy(begin, charbuf.start + charbuf.avail, numRead);
             charbuf.avail = numRead;
             break;
-        case InputStream::Eof:
+        case Eof:
             // signal end of input buffer
             input = 0;
             if (charbuf.avail) {
@@ -131,7 +123,7 @@ InputStreamReader::decodeFromStream() {
                 status = Eof;
             }
             return;
-        case InputStream::Error:
+        case Error:
             error = input->getError();
             status = Error;
             return;
@@ -140,12 +132,12 @@ InputStreamReader::decodeFromStream() {
     // decode
     decode();
 }
-Reader::Status
+StreamStatus
 InputStreamReader::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
-Reader::Status
+StreamStatus
 InputStreamReader::reset() {
     if (buffer.markPos) {
         buffer.reset();
@@ -164,19 +156,19 @@ FileReader::~FileReader() {
     if (reader) delete reader;
     if (input) delete input;
 }
-Reader::Status
+StreamStatus
 FileReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     status = reader->read(start, nread, max);
     if (status != Ok) error = reader->getError();
     return status;
 }
-Reader::Status
+StreamStatus
 FileReader::mark(int32_t readlimit) {
     status = reader->mark(readlimit);
     if (status != Ok) error = reader->getError();
     return status;
 }
-Reader::Status
+StreamStatus
 FileReader::reset() {
     status = reader->reset();
     if (status != Ok) error = reader->getError();
@@ -196,7 +188,7 @@ StringReader::StringReader( const wchar_t* value ) {
 StringReader::~StringReader(){
     close();
 }
-Reader::Status
+StreamStatus
 StringReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     if ( pt >= len )
         return Eof;
@@ -206,7 +198,7 @@ StringReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
     pt += nread;
     return Ok;
 }
-Reader::Status
+StreamStatus
 StringReader::read(wchar_t&c) {
     if (pt == len) {
         return Eof;
@@ -220,12 +212,12 @@ StringReader::close(){
         delete data;
     }
 }
-Reader::Status
+StreamStatus
 StringReader::mark(int32_t /*readlimit*/) {
     markpt = pt;
     return Ok;
 }
-Reader::Status
+StreamStatus
 StringReader::reset() {
     pt = markpt;
     return Ok;

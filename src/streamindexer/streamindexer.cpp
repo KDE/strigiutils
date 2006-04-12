@@ -4,6 +4,7 @@
 #include "bz2endanalyzer.h"
 #include "tarendanalyzer.h"
 #include "digestthroughanalyzer.h"
+using namespace jstreams;
 
 StreamIndexer::StreamIndexer() {
 }
@@ -72,8 +73,8 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     while (!finished && es != eIter->end()) {
         char r = (*es)->analyze(path, input, depth+1, this);
         if (r) {
-            InputStream::Status ir = input->reset();
-            if (ir != InputStream::Ok) { // could not reset
+            StreamStatus ir = input->reset();
+            if (ir != Ok) { // could not reset
                 printf("could not reset\n");
                 return -2;
             }
@@ -85,11 +86,11 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     if (!finished) {
         // no endanalyzer was found, or the analyzer did
         // not read all of the stream, so we do that here
-        InputStream::Status r;
+        StreamStatus r;
         do {
             r = input->skip(1000000);
         } while (r == 0);
-        if (r == InputStream::Error) {
+        if (r == Error) {
             printf("%s\n", input->getError().c_str());
             return -2;
         }

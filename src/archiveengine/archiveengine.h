@@ -29,7 +29,9 @@ public:
 
 class StreamEngine;
 class ArchiveDirEngine;
-class InputStream;
+
+#include "fsfileinputstream.h"
+#include "substreamprovider.h"
 
 class ArchiveEngineBase : public QAbstractFileEngine {
 friend class ArchiveDirEngine;
@@ -41,7 +43,7 @@ protected:
 public:
     virtual StreamEngine *openEntry(const QString &filename) = 0;
     virtual ArchiveDirEngine *openDir(QString filename) = 0;
-    virtual InputStream *getInputStream(const FileEntry* entry) = 0;
+    virtual jstreams::InputStream *getInputStream(const FileEntry* entry) = 0;
     // lose references to engines so that they are not deleted
     virtual void releaseEngines() {};
     bool caseSensitive () const { return true; }
@@ -68,12 +70,6 @@ public:
     }
 };
 
-class InputStream;
-class SubInputStream;
-class QFSFileEngine;
-class FSFileInputStream;
-class SubStreamProvider;
-
 class FileEntryCache {
 private:
     struct Entry {
@@ -97,11 +93,11 @@ private:
     QString fullpath;
     QString path;
     StreamEngine *streamengine;
-    InputStream *parentstream;
-    FSFileInputStream *filestream;
-    QList<InputStream*> compressedstreams;
-    SubStreamProvider *zipstream;
-    mutable SubInputStream *entrystream;
+    jstreams::InputStream *parentstream;
+    jstreams::FSFileInputStream *filestream;
+    QList<jstreams::InputStream*> compressedstreams;
+    jstreams::SubStreamProvider *zipstream;
+    mutable jstreams::SubInputStream *entrystream;
     mutable bool readAllEntryNames;
     FileEntry* rootentry;
     mutable FileEntry* current;
@@ -110,8 +106,9 @@ private:
     bool nextEntry() const;
     void openArchive();
     void readEntryNames() const;
-    InputStream* decompress(InputStream*, int32_t bufsize) const;
-    bool testStream(InputStream* is, int32_t readsize) const;
+    jstreams::InputStream* decompress(jstreams::InputStream*,
+        int32_t bufsize) const;
+    bool testStream(jstreams::InputStream* is, int32_t readsize) const;
     void getRootEntry(const QDateTime& mtime);
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
@@ -126,7 +123,7 @@ public:
     QString fileName ( FileName file = DefaultName ) const;
     // lose references to engines so that they are not deleted
     void releaseEngines() {    streamengine = 0;};
-    InputStream *getInputStream(const FileEntry* entry);
+    jstreams::InputStream *getInputStream(const FileEntry* entry);
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"
         FileFlags flags =

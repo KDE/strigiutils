@@ -4,6 +4,8 @@
 #include "inputstream.h"
 #include "inputstreambuffer.h"
 
+namespace jstreams {
+
 class FileInputStream : public InputStream {
 private:
     FILE *file;
@@ -15,11 +17,13 @@ public:
     static const int32_t defaultBufferSize;
     FileInputStream(const char *filepath, int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
-    Status read(const char*& start, int32_t& nread, int32_t max = 0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
 //    char skip(int32_t ntoskip);
 };
+
+} // end namespace jstreams
 
 #endif
 

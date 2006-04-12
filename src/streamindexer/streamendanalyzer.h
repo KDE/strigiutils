@@ -1,17 +1,16 @@
 #ifndef STREAMENDANALYZER_H
 #define STREAMENDANALYZER_H
 
-#include <string>
+#include "inputstream.h"
 
-class InputStream;
 class StreamIndexer;
 
 class StreamEndAnalyzer {
 protected:
-    static char testStream(InputStream *in);
+    static char testStream(jstreams::InputStream *in);
 public:
     virtual ~StreamEndAnalyzer() {};
-    virtual char analyze(std::string filename, InputStream *in, int depth, StreamIndexer *indexer) = 0;
+    virtual char analyze(std::string filename, jstreams::InputStream *in, int depth, StreamIndexer *indexer) = 0;
 };
 
 #endif

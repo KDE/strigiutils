@@ -1,6 +1,7 @@
 #include "digestthroughanalyzer.h"
 #include "inputstream.h"
 #include <openssl/sha.h>
+using namespace jstreams;
 
 class DigestInputStream : public InputStream {
 private:
@@ -11,10 +12,10 @@ private:
     InputStream *input;
 public:
     DigestInputStream(InputStream *input);
-    Status read(const char*& start, int32_t& read, int32_t max = 0);
-    Status skip(int64_t ntoskip, int64_t* skipped = 0);
-    Status mark(int32_t readlimit);
-    Status reset();
+    StreamStatus read(const char*& start, int32_t& read, int32_t max = 0);
+    StreamStatus skip(int64_t ntoskip, int64_t* skipped = 0);
+    StreamStatus mark(int32_t readlimit);
+    StreamStatus reset();
     void printDigest();
 };
 DigestInputStream::DigestInputStream(InputStream *input) {
@@ -24,7 +25,7 @@ DigestInputStream::DigestInputStream(InputStream *input) {
     ignoreBytes = 0;
     SHA1_Init(&sha1);
 }
-InputStream::Status
+StreamStatus
 DigestInputStream::read(const char*& start, int32_t& read, int32_t max) {
     if (status) return status;
     status = input->read(start, read, max);
@@ -44,21 +45,21 @@ DigestInputStream::read(const char*& start, int32_t& read, int32_t max) {
     }
     return status;
 }
-InputStream::Status
+StreamStatus
 DigestInputStream::skip(int64_t ntoskip, int64_t* skipped) {
     // we call the default implementation because it calls
     // read() which is required for updating the hash
     return InputStream::skip(ntoskip, skipped);
 }
-InputStream::Status
+StreamStatus
 DigestInputStream::mark(int32_t readlimit) {
     if (status) return status;
     sinceMark = 0;
     return input->mark(readlimit);
 }
-InputStream::Status
+StreamStatus
 DigestInputStream::reset() {
-    Status s = input->reset();
+    StreamStatus s = input->reset();
     if (s == Ok) {
         ignoreBytes += sinceMark;
         sinceMark = 0;

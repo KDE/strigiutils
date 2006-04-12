@@ -9,7 +9,7 @@ private:
 public:
     DigestThroughAnalyzer();
     ~DigestThroughAnalyzer();
-    InputStream *connectInputStream(InputStream *in);
+    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     void printResults();
 };
 

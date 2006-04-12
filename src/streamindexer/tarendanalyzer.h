@@ -5,7 +5,8 @@
 
 class TarEndAnalyzer : public StreamEndAnalyzer {
 public:
-    char analyze(std::string filename, InputStream *in, int depth, StreamIndexer *indexer);
+    char analyze(std::string filename, jstreams::InputStream *in, int depth,
+        StreamIndexer *indexer);
 };
 
 #endif

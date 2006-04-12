@@ -1,4 +1,5 @@
 #include "bz2inputstream.h"
+using namespace jstreams;
 
 BZ2InputStream::BZ2InputStream(InputStream *input) {
     // initialize values that signal state
@@ -71,7 +72,7 @@ BZ2InputStream::checkMagic() {
     }
     return ok;
 }
-InputStream::Status
+StreamStatus
 BZ2InputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -138,12 +139,12 @@ BZ2InputStream::decompressFromStream() {
         break;
     }
 }
-InputStream::Status
+StreamStatus
 BZ2InputStream::mark(int32_t readlimit) {
     buffer.mark(readlimit);
     return Ok;
 }
-InputStream::Status
+StreamStatus
 BZ2InputStream::reset() {
     if (buffer.markPos) {
         buffer.reset();
