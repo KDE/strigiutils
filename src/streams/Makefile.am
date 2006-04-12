@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libstreams.la
 
 libstreams_la_SOURCES = bz2inputstream.cpp \
 	fileinputstream.cpp gzipinputstream.cpp \
-	inputstream.cpp \
+	inputstream.cpp inputstreamreader.cpp \
 	subinputstream.cpp Reader.cpp \
 	tarinputstream.cpp zipinputstream.cpp inputstreambuffer.cpp dostime.c
 
