@@ -133,7 +133,7 @@ void
 index(const char *path) {
     FileLister fl;
     fl.setCallbackFunction(&listcallback);
-    if (fl.listFiles(path)) {
+    if (fl.listFiles(path) == -1) {
         indexer.indexFile(path);
     }
 }

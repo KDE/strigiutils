@@ -27,44 +27,45 @@ TarInputStream::nextEntry() {
     output = new SubInputStream(input, entryinfo.size);
     return output;
 }
-void
-TarInputStream::readHeader(char *hb) {
-    char *bptr;
+const char*
+TarInputStream::readHeader() {
+    const char *hb;
     int toread;
     const char *begin;
     int32_t nread;
 
     // read the first 500 characters
+    hb = 0;
     toread = 512;
-    bptr = hb;
+    input->mark(512);
     while (toread) {
         StreamStatus r = input->read(begin, nread, toread);
         if (r) {
             status = Error;
             error = "Error reading header: " + input->getError();
-            return;
+            return 0;
         }
-        memcpy(bptr, begin, nread);
-        bptr += nread;
+        if (hb == 0) {
+            hb = begin;
+        }
         toread -= nread;
     }
+    return hb;
 }
 void
 TarInputStream::parseHeader() {
-    char hb[512];
-    readHeader(hb);
+    const char *hb;
+    hb = readHeader();
     if (status) return;
 
-    int32_t len = 0;
-    while (len < 108 && hb[len]) {
-        len++;
-    }
-    if (len > 107) { // this is 107 because 100 + 7 (for the adjecent field)
-                     // which may be merged by not having a proper '\0' at 100
+    // check for terminators ('\0') on the first couple of fields
+    if (hb[107] || hb[115] || hb[123] || hb[135] || hb[147]) {
+        error = "Invalid tar header.\n";
         status = Error;
-        error = "Error reading header: file name is too long.";
         return;
     }
+
+    int32_t len = strlen(hb);
     if (len == 0) {
         // ready
         status = Eof;
@@ -77,7 +78,8 @@ TarInputStream::parseHeader() {
         entryinfo.filename.resize(0);
         readLongLink(hb);
         if (status) return;
-        readHeader(hb);
+        hb = readHeader();
+        if (status) return;
     }
 
     // read the file size which is in octal format
@@ -101,7 +103,7 @@ TarInputStream::parseHeader() {
     //printf("%s\n", entryfilename.c_str());
 }
 int32_t
-TarInputStream::readOctalField(char *b, int32_t offset) {
+TarInputStream::readOctalField(const char *b, int32_t offset) {
     int32_t val;
     int r = sscanf(b+offset, "%o", &val);
     if (r != 1) {
@@ -112,7 +114,7 @@ TarInputStream::readOctalField(char *b, int32_t offset) {
     return val;
 }
 void
-TarInputStream::readLongLink(char *b) {
+TarInputStream::readLongLink(const char *b) {
     int32_t toread = readOctalField(b, 124);
     int32_t left = toread%512;
     if (left) {

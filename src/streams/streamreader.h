@@ -1,6 +1,8 @@
 #ifndef STREAMREADER_H
 #define STREAMREADER_H
 
+#include "Reader.h"
+
 namespace jstreams {
 
 class StringReader : public Reader {

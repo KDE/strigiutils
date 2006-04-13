@@ -26,10 +26,10 @@ private:
     int32_t numPaddingBytes;
 
     void readFileName(int32_t len);
-    void readHeader(char *);
+    const char* readHeader();
     void parseHeader();
-    int32_t readOctalField(char *b, int32_t offset);
-    void readLongLink(char *b);
+    int32_t readOctalField(const char *b, int32_t offset);
+    void readLongLink(const char *b);
 public:
     TarInputStream(InputStream *input);
     ~TarInputStream();

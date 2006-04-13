@@ -24,6 +24,7 @@ FileLister::walk_directory(const char *dirname) {
 	if (dir == 0) {
 		return -1;
 	}
+
 	// change into the directory
 	rc = fchdir(dirfd(dir));
 	if (rc != 0) {
@@ -33,7 +34,6 @@ FileLister::walk_directory(const char *dirname) {
 
 	// append the name of the opened dir to the list of opened names
 	m_dirnames.push_back(dirname);
-
 
 	subdir = readdir(dir);
 	while (subdir) {
