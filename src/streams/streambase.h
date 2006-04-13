@@ -35,15 +35,16 @@ public:
         return error;
     }
     virtual void close() {};
-    virtual StreamStatus read(T&);
     /**
      * Reads input data and points the input pointers to the read
      * data.
      * If the end of stream is reached, Eof is returned.
      * If an error occured, Error is returned.
-     * No more than @param max data wil be read. If @param max == 0, there's no limit.
+     * The function will try to read ntoread data unless an error occurs or
+     * a premature end of stream is encountered.
      **/
-    virtual StreamStatus read(const T*& start, int32_t& nread, int32_t max=0)= 0;
+    virtual StreamStatus read(const T*& start, int32_t& nread,
+        int32_t ntoread = 0) = 0;
     /* the available value may be greater than the actual value if
       the encoding is a variable one (such as utf8 or unicode) */
     /**
@@ -89,7 +90,7 @@ public:
     virtual StreamStatus reset() = 0;
 };
 
-template <class T>
+/*template <class T>
 StreamStatus
 StreamBase<T>::read(T& c) {
     const T *buf;
@@ -100,7 +101,26 @@ StreamBase<T>::read(T& c) {
     } while (r == Ok && numRead == 0);
     if (r == Ok) c = buf[0];
     return r;
-}
+}*/
+
+/*template <class T>
+StreamStatus
+StreamBase<T>::exactRead(const T*& start, int32_t ntoread) {
+    if (status != Ok) return status;
+    int toread;
+    const T* ptr;
+    if (mark(ntoread) != Ok) return status;
+    start = 0;
+    do {
+        read(ptr, numRead, ntoread);
+        if (status != Ok) return status;
+        if (start == 0) {
+            start = ptr;
+        }
+        ntoread -= numRead;
+    } while (ntoread);
+    return status;
+}*/
 
 template <class T>
 StreamStatus
