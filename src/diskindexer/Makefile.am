@@ -1,6 +1,6 @@
 
 bin_PROGRAMS = diskindexer
-diskindexer_SOURCES = diskindex.cpp
+diskindexer_SOURCES = diskindex.cpp filelister.cpp
 
 diskindexer_LDFLAGS = 
 diskindexer_LDADD = $(top_builddir)/archivereader/src/streamindexer/libstreamindexer.la

@@ -123,11 +123,19 @@ bunzip(InputStream &i, const char *path) {
 //    printf("%li\n", l);
     //GZipInputStream gz(&i);
 }
-
+StreamIndexer indexer;
+void
+listcallback(const char * /*path*/, const char *filename) {
+    indexer.indexFile(filename);
+}
+#include "filelister.h"
 void
 index(const char *path) {
-    StreamIndexer indexer;
-    indexer.indexFile(path);
+    FileLister fl;
+    fl.setCallbackFunction(&listcallback);
+    if (fl.listFiles(path)) {
+        indexer.indexFile(path);
+    }
 }
 int main(int argc, char *argv[])
 {
