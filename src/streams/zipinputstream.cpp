@@ -6,6 +6,12 @@ extern "C" {
 }
 using namespace jstreams;
 
+bool
+ZipInputStream::checkHeader(const char* data, int32_t datasize) {
+    static const char magic[] = {0x50, 0xb4, 0x03, 0x04};
+    if (datasize < 4) return false;
+    return memcmp(data, magic, 4) == 0;
+}
 ZipInputStream::ZipInputStream(InputStream *input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
@@ -124,7 +130,7 @@ ZipInputStream::readHeader() {
     entryinfo.size = read4bytes(hb + 22);
     // read 4 bytes into the length of the compressed size
     entryCompressedSize = read4bytes(hb + 18);
-    compressionMethod = read2bytes(hb+8);
+    compressionMethod = read2bytes(hb + 8);
 
     int32_t generalBitFlags = read2bytes(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?

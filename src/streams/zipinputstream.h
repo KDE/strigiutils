@@ -33,6 +33,7 @@ public:
     ZipInputStream(InputStream *input);
     ~ZipInputStream();
     SubInputStream* nextEntry();
+    static bool checkHeader(const char* data, int32_t datasize);
 };
 
 } // end namespace jstreams
