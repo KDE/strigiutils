@@ -4,6 +4,10 @@
 #include "subinputstream.h"
 using namespace jstreams;
 
+bool
+TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
+    return TarInputStream::checkHeader(header, headersize);
+}
 char
 TarEndAnalyzer::analyze(std::string filename, InputStream *in, int depth, StreamIndexer *indexer) {
     TarInputStream tar(in);

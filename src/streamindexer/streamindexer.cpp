@@ -36,8 +36,8 @@ StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
-    tIter->push_back(ana);
+//    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
+//    tIter->push_back(ana);
 }
 void
 StreamIndexer::addEndAnalyzers() {
@@ -69,24 +69,32 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
 
     bool finished = false;
     input->mark(1024); // set to size required to determine file type
+    const char* header;
+    int32_t headersize;
+    StreamStatus r = input->read(header, headersize);
+    if (r == Error) {
+        printf("%s\n", input->getError().c_str());
+        return -2;
+    }
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
-        char r = (*es)->analyze(path, input, depth+1, this);
-        if (r) {
-            StreamStatus ir = input->reset();
-            if (ir != Ok) { // could not reset
-                printf("could not reset\n");
-                return -2;
+        if ((*es)->checkHeader(header, headersize)) {
+            char ar = (*es)->analyze(path, input, depth+1, this);
+            if (ar) {
+                r = input->reset();
+                if (r != Ok) { // could not reset
+                    printf("could not reset\n");
+                    return -2;
+                }
+            } else {
+                finished = true;
             }
-        } else {
-            finished = true;
         }
         es++;
     }
     if (!finished) {
         // no endanalyzer was found, or the analyzer did
         // not read all of the stream, so we do that here
-        StreamStatus r;
         do {
             r = input->skip(1000000);
         } while (r == 0);

@@ -1,6 +1,12 @@
 #include "bz2inputstream.h"
 using namespace jstreams;
 
+bool
+BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
+    static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
+    if (datasize < 5) return false;
+    return memcmp(data, magic, 5) == 0;
+}
 BZ2InputStream::BZ2InputStream(InputStream *input) {
     // initialize values that signal state
     status = Ok;
@@ -48,10 +54,9 @@ BZ2InputStream::dealloc() {
 }
 bool
 BZ2InputStream::checkMagic() {
-    static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
-    char buf[5];
     input->mark(5);
-    const char *ptr;
+    const char* begin = 0;
+    const char* ptr;
     int32_t nread;
     int32_t total = 0;
     do {
@@ -60,17 +65,14 @@ BZ2InputStream::checkMagic() {
             error = input->getError();
             return false;
         }
-        for (int32_t i=0; i<nread; i++) {
-            buf[i+total] = ptr[i];
+        if (begin == 0) {
+            begin = ptr;
         }
         total += nread;
     } while (total < 5);
     input->reset();
-    bool ok = true;
-    for (int i=0; ok && i<5; ++i) {
-        ok &= magic[i] == buf[i];
-    }
-    return ok;
+
+    return checkHeader(begin, 5);
 }
 StreamStatus
 BZ2InputStream::read(const char*& start, int32_t& nread, int32_t max) {

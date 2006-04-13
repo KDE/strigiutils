@@ -34,6 +34,7 @@ public:
     TarInputStream(InputStream *input);
     ~TarInputStream();
     SubInputStream* nextEntry();
+    static bool checkHeader(const char* data, int32_t datasize);
 };
 
 } // end namespace jstreams

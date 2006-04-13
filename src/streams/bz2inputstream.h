@@ -27,6 +27,7 @@ public:
     StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
+    static bool checkHeader(const char* data, int32_t datasize);
 };
 
 } // end namespace jstreams
