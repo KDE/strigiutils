@@ -2,7 +2,7 @@
 #include <cerrno>
 using namespace jstreams;
 
-InputStreamReader::InputStreamReader(InputStream *i, const char* enc) {
+InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
     status = Ok;
     finishedDecoding = false;
     input = i;
@@ -28,29 +28,44 @@ InputStreamReader::~InputStreamReader() {
         iconv_close(converter);
     }
 }
-StreamStatus
-InputStreamReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
+/*int32_t
+InputStreamReader::read(const wchar_t*& start, int32_t ntoread) {
+}
+int32_t
+InputStreamReader::read(const wchar_t*& start) {
     // if an error occured earlier, signal this
-    if (status) return status;
+    if (status == Error) return -1;
+    if (status == Eof) return 0;
 
     // if we cannot read and there's nothing in the buffer
     // (this can maybe be fixed by calling reset)
-    if (finishedDecoding && buffer.avail == 0) return Eof;
+    if (finishedDecoding && buffer.avail == 0) return 0;
 
     // check if there is still data in the buffer
     if (buffer.avail == 0) {
         decodeFromStream();
-        if (status) return status;
+        if (status == Error) return -1;
+        if (status == Eof) return 0;
     }
 
     // set the pointers to the available data
-    buffer.read(start, nread, max);
-    return Ok;
+    int32_t nread;
+    nread = buffer.read(start, 0);
+    return nread;
+}*/
+void
+InputStreamReader::fillBuffer() {
+    readFromStream();
 }
 void
 InputStreamReader::readFromStream() {
     // read data from the input stream
-    status = input->read(inStart, inSize);
+    inSize = input->read(inStart);
+    if (inSize == 0) {
+        status = Eof;
+    } else if (inSize == -1) {
+        status = Error;
+    }
 }
 void
 InputStreamReader::decode() {
@@ -105,15 +120,9 @@ InputStreamReader::decodeFromStream() {
  //       printf("fill up charbuf\n");
         const char *begin;
         int32_t numRead;
-        StreamStatus s;
-        s = input->read(begin, numRead, charbuf.size);
-        switch (s) {
-        case Ok:
-            // copy data into other buffer
-            bcopy(begin, charbuf.start + charbuf.avail, numRead);
-            charbuf.avail = numRead;
-            break;
-        case Eof:
+        numRead = input->read(begin, charbuf.size);
+        switch (numRead) {
+        case 0:
             // signal end of input buffer
             input = 0;
             if (charbuf.avail) {
@@ -123,10 +132,15 @@ InputStreamReader::decodeFromStream() {
                 status = Eof;
             }
             return;
-        case Error:
+        case -1:
             error = input->getError();
             status = Error;
             return;
+        default:
+            // copy data into other buffer
+            memmove(charbuf.start + charbuf.avail, begin, numRead);
+            charbuf.avail = numRead;
+            break;
         }
     }
     // decode
@@ -156,11 +170,29 @@ FileReader::~FileReader() {
     if (reader) delete reader;
     if (input) delete input;
 }
-StreamStatus
-FileReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
-    status = reader->read(start, nread, max);
-    if (status != Ok) error = reader->getError();
-    return status;
+int32_t
+FileReader::read(const wchar_t*& start) {
+    int32_t nread = reader->read(start);
+    if (nread == -1) {
+        error = reader->getError();
+        status = Error;
+        return -1;
+    } else if (nread == 0) {
+        status = Eof;
+    }
+    return nread;
+}
+int32_t
+FileReader::read(const wchar_t*& start, int32_t ntoread) {
+    int32_t nread = reader->read(start, ntoread);
+    if (nread == -1) {
+        error = reader->getError();
+        status = Error;
+        return -1;
+    } else if (nread != ntoread) {
+        status = Eof;
+    }
+    return nread;
 }
 StreamStatus
 FileReader::mark(int32_t readlimit) {

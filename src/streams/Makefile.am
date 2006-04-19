@@ -10,5 +10,5 @@ libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 
 libstreams_la_LIBADD = -lz -lbz2
 
-noinst_HEADERS = 
+noinst_HEADERS = bufferedstream.h
 SUBDIRS = tests

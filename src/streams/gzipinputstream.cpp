@@ -2,7 +2,7 @@
 #include <zlib.h>
 using namespace jstreams;
 
-GZipInputStream::GZipInputStream(InputStream *input, ZipFormat format) {
+GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     // initialize values that signal state
     status = Ok;
     zstream = 0;
@@ -71,8 +71,8 @@ GZipInputStream::checkMagic() {
     int32_t nread;
     int32_t total = 0;
     do {
-        status = input->read(ptr, nread, 2-total);
-        if (status != Ok) {
+        nread = input->read(ptr, 2-total);
+        if (nread == -1) {
             error = input->getError();
             return false;
         }
@@ -89,7 +89,7 @@ GZipInputStream::checkMagic() {
  * allocated buffer and zstream.
  **/
 void
-GZipInputStream::restart(InputStream *input) {
+GZipInputStream::restart(StreamBase<char>* input) {
     if (zstream == 0) {
         error = "Cannot restart GZipInputStream: state invalid.";
         status = Error;
@@ -106,8 +106,8 @@ GZipInputStream::restart(InputStream *input) {
     // signal that we need to read into the buffer
     zstream->avail_out = 1;
 }
-StreamStatus
-GZipInputStream::read(const char*& start, int32_t& nread, int32_t max) {
+/*int32_t
+GZipInputStream::read(const char*& start, int32_t ntoread) {
     // if an error occured earlier, signal this
     if (status) return status;
 
@@ -122,15 +122,22 @@ GZipInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     }
 
     // set the pointers to the available data
-    buffer.read(start, nread, max);
-    return Ok;
+    int32_t nread = buffer.read(start, ntoread);
+    return nread;
+}*/
+void
+GZipInputStream::fillBuffer() {
+    readFromStream();
 }
 void
 GZipInputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    status = input->read(inStart, nread);
+    nread = input->read(inStart);
+    if (nread == -1) {
+        status = Error;
+    }
     zstream->next_in = (Bytef*)inStart;
     zstream->avail_in = nread;
 }
@@ -171,20 +178,5 @@ GZipInputStream::decompressFromStream() {
         // (but this stream is not yet finished)
         finishedInflating = true;
         break;
-    }
-}
-StreamStatus
-GZipInputStream::mark(int32_t readlimit) {
-    buffer.mark(readlimit);
-    return Ok;
-}
-StreamStatus
-GZipInputStream::reset() {
-    if (buffer.markPos) {
-        buffer.reset();
-        return Ok;
-    } else {
-        error = "No valid mark for reset.";
-        return Error;
     }
 }

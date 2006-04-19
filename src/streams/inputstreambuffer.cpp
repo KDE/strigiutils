@@ -14,11 +14,13 @@ void
 InputStreamBuffer<T>::setSize(int32_t size) {
     // store pointer information
     int32_t offset = curPos - start;
+    int32_t markOffset = (markPos) ? markPos - start : -1;
     // allocate memory in the buffer
     start = (T*)realloc(start, size*sizeof(T));
     this->size = size;
     // restore pointer information
     curPos = start + offset;
+    markPos = (markOffset == -1) ?0 :start + markOffset;
 }
 template <class T>
 void
@@ -72,13 +74,13 @@ InputStreamBuffer<T>::getWriteSpace() {
     return writeSpace;
 }
 template <class T>
-void
-InputStreamBuffer<T>::read(const T*& start, int32_t& nread, int32_t max) {
+int32_t
+InputStreamBuffer<T>::read(const T*& start, int32_t max) {
     start = curPos;
     if (max <= 0 || max > avail) {
         max = avail;
     }
     curPos += max;
     avail -= max;
-    nread = max;
+    return max;
 }

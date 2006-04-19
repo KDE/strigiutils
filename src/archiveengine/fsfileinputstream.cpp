@@ -48,7 +48,7 @@ FSFileInputStream::reopen() {
     buffer.avail = 0;
     return status;
 }
-StreamStatus
+/*StreamStatus
 FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // if an error occured earlier, signal this
     if (status) return status;
@@ -65,6 +65,10 @@ FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     // set the pointers to the available data
     buffer.read(start, nread, max);
     return Ok;
+}*/
+void
+FSFileInputStream::fillBuffer() {
+    readFromFile();
 }
 void
 FSFileInputStream::readFromFile() {
@@ -83,15 +87,5 @@ FSFileInputStream::readFromFile() {
         fse->close();
         open = false;
     }
-}
-StreamStatus
-FSFileInputStream::mark(int32_t readlimit) {
-    buffer.mark(readlimit);
-    return Ok;
-}
-StreamStatus
-FSFileInputStream::reset() {
-    buffer.reset();
-    return Ok;
 }
 

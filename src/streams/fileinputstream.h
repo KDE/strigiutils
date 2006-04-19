@@ -1,25 +1,20 @@
 #ifndef FILEINPUTSTREAM_H
 #define FILEINPUTSTREAM_H
 
-#include "inputstream.h"
-#include "inputstreambuffer.h"
+#include "bufferedstream.h"
 
 namespace jstreams {
 
-class FileInputStream : public InputStream {
+class FileInputStream : public BufferedInputStream<char> {
 private:
     FILE *file;
     std::string filepath;
-    InputStreamBuffer<char> buffer;
 
-    void readFromFile();
 public:
     static const int32_t defaultBufferSize;
     FileInputStream(const char *filepath, int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
-    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
+    void fillBuffer();
 //    char skip(int32_t ntoskip);
 };
 

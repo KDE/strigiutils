@@ -4,7 +4,8 @@
 #include <string>
 #include <iconv.h>
 #include "fileinputstream.h"
-#include "Reader.h"
+#include "bufferedstream.h"
+#include "inputstream.h"
 
 namespace jstreams {
 
@@ -13,11 +14,11 @@ namespace jstreams {
 http://www.gnu.org/software/libc/manual/html_node/iconv-Examples.html
 http://tangentsoft.net/mysql++/doc/userman/html/unicode.html
  **/
-class InputStreamReader : public Reader {
+class InputStreamReader : public BufferedInputStream<wchar_t> {
 private:
     iconv_t converter;
     bool finishedDecoding;
-    InputStream* input;
+    StreamBase<char>* input;
     const char* inStart;
     int32_t inSize;
     int32_t charsLeft;
@@ -28,15 +29,14 @@ private:
     void decodeFromStream();
     void decode();
 public:
-    InputStreamReader(InputStream *i, const char *enc=NULL);
+    InputStreamReader(StreamBase<char> *i, const char *enc=0);
     ~InputStreamReader();
-    using Reader::read;
-    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    void fillBuffer();
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };
 
-class FileReader : public Reader {
+class FileReader : public StreamBase<wchar_t> {
     FileInputStream* input;
     InputStreamReader* reader;
 public:
@@ -44,13 +44,13 @@ public:
         const int32_t cachelen = 13,
         const int32_t cachebuff = 14 );
     ~FileReader();
-    using Reader::read;
-    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    int32_t read(const wchar_t*& start);
+    int32_t read(const wchar_t*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };
 
-class StringReader:public Reader{
+class StringReader : public StreamBase<wchar_t> {
 private:
     wchar_t* data;
     int32_t pt;

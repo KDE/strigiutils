@@ -1,8 +1,9 @@
 #include "fileinputstream.h"
-#include "errno.h"
+#include <cerrno>
+#include <cstring>
 using namespace jstreams;
 
-const int32_t FileInputStream::defaultBufferSize = 64;
+const int32_t FileInputStream::defaultBufferSize = 1048576;
 FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     // initialize values that signal state
     status = Ok;
@@ -10,11 +11,12 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     // try to open the file for reading
     file = fopen(filepath, "rb");
     this->filepath = filepath;
-    if (file == NULL) {
+    if (file == 0) {
         // handle error
         error = "Could not read file '";
         error += filepath;
-        error += "'.";
+        error += "': ";
+	error += strerror(errno);
         status = Error;
         return;
     }
@@ -31,14 +33,19 @@ FileInputStream::~FileInputStream() {
         }
     }
 }
-StreamStatus
-FileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
+/*int32_t
+FileInputStream::read(const char*& start, int32_t ntoread) {
+    return 0;
+}
+int32_t
+FileInputStream::read(const char*& start) {
     // if an error occured earlier, signal this
-    if (status) return status;
+    if (status == Error) return -1;
+    if (status == Eof) return 0;
 
     // if we cannot read and there's nothing in the buffer
     // (this can maybe be fixed by calling reset)
-    if (file == NULL && buffer.avail == 0) return Eof;
+    if (file == NULL && buffer.avail == 0) return 0;
 
     // if buffer is empty, read from buffer
     if (buffer.avail == 0) {
@@ -46,11 +53,12 @@ FileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
         if (status) return status;
     }
     // set the pointers to the available data
-    buffer.read(start, nread, max);
-    return Ok;
-}
+    int32_t nread;
+    buffer.read(start, nread);
+    return nread;
+}*/
 void
-FileInputStream::readFromFile() {
+FileInputStream::fillBuffer() {
     // prepare the buffer for writing
     int32_t bytesRead = buffer.getWriteSpace();
     // read into the buffer
@@ -69,16 +77,6 @@ FileInputStream::readFromFile() {
             status = Ok;
         }
     }
-}
-StreamStatus
-FileInputStream::mark(int32_t readlimit) {
-    buffer.mark(readlimit);
-    return Ok;
-}
-StreamStatus
-FileInputStream::reset() {
-    buffer.reset();
-    return Ok;
 }
 /*char
 FileInputStream::skip(int32_t ntoskip) {

@@ -1,28 +1,33 @@
 #include "subinputstream.h"
 using namespace jstreams;
 
-SubInputStream::SubInputStream(InputStream *input, int32_t length)
+SubInputStream::SubInputStream(InputStream *input, int64_t length)
         : size(length) {
     this->input = input;
     left = length;
 }
-StreamStatus
-SubInputStream::read(const char*& start, int32_t& nread, int32_t max) {
-    if (left == 0) {
-        nread = 0;
-        return Eof;
+int32_t
+SubInputStream::read(const char*& start) {
+    int32_t ntoread = (int32_t)((left > INT32MAX) ?INT32MAX :left);
+    int32_t nread = input->read(start, ntoread);
+    if (ntoread != nread) {
+        status = Error;
     }
+    return nread;
+}
+int32_t
+SubInputStream::read(const char*& start, int32_t ntoread) {
+    if (left == 0) return 0;
     // restrict the amount of data that can be read
-    if (max > left || max == 0) {
-        max = (int32_t)((left > INT32MAX) ?INT32MAX :left);
+    if (ntoread > left) {
+        ntoread = left;
     }
-    status = input->read(start, nread, max);
-    if (status) {
-        //printf("suberror %s\n", input->getError().c_str());
-        return status;
+    int32_t nread = input->read(start, ntoread);
+    if (ntoread != nread) {
+        status = Error;
     }
     left -= nread;
-    return Ok;
+    return nread;
 }
 StreamStatus
 SubInputStream::mark(int32_t readlimit) {

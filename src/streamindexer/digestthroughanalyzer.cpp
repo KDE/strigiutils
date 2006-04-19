@@ -12,7 +12,8 @@ private:
     InputStream *input;
 public:
     DigestInputStream(InputStream *input);
-    StreamStatus read(const char*& start, int32_t& read, int32_t max = 0);
+    int32_t read(const char*& start);
+    int32_t read(const char*& start, int32_t ntoread);
     StreamStatus skip(int64_t ntoskip, int64_t* skipped = 0);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
@@ -25,25 +26,47 @@ DigestInputStream::DigestInputStream(InputStream *input) {
     ignoreBytes = 0;
     SHA1_Init(&sha1);
 }
-StreamStatus
-DigestInputStream::read(const char*& start, int32_t& read, int32_t max) {
-    if (status) return status;
-    status = input->read(start, read, max);
-    if (status == Error) {
+int32_t
+DigestInputStream::read(const char*& start) {
+    int32_t nread = input->read(start);
+    if (nread == -1) {
         error = input->getError();
-        return status;
+        status = Error;
+        return -1;
     }
-    if (status == Eof) {
+    if (nread == 0) {
+        status = Eof;
         return Eof;
     }
-    sinceMark += read;
-    if (ignoreBytes < read) {
-        SHA1_Update(&sha1, start+ignoreBytes, read-ignoreBytes);
+    sinceMark += nread;
+    if (ignoreBytes < nread) {
+        SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
         ignoreBytes = 0;
     } else {
-        ignoreBytes -= read;
+        ignoreBytes -= nread;
     }
-    return status;
+    return nread;
+}
+int32_t
+DigestInputStream::read(const char*& start, int32_t ntoread) {
+    int32_t nread = input->read(start, ntoread);
+    if (nread == -1) {
+        error = input->getError();
+        status = Error;
+        return -1;
+    }
+    if (nread != ntoread) {
+        status = Eof;
+        return Eof;
+    }
+    sinceMark += nread;
+    if (ignoreBytes < nread) {
+        SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
+        ignoreBytes = 0;
+    } else {
+        ignoreBytes -= nread;
+    }
+    return nread;
 }
 StreamStatus
 DigestInputStream::skip(int64_t ntoskip, int64_t* skipped) {

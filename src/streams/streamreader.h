@@ -11,7 +11,7 @@ private:
     uint32_t markpt;
     uint32_t pt;
     size_t len;
-        bool ownData;
+    bool ownData;
 public:
     StringReader ( const TCHAR* value );
     StringReader ( const TCHAR* value, const size_t length );

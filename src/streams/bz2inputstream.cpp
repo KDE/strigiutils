@@ -7,7 +7,7 @@ BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
     if (datasize < 5) return false;
     return memcmp(data, magic, 5) == 0;
 }
-BZ2InputStream::BZ2InputStream(InputStream *input) {
+BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     // initialize values that signal state
     status = Ok;
     finishedInflating = false;
@@ -60,7 +60,7 @@ BZ2InputStream::checkMagic() {
     int32_t nread;
     int32_t total = 0;
     do {
-        status = input->read(ptr, nread, 5-total);
+        nread = input->read(ptr, 5-total);
         if (status != Ok) {
             error = input->getError();
             return false;
@@ -74,36 +74,43 @@ BZ2InputStream::checkMagic() {
 
     return checkHeader(begin, 5);
 }
-StreamStatus
-BZ2InputStream::read(const char*& start, int32_t& nread, int32_t max) {
+/*int32_t
+BZ2InputStream::read(const char*& start, int32_t ntoread) {
     // if an error occured earlier, signal this
-    if (status) return status;
+    if (status == Error) return -1;
+    if (status == Eof) return 0;
 
     // if we cannot read and there's nothing in the buffer
     // (this can maybe be fixed by calling reset)
-    if (finishedInflating && buffer.avail == 0) return Eof;
+    if (finishedInflating && buffer.avail == 0) return 0;
 
     // check if there is still data in the buffer
     if (buffer.avail == 0) {
         decompressFromStream();
-        if (status) return status;
+        if (status == Error) return -1;
+        if (status == Eof) return 0;
     }
 
     // set the pointers to the available data
-    buffer.read(start, nread, max);
-    if (nread == 0) {
-        return read(start, nread, max);
+    int32_t nread = buffer.read(start, ntoread);
+    while (nread == 0) {
+        nread = read(start, ntoread);
     }
-    return Ok;
+    return nread;
+} */
+void
+BZ2InputStream::fillBuffer() {
+    decompressFromStream();
 }
 void
 BZ2InputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    status = input->read(inStart, nread);
+    nread = input->read(inStart);
     if (status == Error) {
-        error = "Error reading bz2: " + input->getError();
+        error = "Error reading bz2: ";
+        error += input->getError();
     }
     bzstream.next_in = (char*)inStart;
     bzstream.avail_in = nread;
@@ -139,20 +146,5 @@ BZ2InputStream::decompressFromStream() {
         // (but this stream is not yet finished)
         finishedInflating = true;
         break;
-    }
-}
-StreamStatus
-BZ2InputStream::mark(int32_t readlimit) {
-    buffer.mark(readlimit);
-    return Ok;
-}
-StreamStatus
-BZ2InputStream::reset() {
-    if (buffer.markPos) {
-        buffer.reset();
-        return Ok;
-    } else {
-        error = "No valid mark for reset.";
-        return Error;
     }
 }

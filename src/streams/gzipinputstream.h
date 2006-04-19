@@ -1,19 +1,17 @@
 #ifndef GZIPINPUTSTREAM_H
 #define GZIPINPUTSTREAM_H
 
-#include "inputstream.h"
-#include "inputstreambuffer.h"
+#include "bufferedstream.h"
 
 struct z_stream_s;
 
 namespace jstreams {
 
-class GZipInputStream : public InputStream {
+class GZipInputStream : public BufferedInputStream<char> {
 private:
     bool finishedInflating;
     z_stream_s *zstream;
-    InputStream *input;
-    InputStreamBuffer<char> buffer;
+    StreamBase<char>* input;
 
     void dealloc();
     void readFromStream();
@@ -21,12 +19,10 @@ private:
     bool checkMagic();
 public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
-    GZipInputStream(InputStream *input, ZipFormat format=GZIPFORMAT);
+    GZipInputStream(StreamBase<char>* input, ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
-    void restart(InputStream *input);
-    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
+    void restart(StreamBase<char>* input);
+    void fillBuffer();
 };
 
 } // end namespace jstreams

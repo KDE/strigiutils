@@ -31,6 +31,12 @@ StreamIndexer::indexFile(const char *filepath) {
     FileInputStream file(filepath);
     return analyze(path, &file, 0);
 }
+char
+StreamIndexer::indexFile(std::string& filepath) {
+    FileInputStream file(filepath.c_str());
+    return analyze(filepath, &file, 0);
+}
+
 void
 StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
@@ -68,17 +74,19 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     }
 
     bool finished = false;
-    input->mark(1024); // set to size required to determine file type
+    int32_t headersize = 1024;
+    input->mark(headersize); // set to size required to determine file type
     const char* header;
-    int32_t headersize;
-    StreamStatus r = input->read(header, headersize);
-    if (r == Error) {
-        printf("%s\n", input->getError().c_str());
+    int32_t nread;
+    nread = input->read(header);
+    if (nread != headersize) {
+        printf("%s\n", input->getError());
         return -2;
     }
+    StreamStatus r;
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
-        if ((*es)->checkHeader(header, headersize)) {
+        if ((*es)->checkHeader(header, nread)) {
             char ar = (*es)->analyze(path, input, depth+1, this);
             if (ar) {
                 r = input->reset();
@@ -99,7 +107,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
             r = input->skip(1000000);
         } while (r == 0);
         if (r == Error) {
-            printf("%s\n", input->getError().c_str());
+            printf("%s\n", input->getError());
             return -2;
         }
     }

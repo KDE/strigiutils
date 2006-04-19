@@ -40,13 +40,13 @@ streamLen(InputStream *i) {
     long count = 0;
     const char *begin;
     int32_t nread;
-    char r = i->read(begin, nread);
-    while (r == 0) {
+    nread = i->read(begin);
+    while (nread > 0) {
         count += nread;
 //        printf ("count %li\n", count);
-        r = i->read(begin, nread, 1);
+        nread = i->read(begin, 1);
     }
-    if (r == -2) count = -2;
+    if (nread == -1) count = -1;
     return count;
 }
 

@@ -31,20 +31,42 @@ public:
      * Return a string representation of the last error that has occurred.
      * If no error has occurred, an empty string is returned.
      **/
-    const std::string& getError() const {
-        return error;
+    const char* getError() const {
+        return error.c_str();
     }
     virtual void close() {};
-    /**
-     * Reads input data and points the input pointers to the read
-     * data.
-     * If the end of stream is reached, Eof is returned.
-     * If an error occured, Error is returned.
-     * The function will try to read ntoread data unless an error occurs or
-     * a premature end of stream is encountered.
+    /** 
+     * @brief Reads @p ntoread characters from the stream and sets \a start to
+     * the first character that was read.
+     *
+     * If @p ntoread is @c 0, then at least one character will be read.
+     *
+     * @param start Pointer passed by reference that will be set to point to
+     *              the retrieved array of characters. If the end of the stream
+     *              is encountered or an error occurs, the value of @p start
+     *              is undefined.
+     * @return the number of characters that were read. If 0 is returned, the
+     *         end of the stream has been reached. If -1 is returned, an error
+     *         has occured.
      **/
-    virtual StreamStatus read(const T*& start, int32_t& nread,
-        int32_t ntoread = 0) = 0;
+    virtual int32_t read(const T*& start) = 0;
+    /** 
+     * @brief Reads @p ntoread characters from the stream and sets \a start to
+     * the first character that was read.
+     *
+     * If @p ntoread is @c 0, then at least one character will be read.
+     *
+     * @param start Pointer passed by reference that will be set to point to
+     *              the retrieved array of characters. If the end of the stream
+     *              is encountered or an error occurs, the value of @p start
+     *              is undefined.
+     * @param ntoread The number of characters to read from the stream. If
+     *                @p is @c 0 the stream reads at least 1 character.
+     * @return the number of characters that were read. If 0 is returned, the
+     *         end of the stream has been reached. If -1 is returned, an error
+     *         has occured.
+     **/
+    virtual int32_t read(const T*& start, int32_t ntoread) = 0;
     /* the available value may be greater than the actual value if
       the encoding is a variable one (such as utf8 or unicode) */
     /**
@@ -102,17 +124,18 @@ StreamBase<T>::read(T& c) {
     if (r == Ok) c = buf[0];
     return r;
 }*/
-
-/*template <class T>
-StreamStatus
-StreamBase<T>::exactRead(const T*& start, int32_t ntoread) {
-    if (status != Ok) return status;
+/*
+template <class T>
+int32_t
+StreamBase<T>::read(const T*& start, int32_t ntoread) {
+    if (status == Eof) return 0;
+    if (status == Error) return -1;
     int toread;
     const T* ptr;
     if (mark(ntoread) != Ok) return status;
     start = 0;
     do {
-        read(ptr, numRead, ntoread);
+        numRead = read(ptr, numRead, ntoread);
         if (status != Ok) return status;
         if (start == 0) {
             start = ptr;
@@ -120,8 +143,8 @@ StreamBase<T>::exactRead(const T*& start, int32_t ntoread) {
         ntoread -= numRead;
     } while (ntoread);
     return status;
-}*/
-
+}
+*/
 template <class T>
 StreamStatus
 StreamBase<T>::skip(int64_t ntoskip, int64_t* skipped) {
@@ -130,8 +153,8 @@ StreamBase<T>::skip(int64_t ntoskip, int64_t* skipped) {
     if (skipped) *skipped = 0;
     while (ntoskip) {
         int32_t readstep = (int32_t)((ntoskip > INT32MAX) ?INT32MAX :ntoskip);
-        StreamStatus r = read(begin, nread, readstep);
-        if (r != Ok) return r;
+        nread = read(begin, readstep);
+        if (status != Ok) return status;
         ntoskip -= nread;
         if (skipped) *skipped += nread;
     }

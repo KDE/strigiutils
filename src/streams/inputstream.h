@@ -5,7 +5,7 @@
 
 namespace jstreams {
 
-typedef jstreams::StreamBase<char> InputStream;
+typedef StreamBase<char> InputStream;
 
 } // end namespace jstreams
 

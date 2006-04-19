@@ -5,15 +5,16 @@
 
 namespace jstreams {
 
-class SubInputStream : public InputStream {
+class SubInputStream : public StreamBase<char> {
 private:
     const int64_t size;
     int64_t left;
     int64_t markleft;
     InputStream *input;
 public:
-    SubInputStream(InputStream *input, int32_t size);
-    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
+    SubInputStream(InputStream *input, int64_t size);
+    int32_t read(const char*& start);
+    int32_t read(const char*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
     StreamStatus skipToEnd();

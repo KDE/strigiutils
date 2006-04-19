@@ -29,28 +29,13 @@ TarInputStream::nextEntry() {
 }
 const char*
 TarInputStream::readHeader() {
-    const char *hb;
-    int toread;
-    const char *begin;
-    int32_t nread;
-
     // read the first 500 characters
-    hb = 0;
-    toread = 512;
-    input->mark(512);
-    while (toread) {
-        StreamStatus r = input->read(begin, nread, toread);
-        if (r) {
-            status = Error;
-            error = "Error reading header: " + input->getError();
-            return 0;
-        }
-        if (hb == 0) {
-            hb = begin;
-        }
-        toread -= nread;
+    const char *begin;
+    int32_t nread = input->read(begin, 512);
+    if (nread != 512) {
+        status = Error;
     }
-    return hb;
+    return begin;
 }
 bool
 TarInputStream::checkHeader(const char* h, const int32_t hsize) {
@@ -129,23 +114,20 @@ TarInputStream::readLongLink(const char *b) {
         left = 512 - left;
     }
     const char *begin;
-    int32_t nread;
     if (status) return;
-    while (toread) {
-        StreamStatus r = input->read(begin, nread, toread);
-        if (r) {
+    int32_t nread = input->read(begin, toread);
+    if (nread != toread) {
             status = Error;
             error = "Error reading LongLink: ";
-            if (r == Error) {
+            if (nread == -1) {
                 error += input->getError();
             } else {
                 error += " premature end of file.";
             }
             return;
-        }
-        toread -= nread;
-        entryinfo.filename.append(begin, nread);
     }
+    entryinfo.filename.append(begin, nread);
+
     StreamStatus r = input->skip(left);
     if (r) {
         status = Error;

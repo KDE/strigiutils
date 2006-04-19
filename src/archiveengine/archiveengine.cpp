@@ -211,9 +211,8 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
 bool
 ArchiveEngine::testStream(InputStream* is, int32_t readsize) const {
     const char *start;
-    int32_t nread;
     is->mark(readsize);
-    return is->read(start, nread, readsize) == Ok;
+    return is->read(start, readsize) == readsize;
 }
 InputStream*
 ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {

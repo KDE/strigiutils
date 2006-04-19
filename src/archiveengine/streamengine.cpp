@@ -46,14 +46,13 @@ StreamEngine::read(char* data, qint64 maxlen) {
     if (stream) {
         const char *start;
         int32_t nread;
-        StreamStatus status;
         if (maxlen > INT32MAX) maxlen = INT32MAX;
-        status = stream->read(start, nread, (int32_t)maxlen);
-        if (status == Ok) {
+        nread = stream->read(start, (int32_t)maxlen);
+        if (nread > 0) {
             bcopy(start, data, nread);
             return nread;
         }
-        if (status == Eof) {
+        if (nread == 0) {
             return 0;
         }
     }

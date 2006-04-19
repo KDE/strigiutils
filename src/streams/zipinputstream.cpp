@@ -73,26 +73,24 @@ ZipInputStream::read4bytes(const unsigned char *b) {
 }
 void
 ZipInputStream::readHeader() {
-    unsigned char hb[30];
-    unsigned char *bptr;
-    int toread;
-    const char *begin;
+    const unsigned char *hb;
+    const char *b;
+    int32_t toread;
     int32_t nread;
 
     // read the first 30 characters
     toread = 30;
-    bptr = hb;
-    while (toread) {
-        StreamStatus r = input->read(begin, nread, toread);
-        if (r) {
-            status = Error;
-            error = "Error reading header: " + input->getError();
-            return;
+    nread = input->read(b, toread);
+    if (nread != toread) {
+        error = "Error reading LongLink: ";
+        if (nread == -1) {
+            error += input->getError();
+        } else {
+            error += " premature end of file.";
         }
-        memcpy(bptr, begin, nread);
-        bptr += nread;
-        toread -= nread;
+        return;
     }
+    hb = (const unsigned char*)b;
     // check the signature
     // check the first half of the signature
     if (hb[0] != 0x50 || hb[1] != 0x4b) {
@@ -111,27 +109,13 @@ ZipInputStream::readHeader() {
         return;
     }
     // read 2 bytes into the filename size
-    int32_t len = read2bytes(hb + 26);
-    readFileName(len);
-    if (status) {
-        status = Error;
-        error = "Error reading file name.";
-        return;
-    }
-    // read 2 bytes into the length of the extra field
-    len = read2bytes(hb + 28);
-    StreamStatus r = input->skip(len);
-    if (r) {
-        status = Error;
-        error = "Error skipping extra field.";
-        return;
-    }
+    int32_t filenamelen = read2bytes(hb + 26);
+    int32_t extralen = read2bytes(hb + 28);
     // read 4 bytes into the length of the uncompressed size
     entryinfo.size = read4bytes(hb + 22);
     // read 4 bytes into the length of the compressed size
     entryCompressedSize = read4bytes(hb + 18);
     compressionMethod = read2bytes(hb + 8);
-
     int32_t generalBitFlags = read2bytes(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
         // ohoh, the filesize and compressed file size are unknown at this point
@@ -144,21 +128,37 @@ ZipInputStream::readHeader() {
     }
     unsigned long dost = read4bytes(hb+10);
     entryinfo.mtime = dos2unixtime(dost);
+
+    readFileName(filenamelen);
+    if (status) {
+        status = Error;
+        error = "Error reading file name.";
+        return;
+    }
+    // read 2 bytes into the length of the extra field
+    StreamStatus r = input->skip(extralen);
+    if (r) {
+        status = Error;
+        error = "Error skipping extra field.";
+        return;
+    }
 }
 void
 ZipInputStream::readFileName(int32_t len) {
     entryinfo.filename.resize(0);
     const char *begin;
-    int32_t nread;
-    while (len) {
-        StreamStatus r = input->read(begin, nread, len);
-        if (r) {
-            status = Error;
-            return;
+    int32_t nread = input->read(begin, len);
+    if (nread != len) {
+        error = "Error reading filename: ";
+        if (nread == -1) {
+            error += input->getError();
+        } else {
+            error += " premature end of file.";
         }
-        entryinfo.filename.append(begin, nread);
-        len -= nread;
+        return;
     }
+    entryinfo.filename.append(begin, nread);
+
     // temporary hack for determining if this is a directory:
     // does the filename end in '/'?
     len = entryinfo.filename.length();

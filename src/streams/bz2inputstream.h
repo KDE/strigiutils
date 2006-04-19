@@ -1,32 +1,28 @@
 #ifndef BZ2INPUTSTREAM_H
 #define BZ2INPUTSTREAM_H
 
-#include "inputstream.h"
-#include "inputstreambuffer.h"
+#include "bufferedstream.h"
 
 #include <bzlib.h>
 
 namespace jstreams {
 
-class BZ2InputStream : public InputStream {
+class BZ2InputStream : public BufferedInputStream<char> {
 private:
     bool allocatedBz;
     bool finishedInflating;
     bz_stream bzstream;
-    InputStream *input;
-    InputStreamBuffer<char> buffer;
+    StreamBase<char> *input;
 
     void dealloc();
     void readFromStream();
     void decompressFromStream();
     bool checkMagic();
+protected:
+    void fillBuffer();
 public:
-    BZ2InputStream(InputStream *input);
+    BZ2InputStream(StreamBase<char>* input);
     ~BZ2InputStream();
-//    void restart(InputStream *input);
-    StreamStatus read(const char*& start, int32_t& nread, int32_t max = 0);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
     static bool checkHeader(const char* data, int32_t datasize);
 };
 

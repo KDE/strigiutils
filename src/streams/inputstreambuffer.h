@@ -7,18 +7,18 @@ template <class T>
 class InputStreamBuffer {
 private:
 public:
-    T *start;
+    T* start;
     int32_t size;
-    T *curPos;
+    T* curPos;
     int32_t avail;
-    T *markPos;
+    T* markPos;
 
     InputStreamBuffer();
     ~InputStreamBuffer();
     void setSize(int32_t size);
     void mark(int32_t readlimit);
     void reset();
-    void read(const T*& start, int32_t& end, int32_t max);
+    int32_t read(const T*& start, int32_t max=0);
 
     /**
      * This function prepares the buffer for a new write.
