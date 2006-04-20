@@ -20,7 +20,7 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
         return;
     }
     charbuf.setSize(262);
-    buffer.setSize(262);
+    setBufferSize(262);
     charsLeft = 0;
 }
 InputStreamReader::~InputStreamReader() {
@@ -63,56 +63,57 @@ InputStreamReader::readFromStream() {
         status = Error;
     }
 }
-void
-InputStreamReader::decode() {
+int32_t
+InputStreamReader::decode(wchar_t* start, int32_t space) {
     // decode from charbuf
-    char *inbuf = charbuf.curPos;
+    char *inbuf = charbuf.readPos;
     size_t inbytesleft = charbuf.avail;
-    int32_t space = buffer.getWriteSpace();
 //    printf("decode %p %i %i\n", buffer.curPos, space, buffer.size);
     size_t outbytesleft = sizeof(wchar_t)*space;
-    char *outbuf = (char*)buffer.curPos;
+    char *outbuf = (char*)start;
     size_t r = iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+    int32_t nwritten;
     if (r == (size_t)-1) {
         switch (errno) {
         case EILSEQ: //invalid multibyte sequence
 //            printf("invalid multibyte\n");
             error = "Invalid multibyte sequence.";
             status = Error;
-            return;
+            return -1;
         case EINVAL: // last character is incomplete
             // move from inbuf to the end to the start of
             // the buffer
 //            printf("last char incomplete %i %i\n", left, inbytesleft);
             memmove(charbuf.start, inbuf, inbytesleft);
-            charbuf.curPos = charbuf.start;
+            charbuf.readPos = charbuf.start;
             charbuf.avail = inbytesleft;
-            buffer.avail = ((wchar_t*)outbuf) - buffer.curPos;
+            nwritten = ((wchar_t*)outbuf) - start;
             break;
         case E2BIG: // output buffer is full
 //            printf("output full read %i %i\n", read, charbuf.avail );
-            charbuf.curPos += charbuf.avail - inbytesleft;
+            charbuf.readPos += charbuf.avail - inbytesleft;
             charbuf.avail = inbytesleft;
-            buffer.avail = space;
+            nwritten = space;
             break;
         default:
             exit(-1);
         }
     } else { //input sequence was completely converted
 //        printf("complete\n" );
-        charbuf.curPos = charbuf.start;
+        charbuf.readPos = charbuf.start;
         charbuf.avail = 0;
-        buffer.avail = ((wchar_t*)outbuf) - buffer.curPos;
+        nwritten = ((wchar_t*)outbuf) - start;
         if (input == 0) {
             finishedDecoding = true;
         }
     }
+    return nwritten;
 }
-bool
-InputStreamReader::fillBuffer() {
+int32_t
+InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
 //    printf("decodefromstream\n");
     // fill up charbuf
-    if (charbuf.curPos == charbuf.start) {
+    if (charbuf.readPos == charbuf.start) {
  //       printf("fill up charbuf\n");
         const char *begin;
         int32_t numRead;
@@ -140,23 +141,7 @@ InputStreamReader::fillBuffer() {
         }
     }
     // decode
-    decode();
-    return true;
-}
-StreamStatus
-InputStreamReader::mark(int32_t readlimit) {
-    buffer.mark(readlimit);
-    return Ok;
-}
-StreamStatus
-InputStreamReader::reset() {
-    if (buffer.markPos) {
-        buffer.reset();
-        return Ok;
-    } else {
-        error = "No valid mark for reset.";
-        return Error;
-    }
+    return decode(start, space);
 }
 FileReader::FileReader(const char* fname, const char* /*encoding_scheme*/,
         int32_t cachelen, int32_t /*cachebuff*/) {

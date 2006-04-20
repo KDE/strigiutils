@@ -22,7 +22,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     }
     if (file) {
         // allocate memory in the buffer
-        buffer.setSize(buffersize);
+        setBufferSize(buffersize);
     }
 }
 FileInputStream::~FileInputStream() {
@@ -57,13 +57,10 @@ FileInputStream::read(const char*& start) {
     buffer.read(start, nread);
     return nread;
 }*/
-bool
-FileInputStream::fillBuffer() {
-    // prepare the buffer for writing
-    int32_t bytesRead = buffer.getWriteSpace();
+int32_t
+FileInputStream::fillBuffer(char* start, int32_t space) {
     // read into the buffer
-    bytesRead = fread(buffer.curPos, 1, bytesRead, file);
-    buffer.avail = bytesRead;
+    int32_t nwritten = fread(start, 1, space, file);
     // check the file stream status
     if (ferror(file)) {
         error = "Could not read from file '" + filepath + "'.";
@@ -73,9 +70,9 @@ FileInputStream::fillBuffer() {
     } else if (feof(file)) {
         fclose(file);
         file = NULL;
-        return false;
+        return -1;
     }
-    return true;
+    return nwritten;
 }
 /*char
 FileInputStream::skip(int32_t ntoskip) {

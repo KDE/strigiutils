@@ -20,7 +20,7 @@ public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
     GZipInputStream(StreamBase<char>* input, ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
-    bool fillBuffer();
+    int32_t fillBuffer(char* start, int32_t space);
 };
 
 } // end namespace jstreams

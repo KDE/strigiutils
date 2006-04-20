@@ -19,14 +19,14 @@ FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize
     }
 
     // allocate memory in the buffer
-    buffer.setSize(buffersize);
+    setBufferSize(buffersize);
 }
 FSFileInputStream::FSFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
     status = Ok;
     open = true; // fse must be have been opened
     this->fse = fse;
     // allocate memory in the buffer
-    buffer.setSize(buffersize);
+    setBufferSize(buffersize);
 }
 FSFileInputStream::~FSFileInputStream() {
     delete fse;
@@ -44,8 +44,7 @@ FSFileInputStream::reopen() {
         error = (const char*)fse->errorString().toUtf8();
         status = Error;
     }
-    buffer.markPos = buffer.curPos = 0;
-    buffer.avail = 0;
+    resetBuffer();
     return status;
 }
 /*StreamStatus
@@ -66,24 +65,22 @@ FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     buffer.read(start, nread, max);
     return Ok;
 }*/
-bool
-FSFileInputStream::fillBuffer() {
+int32_t
+FSFileInputStream::fillBuffer(char* start, int32_t space) {
     // prepare the buffer for writing
-    int32_t bytesRead = buffer.getWriteSpace();
     // read into the buffer
-    bytesRead = (int32_t)fse->read(buffer.curPos, bytesRead);
-    buffer.avail = bytesRead;
+    int32_t nwritten = (int32_t)fse->read(start, space);
     // check the file stream status
-    if (bytesRead == (int32_t)-1) {
+    if (nwritten == (int32_t)-1) {
         error = (const char*)fse->errorString().toUtf8();
         fse->close();
         open = false;
         status = Error;
-    } else if (bytesRead == 0) {
+    } else if (nwritten == 0) {
         fse->close();
         open = false;
-        return false;
+        return -1;
     }
-    return true;
+    return nwritten;
 }
 

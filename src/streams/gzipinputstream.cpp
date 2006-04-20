@@ -18,7 +18,7 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     }
 
     // initialize the buffer
-    buffer.setSize(262144);
+    setBufferSize(262144);
 
     // initialize the z_stream
     zstream = (z_stream_s*)malloc(sizeof(z_stream_s));
@@ -114,8 +114,8 @@ GZipInputStream::readFromStream() {
     zstream->next_in = (Bytef*)inStart;
     zstream->avail_in = nread;
 }
-bool
-GZipInputStream::fillBuffer() {
+int32_t
+GZipInputStream::fillBuffer(char* start, int32_t space) {
 //    printf("decompress\n");
     // make sure there is data to decompress
     if (zstream->avail_out != 0) {
@@ -126,13 +126,12 @@ GZipInputStream::fillBuffer() {
         }
     }
     // make sure we can write into the buffer
-    int space = buffer.getWriteSpace();
     zstream->avail_out = space;
-    zstream->next_out = (Bytef*)buffer.curPos;
+    zstream->next_out = (Bytef*)start;
     // decompress
     int r = inflate(zstream, Z_SYNC_FLUSH);
     // inform the buffer of the number of bytes that was read
-    buffer.avail = space - zstream->avail_out;
+    int32_t nwritten = space - zstream->avail_out;
     switch (r) {
     case Z_NEED_DICT:
         error = "Z_NEED_DICT while inflating stream.";
@@ -151,5 +150,5 @@ GZipInputStream::fillBuffer() {
         // (but this stream is not yet finished)
         return false;
     }
-    return true;
+    return nwritten;
 }

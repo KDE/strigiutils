@@ -9,9 +9,10 @@ private:
 public:
     T* start;
     int32_t size;
-    T* curPos;
+    T* readPos;
     int32_t avail;
     T* markPos;
+    int32_t markLimit;
 
     InputStreamBuffer();
     ~InputStreamBuffer();
@@ -22,7 +23,6 @@ public:
 
     /**
      * This function prepares the buffer for a new write.
-     * Any data not read since the last write is lost.
      * returns the number of available places.
      **/
     int32_t getWriteSpace();

@@ -17,7 +17,7 @@ private:
     void readFromStream();
     bool checkMagic();
 protected:
-    bool fillBuffer();
+    int32_t fillBuffer(char* start, int32_t space);
 public:
     BZ2InputStream(StreamBase<char>* input);
     ~BZ2InputStream();

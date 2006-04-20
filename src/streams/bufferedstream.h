@@ -10,12 +10,16 @@ template <class T>
 class BufferedInputStream : public StreamBase<T> {
 private:
     bool finishedWritingToBuffer;
-protected:
     InputStreamBuffer<T> buffer;
+protected:
     /**
      * returns true if more data can be read into the buffer
      **/
-    virtual bool fillBuffer() = 0;
+    virtual int32_t fillBuffer(T* start, int32_t space) = 0;
+    void setBufferSize(int32_t buffersize) {
+        buffer.setSize(buffersize);
+    }
+    void resetBuffer() {}
 public:
     BufferedInputStream<T>();
     int32_t read(const T*& start);
@@ -36,10 +40,19 @@ BufferedInputStream<T>::read(const T*& start) {
     if (StreamBase<T>::status == Eof) return 0;
 
     if (buffer.avail < 1) {
+        int32_t nwritten;
         do {
-            finishedWritingToBuffer = !fillBuffer();
+            T* first;
+            int32_t space;
+            nwritten = fillBuffer(first, space);
+            if (nwritten > 0) {
+                buffer.avail += nwritten;
+            }
         } while (StreamBase<T>::status == Ok
-                && !finishedWritingToBuffer && buffer.avail < 1);
+                && nwritten >= 0 && buffer.avail < 1);
+        if (nwritten < 0) {
+            finishedWritingToBuffer = true;
+        }
         if (StreamBase<T>::status == Error) return -1;
         if (StreamBase<T>::status == Eof) return 0;
     }
@@ -53,27 +66,36 @@ BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
     if (StreamBase<T>::status == Eof) return 0;
 
     if (buffer.avail < ntoread) {
-        // make sure the buffer is large enough
-        buffer.setSize(ntoread);
+        int32_t nread;
         do {
-            finishedWritingToBuffer = !fillBuffer();
+            T* first;
+            int32_t space;
+            nread = fillBuffer(first, space);
         } while (StreamBase<T>::status == Ok
-                && !finishedWritingToBuffer && buffer.avail < ntoread);
+                && nread >= 0 && buffer.avail < ntoread);
+        if (nread < 0) {
+            finishedWritingToBuffer = true;
+        }
         if (StreamBase<T>::status == Error) return -1;
         if (StreamBase<T>::status == Eof) return 0;
     }
 
-    return buffer.read(start, ntoread);
+    printf("read1 %p %p\n", this, buffer.markPos);
+    int32_t nread = buffer.read(start, ntoread);
+    printf("read2 %p %p %i %i\n", this, buffer.markPos, ntoread, nread);
+    return nread;
 }
 template <class T>
 StreamStatus
 BufferedInputStream<T>::mark(int32_t readlimit) {
+    printf("mark %p %i\n", this, readlimit);
     buffer.mark(readlimit);
     return Ok;
 }
 template <class T>
 StreamStatus
 BufferedInputStream<T>::reset() {
+    printf("reset %p %p\n", this, buffer.markPos);
     if (buffer.markPos) {
         buffer.reset();
         return Ok;

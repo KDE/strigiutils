@@ -24,15 +24,12 @@ private:
     int32_t charsLeft;
 
     InputStreamBuffer<char> charbuf;
-    InputStreamBuffer<wchar_t> buffer;
     void readFromStream();
-    void decode();
+    int32_t decode(wchar_t* start, int32_t space);
 public:
     InputStreamReader(StreamBase<char> *i, const char *enc=0);
     ~InputStreamReader();
-    bool fillBuffer();
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
+    int32_t fillBuffer(wchar_t* start, int32_t space);
 };
 
 class FileReader : public StreamBase<wchar_t> {

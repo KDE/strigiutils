@@ -22,7 +22,7 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     }
 
     // initialize the output buffer
-    buffer.setSize(262144);
+    setBufferSize(262144);
 
     bzstream.bzalloc = NULL;
     bzstream.bzfree = NULL;
@@ -110,24 +110,23 @@ BZ2InputStream::readFromStream() {
     bzstream.next_in = (char*)inStart;
     bzstream.avail_in = nread;
 }
-bool
-BZ2InputStream::fillBuffer() {
+int32_t
+BZ2InputStream::fillBuffer(char* start, int32_t space) {
     // make sure there is data to decompress
     if (bzstream.avail_out != 0) {
         readFromStream();
         if (status != Ok) {
             // no data was read
-            return false;
+            return -1;
         }
     }
     // make sure we can write into the buffer
-    int space = buffer.getWriteSpace();
     bzstream.avail_out = space;
-    bzstream.next_out = buffer.curPos;
+    bzstream.next_out = start;
     // decompress
     int r = BZ2_bzDecompress(&bzstream);
     // inform the buffer of the number of bytes that was read
-    buffer.avail = space - bzstream.avail_out;
+    int32_t nwritten = space - bzstream.avail_out;
     switch (r) {
     case BZ_PARAM_ERROR:
     case BZ_DATA_ERROR:
@@ -141,5 +140,5 @@ BZ2InputStream::fillBuffer() {
         // (but this stream is not yet finished)
         return false;
     }
-    return true;
+    return nwritten;
 }
