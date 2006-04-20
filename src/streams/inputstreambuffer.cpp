@@ -67,13 +67,17 @@ InputStreamBuffer<T>::reset() {
 }
 template <class T>
 int32_t
-InputStreamBuffer<T>::getWriteSpace() {
-    // advance the buffer to where the last write left off
-    readPos += avail;
-    // calculate how much space is left at the end of the buffer
-    int32_t writeSpace = size - (readPos - start);
-    if (markPos == 0 || writeSpace <= 0) {
-        // if there is no mark or the buffer is full,
+InputStreamBuffer<T>::makeSpace(int32_t needed) {
+    int32_t space = size - (readPos - start) - avail;
+    if (space < needed) { // buffer is too small
+            // may we move the data in the buffer?
+        bool maymove = (markPos == 0 || readPos - markPos > markLimit);
+        if (maymove) {
+        }
+    }
+
+    if (markPos == 0 && avail == 0) {
+        // if there is no mark
         // we set the next write to the start of the buffer
         markPos = 0;
         writeSpace = size;

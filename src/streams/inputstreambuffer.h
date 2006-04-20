@@ -25,7 +25,7 @@ public:
      * This function prepares the buffer for a new write.
      * returns the number of available places.
      **/
-    int32_t getWriteSpace();
+     int32_t makeSpace(int32_t needed);
 };
 
 #endif
