@@ -6,7 +6,6 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     // initialize values that signal state
     status = Ok;
     zstream = 0;
-    finishedInflating = false;
 
     this->input = input;
 
@@ -84,28 +83,6 @@ GZipInputStream::checkMagic() {
     input->reset();
     return buf[0] == 0x1f && buf[1] == 0x8b;
 }
-/**
- * Obtain small performance gain by reusing the object and its
- * allocated buffer and zstream.
- **/
-void
-GZipInputStream::restart(StreamBase<char>* input) {
-    if (zstream == 0) {
-        error = "Cannot restart GZipInputStream: state invalid.";
-        status = Error;
-        return;
-    }
-    this->input = input;
-    int r = inflateReset(zstream);
-    if (r != Z_OK) {
-        status = Error;
-        return;
-    }
-    status = Ok;
-    finishedInflating = false;
-    // signal that we need to read into the buffer
-    zstream->avail_out = 1;
-}
 /*int32_t
 GZipInputStream::read(const char*& start, int32_t ntoread) {
     // if an error occured earlier, signal this
@@ -126,10 +103,6 @@ GZipInputStream::read(const char*& start, int32_t ntoread) {
     return nread;
 }*/
 void
-GZipInputStream::fillBuffer() {
-    readFromStream();
-}
-void
 GZipInputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
@@ -141,15 +114,15 @@ GZipInputStream::readFromStream() {
     zstream->next_in = (Bytef*)inStart;
     zstream->avail_in = nread;
 }
-void
-GZipInputStream::decompressFromStream() {
+bool
+GZipInputStream::fillBuffer() {
 //    printf("decompress\n");
     // make sure there is data to decompress
     if (zstream->avail_out != 0) {
         readFromStream();
         if (status) {
             // no data was read
-            return;
+            return true;
         }
     }
     // make sure we can write into the buffer
@@ -176,7 +149,7 @@ GZipInputStream::decompressFromStream() {
     case Z_STREAM_END:
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        finishedInflating = true;
-        break;
+        return false;
     }
+    return true;
 }

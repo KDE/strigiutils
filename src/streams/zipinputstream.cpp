@@ -51,11 +51,10 @@ ZipInputStream::nextEntry() {
     if (compressionMethod == 8) {
         compressedEntryStream = new SubInputStream(input, entryCompressedSize);
         if (uncompressionStream) {
-            uncompressionStream->restart(compressedEntryStream);
-        } else {
-            uncompressionStream = new GZipInputStream(compressedEntryStream,
-                GZipInputStream::ZIPFORMAT);
+            delete uncompressionStream;
         }
+        uncompressionStream = new GZipInputStream(compressedEntryStream,
+                GZipInputStream::ZIPFORMAT);
         uncompressedEntryStream
             = new SubInputStream(uncompressionStream, entryinfo.size);
     } else {

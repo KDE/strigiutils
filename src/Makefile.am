@@ -4,4 +4,4 @@ QT_SUBDIRS = archiveengine qclient
 if HAVE_CLUCENE
 LUCENE_SUBDIRS = luceneindexer
 endif
-SUBDIRS = streams streamindexer storage diskindexer $(QT_SUBDIRS) $(LUCENE_INDEXER)
+SUBDIRS = streams streamindexer diskindexer $(QT_SUBDIRS) $(LUCENE_INDEXER)

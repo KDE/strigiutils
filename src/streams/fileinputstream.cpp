@@ -57,7 +57,7 @@ FileInputStream::read(const char*& start) {
     buffer.read(start, nread);
     return nread;
 }*/
-void
+bool
 FileInputStream::fillBuffer() {
     // prepare the buffer for writing
     int32_t bytesRead = buffer.getWriteSpace();
@@ -73,10 +73,9 @@ FileInputStream::fillBuffer() {
     } else if (feof(file)) {
         fclose(file);
         file = NULL;
-        if (bytesRead == 0) {
-            status = Ok;
-        }
+        return false;
     }
+    return true;
 }
 /*char
 FileInputStream::skip(int32_t ntoskip) {

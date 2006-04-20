@@ -26,12 +26,11 @@ private:
     InputStreamBuffer<char> charbuf;
     InputStreamBuffer<wchar_t> buffer;
     void readFromStream();
-    void decodeFromStream();
     void decode();
 public:
     InputStreamReader(StreamBase<char> *i, const char *enc=0);
     ~InputStreamReader();
-    void fillBuffer();
+    bool fillBuffer();
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };

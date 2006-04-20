@@ -10,7 +10,6 @@ BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
 BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     // initialize values that signal state
     status = Ok;
-    finishedInflating = false;
     this->input = input;
 
     // TODO: check first bytes of stream before allocating buffer
@@ -99,10 +98,6 @@ BZ2InputStream::read(const char*& start, int32_t ntoread) {
     return nread;
 } */
 void
-BZ2InputStream::fillBuffer() {
-    decompressFromStream();
-}
-void
 BZ2InputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
@@ -115,14 +110,14 @@ BZ2InputStream::readFromStream() {
     bzstream.next_in = (char*)inStart;
     bzstream.avail_in = nread;
 }
-void
-BZ2InputStream::decompressFromStream() {
+bool
+BZ2InputStream::fillBuffer() {
     // make sure there is data to decompress
     if (bzstream.avail_out != 0) {
         readFromStream();
-        if (status) {
+        if (status != Ok) {
             // no data was read
-            return;
+            return false;
         }
     }
     // make sure we can write into the buffer
@@ -140,11 +135,11 @@ BZ2InputStream::decompressFromStream() {
     case BZ_MEM_ERROR:
         error = "Error while inflating bz2 stream.";
         status = Error;
-        break;
+        return false;
     case BZ_STREAM_END:
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        finishedInflating = true;
-        break;
+        return false;
     }
+    return true;
 }

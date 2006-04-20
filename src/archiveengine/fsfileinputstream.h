@@ -15,7 +15,7 @@ private:
 
     void readFromFile();
 protected:
-    void fillBuffer();
+    bool fillBuffer();
 public:
     static const int32_t defaultBufferSize;
     FSFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);

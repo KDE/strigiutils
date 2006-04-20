@@ -9,8 +9,7 @@ namespace jstreams {
 
 class GZipInputStream : public BufferedInputStream<char> {
 private:
-    bool finishedInflating;
-    z_stream_s *zstream;
+    z_stream_s* zstream;
     StreamBase<char>* input;
 
     void dealloc();
@@ -21,8 +20,7 @@ public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
     GZipInputStream(StreamBase<char>* input, ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
-    void restart(StreamBase<char>* input);
-    void fillBuffer();
+    bool fillBuffer();
 };
 
 } // end namespace jstreams

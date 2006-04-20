@@ -66,12 +66,8 @@ FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
     buffer.read(start, nread, max);
     return Ok;
 }*/
-void
+bool
 FSFileInputStream::fillBuffer() {
-    readFromFile();
-}
-void
-FSFileInputStream::readFromFile() {
     // prepare the buffer for writing
     int32_t bytesRead = buffer.getWriteSpace();
     // read into the buffer
@@ -86,6 +82,8 @@ FSFileInputStream::readFromFile() {
     } else if (bytesRead == 0) {
         fse->close();
         open = false;
+        return false;
     }
+    return true;
 }
 

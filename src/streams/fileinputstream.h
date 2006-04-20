@@ -14,7 +14,7 @@ public:
     static const int32_t defaultBufferSize;
     FileInputStream(const char *filepath, int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
-    void fillBuffer();
+    bool fillBuffer();
 //    char skip(int32_t ntoskip);
 };
 

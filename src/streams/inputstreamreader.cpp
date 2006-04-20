@@ -54,10 +54,6 @@ InputStreamReader::read(const wchar_t*& start) {
     return nread;
 }*/
 void
-InputStreamReader::fillBuffer() {
-    readFromStream();
-}
-void
 InputStreamReader::readFromStream() {
     // read data from the input stream
     inSize = input->read(inStart);
@@ -112,8 +108,8 @@ InputStreamReader::decode() {
         }
     }
 }
-void
-InputStreamReader::decodeFromStream() {
+bool
+InputStreamReader::fillBuffer() {
 //    printf("decodefromstream\n");
     // fill up charbuf
     if (charbuf.curPos == charbuf.start) {
@@ -131,11 +127,11 @@ InputStreamReader::decodeFromStream() {
             } else {
                 status = Eof;
             }
-            return;
+            return false;
         case -1:
             error = input->getError();
             status = Error;
-            return;
+            return false;
         default:
             // copy data into other buffer
             memmove(charbuf.start + charbuf.avail, begin, numRead);
@@ -145,6 +141,7 @@ InputStreamReader::decodeFromStream() {
     }
     // decode
     decode();
+    return true;
 }
 StreamStatus
 InputStreamReader::mark(int32_t readlimit) {

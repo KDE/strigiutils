@@ -8,15 +8,26 @@ namespace jstreams {
 
 template <class T>
 class BufferedInputStream : public StreamBase<T> {
+private:
+    bool finishedWritingToBuffer;
 protected:
     InputStreamBuffer<T> buffer;
-    virtual void fillBuffer() = 0;
+    /**
+     * returns true if more data can be read into the buffer
+     **/
+    virtual bool fillBuffer() = 0;
 public:
+    BufferedInputStream<T>();
     int32_t read(const T*& start);
     int32_t read(const T*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };
+
+template <class T>
+BufferedInputStream<T>::BufferedInputStream<T>() {
+	finishedWritingToBuffer = false;
+}
 
 template <class T>
 int32_t
@@ -26,8 +37,9 @@ BufferedInputStream<T>::read(const T*& start) {
 
     if (buffer.avail < 1) {
         do {
-            fillBuffer();
-        } while (StreamBase<T>::status == Ok && buffer.avail < 1);
+            finishedWritingToBuffer = !fillBuffer();
+        } while (StreamBase<T>::status == Ok
+                && !finishedWritingToBuffer && buffer.avail < 1);
         if (StreamBase<T>::status == Error) return -1;
         if (StreamBase<T>::status == Eof) return 0;
     }
@@ -44,8 +56,9 @@ BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
         // make sure the buffer is large enough
         buffer.setSize(ntoread);
         do {
-            fillBuffer();
-        } while (StreamBase<T>::status == Ok && buffer.avail < ntoread);
+            finishedWritingToBuffer = !fillBuffer();
+        } while (StreamBase<T>::status == Ok
+                && !finishedWritingToBuffer && buffer.avail < ntoread);
         if (StreamBase<T>::status == Error) return -1;
         if (StreamBase<T>::status == Eof) return 0;
     }
