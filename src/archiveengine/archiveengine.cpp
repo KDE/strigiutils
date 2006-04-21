@@ -181,7 +181,7 @@ ArchiveEngine::openArchive() {
         setError(QFile::NoError, "");
         return;
     }
-    setError(QFile::FatalError, zipstream->getError().c_str());
+    setError(QFile::FatalError, zipstream->getError());
     if (compressed->reset() != Ok) {
         qDebug("ArchiveEngine mark call is too small.");
         return;

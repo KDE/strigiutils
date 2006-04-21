@@ -96,8 +96,8 @@ unzip(InputStream &i, const char *path) {
         //analyze(entrystream, zip.getEntryFileName().c_str());
         entrystream = zip.nextEntry();
     }
-    if (zip.getError().size()) {
-        printf("error: %s\n", zip.getError().c_str());
+    if (zip.getStatus() == jstreams::Error) {
+        printf("error: %s\n", zip.getError());
     }
 }
 void
@@ -111,8 +111,8 @@ listtar(InputStream *i, const char *path) {
         //analyze(entrystream, zip.getEntryFileName().c_str());
         entrystream = tar.nextEntry();
     }
-    if (tar.getError().size()) {
-        printf("error: %s\n", tar.getError().c_str());
+    if (tar.getStatus() == jstreams::Error) {
+        printf("error: %s\n", tar.getError());
     }
 }
 void

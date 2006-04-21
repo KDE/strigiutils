@@ -18,9 +18,9 @@ TarEndAnalyzer::analyze(std::string filename, InputStream *in, int depth, Stream
         indexer->analyze(file, s, depth);
         s = tar.nextEntry();
     }
-    if (tar.getError().size()) {
+    if (tar.getStatus() == jstreams::Error) {
    //     printf("%s\n", tar.getError().c_str());
     }
-    return tar.getError().size() > 0;
+    return tar.getStatus();
 }
 
