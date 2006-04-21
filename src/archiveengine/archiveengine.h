@@ -43,7 +43,7 @@ protected:
 public:
     virtual StreamEngine *openEntry(const QString &filename) = 0;
     virtual ArchiveDirEngine *openDir(QString filename) = 0;
-    virtual jstreams::InputStream *getInputStream(const FileEntry* entry) = 0;
+    virtual jstreams::StreamBase<char>* getInputStream(const FileEntry* entry) = 0;
     // lose references to engines so that they are not deleted
     virtual void releaseEngines() {};
     bool caseSensitive () const { return true; }
@@ -93,9 +93,9 @@ private:
     QString fullpath;
     QString path;
     StreamEngine *streamengine;
-    jstreams::InputStream *parentstream;
-    jstreams::FSFileInputStream *filestream;
-    QList<jstreams::InputStream*> compressedstreams;
+    jstreams::StreamBase<char>* parentstream;
+    jstreams::FSFileInputStream* filestream;
+    QList<jstreams::StreamBase<char>*> compressedstreams;
     jstreams::SubStreamProvider *zipstream;
     mutable jstreams::SubInputStream *entrystream;
     mutable bool readAllEntryNames;
@@ -106,9 +106,9 @@ private:
     bool nextEntry() const;
     void openArchive();
     void readEntryNames() const;
-    jstreams::InputStream* decompress(jstreams::InputStream*,
+    jstreams::StreamBase<char>* decompress(jstreams::StreamBase<char>*,
         int32_t bufsize) const;
-    bool testStream(jstreams::InputStream* is, int32_t readsize) const;
+    bool testStream(jstreams::StreamBase<char>* is, int32_t readsize) const;
     void getRootEntry(const QDateTime& mtime);
 protected:
     const QLinkedList<FileEntry>* getEntries(const QString& base);
@@ -123,7 +123,7 @@ public:
     QString fileName ( FileName file = DefaultName ) const;
     // lose references to engines so that they are not deleted
     void releaseEngines() {    streamengine = 0;};
-    jstreams::InputStream *getInputStream(const FileEntry* entry);
+    jstreams::StreamBase<char>* getInputStream(const FileEntry* entry);
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"
         FileFlags flags =

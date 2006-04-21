@@ -12,7 +12,7 @@ ZipInputStream::checkHeader(const char* data, int32_t datasize) {
     if (datasize < 4) return false;
     return memcmp(data, magic, 4) == 0;
 }
-ZipInputStream::ZipInputStream(InputStream *input)
+ZipInputStream::ZipInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
     uncompressionStream = 0;
@@ -35,13 +35,13 @@ ZipInputStream::nextEntry() {
     // clean up the last stream(s)
     if (uncompressedEntryStream) {
         if (compressedEntryStream) {
-            compressedEntryStream->skipToEnd();
+            compressedEntryStream->skip(compressedEntryStream->getSize());
             delete compressedEntryStream;
             compressedEntryStream = 0;
             delete uncompressionStream;
             uncompressionStream = 0;
         } else {
-            uncompressedEntryStream->skipToEnd();
+            uncompressedEntryStream->skip(uncompressedEntryStream->getSize());
         }
         delete uncompressedEntryStream;
         uncompressedEntryStream = 0;

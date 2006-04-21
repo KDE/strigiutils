@@ -19,10 +19,10 @@ class SubStreamProvider {
 protected:
     StreamStatus status;
     std::string error;
-    InputStream *input;
+    StreamBase<char> *input;
     EntryInfo entryinfo;
 public:
-    SubStreamProvider(InputStream *i) :status(Ok), input(i) {}
+    SubStreamProvider(StreamBase<char> *i) :status(Ok), input(i) {}
     virtual ~SubStreamProvider() {}
     StreamStatus getStatus() const { return status; }
     virtual SubInputStream* nextEntry() = 0;

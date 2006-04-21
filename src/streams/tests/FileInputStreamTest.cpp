@@ -1,13 +1,11 @@
 #include "FileInputStreamTest"
 #include "../fileinputstream.h"
-#include <QtTest/QtTest>
+#include "inputstreamtests.h"
 using namespace jstreams;
 
 void
 FileInputStreamTest::testStream() {
     FileInputStream file("a.zip");
-    const char *ptr;
-    int32_t size = file.read(ptr, 1000);
-    QVERIFY(size == 275);
+    inputStreamTest1<char>(&file);
 }
 

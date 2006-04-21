@@ -1,45 +1,61 @@
 #include "subinputstream.h"
 using namespace jstreams;
 
-SubInputStream::SubInputStream(InputStream *input, int64_t length)
-        : size(length) {
-    this->input = input;
-    left = length;
+SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
+        : input(i) {
+    size = length;
+    printf("size is %lli\n", size);
 }
 int32_t
 SubInputStream::read(const char*& start) {
-    int32_t ntoread = (int32_t)((left > INT32MAX) ?INT32MAX :left);
-    int32_t nread = input->read(start, ntoread);
-    if (ntoread != nread) {
-        status = Error;
-    }
-    return nread;
+    return read(start, 1024);
 }
 int32_t
 SubInputStream::read(const char*& start, int32_t ntoread) {
-    if (left == 0) return 0;
+    const int64_t left = size - position;
+    if (left == 0) {
+        return 0;
+    }
     // restrict the amount of data that can be read
     if (ntoread > left) {
         ntoread = left;
     }
     int32_t nread = input->read(start, ntoread);
-    if (ntoread != nread) {
+    if (nread < 0) {
         status = Error;
+        error = input->getError();
+    } else {
+        position += nread;
+        if (position == size) {
+            status = Eof;
+        }
     }
-    left -= nread;
     return nread;
 }
 StreamStatus
 SubInputStream::mark(int32_t readlimit) {
-    markleft = left;
+    markPos = position;
     return input->mark(readlimit);
 }
 StreamStatus
 SubInputStream::reset() {
-    left = markleft;
-    return input->reset();
+    StreamStatus s = input->reset();
+    if (s == Ok) {
+        position = markPos;
+    }
+    return s;
 }
 int64_t
-SubInputStream::skipToEnd() {
-    return skip(left);
+SubInputStream::skip(int64_t ntoskip) {
+    int64_t skipped = input->skip(ntoskip);
+    if (input->getStatus() == Error) {
+        status = Error;
+        error = input->getError();
+    } else {
+        position += skipped;
+        if (position == size) {
+            status = Eof;
+        }
+    }
+    return skipped;
 }

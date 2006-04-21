@@ -3,7 +3,7 @@
 #include <cstring>
 using namespace jstreams;
 
-TarInputStream::TarInputStream(InputStream *input)
+TarInputStream::TarInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
     output = 0;
 }
@@ -17,7 +17,7 @@ SubInputStream*
 TarInputStream::nextEntry() {
     if (status) return 0;
     if (output) {
-        output->skipToEnd();
+        output->skip(output->getSize());
         input->skip(numPaddingBytes);
         delete output;
         output = 0;

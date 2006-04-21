@@ -23,7 +23,7 @@ public:
     QString fileName ( FileName file = DefaultName ) const;
     QStringList entryList(QDir::Filters filters,
         const QStringList& filterNames) const;
-    jstreams::InputStream *getInputStream(const FileEntry* entry);
+    jstreams::StreamBase<char>* getInputStream(const FileEntry* entry);
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"
         FileFlags flags =

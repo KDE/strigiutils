@@ -72,7 +72,7 @@ int64_t
 DigestInputStream::skip(int64_t ntoskip) {
     // we call the default implementation because it calls
     // read() which is required for updating the hash
-    return InputStream::skip(ntoskip);
+    return input->skip(ntoskip);
 }
 StreamStatus
 DigestInputStream::mark(int32_t readlimit) {

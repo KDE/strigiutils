@@ -37,7 +37,7 @@ public:
     const char* getError() const { return error.c_str(); }
     StreamStatus getStatus() const { return status; }
     int64_t getPosition() const { return position; }
-    virtual void close() {};
+    int64_t getSize() const { return size; }
     /** 
      * @brief Reads @p ntoread characters from the stream and sets \a start to
      * the first character that was read.
@@ -118,16 +118,21 @@ public:
 template <class T>
 int64_t
 StreamBase<T>::skip(int64_t ntoskip) {
+    static const int32_t skipstep = 1024;
     const T *begin;
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        int32_t step = (int32_t)(ntoskip > INT32MAX) ?INT32MAX :ntoskip;
+        int32_t step = (int32_t)(ntoskip > skipstep) ?skipstep :ntoskip;
         nread = read(begin, step);
-        if (nread <= 0) {
+        if (nread < 0) {
             return skipped;
+        } else if (nread < step) {
+            status = Eof;
+            ntoskip = 0;
+        } else {
+            ntoskip -= nread;
         }
-        ntoskip -= nread;
         skipped += nread;
         position += nread;
     }

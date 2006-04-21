@@ -34,7 +34,7 @@ public:
 };
 
 template <class T>
-BufferedInputStream<T>::BufferedInputStream<T>() {
+BufferedInputStream<T>::BufferedInputStream() {
     finishedWritingToBuffer = false;
 }
 
@@ -73,7 +73,11 @@ BufferedInputStream<T>::read(const T*& start) {
     if (StreamBase<T>::status == Eof) return 0;
 
     int32_t nread = buffer.read(start);
-    position += nread;
+    BufferedInputStream<T>::position += nread;
+    if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
+            && finishedWritingToBuffer) {
+        BufferedInputStream<T>::status = Eof;
+    }
     return nread;
 }
 template <class T>
@@ -88,7 +92,11 @@ BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
     if (StreamBase<T>::status == Eof) return 0;
 
     int32_t nread = buffer.read(start, ntoread);
-    position += nread;
+    BufferedInputStream<T>::position += nread;
+    if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
+            && finishedWritingToBuffer) {
+        BufferedInputStream<T>::status = Eof;
+    }
     return nread;
 }
 template <class T>
@@ -103,7 +111,7 @@ StreamStatus
 BufferedInputStream<T>::reset() {
 //    printf("reset %p %p\n", this, buffer.markPos);
     if (buffer.markPos) {
-        position -= buffer.readPos - buffer.markPos;
+        BufferedInputStream<T>::position -= buffer.readPos - buffer.markPos;
         buffer.reset();
         return Ok;
     } else {
@@ -125,7 +133,7 @@ BufferedInputStream<T>::skip(int64_t ntoskip) {
         }
         ntoskip -= nread;
         skipped += nread;
-        position += nread;
+        BufferedInputStream<T>::position += nread;
     }
     return skipped;
 }

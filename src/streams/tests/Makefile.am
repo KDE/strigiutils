@@ -27,6 +27,7 @@ testrunner_SOURCES = ZipInputStreamTest.cpp ZipInputStreamTest_moc.cpp \
 	TarInputStreamTest.cpp TarInputStreamTest_moc.cpp \
 	FileInputStreamTest.cpp FileInputStreamTest_moc.cpp \
 	InputStreamTest.cpp InputStreamTest_moc.cpp \
+        inputstreamtests.cpp \
 	testrunner.cpp
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 testrunner_LDADD = $(top_builddir)/archivereader/src/streams/libstreams.la

@@ -1,29 +1,21 @@
 #ifndef SUBINPUTSTREAM_H
 #define SUBINPUTSTREAM_H
 
-#include "inputstream.h"
+#include "streambase.h"
 
 namespace jstreams {
 
 class SubInputStream : public StreamBase<char> {
 private:
-    const int64_t size;
-    int64_t left;
-    int64_t markleft;
-    InputStream *input;
+    int64_t markPos;
+    StreamBase<char> *input;
 public:
-    SubInputStream(InputStream *input, int64_t size);
+    SubInputStream(StreamBase<char> *input, int64_t size);
     int32_t read(const char*& start);
     int32_t read(const char*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
-    int64_t skipToEnd();
-    int64_t pos() {
-        return size-left;
-    }
-    int64_t getSize() const {
-        return size;
-    }
+    int64_t skip(int64_t ntoskip);
 };
 
 } //end namespace jstreams

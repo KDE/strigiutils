@@ -1,4 +1,5 @@
 #include "inputstreambuffer.h"
+#include <cstdio>
 
 template <class T>
 InputStreamBuffer<T>::InputStreamBuffer() {
