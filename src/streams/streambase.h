@@ -26,6 +26,7 @@ protected:
     StreamStatus status;
     std::string error;
 public:
+    StreamBase() { status = Ok; }
     virtual ~StreamBase(){}
     /**
      * Return a string representation of the last error that has occurred.
@@ -112,39 +113,6 @@ public:
     virtual StreamStatus reset() = 0;
 };
 
-/*template <class T>
-StreamStatus
-StreamBase<T>::read(T& c) {
-    const T *buf;
-    int32_t numRead;
-    StreamStatus r;
-    do {
-        r = read(buf, numRead, 1);
-    } while (r == Ok && numRead == 0);
-    if (r == Ok) c = buf[0];
-    return r;
-}*/
-/*
-template <class T>
-int32_t
-StreamBase<T>::read(const T*& start, int32_t ntoread) {
-    if (status == Eof) return 0;
-    if (status == Error) return -1;
-    int toread;
-    const T* ptr;
-    if (mark(ntoread) != Ok) return status;
-    start = 0;
-    do {
-        numRead = read(ptr, numRead, ntoread);
-        if (status != Ok) return status;
-        if (start == 0) {
-            start = ptr;
-        }
-        ntoread -= numRead;
-    } while (ntoread);
-    return status;
-}
-*/
 template <class T>
 StreamStatus
 StreamBase<T>::skip(int64_t ntoskip, int64_t* skipped) {

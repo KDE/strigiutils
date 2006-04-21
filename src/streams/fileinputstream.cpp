@@ -5,8 +5,6 @@ using namespace jstreams;
 
 const int32_t FileInputStream::defaultBufferSize = 1048576;
 FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
-    // initialize values that signal state
-    status = Ok;
 
     // try to open the file for reading
     file = fopen(filepath, "rb");
@@ -22,7 +20,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     }
     if (file) {
         // allocate memory in the buffer
-        setBufferSize(buffersize);
+        mark(buffersize);
     }
 }
 FileInputStream::~FileInputStream() {
@@ -33,44 +31,21 @@ FileInputStream::~FileInputStream() {
         }
     }
 }
-/*int32_t
-FileInputStream::read(const char*& start, int32_t ntoread) {
-    return 0;
-}
-int32_t
-FileInputStream::read(const char*& start) {
-    // if an error occured earlier, signal this
-    if (status == Error) return -1;
-    if (status == Eof) return 0;
-
-    // if we cannot read and there's nothing in the buffer
-    // (this can maybe be fixed by calling reset)
-    if (file == NULL && buffer.avail == 0) return 0;
-
-    // if buffer is empty, read from buffer
-    if (buffer.avail == 0) {
-        readFromFile();
-        if (status) return status;
-    }
-    // set the pointers to the available data
-    int32_t nread;
-    buffer.read(start, nread);
-    return nread;
-}*/
 int32_t
 FileInputStream::fillBuffer(char* start, int32_t space) {
+    if (file == 0) return -1;
     // read into the buffer
     int32_t nwritten = fread(start, 1, space, file);
     // check the file stream status
     if (ferror(file)) {
         error = "Could not read from file '" + filepath + "'.";
         fclose(file);
-        file = NULL;
+        file = 0;
         status = Error;
+        return -1;
     } else if (feof(file)) {
         fclose(file);
-        file = NULL;
-        return -1;
+        file = 0;
     }
     return nwritten;
 }

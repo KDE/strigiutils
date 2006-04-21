@@ -23,10 +23,7 @@ protected:
      * must return -1.
      **/
     virtual int32_t fillBuffer(T* start, int32_t space) = 0;
-    void setBufferSize(int32_t buffersize) {
-        buffer.setSize(buffersize);
-    }
-    void resetBuffer() {}
+    void resetBuffer() {printf("implement 'resetBuffer'\n");}
 public:
     BufferedInputStream<T>();
     int32_t read(const T*& start);

@@ -18,7 +18,7 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     }
 
     // initialize the buffer
-    setBufferSize(262144);
+    mark(262144);
 
     // initialize the z_stream
     zstream = (z_stream_s*)malloc(sizeof(z_stream_s));
@@ -64,44 +64,20 @@ GZipInputStream::dealloc() {
 }
 bool
 GZipInputStream::checkMagic() {
-    unsigned char buf[2];
-    input->mark(2);
-    const char *ptr;
+    const unsigned char* buf;
+    const char* begin;
     int32_t nread;
-    int32_t total = 0;
-    do {
-        nread = input->read(ptr, 2-total);
-        if (nread == -1) {
-            error = input->getError();
-            return false;
-        }
-        for (int32_t i=0; i<nread; i++) {
-            buf[i+total] = ptr[i];
-        }
-        total += nread;
-    } while (total < 2);
+
+    input->mark(2);
+    nread = input->read(begin, 2);
     input->reset();
-    return buf[0] == 0x1f && buf[1] == 0x8b;
-}
-/*int32_t
-GZipInputStream::read(const char*& start, int32_t ntoread) {
-    // if an error occured earlier, signal this
-    if (status) return status;
-
-    // if we cannot read and there's nothing in the buffer
-    // (this can maybe be fixed by calling reset)
-    if (finishedInflating && buffer.avail == 0) return Eof;
-
-    // check if there is still data in the buffer
-    if (buffer.avail == 0) {
-        decompressFromStream();
-        if (status) return status;
+    if (nread != 2) {
+        return false;
     }
 
-    // set the pointers to the available data
-    int32_t nread = buffer.read(start, ntoread);
-    return nread;
-}*/
+    buf = (const unsigned char*)begin;
+    return buf[0] == 0x1f && buf[1] == 0x8b;
+}
 void
 GZipInputStream::readFromStream() {
     // read data from the input stream

@@ -20,7 +20,7 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
         return;
     }
     charbuf.setSize(262);
-    setBufferSize(262);
+    mark(262);
     charsLeft = 0;
 }
 InputStreamReader::~InputStreamReader() {
@@ -28,31 +28,6 @@ InputStreamReader::~InputStreamReader() {
         iconv_close(converter);
     }
 }
-/*int32_t
-InputStreamReader::read(const wchar_t*& start, int32_t ntoread) {
-}
-int32_t
-InputStreamReader::read(const wchar_t*& start) {
-    // if an error occured earlier, signal this
-    if (status == Error) return -1;
-    if (status == Eof) return 0;
-
-    // if we cannot read and there's nothing in the buffer
-    // (this can maybe be fixed by calling reset)
-    if (finishedDecoding && buffer.avail == 0) return 0;
-
-    // check if there is still data in the buffer
-    if (buffer.avail == 0) {
-        decodeFromStream();
-        if (status == Error) return -1;
-        if (status == Eof) return 0;
-    }
-
-    // set the pointers to the available data
-    int32_t nread;
-    nread = buffer.read(start, 0);
-    return nread;
-}*/
 void
 InputStreamReader::readFromStream() {
     // read data from the input stream

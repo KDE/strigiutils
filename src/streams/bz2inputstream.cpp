@@ -9,7 +9,6 @@ BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
 }
 BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     // initialize values that signal state
-    status = Ok;
     this->input = input;
 
     // TODO: check first bytes of stream before allocating buffer
@@ -21,8 +20,8 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
         return;
     }
 
-    // initialize the output buffer
-    setBufferSize(262144);
+    // set the minimum size for the output buffer
+    mark(262144);
 
     bzstream.bzalloc = NULL;
     bzstream.bzfree = NULL;
@@ -53,50 +52,18 @@ BZ2InputStream::dealloc() {
 }
 bool
 BZ2InputStream::checkMagic() {
-    input->mark(5);
-    const char* begin = 0;
-    const char* ptr;
+    const char* begin;
     int32_t nread;
-    int32_t total = 0;
-    do {
-        nread = input->read(ptr, 5-total);
-        if (status != Ok) {
-            error = input->getError();
-            return false;
-        }
-        if (begin == 0) {
-            begin = ptr;
-        }
-        total += nread;
-    } while (total < 5);
+
+    input->mark(5);
+    nread = input->read(begin, 5);
     input->reset();
+    if (nread != 5) {
+        return false;
+    }
 
     return checkHeader(begin, 5);
 }
-/*int32_t
-BZ2InputStream::read(const char*& start, int32_t ntoread) {
-    // if an error occured earlier, signal this
-    if (status == Error) return -1;
-    if (status == Eof) return 0;
-
-    // if we cannot read and there's nothing in the buffer
-    // (this can maybe be fixed by calling reset)
-    if (finishedInflating && buffer.avail == 0) return 0;
-
-    // check if there is still data in the buffer
-    if (buffer.avail == 0) {
-        decompressFromStream();
-        if (status == Error) return -1;
-        if (status == Eof) return 0;
-    }
-
-    // set the pointers to the available data
-    int32_t nread = buffer.read(start, ntoread);
-    while (nread == 0) {
-        nread = read(start, ntoread);
-    }
-    return nread;
-} */
 void
 BZ2InputStream::readFromStream() {
     // read data from the input stream

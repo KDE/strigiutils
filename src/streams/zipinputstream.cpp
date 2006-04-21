@@ -109,7 +109,6 @@ ZipInputStream::readHeader() {
         status = Eof;
         return;
     }
-    printf("reading header\n");
     // read 2 bytes into the filename size
     int32_t filenamelen = read2bytes(hb + 26);
     int32_t extralen = read2bytes(hb + 28);

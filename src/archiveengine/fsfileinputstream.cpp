@@ -19,14 +19,14 @@ FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize
     }
 
     // allocate memory in the buffer
-    setBufferSize(buffersize);
+    mark(buffersize);
 }
 FSFileInputStream::FSFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
     status = Ok;
     open = true; // fse must be have been opened
     this->fse = fse;
     // allocate memory in the buffer
-    setBufferSize(buffersize);
+    mark(buffersize);
 }
 FSFileInputStream::~FSFileInputStream() {
     delete fse;
@@ -47,24 +47,6 @@ FSFileInputStream::reopen() {
     resetBuffer();
     return status;
 }
-/*StreamStatus
-FSFileInputStream::read(const char*& start, int32_t& nread, int32_t max) {
-    // if an error occured earlier, signal this
-    if (status) return status;
-
-    // if we cannot read and there's nothing in the buffer
-    // (this can maybe be fixed by calling reset)
-    if (!open && buffer.avail == 0) return Eof;
-
-    // if buffer is empty, read from buffer
-    if (buffer.avail == 0) {
-        readFromFile();
-        if (status) return status;
-    }
-    // set the pointers to the available data
-    buffer.read(start, nread, max);
-    return Ok;
-}*/
 int32_t
 FSFileInputStream::fillBuffer(char* start, int32_t space) {
     // prepare the buffer for writing
