@@ -19,3 +19,5 @@ testrunner_LDADD = $(LIB_QT) \
 METASOURCES = AUTO
 
 noinst_HEADERS = ArchiveEngineHandlerTest
+
+CLEANFILES = testrunner.cpp *_moc.cpp

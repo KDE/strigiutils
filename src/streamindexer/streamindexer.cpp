@@ -77,16 +77,11 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     int32_t headersize = 1024;
     input->mark(headersize); // set to size required to determine file type
     const char* header;
-    int32_t nread;
-    nread = input->read(header);
-    if (nread != headersize) {
-        printf("%s\n", input->getError());
-        return -2;
-    }
+    headersize = input->read(header, headersize);
     StreamStatus r;
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
-        if ((*es)->checkHeader(header, nread)) {
+        if ((*es)->checkHeader(header, headersize)) {
             char ar = (*es)->analyze(path, input, depth+1, this);
             if (ar) {
                 r = input->reset();
@@ -103,11 +98,12 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     if (!finished) {
         // no endanalyzer was found, or the analyzer did
         // not read all of the stream, so we do that here
+        int64_t nskipped;
         do {
-            r = input->skip(1000000);
-        } while (r == 0);
-        if (r == Error) {
-            printf("%s\n", input->getError());
+            nskipped = input->skip(1000000);
+        } while (nskipped > 0);
+        if (input->getStatus() == Error) {
+            printf("Error: %s\n", input->getError());
             return -2;
         }
     }

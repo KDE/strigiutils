@@ -13,7 +13,7 @@ ZipInputStreamTest::testStream() {
     const char* ptr;
     while (s) {
         int32_t size = zip.getEntryInfo().size;
-        int32_t n = s->read(ptr, 1000000);
+        int32_t n = s->read(ptr, size+10);
         QVERIFY(size == n);
         s = zip.nextEntry();
         count++;

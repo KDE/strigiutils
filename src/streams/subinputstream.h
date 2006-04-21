@@ -17,7 +17,7 @@ public:
     int32_t read(const char*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
-    StreamStatus skipToEnd();
+    int64_t skipToEnd();
     int64_t pos() {
         return size-left;
     }

@@ -29,7 +29,7 @@ void
 InputStreamBuffer<T>::mark(int32_t limit) {
     // if there's no buffer yet, allocate one now
     if (start == 0) {
-        setSize(limit);
+        setSize(limit+1);
     }
     // if we had a larger limit defined for the same position, do nothing
     if (readPos == markPos && limit <= markLimit) {
@@ -58,7 +58,7 @@ InputStreamBuffer<T>::mark(int32_t limit) {
     }
 
     // last resort: increase buffer size
-    setSize(limit);
+    setSize(limit+1);
     markPos = readPos;
 }
 template <class T>
@@ -82,18 +82,27 @@ InputStreamBuffer<T>::makeSpace(int32_t needed) {
     if (markPos && readPos - markPos <= markLimit) {
         // move data to the start of the buffer while respecting the set mark
         if (markPos != start) {
+            printf("moving with mark\n");
             int32_t n = avail + readPos - markPos;
             memmove(start, markPos, n*sizeof(T));
             readPos -= markPos - start;
             space += markPos - start;
             markPos = start;
         }
-    } else if (avail && readPos != start) {
-        // move data to the start of the buffer
-        memmove(start, readPos, avail*sizeof(T));
-        space += readPos - start;
-        readPos = start;
+    } else if (avail) {
+        if (readPos != start) {
+            printf("moving\n");
+            // move data to the start of the buffer
+            memmove(start, readPos, avail*sizeof(T));
+            space += readPos - start;
+            readPos = start;
+            markPos = 0;
+        }
+    } else {
+        // we may start writing at the start of the buffer
         markPos = 0;
+        readPos = start;
+        space = size;
     }
     if (space >= needed) {
         // there's enough space now
@@ -101,6 +110,7 @@ InputStreamBuffer<T>::makeSpace(int32_t needed) {
     }
 
     // still not enough space, we have to allocate more
+    printf("resize %i %i %i %i %i\n", avail, needed, space, size + needed - space, size);
     setSize(size + needed - space);
     return needed;
 }

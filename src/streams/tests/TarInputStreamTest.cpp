@@ -13,7 +13,7 @@ TarInputStreamTest::testStream() {
     const char* ptr;
     while (s) {
         int32_t size = tar.getEntryInfo().size;
-        int32_t n = s->read(ptr, 1000000);
+        int32_t n = s->read(ptr, size+10);
         QVERIFY(size == n);
         s = tar.nextEntry();
         count++;

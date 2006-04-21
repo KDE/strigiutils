@@ -14,7 +14,7 @@ public:
     DigestInputStream(InputStream *input);
     int32_t read(const char*& start);
     int32_t read(const char*& start, int32_t ntoread);
-    StreamStatus skip(int64_t ntoskip, int64_t* skipped = 0);
+    int64_t skip(int64_t ntoskip);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
     void printDigest();
@@ -68,11 +68,11 @@ DigestInputStream::read(const char*& start, int32_t ntoread) {
     }
     return nread;
 }
-StreamStatus
-DigestInputStream::skip(int64_t ntoskip, int64_t* skipped) {
+int64_t
+DigestInputStream::skip(int64_t ntoskip) {
     // we call the default implementation because it calls
     // read() which is required for updating the hash
-    return InputStream::skip(ntoskip, skipped);
+    return InputStream::skip(ntoskip);
 }
 StreamStatus
 DigestInputStream::mark(int32_t readlimit) {

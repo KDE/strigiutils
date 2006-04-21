@@ -125,7 +125,7 @@ bunzip(InputStream &i, const char *path) {
 }
 StreamIndexer indexer;
 void
-listcallback(const char * /*path*/, const char *filename) {
+listcallback(const char *path, const char *filename) {
     indexer.indexFile(filename);
 }
 #include "filelister.h"

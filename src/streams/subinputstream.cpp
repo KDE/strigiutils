@@ -39,7 +39,7 @@ SubInputStream::reset() {
     left = markleft;
     return input->reset();
 }
-StreamStatus
+int64_t
 SubInputStream::skipToEnd() {
     return skip(left);
 }

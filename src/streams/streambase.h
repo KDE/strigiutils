@@ -35,6 +35,7 @@ public:
     const char* getError() const {
         return error.c_str();
     }
+    StreamStatus getStatus() const { return status; }
     virtual void close() {};
     /** 
      * @brief Reads @p ntoread characters from the stream and sets \a start to
@@ -77,7 +78,7 @@ public:
      * If the end of stream is reached, Eof is returned.
      * If an error occured, Error is returned.
      **/
-    virtual StreamStatus skip(int64_t ntoskip, int64_t* skipped=0);
+    virtual int64_t skip(int64_t ntoskip);
      /**
       * \short Marks the current position in this input stream.
       * A subsequent call to the reset method repositions this stream at the
@@ -114,19 +115,20 @@ public:
 };
 
 template <class T>
-StreamStatus
-StreamBase<T>::skip(int64_t ntoskip, int64_t* skipped) {
+int64_t
+StreamBase<T>::skip(int64_t ntoskip) {
     const T *begin;
     int32_t nread;
-    if (skipped) *skipped = 0;
+    int64_t skipped = 0;
     while (ntoskip) {
-        int32_t readstep = (int32_t)((ntoskip > INT32MAX) ?INT32MAX :ntoskip);
-        nread = read(begin, readstep);
-        if (status != Ok) return status;
+        nread = read(begin);
+        if (nread <= 0) {
+            return skipped;
+        }
         ntoskip -= nread;
-        if (skipped) *skipped += nread;
+        skipped += nread;
     }
-    return Ok;
+    return skipped;
 }
 
 } // end namespace jstreams

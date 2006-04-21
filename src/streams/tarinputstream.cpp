@@ -128,11 +128,11 @@ TarInputStream::readLongLink(const char *b) {
     }
     entryinfo.filename.append(begin, nread);
 
-    StreamStatus r = input->skip(left);
-    if (r) {
+    int64_t skipped = input->skip(left);
+    if (skipped != left) {
         status = Error;
         error = "Error reading LongLink: ";
-        if (r == Error) {
+        if (input->getStatus() == Error) {
             error += input->getError();
         } else {
             error += " premature end of file.";

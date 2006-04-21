@@ -137,8 +137,8 @@ ZipInputStream::readHeader() {
         return;
     }
     // read 2 bytes into the length of the extra field
-    StreamStatus r = input->skip(extralen);
-    if (r) {
+    int64_t skipped = input->skip(extralen);
+    if (skipped != extralen) {
         status = Error;
         error = "Error skipping extra field.";
         return;

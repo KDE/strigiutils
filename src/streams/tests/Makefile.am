@@ -33,4 +33,4 @@ testrunner_LDADD = $(top_builddir)/archivereader/src/streams/libstreams.la
 
 METASOURCES = AUTO
 
-CLEANFILES = testrunner.cpp
+CLEANFILES = testrunner.cpp *_moc.cpp
