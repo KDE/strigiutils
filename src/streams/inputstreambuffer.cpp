@@ -2,7 +2,7 @@
 
 template <class T>
 InputStreamBuffer<T>::InputStreamBuffer() {
-    markPos = readPos = start = NULL;
+    markPos = readPos = start = 0;
     size = avail = 0;
 }
 template <class T>
@@ -27,6 +27,10 @@ InputStreamBuffer<T>::setSize(int32_t size) {
 template <class T>
 void
 InputStreamBuffer<T>::mark(int32_t limit) {
+    // if there's no buffer yet, allocate one now
+    if (start == 0) {
+        setSize(limit);
+    }
     // if we had a larger limit defined for the same position, do nothing
     if (readPos == markPos && limit <= markLimit) {
         return;
@@ -68,22 +72,37 @@ InputStreamBuffer<T>::reset() {
 template <class T>
 int32_t
 InputStreamBuffer<T>::makeSpace(int32_t needed) {
+    // determine how much space is available for writing
     int32_t space = size - (readPos - start) - avail;
-    if (space < needed) { // buffer is too small
-            // may we move the data in the buffer?
-        bool maymove = (markPos == 0 || readPos - markPos > markLimit);
-        if (maymove) {
-        }
+    if (space >= needed) {
+        // there's enough space
+        return space;
     }
 
-    if (markPos == 0 && avail == 0) {
-        // if there is no mark
-        // we set the next write to the start of the buffer
-        markPos = 0;
-        writeSpace = size;
+    if (markPos && readPos - markPos <= markLimit) {
+        // move data to the start of the buffer while respecting the set mark
+        if (markPos != start) {
+            int32_t n = avail + readPos - markPos;
+            memmove(start, markPos, n*sizeof(T));
+            readPos -= markPos - start;
+            space += markPos - start;
+            markPos = start;
+        }
+    } else if (avail && readPos != start) {
+        // move data to the start of the buffer
+        memmove(start, readPos, avail*sizeof(T));
+        space += readPos - start;
         readPos = start;
+        markPos = 0;
     }
-    return writeSpace;
+    if (space >= needed) {
+        // there's enough space now
+        return space;
+    }
+
+    // still not enough space, we have to allocate more
+    setSize(size + needed - space);
+    return needed;
 }
 template <class T>
 int32_t
