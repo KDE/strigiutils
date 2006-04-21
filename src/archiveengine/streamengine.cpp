@@ -49,7 +49,7 @@ StreamEngine::read(char* data, qint64 maxlen) {
         if (maxlen > INT32MAX) maxlen = INT32MAX;
         nread = stream->read(start, (int32_t)maxlen);
         if (nread > 0) {
-            bcopy(start, data, nread);
+            memcpy(data, start, nread);
             return nread;
         }
         if (nread == 0) {

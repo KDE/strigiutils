@@ -23,19 +23,20 @@ enum StreamStatus { Ok, Eof, Error };
 template <class T>
 class StreamBase {
 protected:
-    StreamStatus status;
+    int64_t size;
+    int64_t position;
     std::string error;
+    StreamStatus status;
 public:
-    StreamBase() { status = Ok; }
+    StreamBase() :size(-1), position(0), status(Ok){ }
     virtual ~StreamBase(){}
     /**
      * Return a string representation of the last error that has occurred.
      * If no error has occurred, an empty string is returned.
      **/
-    const char* getError() const {
-        return error.c_str();
-    }
+    const char* getError() const { return error.c_str(); }
     StreamStatus getStatus() const { return status; }
+    int64_t getPosition() const { return position; }
     virtual void close() {};
     /** 
      * @brief Reads @p ntoread characters from the stream and sets \a start to
@@ -121,12 +122,14 @@ StreamBase<T>::skip(int64_t ntoskip) {
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        nread = read(begin);
+        int32_t step = (int32_t)(ntoskip > INT32MAX) ?INT32MAX :ntoskip;
+        nread = read(begin, step);
         if (nread <= 0) {
             return skipped;
         }
         ntoskip -= nread;
         skipped += nread;
+        position += nread;
     }
     return skipped;
 }

@@ -30,6 +30,7 @@ public:
     int32_t read(const T*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
+    virtual int64_t skip(int64_t ntoskip);
 };
 
 template <class T>
@@ -71,7 +72,9 @@ BufferedInputStream<T>::read(const T*& start) {
     if (StreamBase<T>::status == Error) return -1;
     if (StreamBase<T>::status == Eof) return 0;
 
-    return buffer.read(start);
+    int32_t nread = buffer.read(start);
+    position += nread;
+    return nread;
 }
 template <class T>
 int32_t
@@ -84,7 +87,9 @@ BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
     if (StreamBase<T>::status == Error) return -1;
     if (StreamBase<T>::status == Eof) return 0;
 
-    return buffer.read(start, ntoread);
+    int32_t nread = buffer.read(start, ntoread);
+    position += nread;
+    return nread;
 }
 template <class T>
 StreamStatus
@@ -98,12 +103,31 @@ StreamStatus
 BufferedInputStream<T>::reset() {
 //    printf("reset %p %p\n", this, buffer.markPos);
     if (buffer.markPos) {
+        position -= buffer.readPos - buffer.markPos;
         buffer.reset();
         return Ok;
     } else {
         StreamBase<T>::error = "No valid mark for reset.";
         return Error;
     }
+}
+template <class T>
+int64_t
+BufferedInputStream<T>::skip(int64_t ntoskip) {
+    const T *begin;
+    int32_t nread;
+    int64_t skipped = 0;
+    while (ntoskip) {
+        int32_t step = (int32_t)(ntoskip > buffer.size) ?buffer.size :ntoskip;
+        nread = read(begin, step);
+        if (nread <= 0) {
+            return skipped;
+        }
+        ntoskip -= nread;
+        skipped += nread;
+        position += nread;
+    }
+    return skipped;
 }
 }
 

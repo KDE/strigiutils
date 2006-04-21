@@ -7,7 +7,7 @@ void
 FileInputStreamTest::testStream() {
     FileInputStream file("a.zip");
     const char *ptr;
-    int32_t size = file.read(ptr, 100000000);
+    int32_t size = file.read(ptr, 1000);
     QVERIFY(size == 275);
 }
 

@@ -163,52 +163,48 @@ FileReader::reset() {
     if (status != Ok) error = reader->getError();
     return status;
 }
-StringReader::StringReader(const wchar_t* value, const int32_t length )
-        : len(length) {
-    this->data = new wchar_t[len+1];
-    bcopy(value, data, len*sizeof(wchar_t));
-    this->pt = 0;
+StringReader::StringReader(const wchar_t* value, const int32_t length ) {
+    size = length;
+    data = new wchar_t[size+1];
+    memcpy(data, value, size*sizeof(wchar_t));
 }
 StringReader::StringReader( const wchar_t* value ) {
-    this->len = wcslen(value);
-    bcopy(value, data, len*sizeof(wchar_t));
-    this->pt = 0;
+    size = wcslen(value);
+    data = new wchar_t[size+1];
+    memcpy(data, value, size*sizeof(wchar_t));
 }
 StringReader::~StringReader(){
-    close();
-}
-StreamStatus
-StringReader::read(const wchar_t*& start, int32_t& nread, int32_t max) {
-    if ( pt >= len )
-        return Eof;
-    nread = max;
-    if (nread > len) nread = len;
-    start = data + pt;
-    pt += nread;
-    return Ok;
-}
-StreamStatus
-StringReader::read(wchar_t&c) {
-    if (pt == len) {
-        return Eof;
-    }
-    c = data[pt++];
-    return Ok;
-}
-void
-StringReader::close(){
     if (data) {
-        delete data;
+	delete data;
     }
+}
+int32_t
+StringReader::read(const wchar_t*& start) {
+    int32_t nread = size - position;
+    if ( nread == 0 )
+        return 0;
+    start = data + position;
+    position = size;
+    return nread;
+}
+int32_t
+StringReader::read(const wchar_t*& start, int32_t ntoread) {
+    if ( position >= size )
+        return 0;
+    int32_t nread = ntoread;
+    if (nread > size) nread = size;
+    start = data + position;
+    position += nread;
+    return nread;
 }
 StreamStatus
 StringReader::mark(int32_t /*readlimit*/) {
-    markpt = pt;
+    markpt = position;
     return Ok;
 }
 StreamStatus
 StringReader::reset() {
-    pt = markpt;
+    position = markpt;
     return Ok;
 }
 

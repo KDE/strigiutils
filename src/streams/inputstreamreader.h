@@ -49,16 +49,13 @@ public:
 class StringReader : public StreamBase<wchar_t> {
 private:
     wchar_t* data;
-    int32_t pt;
     int32_t markpt;
-    int32_t len;
 public:
     StringReader ( const wchar_t* value );
     StringReader ( const wchar_t* value, const int32_t length );
     ~StringReader();
-    void close();
-    StreamStatus read(wchar_t&);
-    StreamStatus read(const wchar_t*& start, int32_t& nread, int32_t max=0);
+    int32_t read(const wchar_t*& start);
+    int32_t read(const wchar_t*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };

@@ -18,6 +18,10 @@ TarInputStreamTest::testStream() {
         s = tar.nextEntry();
         count++;
     }
+    if (tar.getStatus() == jstreams::Error) {
+        printf("%s\n", tar.getError());
+    }
+    QVERIFY(tar.getStatus() == jstreams::Eof);
     QVERIFY(count == 2);
 }
 

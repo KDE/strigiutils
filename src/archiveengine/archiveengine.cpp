@@ -199,7 +199,7 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
         StreamStatus status;
         status = stream->read(start, nread, maxlen);
         if (status == InputStream::Ok) {
-            bcopy(start, data, nread);
+            memcpy(data, start, nread);
             return nread;
         }
         if (status == InputStream::Eof) {
@@ -258,6 +258,7 @@ bool
 ArchiveEngine::nextEntry() const {
     entrystream = zipstream->nextEntry();
     if (entrystream) {
+        entrystream->mark(1);
         const EntryInfo& info = zipstream->getEntryInfo();
         QString name(info.filename.c_str());
         QStringList path = name.split("/", QString::SkipEmptyParts);

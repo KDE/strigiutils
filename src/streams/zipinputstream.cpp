@@ -111,7 +111,7 @@ ZipInputStream::readHeader() {
     }
     // read 2 bytes into the filename size
     int32_t filenamelen = read2bytes(hb + 26);
-    int32_t extralen = read2bytes(hb + 28);
+    int64_t extralen = read2bytes(hb + 28);
     // read 4 bytes into the length of the uncompressed size
     entryinfo.size = read4bytes(hb + 22);
     // read 4 bytes into the length of the compressed size

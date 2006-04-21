@@ -22,17 +22,15 @@ protected:
     InputStream *input;
     EntryInfo entryinfo;
 public:
-    SubStreamProvider(InputStream *input) {
-        this->input = input; 
-        status = Ok;
-    }
+    SubStreamProvider(InputStream *i) :status(Ok), input(i) {}
     virtual ~SubStreamProvider() {}
+    StreamStatus getStatus() const { return status; }
     virtual SubInputStream* nextEntry() = 0;
     const EntryInfo &getEntryInfo() const {
         return entryinfo;
     }
 //    std::string getEntryFileName() const { return entryfilename; }
-    std::string getError() const { return error; }
+    const char* getError() const { return error.c_str(); }
 };
 
 } // end namespace jstreams

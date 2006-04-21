@@ -18,6 +18,10 @@ ZipInputStreamTest::testStream() {
         s = zip.nextEntry();
         count++;
     }
+    if (zip.getStatus() == jstreams::Error) {
+        printf("%s\n", zip.getError());
+    }
+    QVERIFY(zip.getStatus() == jstreams::Eof);
     QVERIFY(count == 2);
 }
 
