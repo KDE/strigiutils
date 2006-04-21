@@ -43,7 +43,8 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
         file = 0;
         status = Error;
         return -1;
-    } else if (feof(file)) {
+    }
+    if (feof(file)) {
         fclose(file);
         file = 0;
     }

@@ -5,6 +5,7 @@ use strict;
 # Jos van den Oever
 
 my $dir = $ARGV[0];
+my $srcdir = $ARGV[1];
 
 open(FH, "> testrunner.cpp") or die;
 
@@ -32,6 +33,7 @@ foreach (glob("$dir/*Test")) {
 }
 
 print FH "int main() {\n\tint leaked = 0;\n";
+print FH "\tQDir::setCurrent(\"$srcdir\");\n";
 
 foreach (glob("$dir/*Test")) {
 	s#$dir/##;

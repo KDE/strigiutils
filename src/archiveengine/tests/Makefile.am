@@ -5,7 +5,7 @@ check_PROGRAMS = testrunner
 TESTS = $(srcdir)/valgrindtest.sh
 
 testrunner.cpp: makestestrunner.pl
-	perl $(srcdir)/makestestrunner.pl $(srcdir)
+	perl $(srcdir)/makestestrunner.pl $(srcdir) $(top_srcdir)/archivereader/testdata
 
 ArchiveEngineHandlerTest_moc.cpp: ArchiveEngineHandlerTest
 	$(MOC) -o ArchiveEngineHandlerTest_moc.cpp $(srcdir)/ArchiveEngineHandlerTest

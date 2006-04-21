@@ -7,7 +7,7 @@
 
 bool
 ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const {
-    //printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
+//    printf("open %p %p '%s'\n", *se, *ae, (const char*)name.toUtf8());
     bool newstream = *se == 0;
     if (*ae) {
         *se = (*ae)->openEntry(name);
@@ -49,6 +49,9 @@ ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QStr
 }
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &file) const {
+//    printf("create %s\n", (const char*)file.toUtf8());
+//    printf("pwd %s\n", (const char*)QDir::currentPath().toUtf8());
+
     // try to open the deepest regular file in the file path
     QFSFileEngine* fse = 0;
     // use the full path
@@ -113,7 +116,7 @@ ArchiveEngineHandler::create(const QString &file) const {
     }
     if (file.length() > len+1) {
         name = file.mid(len+1);
- //      printf(" %s %s\n", (const char*)path.toUtf8(), (const char*)name.toUtf8());
+//        printf(" %s %s\n", (const char*)path.toUtf8(), (const char*)name.toUtf8());
         if (!open(&se, &ae, name)) {
             return 0;
         }
@@ -123,6 +126,6 @@ ArchiveEngineHandler::create(const QString &file) const {
     if (se) {
         return se;
     }
-    //printf("return %p\n", ae);
+//    printf("return %p\n", ae);
     return ae;
 }

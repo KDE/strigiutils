@@ -13,10 +13,18 @@ InputStreamTest_moc.cpp: InputStreamTest
 FileInputStreamTest_moc.cpp: FileInputStreamTest
 	$(MOC) -o FileInputStreamTest_moc.cpp $(srcdir)/FileInputStreamTest
 
+GZipInputStreamTest_moc.cpp: GZipInputStreamTest
+	$(MOC) -o GZipInputStreamTest_moc.cpp $(srcdir)/GZipInputStreamTest
+
+TarInputStreamTest_moc.cpp: TarInputStreamTest
+	$(MOC) -o TarInputStreamTest_moc.cpp $(srcdir)/TarInputStreamTest
+
 ZipInputStreamTest_moc.cpp: ZipInputStreamTest
 	$(MOC) -o ZipInputStreamTest_moc.cpp $(srcdir)/ZipInputStreamTest
 
 testrunner_SOURCES = ZipInputStreamTest.cpp ZipInputStreamTest_moc.cpp \
+	GZipInputStreamTest.cpp GZipInputStreamTest_moc.cpp \
+	TarInputStreamTest.cpp TarInputStreamTest_moc.cpp \
 	FileInputStreamTest.cpp FileInputStreamTest_moc.cpp \
 	InputStreamTest.cpp InputStreamTest_moc.cpp \
 	testrunner.cpp

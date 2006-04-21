@@ -92,13 +92,13 @@ GZipInputStream::readFromStream() {
 }
 int32_t
 GZipInputStream::fillBuffer(char* start, int32_t space) {
-//    printf("decompress\n");
+    if (zstream == 0) return -1;
     // make sure there is data to decompress
     if (zstream->avail_out != 0) {
         readFromStream();
-        if (status) {
+        if (status == Error) {
             // no data was read
-            return true;
+            return -1;
         }
     }
     // make sure we can write into the buffer
@@ -124,7 +124,7 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
     case Z_STREAM_END:
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        return false;
+        dealloc();
     }
     return nwritten;
 }
