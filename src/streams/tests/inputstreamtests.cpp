@@ -28,12 +28,17 @@ inputStreamTest1(StreamBase<T>* s) {
 template <class T>
 void
 inputStreamTest2(StreamBase<T>* s) {
+    int64_t p = s->getPosition();
+    QVERIFY(s->mark(100) == Ok);
+    QVERIFY(s->skip(100) > 0);
+    QVERIFY(s->reset() == Ok);
+    QVERIFY(s->getPosition() == p);
+    inputStreamTest1(s);
 }
 void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     SubInputStream *s = ssp->nextEntry();
     while (s) {
-//        printf("%s\n", ssp->getEntryInfo().filename.c_str());
         inputStreamTest1<char>(s);
         s = ssp->nextEntry();
     }
@@ -42,3 +47,25 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     }
     QVERIFY(ssp->getStatus() == jstreams::Eof);
 }
+void
+subStreamProviderTest2(SubStreamProvider* ssp) {
+    SubInputStream *s = ssp->nextEntry();
+    while (s) {
+        inputStreamTest2<char>(s);
+        s = ssp->nextEntry();
+    }
+    if (ssp->getStatus() == jstreams::Error) {
+        printf("%s\n", ssp->getError());
+    }
+    QVERIFY(ssp->getStatus() == jstreams::Eof);
+}
+
+int ninputstreamtests = 2;
+void (*charinputstreamtests[])(StreamBase<char>*) = {
+    inputStreamTest1, inputStreamTest2 };
+void (*wcharinputstreamtests[])(StreamBase<wchar_t>*) = {
+    inputStreamTest1, inputStreamTest2 };
+
+int nstreamprovidertests = 2;
+void (*streamprovidertests[])(SubStreamProvider*) = {
+    subStreamProviderTest1, subStreamProviderTest2 };

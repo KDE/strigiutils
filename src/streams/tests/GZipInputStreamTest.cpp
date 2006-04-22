@@ -6,8 +6,10 @@ using namespace jstreams;
 
 void
 GZipInputStreamTest::testStream() {
-    FileInputStream file("a.gz");
-    GZipInputStream gzip(&file);
-    inputStreamTest1<char>(&gzip);
+    for (int i=0; i<ninputstreamtests; ++i) {
+        FileInputStream file("a.gz");
+        GZipInputStream gzip(&file);
+        charinputstreamtests[i](&file);
+    }
 }
 

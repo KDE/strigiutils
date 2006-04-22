@@ -5,7 +5,9 @@ using namespace jstreams;
 
 void
 FileInputStreamTest::testStream() {
-    FileInputStream file("a.zip");
-    inputStreamTest1<char>(&file);
+    for (int i=0; i<ninputstreamtests; ++i) {
+        FileInputStream file("a.zip");
+        charinputstreamtests[i](&file);
+    }
 }
 

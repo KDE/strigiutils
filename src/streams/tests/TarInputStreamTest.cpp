@@ -6,8 +6,10 @@ using namespace jstreams;
 
 void
 TarInputStreamTest::testStream() {
-    FileInputStream file("a.tar");
-    TarInputStream tar(&file);
-    subStreamProviderTest1(&tar);
+    for (int i=0; i<nstreamprovidertests; ++i) {
+        FileInputStream file("a.tar");
+        TarInputStream tar(&file);
+        streamprovidertests[i](&tar);
+    }
 }
 

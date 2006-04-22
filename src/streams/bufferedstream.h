@@ -109,7 +109,6 @@ BufferedInputStream<T>::mark(int32_t readlimit) {
 template <class T>
 StreamStatus
 BufferedInputStream<T>::reset() {
-//    printf("reset %p %p\n", this, buffer.markPos);
     if (buffer.markPos) {
         BufferedInputStream<T>::position -= buffer.readPos - buffer.markPos;
         buffer.reset();
@@ -133,7 +132,6 @@ BufferedInputStream<T>::skip(int64_t ntoskip) {
         }
         ntoskip -= nread;
         skipped += nread;
-        BufferedInputStream<T>::position += nread;
     }
     return skipped;
 }

@@ -6,8 +6,10 @@ using namespace jstreams;
 
 void
 SubInputStreamTest::testStream() {
-    FileInputStream file("a.zip");
-    SubInputStream sub(&file, 1);
-    inputStreamTest1<char>(&sub);
+    for (int i=0; i<ninputstreamtests; ++i) {
+        FileInputStream file("a.zip");
+        SubInputStream sub(&file, 1);
+        charinputstreamtests[i](&sub);
+    }
 }
 
