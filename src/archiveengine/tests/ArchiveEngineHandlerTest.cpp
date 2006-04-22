@@ -1,4 +1,4 @@
-#include "ArchiveEngineHandlerTest"
+#include "ArchiveEngineHandlerTest.h"
 #include "archiveenginehandler.h"
 #include <QtTest/QtTest>
 #include <QDebug>

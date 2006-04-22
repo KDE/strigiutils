@@ -7,10 +7,8 @@ TESTS = $(srcdir)/valgrindtest.sh
 testrunner.cpp: makestestrunner.pl
 	perl $(srcdir)/makestestrunner.pl $(srcdir) $(top_srcdir)/archivereader/testdata
 
-ArchiveEngineHandlerTest_moc.cpp: ArchiveEngineHandlerTest
-	$(MOC) -o ArchiveEngineHandlerTest_moc.cpp $(srcdir)/ArchiveEngineHandlerTest
 
-testrunner_SOURCES = ArchiveEngineHandlerTest.cpp ArchiveEngineHandlerTest_moc.cpp testrunner.cpp
+testrunner_SOURCES = ArchiveEngineHandlerTest.cpp testrunner.cpp
 testrunner_CXXFLAGS = $(QT_CXXFLAGS) -I$(srcdir)/..
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 testrunner_LDADD = $(LIB_QT) \
@@ -18,6 +16,6 @@ testrunner_LDADD = $(LIB_QT) \
 
 METASOURCES = AUTO
 
-noinst_HEADERS = ArchiveEngineHandlerTest
+noinst_HEADERS = ArchiveEngineHandlerTest.h
 
-CLEANFILES = testrunner.cpp *_moc.cpp
+CLEANFILES = testrunner.cpp

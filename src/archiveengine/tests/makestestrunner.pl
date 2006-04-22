@@ -27,7 +27,7 @@ test(QObject* o) {
 THEEND
 ;
 
-foreach (glob("$dir/*Test")) {
+foreach (glob("$dir/*Test.h")) {
 	s#$dir/##;
 	print FH "#include \"$_\"\n";
 }
@@ -35,8 +35,9 @@ foreach (glob("$dir/*Test")) {
 print FH "int main() {\n\tint leaked = 0;\n";
 print FH "\tQDir::setCurrent(\"$srcdir\");\n";
 
-foreach (glob("$dir/*Test")) {
+foreach (glob("$dir/*Test.h")) {
 	s#$dir/##;
+        s#.h$##;
 	print FH "\tleaked += test(new $_());\n";
 }
 
