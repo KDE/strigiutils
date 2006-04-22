@@ -9,9 +9,8 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
 
     this->input = input;
 
-    // TODO: check first bytes of stream before allocating buffer
-    // 0x42 0x5a 0x68 0x39 0x31
-    if (format != GZIPFORMAT && !checkMagic()) {
+    // check first bytes of stream before allocating buffer
+    if (format == GZIPFORMAT && !checkMagic()) {
         error = "Magic bytes are wrong.";
         status = Error;
         return;

@@ -155,7 +155,7 @@ ArchiveEngine::openArchive() {
         setError(QFile::FatalError, "no stream");
         return;
     }
-    int32_t bufsize = 100;
+    int32_t bufsize = 1000;
     parentstream->mark(bufsize); // make sure this is enough
     InputStream* compressed = parentstream;
     InputStream* decompressed = decompress(compressed, bufsize);
@@ -219,11 +219,15 @@ ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {
     // try bzip
     InputStream *dec = new BZ2InputStream(is);
     if (testStream(dec, bufsize)) {
-        dec->reset();
+        if (dec->reset() != Ok) {
+            qDebug("ArchiveEngine mark call is too small.");
+        }
         return dec;
     }
     delete dec;
-    is->reset();
+    if (is->reset() != Ok) {
+        qDebug("ArchiveEngine mark call is too small.");
+    }
 
     // try gzip
     dec = new GZipInputStream(is);
