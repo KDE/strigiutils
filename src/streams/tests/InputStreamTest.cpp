@@ -1,4 +1,4 @@
-#include "InputStreamTest"
+#include "InputStreamTest.h"
 #include <QtTest/QtTest>
 
 void

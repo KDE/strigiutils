@@ -1,4 +1,4 @@
-#include "ZipInputStreamTest"
+#include "ZipInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "../zipinputstream.h"
 #include "inputstreamtests.h"

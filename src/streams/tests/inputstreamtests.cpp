@@ -17,13 +17,18 @@ inputStreamTest1(StreamBase<T>* s) {
             n2 = s->read(ptr);
         }
     } else {
-        n = s->read(ptr, size);
+        // read past the end
+        n = s->read(ptr, size+1);
     }
     QVERIFY(size == -1 || size == n);
     QVERIFY(s->getPosition() == n);
     QVERIFY(s->getStatus() == jstreams::Eof);
 }
 
+template <class T>
+void
+inputStreamTest2(StreamBase<T>* s) {
+}
 void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     SubInputStream *s = ssp->nextEntry();

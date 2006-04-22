@@ -1,4 +1,4 @@
-#include "TarInputStreamTest"
+#include "TarInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "../tarinputstream.h"
 #include "inputstreamtests.h"

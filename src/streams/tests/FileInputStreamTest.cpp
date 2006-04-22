@@ -1,4 +1,4 @@
-#include "FileInputStreamTest"
+#include "FileInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
