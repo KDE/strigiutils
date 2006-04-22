@@ -1,5 +1,6 @@
 #include "inputstreambuffer.h"
 #include <cstdio>
+using namespace jstreams;
 
 template <class T>
 InputStreamBuffer<T>::InputStreamBuffer() {

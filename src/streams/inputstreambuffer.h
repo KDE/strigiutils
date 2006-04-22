@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 
+namespace jstreams {
+
 template <class T>
 class InputStreamBuffer {
 private:
@@ -27,5 +29,7 @@ public:
      **/
      int32_t makeSpace(int32_t needed);
 };
+
+} // end namespace jstreams
 
 #endif
