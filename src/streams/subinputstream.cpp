@@ -17,7 +17,7 @@ SubInputStream::read(const char*& start, int32_t ntoread) {
     }
     // restrict the amount of data that can be read
     if (ntoread > left) {
-        ntoread = left;
+        ntoread = (int32_t)left;
     }
     int32_t nread = input->read(start, ntoread);
     if (nread < 0) {

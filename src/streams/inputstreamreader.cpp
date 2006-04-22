@@ -166,12 +166,14 @@ FileReader::reset() {
 StringReader::StringReader(const wchar_t* value, const int32_t length ) {
     size = length;
     data = new wchar_t[size+1];
-    memcpy(data, value, size*sizeof(wchar_t));
+    size_t s = (size_t)(size*sizeof(wchar_t));
+    memcpy(data, value, s);
 }
 StringReader::StringReader( const wchar_t* value ) {
     size = wcslen(value);
     data = new wchar_t[size+1];
-    memcpy(data, value, size*sizeof(wchar_t));
+    size_t s = (size_t)(size*sizeof(wchar_t));
+    memcpy(data, value, s);
 }
 StringReader::~StringReader(){
     if (data) {
@@ -180,11 +182,16 @@ StringReader::~StringReader(){
 }
 int32_t
 StringReader::read(const wchar_t*& start) {
-    int32_t nread = size - position;
+    int32_t nread;
+    if (size - position > INT32MAX) {
+        nread = INT32MAX;
+    } else {
+        nread = (int32_t)(size - position);
+    }
     if ( nread == 0 )
         return 0;
     start = data + position;
-    position = size;
+    position += nread;
     return nread;
 }
 int32_t
@@ -192,7 +199,7 @@ StringReader::read(const wchar_t*& start, int32_t ntoread) {
     if ( position >= size )
         return 0;
     int32_t nread = ntoread;
-    if (nread > size) nread = size;
+    if (nread > size) nread = (int32_t)size;
     start = data + position;
     position += nread;
     return nread;

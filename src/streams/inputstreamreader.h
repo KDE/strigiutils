@@ -49,7 +49,7 @@ public:
 class StringReader : public StreamBase<wchar_t> {
 private:
     wchar_t* data;
-    int32_t markpt;
+    int64_t markpt;
 public:
     StringReader ( const wchar_t* value );
     StringReader ( const wchar_t* value, const int32_t length );

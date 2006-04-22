@@ -125,7 +125,7 @@ BufferedInputStream<T>::skip(int64_t ntoskip) {
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        int32_t step = (int32_t)(ntoskip > buffer.size) ?buffer.size :ntoskip;
+        int32_t step = (int32_t)((ntoskip > buffer.size) ?buffer.size :ntoskip);
         nread = read(begin, step);
         if (nread <= 0) {
             return skipped;

@@ -123,7 +123,7 @@ StreamBase<T>::skip(int64_t ntoskip) {
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        int32_t step = (int32_t)(ntoskip > skipstep) ?skipstep :ntoskip;
+        int32_t step = (int32_t)((ntoskip > skipstep) ?skipstep :ntoskip);
         nread = read(begin, step);
         if (nread < 0) {
             return skipped;
