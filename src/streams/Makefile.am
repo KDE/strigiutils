@@ -4,7 +4,7 @@ libstreams_la_SOURCES = bz2inputstream.cpp \
 	fileinputstream.cpp gzipinputstream.cpp \
 	inputstreamreader.cpp \
 	subinputstream.cpp \
-	tarinputstream.cpp zipinputstream.cpp inputstreambuffer.cpp dostime.c
+	tarinputstream.cpp zipinputstream.cpp dostime.c
 
 libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 

@@ -52,5 +52,3 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
     }
     return nwritten;
 }
-
-#include "inputstreambuffer.cpp"

@@ -208,6 +208,3 @@ StringReader::reset() {
     return Ok;
 }
 
-#include "inputstreambuffer.cpp"
-
-
