@@ -4,7 +4,6 @@ using namespace jstreams;
 SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
         : input(i) {
     size = length;
-    printf("size is %lli\n", size);
 }
 int32_t
 SubInputStream::read(const char*& start) {
@@ -47,6 +46,14 @@ SubInputStream::reset() {
 }
 int64_t
 SubInputStream::skip(int64_t ntoskip) {
+    const int64_t left = size - position;
+    if (left == 0) {
+        return 0;
+    }
+    // restrict the amount of data that can be skipped
+    if (ntoskip > left) {
+        ntoskip = left;
+    }
     int64_t skipped = input->skip(ntoskip);
     if (input->getStatus() == Error) {
         status = Error;

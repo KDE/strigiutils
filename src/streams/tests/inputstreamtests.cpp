@@ -33,6 +33,7 @@ void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     SubInputStream *s = ssp->nextEntry();
     while (s) {
+//        printf("%s\n", ssp->getEntryInfo().filename.c_str());
         inputStreamTest1<char>(s);
         s = ssp->nextEntry();
     }
