@@ -33,7 +33,7 @@ StringReader<T>::StringReader(const T* value, const int32_t length )
 }
 template <class T>
 StringReader<T>::~StringReader() {
-    delete data;
+    delete [] data;
 }
 template <class T>
 int32_t
