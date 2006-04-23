@@ -3,9 +3,7 @@
 
 #include <string>
 #include <iconv.h>
-#include "fileinputstream.h"
 #include "bufferedstream.h"
-#include "inputstream.h"
 
 namespace jstreams {
 

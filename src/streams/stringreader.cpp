@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "stringreader.h"
 using namespace jstreams;
 

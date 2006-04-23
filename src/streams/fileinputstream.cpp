@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "fileinputstream.h"
 #include <cerrno>
 #include <cstring>

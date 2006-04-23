@@ -13,6 +13,7 @@ testrunner_SOURCES = ZipInputStreamTest.cpp \
 	FileInputStreamTest.cpp \
 	SubInputStreamTest.cpp \
 	InputStreamTest.cpp \
+	InputStreamReaderTest.cpp \
         inputstreamtests.cpp \
 	testrunner.cpp
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest

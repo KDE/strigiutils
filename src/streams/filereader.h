@@ -1,10 +1,12 @@
 #ifndef FILEREADER_H
 #define FILEREADER_H
 
-#include "inputstreamreader.h"
+#include "streambase.h"
 
 namespace jstreams {
 
+class FileInputStream;
+class InputStreamReader;
 class FileReader : public StreamBase<wchar_t> {
     FileInputStream* input;
     InputStreamReader* reader;

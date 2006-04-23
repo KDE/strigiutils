@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "subinputstream.h"
 using namespace jstreams;
 

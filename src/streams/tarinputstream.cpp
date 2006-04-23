@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include <cstring>

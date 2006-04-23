@@ -1,4 +1,6 @@
+#include "jstreamsconfig.h"
 #include "inputstreamreader.h"
+#include "jstreamsconfig.h"
 #include <cerrno>
 using namespace jstreams;
 
@@ -6,6 +8,7 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
     status = Ok;
     finishedDecoding = false;
     input = i;
+    if (enc == 0) enc = "UTF8";
     if (sizeof(wchar_t) > 1) {
         converter = iconv_open("WCHAR_T", enc);
     } else {
@@ -41,7 +44,11 @@ InputStreamReader::readFromStream() {
 int32_t
 InputStreamReader::decode(wchar_t* start, int32_t space) {
     // decode from charbuf
-    char *inbuf = charbuf.readPos;
+#ifdef _ICONV_H
+    ICONV_CONST char *inbuf = charbuf.readPos;
+#else
+    const char *inbuf = charbuf.readPos;
+#endif
     size_t inbytesleft = charbuf.avail;
 //    printf("decode %p %i %i\n", buffer.curPos, space, buffer.size);
     size_t outbytesleft = sizeof(wchar_t)*space;
@@ -86,13 +93,13 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
 }
 int32_t
 InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
-//    printf("decodefromstream\n");
+    printf("fillBuffer\n");
     // fill up charbuf
-    if (charbuf.readPos == charbuf.start) {
+    if (input && charbuf.readPos == charbuf.start) {
  //       printf("fill up charbuf\n");
         const char *begin;
         int32_t numRead;
-        numRead = input->read(begin, charbuf.size);
+        numRead = input->read(begin, charbuf.size - charbuf.avail);
         switch (numRead) {
         case 0:
             // signal end of input buffer
@@ -103,11 +110,12 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
             } else {
                 status = Eof;
             }
-            return false;
+            return -1;
         case -1:
+            input = 0;
             error = input->getError();
             status = Error;
-            return false;
+            return -1;
         default:
             // copy data into other buffer
             memmove(charbuf.start + charbuf.avail, begin, numRead);

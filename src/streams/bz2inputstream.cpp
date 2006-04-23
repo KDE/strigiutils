@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "bz2inputstream.h"
 using namespace jstreams;
 

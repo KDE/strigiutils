@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "gzipinputstream.h"
 #include <zlib.h>
 using namespace jstreams;

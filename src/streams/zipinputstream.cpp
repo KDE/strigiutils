@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "zipinputstream.h"
 #include "gzipinputstream.h"
 #include "subinputstream.h"

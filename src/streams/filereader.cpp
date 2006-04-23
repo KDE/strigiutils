@@ -1,4 +1,7 @@
+#include "jstreamsconfig.h"
 #include "filereader.h"
+#include "fileinputstream.h"
+#include "inputstreamreader.h"
 using namespace jstreams;
 
 FileReader::FileReader(const char* fname, const char* /*encoding_scheme*/,
