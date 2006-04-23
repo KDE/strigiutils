@@ -32,34 +32,6 @@ public:
     int32_t fillBuffer(wchar_t* start, int32_t space);
 };
 
-class FileReader : public StreamBase<wchar_t> {
-    FileInputStream* input;
-    InputStreamReader* reader;
-public:
-    FileReader(const char* fname, const char* encoding_scheme=NULL,
-        const int32_t cachelen = 13,
-        const int32_t cachebuff = 14 );
-    ~FileReader();
-    int32_t read(const wchar_t*& start);
-    int32_t read(const wchar_t*& start, int32_t ntoread);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
-};
-
-class StringReader : public StreamBase<wchar_t> {
-private:
-    wchar_t* data;
-    int64_t markpt;
-public:
-    StringReader ( const wchar_t* value );
-    StringReader ( const wchar_t* value, const int32_t length );
-    ~StringReader();
-    int32_t read(const wchar_t*& start);
-    int32_t read(const wchar_t*& start, int32_t ntoread);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
-};
-
 } // end namespace jstreams
 
 #endif
