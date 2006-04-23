@@ -8,12 +8,13 @@ namespace jstreams {
 template <class T>
 class StringReader : public StreamBase<T> {
 private:
-    T* data;
     int64_t markpt;
+    T* data;
+    bool dataowner;
     StringReader(const StringReader<T>&);
     void operator=(const StringReader<T>&);
 public:
-    StringReader(const T* value, const int32_t length);
+    StringReader(const T* value, int32_t length = -1, bool copy = true);
     ~StringReader();
     int32_t read(const T*& start);
     int32_t read(const T*& start, int32_t ntoread);
@@ -23,17 +24,31 @@ public:
 };
 
 template <class T>
-StringReader<T>::StringReader(const T* value, const int32_t length )
-        : markpt(0) {
+StringReader<T>::StringReader(const T* value, int32_t length, bool copy)
+        : markpt(0), dataowner(copy) {
+    if (length < 0) {
+        if (sizeof(T) > 1) {
+            length = wcslen((const wchar_t*)value);
+        } else {
+            length = strlen((const char*)value);
+        }
+    }
     StreamBase<T>::size = length;
-    data = new T[length+1];
-    size_t s = (size_t)(length*sizeof(T));
-    memcpy(data, value, s);
-    data[length] = 0;
+    if (copy) {
+        data = new T[length+1];
+        size_t s = (size_t)(length*sizeof(T));
+        memcpy(data, value, s);
+        data[length] = 0;
+    } else {
+        // casting away const is ok, because we don't write anyway
+        data = (T*)value;
+    }
 }
 template <class T>
 StringReader<T>::~StringReader() {
-    delete [] data;
+    if (dataowner) {
+        delete [] data;
+    }
 }
 template <class T>
 int32_t
