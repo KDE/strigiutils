@@ -134,7 +134,6 @@ StreamBase<T>::skip(int64_t ntoskip) {
             ntoskip -= nread;
         }
         skipped += nread;
-        position += nread; // TODO: remove this line
     }
     return skipped;
 }
