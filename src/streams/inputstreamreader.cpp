@@ -44,11 +44,7 @@ InputStreamReader::readFromStream() {
 int32_t
 InputStreamReader::decode(wchar_t* start, int32_t space) {
     // decode from charbuf
-#ifdef _ICONV_H
     ICONV_CONST char *inbuf = charbuf.readPos;
-#else
-    const char *inbuf = charbuf.readPos;
-#endif
     size_t inbytesleft = charbuf.avail;
 //    printf("decode %p %i %i\n", buffer.curPos, space, buffer.size);
     size_t outbytesleft = sizeof(wchar_t)*space;
