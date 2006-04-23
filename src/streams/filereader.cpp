@@ -4,10 +4,10 @@
 #include "inputstreamreader.h"
 using namespace jstreams;
 
-FileReader::FileReader(const char* fname, const char* /*encoding_scheme*/,
+FileReader::FileReader(const char* fname, const char* encoding_scheme,
         int32_t cachelen, int32_t /*cachebuff*/) {
     input = new FileInputStream(fname, cachelen);
-    reader = new InputStreamReader(input);
+    reader = new InputStreamReader(input, encoding_scheme);
 }
 FileReader::~FileReader() {
     if (reader) delete reader;

@@ -9,7 +9,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
 
     // try to open the file for reading
     file = fopen(filepath, "rb");
-    this->filepath = filepath;
+    this->filepath = std::string(filepath,strlen(filepath));
     if (file == 0) {
         // handle error
         error = "Could not read file '";

@@ -17,7 +17,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>archivereader/src/streamindexer/libstreamindexer.la</activetarget>
+      <activetarget>archivereader/src/streams/libstreams.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>

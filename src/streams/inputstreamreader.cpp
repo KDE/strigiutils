@@ -8,12 +8,20 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
     status = Ok;
     finishedDecoding = false;
     input = i;
-    if (enc == 0) enc = "UTF8";
+    if (enc == 0) enc = "UTF-8";
+#ifdef _LIBICONV_H
+    if (sizeof(wchar_t) == 4) {
+        converter = iconv_open("UCS-4-INTERNAL", enc);
+    } if (sizeof(wchar_t) == 2) {
+        converter = iconv_open("UCS-2-INTERNAL", enc);
+#else
     if (sizeof(wchar_t) > 1) {
         converter = iconv_open("WCHAR_T", enc);
+#endif
     } else {
         converter = iconv_open("ASCII", enc);
     }
+
     // check if the converter is valid
     if (converter == (iconv_t) -1) {
         error = "conversion from '";
@@ -31,22 +39,11 @@ InputStreamReader::~InputStreamReader() {
         iconv_close(converter);
     }
 }
-void
-InputStreamReader::readFromStream() {
-    // read data from the input stream
-    inSize = input->read(inStart);
-    if (inSize == 0) {
-        status = Eof;
-    } else if (inSize == -1) {
-        status = Error;
-    }
-}
 int32_t
 InputStreamReader::decode(wchar_t* start, int32_t space) {
     // decode from charbuf
     ICONV_CONST char *inbuf = charbuf.readPos;
     size_t inbytesleft = charbuf.avail;
-//    printf("decode %p %i %i\n", buffer.curPos, space, buffer.size);
     size_t outbytesleft = sizeof(wchar_t)*space;
     char *outbuf = (char*)start;
     size_t r = iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
@@ -54,21 +51,18 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
     if (r == (size_t)-1) {
         switch (errno) {
         case EILSEQ: //invalid multibyte sequence
-//            printf("invalid multibyte\n");
             error = "Invalid multibyte sequence.";
             status = Error;
             return -1;
         case EINVAL: // last character is incomplete
             // move from inbuf to the end to the start of
             // the buffer
-//            printf("last char incomplete %i %i\n", left, inbytesleft);
             memmove(charbuf.start, inbuf, inbytesleft);
             charbuf.readPos = charbuf.start;
             charbuf.avail = inbytesleft;
             nwritten = ((wchar_t*)outbuf) - start;
             break;
         case E2BIG: // output buffer is full
-//            printf("output full read %i %i\n", read, charbuf.avail );
             charbuf.readPos += charbuf.avail - inbytesleft;
             charbuf.avail = inbytesleft;
             nwritten = space;
@@ -77,7 +71,6 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
             exit(-1);
         }
     } else { //input sequence was completely converted
-//        printf("complete\n" );
         charbuf.readPos = charbuf.start;
         charbuf.avail = 0;
         nwritten = ((wchar_t*)outbuf) - start;
@@ -89,13 +82,12 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
 }
 int32_t
 InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
-    printf("fillBuffer\n");
     // fill up charbuf
     if (input && charbuf.readPos == charbuf.start) {
- //       printf("fill up charbuf\n");
         const char *begin;
         int32_t numRead;
         numRead = input->read(begin, charbuf.size - charbuf.avail);
+        //printf("filled up charbuf\n");
         switch (numRead) {
         case 0:
             // signal end of input buffer
@@ -103,8 +95,6 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
             if (charbuf.avail) {
                 error = "stream ends on incomplete character";
                 status = Error;
-            } else {
-                status = Eof;
             }
             return -1;
         case -1:
@@ -115,10 +105,12 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
         default:
             // copy data into other buffer
             memmove(charbuf.start + charbuf.avail, begin, numRead);
-            charbuf.avail = numRead;
+            charbuf.avail = numRead + charbuf.avail;
             break;
         }
     }
     // decode
-    return decode(start, space);
+    int32_t n = decode(start, space);
+    //printf("decoded %i\n", n);
+    return n;
 }

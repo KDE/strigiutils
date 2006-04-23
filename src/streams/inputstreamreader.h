@@ -17,8 +17,6 @@ private:
     iconv_t converter;
     bool finishedDecoding;
     StreamBase<char>* input;
-    const char* inStart;
-    int32_t inSize;
     int32_t charsLeft;
 
     InputStreamBuffer<char> charbuf;

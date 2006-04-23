@@ -22,6 +22,9 @@ inputStreamTest1(StreamBase<T>* s) {
     }
     QVERIFY(size == -1 || size == n);
     QVERIFY(s->getPosition() == n);
+    if (s->getStatus() == jstreams::Error) {
+        printf("error %s\n", s->getError());
+    }
     QVERIFY(s->getStatus() == jstreams::Eof);
 }
 
