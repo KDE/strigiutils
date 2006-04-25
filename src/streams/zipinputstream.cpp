@@ -30,7 +30,7 @@ ZipInputStream::~ZipInputStream() {
         delete uncompressedEntryStream;
     }
 }
-SubInputStream*
+StreamBase<char>*
 ZipInputStream::nextEntry() {
     if (status) return 0;
     // clean up the last stream(s)

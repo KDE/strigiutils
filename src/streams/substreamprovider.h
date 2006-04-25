@@ -2,8 +2,7 @@
 #define SUBSTREAMPROVIDER
 
 #include <string>
-
-#include "subinputstream.h"
+#include "streambase.h"
 
 namespace jstreams {
 
@@ -25,7 +24,7 @@ public:
     SubStreamProvider(StreamBase<char> *i) :status(Ok), input(i) {}
     virtual ~SubStreamProvider() {}
     StreamStatus getStatus() const { return status; }
-    virtual SubInputStream* nextEntry() = 0;
+    virtual StreamBase<char>* nextEntry() = 0;
     const EntryInfo &getEntryInfo() const {
         return entryinfo;
     }

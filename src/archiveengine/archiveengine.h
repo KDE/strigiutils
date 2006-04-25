@@ -97,7 +97,7 @@ private:
     jstreams::FSFileInputStream* filestream;
     QList<jstreams::StreamBase<char>*> compressedstreams;
     jstreams::SubStreamProvider *zipstream;
-    mutable jstreams::SubInputStream *entrystream;
+    mutable jstreams::StreamBase<char>* entrystream;
     mutable bool readAllEntryNames;
     FileEntry* rootentry;
     mutable FileEntry* current;

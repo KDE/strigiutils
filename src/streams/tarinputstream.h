@@ -22,7 +22,7 @@ namespace jstreams {
 class TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    SubInputStream *output;
+    StreamBase<char> *output;
     int32_t numPaddingBytes;
 
     void readFileName(int32_t len);
@@ -33,7 +33,7 @@ private:
 public:
     TarInputStream(StreamBase<char> *input);
     ~TarInputStream();
-    SubInputStream* nextEntry();
+    StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
 };
 

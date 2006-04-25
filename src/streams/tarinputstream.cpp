@@ -14,7 +14,7 @@ TarInputStream::~TarInputStream() {
         delete output;
     }
 }
-SubInputStream*
+StreamBase<char>*
 TarInputStream::nextEntry() {
     if (status) return 0;
     if (output) {

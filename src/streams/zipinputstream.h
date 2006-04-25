@@ -19,9 +19,9 @@ namespace jstreams {
 class ZipInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    SubInputStream *compressedEntryStream;
+    StreamBase<char>* compressedEntryStream;
     GZipInputStream *uncompressionStream;
-    SubInputStream *uncompressedEntryStream;
+    StreamBase<char>* uncompressedEntryStream;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
 
@@ -32,7 +32,7 @@ private:
 public:
     ZipInputStream(StreamBase<char>* input);
     ~ZipInputStream();
-    SubInputStream* nextEntry();
+    StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
 };
 
