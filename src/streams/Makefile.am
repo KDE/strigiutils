@@ -3,7 +3,7 @@ lib_LTLIBRARIES = libstreams.la
 libstreams_la_SOURCES = bz2inputstream.cpp \
 	fileinputstream.cpp gzipinputstream.cpp \
 	inputstreamreader.cpp filereader.cpp \
-	subinputstream.cpp \
+	subinputstream.cpp mailinputstream.cpp \
 	tarinputstream.cpp zipinputstream.cpp dostime.c
 
 libstreams_la_CXXFLAGS =

@@ -70,6 +70,10 @@ public:
      *         has occured.
      **/
     virtual int32_t read(const T*& start, int32_t ntoread) = 0;
+    /**
+     * Same as read(const T*& start, int32_t ntoread), but may read more.
+     **/
+    virtual int32_t readAtLeast(const T*& start, int32_t ntoread) = 0;
     /* the available value may be greater than the actual value if
       the encoding is a variable one (such as utf8 or unicode) */
     /**

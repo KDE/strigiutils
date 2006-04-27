@@ -18,6 +18,7 @@ public:
     ~StringReader();
     int32_t read(const T*& start);
     int32_t read(const T*& start, int32_t ntoread);
+    int32_t readAtLeast(const T*& start, int32_t ntoread);
     int64_t skip(int64_t ntoskip);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
@@ -78,6 +79,11 @@ StringReader<T>::read(const T*& start, int32_t ntoread) {
         StreamBase<T>::status = Eof;
     }
     return nread;
+}
+template <class T>
+int32_t
+StringReader<T>::readAtLeast(const T*& start, int32_t ntoread) {
+    return read(start);
 }
 template <class T>
 int64_t

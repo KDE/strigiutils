@@ -14,6 +14,7 @@ public:
     DigestInputStream(InputStream *input);
     int32_t read(const char*& start);
     int32_t read(const char*& start, int32_t ntoread);
+    int32_t readAtLeast(const char*& start, int32_t ntoread);
     int64_t skip(int64_t ntoskip);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
@@ -50,6 +51,27 @@ DigestInputStream::read(const char*& start) {
 int32_t
 DigestInputStream::read(const char*& start, int32_t ntoread) {
     int32_t nread = input->read(start, ntoread);
+    if (nread == -1) {
+        error = input->getError();
+        status = Error;
+        return -1;
+    }
+    if (nread != ntoread) {
+        status = Eof;
+        return Eof;
+    }
+    sinceMark += nread;
+    if (ignoreBytes < nread) {
+        SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
+        ignoreBytes = 0;
+    } else {
+        ignoreBytes -= nread;
+    }
+    return nread;
+}
+int32_t
+DigestInputStream::readAtLeast(const char*& start, int32_t ntoread) {
+    int32_t nread = input->readAtLeast(start, ntoread);
     if (nread == -1) {
         error = input->getError();
         status = Error;

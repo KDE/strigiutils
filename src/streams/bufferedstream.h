@@ -13,6 +13,7 @@ private:
     InputStreamBuffer<T> buffer;
 
     void writeToBuffer(int32_t minsize);
+    int32_t read_(const T*& start, int32_t min, int32_t max);
 protected:
     /**
      * This function must be implemented by the subclasses.
@@ -23,11 +24,13 @@ protected:
      * must return -1.
      **/
     virtual int32_t fillBuffer(T* start, int32_t space) = 0;
+    // this function might be useful if you want to reuse a bufferedstream
     void resetBuffer() {printf("implement 'resetBuffer'\n");}
 public:
     BufferedInputStream<T>();
     int32_t read(const T*& start);
     int32_t read(const T*& start, int32_t ntoread);
+    int32_t readAtLeast(const T*& start, int32_t ntoread);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
     virtual int64_t skip(int64_t ntoskip);
@@ -63,16 +66,16 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
 }
 template <class T>
 int32_t
-BufferedInputStream<T>::read(const T*& start) {
+BufferedInputStream<T>::read_(const T*& start, int32_t min, int32_t max) {
     if (StreamBase<T>::status == Error) return -1;
     if (StreamBase<T>::status == Eof) return 0;
 
-    writeToBuffer(1);
+    writeToBuffer(min);
 
     if (StreamBase<T>::status == Error) return -1;
     if (StreamBase<T>::status == Eof) return 0;
 
-    int32_t nread = buffer.read(start);
+    int32_t nread = buffer.read(start, max);
     BufferedInputStream<T>::position += nread;
     if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
@@ -82,28 +85,24 @@ BufferedInputStream<T>::read(const T*& start) {
 }
 template <class T>
 int32_t
+BufferedInputStream<T>::read(const T*& start) {
+    return read_(start, 1, 0);
+}
+template <class T>
+int32_t
 BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
-    if (StreamBase<T>::status == Error) return -1;
-    if (StreamBase<T>::status == Eof) return 0;
-
-    writeToBuffer(ntoread);
-
-    if (StreamBase<T>::status == Error) return -1;
-    if (StreamBase<T>::status == Eof) return 0;
-
-    int32_t nread = buffer.read(start, ntoread);
-    BufferedInputStream<T>::position += nread;
-    if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
-            && finishedWritingToBuffer) {
-        BufferedInputStream<T>::status = Eof;
-    }
-    return nread;
+    return read_(start, ntoread, ntoread);
+}
+template <class T>
+int32_t
+BufferedInputStream<T>::readAtLeast(const T*& start, int32_t ntoread) {
+    return read_(start, ntoread, 0);
 }
 template <class T>
 StreamStatus
 BufferedInputStream<T>::mark(int32_t readlimit) {
-//    printf("mark %p %i\n", this, readlimit);
     buffer.mark(readlimit);
+//    printf("mark %p %i %i\n", this, readlimit, buffer.size);
     return Ok;
 }
 template <class T>

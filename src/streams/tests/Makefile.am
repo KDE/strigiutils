@@ -1,5 +1,7 @@
 INCLUDES = $(all_includes)
 
+noinst_PROGRAMS = mailtester
+
 check_PROGRAMS = testrunner
 
 TESTS = $(check_PROGRAMS) $(srcdir)/valgrindtest.sh
@@ -15,11 +17,16 @@ testrunner_SOURCES = ZipInputStreamTest.cpp \
 	InputStreamTest.cpp \
 	StringReaderTest.cpp \
 	InputStreamReaderTest.cpp \
+	MailInputStreamTest.cpp \
         inputstreamtests.cpp \
 	testrunner.cpp
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 testrunner_LDADD = $(top_builddir)/archivereader/src/streams/libstreams.la
 
-METASOURCES = AUTO
+mailtester_SOURCES = mailtester.cpp
+mailtester_LDFLAGS = $(QT_LDFLAGS) -lQtCore
+mailtester_LDADD = $(top_builddir)/archivereader/src/streams/libstreams.la
+
+testrunner_METASOURCES = AUTO
 
 CLEANFILES = testrunner.cpp

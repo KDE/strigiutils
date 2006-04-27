@@ -32,6 +32,10 @@ SubInputStream::read(const char*& start, int32_t ntoread) {
     }
     return nread;
 }
+int32_t
+SubInputStream::readAtLeast(const char*& start, int32_t ntoread) {
+    return read(start, ntoread);
+}
 StreamStatus
 SubInputStream::mark(int32_t readlimit) {
     markPos = position;
