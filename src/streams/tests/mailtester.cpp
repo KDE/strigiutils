@@ -9,6 +9,18 @@ using namespace jstreams;
 void
 testMailFile2(StreamBase<char>* input) {
     MailInputStream mail(input);
+    StreamBase<char>* a = mail.nextEntry();
+    while (a) {
+        int32_t size = 0;
+        const char* start;
+        int32_t nread = a->read(start);
+        while (nread > 0) {
+            size += nread;
+            nread = a->read(start);
+        }
+        printf("%p\t%i\n", a, size);
+        a = mail.nextEntry();
+    }
 //    qDebug() << mail.getSubject().c_str();
 //    qDebug() << mail.getContentType().c_str();
 }

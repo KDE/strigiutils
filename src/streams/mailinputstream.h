@@ -24,7 +24,7 @@ private:
     const char* bufstart;
     const char* bufend;
 
-    StreamBase<char>* entrystream;
+    Base64InputStream* entrystream;
     std::string subject;
     std::string contenttype;
     std::string* lastHeader;
@@ -37,6 +37,7 @@ private:
     void scanBody();
     void handleHeaderLine(const char* start, const char* end);
     bool handleBodyLine();
+    bool lineIsEndOfBlock();
 public:
     MailInputStream(StreamBase<char>* input);
     ~MailInputStream();

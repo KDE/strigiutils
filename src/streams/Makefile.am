@@ -4,7 +4,8 @@ libstreams_la_SOURCES = bz2inputstream.cpp \
 	fileinputstream.cpp gzipinputstream.cpp \
 	inputstreamreader.cpp filereader.cpp \
 	subinputstream.cpp mailinputstream.cpp \
-	tarinputstream.cpp zipinputstream.cpp dostime.c
+	tarinputstream.cpp zipinputstream.cpp dostime.c \
+	base64inputstream.cpp
 
 libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 

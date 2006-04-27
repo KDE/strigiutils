@@ -1,22 +1,9 @@
 #include "jstreamsconfig.h"
 #include "mailinputstream.h"
 #include "subinputstream.h"
+#include "base64inputstream.h"
 using namespace jstreams;
 using namespace std;
-
-namespace jstreams {
-class Base64InputStream : public StreamBase<char> {
-private:
-    const char* pos;
-    MailInputStream* source;
-    static const char* alphabet;
-    static bool inalphabet[256];
-    static char decoder[133];
-public:
-    Base64InputStream(MailInputStream*);
-    int32_t fillBuffer(char* start, int32_t space);
-};
-}
 
 /**
  * Very naive mail detection. An file that starts with 'Received:' or 'From:'
@@ -36,7 +23,24 @@ MailInputStream::MailInputStream(StreamBase<char>* input)
 //    printf("%p\n", input);
     linenum = 0;
     skipHeader();
-    scanBody();
+
+    // get the boundary
+    const char* ct = contenttype.c_str();
+    const char* battr = strcasestr(ct, "boundary=");
+    if (battr == 0) {
+        // so far we just scan for a bountdary attribute
+        return;
+    }
+    battr += 9;
+    const char* bend = strchr(battr, ';');
+    if (bend == 0) {
+        bend = ct + contenttype.length();
+    }
+    if (*battr == '"') {
+        boundary = string(battr+1, bend-battr-2);
+    } else {
+        boundary = string(battr, bend-battr);
+    }
 }
 MailInputStream::~MailInputStream() {
     if (entrystream) {
@@ -45,12 +49,15 @@ MailInputStream::~MailInputStream() {
 }
 void
 MailInputStream::readLine() {
+    if (bufstart == 0) return;
     linenum++;
     linestart = lineend;
     bool backslashr = false;
     if (eol) {
         linestart++; // skip \r or \n
         backslashr = *lineend == '\r';
+        //printf("%p %p %p %p\n", linestart, lineend, bufstart, bufend);
+        if (backslashr && linestart != bufend) printf("%i\n", *linestart);
         if (backslashr && linestart != bufend && *linestart == '\n') {
             // skip \n of \r\n
             linestart++;
@@ -92,6 +99,19 @@ MailInputStream::readLine() {
     }
 }
 void
+MailInputStream::fillBuffer() {
+    input->reset();
+    input->skip(linestart-bufstart);
+    input->mark(maxlinesize);
+    int32_t nread = input->readAtLeast(bufstart, maxlinesize);
+    if (nread > 0) {
+        bufend = bufstart + nread;
+        linestart = bufstart;
+    } else {
+        bufstart = 0;
+    }
+}
+void
 MailInputStream::skipHeader() {
     maxlinesize = 100;
     input->mark(maxlinesize);
@@ -114,49 +134,18 @@ MailInputStream::skipHeader() {
     }
 }
 void
-MailInputStream::fillBuffer() {
-    input->reset();
-    input->skip(linestart-bufstart);
-    input->mark(maxlinesize);
-    int32_t nread = input->readAtLeast(bufstart, maxlinesize);
-    if (nread > 0) {
-        bufend = bufstart + nread;
-        linestart = bufstart;
-    } else {
-        bufstart = 0;
-    }
-}
-void
 MailInputStream::scanBody() {
-    // get the boundary
-    const char* ct = contenttype.c_str();
-    const char* battr = strcasestr(ct, "boundary=");
-    if (battr == 0) {
-        // so far we just scan for a bountdary attribute
-        return;
-    }
-    battr += 9;
-    const char* bend = strchr(battr, ';');
-    if (bend == 0) {
-        bend = ct + contenttype.length();
-    }
-    if (*battr == '"') {
-        boundary = string(battr+1, bend-battr-2);
-    } else {
-        boundary = string(battr, bend-battr);
-    }
 
-    int n = 0;
     while (bufstart) {
         readLine();
-        if (handleBodyLine()) n++;
+        if (handleBodyLine()) break;
     }
 
 //    const char* bend = strchr(bstart+1, '"');
  //   string boundary(bstart+1, bend-bstart-2);
 //    printf("%s\n", contenttype.c_str());
 //    printf("%s\n", boundary.c_str());
-    printf("%s %i\n", boundary.c_str(), n);
+//    printf("%s %i\n", boundary.c_str(), n);
 }
 void
 MailInputStream::handleHeaderLine(const char* start, const char* end) {
@@ -181,7 +170,7 @@ MailInputStream::handleHeaderLine(const char* start, const char* end) {
 // return true if we are at the start of a base64 encoded block
 bool
 MailInputStream::handleBodyLine() {
-    if (boundary.length()+2 != lineend-linestart) {
+    if (boundary.length()+2 != size_t(lineend-linestart)) {
         return false;
     }
     int n = strncmp(boundary.c_str(), linestart+2, boundary.length());
@@ -197,116 +186,25 @@ MailInputStream::handleBodyLine() {
             }
         } while (bufstart && linestart != lineend);
     }
+    if (base64) {
+	entrystream = new Base64InputStream(this);
+        printf("new stream\n");
+    }
     return base64;
+}
+bool
+MailInputStream::lineIsEndOfBlock() {
+    //printf("%i %i '%s' '*s'\n", boundary.length()+4, lineend-linestart,
+    //    boundary.c_str());//, lineend-linestart, linestart);
+    return boundary.length()+4 == (size_t)(lineend-linestart)
+        && strncmp(boundary.c_str(), linestart, lineend-linestart);
 }
 StreamBase<char>*
 MailInputStream::nextEntry() {
+    delete entrystream;
+    entrystream = 0;
     if (status) return 0;
+    scanBody();
     return entrystream;
-}
-Base64InputStream::Base64InputStream(MailInputStream*s) :pos(s->bufend),
-        source(s) {
-    for (int i=64; i<256; ++i) {
-        inalphabet[i] = 0;
-    }
-    for (int i=0; i<64; ++i) {
-	inalphabet[alphabet[i]] = true;
-	decoder[alphabet[i]] = i;
-    }
-}
-int32_t
-Base64InputStream::fillBuffer(char* start, int32_t space) {
-    if (pos == source->bufend) {
-        source->readLine();
-        if (source->linestart == source->lineend) {
-            return 0;
-        }
-    }
-    return 0;
-}
-const char *Base64InputStream::alphabet
-    = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-bool Base64InputStream::inalphabet[256];
-char Base64InputStream::decoder[133];
-
-namespace jstreams {
-/**
- * Class for string search that uses the Knuth-Morris-Pratt algorithm.
- * Code based on the example on
- * http://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
- **/
-class KMPSearcher {
-private:
-    string query;
-    int32_t* table;
-    int32_t len;
-    int32_t maxlen;
-public:
-    KMPSearcher() :table(0) { }
-    ~KMPSearcher() {
-        if (table) {
-            free(table);
-        }
-    }
-    void setQuery(const string& );
-    const char* search(const char* haystack, int32_t haylen) const;
-};
-}
-void
-KMPSearcher::setQuery(const string& query) {
-    this->query = query;
-    int32_t len = query.length();
-    const char* p = query.c_str();
-    if (table) {
-        if (len > maxlen) {
-            table = (int32_t*)realloc(table, sizeof(int32_t)*(len+1));
-            maxlen = len;
-        }
-    } else {
-        table = (int32_t*)malloc(sizeof(int32_t)*(len+1));
-        maxlen = len;
-    }
-    int32_t i = 0;
-    int32_t j = -1;
-    char c = '\0';
-
-    // build the mismatch table    
-    table[0] = j;
-    while (i < len) {
-        if (p[i] == c) {
-            table[i + 1] = j + 1;
-            ++j;
-            ++i;
-        } else if (j > 0) {
-            j = table[j];
-        } else {
-            table[i + 1] = 0;
-            ++i;
-            j = 0;
-        }
-        c = p[j];
-    }
-}
-const char*
-KMPSearcher::search(const char* haystack, int32_t haylen) const {
-    if (table == 0) return 0;
-    const char* needle = query.c_str();
-    // search for the pattern
-    int32_t i = 0;
-    int32_t j = 0;
-    while (j + i < haylen && i < len) {
-        if (haystack[j + i] == needle[i]) {
-            ++i;
-        } else {
-            j += i - table[i];
-            if (i > 0) i = table[i];
-        }
-    }
-    
-    if (needle[i] == '\0') {
-        return haystack + j;
-    } else {
-        return 0;
-    }
 }
 
