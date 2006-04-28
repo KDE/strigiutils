@@ -77,7 +77,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     int32_t headersize = 1024;
     input->mark(headersize); // set to size required to determine file type
     const char* header;
-    headersize = input->read(header, headersize);
+    headersize = input->read(header, headersize, headersize);
     StreamStatus r;
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {

@@ -40,11 +40,11 @@ streamLen(InputStream *i) {
     long count = 0;
     const char *begin;
     int32_t nread;
-    nread = i->read(begin);
+    nread = i->read(begin, 1, 0);
     while (nread > 0) {
         count += nread;
 //        printf ("count %li\n", count);
-        nread = i->read(begin, 1);
+        nread = i->read(begin, 1, 1);
     }
     if (nread == -1) count = -1;
     return count;
@@ -67,7 +67,7 @@ void
 printSigPositions(InputStream *i) {
     const char *begin;
     int32_t nread;
-    i->read(begin, nread);
+    i->read(begin, nread, nread);
     printf("read: %i\n", nread);
     if (nread < 4) return;
     for (int32_t j=0; j<nread-4; j++) {

@@ -11,14 +11,14 @@ inputStreamTest1(StreamBase<T>* s) {
     int32_t n;
     if (size == -1) {
         n = 0;
-        int32_t n2 = s->read(ptr);
+        int32_t n2 = s->read(ptr, 1, 0);
         while (n2 > 0) {
             n += n2;
-            n2 = s->read(ptr);
+            n2 = s->read(ptr, 1, 0);
         }
     } else {
         // read past the end
-        n = s->read(ptr, size+1);
+        n = s->read(ptr, size+1, size+1);
     }
     QVERIFY(size == -1 || size == n);
     QVERIFY(s->getPosition() == n);

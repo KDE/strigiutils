@@ -52,9 +52,9 @@ public:
      *         end of the stream has been reached. If -1 is returned, an error
      *         has occured.
      **/
-    virtual int32_t read(const T*& start) = 0;
+ //   virtual int32_t read(const T*& start) = 0;
     /** 
-     * @brief Reads @p ntoread characters from the stream and sets \a start to
+     * @brief Reads characters from the stream and sets \a start to
      * the first character that was read.
      *
      * If @p ntoread is @c 0, then at least one character will be read.
@@ -65,15 +65,15 @@ public:
      *              is undefined.
      * @param ntoread The number of characters to read from the stream. If
      *                @p is @c 0 the stream reads at least 1 character.
-     * @return the number of characters that were read. If 0 is returned, the
-     *         end of the stream has been reached. If -1 is returned, an error
+     * @return the number of characters that were read. If -1 is returned, the
+     *         end of the stream has been reached. If -2 is returned, an error
      *         has occured.
      **/
-    virtual int32_t read(const T*& start, int32_t ntoread) = 0;
+    virtual int32_t read(const T*& start, int32_t min, int32_t max) = 0;
     /**
      * Same as read(const T*& start, int32_t ntoread), but may read more.
      **/
-    virtual int32_t readAtLeast(const T*& start, int32_t ntoread) = 0;
+//    virtual int32_t readAtLeast(const T*& start, int32_t ntoread) = 0;
     /* the available value may be greater than the actual value if
       the encoding is a variable one (such as utf8 or unicode) */
     /**
@@ -128,7 +128,7 @@ StreamBase<T>::skip(int64_t ntoskip) {
     int64_t skipped = 0;
     while (ntoskip) {
         int32_t step = (int32_t)((ntoskip > skipstep) ?skipstep :ntoskip);
-        nread = read(begin, step);
+        nread = read(begin, 0, step);
         if (nread < 0) {
             return skipped;
         } else if (nread < step) {

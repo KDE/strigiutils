@@ -32,7 +32,7 @@ const char*
 TarInputStream::readHeader() {
     // read the first 500 characters
     const char *begin;
-    int32_t nread = input->read(begin, 512);
+    int32_t nread = input->read(begin, 512, 512);
     if (nread != 512) {
         status = Error;
     }
@@ -116,7 +116,7 @@ TarInputStream::readLongLink(const char *b) {
     }
     const char *begin;
     if (status) return;
-    int32_t nread = input->read(begin, toread);
+    int32_t nread = input->read(begin, toread, toread);
     if (nread != toread) {
             status = Error;
             error = "Error reading LongLink: ";

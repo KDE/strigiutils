@@ -1,9 +1,18 @@
 #include "jstreamsconfig.h"
 #include "mailinputstream.h"
 #include "subinputstream.h"
-#include "base64inputstream.h"
 using namespace jstreams;
 using namespace std;
+
+namespace jstreams {
+class SubMailStream : public StreamBase<char> {
+public:
+    SubMailStream(MailInputStream*){}
+    int32_t read(const char*& start, int32_t min=0, int32_t max=0) {return 0;}
+    StreamStatus mark(int32_t readlimit) { return Error;}
+    StreamStatus reset() {return Error;}
+};
+}
 
 /**
  * Very naive mail detection. An file that starts with 'Received:' or 'From:'
@@ -103,7 +112,7 @@ MailInputStream::fillBuffer() {
     input->reset();
     input->skip(linestart-bufstart);
     input->mark(maxlinesize);
-    int32_t nread = input->readAtLeast(bufstart, maxlinesize);
+    int32_t nread = input->read(bufstart, maxlinesize, 0);
     if (nread > 0) {
         bufend = bufstart + nread;
         linestart = bufstart;
@@ -115,7 +124,7 @@ void
 MailInputStream::skipHeader() {
     maxlinesize = 100;
     input->mark(maxlinesize);
-    int32_t nread = input->read(bufstart, maxlinesize);
+    int32_t nread = input->read(bufstart, maxlinesize, 0);
     if (nread <= 0) {
         // error: file too short
         return;
@@ -187,7 +196,7 @@ MailInputStream::handleBodyLine() {
         } while (bufstart && linestart != lineend);
     }
     if (base64) {
-	entrystream = new Base64InputStream(this);
+	entrystream = new SubMailStream(this);
         printf("new stream\n");
     }
     return base64;

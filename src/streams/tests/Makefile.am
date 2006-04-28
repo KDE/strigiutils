@@ -1,6 +1,6 @@
 INCLUDES = $(all_includes)
 
-noinst_PROGRAMS = mailtester
+noinst_PROGRAMS =
 
 check_PROGRAMS = testrunner
 

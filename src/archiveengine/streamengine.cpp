@@ -47,7 +47,7 @@ StreamEngine::read(char* data, qint64 maxlen) {
         const char *start;
         int32_t nread;
         if (maxlen > INT32MAX) maxlen = INT32MAX;
-        nread = stream->read(start, (int32_t)maxlen);
+        nread = stream->read(start, (int32_t)maxlen, (int32_t)maxlen);
         if (nread > 0) {
             memcpy(data, start, nread);
             return nread;

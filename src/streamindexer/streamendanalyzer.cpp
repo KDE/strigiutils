@@ -11,7 +11,7 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     if (r != Ok) {
         return -1;
     }
-    nread = in->read(dummyptr, testsize);
+    nread = in->read(dummyptr, testsize, testsize);
     if (nread != testsize) {
         return -1;
     }

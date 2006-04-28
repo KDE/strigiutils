@@ -7,20 +7,16 @@ SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
     size = length;
 }
 int32_t
-SubInputStream::read(const char*& start) {
-    return read(start, 1024);
-}
-int32_t
-SubInputStream::read(const char*& start, int32_t ntoread) {
+SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     const int64_t left = size - position;
     if (left == 0) {
         return 0;
     }
     // restrict the amount of data that can be read
-    if (ntoread > left) {
-        ntoread = (int32_t)left;
+    if (max <= 0 || max > left) {
+        max = (int32_t)left;
     }
-    int32_t nread = input->read(start, ntoread);
+    int32_t nread = input->read(start, min, max);
     if (nread < 0) {
         status = Error;
         error = input->getError();
@@ -31,10 +27,6 @@ SubInputStream::read(const char*& start, int32_t ntoread) {
         }
     }
     return nread;
-}
-int32_t
-SubInputStream::readAtLeast(const char*& start, int32_t ntoread) {
-    return read(start, ntoread);
 }
 StreamStatus
 SubInputStream::mark(int32_t readlimit) {

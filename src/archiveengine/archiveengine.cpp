@@ -212,7 +212,7 @@ bool
 ArchiveEngine::testStream(InputStream* is, int32_t readsize) const {
     const char *start;
     is->mark(readsize);
-    return is->read(start, readsize) == readsize;
+    return is->read(start, readsize, readsize) == readsize;
 }
 InputStream*
 ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {

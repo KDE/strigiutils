@@ -15,8 +15,7 @@ public:
         const int32_t cachelen = 13,
         const int32_t cachebuff = 14 );
     ~FileReader();
-    int32_t read(const wchar_t*& start);
-    int32_t read(const wchar_t*& start, int32_t ntoread);
+    int32_t read(const wchar_t*& start, int32_t min, int32_t max);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
 };

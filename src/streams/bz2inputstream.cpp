@@ -57,7 +57,7 @@ BZ2InputStream::checkMagic() {
     int32_t nread;
 
     input->mark(5);
-    nread = input->read(begin, 5);
+    nread = input->read(begin, 5, 5);
     input->reset();
     if (nread != 5) {
         return false;
@@ -70,7 +70,7 @@ BZ2InputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    nread = input->read(inStart);
+    nread = input->read(inStart, 0, 0);
     if (status == Error) {
         error = "Error reading bz2: ";
         error += input->getError();

@@ -16,9 +16,7 @@ private:
 public:
     StringReader(const T* value, int32_t length = -1, bool copy = true);
     ~StringReader();
-    int32_t read(const T*& start);
-    int32_t read(const T*& start, int32_t ntoread);
-    int32_t readAtLeast(const T*& start, int32_t ntoread);
+    int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
@@ -53,26 +51,14 @@ StringReader<T>::~StringReader() {
 }
 template <class T>
 int32_t
-StringReader<T>::read(const T*& start) {
-    StreamBase<T>::status = Eof;
-    int64_t left = StreamBase<T>::size - StreamBase<T>::position;
-    if (left == 0) {
-        return 0;
-    }
-    int32_t nread = (int32_t)((left > INT32MAX) ?INT32MAX :left);
-    start = data + StreamBase<T>::position;
-    StreamBase<T>::position = StreamBase<T>::size;
-    return nread;
-}
-template <class T>
-int32_t
-StringReader<T>::read(const T*& start, int32_t ntoread) {
+StringReader<T>::read(const T*& start, int32_t min, int32_t max) {
     int64_t left = StreamBase<T>::size - StreamBase<T>::position;
     if (left == 0) {
         StreamBase<T>::status = Eof;
         return 0;
     }
-    int32_t nread = (int32_t)(ntoread > left) ?left :ntoread;
+    if (min < 0) min = 0;
+    int32_t nread = (int32_t)(max > left || max <= min) ?left :max;
     start = data + StreamBase<T>::position;
     StreamBase<T>::position += nread;
     if (StreamBase<T>::position == StreamBase<T>::size) {
@@ -81,15 +67,10 @@ StringReader<T>::read(const T*& start, int32_t ntoread) {
     return nread;
 }
 template <class T>
-int32_t
-StringReader<T>::readAtLeast(const T*& start, int32_t ntoread) {
-    return read(start);
-}
-template <class T>
 int64_t
 StringReader<T>::skip(int64_t ntoskip) {
     const T* start;
-    return read(start, ntoskip);
+    return read(start, ntoskip, ntoskip);
 }
 template <class T>
 StreamStatus

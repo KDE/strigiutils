@@ -69,7 +69,7 @@ GZipInputStream::checkMagic() {
     int32_t nread;
 
     input->mark(2);
-    nread = input->read(begin, 2);
+    nread = input->read(begin, 2, 2);
     input->reset();
     if (nread != 2) {
         return false;
@@ -83,7 +83,7 @@ GZipInputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    nread = input->read(inStart);
+    nread = input->read(inStart, 0, 0);
     if (nread == -1) {
         status = Error;
     }

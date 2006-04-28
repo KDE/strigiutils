@@ -86,7 +86,7 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
     if (input && charbuf.readPos == charbuf.start) {
         const char *begin;
         int32_t numRead;
-        numRead = input->read(begin, charbuf.size - charbuf.avail);
+        numRead = input->read(begin, 1, charbuf.size - charbuf.avail);
         //printf("filled up charbuf\n");
         switch (numRead) {
         case 0:

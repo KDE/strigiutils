@@ -14,25 +14,13 @@ FileReader::~FileReader() {
     if (input) delete input;
 }
 int32_t
-FileReader::read(const wchar_t*& start) {
-    int32_t nread = reader->read(start);
+FileReader::read(const wchar_t*& start, int32_t min, int32_t max) {
+    int32_t nread = reader->read(start, min, max);
     if (nread == -1) {
         error = reader->getError();
         status = Error;
         return -1;
     } else if (nread == 0) {
-        status = Eof;
-    }
-    return nread;
-}
-int32_t
-FileReader::read(const wchar_t*& start, int32_t ntoread) {
-    int32_t nread = reader->read(start, ntoread);
-    if (nread == -1) {
-        error = reader->getError();
-        status = Error;
-        return -1;
-    } else if (nread != ntoread) {
         status = Eof;
     }
     return nread;

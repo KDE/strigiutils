@@ -28,9 +28,7 @@ protected:
     void resetBuffer() {printf("implement 'resetBuffer'\n");}
 public:
     BufferedInputStream<T>();
-    int32_t read(const T*& start);
-    int32_t read(const T*& start, int32_t ntoread);
-    int32_t readAtLeast(const T*& start, int32_t ntoread);
+    int32_t read(const T*& start, int32_t min, int32_t max);
     StreamStatus mark(int32_t readlimit);
     StreamStatus reset();
     virtual int64_t skip(int64_t ntoskip);
@@ -66,7 +64,7 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
 }
 template <class T>
 int32_t
-BufferedInputStream<T>::read_(const T*& start, int32_t min, int32_t max) {
+BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     if (StreamBase<T>::status == Error) return -1;
     if (StreamBase<T>::status == Eof) return 0;
 
@@ -82,21 +80,6 @@ BufferedInputStream<T>::read_(const T*& start, int32_t min, int32_t max) {
         BufferedInputStream<T>::status = Eof;
     }
     return nread;
-}
-template <class T>
-int32_t
-BufferedInputStream<T>::read(const T*& start) {
-    return read_(start, 1, 0);
-}
-template <class T>
-int32_t
-BufferedInputStream<T>::read(const T*& start, int32_t ntoread) {
-    return read_(start, ntoread, ntoread);
-}
-template <class T>
-int32_t
-BufferedInputStream<T>::readAtLeast(const T*& start, int32_t ntoread) {
-    return read_(start, ntoread, 0);
 }
 template <class T>
 StreamStatus
@@ -125,7 +108,7 @@ BufferedInputStream<T>::skip(int64_t ntoskip) {
     int64_t skipped = 0;
     while (ntoskip) {
         int32_t step = (int32_t)((ntoskip > buffer.size) ?buffer.size :ntoskip);
-        nread = read(begin, step);
+        nread = read(begin, 1, step);
         if (nread <= 0) {
             return skipped;
         }

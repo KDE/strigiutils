@@ -10,7 +10,7 @@
  **/
 
 namespace jstreams {
-class Base64InputStream;
+class SubMailStream;
 class MailInputStream : public SubStreamProvider {
 friend class Base64InputStream;
 private:
@@ -24,7 +24,7 @@ private:
     const char* bufstart;
     const char* bufend;
 
-    Base64InputStream* entrystream;
+    SubMailStream* entrystream;
     std::string subject;
     std::string contenttype;
     std::string* lastHeader;

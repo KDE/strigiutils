@@ -80,7 +80,7 @@ ZipInputStream::readHeader() {
 
     // read the first 30 characters
     toread = 30;
-    nread = input->read(b, toread);
+    nread = input->read(b, toread, toread);
     if (nread != toread) {
         error = "Error reading zip header: ";
         if (nread == -1) {
@@ -149,7 +149,7 @@ void
 ZipInputStream::readFileName(int32_t len) {
     entryinfo.filename.resize(0);
     const char *begin;
-    int32_t nread = input->read(begin, len);
+    int32_t nread = input->read(begin, len, len);
     if (nread != len) {
         error = "Error reading filename: ";
         if (nread == -1) {
