@@ -32,13 +32,15 @@ foreach (glob("$dir/*Test.h")) {
 	print FH "#include \"$_\"\n";
 }
 
-print FH "int main() {\n\tint leaked = 0;\n";
+print FH "int main(int argc, char** argv) {\n\tint leaked = 0;\n";
+print FH "\tbool all = argc == 1;\n\tfor (int i = (all)?0:1; i<argc; ++i) {\n";
 print FH "\tQDir::setCurrent(\"$srcdir\");\n";
 
 foreach (glob("$dir/*Test.h")) {
 	s#$dir/##;
         s#.h$##;
-	print FH "\tleaked += test(new $_());\n";
+	print FH "\t\tif (all || strcmp(argv[i],\"$_\")==0)\n";
+        print FH "\t\t\tleaked += test(new $_());\n";
 }
 
-print FH "\treturn leaked;\n}\n";
+print FH "\t}\treturn leaked;\n}\n";
