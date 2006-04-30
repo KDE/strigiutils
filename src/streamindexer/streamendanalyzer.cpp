@@ -7,8 +7,8 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     int32_t testsize = 1;
     const char *dummyptr;
     int32_t nread;
-    StreamStatus r = in->mark(testsize);
-    if (r != Ok) {
+    int64_t r = in->mark(testsize);
+    if (r < 0) {
         return -1;
     }
     nread = in->read(dummyptr, testsize, testsize);

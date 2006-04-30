@@ -78,14 +78,13 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     input->mark(headersize); // set to size required to determine file type
     const char* header;
     headersize = input->read(header, headersize, headersize);
-    StreamStatus r;
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
         if ((*es)->checkHeader(header, headersize)) {
             char ar = (*es)->analyze(path, input, depth+1, this);
             if (ar) {
-                r = input->reset();
-                if (r != Ok) { // could not reset
+                int64_t pos = input->reset();
+                if (pos != 0) { // could not reset
                     printf("could not reset\n");
                     return -2;
                 }

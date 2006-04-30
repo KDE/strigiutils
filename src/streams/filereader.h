@@ -17,7 +17,7 @@ public:
     ~FileReader();
     int32_t read(const wchar_t*& start, int32_t min, int32_t max);
     int64_t mark(int32_t readlimit);
-    StreamStatus reset();
+    int64_t reset();
 };
 
 } // end namespace jstreams

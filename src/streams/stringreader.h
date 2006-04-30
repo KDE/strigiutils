@@ -19,7 +19,7 @@ public:
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     int64_t mark(int32_t readlimit);
-    StreamStatus reset();
+    int64_t reset();
 };
 
 template <class T>
@@ -79,7 +79,7 @@ StringReader<T>::mark(int32_t /*readlimit*/) {
     return markpt;
 }
 template <class T>
-StreamStatus
+int64_t
 StringReader<T>::reset() {
     StreamBase<T>::position = markpt;
     if (markpt == StreamBase<T>::size) {
@@ -87,7 +87,7 @@ StringReader<T>::reset() {
     } else {
         StreamBase<T>::status = Ok;
     }
-    return Ok;
+    return markpt;
 }
 
 } // end namespace jstreams

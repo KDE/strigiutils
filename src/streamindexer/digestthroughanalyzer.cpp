@@ -5,7 +5,6 @@ using namespace jstreams;
 
 class DigestInputStream : public InputStream {
 private:
-    int32_t sinceMark;
     int32_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
@@ -14,14 +13,13 @@ public:
     DigestInputStream(InputStream *input);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
-    StreamStatus mark(int32_t readlimit);
-    StreamStatus reset();
+    int64_t mark(int32_t readlimit);
+    int64_t reset();
     void printDigest();
 };
 DigestInputStream::DigestInputStream(InputStream *input) {
     this->input = input;
     status = Ok;
-    sinceMark = 0;
     ignoreBytes = 0;
     SHA1_Init(&sha1);
 }
@@ -37,7 +35,6 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
         status = Eof;
         return Eof;
     }
-    sinceMark += nread;
     if (ignoreBytes < nread) {
         SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
         ignoreBytes = 0;
@@ -52,20 +49,24 @@ DigestInputStream::skip(int64_t ntoskip) {
     // read() which is required for updating the hash
     return input->skip(ntoskip);
 }
-StreamStatus
+int64_t
 DigestInputStream::mark(int32_t readlimit) {
     if (status) return status;
-    sinceMark = 0;
     return input->mark(readlimit);
 }
-StreamStatus
+int64_t
 DigestInputStream::reset() {
-    StreamStatus s = input->reset();
-    if (s == Ok) {
-        ignoreBytes += sinceMark;
-        sinceMark = 0;
+    int64_t newpos = input->reset();
+    if (newpos < 0) {
+        status = Error;
+        error = input->getError();
+    } else {
+        if (newpos < position) {
+            ignoreBytes += position - newpos;
+        }
     }
-    return input->reset();
+    position = newpos;
+    return newpos;
 }
 void
 DigestInputStream::printDigest() {

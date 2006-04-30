@@ -116,7 +116,7 @@ public:
        *   would have been the next input data as of the time of the call to
        *   reset.
        **/
-    virtual StreamStatus reset() = 0;
+    virtual int64_t reset() = 0;
 };
 
 template <class T>

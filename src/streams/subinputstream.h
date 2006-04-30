@@ -13,7 +13,7 @@ public:
     SubInputStream(StreamBase<char> *input, int64_t size);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t mark(int32_t readlimit);
-    StreamStatus reset();
+    int64_t reset();
     int64_t skip(int64_t ntoskip);
 };
 

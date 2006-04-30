@@ -30,10 +30,13 @@ FileReader::mark(int32_t readlimit) {
     int64_t mp = reader->mark(readlimit);
     return mp;
 }
-StreamStatus
+int64_t
 FileReader::reset() {
-    status = reader->reset();
-    if (status != Ok) error = reader->getError();
-    return status;
+    position = reader->reset();
+    if (position < 0) {
+        status = Error;
+        error = reader->getError();
+    }
+    return position;
 }
 

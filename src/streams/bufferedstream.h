@@ -30,7 +30,7 @@ public:
     BufferedInputStream<T>();
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t mark(int32_t readlimit);
-    StreamStatus reset();
+    int64_t reset();
     virtual int64_t skip(int64_t ntoskip);
 };
 
@@ -89,15 +89,15 @@ BufferedInputStream<T>::mark(int32_t readlimit) {
     return StreamBase<T>::position;
 }
 template <class T>
-StreamStatus
+int64_t
 BufferedInputStream<T>::reset() {
     if (buffer.markPos) {
         BufferedInputStream<T>::position -= buffer.readPos - buffer.markPos;
         buffer.reset();
-        return Ok;
+        return BufferedInputStream<T>::position;
     } else {
         StreamBase<T>::error = "No valid mark for reset.";
-        return Error;
+        return -1;
     }
 }
 template <class T>
