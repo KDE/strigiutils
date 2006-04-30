@@ -1,18 +1,9 @@
 #include "jstreamsconfig.h"
 #include "mailinputstream.h"
 #include "subinputstream.h"
+#include "stringterminatedsubstream.h"
 using namespace jstreams;
 using namespace std;
-
-namespace jstreams {
-class SubMailStream : public StreamBase<char> {
-public:
-    SubMailStream(MailInputStream*){}
-    int32_t read(const char*& start, int32_t min=0, int32_t max=0) {return 0;}
-    StreamStatus mark(int32_t readlimit) { return Error;}
-    StreamStatus reset() {return Error;}
-};
-}
 
 /**
  * Very naive mail detection. An file that starts with 'Received:' or 'From:'
@@ -194,12 +185,10 @@ MailInputStream::handleBodyLine() {
                 base64 = true;
             }
         } while (bufstart && linestart != lineend);
+        if (entrystream) delete entrystream;
+        entrystream = new StringTerminatedSubStream(input, boundary);
     }
-    if (base64) {
-	entrystream = new SubMailStream(this);
-        printf("new stream\n");
-    }
-    return base64;
+    return n == 0;
 }
 bool
 MailInputStream::lineIsEndOfBlock() {

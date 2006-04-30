@@ -30,7 +30,7 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     bzstream.avail_in = 0;
     bzstream.next_in = NULL;
     int r;
-    r = BZ2_bzDecompressInit(&bzstream, 0, 0);
+    r = BZ2_bzDecompressInit(&bzstream, 1, 0);
     if (r != BZ_OK) {
         error = "Error initializing BZ2InputStream.";
         printf("Error initializing BZ2InputStream.\n");
@@ -70,7 +70,7 @@ BZ2InputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    nread = input->read(inStart, 0, 0);
+    nread = input->read(inStart, 1, 0);
     if (status == Error) {
         error = "Error reading bz2: ";
         error += input->getError();

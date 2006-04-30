@@ -10,9 +10,7 @@
  **/
 
 namespace jstreams {
-class SubMailStream;
 class MailInputStream : public SubStreamProvider {
-friend class Base64InputStream;
 private:
     // variables that record the current read state
     bool firstline;
@@ -24,7 +22,7 @@ private:
     const char* bufstart;
     const char* bufend;
 
-    SubMailStream* entrystream;
+    StreamBase<char>* entrystream;
     std::string subject;
     std::string contenttype;
     std::string* lastHeader;

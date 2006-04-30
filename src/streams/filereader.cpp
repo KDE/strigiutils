@@ -25,11 +25,10 @@ FileReader::read(const wchar_t*& start, int32_t min, int32_t max) {
     }
     return nread;
 }
-StreamStatus
+int64_t
 FileReader::mark(int32_t readlimit) {
-    status = reader->mark(readlimit);
-    if (status != Ok) error = reader->getError();
-    return status;
+    int64_t mp = reader->mark(readlimit);
+    return mp;
 }
 StreamStatus
 FileReader::reset() {

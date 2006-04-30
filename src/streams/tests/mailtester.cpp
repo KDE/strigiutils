@@ -12,11 +12,12 @@ testMailFile2(StreamBase<char>* input) {
     StreamBase<char>* a = mail.nextEntry();
     while (a) {
         int32_t size = 0;
+        bool readall = false;
         const char* start;
-        int32_t nread = a->read(start);
-        while (nread > 0) {
+        int32_t nread = a->read(start, 1, 1);
+        while (readall && nread > 0) {
             size += nread;
-            nread = a->read(start);
+            nread = a->read(start, 1, 1);
         }
         printf("%p\t%i\n", a, size);
         a = mail.nextEntry();
@@ -30,7 +31,7 @@ testMailFile(const QByteArray &filename) {
     FileInputStream file((const char*)filename);
     file.mark(10000);
     const char* header;
-    file.read(header, 50);
+    file.read(header, 50, 50);
     bool ok = MailInputStream::checkHeader(header, 50);
     if (ok) {
         testMailFile2(&file);

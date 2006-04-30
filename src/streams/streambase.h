@@ -100,7 +100,7 @@ public:
       * When calling the method mark more than once at the same position in the
       * stream, the call with the largest value for \p readlimit is defining.
       **/
-    virtual StreamStatus mark(int32_t readlimit) = 0;
+    virtual int64_t mark(int32_t readlimit) = 0;
       /**
        * \short Repositions this stream to the position at the time the mark
        * method was last called on this input stream.

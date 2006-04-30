@@ -29,7 +29,7 @@ protected:
 public:
     BufferedInputStream<T>();
     int32_t read(const T*& start, int32_t min, int32_t max);
-    StreamStatus mark(int32_t readlimit);
+    int64_t mark(int32_t readlimit);
     StreamStatus reset();
     virtual int64_t skip(int64_t ntoskip);
 };
@@ -82,11 +82,11 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     return nread;
 }
 template <class T>
-StreamStatus
+int64_t
 BufferedInputStream<T>::mark(int32_t readlimit) {
     buffer.mark(readlimit);
 //    printf("mark %p %i %i\n", this, readlimit, buffer.size);
-    return Ok;
+    return StreamBase<T>::position;
 }
 template <class T>
 StreamStatus

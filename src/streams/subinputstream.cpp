@@ -3,7 +3,7 @@
 using namespace jstreams;
 
 SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
-        : input(i) {
+        : offset(i->getPosition()), input(i) {
     size = length;
 }
 int32_t
@@ -28,17 +28,15 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     return nread;
 }
-StreamStatus
+int64_t
 SubInputStream::mark(int32_t readlimit) {
-    markPos = position;
-    return input->mark(readlimit);
+    position = input->mark(readlimit) - offset;
+    return position;
 }
 StreamStatus
 SubInputStream::reset() {
     StreamStatus s = input->reset();
-    if (s == Ok) {
-        position = markPos;
-    }
+    position = input->getPosition() - offset;
     return s;
 }
 int64_t

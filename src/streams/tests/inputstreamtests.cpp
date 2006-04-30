@@ -32,7 +32,7 @@ template <class T>
 void
 inputStreamTest2(StreamBase<T>* s) {
     int64_t p = s->getPosition();
-    QVERIFY(s->mark(100) == Ok);
+    QVERIFY(s->mark(100) >= 0);
     QVERIFY(s->skip(100) > 0);
     QVERIFY(s->reset() == Ok);
     QVERIFY(s->getPosition() == p);

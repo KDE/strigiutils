@@ -18,7 +18,7 @@ public:
     ~StringReader();
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
-    StreamStatus mark(int32_t readlimit);
+    int64_t mark(int32_t readlimit);
     StreamStatus reset();
 };
 
@@ -73,10 +73,10 @@ StringReader<T>::skip(int64_t ntoskip) {
     return read(start, ntoskip, ntoskip);
 }
 template <class T>
-StreamStatus
+int64_t
 StringReader<T>::mark(int32_t /*readlimit*/) {
     markpt = StreamBase<T>::position;
-    return Ok;
+    return markpt;
 }
 template <class T>
 StreamStatus
