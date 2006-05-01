@@ -31,8 +31,8 @@ FileReader::mark(int32_t readlimit) {
     return mp;
 }
 int64_t
-FileReader::reset() {
-    position = reader->reset();
+FileReader::reset(int64_t newpos) {
+    position = reader->reset(newpos);
     if (position < 0) {
         status = Error;
         error = reader->getError();

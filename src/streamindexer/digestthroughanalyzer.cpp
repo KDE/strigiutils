@@ -14,7 +14,7 @@ public:
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     int64_t mark(int32_t readlimit);
-    int64_t reset();
+    int64_t reset(int64_t);
     void printDigest();
 };
 DigestInputStream::DigestInputStream(InputStream *input) {
@@ -55,8 +55,8 @@ DigestInputStream::mark(int32_t readlimit) {
     return input->mark(readlimit);
 }
 int64_t
-DigestInputStream::reset() {
-    int64_t newpos = input->reset();
+DigestInputStream::reset(int64_t newpos) {
+    newpos = input->reset(newpos);
     if (newpos < 0) {
         status = Error;
         error = input->getError();

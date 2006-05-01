@@ -58,7 +58,7 @@ analyze(InputStream *i, const char *path) {
     GZipInputStream gz(i);
     count = streamLen(&gz);
     if (count == -2) {
-        i->reset();
+        i->reset(0);
         count = streamLen(i);
     }
     fprintf(stderr, "read %li bytes from file %s\n", count, path);

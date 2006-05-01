@@ -34,7 +34,7 @@ inputStreamTest2(StreamBase<T>* s) {
     int64_t p = s->getPosition();
     QVERIFY(s->mark(100) >= 0);
     QVERIFY(s->skip(100) > 0);
-    QVERIFY(s->reset() == Ok);
+    QVERIFY(s->reset(p) == p);
     QVERIFY(s->getPosition() == p);
     inputStreamTest1(s);
 }

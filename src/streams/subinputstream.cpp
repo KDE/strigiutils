@@ -34,8 +34,8 @@ SubInputStream::mark(int32_t readlimit) {
     return position;
 }
 int64_t
-SubInputStream::reset() {
-    position = input->reset();
+SubInputStream::reset(int64_t newpos) {
+    position = input->reset(newpos + offset);
     if (position < 0) {
         status = Error;
         error = input->getError();

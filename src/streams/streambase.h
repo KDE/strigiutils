@@ -116,7 +116,7 @@ public:
        *   would have been the next input data as of the time of the call to
        *   reset.
        **/
-    virtual int64_t reset() = 0;
+    virtual int64_t reset(int64_t pos) = 0;
 };
 
 template <class T>

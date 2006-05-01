@@ -68,9 +68,9 @@ GZipInputStream::checkMagic() {
     const char* begin;
     int32_t nread;
 
-    input->mark(2);
+    int64_t markpos = input->mark(2);
     nread = input->read(begin, 2, 2);
-    input->reset();
+    input->reset(markpos);
     if (nread != 2) {
         return false;
     }

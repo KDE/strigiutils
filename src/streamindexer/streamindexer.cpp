@@ -83,7 +83,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
         if ((*es)->checkHeader(header, headersize)) {
             char ar = (*es)->analyze(path, input, depth+1, this);
             if (ar) {
-                int64_t pos = input->reset();
+                int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
                     printf("could not reset\n");
                     return -2;

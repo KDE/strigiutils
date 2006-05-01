@@ -15,8 +15,8 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     if (nread != testsize) {
         return -1;
     }
-    r = in->reset();
-    if (r != Ok) {
+    int64_t nr = in->reset(r);
+    if (r != nr) {
         return -1;
     }
     return 0;

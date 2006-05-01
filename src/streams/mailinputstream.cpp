@@ -100,8 +100,9 @@ MailInputStream::readLine() {
 }
 void
 MailInputStream::fillBuffer() {
-    input->reset();
-    input->skip(linestart-bufstart);
+    int64_t pos = input->getPosition();
+    pos -= bufend-linestart;
+    input->reset(pos);
     input->mark(maxlinesize);
     int32_t nread = input->read(bufstart, maxlinesize, 0);
     if (nread > 0) {

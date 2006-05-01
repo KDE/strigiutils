@@ -171,7 +171,7 @@ ArchiveEngine::openArchive() {
         setError(QFile::NoError, "");
         return;
     }
-    if (compressed->reset() != Ok) {
+    if (compressed->reset(0) != 0) {
         qDebug("ArchiveEngine mark call is too small.");
         return;
     }
@@ -182,7 +182,7 @@ ArchiveEngine::openArchive() {
         return;
     }
     setError(QFile::FatalError, zipstream->getError());
-    if (compressed->reset() != Ok) {
+    if (compressed->reset(0) != Ok) {
         qDebug("ArchiveEngine mark call is too small.");
         return;
     }
@@ -219,24 +219,24 @@ ArchiveEngine::decompress(InputStream* is, int32_t bufsize) const {
     // try bzip
     InputStream *dec = new BZ2InputStream(is);
     if (testStream(dec, bufsize)) {
-        if (dec->reset() != Ok) {
+        if (dec->reset(0) != 0) {
             qDebug("ArchiveEngine mark call is too small.");
         }
         return dec;
     }
     delete dec;
-    if (is->reset() != Ok) {
+    if (is->reset(0) != 0) {
         qDebug("ArchiveEngine mark call is too small.");
     }
 
     // try gzip
     dec = new GZipInputStream(is);
     if (testStream(dec, bufsize)) {
-        dec->reset();
+        dec->reset(0);
         return dec;
     }
     delete dec;
-    is->reset();
+    is->reset(0);
     return 0;
 }
 void
