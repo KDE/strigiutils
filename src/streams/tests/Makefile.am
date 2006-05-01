@@ -18,6 +18,7 @@ testrunner_SOURCES = ZipInputStreamTest.cpp \
 	StringReaderTest.cpp \
 	InputStreamReaderTest.cpp \
 	MailInputStreamTest.cpp \
+	StringTerminatedSubStreamTest.cpp \
         inputstreamtests.cpp \
 	testrunner.cpp
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
