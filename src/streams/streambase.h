@@ -102,10 +102,15 @@ public:
       **/
     virtual int64_t mark(int32_t readlimit) = 0;
       /**
-       * \short Repositions this stream to the position at the time the mark
-       * method was last called on this input stream.
+       * \short Repositions this stream to given requested position.
        * The general contract of reset is:
-       * - If the method mark has not been called since the stream was created,
+       * - Reset is guaranteed to work after a successfull call to read(),
+       *   when new position is in the range of the data returned by read().
+       *   This means that @p pos must lie between than the position
+       *   corresponding to the @p start parameter (x) of the @r read function
+       *   and the position corresponding to the last position in the returned
+       *   buffer (x + @p nread).
+       * if If the method mark has not been called since the stream was created,
        *   or the number of bytes read from the stream since mark was last
        *   called is larger than the argument to mark at that last call, then
        *   Error is returned.

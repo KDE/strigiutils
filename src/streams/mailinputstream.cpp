@@ -2,6 +2,7 @@
 #include "mailinputstream.h"
 #include "subinputstream.h"
 #include "stringterminatedsubstream.h"
+#include "base64inputstream.h"
 using namespace jstreams;
 using namespace std;
 
@@ -19,7 +20,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
         || memcmp(receiver, data, receiverlength) == 0;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
-        : SubStreamProvider(input), entrystream(0) {
+        : SubStreamProvider(input), entrystream(0), substream(0) {
 //    printf("%p\n", input);
     linenum = 0;
     skipHeader();
@@ -45,6 +46,9 @@ MailInputStream::MailInputStream(StreamBase<char>* input)
 MailInputStream::~MailInputStream() {
     if (entrystream) {
         delete entrystream;
+    }
+    if (substream) {
+        delete substream;
     }
 }
 void
@@ -186,17 +190,14 @@ MailInputStream::handleBodyLine() {
                 base64 = true;
             }
         } while (bufstart && linestart != lineend);
-        if (entrystream) delete entrystream;
-        entrystream = new StringTerminatedSubStream(input, boundary);
+        if (base64) {
+            if (substream) delete substream;
+            if (entrystream) delete entrystream;
+            substream = new StringTerminatedSubStream(input, boundary);
+            entrystream = new Base64InputStream(substream);
+        }
     }
     return n == 0;
-}
-bool
-MailInputStream::lineIsEndOfBlock() {
-    //printf("%i %i '%s' '*s'\n", boundary.length()+4, lineend-linestart,
-    //    boundary.c_str());//, lineend-linestart, linestart);
-    return boundary.length()+4 == (size_t)(lineend-linestart)
-        && strncmp(boundary.c_str(), linestart, lineend-linestart);
 }
 StreamBase<char>*
 MailInputStream::nextEntry() {

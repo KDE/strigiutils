@@ -11,8 +11,13 @@ open(FH, "> testrunner.cpp") or die;
 
 print FH <<THEEND
 #include <QtTest/QtTest>
+#ifdef HAVE_VALGRIND_H
 #include <valgrind/valgrind.h>
 #include <valgrind/memcheck.h>
+#else
+#define VALGRIND_DO_QUICK_LEAK_CHECK
+#define VALGRIND_COUNT_LEAKS(a,b,c,d)
+#endif
 int
 test(QObject* o) {
     int errors;
