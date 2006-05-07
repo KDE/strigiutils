@@ -7,41 +7,68 @@ using namespace jstreams;
 using namespace std;
 
 /**
- * Very naive mail detection. An file that starts with 'Received:' or 'From:'
- * must be an email.
+ * Validate a mail header. The header format is checked, but not the presence
+ * of required fields. It is recommended to use a datasize of at least 512
+ * bytes.
  **/
 bool
 MailInputStream::checkHeader(const char* data, int32_t datasize) {
-    static char* from = "From: ";
-    static char* receiver = "Received: ";
-    int fromlength = (datasize > 6) ?6: datasize;
-    int receiverlength = (datasize > 10) ?10: datasize;
-    return memcmp(from, data, fromlength) == 0
-        || memcmp(receiver, data, receiverlength) == 0;
+    int linecount = 1;
+    bool key = true;
+    bool slashr = false;
+    char prevc = 0;
+    int32_t pos = 0;
+    while (pos < datasize) {
+        char c = data[pos++];
+        if (slashr) {
+            slashr = false;
+            if (c == '\n') {
+                continue;
+            }
+        }
+        if (key) {
+            if (c == ':' || (isblank(c) && isspace(prevc))) {
+                // ':' signals the end of the key, a line starting with space
+                // is a continuation of the previous line's value
+                key = false;
+            } else if ((c == '\n' || c == '\r') && linecount > 5
+                    && (prevc == '\n' || prevc == '\r')) {
+                // if at least 5 header lines were read and an empty line is
+                // encountered, the mail header is valid
+                return true;
+            } else if (c != '-' && !isalpha(c)) {
+                // an invalid character in the key
+                return false;
+            }
+        } else {
+            // check that the text is 7-bit
+            //if (c <= 0) return false;
+            if (c == '\n' || c == '\r') {
+                // a new line starts, so a new key
+                key = true;
+                linecount++;
+                // enable reading of \r\n line endings
+                if (c == '\r') {
+                    slashr = true;
+                }
+            }
+        }
+        prevc = c;
+    }
+    return true;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), entrystream(0), substream(0) {
 //    printf("%p\n", input);
     linenum = 0;
     skipHeader();
-
-    // get the boundary
-    const char* ct = contenttype.c_str();
-    const char* battr = strcasestr(ct, "boundary=");
-    if (battr == 0) {
-        // so far we just scan for a bountdary attribute
+    if (bufstart == 0) {
+        printf("no valid header\n");
         return;
     }
-    battr += 9;
-    const char* bend = strchr(battr, ';');
-    if (bend == 0) {
-        bend = ct + contenttype.length();
-    }
-    if (*battr == '"') {
-        boundary = string(battr+1, bend-battr-2);
-    } else {
-        boundary = string(battr, bend-battr);
-    }
+
+    // get the boundary
+    boundary = getValue("boundary", contenttype);
 }
 MailInputStream::~MailInputStream() {
     if (entrystream) {
@@ -73,6 +100,7 @@ MailInputStream::readLine() {
     }
     eol = true;
     if (lineend == bufend) {
+        rewindToLineStart();
         fillBuffer();
         if (bufstart == 0) {
             // the input has been exhausted
@@ -83,6 +111,7 @@ MailInputStream::readLine() {
             // boundary
             linestart++;
             if (linestart == bufend) {
+                rewindToLineStart();
                 fillBuffer();
                 if (bufstart == 0) {
                     // the input has been exhausted
@@ -101,15 +130,48 @@ MailInputStream::readLine() {
             eol = false;
         }
     }
+//    printf("%.*s\n", lineend-linestart, linestart);
+}
+string
+MailInputStream::getValue(const char* n, const string& headerline) const {
+    string name = n;
+    name += "=";
+    string value;
+    // get the value
+    const char* hl = headerline.c_str();
+    const char* v = strcasestr(hl, name.c_str());
+    if (v == 0) {
+        // so far we just scan for a value attribute
+        return value;
+    }
+    v += name.length();
+    const char* vend = strchr(v, ';');
+    if (vend == 0) {
+        vend = hl + headerline.length();
+    }
+    if (*v == '"') {
+        value = string(v+1, vend-v-2);
+    } else {
+        value = string(v, vend-v);
+    }
+    return value;
+}
+/**
+ * Position the stream to the start of the active line. So in the next
+ * call to this function, this line is read again.
+ **/
+void
+MailInputStream::rewindToLineStart() {
+    int64_t rp = bufstartpos + (linestart-bufstart);
+    int64_t np = input->reset(bufstartpos + (linestart-bufstart));
+    //printf("rewind %lli %lli\n", rp, np);
 }
 void
 MailInputStream::fillBuffer() {
-    int64_t pos = input->getPosition();
-    pos -= bufend-linestart;
-    input->reset(pos);
-    input->mark(maxlinesize);
+    bufstartpos = input->getPosition();
     int32_t nread = input->read(bufstart, maxlinesize, 0);
     if (nread > 0) {
+//        printf("buf: '%.*s'\n", 10, bufstart);
         bufend = bufstart + nread;
         linestart = bufstart;
     } else {
@@ -119,31 +181,37 @@ MailInputStream::fillBuffer() {
 void
 MailInputStream::skipHeader() {
     maxlinesize = 100;
-    input->mark(maxlinesize);
-    int32_t nread = input->read(bufstart, maxlinesize, 0);
-    if (nread <= 0) {
+
+    fillBuffer();
+    lineend = bufstart;
+
+    if (bufstart == 0) {
         // error: file too short
         return;
     }
     lastHeader = 0;
     eol = false;
-    bufend = bufstart + nread;
-    lineend = bufstart;
     readLine();
     while (bufstart) {
         readLine();
         if (linestart == lineend) {
-            return;
+            break;
         }
-        handleHeaderLine(linestart, lineend);
+        handleHeaderLine();
     }
+    readLine();
+    rewindToLineStart();
 }
 void
 MailInputStream::scanBody() {
-
     while (bufstart) {
         readLine();
-        if (handleBodyLine()) break;
+        if (boundary.length()+2 == size_t(lineend-linestart)
+                && strncmp(boundary.c_str(), linestart+2, boundary.length())
+                 == 0) {
+            handleBodyLine();
+            break;
+        }
     }
 
 //    const char* bend = strchr(bstart+1, '"');
@@ -153,58 +221,113 @@ MailInputStream::scanBody() {
 //    printf("%s %i\n", boundary.c_str(), n);
 }
 void
-MailInputStream::handleHeaderLine(const char* start, const char* end) {
+MailInputStream::handleHeaderLine() {
     static const char* subject = "Subject:";
     static const char* contenttype = "Content-Type:";
-    if (end-start < 2) return;
-    if (lastHeader && isspace(*start)) {
-        *lastHeader += string(start, end-start);
-    } else if (end-start < 8) {
+    static const char* contenttransferencoding = "Content-Transfer-Encoding:";
+    static const char* contentdisposition = "Content-Disposition:";
+    int32_t len = lineend - linestart;
+    if (len < 2) return;
+    if (lastHeader && isspace(*linestart)) {
+        *lastHeader += string(linestart, len);
+    } else if (len < 8) {
         lastHeader = 0;
         return;
-    } else if (strncasecmp(start, subject, 8) == 0) {
-        this->subject = std::string(start, end-start);
+    } else if (strncasecmp(linestart, subject, 8) == 0) {
+        this->subject = std::string(linestart, len);
         lastHeader = &this->subject;
-    } else if (strncasecmp(start, contenttype, 13) == 0) {
-        this->contenttype = std::string(start, end-start);
+    } else if (strncasecmp(linestart, contenttype, 13) == 0) {
+        this->contenttype = std::string(linestart, len);
         lastHeader = &this->contenttype;
+    } else if (strncasecmp(linestart, contenttransferencoding, 26) == 0) {
+        this->contenttransferencoding = std::string(linestart, len);
+        lastHeader = &this->contenttransferencoding;
+    } else if (strncasecmp(linestart, contentdisposition, 20) == 0) {
+        this->contentdisposition = std::string(linestart, len);
+        lastHeader = &this->contentdisposition;
     } else {
         lastHeader = 0;
     }
 }
-// return true if we are at the start of a base64 encoded block
 bool
+MailInputStream::checkHeaderLine() const {
+    bool validheader = bufstart && linestart != lineend;
+    if (validheader) {
+        const char* colpos = linestart;
+        while (*colpos != ':' && ++colpos != lineend) {}
+        validheader = colpos != lineend || isblank(*linestart);
+    }
+    return validheader;    
+}
+// return true if we are at the start of a base64 encoded block
+void
 MailInputStream::handleBodyLine() {
-    if (boundary.length()+2 != size_t(lineend-linestart)) {
-        return false;
-    }
-    int n = strncmp(boundary.c_str(), linestart+2, boundary.length());
-    bool base64 = false;
-    if (n == 0) {
-        // start of new block
-        // skip header
-        do {
-            readLine();
-            if (lineend - linestart > 6
-                    && strncasecmp("base64", lineend-6, 6) == 0) {
-                base64 = true;
-            }
-        } while (bufstart && linestart != lineend);
-        if (base64) {
-            if (substream) delete substream;
-            if (entrystream) delete entrystream;
-            substream = new StringTerminatedSubStream(input, boundary);
-            entrystream = new Base64InputStream(substream);
+    clearHeaders();
+    //printf("handleBodyLine %p %s\n", linestart, boundary.c_str());
+    // start of new block
+    // skip header
+    bool validheader;
+    do {
+        readLine();
+        validheader = checkHeaderLine();
+        if (validheader) {
+            handleHeaderLine();
         }
+    } while (validheader);
+    // set the stream to the start of the content
+    readLine();
+    if (bufstart == 0) return;
+    rewindToLineStart();
+    //printf("b %p %p %.*s\n", bufstart, linestart, lineend-linestart, linestart);
+
+    // get the filename
+    entryinfo.filename = getValue("filename", contentdisposition).c_str();
+
+    // create a stream that's limited to the content
+    substream = new StringTerminatedSubStream(input, "--"+boundary);
+    // set a reasonable buffer size
+    substream->mark(10*boundary.length());
+    //printf("%s\n", contenttransferencoding.c_str());
+    if (strcasestr(contenttransferencoding.c_str(), "base64")) {
+        //printf("base64 %p\n", substream);
+        entrystream = new Base64InputStream(substream);
     }
-    return n == 0;
 }
 StreamBase<char>*
 MailInputStream::nextEntry() {
-    delete entrystream;
-    entrystream = 0;
+    //printf("---------\n");
     if (status) return 0;
-    scanBody();
-    return entrystream;
+    // if the mail does not consist of multiple parts, we give a pointer to
+    // the input stream
+    if (boundary.length() == 0) {
+        // signal eof because we only return eof once
+        status = Eof;
+        return input;
+    }
+    // read anything that's left over in the previous stream
+    if (substream) {
+        const char* dummy;
+        while (substream->read(dummy, 1, 0) > 0) {}
+        delete substream;
+        substream = 0;
+        if (entrystream) {
+            delete entrystream;
+            entrystream = 0;
+        }
+        // force the stream to refresh the buffer
+        fillBuffer();
+        lineend = bufstart;
+        handleBodyLine();
+    } else {
+        scanBody();
+    }
+    return entrystream ?entrystream : substream;
+}
+void
+MailInputStream::clearHeaders() {
+    subject.resize(0);
+    contenttype.resize(0);
+    contenttransferencoding.resize(0);
+    contentdisposition.resize(0);
 }
 

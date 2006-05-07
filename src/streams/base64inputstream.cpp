@@ -23,7 +23,7 @@ Base64InputStream::Base64InputStream(StreamBase<char>* i) :input(i) {
     nleft = 0;
     char_count = 0;
     bits = 0;
-    bitstodo = 0;
+    bytestodo = 0;
     pos = pend = 0;
 }
 bool
@@ -36,7 +36,7 @@ Base64InputStream::moreData() {
             return false;
         }
         if (nread <= 0) {
-            status = Eof;
+            input = 0;
             return false;
         }
         pend = pos + nread;
@@ -45,12 +45,10 @@ Base64InputStream::moreData() {
 }
 int32_t
 Base64InputStream::fillBuffer(char* start, int32_t space) {
-    if (input == 0) return -1;
+    if (input == 0 && bytestodo == 0) return -1;
     // handle the  bytes that were left over from the last call
-    //printf("%i space-\n", space);
-    if (bitstodo) {
-        //printf("-\n");
-        switch (bitstodo) {
+    if (bytestodo) {
+        switch (bytestodo) {
         case 3:
             *start = bits >> 16;
             break;
@@ -63,7 +61,7 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
             char_count = 0;
             break;
         }
-        bitstodo--;
+        bytestodo--;
         return 1;
     }
     const char* end = start + space;
@@ -73,6 +71,13 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
         unsigned char c = *pos++;
         // = signals the end of the encoded block
         if (c == '=') {
+            if (char_count == 2) {
+                bytestodo = 1;
+                bits >>= 10;
+            } else if (char_count == 3) {
+                bytestodo = 2;
+                bits >>= 8;
+            }
             input = 0;
             break;
         }
@@ -84,25 +89,22 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
         char_count++;
         if (char_count == 4) {
             if (p >= end) {
-                bitstodo = 3;
+                bytestodo = 3;
                 break;
             }
             *p++ = bits >> 16;
-            //printf("%c\n", p[-1]);
             if (p >= end) {
-                bitstodo = 2;
+                bytestodo = 2;
                 nwritten++;
                 break;
             }
             *p++ = (bits >> 8) & 0xff;
-            //printf("%c\n", p[-1]);
             if (p >= end) {
-                bitstodo = 1;
+                bytestodo = 1;
                 nwritten += 2;
                 break;
             }
             *p++ = bits & 0xff;
-            //printf("%c\n", p[-1]);
             bits = 0;
             char_count = 0;
             nwritten += 3;
@@ -110,8 +112,7 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
             bits <<= 6;
         }
     }
-    //printf(".");
-    if (nwritten == 0 && status == Eof) {
+    if (nwritten == 0 && input == 0 && bytestodo == 0) {
         printf("EOF\n");
         nwritten = -1;
     }

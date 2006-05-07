@@ -13,8 +13,8 @@ namespace jstreams {
 class MailInputStream : public SubStreamProvider {
 private:
     // variables that record the current read state
-    bool firstline;
     bool eol; // true if the buffer contains a line end
+    int64_t bufstartpos;
     int linenum;
     int maxlinesize;
     const char* linestart;
@@ -26,6 +26,8 @@ private:
     StreamBase<char>* substream;
     std::string subject;
     std::string contenttype;
+    std::string contenttransferencoding;
+    std::string contentdisposition;
     std::string* lastHeader;
 
     std::string boundary;
@@ -34,9 +36,13 @@ private:
     void fillBuffer();
     void skipHeader();
     void scanBody();
-    void handleHeaderLine(const char* start, const char* end);
-    bool handleBodyLine();
+    void handleHeaderLine();
+    void handleBodyLine();
     bool lineIsEndOfBlock();
+    void rewindToLineStart();
+    bool checkHeaderLine() const;
+    void clearHeaders();
+    std::string getValue(const char* n, const std::string& headerline) const;
 public:
     MailInputStream(StreamBase<char>* input);
     ~MailInputStream();

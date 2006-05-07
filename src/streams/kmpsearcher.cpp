@@ -40,7 +40,7 @@ KMPSearcher::setQuery(const string& query) {
 const char*
 KMPSearcher::search(const char* haystack, int32_t haylen) const {
     if (table == 0) return 0;
-    printf("start search %i\n", len);
+//    printf("start search %i\n", len);
     const char* needle = query.c_str();
     // search for the pattern
     int32_t i = 0;

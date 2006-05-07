@@ -8,11 +8,12 @@ namespace jstreams {
 
 class StringTerminatedSubStream : public StreamBase<char> {
 private:
+    const int64_t offset;
     StreamBase<char>* input;
     KMPSearcher searcher;
 public:
     StringTerminatedSubStream(StreamBase<char>* i, const std::string& terminator)
-        : input(i) {
+        : offset(i->getPosition()), input(i) {
         searcher.setQuery(terminator);
     }
     int32_t read(const char*& start, int32_t min=0, int32_t max=0);

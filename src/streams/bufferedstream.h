@@ -91,12 +91,14 @@ BufferedInputStream<T>::mark(int32_t readlimit) {
 template <class T>
 int64_t
 BufferedInputStream<T>::reset(int64_t newpos) {
+    if (StreamBase<T>::status == Error) return -2;
     // check to see if we have this position
     int64_t d = BufferedInputStream<T>::position - newpos;
-    if (buffer.readPos - d >= buffer.start && d > 0) {
+    if (buffer.readPos - d >= buffer.start && -d < buffer.avail) {
         BufferedInputStream<T>::position -= d;
         buffer.avail += d;
         buffer.readPos -= d;
+        StreamBase<T>::status = Ok;
     }
     return StreamBase<T>::position;
 }

@@ -23,7 +23,6 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, tlmin, tlmax);
     if (nread == -1) {
         status = Eof;
-        printf("%i\n", nread);
         return nread;
     }
     if (nread < -1) {
@@ -32,7 +31,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         return nread;
     }
 
-    printf("'%*s'\n", nread, start);
+    //printf("'%.*s'\n", nread, start);
     const char* end = searcher.search(start, nread);
     if (end) {
         nread = end - start;
@@ -62,9 +61,9 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 }
 int64_t
 StringTerminatedSubStream::mark(int32_t readlimit) {
-    return input->mark(readlimit);
+    return input->mark(readlimit) - offset;
 }
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
-    return input->reset(newpos);
+    return input->reset(newpos+offset);
 }

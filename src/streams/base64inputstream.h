@@ -7,7 +7,7 @@ namespace jstreams {
 class Base64InputStream : public BufferedInputStream<char> {
 private:
     int32_t bits;
-    char bitstodo;
+    char bytestodo;
     char char_count;
     const char* pos, * pend;
     int32_t nleft;
