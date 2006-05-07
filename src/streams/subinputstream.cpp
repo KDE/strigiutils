@@ -10,7 +10,7 @@ int32_t
 SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     const int64_t left = size - position;
     if (left == 0) {
-        return 0;
+        return -1;
     }
     // restrict the amount of data that can be read
     if (max <= 0 || max > left) {
@@ -48,7 +48,7 @@ int64_t
 SubInputStream::skip(int64_t ntoskip) {
     const int64_t left = size - position;
     if (left == 0) {
-        return 0;
+        return -1;
     }
     // restrict the amount of data that can be skipped
     if (ntoskip > left) {

@@ -55,7 +55,7 @@ StringReader<T>::read(const T*& start, int32_t min, int32_t max) {
     int64_t left = StreamBase<T>::size - StreamBase<T>::position;
     if (left == 0) {
         StreamBase<T>::status = Eof;
-        return 0;
+        return -1;
     }
     if (min < 0) min = 0;
     int32_t nread = (int32_t)(max > left || max < 1) ?left :max;

@@ -65,13 +65,13 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
 template <class T>
 int32_t
 BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
-    if (StreamBase<T>::status == Error) return -1;
-    if (StreamBase<T>::status == Eof) return 0;
+    if (StreamBase<T>::status == Error) return -2;
+    if (StreamBase<T>::status == Eof) return -1;
 
     writeToBuffer(min);
 
-    if (StreamBase<T>::status == Error) return -1;
-    if (StreamBase<T>::status == Eof) return 0;
+    if (StreamBase<T>::status == Error) return -2;
+    if (StreamBase<T>::status == Eof) return -1;
 
     int32_t nread = buffer.read(start, max);
     BufferedInputStream<T>::position += nread;
