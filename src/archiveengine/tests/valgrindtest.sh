@@ -2,8 +2,9 @@
 ODIR=$PWD
 DIR=`dirname $0`;
 cd $DIR
-if $ODIR/testrunner; then
-	libtool --mode=execute valgrind -q --leak-check=full $ODIR/testrunner;
+VALGRIND=`which valgrind`
+if $ODIR/testrunner && [[ -n $VALGRIND ]]; then
+	libtool --mode=execute $VALGRIND -q --leak-check=full $ODIR/testrunner;
 	exit;
 fi
 false;
