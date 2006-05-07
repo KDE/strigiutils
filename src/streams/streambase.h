@@ -123,16 +123,15 @@ public:
        **/
     virtual int64_t reset(int64_t pos) = 0;
 };
-
+#define SKIPSTEP 1024
 template <class T>
 int64_t
 StreamBase<T>::skip(int64_t ntoskip) {
-    static const int32_t skipstep = 1024;
     const T *begin;
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        int32_t step = (int32_t)((ntoskip > skipstep) ?skipstep :ntoskip);
+        int32_t step = (int32_t)((ntoskip > SKIPSTEP) ?SKIPSTEP :ntoskip);
         nread = read(begin, 0, step);
         if (nread < 0) {
             return skipped;
