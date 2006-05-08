@@ -78,6 +78,7 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
         BufferedInputStream<T>::status = Eof;
+        nread = -1;
     }
     return nread;
 }
