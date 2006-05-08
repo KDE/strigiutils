@@ -1,10 +1,13 @@
 #include "../mailinputstream.h"
 #include "../fileinputstream.h"
-#include <QProcess>
-#include <QDir>
-#include <QFile>
 #include <QDebug>
+#include <QDir>
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
+
 using namespace jstreams;
 
 void
@@ -12,11 +15,10 @@ testMailFile2(StreamBase<char>* input) {
     MailInputStream mail(input);
     StreamBase<char>* a = mail.nextEntry();
     while (a) {
-        bool open = false; 
         std::string filename = "/tmp/mailtest/"+mail.getEntryInfo().filename;
-        QFile file(filename.c_str());
+        FILE* file = 0;
         if (mail.getEntryInfo().filename.length() > 0) {
-            open = file.open(QIODevice::WriteOnly|QIODevice::Truncate);
+            file = fopen(filename.c_str(), "w");
         }
         int32_t size = 0;
         bool readall = true;
@@ -24,17 +26,17 @@ testMailFile2(StreamBase<char>* input) {
         int32_t nread = a->read(start, 1024, 0);
         //printf("# %i\n", nread);
         while (readall && nread > 0) {
-            if (open) {
+            if (file) {
                 //printf("writing: %i\t%i\t%s\n", nread, size, filename.c_str());
-                file.write(start, nread);
+                fwrite(start, 1, nread, file);
             }
             size += nread;
             nread = a->read(start, 1, 0);
         }
         //if (size == 0) { a = 0; a->read(start, 1,1);}
         //printf(": %p\t%i\t%i\n", a, size, nread);
-        if (open) {
-            file.close();
+        if (file) {
+            fclose(file);
         }
         a = mail.nextEntry();
     }
@@ -43,8 +45,8 @@ testMailFile2(StreamBase<char>* input) {
 }
 
 void
-testMailFile(const QByteArray &filename) {
-    FileInputStream file((const char*)filename);
+testMailFile(const char* filename) {
+    FileInputStream file(filename);
     file.mark(10000);
     const char* header;
     int32_t nread = file.read(header, 1024, 1024);
@@ -56,47 +58,39 @@ testMailFile(const QByteArray &filename) {
     }
 }
 
-QList<QByteArray>
-getMailFiles(const QString& dir) {
-    QList<QByteArray> files;
-    QProcess find;
-    find.start("find", QStringList() << dir << "-type" << "f");
-    if (!find.waitForStarted()) {
-        qDebug() << "Could not run 'find'";
-        return files;
+void
+testMails(const char* path) {
+    struct stat s;
+    if (stat(path, &s) != 0) return;
+    if (S_ISDIR(s.st_mode)) {
+        std::string dir(path);
+        if (dir[dir.length()-1] == '.') return;
+        dir += "/";
+        DIR* d = opendir(dir.c_str());
+        if (d == 0) return;
+        struct dirent* e = readdir(d);
+        while(e) {
+            std::string ep = dir+e->d_name;
+            testMails(ep.c_str());
+            e = readdir(d);
+        }
+        closedir(d);
+    } else if (S_ISREG(s.st_mode)) {
+        testMailFile(path);
     }
-    find.closeWriteChannel();
-
-    if (!find.waitForFinished()) {
-        qDebug() << "Could not run 'find'";
-        return files;
-    }
-    if (find.exitCode()) {
-        qDebug() << find.readAllStandardError();
-        return files;
-    }
-    QByteArray line = find.readLine();
-    while (!line.isEmpty()) {
-        line.chop(1);
-        files.append(line);
-        line = find.readLine();
-    }
-    return files;
 }
 
 int
 main(int argc, char **argv) {
-    QList<QByteArray> mailfiles;
     if (argc < 2) {
-        const char* dir = "/.kde/share/apps/kmail/mail";
-        mailfiles = getMailFiles(QDir::homePath()+dir);
+        QString dir = QDir::homePath()+"/.kde/share/apps/kmail/mail";
+        testMails(dir.toLocal8Bit());
+        dir = QDir::homePath()+"/Mail";
+        testMails(dir.toLocal8Bit());
     } else {
         for (int i=1; i<argc; ++i) {
-            mailfiles += QByteArray(argv[i]);
+            testMails(argv[i]);
         }
-    }
-    foreach (QByteArray mailfile, mailfiles) {
-        testMailFile(mailfile);
     }
     return 0;
 }
