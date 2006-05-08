@@ -321,6 +321,7 @@ MailInputStream::nextEntry() {
     } else {
         scanBody();
     }
+    if (substream == 0) status = Eof;
     return entrystream ?entrystream : substream;
 }
 void

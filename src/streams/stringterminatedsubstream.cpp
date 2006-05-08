@@ -31,7 +31,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         return nread;
     }
 
-    //printf("'%.*s'\n", nread, start);
+    //printf("%i '%.*s'\n", nread, 20, start);
     const char* end = searcher.search(start, nread);
     if (end) {
         nread = end - start;
@@ -57,6 +57,8 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         status = Eof;
     }
 
+    //printf("%i '%.*s'\n", nread, 10, start);
+    position += nread;
     return nread;
 }
 int64_t
@@ -65,5 +67,6 @@ StringTerminatedSubStream::mark(int32_t readlimit) {
 }
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
+    printf("newpos: %lli %lli\n", newpos, offset);
     return input->reset(newpos+offset);
 }

@@ -7,7 +7,7 @@ using namespace jstreams;
 void
 MailInputStreamTest::testStream() {
     for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("a.zip");
+        FileInputStream file("mail");
         MailInputStream mail(&file);
         streamprovidertests[i](&mail);
     }
