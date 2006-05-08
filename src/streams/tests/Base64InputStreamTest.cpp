@@ -18,7 +18,7 @@ Base64InputStreamTest::testStream() {
         }
         nread = b64.read(start, 1, 0);
     }
-    printf("\n", nread);
+    printf("\n");
 /*    for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         charinputstreamtests[i](&file);

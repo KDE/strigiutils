@@ -33,6 +33,7 @@ Base64InputStream::moreData() {
         if (nread < -1) {
             status = Error;
             error = input->getError();
+            input = 0;
             return false;
         }
         if (nread <= 0) {

@@ -16,11 +16,11 @@ FileReader::~FileReader() {
 int32_t
 FileReader::read(const wchar_t*& start, int32_t min, int32_t max) {
     int32_t nread = reader->read(start, min, max);
-    if (nread == -1) {
+    if (nread < -1) {
         error = reader->getError();
         status = Error;
-        return -1;
-    } else if (nread == 0) {
+        return nread;
+    } else if (nread == -1) {
         status = Eof;
     }
     return nread;
@@ -33,7 +33,7 @@ FileReader::mark(int32_t readlimit) {
 int64_t
 FileReader::reset(int64_t newpos) {
     position = reader->reset(newpos);
-    if (position < 0) {
+    if (position < -1) {
         status = Error;
         error = reader->getError();
     }

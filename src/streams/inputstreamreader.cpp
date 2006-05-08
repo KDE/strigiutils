@@ -100,8 +100,13 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
         int32_t numRead;
         numRead = input->read(begin, 1, charbuf.size - charbuf.avail);
         //printf("filled up charbuf\n");
-        switch (numRead) {
-        case 0:
+        if (numRead < -1) {
+            error = input->getError();
+            status = Error;
+            input = 0;
+            return numRead;
+        }
+        if (numRead < 1) {
             // signal end of input buffer
             input = 0;
             if (charbuf.avail) {
@@ -109,17 +114,10 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
                 status = Error;
             }
             return -1;
-        case -1:
-            input = 0;
-            error = input->getError();
-            status = Error;
-            return -1;
-        default:
-            // copy data into other buffer
-            memmove(charbuf.start + charbuf.avail, begin, numRead);
-            charbuf.avail = numRead + charbuf.avail;
-            break;
         }
+        // copy data into other buffer
+        memmove(charbuf.start + charbuf.avail, begin, numRead);
+        charbuf.avail = numRead + charbuf.avail;
     }
     // decode
     int32_t n = decode(start, space);
