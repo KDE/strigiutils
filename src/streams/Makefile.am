@@ -13,3 +13,4 @@ libstreams_la_LIBADD = -lz -lbz2
 
 noinst_HEADERS = bufferedstream.h
 SUBDIRS = tests
+

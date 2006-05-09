@@ -8,7 +8,7 @@ using lucene::index::IndexWriter;
 using lucene::index::Term;
 using lucene::document::Document;
 using lucene::document::Field;
-using lucene::util::FileReader;
+using lucene::util::Reader;
 
 Indexer *Indexer::workingIndexer;
 
@@ -113,8 +113,9 @@ Indexer::addFile(const std::string &filepath) {
 	STRCPY_AtoT(tf, filepath.c_str(), CL_MAX_DIR);
 	doc->add( *Field::Keyword(_T("path"), tf) );
 	// add file content
-        FileReader* reader = new FileReader(filepath.c_str(),
-		PLATFORM_DEFAULT_READER_ENCODING);
+	// TODO fix with a real reader
+        Reader* reader = 0;//new FileReader(filepath.c_str(),
+		//PLATFORM_DEFAULT_READER_ENCODING);
         doc->add( *Field::Text(_T("contents"),reader) );
 	// add to index
 	m_writer->addDocument(doc);

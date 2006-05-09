@@ -120,10 +120,10 @@ ZipInputStream::readHeader() {
     compressionMethod = read2bytes(hb + 8);
     int32_t generalBitFlags = read2bytes(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
-        // ohoh, the filesize and compressed file size are unknown at this point
-        // in theory this is a solvable problem, but it's not easy:
-        // one would need to keep a running crc32 and filesize and match it to the
-        // data read so far
+        // ohoh, the file size and compressed file size are unknown at this
+        // point in theory this is a solvable problem, but it's not easy:
+        // one would need to keep a running crc32 and file size and match it
+        // to the data read so far
         status = Error;
         error = "This particular zip file format is not supported for reading "
             "as a stream.";
