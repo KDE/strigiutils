@@ -1,0 +1,18 @@
+How to obtain and build ArchiveReader from SVN?
+-----------------------------------------------
+
+Make sure you have installed unsermake according the the instructions here:
+http://wiki.kde.org/tiki-index.php?page=unsermake
+
+Execute these commands:
+
+ svn co -N svn://anonsvn.kde.org/home/kde/branches/work/kde4/playground/libs
+ cd libs
+ svn co svn://anonsvn.kde.org/home/kde/branches/work/kde4/playground/libs/archivereader
+ svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/kde-common/admin
+ make -f Makefile.cvs
+ mkdir debug; cd debug
+ ../configure --enable-debug=full
+ make
+
+
