@@ -88,7 +88,7 @@ MailInputStream::readLine() {
         linestart++; // skip \r or \n
         backslashr = *lineend == '\r';
         //printf("%p %p %p %p\n", linestart, lineend, bufstart, bufend);
-        if (backslashr && linestart != bufend) printf("%i\n", *linestart);
+//        if (backslashr && linestart != bufend) printf("%i\n", *linestart);
         if (backslashr && linestart != bufend && *linestart == '\n') {
             // skip \n of \r\n
             linestart++;
@@ -281,7 +281,10 @@ MailInputStream::handleBodyLine() {
     //printf("b %p %p %.*s\n", bufstart, linestart, lineend-linestart, linestart);
 
     // get the filename
-    entryinfo.filename = getValue("filename", contentdisposition).c_str();
+    entryinfo.filename = getValue("filename", contentdisposition);
+    if (entryinfo.filename.length() == 0) {
+        entryinfo.filename = getValue("name", contenttype);
+    }
 
     // create a stream that's limited to the content
     substream = new StringTerminatedSubStream(input, "--"+boundary);
@@ -322,6 +325,7 @@ MailInputStream::nextEntry() {
         scanBody();
     }
     if (substream == 0) status = Eof;
+
     return entrystream ?entrystream : substream;
 }
 void

@@ -67,6 +67,13 @@ StringTerminatedSubStream::mark(int32_t readlimit) {
 }
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
-    printf("newpos: %lli %lli\n", newpos, offset);
-    return input->reset(newpos+offset);
+    position = input->reset(newpos+offset);
+    if (position >= offset) {
+        position -= offset;
+    } else {
+        // the stream is not positioned at a valid position
+        status = Error;
+        position = -1;
+    }
+    return position;
 }

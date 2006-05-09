@@ -33,13 +33,11 @@ void
 inputStreamTest2(StreamBase<T>* s) {
     int64_t p = s->getPosition();
     int64_t n = s->mark(100);
-    //printf("n: %lli\n", n);
     QVERIFY(n >= 0);
     n = s->skip(100);
-    //printf("skip: %lli\n", n);
     QVERIFY(n > 0);
-    //printf("pos: %lli n: %lli\n", p, s->getPosition());
-    QVERIFY(s->reset(p) == p);
+    n = s->reset(p);
+    QVERIFY(n == p);
     QVERIFY(s->getPosition() == p);
     inputStreamTest1(s);
 }
