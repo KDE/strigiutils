@@ -1,7 +1,5 @@
 #include "../mailinputstream.h"
 #include "../fileinputstream.h"
-#include <QDebug>
-#include <QDir>
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -83,10 +81,11 @@ testMails(const char* path) {
 int
 main(int argc, char **argv) {
     if (argc < 2) {
-        QString dir = QDir::homePath()+"/.kde/share/apps/kmail/mail";
-        testMails(dir.toLocal8Bit());
-        dir = QDir::homePath()+"/Mail";
-        testMails(dir.toLocal8Bit());
+        std::string home(getenv("HOME"));
+        std::string dir = home+"/.kde/share/apps/kmail/mail";
+        testMails(dir.c_str());
+        dir = home+"/Mail";
+        testMails(dir.c_str());
     } else {
         for (int i=1; i<argc; ++i) {
             testMails(argv[i]);

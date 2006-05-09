@@ -1,6 +1,6 @@
-#if LIB_QT
+if HAVE_QTLIB
 QT_SUBDIRS = archiveengine qclient
-#endif
+endif
 if HAVE_CLUCENELIB
 LUCENE_SUBDIRS = luceneindexer
 endif

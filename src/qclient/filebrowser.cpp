@@ -40,4 +40,3 @@ FileBrowser::clicked(const QModelIndex& index) {
     browser->setSource(s);
 }
 
-#include "filebrowser.moc"

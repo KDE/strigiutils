@@ -8,11 +8,11 @@ include_HEADERS = archiveenginehandler.h
 libarchiveengine_la_SOURCES = fsfileinputstream.cpp streamengine.cpp \
 	archivedirengine.cpp archiveengine.cpp archiveenginehandler.cpp 
 
-libarchiveengine_la_CXXFLAGS = $(QT_CXXFLAGS) \
-	-I$(top_srcdir)/archivereader/src/streams
+libarchiveengine_la_CXXFLAGS = $(QT_CFLAGS) \
+	-I$(top_srcdir)/src/streams
 libarchiveengine_la_LDFLAGS = $(QT_LDFLAGS) $(USER_LDFLAGS)
 libarchiveengine_la_LIBADD = $(LIB_QT) \
-        $(top_builddir)/archivereader/src/streams/libstreams.la
+        $(top_builddir)/src/streams/libstreams.la
 
 noinst_HEADERS = archivedirengine.h archiveengine.h \
 	fsfileinputstream.h streamengine.h
