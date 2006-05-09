@@ -1,5 +1,5 @@
 INCLUDES = $(all_includes)
-SUBDIRS = tests
+SUBDIRS = . tests
 
 lib_LTLIBRARIES = libarchiveengine.la
 

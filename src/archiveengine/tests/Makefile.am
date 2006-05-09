@@ -5,7 +5,7 @@ check_PROGRAMS = testrunner
 TESTS = $(srcdir)/valgrindtest.sh
 
 testrunner.cpp: makestestrunner.pl
-	perl $(srcdir)/makestestrunner.pl $(srcdir) $(top_srcdir)/testdata
+	perl $(srcdir)/makestestrunner.pl $(srcdir) $(top_builddir)/testdata
 
 # rule to generate source files from headers
 %_moc.cpp: %.h
