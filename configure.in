@@ -60,6 +60,9 @@ fi
 PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
+dnl check for iconv
+AM_ICONV
+
 AC_PROG_CXX
 
 AC_OUTPUT( Makefile \
