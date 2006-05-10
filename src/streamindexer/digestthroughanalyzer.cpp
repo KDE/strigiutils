@@ -93,9 +93,8 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     stream = new DigestInputStream(in);
     return stream;
 }
-void
-DigestThroughAnalyzer::printResults() {
-    if (stream) {
-        stream->printDigest();
-    }
+const std::multimap<std::wstring, std::wstring> &
+DigestThroughAnalyzer::getResults() {
+    //results["hi"] = "hi";
+    return results;
 }

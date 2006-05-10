@@ -6,11 +6,12 @@ class DigestInputStream;
 class DigestThroughAnalyzer : public StreamThroughAnalyzer {
 private:
     DigestInputStream *stream;
+    std::multimap<std::wstring, std::wstring> results;
 public:
     DigestThroughAnalyzer();
     ~DigestThroughAnalyzer();
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
-    void printResults();
+    const std::multimap<std::wstring, std::wstring> &getResults();
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define STREAMTHROUGHANALYZER_H
 
 #include "inputstream.h"
+#include <map>
 
 class StreamIndexer;
 
@@ -22,7 +23,7 @@ public:
      * caller.
      **/
     virtual jstreams::InputStream *connectInputStream(jstreams::InputStream *in) = 0;
-    virtual void printResults() = 0;
+    virtual const std::multimap<std::wstring, std::wstring> &getResults() = 0;
 };
 
 #endif
