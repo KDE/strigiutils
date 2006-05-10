@@ -4,5 +4,8 @@ endif
 if HAVE_CLUCENELIB
 LUCENE_SUBDIRS = luceneindexer
 endif
-SUBDIRS = streams streamindexer diskindexer $(QT_SUBDIRS) $(LUCENE_SUBDIRS)
+if HAVE_OPENSSL
+INDEXER_SUBDIRS = streamindexer diskindexer
+endif
+SUBDIRS = streams $(INDEXER_SUBDIRS) diskindexer $(QT_SUBDIRS) $(LUCENE_SUBDIRS)
 

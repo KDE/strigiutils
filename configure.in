@@ -24,11 +24,11 @@ if test "$with_qt" = "yes" -o "$enable_qt" = "yes" ; then
 fi
 
 # configure QT
-QT_REQUIRED_VERSION=4.1.2
+QT_REQ_VERSION=4.1.2
 # Qt has split over multiple libraries, so we must check
 # for the all the modules we need
-PKG_CHECK_MODULES(QT, QtCore >= $QT_REQUIRED_VERSION
-	QtGui >= $QT_REQUIRED_VERSION, have_qt="yes", have_qt="no")
+PKG_CHECK_MODULES(QT, QtCore >= $QT_REQ_VERSION QtGui >= $QT_REQ_VERSION
+        QtTest >= $QT_REQ_VERSION, have_qt="yes", have_qt="no")
 # of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
 if test "$have_qt" = "yes"; then
     QT_INCLUDE_DIR=$($PKG_CONFIG --variable=includedir Qt)
@@ -55,6 +55,10 @@ if test "$have_clucenelib" = "yes"; then
   AC_SUBST(HAVE_CLUCENE_H)
   AC_DEFINE(HAVE_CLUCENE_H,1,[Define if you want clucene lib installed])
 fi
+
+# check for openssl
+PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
+AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
 AC_PROG_CXX
 
