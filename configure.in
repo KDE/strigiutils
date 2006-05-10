@@ -3,17 +3,18 @@ AC_INIT(src/streams/streambase.h)
 PACKAGE=jstreams
 VERSION=0.1.0
 
-# use libtool
+dnl use libtool
 AC_PROG_LIBTOOL
  
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-if test "x$PKG_CONFIG" = "xno"; then
-        AC_MSG_ERROR(You have to install pkg-config to compile inkscape.)
-fi
+dnl check for pkg-config
+PKG_PROG_PKG_CONFIG
 
-# check if Qt gui should be used
+dnl check for c++
+AC_PROG_CXX
+
+dnl check if Qt gui should be used
 AC_ARG_WITH(qt, [  --with-qt               use Qt GUI toolkit ])
 if test "$with_qt" = "yes" -o "$enable_qt" = "yes" ; then 
   if test "$withval" = "no" ; then
@@ -23,13 +24,13 @@ if test "$with_qt" = "yes" -o "$enable_qt" = "yes" ; then
   fi
 fi
 
-# configure QT
+dnl configure QT
 QT_REQ_VERSION=4.1.2
-# Qt has split over multiple libraries, so we must check
-# for the all the modules we need
+dnl Qt has split over multiple libraries, so we must check
+dnl for the all the modules we need
 PKG_CHECK_MODULES(QT, QtCore >= $QT_REQ_VERSION QtGui >= $QT_REQ_VERSION
         QtTest >= $QT_REQ_VERSION, have_qt="yes", have_qt="no")
-# of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
+dnl of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
 if test "$have_qt" = "yes"; then
     QT_INCLUDE_DIR=$($PKG_CONFIG --variable=includedir Qt)
     EXTRA_QT_INCLUDE_DIR="$QT_INCLUDE_DIR/Qt"
@@ -47,23 +48,16 @@ if test "$have_qt" = "yes"; then
 fi
 AM_CONDITIONAL(HAVE_QTLIB, test "$have_qt" = "yes")
 
-# check for CLucene
+dnl check for CLucene
 AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
 AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
-if test "$have_clucenelib" = "yes"; then
-  HAVE_CLUCENELIB="yes"
-  AC_SUBST(HAVE_CLUCENE_H)
-  AC_DEFINE(HAVE_CLUCENE_H,1,[Define if you want clucene lib installed])
-fi
 
-# check for openssl
+dnl check for openssl
 PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
 dnl check for iconv
 AM_ICONV
-
-AC_PROG_CXX
 
 AC_OUTPUT( Makefile \
 	src/Makefile \
