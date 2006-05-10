@@ -3,6 +3,7 @@
 #include "subinputstream.h"
 #include "stringterminatedsubstream.h"
 #include "base64inputstream.h"
+#include <cstring>
 using namespace jstreams;
 using namespace std;
 
