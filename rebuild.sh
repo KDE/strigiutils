@@ -13,7 +13,7 @@ if [[ -n $1 ]]; then
 fi
 
 libtoolize --force --copy && \
-aclocal && \
+aclocal -I m4 && \
 autoconf && \
 automake --add-missing
 
