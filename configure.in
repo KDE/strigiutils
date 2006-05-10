@@ -23,8 +23,6 @@ if test "$with_qt" = "yes" -o "$enable_qt" = "yes" ; then
   fi
 fi
 
-AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
-
 # configure QT
 QT_REQUIRED_VERSION=4.1.2
 # Qt has split over multiple libraries, so we must check
@@ -48,8 +46,15 @@ if test "$have_qt" = "yes"; then
     AC_SUBST(QT_LIBS)
 fi
 AM_CONDITIONAL(HAVE_QTLIB, test "$have_qt" = "yes")
+
+# check for CLucene
+AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
 AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
-AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
+if test "$have_clucenelib" = "yes"; then
+  HAVE_CLUCENELIB="yes"
+  AC_SUBST(HAVE_CLUCENE_H)
+  AC_DEFINE(HAVE_CLUCENE_H,1,[Define if you want clucene lib installed])
+fi
 
 AC_PROG_CXX
 
@@ -59,6 +64,7 @@ AC_OUTPUT( Makefile \
         src/streams/tests/Makefile \
         src/streamindexer/Makefile \
         src/diskindexer/Makefile \
-        src/archiveengine/Makefile 
-        src/archiveengine/tests/Makefile 
+        src/luceneindexer/Makefile \
+        src/archiveengine/Makefile \
+        src/archiveengine/tests/Makefile \
         src/qclient/Makefile )
