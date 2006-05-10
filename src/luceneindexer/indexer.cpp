@@ -1,6 +1,7 @@
 #include "indexer.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include "filereader.h"
 
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::index::IndexReader;
@@ -37,8 +38,11 @@ Indexer::openReader() {
 }
 void
 Indexer::closeReader() {
-	m_reader->close();
-	delete m_reader;
+	if (m_reader) {
+		m_reader->close();
+		delete m_reader;
+		m_reader = 0;
+	}
 }
 void
 Indexer::openWriter(bool create) {
@@ -105,20 +109,28 @@ void
 Indexer::addFile(const std::string &filepath) {
 	TCHAR tf[CL_MAX_DIR];
 
-	printf("adding %s\n", filepath.c_str());
+	printf("adding %s ", filepath.c_str());
 
-    Document* doc = new Document();
+	Document* doc = new Document();
 
 	// add file name
 	STRCPY_AtoT(tf, filepath.c_str(), CL_MAX_DIR);
 	doc->add( *Field::Keyword(_T("path"), tf) );
 	// add file content
+	jstreams::FileReader* fr
+		= new jstreams::FileReader(filepath.c_str());
 	// TODO fix with a real reader
-        Reader* reader = 0;//new FileReader(filepath.c_str(),
+        Reader* reader = new Reader(fr, true);//ilepath.c_str(),
 		//PLATFORM_DEFAULT_READER_ENCODING);
         doc->add( *Field::Text(_T("contents"),reader) );
 	// add to index
-	m_writer->addDocument(doc);
+	bool ok = true;
+	try {
+		m_writer->addDocument(doc);
+	} catch (...) {
+		ok = false;
+	}
+	printf("%s\n", (ok)?"ok":"failed");
 	delete doc;
 }
 void
