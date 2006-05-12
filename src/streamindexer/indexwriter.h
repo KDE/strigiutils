@@ -26,6 +26,8 @@ protected:
     virtual void addStream(const Indexable*, const std::wstring& fieldname,
         jstreams::StreamBase<wchar_t>* datastream) = 0;
     virtual void addField(const Indexable*, const std::wstring &fieldname,
+        const char* value) = 0;
+    virtual void addField(const Indexable*, const std::wstring &fieldname,
         const std::wstring &value) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
 public:
@@ -41,6 +43,10 @@ public:
     void addStream(const std::wstring& fieldname,
             jstreams::StreamBase<wchar_t>* datastream) {
         writer->addStream(this, fieldname, datastream);
+    }
+    inline void addField(const std::wstring &fieldname,
+            const char* value) {
+        writer->addField(this, fieldname, value);
     }
     void addField(const std::wstring &fieldname,
             const std::wstring &value) {

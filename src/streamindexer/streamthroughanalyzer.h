@@ -2,10 +2,8 @@
 #define STREAMTHROUGHANALYZER_H
 
 #include "inputstream.h"
-#include <map>
-
-class StreamIndexer;
-
+namespace jstreams {
+class Indexable;
 /**
  * This class defines an interface for analyzing streams.
  * This interface is not yet complete, it lacks good functions for retrieving
@@ -14,6 +12,7 @@ class StreamIndexer;
 class StreamThroughAnalyzer {
 public:
     virtual ~StreamThroughAnalyzer() {};
+    virtual void setIndexable(jstreams::Indexable*) = 0;
     /**
      * This function sets up the analyzer for handling a stream.
      * The stream \p in is used in constructing a new internal
@@ -23,7 +22,7 @@ public:
      * caller.
      **/
     virtual jstreams::InputStream *connectInputStream(jstreams::InputStream *in) = 0;
-    virtual const std::multimap<std::wstring, std::wstring> &getResults() = 0;
 };
+}
 
 #endif

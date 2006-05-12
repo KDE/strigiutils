@@ -8,7 +8,8 @@ BZ2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return BZ2InputStream::checkHeader(header, headersize);
 }
 char
-BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in, int depth, StreamIndexer *indexer) {
+BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
+        int depth, StreamIndexer *indexer, jstreams::Indexable*) {
     BZ2InputStream stream(in);
     char r = testStream(&stream);
     if (r) {

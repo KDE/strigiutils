@@ -4,33 +4,40 @@
 
 using namespace std;
 using namespace jstreams;
+using lucene::analysis::Analyzer;
+using lucene::analysis::standard::StandardAnalyzer;
 using lucene::document::Document;
 using lucene::document::Field;
 using lucene::util::Reader;
 
-CLuceneIndexWriter::CLuceneIndexWriter() {
+CLuceneIndexWriter::CLuceneIndexWriter(const char* ip) :indexespath(ip) {
     activewriter = 0;
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
-    // close all writers
-    vector<lucene::index::IndexWriter*>::iterator i;
-    for (i = writers.begin(); i != writers.end(); ++i) {
-        lucene::index::IndexWriter* writer = *i;
+    // close all writers and analyzers
+    for (int i=0; i<writers.size(); ++i) {
+        lucene::index::IndexWriter* writer = writers[i];
 	writer->optimize();
         writer->close();
 	delete writer;
-	//delete m_analyzer;
+        Analyzer* analyzer = analyzers[i];
+	delete analyzer;
     }
 }
 void
 CLuceneIndexWriter::addIndexWriter() {
-    lucene::index::IndexWriter* writer = new lucene::index::IndexWriter("",0,0);
+    Analyzer* analyzer = new StandardAnalyzer();
+    analyzers.push_back(analyzer);
+    // check if the required directory exists
+    string dir = indexespath+(char)('1'+activewriter);
+    mkdir(dir.c_str(), 0777);
+    lucene::index::IndexWriter* writer = new lucene::index::IndexWriter(
+        dir.c_str(), analyzer, 1);
     writers.push_back(writer);
 }
 void
 CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
         StreamBase<wchar_t>* datastream) {
-
     Document *doc = docs[idx];
     if (doc == 0) {
         doc = new Document();
@@ -38,9 +45,12 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
         docs[idx] = 0;
     }
     Reader* reader = new Reader(datastream, false);
-    doc->add( *Field::Text(fieldname.c_str(), reader) );
+    try {
+        doc->add( *Field::Text(fieldname.c_str(), reader) );
+    } catch (...) {
+    }
 
-    if (writers.size() < activewriter) {
+    if (writers.size() < activewriter+1) {
         addIndexWriter();
     }
     lucene::index::IndexWriter* writer = writers[activewriter];
@@ -62,6 +72,11 @@ CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
     }
     doc->add( *Field::Keyword(fieldname.c_str(), value.c_str()) );
 }
+void
+CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
+        const char* value) {
+}
+
 /*
     Close all left open indexwriters for this path.
 */
@@ -69,7 +84,7 @@ void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     Document *doc = docs[idx];
     if (doc) {
-        if (writers.size() < activewriter) {
+        if (writers.size() < activewriter+1) {
             addIndexWriter();
         }
         writers[activewriter]->addDocument(doc);

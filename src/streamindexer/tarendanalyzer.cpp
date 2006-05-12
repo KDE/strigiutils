@@ -9,7 +9,8 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return TarInputStream::checkHeader(header, headersize);
 }
 char
-TarEndAnalyzer::analyze(std::string filename, InputStream *in, int depth, StreamIndexer *indexer) {
+TarEndAnalyzer::analyze(std::string filename, InputStream *in,
+        int depth, StreamIndexer *indexer, jstreams::Indexable*) {
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {

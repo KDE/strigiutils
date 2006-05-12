@@ -3,15 +3,14 @@
 
 #include "streamthroughanalyzer.h"
 class DigestInputStream;
-class DigestThroughAnalyzer : public StreamThroughAnalyzer {
+class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     DigestInputStream *stream;
-    std::multimap<std::wstring, std::wstring> results;
 public:
     DigestThroughAnalyzer();
     ~DigestThroughAnalyzer();
+    void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
-    const std::multimap<std::wstring, std::wstring> &getResults();
 };
 
 #endif

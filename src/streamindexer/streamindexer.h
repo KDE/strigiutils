@@ -5,9 +5,10 @@
 
 #include "inputstream.h"
 
+namespace jstreams {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
-
+class IndexWriter;
 /**
  * The class StreamIndexer extracts information from files or character
  * streams. This task is performed by two separate analyzer classes:
@@ -25,17 +26,19 @@ class StreamThroughAnalyzer;
  **/
 class StreamIndexer {
 private:
-    std::vector<std::vector<StreamEndAnalyzer*> > end;
-    std::vector<std::vector<StreamThroughAnalyzer*> > through;
+    IndexWriter* writer;
+    std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
+    std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
 
     void addThroughAnalyzers();
     void addEndAnalyzers();
 public:
-    StreamIndexer();
+    StreamIndexer(IndexWriter *w);
     ~StreamIndexer();
     char indexFile(const char *filepath);
     char indexFile(std::string& filepath);
     char analyze(std::string &path, jstreams::InputStream *input, uint depth);
 };
+}
 
 #endif

@@ -3,11 +3,11 @@
 
 #include "streamendanalyzer.h"
 
-class TarEndAnalyzer : public StreamEndAnalyzer {
+class TarEndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(std::string filename, jstreams::InputStream *in, int depth,
-        StreamIndexer *indexer);
+        jstreams::StreamIndexer *indexer, jstreams::Indexable*);
 };
 
 #endif

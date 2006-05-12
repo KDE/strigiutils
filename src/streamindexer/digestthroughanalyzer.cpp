@@ -93,8 +93,6 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     stream = new DigestInputStream(in);
     return stream;
 }
-const std::multimap<std::wstring, std::wstring> &
-DigestThroughAnalyzer::getResults() {
-    //results["hi"] = "hi";
-    return results;
+void
+DigestThroughAnalyzer::setIndexable(jstreams::Indexable*) {
 }

@@ -1,12 +1,16 @@
 #include "streamindexer.h"
 #include "fileinputstream.h"
+#include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
 #include "bz2endanalyzer.h"
+#include "textendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "digestthroughanalyzer.h"
+#include "indexwriter.h"
+using namespace std;
 using namespace jstreams;
 
-StreamIndexer::StreamIndexer() {
+StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
 }
 StreamIndexer::~StreamIndexer() {
     // delete the through analyzers and end analyzers
@@ -54,9 +58,14 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
     ana = new TarEndAnalyzer();
     eIter->push_back(ana);
+    ana = new TextEndAnalyzer();
+    eIter->push_back(ana);
 }
 char
 StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
+    Indexable idx(writer);
+    idx.addField(L"path", path.c_str());
+
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
@@ -70,6 +79,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     // insert the through analyzers
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
+        (*ts)->setIndexable(&idx);
         input = (*ts)->connectInputStream(input);
     }
 
@@ -81,7 +91,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     std::vector<StreamEndAnalyzer*>::iterator es = eIter->begin();
     while (!finished && es != eIter->end()) {
         if ((*es)->checkHeader(header, headersize)) {
-            char ar = (*es)->analyze(path, input, depth+1, this);
+            char ar = (*es)->analyze(path, input, depth+1, this, &idx);
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
@@ -106,13 +116,14 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
             return -2;
         }
     }
-
     // iterator must be reinitialized because vector may
     // have changed
     printf("%s\n", path.c_str());
     tIter = through.begin() + depth;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
-        const std::multimap<std::wstring, std::wstring>& results =(*ts)->getResults();
+        // remove references to the indexable before it goes out of scope
+        (*ts)->setIndexable(0);
     }
+
     return 0;
 }
