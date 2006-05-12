@@ -94,5 +94,5 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     return stream;
 }
 void
-DigestThroughAnalyzer::setIndexable(jstreams::Indexable*) {
+DigestThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
 }

@@ -13,14 +13,18 @@ TarEndAnalyzer::analyze(std::string filename, InputStream *in,
         int depth, StreamIndexer *indexer, jstreams::Indexable*) {
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
+//    printf("TAR %p %lli %i\n", s, in->getSize(), in->getStatus());
     while (s) {
         std::string file = filename+"/";
         file += tar.getEntryInfo().filename;
+//        printf("entry %i %lli %s\n", depth, s->getSize(), file.c_str());
         indexer->analyze(file, s, depth);
         s = tar.nextEntry();
     }
     if (tar.getStatus() == jstreams::Error) {
-   //     printf("%s\n", tar.getError().c_str());
+//        printf("Error: %s\n", tar.getError());
+    } else {
+//        printf("finished ok\n");
     }
     return tar.getStatus();
 }

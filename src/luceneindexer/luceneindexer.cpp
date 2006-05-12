@@ -7,6 +7,10 @@ main(int argc, char **argv) {
 		return -1;
 	}
         Indexer indexer(argv[1]);
-	indexer.index(argv[2]);
+	try {
+		indexer.index(argv[2]);
+	} catch (...) {
+		printf("hmm\n");
+	}
 	return 0;
 }

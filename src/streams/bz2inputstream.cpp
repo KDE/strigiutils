@@ -102,11 +102,11 @@ BZ2InputStream::fillBuffer(char* start, int32_t space) {
     case BZ_MEM_ERROR:
         error = "Error while inflating bz2 stream.";
         status = Error;
-        return false;
+        return -1;
     case BZ_STREAM_END:
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        return false;
+        return -1;
     }
     return nwritten;
 }

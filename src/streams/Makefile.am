@@ -7,7 +7,7 @@ libstreams_la_SOURCES = bz2inputstream.cpp \
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp \
 	dostime.c 
 
-libstreams_la_CXXFLAGS = -fexceptions
+libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 
 libstreams_la_LIBADD = -lz -lbz2
 

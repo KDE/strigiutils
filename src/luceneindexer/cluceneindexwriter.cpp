@@ -45,17 +45,18 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
         docs[idx] = 0;
     }
     Reader* reader = new Reader(datastream, false);
-    try {
-        doc->add( *Field::Text(fieldname.c_str(), reader) );
-    } catch (...) {
-    }
+    doc->add( *Field::Text(fieldname.c_str(), reader) );
 
     if (writers.size() < activewriter+1) {
         addIndexWriter();
     }
     lucene::index::IndexWriter* writer = writers[activewriter];
     activewriter++;
-    writer->addDocument(doc);
+    try {
+        writer->addDocument(doc);
+    } catch (...) {
+    }
+
     delete doc;
     activewriter--;
 }

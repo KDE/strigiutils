@@ -23,6 +23,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     fseek(file, 0, SEEK_END);
     size = ftell(file);
     fseek(file, 0, SEEK_SET);
+
     // allocate memory in the buffer
     mark(buffersize);
 }
