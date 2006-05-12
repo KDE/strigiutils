@@ -46,8 +46,8 @@ StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-//    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
-//    tIter->push_back(ana);
+    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
+    tIter->push_back(ana);
 }
 void
 StreamIndexer::addEndAnalyzers() {
@@ -90,6 +90,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     headersize = input->read(header, headersize, headersize);
     input->reset(0);
     if (headersize < 0) finished = true;
+//    printf("headersize: %i\n", headersize);
     int es = 0, size = eIter->size();
     int n = 0;
     while (!finished && es != size) {

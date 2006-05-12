@@ -19,6 +19,7 @@ public:
 };
 DigestInputStream::DigestInputStream(InputStream *input) {
     this->input = input;
+    size = input->getSize();
     status = Ok;
     ignoreBytes = 0;
     SHA1_Init(&sha1);
@@ -26,14 +27,14 @@ DigestInputStream::DigestInputStream(InputStream *input) {
 int32_t
 DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, min, max);
-    if (nread == -1) {
+    position = input->getPosition();
+    if (nread < -1) {
         error = input->getError();
         status = Error;
-        return -1;
+        return -2;
     }
     if (nread < min) {
         status = Eof;
-        return Eof;
     }
     if (ignoreBytes < nread) {
         SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
@@ -66,6 +67,9 @@ DigestInputStream::reset(int64_t newpos) {
         }
     }
     position = newpos;
+    if (position == size) {
+        status = Eof;
+    }
     return newpos;
 }
 void

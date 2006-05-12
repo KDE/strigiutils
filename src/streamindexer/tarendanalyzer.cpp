@@ -17,7 +17,6 @@ TarEndAnalyzer::analyze(std::string filename, InputStream *in,
     while (s) {
         std::string file = filename+"/";
         file += tar.getEntryInfo().filename;
-//        printf("entry %i %lli %s\n", depth, s->getSize(), file.c_str());
         indexer->analyze(file, s, depth);
         s = tar.nextEntry();
     }
