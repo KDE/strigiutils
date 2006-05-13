@@ -43,10 +43,6 @@ template <class T>
 void
 BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
     int32_t missing = ntoread - buffer.avail;
-    if (missing > 0 && finishedWritingToBuffer) {
-        StreamBase<T>::status = Eof;
-        return;
-    }
     int32_t nwritten = 0;
     while (missing > 0 && nwritten >= 0) {
         int32_t space;
@@ -68,10 +64,13 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     if (StreamBase<T>::status == Error) return -2;
     if (StreamBase<T>::status == Eof) return -1;
 
-    writeToBuffer(min);
-
-    if (StreamBase<T>::status == Error) return -2;
-    if (StreamBase<T>::status == Eof) return -1;
+    // do we need to read data into the buffer?
+    if (!finishedWritingToBuffer && min > buffer.avail) {
+        // do we have enough space in the buffer?
+        writeToBuffer(min);
+        if (StreamBase<T>::status == Error) return -2;
+        if (StreamBase<T>::status == Eof) return -1;
+    }
 
     int32_t nread = buffer.read(start, max);
     BufferedInputStream<T>::position += nread;
@@ -87,7 +86,6 @@ template <class T>
 int64_t
 BufferedInputStream<T>::mark(int32_t readlimit) {
     buffer.mark(readlimit);
-//    printf("mark %p %i %i\n", this, readlimit, buffer.size);
     return StreamBase<T>::position;
 }
 template <class T>

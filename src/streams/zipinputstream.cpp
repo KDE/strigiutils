@@ -9,7 +9,7 @@ using namespace jstreams;
 
 bool
 ZipInputStream::checkHeader(const char* data, int32_t datasize) {
-    static const char magic[] = {0x50, 0xb4, 0x03, 0x04};
+    static const char magic[] = {0x50, 0x4b, 0x03, 0x04};
     if (datasize < 4) return false;
     return memcmp(data, magic, 4) == 0;
 }

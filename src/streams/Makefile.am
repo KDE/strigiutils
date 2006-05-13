@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = libstreams.la
 
-libstreams_la_SOURCES = bz2inputstream.cpp \
+libstreams_la_SOURCES = bz2inputstream.cpp digestinputstream.cpp \
 	fileinputstream.cpp gzipinputstream.cpp \
 	inputstreamreader.cpp filereader.cpp kmpsearcher.cpp \
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp \
@@ -9,7 +9,7 @@ libstreams_la_SOURCES = bz2inputstream.cpp \
 
 libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 
-libstreams_la_LIBADD = -lz -lbz2
+libstreams_la_LIBADD = -lz -lbz2 -lcrypto
 
 noinst_HEADERS = bufferedstream.h
 SUBDIRS = . tests

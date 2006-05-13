@@ -5,6 +5,7 @@
 #include "bz2endanalyzer.h"
 #include "textendanalyzer.h"
 #include "tarendanalyzer.h"
+#include "zipendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexwriter.h"
 using namespace std;
@@ -38,6 +39,8 @@ StreamIndexer::indexFile(const char *filepath) {
 char
 StreamIndexer::indexFile(std::string& filepath) {
     FileInputStream file(filepath.c_str());
+    // ensure a decent buffer size
+    file.mark(1024);
     return analyze(filepath, &file, 0);
 }
 
@@ -58,12 +61,14 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
     ana = new TarEndAnalyzer();
     eIter->push_back(ana);
+    ana = new ZipEndAnalyzer();
+    eIter->push_back(ana);
     ana = new TextEndAnalyzer();
     eIter->push_back(ana);
 }
 char
 StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
-//    printf(">%i %s\n", depth, path.c_str());
+    printf("%s %lli\n", path.c_str(), input->getSize());
     Indexable idx(writer);
     idx.addField(L"path", path.c_str());
     idx.addField(L"path", L"hmm");
@@ -90,7 +95,6 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     headersize = input->read(header, headersize, headersize);
     input->reset(0);
     if (headersize < 0) finished = true;
-//    printf("headersize: %i\n", headersize);
     int es = 0, size = eIter->size();
     int n = 0;
     while (!finished && es != size) {

@@ -2,10 +2,14 @@
 #define DIGESTTHROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
-class DigestInputStream;
+
+namespace jstreams {
+	class DigestInputStream;
+}
+
 class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
-    DigestInputStream *stream;
+    jstreams::DigestInputStream *stream;
 public:
     DigestThroughAnalyzer();
     ~DigestThroughAnalyzer();

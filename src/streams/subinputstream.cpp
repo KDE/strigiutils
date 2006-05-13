@@ -4,6 +4,7 @@ using namespace jstreams;
 
 SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
         : offset(i->getPosition()), input(i) {
+//    printf("substream offset: %lli\n", offset);
     size = length;
 }
 int32_t
@@ -15,9 +16,13 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     // restrict the amount of data that can be read
     if (max <= 0 || max > left) {
         max = (int32_t)left;
+        if (min > max) min = max;
     }
     int32_t nread = input->read(start, min, max);
-    if (nread < 0) {
+    if (left < min) min = left;
+    if (nread < min) {
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        // we expected data but didn't get enough so that's an error
         status = Error;
         error = input->getError();
     } else {
@@ -35,8 +40,10 @@ SubInputStream::mark(int32_t readlimit) {
 }
 int64_t
 SubInputStream::reset(int64_t newpos) {
+//    printf("subreset newpos: %lli offset: %lli\n", newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
+        printf("###########\n");
         status = Error;
         error = input->getError();
     } else {

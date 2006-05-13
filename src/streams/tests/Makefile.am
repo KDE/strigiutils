@@ -27,6 +27,7 @@ testrunner_SOURCES = ZipInputStreamTest.cpp \
 	MailInputStreamTest.cpp \
 	Base64InputStreamTest.cpp \
 	StringTerminatedSubStreamTest.cpp \
+	DigestInputStreamTest.cpp \
         inputstreamtests.cpp \
 	testrunner.cpp $(testrunner_MOCSOURCES)
 
@@ -41,6 +42,7 @@ testrunner_MOCSOURCES = ZipInputStreamTest_moc.cpp \
 	MailInputStreamTest_moc.cpp \
 	Base64InputStreamTest_moc.cpp \
 	StringTerminatedSubStreamTest_moc.cpp \
+	DigestInputStreamTest_moc.cpp \
         inputstreamtests_moc.cpp
 
 testrunner_CXXFLAGS = $(QT_CFLAGS)
