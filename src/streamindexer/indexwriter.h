@@ -24,12 +24,10 @@ class IndexWriter {
 friend class Indexable;
 protected:
     virtual void startIndexable(const Indexable*) = 0;
-    virtual void addStream(const Indexable*, const std::wstring& fieldname,
+    virtual void addStream(const Indexable*, const std::string& fieldname,
         jstreams::StreamBase<wchar_t>* datastream) = 0;
-    virtual void addField(const Indexable*, const std::wstring &fieldname,
-        const char* value) = 0;
-    virtual void addField(const Indexable*, const std::wstring &fieldname,
-        const std::wstring &value) = 0;
+    virtual void addField(const Indexable*, const std::string &fieldname,
+        const std::string& value) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
 public:
     virtual ~IndexWriter() {}
@@ -44,16 +42,12 @@ public:
         w->startIndexable(this);
     }
     ~Indexable() { writer->finishIndexable(this); }
-    void addStream(const std::wstring& fieldname,
+    void addStream(const std::string& fieldname,
             jstreams::StreamBase<wchar_t>* datastream) {
         writer->addStream(this, fieldname, datastream);
     }
-    inline void addField(const std::wstring &fieldname,
-            const char* value) {
-        writer->addField(this, fieldname, value);
-    }
-    void addField(const std::wstring &fieldname,
-            const std::wstring &value) {
+    void addField(const std::string &fieldname,
+            const std::string &value) {
         writer->addField(this, fieldname, value);
     }
     const std::string& getName() const { return name; }

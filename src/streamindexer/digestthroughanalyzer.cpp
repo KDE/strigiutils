@@ -3,6 +3,7 @@
 #include "inputstream.h"
 #include "indexwriter.h"
 #include <openssl/sha.h>
+using namespace std;
 using namespace jstreams;
 
 DigestThroughAnalyzer::DigestThroughAnalyzer() {
@@ -16,8 +17,9 @@ DigestThroughAnalyzer::~DigestThroughAnalyzer() {
 }
 InputStream *
 DigestThroughAnalyzer::connectInputStream(InputStream *in) {
-    if (indexable && stream && stream->getStatus() == Eof) {
-        indexable->addField(L"sha1", stream->getDigestString().c_str());
+    const static string sha1("sha1");
+    if (indexable && stream) { // && stream->getStatus() == Eof) {
+        indexable->addField(sha1, stream->getDigestString());
     }
     if (stream) {
         delete stream;

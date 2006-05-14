@@ -75,7 +75,8 @@ StreamIndexer::addEndAnalyzers() {
 }
 char
 StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
-    printf("%s %lli\n", path.c_str(), input->getSize());
+    static int count = 1;
+    printf("%s %lli %i\n", path.c_str(), input->getSize(), count++);
     Indexable idx(path, writer);
 
     // retrieve or construct the through analyzers and end analyzers

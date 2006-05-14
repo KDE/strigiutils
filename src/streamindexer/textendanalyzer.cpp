@@ -8,6 +8,6 @@ char
 TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
     InputStreamReader reader(in);
-    i->addStream(L"content", &reader);
+    i->addStream("content", &reader);
     return 0;
 }

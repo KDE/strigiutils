@@ -36,7 +36,7 @@ CLuceneIndexWriter::addIndexWriter() {
     writers.push_back(writer);
 }
 void
-CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
+CLuceneIndexWriter::addStream(const Indexable* idx, const string& fieldname,
         StreamBase<wchar_t>* datastream) {
     Document *doc = docs[idx];
     if (doc == 0) {
@@ -45,8 +45,11 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
         docs[idx] = 0;
     }
     Reader* reader = new Reader(datastream, false);
-    doc->add( *Field::Text(fieldname.c_str(), reader) );
-
+#if defined(_UCS2)
+    TCHAR fn[CL_MAX_DIR];
+    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
+    doc->add( *Field::Text(fn, reader) );
+#endif
     if (writers.size() < activewriter+1) {
         addIndexWriter();
     }
@@ -64,27 +67,26 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const wstring& fieldname,
    If there's an open document, add fields to that. If there isn't open one.
 */
 void
-CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
-        const wstring &value) {
+CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
+        const string& value) {
     Document *doc = docs[idx];
     if (doc == 0) {
         doc = new Document();
         docs[idx] = doc;
     }
-    doc->add( *Field::Keyword(fieldname.c_str(), value.c_str()) );
+#if defined(_UCS2)
+    TCHAR fn[CL_MAX_DIR];
+    TCHAR fv[CL_MAX_DIR];
+    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
+    STRCPY_AtoT(fv, value.c_str(), CL_MAX_DIR);
+    doc->add( *Field::Keyword(fn, fv) );
+#else
+    doc->add(*Field::Keyword(fieldname.c_str(), value.c_str()));
+#endif
 }
-void
-CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
-        const char* value) {
-    TCHAR tf[CL_MAX_DIR];
-    STRCPY_AtoT(tf, value, CL_MAX_DIR);
-    wstring v(tf);
-    addField(idx, fieldname, v);
-}
-
 void
 CLuceneIndexWriter::startIndexable(const Indexable* idx) {
-    addField(idx, L"path", idx->getName().c_str());
+    addField(idx, "path", idx->getName().c_str());
 }
 /*
     Close all left open indexwriters for this path.
