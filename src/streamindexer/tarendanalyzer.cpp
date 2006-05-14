@@ -10,10 +10,14 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 TarEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable*) {
+        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
+    return staticAnalyze(filename, in, depth, indexer, idx);
+}
+char
+TarEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
+        int depth, jstreams::StreamIndexer *indexer, jstreams::Indexable*) {
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
-//    printf("TAR %p %lli %i\n", s, in->getSize(), in->getStatus());
     while (s) {
         std::string file = filename+"/";
         file += tar.getEntryInfo().filename;

@@ -21,7 +21,9 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, min, max);
     if (left < min) min = left;
     if (nread < min) {
-        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i left %lli size %lli\n", nread, min, max, left, size);
+        printf("pos %lli parentpos %lli\n", position, input->getPosition());
+        printf("status: %i error: %s\n", input->getStatus(), input->getError());
         // we expected data but didn't get enough so that's an error
         status = Error;
         error = input->getError();
@@ -40,7 +42,8 @@ SubInputStream::mark(int32_t readlimit) {
 }
 int64_t
 SubInputStream::reset(int64_t newpos) {
-//    printf("subreset newpos: %lli offset: %lli\n", newpos, offset);
+    //printf("subreset pos: %lli newpos: %lli offset: %lli\n", position,
+    //    newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
         printf("###########\n");
@@ -53,6 +56,7 @@ SubInputStream::reset(int64_t newpos) {
 }
 int64_t
 SubInputStream::skip(int64_t ntoskip) {
+    //printf("subskip pos: %lli ntoskip: %lli offset: %lli\n", position, ntoskip, offset);
     const int64_t left = size - position;
     if (left == 0) {
         return -1;

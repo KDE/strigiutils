@@ -48,7 +48,7 @@ DigestInputStream::skip(int64_t ntoskip) {
 }
 int64_t
 DigestInputStream::mark(int32_t readlimit) {
-    if (status) return status;
+    if (status == Error) return -2;
     return input->mark(readlimit);
 }
 int64_t
@@ -59,7 +59,6 @@ DigestInputStream::reset(int64_t np) {
         return position;
     }
     int64_t newpos = input->reset(np);
-//    printf("dg newpos %p %lli\n", this, newpos);
     if (newpos < 0) {
         status = Error;
         error = input->getError();
@@ -67,12 +66,9 @@ DigestInputStream::reset(int64_t np) {
         if (newpos < position) {
             ignoreBytes += position - newpos;
         }
-        status = (position == size) ?Eof :Ok;
+        status = (newpos == size) ?Eof :Ok;
     }
     position = newpos;
-//    const char*x; input->read(x,1,0);printf("digread %p\n", x);
-//    input->reset(np);
-    //printf("%p reset %lli\n", this, newpos);
     return newpos;
 }
 void

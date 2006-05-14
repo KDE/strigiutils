@@ -10,7 +10,7 @@ namespace jstreams {
 class BZ2InputStream : public BufferedInputStream<char> {
 private:
     bool allocatedBz;
-    bz_stream bzstream;
+    bz_stream* bzstream;
     StreamBase<char> *input;
 
     void dealloc();

@@ -87,13 +87,13 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         (*ts)->setIndexable(&idx);
-        input = (*ts)->connectInputStream(input);
+    //    input = (*ts)->connectInputStream(input);
     }
     bool finished = false;
     int32_t headersize = 1024;
     const char* header;
-    headersize = input->read(header, headersize, headersize);
-    input->reset(0);
+    headersize = input->read(header, headersize, 0);
+    if (input->reset(0) != 0) printf("resetting is impossible!!\n");
     if (headersize < 0) finished = true;
     int es = 0, size = eIter->size();
     int n = 0;
