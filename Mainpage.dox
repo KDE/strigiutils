@@ -1,0 +1,9 @@
+/** @mainpage ArchiveReader
+*
+* ArchiveReader is currently a demonstration of using QAbstractFileEngine for
+* reading archive files.
+**/
+// DOXYGEN_VERSION=4.0
+// DOXYGEN_NAME=archivereader
+// DOXYGEN_ENABLE=YES
+// DOXYGEN_SET_RECURSIVE = YES
