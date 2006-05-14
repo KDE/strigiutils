@@ -1,4 +1,5 @@
 #include "digestinputstream.h"
+using namespace std;
 using namespace jstreams;
 
 DigestInputStream::DigestInputStream(StreamBase<char> *input) {
@@ -6,6 +7,7 @@ DigestInputStream::DigestInputStream(StreamBase<char> *input) {
     size = input->getSize();
     status = Ok;
     ignoreBytes = 0;
+    finished = false;
     SHA1_Init(&sha1);
 }
 int32_t
@@ -73,10 +75,26 @@ DigestInputStream::reset(int64_t np) {
 }
 void
 DigestInputStream::printDigest() {
-    SHA1_Final(digest, &sha1);
-    printf("The hash: ");
-    for (int i = 0; i < 20; i++) {
+    finishDigest();
+    printf("The hash %p: %s\n", this, getDigestString().c_str());
+/*    for (int i = 0; i < 20; i++) {
         printf("%02x ", digest[i]);
     }
-    printf("\n");
+    printf("\n");*/
+}
+void
+DigestInputStream::finishDigest() {
+    if (!finished) {
+        SHA1_Final(digest, &sha1);
+        finished = true;
+    }
+}
+string
+DigestInputStream::getDigestString() {
+    finishDigest();
+    char d[41];
+    for (int i = 0; i < 20; i++) {
+        sprintf(d+2*i, "%02x", digest[i]);
+    }
+    return d;
 }

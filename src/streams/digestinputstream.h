@@ -6,10 +6,13 @@
 namespace jstreams {
 class DigestInputStream : public StreamBase<char> {
 private:
+    bool finished;
     int32_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
     StreamBase<char> *input;
+
+    void finishDigest();
 public:
     DigestInputStream(StreamBase<char> *input);
     int32_t read(const char*& start, int32_t min, int32_t max);
@@ -17,6 +20,7 @@ public:
     int64_t mark(int32_t readlimit);
     int64_t reset(int64_t);
     void printDigest();
+    std::string getDigestString();
 };
 }
 #endif

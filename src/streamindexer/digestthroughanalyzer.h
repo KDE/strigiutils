@@ -4,12 +4,13 @@
 #include "streamthroughanalyzer.h"
 
 namespace jstreams {
-	class DigestInputStream;
+    class DigestInputStream;
 }
 
 class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     jstreams::DigestInputStream *stream;
+    jstreams::Indexable* indexable;
 public:
     DigestThroughAnalyzer();
     ~DigestThroughAnalyzer();

@@ -76,8 +76,16 @@ CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
 void
 CLuceneIndexWriter::addField(const Indexable* idx, const wstring &fieldname,
         const char* value) {
+    TCHAR tf[CL_MAX_DIR];
+    STRCPY_AtoT(tf, value, CL_MAX_DIR);
+    wstring v(tf);
+    addField(idx, fieldname, v);
 }
 
+void
+CLuceneIndexWriter::startIndexable(const Indexable* idx) {
+    addField(idx, L"path", idx->getName().c_str());
+}
 /*
     Close all left open indexwriters for this path.
 */

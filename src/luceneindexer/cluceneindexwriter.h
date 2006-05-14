@@ -27,13 +27,14 @@ private:
 
     void addIndexWriter();
 protected:
+    void startIndexable(const jstreams::Indexable*);
+    void finishIndexable(const jstreams::Indexable*);
     void addStream(const jstreams::Indexable*, const std::wstring& fieldname,
         jstreams::StreamBase<wchar_t>* datastream);
     void addField(const jstreams::Indexable*, const std::wstring &fieldname,
         const char* value);
     void addField(const jstreams::Indexable*, const std::wstring &fieldname,
         const std::wstring &value);
-    void finishIndexable(const jstreams::Indexable*);
 public:
     CLuceneIndexWriter(const char* path);
     ~CLuceneIndexWriter();
