@@ -58,6 +58,11 @@ dnl check for openssl
 PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
+dnl check for slqlite3
+PKG_CHECK_MODULES(sqlite3, sqlite3 >= 0, have_sqlite3="yes", have_sqlite3="no")
+AM_CONDITIONAL(HAVE_SQLITE3, test "$have_sqlite3" = "yes")
+
+
 dnl check for iconv
 AM_ICONV
 
@@ -68,6 +73,7 @@ AC_OUTPUT( Makefile \
         src/streamindexer/Makefile \
         src/diskindexer/Makefile \
         src/luceneindexer/Makefile \
+        src/sqliteindexer/Makefile \
         src/archiveengine/Makefile \
         src/archiveengine/tests/Makefile \
         src/qclient/Makefile )
