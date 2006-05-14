@@ -14,13 +14,11 @@ int32_t
 DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, min, max);
     position = input->getPosition();
-    //printf("digread %p %p %i %lli ", this, start, nread, position);
     if (nread < -1) {
         error = input->getError();
         status = Error;
         return -2;
     }
-//    if (nread > 0) position += nread;
     if (nread < min) {
         status = Eof;
     }
@@ -30,14 +28,13 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     } else {
         ignoreBytes -= nread;
     }
-    //printf("%lli %lli\n", position, getPosition());
     return nread;
 }
 int64_t
 DigestInputStream::skip(int64_t ntoskip) {
     // we call the default implementation because it calls
     // read() which is required for updating the hash
-    int64_t skipped = input->skip(ntoskip);
+    int64_t skipped = StreamBase<char>::skip(ntoskip);
     status = input->getStatus();
     if (status == Error) {
         error = input->getError();
