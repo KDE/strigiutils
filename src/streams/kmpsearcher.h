@@ -24,6 +24,7 @@ public:
     }
     void setQuery(const std::string& );
     int32_t getQueryLength() const { return len; }
+    std::string getQuery() const { return query; }
     const char* search(const char* haystack, int32_t haylen) const;
 };
 }

@@ -300,8 +300,8 @@ MailInputStream::handleBodyLine() {
 }
 StreamBase<char>*
 MailInputStream::nextEntry() {
-    //printf("---------\n");
-    if (status) return 0;
+//    printf("--------- %lli\n", input->getPosition());
+    if (status != Ok) return 0;
     // if the mail does not consist of multiple parts, we give a pointer to
     // the input stream
     if (boundary.length() == 0) {
@@ -312,12 +312,45 @@ MailInputStream::nextEntry() {
     // read anything that's left over in the previous stream
     if (substream) {
         const char* dummy;
-        while (substream->read(dummy, 1, 0) > 0) {}
+        while (substream->getStatus() == Ok) {
+            substream->read(dummy, 1, 0);
+        }
+        if (substream->getStatus() == Error) {
+            status = Error;
+        } else {
+            if (substream->getSize()<0) {
+                printf("NONDEJU size should be determined %lli\n",
+                    substream->getSize());
+                exit(0);
+            }
+            int64_t end = substream->getOffset()+substream->getSize()
+                + boundary.length()+2;
+            //printf("weird: %lli %lli\n",substream->getOffset(),substream->getSize());
+            // skip to pass the boundary
+            int64_t np = input->reset(end);
+            if (np != end) {
+                status = Error;
+                printf("error: could not reset position\n");
+            } else {
+                int32_t nr = input->read(dummy, 1, 0);
+                //printf("ohoh: %lli %lli '%.*s'\n",end,np, (nr>10)?10:nr,dummy);
+                if (nr < 1 || *dummy == '-') {
+                    // the end of the mail
+                    status = Eof;
+                }
+                input->reset(end);
+                input->read(dummy, 2, 2);
+            }
+        }
+
         delete substream;
         substream = 0;
         if (entrystream) {
             delete entrystream;
             entrystream = 0;
+        }
+        if (status != Ok) {
+            return 0;
         }
         // force the stream to refresh the buffer
         fillBuffer();

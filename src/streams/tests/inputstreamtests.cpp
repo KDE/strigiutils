@@ -20,7 +20,7 @@ inputStreamTest1(StreamBase<T>* s) {
         // read past the end
         n = s->read(ptr, size+1, size+1);
     }
-    QVERIFY(size == -1 || size == n);
+    QVERIFY(size == -1 || n == -1 || size == n);
     QVERIFY(s->getPosition() == n);
     if (s->getStatus() == jstreams::Error) {
         printf("error %s\n", s->getError());

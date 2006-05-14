@@ -35,13 +35,13 @@ DigestInputStream::skip(int64_t ntoskip) {
     // we call the default implementation because it calls
     // read() which is required for updating the hash
     int64_t skipped = StreamBase<char>::skip(ntoskip);
-    status = input->getStatus();
+/*    status = input->getStatus();
     if (status == Error) {
         error = input->getError();
         position = -1;
     } else {
         position += skipped;
-    }
+    } */
 
     return skipped;
 }

@@ -10,6 +10,7 @@
  **/
 
 namespace jstreams {
+class StringTerminatedSubStream;
 class MailInputStream : public SubStreamProvider {
 private:
     // variables that record the current read state
@@ -23,7 +24,7 @@ private:
     const char* bufend;
 
     StreamBase<char>* entrystream;
-    StreamBase<char>* substream;
+    StringTerminatedSubStream* substream;
     std::string subject;
     std::string contenttype;
     std::string contenttransferencoding;
