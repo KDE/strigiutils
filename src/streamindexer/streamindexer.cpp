@@ -6,6 +6,8 @@
 #include "textendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "zipendanalyzer.h"
+#include "gzipendanalyzer.h"
+#include "mailendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexwriter.h"
 using namespace std;
@@ -59,10 +61,15 @@ StreamIndexer::addEndAnalyzers() {
     eIter = end.rbegin();
     StreamEndAnalyzer* ana = new BZ2EndAnalyzer();
     eIter->push_back(ana);
+    ana = new GZipEndAnalyzer();
+    eIter->push_back(ana);
     ana = new TarEndAnalyzer();
+    eIter->push_back(ana);
+    ana = new MailEndAnalyzer();
     eIter->push_back(ana);
     ana = new ZipEndAnalyzer();
     eIter->push_back(ana);
+    // add a text analyzer to the end of the queue
     ana = new TextEndAnalyzer();
     eIter->push_back(ana);
 }
@@ -87,7 +94,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         (*ts)->setIndexable(&idx);
-    //    input = (*ts)->connectInputStream(input);
+        input = (*ts)->connectInputStream(input);
     }
     bool finished = false;
     int32_t headersize = 1024;

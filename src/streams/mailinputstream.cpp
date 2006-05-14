@@ -14,6 +14,7 @@ using namespace std;
  **/
 bool
 MailInputStream::checkHeader(const char* data, int32_t datasize) {
+    if (datasize < 512) return false;
     int linecount = 1;
     bool key = true;
     bool slashr = false;
