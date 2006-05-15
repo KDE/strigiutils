@@ -120,12 +120,11 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
         }
         es++;
     }
-    // no endanalyzer was found, or the analyzer did
-    // not read all of the stream, so we do that here
+    // make sure the entire stream as read
     int64_t nskipped;
     do {
         nskipped = input->skip(1000000);
-    } while (nskipped > 0);
+    } while (input->getStatus() == Ok);
     if (input->getStatus() == Error) {
         printf("Error: %s\n", input->getError());
         return -2;
