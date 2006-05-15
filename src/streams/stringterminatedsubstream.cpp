@@ -33,8 +33,8 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 
     const char* end = searcher.search(start, nread);
     if (end) {
-//        printf("THE END %p %p %s\n", start, end, searcher.getQuery().c_str());
-//        printf("TE %i '%.*s'\n", end-start, 10, end);
+        printf("THE END %p %p %s\n", start, end, searcher.getQuery().c_str());
+        printf("TE %i '%.*s'\n", end-start, 10, end);
         nread = end - start;
         // signal the end of stream at the next call
         status = Eof;
@@ -47,15 +47,15 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         nread -= tl;
         // we rewind, but the pointer 'start' will stay valid nontheless
         input->reset(pos + nread);
-//        printf("ehh %i %i\n", status, max);
+        printf("ehh %i %i\n", status, max);
     } else if (max != 0 && nread > max) {
-//        printf("max\n");
+        printf("max\n");
         // we are near the end of the stream but cannot pass all data
         // at once because the amount read is larger than the amount to pass
         input->reset(pos + max);
         nread = max;
     } else {
-//        printf("huh????\n");
+        printf("huh????\n");
         // we are at the end of the stream, so no need to rewind
         // signal the end of stream at the next call
         status = Eof;
@@ -70,6 +70,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 }
 int64_t
 StringTerminatedSubStream::mark(int32_t readlimit) {
+    printf("mark %i\n", readlimit);
     return input->mark(readlimit) - offset;
 }
 int64_t

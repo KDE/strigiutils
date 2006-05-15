@@ -20,6 +20,7 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     const static string sha1("sha1");
     if (indexable && stream) { // && stream->getStatus() == Eof) {
         indexable->addField(sha1, stream->getDigestString());
+        printf("%s %s\n", indexable->getName().c_str(), stream->getDigestString().c_str());
     }
     if (stream) {
         delete stream;

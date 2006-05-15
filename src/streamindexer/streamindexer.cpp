@@ -120,26 +120,25 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
         }
         es++;
     }
-    if (!finished) {
-        // no endanalyzer was found, or the analyzer did
-        // not read all of the stream, so we do that here
-        int64_t nskipped;
-        do {
-            nskipped = input->skip(1000000);
-        } while (nskipped > 0);
-        if (input->getStatus() == Error) {
-            printf("Error: %s\n", input->getError());
-            return -2;
-        }
+    // no endanalyzer was found, or the analyzer did
+    // not read all of the stream, so we do that here
+    int64_t nskipped;
+    do {
+        nskipped = input->skip(1000000);
+    } while (nskipped > 0);
+    if (input->getStatus() == Error) {
+        printf("Error: %s\n", input->getError());
+        return -2;
     }
+
     // iterator must be reinitialized because vector may
     // have changed
-    //printf("%s\n", path.c_str());
     tIter = through.begin() + depth;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         // remove references to the indexable before it goes out of scope
         (*ts)->setIndexable(0);
     }
+//    printf("< %s\n", path.c_str());
 
     return 0;
 }
