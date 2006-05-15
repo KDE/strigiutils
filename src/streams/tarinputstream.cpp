@@ -40,11 +40,11 @@ TarInputStream::readHeader() {
 }
 bool
 TarInputStream::checkHeader(const char* h, const int32_t hsize) {
-    if (hsize < 148) {
+    if (hsize < 257) {
         // header is too small to check
         return false;
     }
-    return !(h[107] || h[115] || h[123] || h[135] || h[147]);
+    return !(h[107] || h[115] || h[123] || h[135] || h[147] || h[256]);
 }
 void
 TarInputStream::parseHeader() {
@@ -53,7 +53,7 @@ TarInputStream::parseHeader() {
     if (status) return;
 
     // check for terminators ('\0') on the first couple of fields
-    if (hb[107] || hb[115] || hb[123] || hb[135] || hb[147]) {
+    if (hb[107] || hb[115] || hb[123] || hb[135] || hb[147] || hb[256]) {
         error = "Invalid tar header.\n";
         status = Error;
         return;
