@@ -60,7 +60,8 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
     return true;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
-        : SubStreamProvider(input), entrystream(0), substream(0) {
+        : SubStreamProvider(input), entrystream(0), substream(0),
+          bodysubstream(0) {
 //    printf("%p\n", input);
     linenum = 0;
     skipHeader();
@@ -78,6 +79,9 @@ MailInputStream::~MailInputStream() {
     }
     if (substream) {
         delete substream;
+    }
+    if (bodysubstream) {
+        delete bodysubstream;
     }
 }
 void
@@ -307,7 +311,8 @@ MailInputStream::nextEntry() {
     if (boundary.length() == 0) {
         // signal eof because we only return eof once
         status = Eof;
-        return input;
+        bodysubstream = new SubInputStream(input);
+        return bodysubstream;
     }
     // read anything that's left over in the previous stream
     if (substream) {

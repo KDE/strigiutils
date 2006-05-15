@@ -83,8 +83,8 @@ GZipInputStream::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
-    nread = input->read(inStart, 0, 0);
-    if (nread == -1) {
+    nread = input->read(inStart, 1, 0);
+    if (nread < -1) {
         status = Error;
     }
     zstream->next_in = (Bytef*)inStart;

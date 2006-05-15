@@ -4,6 +4,7 @@ using namespace std;
 using namespace jstreams;
 
 DigestInputStream::DigestInputStream(StreamBase<char> *input) {
+    assert(input->getPosition() == 0);
     this->input = input;
     size = input->getSize();
 #ifndef NDEBUG
@@ -16,13 +17,16 @@ DigestInputStream::DigestInputStream(StreamBase<char> *input) {
 }
 int32_t
 DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
+    if (min == 0) {input=0;input->getSize();}
     int32_t nread = input->read(start, min, max);
-//    printf("read min %i max %i nread %i\n", min, max, nread);
-    position = input->getPosition();
+//    printf("%p pos: %lli min %i max %i nread %i\n", this, position, min, max, nread);
     if (nread < -1) {
         error = input->getError();
         status = Error;
         return -2;
+    }
+    if (nread > 0) {
+        position += nread;
     }
     if (ignoreBytes < nread) {
         SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
@@ -36,12 +40,14 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     if (nread < min) {
         status = Eof;
         if (size == -1) {
+//            printf("set size: %lli\n", position);
             size = position;
         }
 #ifndef NDEBUG
         if (size != position || size != totalread) {
             printf("size: %lli position: %lli totalread: %lli\n",
                 size, position, totalread);
+            printf("%i %s\n", input->getStatus(), input->getError());
         }
         assert(size == position);
         assert(totalread == size);
@@ -50,15 +56,16 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     return nread;
 }
-/*int64_t
+int64_t
 DigestInputStream::skip(int64_t ntoskip) {
 //    printf("skipping %lli\n", ntoskip);
     // we call the default implementation because it calls
     // read() which is required for updating the hash
     int64_t skipped = StreamBase<char>::skip(ntoskip);
-
+    //const char*d;
+    //int32_t skipped = read(d, ntoskip, ntoskip);
     return skipped;
-}*/
+}
 int64_t
 DigestInputStream::mark(int32_t readlimit) {
     if (status == Error) return -2;
@@ -74,6 +81,7 @@ DigestInputStream::reset(int64_t np) {
         return position;
     }
     int64_t newpos = input->reset(np);
+//    printf("np %lli newpos %lli\n", np, newpos);
     if (newpos < 0) {
         status = Error;
         error = input->getError();

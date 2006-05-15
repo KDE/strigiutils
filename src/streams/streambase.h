@@ -134,17 +134,14 @@ StreamBase<T>::skip(int64_t ntoskip) {
         int32_t step = (int32_t)((ntoskip > SKIPSTEP) ?SKIPSTEP :ntoskip);
         nread = read(begin, 1, step);
         if (nread < -1 ) {
+            // an error occurred
             return nread;
         } else if (nread < 1) {
-//            printf("EEEEOOOOFFFF\n");
-            status = Eof;
-            if (size == -1) size = position;
             ntoskip = 0;
         } else {
+            skipped += nread;
             ntoskip -= nread;
-            position += nread;
         }
-        skipped += nread;
     }
     return skipped;
 }

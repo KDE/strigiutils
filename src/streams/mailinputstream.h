@@ -10,6 +10,7 @@
  **/
 
 namespace jstreams {
+class SubInputStream;
 class StringTerminatedSubStream;
 class MailInputStream : public SubStreamProvider {
 private:
@@ -25,6 +26,7 @@ private:
 
     StreamBase<char>* entrystream;
     StringTerminatedSubStream* substream;
+    SubInputStream* bodysubstream;
     std::string subject;
     std::string contenttype;
     std::string contenttransferencoding;

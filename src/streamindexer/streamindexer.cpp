@@ -110,7 +110,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
-                    printf("could not reset\n");
+                    printf("could not reset: %s\n", sea->getError().c_str());
                     return -2;
                 }
             } else {

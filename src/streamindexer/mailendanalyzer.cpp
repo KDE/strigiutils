@@ -29,9 +29,9 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
         n++;
     }
     if (mail.getStatus() == jstreams::Error) {
-//        printf("Error: %s\n", tar.getError());
+        error = mail.getError();
     } else {
-//        printf("finished ok\n");
+        error.resize(0);
     }
     return mail.getStatus();
 }

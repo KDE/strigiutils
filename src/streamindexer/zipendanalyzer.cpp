@@ -25,10 +25,10 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
         s = zip.nextEntry();
     }
     if (zip.getStatus() == jstreams::Error) {
-//        printf("Error: %s\n", tar.getError());
+        error = zip.getError();
     } else {
-//        printf("finished ok\n");
+        error.resize(0);
     }
-    return zip.getStatus();
+    return zip.getStatus() != jstreams::Error;
 }
 
