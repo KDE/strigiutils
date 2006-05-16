@@ -3,7 +3,7 @@ lib_LTLIBRARIES = libstreamindexer.la
 libstreamindexer_la_SOURCES = bz2endanalyzer.cpp \
 	digestthroughanalyzer.cpp textendanalyzer.cpp \
 	streamendanalyzer.cpp zipendanalyzer.cpp \
-	tarendanalyzer.cpp streamindexer.cpp \
+	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp \
 	mailendanalyzer.cpp gzipendanalyzer.cpp
 
 libstreamindexer_la_CXXFLAGS = -I$(top_srcdir)/src/streams

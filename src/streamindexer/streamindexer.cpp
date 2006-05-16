@@ -6,6 +6,7 @@
 #include "textendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "zipendanalyzer.h"
+#include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
 #include "digestthroughanalyzer.h"
@@ -68,6 +69,8 @@ StreamIndexer::addEndAnalyzers() {
     ana = new MailEndAnalyzer();
     eIter->push_back(ana);
     ana = new ZipEndAnalyzer();
+    eIter->push_back(ana);
+    ana = new PngEndAnalyzer();
     eIter->push_back(ana);
     // add a text analyzer to the end of the queue
     ana = new TextEndAnalyzer();
