@@ -111,6 +111,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
                     printf("could not reset: %s\n", sea->getError().c_str());
+                    removeIndexable(depth);
                     return -2;
                 }
             } else {
@@ -127,17 +128,21 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     } while (input->getStatus() == Ok);
     if (input->getStatus() == Error) {
         printf("Error: %s\n", input->getError());
+        removeIndexable(depth);
         return -2;
     }
 
-    // iterator must be reinitialized because vector may
-    // have changed
+    // remove references to the indexable before it goes out of scope
+    removeIndexable(depth);
+    return 0;
+}
+void
+StreamIndexer::removeIndexable(uint depth) {
+    std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
+    std::vector<StreamThroughAnalyzer*>::iterator ts;
     tIter = through.begin() + depth;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         // remove references to the indexable before it goes out of scope
         (*ts)->setIndexable(0);
     }
-//    printf("< %s\n", path.c_str());
-
-    return 0;
 }

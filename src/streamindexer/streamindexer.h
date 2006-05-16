@@ -32,6 +32,7 @@ private:
 
     void addThroughAnalyzers();
     void addEndAnalyzers();
+    void removeIndexable(uint depth);
 public:
     StreamIndexer(IndexWriter *w);
     ~StreamIndexer();
