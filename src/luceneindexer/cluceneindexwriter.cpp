@@ -58,6 +58,8 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const string& fieldname,
     try {
         writer->addDocument(doc);
     } catch (...) {
+        // empty catch: the exception is the result of the document encoding
+        // not being correct
     }
 
     delete doc;
