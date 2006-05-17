@@ -3,12 +3,12 @@ INCLUDES = $(all_includes)
 bin_PROGRAMS = daemon agent
 
 AM_CXXFLAGS = 
-AM_LDFLAGS = 
+AM_LDFLAGS = -lpthread
 LDADD =
 
 daemon_SOURCES = daemon.cpp
 
-daemon_SOURCES = agent.cpp
+agent_SOURCES = agent.cpp
 
 noinst_HEADERS =
 

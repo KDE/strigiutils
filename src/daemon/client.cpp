@@ -69,7 +69,7 @@ Connection::sendMessage(const std::string& msg) {
     if (!open()) return false;
     response = "";
     // send first
-    int pos = 0;
+/*    int pos = 0;
     int len = msg.length()+1; //include '\0'
     while (sd >= 0 && pos < len) {
         int r = send(sd, msg.c_str()+pos, len-pos, MSG_NOSIGNAL);
@@ -81,7 +81,7 @@ Connection::sendMessage(const std::string& msg) {
         }
         pos += r;
     }
-    printf("after sending\n");
+    printf("after sending\n");*/
     char buf[1001];
     while (sd >= 0) {
         int r = recv(sd, buf, 1000, 0);

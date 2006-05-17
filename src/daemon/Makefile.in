@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 
-SOURCES = $(daemon_SOURCES)
+SOURCES = $(agent_SOURCES) $(daemon_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -39,14 +39,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = daemon$(EXEEXT)
+bin_PROGRAMS = daemon$(EXEEXT) agent$(EXEEXT)
 subdir = src/daemon
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -54,6 +52,10 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
+am_agent_OBJECTS = agent.$(OBJEXT)
+agent_OBJECTS = $(am_agent_OBJECTS)
+agent_LDADD = $(LDADD)
+agent_DEPENDENCIES =
 am_daemon_OBJECTS = daemon.$(OBJEXT)
 daemon_OBJECTS = $(am_daemon_OBJECTS)
 daemon_LDADD = $(LDADD)
@@ -69,8 +71,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(daemon_SOURCES)
-DIST_SOURCES = $(daemon_SOURCES)
+SOURCES = $(agent_SOURCES) $(daemon_SOURCES)
+DIST_SOURCES = $(agent_SOURCES) $(daemon_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -106,6 +108,8 @@ F77 = @F77@
 FFLAGS = @FFLAGS@
 HAVE_CLUCENELIB_FALSE = @HAVE_CLUCENELIB_FALSE@
 HAVE_CLUCENELIB_TRUE = @HAVE_CLUCENELIB_TRUE@
+HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
+HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_OPENSSL_FALSE = @HAVE_OPENSSL_FALSE@
 HAVE_OPENSSL_TRUE = @HAVE_OPENSSL_TRUE@
 HAVE_QTLIB_FALSE = @HAVE_QTLIB_FALSE@
@@ -167,6 +171,8 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+dbus_CFLAGS = @dbus_CFLAGS@
+dbus_LIBS = @dbus_LIBS@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
@@ -194,9 +200,10 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 INCLUDES = $(all_includes)
 AM_CXXFLAGS = 
-AM_LDFLAGS = 
+AM_LDFLAGS = -lpthread
 LDADD = 
 daemon_SOURCES = daemon.cpp
+agent_SOURCES = agent.cpp
 noinst_HEADERS = 
 all: all-am
 
@@ -211,9 +218,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/daemon/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  src/daemon/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/daemon/Makefile
+	  $(AUTOMAKE) --foreign  src/daemon/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -259,6 +266,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+agent$(EXEEXT): $(agent_OBJECTS) $(agent_DEPENDENCIES) 
+	@rm -f agent$(EXEEXT)
+	$(CXXLINK) $(agent_LDFLAGS) $(agent_OBJECTS) $(agent_LDADD) $(LIBS)
 daemon$(EXEEXT): $(daemon_OBJECTS) $(daemon_DEPENDENCIES) 
 	@rm -f daemon$(EXEEXT)
 	$(CXXLINK) $(daemon_LDFLAGS) $(daemon_OBJECTS) $(daemon_LDADD) $(LIBS)
@@ -269,6 +279,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/agent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/daemon.Po@am__quote@
 
 .cpp.o:
