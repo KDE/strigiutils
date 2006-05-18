@@ -5,8 +5,25 @@
 #include <string>
 #include <cstdio>
 
+pthread_mutex_t stacklock = PTHREAD_MUTEX_INITIALIZER;
+std::stack<std::string> filestack;
+
 /* function prototypes and global variables */
 void *do_chld(void *);
+
+void *indexloop(void *) {
+    // set sleep time
+    struct timespec sleeptime, t1, t2;
+    long int dt;
+    sleeptime.tv_sec = 0;
+    sleeptime.tv_nsec = 10000000;
+
+    for (;;) {
+        nanosleep(&sleeptime, 0);
+        pthread_mutex_lock(&lock);
+        pthread_mutex_unlock(&lock);
+    }
+}
 
 class ClientThread {
 private:
