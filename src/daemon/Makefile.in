@@ -55,11 +55,10 @@ PROGRAMS = $(bin_PROGRAMS)
 am_agent_OBJECTS = agent.$(OBJEXT)
 agent_OBJECTS = $(am_agent_OBJECTS)
 agent_LDADD = $(LDADD)
-agent_DEPENDENCIES =
-am_daemon_OBJECTS = daemon.$(OBJEXT)
+am_daemon_OBJECTS = daemon.$(OBJEXT) server.$(OBJEXT) \
+	socketserver.$(OBJEXT)
 daemon_OBJECTS = $(am_daemon_OBJECTS)
 daemon_LDADD = $(LDADD)
-daemon_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -199,10 +198,8 @@ sqlite3_LIBS = @sqlite3_LIBS@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 INCLUDES = $(all_includes)
-AM_CXXFLAGS = 
-AM_LDFLAGS = -lpthread
-LDADD = 
-daemon_SOURCES = daemon.cpp
+daemon_SOURCES = daemon.cpp server.cpp socketserver.cpp
+daemon_LDFLAGS = -lpthread
 agent_SOURCES = agent.cpp
 noinst_HEADERS = 
 all: all-am
@@ -281,6 +278,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/agent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/daemon.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/socketserver.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

@@ -2,11 +2,8 @@ INCLUDES = $(all_includes)
 
 bin_PROGRAMS = daemon agent
 
-AM_CXXFLAGS = 
-AM_LDFLAGS = -lpthread
-LDADD =
-
-daemon_SOURCES = daemon.cpp
+daemon_SOURCES = daemon.cpp server.cpp socketserver.cpp
+daemon_LDFLAGS = -lpthread
 
 agent_SOURCES = agent.cpp
 
