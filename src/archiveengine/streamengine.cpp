@@ -1,4 +1,5 @@
 #include "streamengine.h"
+#include <QDebug>
 using namespace jstreams;
 
 StreamEngine::StreamEngine(const FileEntry* e, ArchiveEngineBase* engine)
@@ -41,7 +42,7 @@ qint64
 StreamEngine::read(char* data, qint64 maxlen) {
     if (maxlen == 0) {
         qDebug("maxlen == 0!!!\n");
-        return true;
+        return 0;
     }
     if (stream) {
         const char *start;
@@ -55,6 +56,8 @@ StreamEngine::read(char* data, qint64 maxlen) {
         if (nread == 0) {
             return 0;
         }
+    } else {
+        qDebug() << "no stream\n";
     }
     return -1;
 }

@@ -4,6 +4,10 @@
 #include <cstdio>
 #include <signal.h>
 #include "socketserver.h"
+#include "interface.h"
+#include "sqliteindexmanager.h"
+#include "sqliteindexreader.h"
+using namespace jstreams;
 
 pthread_mutex_t stacklock = PTHREAD_MUTEX_INITIALIZER;
 std::stack<std::string> filestack;
@@ -56,6 +60,10 @@ main(int argc, char** argv) {
 	set_quit_on_signal(SIGQUIT);
 	set_quit_on_signal(SIGTERM);
 
+	// initialize the storage manager
+	SqliteIndexManager* index = new SqliteIndexManager("/tmp/mailtest/sqlite.db");
+	IndexReader* reader = new SqliteIndexReader(index);
+
 	// start the indexer thread
 	pthread_t indexthread;
 	int r = pthread_create(&indexthread, NULL, indexloop, 0);
@@ -65,10 +73,15 @@ main(int argc, char** argv) {
 	}
 
 	// listen for requests
-	SocketServer server;
+	Interface interface(reader);
+	SocketServer server(&interface);
+	server.setSocketName("/tmp/katsocket");
 	server.start();
 
 	// wait for the indexer to finish
 	pthread_join(indexthread, 0);
+
+	// close the indexmanager
+	delete index;
 }
 

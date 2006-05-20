@@ -74,6 +74,8 @@ AC_OUTPUT( Makefile \
         src/diskindexer/Makefile \
         src/luceneindexer/Makefile \
         src/sqliteindexer/Makefile \
+        src/daemon/Makefile \
         src/archiveengine/Makefile \
         src/archiveengine/tests/Makefile \
+        src/searchclient/Makefile \
         src/qclient/Makefile )

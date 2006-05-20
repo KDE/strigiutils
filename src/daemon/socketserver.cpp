@@ -1,8 +1,10 @@
 #include "socketserver.h"
+#include "interface.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <assert.h>
 using namespace std;
 
 void
@@ -41,13 +43,21 @@ SocketServer::listen() {
     int n = 0;
     while (n++ < 10000) {
         addlen = sizeof(work);
+        printf("waiting for a new connection\n");
         newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
         if (newSd < 0) {
             perror("cannot accept connection ");
             return;
         }
 
-        readRequest(newSd);
+        if (!readRequest(newSd)) {
+            close(sd);
+            continue;
+        }
+        response.clear();
+        handleRequest();
+        sendResponse(newSd);
+        close(newSd);
 
         /* the server is now free to accept another socket request */
     }
@@ -55,28 +65,62 @@ SocketServer::listen() {
         perror("close socket");
     }
 }
-void
+bool
 SocketServer::readRequest(int sd) {
-    string request;
-    char buf[1001];
-    while (sd >= 0) {
-        int r = recv(sd, buf, 1000, 0);
-        printf("receive %i\n", r);
+    request.clear();
+    string line;
+    char c;
+    while (true) {
+        int r = recv(sd, &c, 1, 0);
         if (r < 0) {
             error = "Error reading from socket: ";
             error += strerror(errno);
-            closeConnection(sd);
-            return;
-        } else if (r == 0 || buf[r-1] == 0) {
-            buf[r] = '\0';
-            request += buf;
-            closeConnection(sd);
+            return false;
+        } else if (r == 0 || c == 0) {
+            if (line.size() > 0) {
+                request.push_back(line);
+            }
+            return true;
+        } else if (c == '\n') {
+            if (line.size() == 0) {
+                // finished reading the request
+                return true;
+            }
+            request.push_back(line);
+            line.clear();
         } else {
-            buf[r] = '\0';
-            request += buf;
+            line += c;
         }
     }
 }
+bool
+SocketServer::sendResponse(int sd) {
+    ssize_t r;
+    for (uint i=0; i<response.size(); ++i) {
+        string line = response[i];
+        assert(line.find('\n') == string::npos);
+        line += '\n';
+        int p = 0;
+        int len = line.length();
+        do {
+            r = send(sd, line.c_str()+p, len-p, MSG_NOSIGNAL);
+            if (r < 0) {
+                printf("error writing response\n");
+                return false;
+            }
+            p += r;
+        } while (p < len);
+    }
+    r = send(sd, "\n", 1, MSG_NOSIGNAL);
+    return r > 0;
+}
 void
-SocketServer::closeConnection(int sd) {
+SocketServer::handleRequest() {
+    if (request.size() == 2 && request[0] == "query") {
+        response = interface->query(request[1]);
+        return;
+    }
+    printf("size %i\n", request.size());
+    response.push_back("error");
+    response.push_back("no valid request");
 }

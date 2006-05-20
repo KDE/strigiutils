@@ -3,6 +3,7 @@
 
 #include <string>
 #include "filelister.h"
+#include "sqliteindexmanager.h"
 #include "sqliteindexwriter.h"
 #include "streamindexer.h"
 
@@ -10,6 +11,7 @@ class Indexer {
 private:
 	FileLister m_lister;
 	const std::string m_indexdir;
+	SqliteIndexManager m_manager;
 	SqliteIndexWriter m_writer;
 	jstreams::StreamIndexer m_indexer;
 

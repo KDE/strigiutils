@@ -1,17 +1,19 @@
 #include "sqliteindexwriter.h"
+#include "sqliteindexmanager.h"
 #include <sqlite3.h>
 using namespace std;
 using namespace jstreams;
 
-SqliteIndexWriter::SqliteIndexWriter(const char* ip) :indexpath(ip) {
-    string dbfile = indexpath + "/sqlite.db";
-    int r;
-    r = sqlite3_open(dbfile.c_str(), &db);
+SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
+        : manager(m) {
+    manager->ref();
+
+    int r = sqlite3_open(manager->getDBFile(), &db);
     // any value other than SQLITE_OK is an error
     if (r != SQLITE_OK) {
         printf("could not open db\n");
         db = 0;
-        stmt = 0;
+        manager->deref();
         return;
     }
     // speed up by being unsafe
@@ -32,8 +34,10 @@ SqliteIndexWriter::SqliteIndexWriter(const char* ip) :indexpath(ip) {
         printf("could not prepare insert statement\n");
         stmt = 0;
     }
+    manager->deref();
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
+    manager->ref();
     if (stmt) {
         int r = sqlite3_finalize(stmt);
         if (r != SQLITE_OK) {
@@ -46,6 +50,7 @@ SqliteIndexWriter::~SqliteIndexWriter() {
             printf("could not create table\n");
         }
     }
+    manager->deref();
 }
 void
 SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,
@@ -54,6 +59,7 @@ SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,
 void
 SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         const string& value) {
+    manager->ref();
     sqlite3_bind_text(stmt, 1, idx->getName().c_str(),
         idx->getName().length(), SQLITE_STATIC);
     sqlite3_bind_text(stmt, 2, fieldname.c_str(),
@@ -67,6 +73,7 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
     if (r != SQLITE_OK) {
         printf("could not reset statement: %s\n", sqlite3_errmsg(db));
     }
+    manager->deref();
 }
 
 void

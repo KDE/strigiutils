@@ -1,13 +1,16 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+class Interface;
 class Server {
 protected:
-	virtual void listen() = 0;
+    Interface* interface;
+    virtual void listen() = 0;
 public:
-	virtual ~Server() {}
-	void start();
-	void stop();
+    Server(Interface*i) :interface(i){}
+    virtual ~Server() {}
+    void start();
+    void stop();
 };
 
 #endif

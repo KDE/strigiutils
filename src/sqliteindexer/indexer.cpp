@@ -4,7 +4,7 @@
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-		m_writer(indexdir), m_indexer(&m_writer) {
+        m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer) {
 }
 Indexer::~Indexer() {
 }

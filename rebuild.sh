@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# directory with clucene binaries and header
+CLUCENESRCDIR=/tmp/clucenecvs2/trunk/src
+
 rm -rf autom4te.cache configure COPYING depcomp INSTALL install-sh Makefile.in \
 	missing aclocal.m4 debug ltmain.sh config.guess config.sub config.log \
 	config.status Makefile libtool 2> /dev/null
@@ -22,6 +25,7 @@ if [ test $TARGET == "dist" ]; then
 else
 	mkdir debug && \
 	cd debug && \
-	CXXFLAGS="-Wall -O0 -g3" ../configure --enable-debug=full && \
+	CXXFLAGS="-Wall -O0 -g3" CPPFLAGS=-I$CLUCENESRCDIR \
+	LDFLAGS=-L$CLUCENESRCDIR ../configure --enable-debug=full && \
 	make check
 fi

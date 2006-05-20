@@ -6,7 +6,9 @@ main(int argc, char **argv) {
 		printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
 		return -1;
 	}
-        Indexer indexer(argv[1]);
+	std::string file = argv[1];
+	file += "/sqlite.db";
+        Indexer indexer(file.c_str());
 	indexer.index(argv[2]);
 	return 0;
 }

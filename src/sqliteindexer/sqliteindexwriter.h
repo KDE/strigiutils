@@ -2,14 +2,14 @@
 #define SQLITEINDEXWRITER_H
 
 #include "indexwriter.h"
-#include <vector>
-#include <map>
 
 struct sqlite3;
 struct sqlite3_stmt;
+class SqliteIndexManager;
 
 class SqliteIndexWriter : public jstreams::IndexWriter {
 private:
+    SqliteIndexManager* manager;
     sqlite3 *db;
     sqlite3_stmt *stmt;
     const std::string indexpath;
@@ -21,7 +21,7 @@ protected:
     void addField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
 public:
-    SqliteIndexWriter(const char* path);
+    SqliteIndexWriter(SqliteIndexManager*);
     ~SqliteIndexWriter();
 };
 
