@@ -30,6 +30,7 @@ public:
     void deref();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
+    static std::string escapeSqlValue(const std::string& value);
 };
 
 #endif

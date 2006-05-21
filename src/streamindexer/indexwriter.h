@@ -23,7 +23,7 @@ class Indexable;
 class IndexWriter {
 friend class Indexable;
 protected:
-    virtual void startIndexable(const Indexable*) = 0;
+    virtual void startIndexable(Indexable*) = 0;
     virtual void addStream(const Indexable*, const std::string& fieldname,
         jstreams::StreamBase<wchar_t>* datastream) = 0;
     virtual void addField(const Indexable*, const std::string &fieldname,
@@ -35,6 +35,7 @@ public:
 
 class Indexable {
 private:
+    int64_t id;
     IndexWriter* writer;
     const std::string& name;
 public:
@@ -51,6 +52,8 @@ public:
         writer->addField(this, fieldname, value);
     }
     const std::string& getName() const { return name; }
+    void setId(int64_t i) { id = i; }
+    int64_t getId() const { return id; }
 };
 
 }

@@ -52,3 +52,14 @@ SqliteIndexManager::getIndexWriter() {
     deref();
     return w;
 }
+string
+SqliteIndexManager::escapeSqlValue(const string& value) {
+    string v = value;
+    // replace ' by ''
+    size_t p = v.find('\'');
+    while (p != string::npos) {
+        v.replace(p, 1, "''");
+        p = v.find('\'', p+2);
+    }
+    return v; 
+}    

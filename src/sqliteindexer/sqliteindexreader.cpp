@@ -56,7 +56,7 @@ SqliteIndexReader::query(const std::string& query) {
         q.replace(p, 1, "_");
         p = q.find('?');
     }
-    string sql = "select distinct path from idx where value like '";
+    string sql = "select distinct files.path from idx join files on idx.path = files.rowid where value like '";
     sql += q;
     sql += "'";
     std::vector<std::string> results;

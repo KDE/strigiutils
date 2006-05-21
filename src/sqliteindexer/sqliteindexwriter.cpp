@@ -62,8 +62,7 @@ void
 SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         const string& value) {
     manager->ref();
-    sqlite3_bind_text(stmt, 1, idx->getName().c_str(),
-        idx->getName().length(), SQLITE_STATIC);
+    sqlite3_bind_int64(stmt, 1, idx->getId());
     sqlite3_bind_text(stmt, 2, fieldname.c_str(),
         fieldname.length(), SQLITE_STATIC);
     sqlite3_bind_text(stmt, 3, value.c_str(), value.length(), SQLITE_STATIC);
@@ -79,14 +78,23 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
 }
 
 void
-SqliteIndexWriter::startIndexable(const Indexable* idx) {
+SqliteIndexWriter::startIndexable(Indexable* idx) {
+    // remove the previous version of this file
+
     // prepare the insert statement
-/*    sql = "insert into idx (path, name, value) values(?, ?, ?)";
-    r = sqlite3_prepare(db, sql, 0, &stmt, 0);
+    string sql = "insert into files (path) values('";
+    string name = SqliteIndexManager::escapeSqlValue(idx->getName());
+    sql += name + "');";
+    manager->ref();
+    int r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not prepare insert statement\n");
+        printf("error in adding file\n");
         stmt = 0;
-    }*/
+    }
+    int64_t id = sqlite3_last_insert_rowid(db);
+    idx->setId(id);
+    printf("%lli %s\n", id, name.c_str());
+    manager->deref();
 }
 /*
     Close all left open indexwriters for this path.
