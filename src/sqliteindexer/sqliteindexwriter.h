@@ -2,6 +2,7 @@
 #define SQLITEINDEXWRITER_H
 
 #include "indexwriter.h"
+#include <map>
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -14,6 +15,8 @@ private:
     sqlite3 *db;
     sqlite3_stmt *stmt;
     const std::string indexpath;
+    std::map<int64_t, std::map<std::string, int> > content;
+
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);

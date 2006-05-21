@@ -31,7 +31,7 @@ int
 sqliteindexreadercallback(void*arg, int, char**v, char**) {
     if (sqliteindexreadercallbackcount++ == 1000) return 1;
     std::vector<std::string>& results = *(std::vector<std::string>*)arg;
-    results.push_back(*v);
+    results.push_back(v[1]);
     return 0;
 }
 std::vector<std::string>
@@ -56,9 +56,17 @@ SqliteIndexReader::query(const std::string& query) {
         q.replace(p, 1, "_");
         p = q.find('?');
     }
-    string sql = "select distinct files.path from idx join files on idx.path = files.rowid where value like '";
+    // this sql probably warants some explanation
+    string sql = "select sp, path from (select fileid, sum(p) sp from ("
+        "select fileid, f.count*1.0/w.count p "
+        "from words w join filewords f on w.wordid = f.wordid "
+        "where word like '";
+    sql += query;
+    sql += "') group by fileid order by sp desc limit 100) "
+        "join files on fileid = files.rowid;";
+/*    string sql = "select distinct files.path from idx join files on idx.path = files.rowid where value like '";
     sql += q;
-    sql += "'";
+    sql += "'"; */
     std::vector<std::string> results;
 
     manager->ref();

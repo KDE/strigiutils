@@ -1,6 +1,7 @@
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
 #include <sqlite3.h>
+#include <sstream>
 using namespace std;
 using namespace jstreams;
 
@@ -15,8 +16,9 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         manager->deref();
         return;
     }
-    // speed up by being unsafe
-    r = sqlite3_exec(db, "PRAGMA synchronous = OFF", 0, 0, 0);
+    // speed up by being unsafe and keeping temp tables in memory
+    r = sqlite3_exec(db, "PRAGMA synchronous = OFF;"
+        "PRAGMA temp_store = MEMORY;" , 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not speed up database\n");
     }
@@ -27,10 +29,14 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         "unique (path, name, value) on conflict ignore);"
         "create index idx_path on idx(path);"
         "create index idx_name on idx(name);"
-        "create index idx_value on idx(value);";
+        "create index idx_value on idx(value);"
+        "create table words (wordid integer primary key, "
+        "    word, count, unique(word));"
+        "create table filewords (fileid integer, wordid integer, count,"
+        "unique (fileid, wordid));";
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not create table\n");
+        printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
     }
     // prepare the insert statement
     sql = "insert into idx (path, name, value) values(?, ?, ?)";
@@ -61,7 +67,12 @@ SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,
 void
 SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         const string& value) {
-    if (idx->getId() == -1) return;
+    int64_t id = idx->getId();
+    if (id == -1) return;
+    if (fieldname == "content") {
+        content[id][value]++;
+        return;
+    }
     manager->ref();
     sqlite3_bind_int64(stmt, 1, idx->getId());
     sqlite3_bind_text(stmt, 2, fieldname.c_str(),
@@ -86,7 +97,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     // remove the previous version of this file
     // check if there is a previous version
     string sql = "select rowid from files where path = '"+name+"';";
-    printf("'%s'\n", sql.c_str());
+//    printf("'%s'\n", sql.c_str());
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
     if (r != SQLITE_OK) {
@@ -97,12 +108,10 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     r = sqlite3_step(stmt);
     int64_t id = -1;
     if (r == SQLITE_ROW) {
-        printf("found\n");
         id = sqlite3_column_int64(stmt, 0);
         sqlite3_finalize(stmt);
     } else if (r == SQLITE_DONE) {
         sqlite3_finalize(stmt);
-        printf("not found\n");
         // prepare the insert statement
         sql = "insert into files (path) values('";
         sql += name + "');";
@@ -118,7 +127,6 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
         return;
     }
     idx->setId(id);
-    printf("%lli %s\n", id, name.c_str());
     manager->deref();
 }
 /*
@@ -126,4 +134,51 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 SqliteIndexWriter::finishIndexable(const Indexable* idx) {
+    // store the content field
+    map<int64_t, map<string, int> >::const_iterator m
+        = content.find(idx->getId());
+    if (m == content.end()) return;
+
+    // create a temporary table
+    int r = sqlite3_exec(db, "create temp table t(word, count)", 0,0,0);
+    if (r != SQLITE_OK) {
+        printf("could not create temp table %i %s\n", r, sqlite3_errmsg(db));
+    }
+
+    sqlite3_stmt* stmt;
+    r = sqlite3_prepare(db, "insert into t (word, count) values(?,?);",
+         0, &stmt, 0);
+    if (r != SQLITE_OK) {
+        printf("could not prepare temp insert sql\n");
+        content.erase(m->first);
+        return;
+    }
+    map<string, int>::const_iterator i = m->second.begin();
+    map<string, int>::const_iterator e = m->second.end();
+    for (; i!=e; ++i) {
+        sqlite3_bind_text(stmt, 1, i->first.c_str(), i->first.length(),
+            SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 2, i->second);
+        r = sqlite3_step(stmt);
+        if (r != SQLITE_DONE) {
+            printf("could not write into database: %i %s\n", r, sqlite3_errmsg(db));
+        }
+        r = sqlite3_reset(stmt);
+    }
+    sqlite3_finalize(stmt);
+
+    ostringstream sql;
+    sql << "replace into words (wordid, word, count) "
+        "select wordid, t.word, t.count+ifnull(words.count,0) "
+        "from t left join words on t.word = words.word; "
+        "replace into filewords (fileid, wordid, count) "
+        "select ";
+    sql << m->first;
+    sql << ", words.rowid, t.count from t join words "
+        "on t.word = words.word; drop table t;";
+    r = sqlite3_exec(db, sql.str().c_str(),0,0,0);
+    if (r != SQLITE_OK) {
+        printf("could not drop temp table %i %s\n", r, sqlite3_errmsg(db));
+    }
+    content.erase(m->first);
 }
