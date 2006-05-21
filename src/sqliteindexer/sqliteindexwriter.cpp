@@ -61,6 +61,7 @@ SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,
 void
 SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         const string& value) {
+    if (idx->getId() == -1) return;
     manager->ref();
     sqlite3_bind_int64(stmt, 1, idx->getId());
     sqlite3_bind_text(stmt, 2, fieldname.c_str(),
@@ -68,30 +69,54 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
     sqlite3_bind_text(stmt, 3, value.c_str(), value.length(), SQLITE_STATIC);
     int r = sqlite3_step(stmt);
     if (r != SQLITE_DONE) {
-        printf("could not write into database: %s\n", sqlite3_errmsg(db));
+        printf("could not write into database: %i %s\n", r, sqlite3_errmsg(db));
     }
     r = sqlite3_reset(stmt);
     if (r != SQLITE_OK) {
-        printf("could not reset statement: %s\n", sqlite3_errmsg(db));
+        printf("could not reset statement: %i %s\n", r, sqlite3_errmsg(db));
     }
     manager->deref();
 }
 
 void
 SqliteIndexWriter::startIndexable(Indexable* idx) {
-    // remove the previous version of this file
-
-    // prepare the insert statement
-    string sql = "insert into files (path) values('";
+    // get the file name
     string name = SqliteIndexManager::escapeSqlValue(idx->getName());
-    sql += name + "');";
-    manager->ref();
-    int r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
+
+    // remove the previous version of this file
+    // check if there is a previous version
+    string sql = "select rowid from files where path = '"+name+"';";
+    printf("'%s'\n", sql.c_str());
+    sqlite3_stmt* stmt;
+    int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
     if (r != SQLITE_OK) {
-        printf("error in adding file\n");
-        stmt = 0;
+        printf("could not prepare document find sql\n");
+        idx->setId(-1);
+        return;
     }
-    int64_t id = sqlite3_last_insert_rowid(db);
+    r = sqlite3_step(stmt);
+    int64_t id = -1;
+    if (r == SQLITE_ROW) {
+        printf("found\n");
+        id = sqlite3_column_int64(stmt, 0);
+        sqlite3_finalize(stmt);
+    } else if (r == SQLITE_DONE) {
+        sqlite3_finalize(stmt);
+        printf("not found\n");
+        // prepare the insert statement
+        sql = "insert into files (path) values('";
+        sql += name + "');";
+        manager->ref();
+        r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
+        if (r != SQLITE_OK) {
+            printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
+            stmt = 0;
+        }
+        id = sqlite3_last_insert_rowid(db);
+    } else {
+        printf("could not look for a document by path\n");
+        return;
+    }
     idx->setId(id);
     printf("%lli %s\n", id, name.c_str());
     manager->deref();
