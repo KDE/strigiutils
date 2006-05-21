@@ -80,6 +80,13 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
 
 void
 SqliteIndexWriter::startIndexable(const Indexable* idx) {
+    // prepare the insert statement
+/*    sql = "insert into idx (path, name, value) values(?, ?, ?)";
+    r = sqlite3_prepare(db, sql, 0, &stmt, 0);
+    if (r != SQLITE_OK) {
+        printf("could not prepare insert statement\n");
+        stmt = 0;
+    }*/
 }
 /*
     Close all left open indexwriters for this path.
