@@ -10,11 +10,20 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     // very simple algorithm to get out sequences of ascii characters
     // we actually miss characters that are not on the edge between reads
     const char* b;
-    int32_t nread = in->read(b, 1024, 0);
+    int32_t nread = in->read(b, 1, 0);
+    // check that this is text file
+    const char* end = b + nread;
+    const char* p = b-1;
+    while (++p < end) {
+        if (*p <= 8) {
+            printf("%i\n", *p);
+            return -1;
+        }
+    }
 
     while (nread > 0) {
-        const char* end = b + nread;
-        const char* p = b;
+        end = b + nread;
+        p = b;
         while (p != end) {
             // find the start of a word
             while (p < end && !isalpha(*p)) ++p;
@@ -29,7 +38,7 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
                 p = e;
             }
         }
-        nread = in->read(b, 1024, 0);
+        nread = in->read(b, 1, 0);
     }
 
 //    InputStreamReader reader(in);
