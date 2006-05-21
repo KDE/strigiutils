@@ -71,7 +71,6 @@ AC_OUTPUT( Makefile \
 	src/streams/Makefile \
         src/streams/tests/Makefile \
         src/streamindexer/Makefile \
-        src/diskindexer/Makefile \
         src/luceneindexer/Makefile \
         src/sqliteindexer/Makefile \
         src/daemon/Makefile \

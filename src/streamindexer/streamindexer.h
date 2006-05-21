@@ -3,12 +3,11 @@
 
 #include <vector>
 
-#include "inputstream.h"
-
 namespace jstreams {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 class IndexWriter;
+template <class T> class StreamBase;
 /**
  * The class StreamIndexer extracts information from files or character
  * streams. This task is performed by two separate analyzer classes:
@@ -38,7 +37,7 @@ public:
     ~StreamIndexer();
     char indexFile(const char *filepath);
     char indexFile(std::string& filepath);
-    char analyze(std::string &path, jstreams::InputStream *input, uint depth);
+    char analyze(std::string &path, jstreams::StreamBase<char> *input, uint depth);
 };
 }
 

@@ -33,8 +33,8 @@ BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
             idx);
     } else {
         std::string file;
-        int p1 = filename.rfind("/");
-        int len = filename.length();
+        uint p1 = filename.rfind("/");
+        //int len = filename.length();
         if (p1 != string::npos) {
             int len = filename.length();
             if (len > 4 && filename.substr(len-4)==".bz2") {

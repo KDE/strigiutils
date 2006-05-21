@@ -8,6 +8,7 @@ struct sqlite3_stmt;
 class SqliteIndexManager;
 
 class SqliteIndexWriter : public jstreams::IndexWriter {
+friend class SqliteIndexManager;
 private:
     SqliteIndexManager* manager;
     sqlite3 *db;
@@ -20,7 +21,6 @@ protected:
         jstreams::StreamBase<wchar_t>* datastream);
     void addField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
-public:
     SqliteIndexWriter(SqliteIndexManager*);
     ~SqliteIndexWriter();
 };

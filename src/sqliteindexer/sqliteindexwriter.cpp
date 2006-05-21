@@ -6,7 +6,6 @@ using namespace jstreams;
 
 SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         : manager(m) {
-    manager->ref();
 
     int r = sqlite3_open(manager->getDBFile(), &db);
     // any value other than SQLITE_OK is an error
@@ -22,7 +21,10 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         printf("could not speed up database\n");
     }
     // create the table required
-    const char* sql = "create table idx (path, name, value);";
+    const char* sql = "create table idx (path, name, value);"
+        "create index idx_path on idx(path);"
+        "create index idx_name on idx(name);"
+        "create index idx_value on idx(value);";
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not create table\n");
@@ -34,10 +36,8 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         printf("could not prepare insert statement\n");
         stmt = 0;
     }
-    manager->deref();
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
-    manager->ref();
     if (stmt) {
         int r = sqlite3_finalize(stmt);
         if (r != SQLITE_OK) {
@@ -50,7 +50,6 @@ SqliteIndexWriter::~SqliteIndexWriter() {
             printf("could not create table\n");
         }
     }
-    manager->deref();
 }
 void
 SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,

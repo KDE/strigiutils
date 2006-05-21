@@ -12,11 +12,11 @@ LDADD = $(QT_LIBS) \
 %_moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-qclient_SOURCES = filehandler.cpp filebrowser.cpp filebrowser_moc.cpp
+qclient_SOURCES = filehandler.cpp filebrowser.cpp
+nodist_qclient_SOURCES = filebrowser_moc.cpp 
 
 archivecat_SOURCES = archivecat.cpp
 
 archivedialog_SOURCES = archivedialog.cpp
 
 noinst_HEADERS = filebrowser.h
-

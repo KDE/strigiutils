@@ -11,7 +11,6 @@ ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 char
 ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
         int depth, StreamIndexer *indexer, jstreams::Indexable*) {
-    const char* z;
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
     if (zip.getStatus()) {

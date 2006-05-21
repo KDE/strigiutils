@@ -11,14 +11,14 @@
  **/
 
 namespace jstreams {
-    class IndexReader;
+    class IndexManager;
 }
 
 class Interface {
 private:
-    jstreams::IndexReader* reader;
+    jstreams::IndexManager* manager;
 public:
-    Interface(jstreams::IndexReader* r) :reader(r) {}
+    Interface(jstreams::IndexManager* m) :manager(m) {}
     std::vector<std::string> query(const std::string& query);
 };
 

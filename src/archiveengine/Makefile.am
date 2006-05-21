@@ -15,4 +15,4 @@ libarchiveengine_la_LIBADD = $(LIB_QT) \
         $(top_builddir)/src/streams/libstreams.la
 
 noinst_HEADERS = archivedirengine.h archiveengine.h \
-	fsfileinputstream.h streamengine.h
+	fsfileinputstream.h streamengine.h archiveenginehandler.h

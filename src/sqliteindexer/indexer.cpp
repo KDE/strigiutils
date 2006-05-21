@@ -4,7 +4,7 @@
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-        m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer) {
+        m_manager(indexdir), m_indexer(m_manager.getIndexWriter()) {
 }
 Indexer::~Indexer() {
 }
@@ -23,11 +23,12 @@ Indexer::index(const char *dir) {
 		m_lister.listFiles(dir);
 	}
 }
-void
+bool
 Indexer::addFileCallback(const char *path, const char *filename) {
 	std::string filepath(path);
 	filepath += filename;
 	workingIndexer->doFile(filepath);
+	return true;
 }
 void
 Indexer::doFile(const std::string &filepath) {

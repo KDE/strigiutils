@@ -1,6 +1,6 @@
 
 bin_PROGRAMS = luceneindexer
-luceneindexer_SOURCES = luceneindexer.cpp indexer.cpp filelister.cpp \
+luceneindexer_SOURCES = luceneindexer.cpp indexer.cpp \
 	cluceneindexwriter.cpp
 
 luceneindexer_LDFLAGS = 

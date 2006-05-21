@@ -29,9 +29,9 @@ testrunner_SOURCES = ZipInputStreamTest.cpp \
 	StringTerminatedSubStreamTest.cpp \
 	DigestInputStreamTest.cpp \
         inputstreamtests.cpp \
-	testrunner.cpp $(testrunner_MOCSOURCES)
+	testrunner.cpp
 
-testrunner_MOCSOURCES = ZipInputStreamTest_moc.cpp \
+nodist_testrunner_SOURCES = ZipInputStreamTest_moc.cpp \
 	GZipInputStreamTest_moc.cpp \
 	TarInputStreamTest_moc.cpp \
 	FileInputStreamTest_moc.cpp \
@@ -53,7 +53,13 @@ mailtester_SOURCES = mailtester.cpp
 mailtester_LDFLAGS =
 mailtester_LDADD = $(top_builddir)/src/streams/libstreams.la
 
-testrunner_METASOURCES = AUTO
-
 CLEANFILES = testrunner.cpp
+
+noinst_HEADERS = Base64InputStreamTest.h DigestInputStreamTest.h \
+	FileInputStreamTest.h GZipInputStreamTest.h InputStreamReaderTest.h \
+	InputStreamTest.h inputstreamtests.h MailInputStreamTest.h \
+	StringReaderTest.h StringTerminatedSubStreamTest.h SubInputStreamTest.h\
+	TarInputStreamTest.h ZipInputStreamTest.h
+
+EXTRA_DIST = makestestrunner.pl valgrindtest.sh
 

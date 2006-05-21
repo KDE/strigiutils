@@ -7,12 +7,13 @@ struct sqlite3;
 class SqliteIndexManager;
 
 class SqliteIndexReader : public jstreams::IndexReader {
+friend class SqliteIndexManager;
 private:
     sqlite3 *db;
     SqliteIndexManager* manager;
-public:
     SqliteIndexReader(SqliteIndexManager* m);
     ~SqliteIndexReader();
+public:
     std::vector<std::string> query(const std::string&);
 };
 

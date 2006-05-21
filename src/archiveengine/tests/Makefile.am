@@ -11,8 +11,8 @@ testrunner.cpp: makestestrunner.pl
 %_moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-testrunner_SOURCES = ArchiveEngineHandlerTest.cpp \
-	ArchiveEngineHandlerTest_moc.cpp testrunner.cpp
+testrunner_SOURCES = ArchiveEngineHandlerTest.cpp testrunner.cpp
+nodist_testrunner_SOURCES = ArchiveEngineHandlerTest_moc.cpp
 testrunner_CXXFLAGS = $(QT_CFLAGS) -I$(srcdir)/..
 testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
 testrunner_LDADD = $(LIB_QT) \

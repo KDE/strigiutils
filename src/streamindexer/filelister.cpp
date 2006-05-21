@@ -3,15 +3,15 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-char
+void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
-	if (m_callback == 0) return 0;
+	if (m_callback == 0) return;
 	m_oldestdate = oldestdate;
 	m_dirnames.clear();
 	m_dirnames.push_back(dir);
-	return walk_directory(dir);
+	walk_directory(dir);
 }
-char
+bool
 FileLister::walk_directory(const char *dirname) {
 	bool expandedPath = false;
 	int rc;
@@ -22,18 +22,18 @@ FileLister::walk_directory(const char *dirname) {
 	// open the directory
 	dir = opendir(dirname);
 	if (dir == 0) {
-		return -1;
+		return true;
 	}
-
 	// change into the directory
 	rc = fchdir(dirfd(dir));
 	if (rc != 0) {
 		perror(dirname);
-		return -1;
+		return true;
 	}
 
 	// append the name of the opened dir to the list of opened names
 	m_dirnames.push_back(dirname);
+
 
 	subdir = readdir(dir);
 	while (subdir) {
@@ -49,6 +49,7 @@ FileLister::walk_directory(const char *dirname) {
 		}
 
 		if (lstat(subdir->d_name, &dirstat) == 0) {
+			bool c = true;
 			if (S_ISREG(dirstat.st_mode)
 					&& dirstat.st_mtime >= m_oldestdate) {
 				// add the name of this dir to the path
@@ -56,15 +57,16 @@ FileLister::walk_directory(const char *dirname) {
 					expandPath(dirname);
 					expandedPath = true;
 				}
-				m_callback(m_path.c_str(), subdir->d_name);
+				c = m_callback(m_path.c_str(), subdir->d_name);
 			} else if (S_ISDIR(dirstat.st_mode)) {
 				// add the name of this dir to the path
 				if (!expandedPath) {
 					expandPath(dirname);
 					expandedPath = true;
 				}
-				walk_directory(subdir->d_name);
+				c = walk_directory(subdir->d_name);
 			}
+			if (!c) break;
 		}
 		
 		subdir = readdir(dir);
@@ -78,7 +80,7 @@ FileLister::walk_directory(const char *dirname) {
 	}
 	// go back to where we came from
 	chdir("..");
-	return 0;
+	return true;
 }
 void
 FileLister::expandPath(const char *name) {

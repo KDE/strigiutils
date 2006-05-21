@@ -1,24 +1,34 @@
-#include <pthread.h>
-#include <string>
-#include <stack>
-#include <cstdio>
-#include <signal.h>
 #include "socketserver.h"
 #include "interface.h"
 #include "sqliteindexmanager.h"
 #include "sqliteindexreader.h"
+#include "filelister.h"
+#include "streamindexer.h"
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string>
+#include <list>
+#include <cstdio>
+#include <cerrno>
+
 using namespace jstreams;
+using namespace std;
 
 pthread_mutex_t stacklock = PTHREAD_MUTEX_INITIALIZER;
-std::stack<std::string> filestack;
+std::list<std::string> filestack;
 bool daemon_run = true;
 
 /* function prototypes and global variables */
 void *do_chld(void *);
 
 
+int interruptcount = 0;
 void
 quit_daemon(int) {
+    if (++interruptcount >= 3) exit(1);
     daemon_run = false;
 }
 
@@ -38,50 +48,110 @@ shortsleep(long nanoseconds) {
     sleeptime.tv_nsec = nanoseconds;
     nanosleep(&sleeptime, 0);
 }
-
+StreamIndexer* streamindexer;
+bool
+addFileCallback(const char *path, const char *filename) {
+    if (!daemon_run) return false;
+    std::string filepath(path);
+    filepath += filename;
+    // only read files that do not start with '.'
+    if (filepath.find("/.") == string::npos) {
+        streamindexer->indexFile(filepath.c_str());
+    }
+    return true;
+}
+string homedir;
 void *
-indexloop(void *) {
+indexloop(void *i) {
+    IndexManager* index = (IndexManager*)i;
+
+    IndexWriter* writer;
+    printf("getting writer\n");
+    streamindexer = new StreamIndexer(index->getIndexWriter());
+    printf("got writer\n");
+
+    // first loop through all files
+    FileLister lister;
+    lister.setCallbackFunction(&addFileCallback);
+    printf("going to index\n");
+    lister.listFiles(homedir.c_str());
+/*
     while (daemon_run) {
         shortsleep(100000000);
         pthread_mutex_lock(&stacklock);
         if (filestack.size())
-        printf("doing %i file\n", filestack.size());
+            printf("doing %i file\n", filestack.size());
         while (filestack.size()) {
+            std::string file = filestack.front();
             filestack.pop();
+            filestack.push_front(file);
         }
         pthread_mutex_unlock(&stacklock);
-    }
+    }*/
     printf("stopping indexer\n");
     return (void*)0;
 }
+/**
+ * Initialize a directory for storing the index data and the socket.
+ * Make sure it is well protected from peeping eyes.
+ **/
+bool
+initializeDir(const string& dir) {
+    struct stat s;
+    // check that the directory exists
+    int r = stat(dir.c_str(), &s);
+    if (r == -1) {
+        if (errno == ENOENT) {
+            // the directory does not exist
+            r = mkdir(dir.c_str(), 0700);
+            if (r == -1) {
+                perror(dir.c_str());
+                return false;
+            }
+        } else {
+            perror(dir.c_str());
+            return false;
+        }
+    }
+    return true;
+}
 int
 main(int argc, char** argv) {
-	set_quit_on_signal(SIGINT);
-	set_quit_on_signal(SIGQUIT);
-	set_quit_on_signal(SIGTERM);
+    set_quit_on_signal(SIGINT);
+    set_quit_on_signal(SIGQUIT);
+    set_quit_on_signal(SIGTERM);
 
-	// initialize the storage manager
-	SqliteIndexManager* index = new SqliteIndexManager("/tmp/mailtest/sqlite.db");
-	IndexReader* reader = new SqliteIndexReader(index);
+    homedir = getenv("HOME");
+    string daemondir = homedir+"/.kitten";
+    string dbfile = daemondir+"/sqlite.db";
+    string socketpath = daemondir+"/socket";
 
-	// start the indexer thread
-	pthread_t indexthread;
-	int r = pthread_create(&indexthread, NULL, indexloop, 0);
-	if (r < 0) {
-		printf("cannot create thread\n");
-		return 1;
-	}
+    // initialize the directory for the daemon data
+    if (!initializeDir(daemondir)) {
+        exit(1);
+    }
 
-	// listen for requests
-	Interface interface(reader);
-	SocketServer server(&interface);
-	server.setSocketName("/tmp/katsocket");
-	server.start();
+    // initialize the storage manager, for now we only use sqlite
+    SqliteIndexManager* index = new SqliteIndexManager(dbfile.c_str());
 
-	// wait for the indexer to finish
-	pthread_join(indexthread, 0);
+    // start the indexer thread
+    pthread_t indexthread;
+    int r = pthread_create(&indexthread, NULL, indexloop, index);
+    if (r < 0) {
+        printf("cannot create thread\n");
+        return 1;
+    }
 
-	// close the indexmanager
-	delete index;
+    // listen for requests
+    Interface interface(index);
+    SocketServer server(&interface);
+    server.setSocketName(socketpath.c_str());
+    server.start();
+
+    // wait for the indexer to finish
+    pthread_join(indexthread, 0);
+
+    // close the indexmanager
+    delete index;
 }
 

@@ -28,7 +28,9 @@ SimpleSearchGui::query(const QString& item) {
     itemview->clear();
 
     SocketClient client;
-    client.setSocketName("/tmp/katsocket");
+    std::string socket = getenv("HOME");
+    socket += "/.kitten/socket";
+    client.setSocketName(socket.c_str());
     vector<string> results = client.query((const char*)item.toUtf8());
 
     if (results.size() > 0 && results[0] == "error") {
