@@ -50,7 +50,7 @@ SimpleSearchGui::addItem(const QString& item) {
 void
 SimpleSearchGui::openItem(QListWidgetItem* i) {
     QStringList args;
-    args << "exec" << i->text();
+    args << "openURL" << i->text();
     QProcess::execute("kfmclient", args);
     qDebug() << i->text();
 }

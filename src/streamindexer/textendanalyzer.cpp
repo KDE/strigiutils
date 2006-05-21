@@ -16,7 +16,6 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     const char* p = b-1;
     while (++p < end) {
         if (*p <= 8) {
-            printf("%i\n", *p);
             return -1;
         }
     }

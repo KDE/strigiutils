@@ -26,17 +26,14 @@ SqliteIndexReader::~SqliteIndexReader() {
         }
     }
 }
-int sqliteindexreadercallbackcount;
 int
 sqliteindexreadercallback(void*arg, int, char**v, char**) {
-    if (sqliteindexreadercallbackcount++ == 1000) return 1;
     std::vector<std::string>& results = *(std::vector<std::string>*)arg;
     results.push_back(v[1]);
     return 0;
 }
 std::vector<std::string>
 SqliteIndexReader::query(const std::string& query) {
-    sqliteindexreadercallbackcount = 0;
     string q = query;
     // replace ' by ''
     size_t p = q.find('\'');
@@ -64,9 +61,6 @@ SqliteIndexReader::query(const std::string& query) {
     sql += query;
     sql += "') group by fileid order by sp desc limit 100) "
         "join files on fileid = files.rowid;";
-/*    string sql = "select distinct files.path from idx join files on idx.path = files.rowid where value like '";
-    sql += q;
-    sql += "'"; */
     std::vector<std::string> results;
 
     manager->ref();

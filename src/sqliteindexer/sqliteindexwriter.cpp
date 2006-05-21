@@ -97,12 +97,13 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     // remove the previous version of this file
     // check if there is a previous version
     string sql = "select rowid from files where path = '"+name+"';";
-//    printf("'%s'\n", sql.c_str());
+    manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare document find sql\n");
         idx->setId(-1);
+        manager->deref();
         return;
     }
     r = sqlite3_step(stmt);
@@ -115,7 +116,6 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
         // prepare the insert statement
         sql = "insert into files (path) values('";
         sql += name + "');";
-        manager->ref();
         r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
         if (r != SQLITE_OK) {
             printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
@@ -124,6 +124,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
         id = sqlite3_last_insert_rowid(db);
     } else {
         printf("could not look for a document by path\n");
+        manager->deref();
         return;
     }
     idx->setId(id);
@@ -145,12 +146,14 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         printf("could not create temp table %i %s\n", r, sqlite3_errmsg(db));
     }
 
+    manager->ref();
     sqlite3_stmt* stmt;
     r = sqlite3_prepare(db, "insert into t (word, count) values(?,?);",
          0, &stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare temp insert sql\n");
         content.erase(m->first);
+        manager->deref();
         return;
     }
     map<string, int>::const_iterator i = m->second.begin();
@@ -180,5 +183,6 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
     if (r != SQLITE_OK) {
         printf("could not drop temp table %i %s\n", r, sqlite3_errmsg(db));
     }
+    manager->deref();
     content.erase(m->first);
 }
