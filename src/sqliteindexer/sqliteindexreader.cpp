@@ -37,8 +37,27 @@ sqliteindexreadercallback(void*arg, int, char**v, char**) {
 std::vector<std::string>
 SqliteIndexReader::query(const std::string& query) {
     sqliteindexreadercallbackcount = 0;
-    string sql = "select unique path from idx where value like '";
-    sql += query;
+    string q = query;
+    // replace ' by ''
+    size_t p = q.find('\'');
+    while (p != string::npos) {
+        q.replace(p, 1, "''");
+        p = q.find('\'', p+2);
+    }
+    // replace * by %
+    p = q.find('*');
+    while (p != string::npos) {
+        q.replace(p, 1, "%");
+        p = q.find('*');
+    }
+    // replace ? by _
+    p = q.find('?');
+    while (p != string::npos) {
+        q.replace(p, 1, "_");
+        p = q.find('?');
+    }
+    string sql = "select distinct path from idx where value like '";
+    sql += q;
     sql += "'";
     std::vector<std::string> results;
 

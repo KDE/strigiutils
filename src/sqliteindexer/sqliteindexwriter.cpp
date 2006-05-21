@@ -20,8 +20,11 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     if (r != SQLITE_OK) {
         printf("could not speed up database\n");
     }
-    // create the table required
-    const char* sql = "create table idx (path, name, value);"
+    // create the tables required
+    const char* sql ="create table files (path,"
+        "unique (path) on conflict ignore);"
+        "create table idx (path, name, value, "
+        "unique (path, name, value) on conflict ignore);"
         "create index idx_path on idx(path);"
         "create index idx_name on idx(name);"
         "create index idx_value on idx(value);";
