@@ -5,6 +5,8 @@
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QProcess>
 #include <QtCore/QDebug>
+#include <QtCore/QFileInfo>
+#include <QtCore/QString>
 #include <string>
 #include <vector>
 #include "socketclient.h"
@@ -34,18 +36,28 @@ SimpleSearchGui::query(const QString& item) {
     vector<string> results = client.query((const char*)item.toUtf8());
 
     if (results.size() > 0 && results[0] == "error") {
-        for (int i=0; i<results.size(); ++i) {
+        for (uint i=0; i<results.size(); ++i) {
             qDebug() << results[i].c_str();
         }
     } else {
-        for (int i=0; i<results.size(); ++i) {
-            itemview->addItem(results[i].c_str());
+        for (uint i=0; i<results.size(); ++i) {
+            addItem(results[i].c_str());
         }
     }
 }
 void
 SimpleSearchGui::addItem(const QString& item) {
-    itemview->addItem(item);
+    // if the file does not exist on the file system remove items of the end
+    // until it does
+    QString file = item;
+    QFileInfo info(file);
+    while (!info.exists()) {
+        int pos = file.lastIndexOf('/');
+        if (pos <= 0) return;
+        file = file.left(pos);
+        info.setFile(file);
+    }
+    itemview->addItem(file);
 }
 void
 SimpleSearchGui::openItem(QListWidgetItem* i) {
