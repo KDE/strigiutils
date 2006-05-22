@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <assert.h>
 
 void
 SocketClient::setSocketName(const std::string& n) {
