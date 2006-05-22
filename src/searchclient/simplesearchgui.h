@@ -2,6 +2,7 @@
 #define SIMPLESEARCHGUI_H
 
 #include <QtGui/QWidget>
+#include "queryexecuter.h"
 
 class QLineEdit;
 class QListWidget;
@@ -11,6 +12,7 @@ Q_OBJECT
 private:
     QLineEdit* queryfield;
     QListWidget* itemview;
+    QueryExecuter executer;
 
 private slots:
     void query(const QString&);

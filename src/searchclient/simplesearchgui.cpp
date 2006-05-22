@@ -21,6 +21,8 @@ SimpleSearchGui::SimpleSearchGui() {
     setLayout(layout);
 
     connect(queryfield, SIGNAL(textChanged(const QString&)),
+        &executer, SLOT(query(const QString&)));
+    connect(&executer, SIGNAL(queryFinished(const QString&)),
         this, SLOT(query(const QString&)));
     connect(itemview, SIGNAL(itemClicked(QListWidgetItem*)),
         this, SLOT(openItem(QListWidgetItem*)));
@@ -28,12 +30,7 @@ SimpleSearchGui::SimpleSearchGui() {
 void
 SimpleSearchGui::query(const QString& item) {
     itemview->clear();
-
-    SocketClient client;
-    std::string socket = getenv("HOME");
-    socket += "/.kitten/socket";
-    client.setSocketName(socket.c_str());
-    vector<string> results = client.query((const char*)item.toUtf8());
+    vector<string> results = executer.getResults();
 
     if (results.size() > 0 && results[0] == "error") {
         for (uint i=0; i<results.size(); ++i) {
