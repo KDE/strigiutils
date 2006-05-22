@@ -33,7 +33,8 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         "create table words (wordid integer primary key, "
         "    word, count, unique(word));"
         "create table filewords (fileid integer, wordid integer, count,"
-        "unique (fileid, wordid));";
+        "unique (fileid, wordid));"
+        "create index filewords_wordid on filewords(wordid);";
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
