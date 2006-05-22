@@ -70,7 +70,20 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
     int64_t id = idx->getId();
     if (id == -1) return;
     if (fieldname == "content") {
-        content[id][value]++;
+        // find a pointer to the value
+        map<int64_t, map<string, int> >::iterator m = content.find(id);
+        if (m == content.end()) {
+            // no value at all yet, so fine to add one
+            content[id][value]++;
+        } else if (m->second.size() >= 1000) {
+            map<string, int>::iterator i = m->second.find(value);
+            if (i != m->second.end()) {
+                i->second++;
+            }
+        } else {
+            content[id][value]++;
+        }
+            
         return;
     }
     manager->ref();
