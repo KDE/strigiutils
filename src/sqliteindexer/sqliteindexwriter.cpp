@@ -132,6 +132,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
         sql += name + "');";
         r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
         if (r != SQLITE_OK) {
+            // TODO: this error occurs quite often: check it out
             printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
             stmt = 0;
         }

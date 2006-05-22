@@ -75,6 +75,7 @@ AC_OUTPUT( Makefile \
         src/streamindexer/Makefile \
         src/luceneindexer/Makefile \
         src/sqliteindexer/Makefile \
+        src/dummyindexer/Makefile \
         src/daemon/Makefile \
         src/archiveengine/Makefile \
         src/archiveengine/tests/Makefile \
