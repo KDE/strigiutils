@@ -128,15 +128,21 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     } else if (r == SQLITE_DONE) {
         sqlite3_finalize(stmt);
         // prepare the insert statement
-        sql = "insert into files (path) values('";
-        sql += name + "');";
-        r = sqlite3_exec(db, sql.c_str(), 0, 0, 0);
+        r = sqlite3_prepare(db, "insert into files (path) values(?);'", 0,
+            &stmt, 0);
         if (r != SQLITE_OK) {
-            // TODO: this error occurs quite often: check it out
+            printf("could not prepare document insert sql\n");
+            idx->setId(-1);
+            manager->deref();
+            return;
+        }
+        sqlite3_bind_text(stmt, 1, name.c_str(), name.length(), SQLITE_STATIC);
+        r = sqlite3_step(stmt);
+        if (r != SQLITE_DONE) {
             printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
-            stmt = 0;
         }
         id = sqlite3_last_insert_rowid(db);
+        sqlite3_finalize(stmt);
     } else {
         printf("could not look for a document by path\n");
         manager->deref();
