@@ -25,6 +25,7 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     int32_t nread = input->read(start, min, max);
     if (nread < -1) {
+        printf("substream too short.\n");
         status = Error;
         error = input->getError();
     } else if (nread < min) {
@@ -41,6 +42,7 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
             // we expected data but didn't get enough so that's an error
             status = Error;
             error = "Premature end of stream\n";
+            nread = -2;
         }
     } else {
         position += nread;
