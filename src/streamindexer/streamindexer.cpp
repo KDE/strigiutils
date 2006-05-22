@@ -78,7 +78,7 @@ StreamIndexer::addEndAnalyzers() {
 }
 char
 StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
-    static int count = 1;
+//    static int count = 1;
 //    printf("%s %lli %i\n", path.c_str(), input->getSize(), count++);
     Indexable idx(path, writer);
 
@@ -105,7 +105,6 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
     if (input->reset(0) != 0) printf("resetting is impossible!!\n");
     if (headersize < 0) finished = true;
     int es = 0, size = eIter->size();
-    int n = 0;
     while (!finished && es != size) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {
@@ -113,7 +112,7 @@ StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
-                    printf("could not reset: %s\n", sea->getError().c_str());
+                    printf("could not reset stream of %s from pos %lli to 0 after reading with %s: %s\n", path.c_str(), input->getPosition(), sea->getName(), sea->getError().c_str());
                     removeIndexable(depth);
                     return -2;
                 }

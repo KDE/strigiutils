@@ -4,6 +4,18 @@
 #include "indexwriter.h"
 using namespace jstreams;
 
+bool
+TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
+    const char* end = header + headersize;
+    const char* p = header-1;
+    while (++p < end) {
+        if (*p <= 8) {
+            return false;
+        }
+    }
+    return true;
+}
+
 char
 TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
@@ -12,13 +24,8 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     const char* b;
     int32_t nread = in->read(b, 1, 0);
     // check that this is text file
-    const char* end = b + nread;
-    const char* p = b-1;
-    while (++p < end) {
-        if (*p <= 8) {
-            return -1;
-        }
-    }
+    const char* end;
+    const char* p;
 
     while (nread > 0) {
         end = b + nread;
@@ -39,8 +46,11 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         }
         nread = in->read(b, 1, 0);
     }
-
+    if (nread != Eof) {
+        error = in->getError();
+        -1;
+    }
 //    InputStreamReader reader(in);
 //    i->addStream("content", &reader);
-    return nread;
+    return 0;
 }

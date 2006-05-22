@@ -15,6 +15,7 @@ PngEndAnalyzer::analyze(std::string filename, InputStream *in,
         int depth, StreamIndexer *indexer, jstreams::Indexable* i) {
     const char* h;
     int32_t n = in->read(h, 24, 24);
+    if (n < 24) return -1;
     in->reset(0);
     
     int32_t x = (unsigned char)h[19] + ((unsigned char)h[18]<<8)

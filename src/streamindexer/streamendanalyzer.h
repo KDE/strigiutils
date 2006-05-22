@@ -17,6 +17,7 @@ public:
     virtual char analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, jstreams::Indexable*) = 0;
     const std::string& getError() const { return error; }
+    virtual const char* getName() const = 0;
 };
 
 }

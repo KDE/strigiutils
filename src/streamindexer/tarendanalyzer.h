@@ -10,6 +10,7 @@ public:
         jstreams::StreamIndexer *indexer, jstreams::Indexable*);
     static char staticAnalyze(std::string filename, jstreams::InputStream *in,
         int depth, jstreams::StreamIndexer *indexer, jstreams::Indexable*);
+    const char* getName() const { return "TarEndAnalyzer"; }
 };
 
 #endif

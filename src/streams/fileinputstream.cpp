@@ -24,6 +24,22 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
+    // if the file has size 0, make sure that it's really empty
+    // this is useful for filesystems like /proc that report files as size 0
+    // for files that do contain content
+    if (size == 0) {
+        char dummy[1];
+        size_t n = fread(dummy, 1, 1, file);
+        if (n == 1) {
+            size = -1;
+            fseek(file, 0, SEEK_SET);
+        } else {
+            fclose(file);
+            file = 0;
+            return;
+        }
+    }
+
     // allocate memory in the buffer
     mark(buffersize);
 }
