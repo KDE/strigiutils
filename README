@@ -9,3 +9,7 @@ Execute these commands:
  svn co svn://anonsvn.kde.org/home/kde/branches/work/kde4/playground/libs/archivereader
  ./rebuild.sh
 
+usage:
+start the daemon by starting 'daemon'
+start the gui by starting 'kittenclient'
+

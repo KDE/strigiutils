@@ -19,10 +19,16 @@ fi
 libtoolize --force --copy && \
 aclocal -I m4 && \
 autoconf && \
-automake --add-missing
+automake --add-missing || exit;
 
 if [ test $TARGET == "dist" ]; then
 	./configure && make dist-bzip2
+elif [ test $TARGET == "release" ]; then
+	mkdir release && \
+	cd release && \
+	CXXFLAGS="-Wall -O3" CPPFLAGS=-I$CLUCENESRCDIR \
+	LDFLAGS=-L$CLUCENESRCDIR ../configure --enable-debug=no && \
+	make
 else
 	mkdir debug && \
 	cd debug && \
