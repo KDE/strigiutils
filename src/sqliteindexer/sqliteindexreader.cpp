@@ -46,12 +46,13 @@ split(const std::string& q) {
     return terms;
 }
 string
-createQuery(int n) {
+createQuery(int n, bool filterpath) {
     // TODO: makeing a query with wildcards slows things down, so we must
     // think about reordering them
     // although we'll never be able to manage queries like 'a% b% c%'
     ostringstream q;
-    q << "select path, ";
+    q << "select path";
+    if (n > 0) q <<",";
     // the points for a file is the sum of the fraction of the total occurances
     // of that word in this file
     for (int i=0; i<n; ++i) {
@@ -59,7 +60,10 @@ createQuery(int n) {
         if (i > 0) q<<"+";
         q << "f"<<a<<".count*1.0/w"<<a<<".count";
     }
-    q << " p from ";
+    if (n > 0) {
+    q <<" p ";
+    }
+    q <<" from ";
     for (int i=0; i<n; ++i) {
         char a = i+'a';
         q <<"words w"<<a<<",";
@@ -78,7 +82,15 @@ createQuery(int n) {
         char b = i+'a';
         q <<"f"<<a<<".fileid = f"<<b<<".fileid and ";
     }
-    q <<"fa.fileid = files.rowid order by p limit 100"; 
+    if (n > 0) {
+        q <<"fa.fileid = files.rowid ";
+    }
+    if (filterpath) {
+        if (n > 0) q <<"and ";
+        q <<"files.path like ? ";
+    }
+    if (n > 0) q <<"order by p ";
+    q <<"limit 100"; 
     return q.str();
 }
 vector<string>
@@ -100,8 +112,21 @@ SqliteIndexReader::query(const std::string& query) {
     set<string> terms = split(q);
     std::vector<std::string> results;
     if (terms.size() == 0) return results;
+    string pathfilter;
+    set<string>::iterator i = terms.begin();
+    while (i != terms.end()) {
+        if (i->substr(0, 5) == "path:") {
+            pathfilter = i->substr(5);
+            terms.erase(i);
+            i = terms.begin();
+        } else {
+            i++;
+        }
+    }
+    if (terms.size() == 0 && pathfilter.length() == 0) return results;
 
-    string sql = createQuery(terms.size());
+    string sql = createQuery(terms.size(), pathfilter.length() > 0);
+
     manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
@@ -111,10 +136,13 @@ SqliteIndexReader::query(const std::string& query) {
         manager->deref();
         return results;
     }
-    set<string>::const_iterator i;
     int j = 1;
     for (i=terms.begin(); i!=terms.end(); ++i) {
         sqlite3_bind_text(stmt, j++, i->c_str(), i->length(),
+            SQLITE_STATIC);
+    }
+    if (pathfilter.length() > 0) {
+        sqlite3_bind_text(stmt, j, pathfilter.c_str(), pathfilter.length(),
             SQLITE_STATIC);
     }
     r = sqlite3_step(stmt);
