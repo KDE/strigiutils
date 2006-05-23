@@ -86,7 +86,7 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
         // this is an error because all dependent code might have been labouring
         // under a misapprehension
         BufferedInputStream<T>::status = Error;
-        error = "Stream is longer than specified.";
+        BufferedInputStream<T>::error = "Stream is longer than specified.";
         nread = -2;
     } else if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
