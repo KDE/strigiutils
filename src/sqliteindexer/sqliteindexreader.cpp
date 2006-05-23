@@ -83,7 +83,7 @@ createQuery(int n, bool filterpath) {
         q <<"f"<<a<<".fileid = f"<<b<<".fileid and ";
     }
     if (n > 0) {
-        q <<"fa.fileid = files.rowid ";
+        q <<"fa.fileid = files.fileid ";
     }
     if (filterpath) {
         if (n > 0) q <<"and ";

@@ -23,8 +23,8 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         printf("could not speed up database\n");
     }
     // create the tables required
-    const char* sql ="create table files (path,"
-        "unique (path) on conflict ignore);"
+    const char* sql ="create table files (fileid integer primary key, path,"
+        "unique (path));"
         "create table idx (path, name, value, "
         "unique (path, name, value) on conflict ignore);"
         "create index idx_path on idx(path);"
@@ -110,7 +110,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
 
     // remove the previous version of this file
     // check if there is a previous version
-    string sql = "select rowid from files where path = '"+name+"';";
+    string sql = "select fileid from files where path = '"+name+"';";
     manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
@@ -198,7 +198,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         "replace into filewords (fileid, wordid, count) "
         "select ";
     sql << m->first;
-    sql << ", words.rowid, t.count from t join words "
+    sql << ", words.wordid, t.count from t join words "
         "on t.word = words.word; drop table t;";
     r = sqlite3_exec(db, sql.str().c_str(),0,0,0);
     if (r != SQLITE_OK) {
