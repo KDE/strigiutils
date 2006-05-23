@@ -11,6 +11,8 @@ protected:
         jstreams::StreamBase<wchar_t>* datastream) {}
     void addField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value) {}
+    void setField(const jstreams::Indexable*, const std::string &fieldname,
+        int64_t value) {}
 public:
     DummyIndexWriter() {}
     ~DummyIndexWriter() {}

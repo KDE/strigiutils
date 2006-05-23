@@ -20,7 +20,7 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
     while (s) {
         std::string file = filename+"/";
         file += zip.getEntryInfo().filename;
-        indexer->analyze(file, s, depth);
+        indexer->analyze(file, zip.getEntryInfo().mtime, s, depth);
         s = zip.nextEntry();
     }
     if (zip.getStatus() == jstreams::Error) {

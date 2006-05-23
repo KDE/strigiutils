@@ -75,6 +75,10 @@ CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
 #endif
 }
 void
+CLuceneIndexWriter::setField(const Indexable*, const std::string &fieldname,
+        int64_t value) {
+}
+void
 CLuceneIndexWriter::startIndexable(Indexable* idx) {
     doccount++;
     addField(idx, "path", idx->getName());

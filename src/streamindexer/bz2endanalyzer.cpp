@@ -4,6 +4,7 @@
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
 #include "streamindexer.h"
+#include "indexwriter.h"
 using namespace std;
 using namespace jstreams;
 
@@ -46,6 +47,6 @@ BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
             // last resort
             file = filename+"/bunzipped";
         }
-        return indexer->analyze(file, &stream, depth);
+        return indexer->analyze(file, idx->getMTime(), &stream, depth);
     }
 }

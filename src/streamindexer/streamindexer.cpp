@@ -11,6 +11,9 @@
 #include "mailendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexwriter.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 using namespace std;
 using namespace jstreams;
 
@@ -36,15 +39,16 @@ StreamIndexer::~StreamIndexer() {
 char
 StreamIndexer::indexFile(const char *filepath) {
     std::string path(filepath);
-    FileInputStream file(filepath);
-    return analyze(path, &file, 0);
+    return indexFile(path);
 }
 char
 StreamIndexer::indexFile(std::string& filepath) {
+    struct stat s;
+    stat(filepath.c_str(), &s);
     FileInputStream file(filepath.c_str());
     // ensure a decent buffer size
     file.mark(1024);
-    return analyze(filepath, &file, 0);
+    return analyze(filepath, s.st_mtime, &file, 0);
 }
 void
 StreamIndexer::addThroughAnalyzers() {
@@ -76,10 +80,14 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
 }
 char
-StreamIndexer::analyze(std::string &path, InputStream *input, uint depth) {
+StreamIndexer::analyze(std::string &path, int64_t mtime, InputStream *input,
+        uint depth) {
 //    static int count = 1;
-//    printf("%s %lli %i\n", path.c_str(), input->getSize(), count++);
-    Indexable idx(path, writer);
+//    printf("%s %lli %i ", path.c_str(), input->getSize(), count++);
+    Indexable idx(path, mtime, writer);
+    if (depth == 0 && idx.wasIndexed()) {
+        return 0;
+    }
 
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;

@@ -27,7 +27,7 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     const char* end;
     const char* p;
 
-    while (nread > 0) {
+    while (nread >= 0) {
         end = b + nread;
         p = b;
         while (p != end) {
@@ -48,7 +48,8 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     }
     if (nread != Eof) {
         error = in->getError();
-        -1;
+        // TODO investigate
+        //return -1;
     }
 //    InputStreamReader reader(in);
 //    i->addStream("content", &reader);

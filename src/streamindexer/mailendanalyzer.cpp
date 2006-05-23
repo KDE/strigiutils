@@ -1,6 +1,7 @@
 #include "mailendanalyzer.h"
 #include "mailinputstream.h"
 #include "streamindexer.h"
+#include "indexwriter.h"
 using namespace jstreams;
 
 bool
@@ -9,7 +10,7 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 MailEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable*) {
+        int depth, StreamIndexer *indexer, jstreams::Indexable* i) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
     if (mail.getStatus() == jstreams::Error) {
@@ -24,7 +25,8 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
         } else {
             file += mail.getEntryInfo().filename;
         }
-        indexer->analyze(file, s, depth);
+        // maybe use the date of sending the mail here
+        indexer->analyze(file, i->getMTime(), s, depth);
         s = mail.nextEntry();
         n++;
     }

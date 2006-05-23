@@ -4,6 +4,7 @@
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
 #include "streamindexer.h"
+#include "indexwriter.h"
 using namespace jstreams;
 
 bool
@@ -27,6 +28,6 @@ GZipEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
             idx);
     } else {
         std::string file = filename+"/bunzipped";
-        return indexer->analyze(file, &stream, depth);
+        return indexer->analyze(file, idx->getMTime(), &stream, depth);
     }
 }

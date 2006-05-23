@@ -28,18 +28,26 @@ protected:
         jstreams::StreamBase<wchar_t>* datastream) = 0;
     virtual void addField(const Indexable*, const std::string &fieldname,
         const std::string& value) = 0;
+    virtual void setField(const Indexable*, const std::string &fieldname,
+        int64_t value) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
+    void setIndexed(Indexable* idx, bool indexed);
 public:
     virtual ~IndexWriter() {}
 };
 
 class Indexable {
+friend class IndexWriter;
 private:
     int64_t id;
-    IndexWriter* writer;
+    const int64_t mtime;
     const std::string& name;
+    IndexWriter* writer;
+    bool wasindexed;
 public:
-    Indexable(const std::string& n, IndexWriter* w) :writer(w), name(n) {
+    Indexable(const std::string& n, int64_t mt, IndexWriter* w)
+            :mtime(mt), name(n), writer(w) {
+        wasindexed = true; // don't index per default
         w->startIndexable(this);
     }
     ~Indexable() { writer->finishIndexable(this); }
@@ -52,9 +60,15 @@ public:
         writer->addField(this, fieldname, value);
     }
     const std::string& getName() const { return name; }
+    int64_t getMTime() const { return mtime; }
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
+    bool wasIndexed() const { return wasindexed; }
 };
+inline void
+IndexWriter::setIndexed(Indexable* idx, bool indexed) {
+    idx->wasindexed = indexed;
+}
 
 }
 
