@@ -2,6 +2,7 @@
 #include "sqliteindexmanager.h"
 #include <sqlite3.h>
 #include <set>
+#include <sstream>
 using namespace std;
 
 SqliteIndexReader::SqliteIndexReader(SqliteIndexManager* m) :manager(m) {
@@ -27,12 +28,6 @@ SqliteIndexReader::~SqliteIndexReader() {
         }
     }
 }
-int
-sqliteindexreadercallback(void*arg, int, char**v, char**) {
-    std::vector<std::string>& results = *(std::vector<std::string>*)arg;
-    results.push_back(v[1]);
-    return 0;
-}
 set<string>
 split(const std::string& q) {
     set<string> terms;
@@ -49,24 +44,6 @@ split(const std::string& q) {
         terms.insert(q.substr(offset));
     }
     return terms;
-}
-#include <sstream>
-string
-createQueryold(int n) {
-    ostringstream q;
-    q << "select path from files f ";
-    for (int i=0; i<n; ++i) {
-        char a = i+'a';
-        q <<"join filewords f"<<a<<" on f.rowid = f"<<a<<".fileid join words w"
-          <<a<<" on f"<<a<<".wordid = w"<<a<<".wordid ";
-    }
-    q << "where ";
-    for (int i=0; i<n; ++i) {
-        char a = i+'a';
-        if (i > 0) q << "and ";
-        q <<"w"<<a<<".word like ? ";
-    }
-    return q.str();
 }
 string
 createQuery(int n) {
@@ -107,14 +84,8 @@ createQuery(int n) {
 vector<string>
 SqliteIndexReader::query(const std::string& query) {
     string q = query;
-    // replace ' by ''
-    size_t p = q.find('\'');
-    while (p != string::npos) {
-        q.replace(p, 1, "''");
-        p = q.find('\'', p+2);
-    }
     // replace * by %
-    p = q.find('*');
+    size_t p = q.find('*');
     while (p != string::npos) {
         q.replace(p, 1, "%");
         p = q.find('*');
@@ -126,26 +97,10 @@ SqliteIndexReader::query(const std::string& query) {
         p = q.find('?');
     }
     // split up in terms
-    set<string> terms = split(query);
+    set<string> terms = split(q);
     std::vector<std::string> results;
     if (terms.size() == 0) return results;
 
-    // this sql probably warants some explanation
-/*    string sql = "select sp, path from (select fileid, sum(p) sp from ("
-        "select fileid, f.count*1.0/w.count p "
-        "from words w join filewords f on w.wordid = f.wordid "
-        "where word like '";
-    sql += q;
-    sql += "') group by fileid order by sp desc limit 100) "
-        "join files on fileid = files.rowid;";
-    char* error;
-    int r = sqlite3_exec(db, sql.c_str(), sqliteindexreadercallback,
-        &results, &error);
-    if (r != SQLITE_OK && error) {
-        printf("%s\n", error);
-        sqlite3_free(error);
-    }
-*/
     string sql = createQuery(terms.size());
     manager->ref();
     sqlite3_stmt* stmt;
