@@ -32,6 +32,8 @@ SimpleSearchGui::SimpleSearchGui() {
 void
 SimpleSearchGui::query(const QString& item) {
     itemview->setEnabled(false);
+    itemview->clear();
+    itemview->addItem("searching...");
     executer.query(item);
 }
 void
@@ -39,20 +41,16 @@ SimpleSearchGui::handleQueryResult(const QString& item) {
     itemview->clear();
     vector<string> results = executer.getResults();
 
-    if (results.size() > 0 && results[0] == "error") {
+    if (results.size() > 0) {
+        if (results[0] != "error") {
+            itemview->setEnabled(true);
+        }
         for (uint i=0; i<results.size(); ++i) {
-            qDebug() << results[i].c_str();
+            itemview->addItem(results[i].c_str());
         }
     } else {
-        for (uint i=0; i<results.size(); ++i) {
-            addItem(results[i].c_str());
-        }
+        itemview->addItem("no results");
     }
-}
-void
-SimpleSearchGui::addItem(const QString& item) {
-    itemview->setEnabled(true);
-    itemview->addItem(item);
 }
 void
 SimpleSearchGui::openItem(QListWidgetItem* i) {
