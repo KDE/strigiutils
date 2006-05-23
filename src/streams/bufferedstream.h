@@ -80,7 +80,15 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     }*/
 
     BufferedInputStream<T>::position += nread;
-    if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
+    if (BufferedInputStream<T>::position > BufferedInputStream<T>::size
+        && BufferedInputStream<T>::size > 0) {
+        // error: we read more than was specified in size
+        // this is an error because all dependent code might have been labouring
+        // under a misapprehension
+        BufferedInputStream<T>::status = Error;
+        error = "Stream is longer than specified.";
+        nread = -2;
+    } else if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
         BufferedInputStream<T>::status = Eof;
         // save one call to read() by already returning -1 if no data is there
