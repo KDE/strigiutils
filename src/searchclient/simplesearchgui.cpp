@@ -21,14 +21,21 @@ SimpleSearchGui::SimpleSearchGui() {
     setLayout(layout);
 
     connect(queryfield, SIGNAL(textChanged(const QString&)),
-        &executer, SLOT(query(const QString&)));
-    connect(&executer, SIGNAL(queryFinished(const QString&)),
         this, SLOT(query(const QString&)));
+    connect(&executer, SIGNAL(queryFinished(const QString&)),
+        this, SLOT(handleQueryResult(const QString&)));
     connect(itemview, SIGNAL(itemClicked(QListWidgetItem*)),
         this, SLOT(openItem(QListWidgetItem*)));
+    itemview->setEnabled(false);
+    queryfield->setFocus(Qt::ActiveWindowFocusReason);
 }
 void
 SimpleSearchGui::query(const QString& item) {
+    itemview->setEnabled(false);
+    executer.query(item);
+}
+void
+SimpleSearchGui::handleQueryResult(const QString& item) {
     itemview->clear();
     vector<string> results = executer.getResults();
 
@@ -44,6 +51,7 @@ SimpleSearchGui::query(const QString& item) {
 }
 void
 SimpleSearchGui::addItem(const QString& item) {
+    itemview->setEnabled(true);
     itemview->addItem(item);
 }
 void

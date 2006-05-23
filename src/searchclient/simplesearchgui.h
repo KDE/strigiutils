@@ -16,6 +16,7 @@ private:
 
 private slots:
     void query(const QString&);
+    void handleQueryResult(const QString&);
     void addItem(const QString&);
     void openItem(QListWidgetItem*);
 public:

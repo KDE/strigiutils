@@ -126,6 +126,7 @@ SqliteIndexReader::query(const std::string& query) {
     if (terms.size() == 0 && pathfilter.length() == 0) return results;
 
     string sql = createQuery(terms.size(), pathfilter.length() > 0);
+    printf("%s\n", sql.c_str());
 
     manager->ref();
     sqlite3_stmt* stmt;
