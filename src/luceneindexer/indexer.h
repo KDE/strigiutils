@@ -13,7 +13,7 @@ private:
 	CLuceneIndexWriter m_writer;
 	jstreams::StreamIndexer m_indexer;
 
-	static void addFileCallback(const char *path, const char *filename);
+	static bool addFileCallback(const char *path, const char *filename);
 	static Indexer *workingIndexer;
 	void doFile(const std::string &filepath);
 public:

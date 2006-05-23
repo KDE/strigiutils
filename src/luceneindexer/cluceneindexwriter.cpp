@@ -15,7 +15,7 @@ CLuceneIndexWriter::CLuceneIndexWriter(const char* ip) :indexespath(ip) {
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
     // close all writers and analyzers
-    for (int i=0; i<writers.size(); ++i) {
+    for (uint i=0; i<writers.size(); ++i) {
         lucene::index::IndexWriter* writer = writers[i];
 	writer->optimize();
         writer->close();
@@ -87,7 +87,7 @@ CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
 #endif
 }
 void
-CLuceneIndexWriter::startIndexable(const Indexable* idx) {
+CLuceneIndexWriter::startIndexable(Indexable* idx) {
     addField(idx, "path", idx->getName().c_str());
 }
 /*

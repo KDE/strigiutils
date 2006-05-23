@@ -36,11 +36,12 @@ Indexer::index(const char *dir) {
 		m_lister.listFiles(dir);
 	}
 }
-void
+bool
 Indexer::addFileCallback(const char *path, const char *filename) {
 	std::string filepath(path);
 	filepath += filename;
 	workingIndexer->doFile(filepath);
+	return true;
 }
 void
 Indexer::doFile(const std::string &filepath) {

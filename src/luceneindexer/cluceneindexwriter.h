@@ -27,7 +27,7 @@ private:
 
     void addIndexWriter();
 protected:
-    void startIndexable(const jstreams::Indexable*);
+    void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
     void addStream(const jstreams::Indexable*, const std::string& fieldname,
         jstreams::StreamBase<wchar_t>* datastream);
