@@ -46,7 +46,6 @@ StreamIndexer::indexFile(std::string& filepath) {
     file.mark(1024);
     return analyze(filepath, &file, 0);
 }
-
 void
 StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);

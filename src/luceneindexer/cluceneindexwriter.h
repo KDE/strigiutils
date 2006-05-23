@@ -2,30 +2,20 @@
 #define CLUCENEINDEXWRITER_H
 
 #include "indexwriter.h"
+#include <CLucene/clucene-config.h>
+#include <CLucene.h>
 #include <vector>
 #include <map>
 
-namespace lucene {
-    namespace index {
-        class IndexWriter;
-    }
-    namespace document {
-        class Document;
-    }
-    namespace analysis {
-        class Analyzer;
-    }
-}
-
 class CLuceneIndexWriter : public jstreams::IndexWriter {
 private:
-    int activewriter;
-    std::string indexespath;
-    std::vector<lucene::index::IndexWriter*> writers;
-    std::vector<lucene::analysis::Analyzer*> analyzers;
-    std::map<const jstreams::Indexable*, lucene::document::Document*> docs;
+    int doccount;
+    std::string indexpath;
+    lucene::index::IndexWriter* writer;
+    lucene::analysis::Analyzer* analyzer;
+    std::map<const jstreams::Indexable*, lucene::document::Document> docs;
+    std::map<const jstreams::Indexable*, std::string> content;
 
-    void addIndexWriter();
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);

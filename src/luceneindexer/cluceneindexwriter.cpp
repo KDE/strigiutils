@@ -10,35 +10,24 @@ using lucene::document::Document;
 using lucene::document::Field;
 using lucene::util::Reader;
 
-CLuceneIndexWriter::CLuceneIndexWriter(const char* ip) :indexespath(ip) {
-    activewriter = 0;
+CLuceneIndexWriter::CLuceneIndexWriter(const char* ip) :indexpath(ip) {
+    analyzer = new StandardAnalyzer();
+    writer = new lucene::index::IndexWriter( indexpath.c_str(), analyzer, 1);
+    doccount = 0;
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
-    // close all writers and analyzers
-    for (uint i=0; i<writers.size(); ++i) {
-        lucene::index::IndexWriter* writer = writers[i];
-	writer->optimize();
-        writer->close();
-	delete writer;
-        Analyzer* analyzer = analyzers[i];
-	delete analyzer;
-    }
-}
-void
-CLuceneIndexWriter::addIndexWriter() {
-    Analyzer* analyzer = new StandardAnalyzer();
-    analyzers.push_back(analyzer);
-    // check if the required directory exists
-    string dir = indexespath+(char)('1'+activewriter);
-    mkdir(dir.c_str(), 0777);
-    lucene::index::IndexWriter* writer = new lucene::index::IndexWriter(
-        dir.c_str(), analyzer, 1);
-    writers.push_back(writer);
+    // close the writer and analyzer
+    writer->optimize();
+    writer->close();
+    delete writer;
+    delete analyzer;
 }
 void
 CLuceneIndexWriter::addStream(const Indexable* idx, const string& fieldname,
         StreamBase<wchar_t>* datastream) {
-    Document *doc = docs[idx];
+    // i'm rethinking how to feed streams
+    assert(0);
+/*    Document *doc = docs[idx];
     if (doc == 0) {
         doc = new Document();
     } else {
@@ -63,7 +52,7 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const string& fieldname,
     }
 
     delete doc;
-    activewriter--;
+    activewriter--;*/
 }
 /*
    If there's an open document, add fields to that. If there isn't open one.
@@ -71,37 +60,47 @@ CLuceneIndexWriter::addStream(const Indexable* idx, const string& fieldname,
 void
 CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
         const string& value) {
-    Document *doc = docs[idx];
-    if (doc == 0) {
-        doc = new Document();
-        docs[idx] = doc;
+    if (fieldname == "content") {
+        content[idx] += value + " ";
+        return;
     }
 #if defined(_UCS2)
     TCHAR fn[CL_MAX_DIR];
     TCHAR fv[CL_MAX_DIR];
     STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
     STRCPY_AtoT(fv, value.c_str(), CL_MAX_DIR);
-    doc->add( *Field::Keyword(fn, fv) );
+    docs[idx].add( *Field::Keyword(fn, fv) );
 #else
-    doc->add(*Field::Keyword(fieldname.c_str(), value.c_str()));
+    docs[idx]add(*Field::Keyword(fieldname.c_str(), value.c_str()));
 #endif
 }
 void
 CLuceneIndexWriter::startIndexable(Indexable* idx) {
-    addField(idx, "path", idx->getName().c_str());
+    doccount++;
+    addField(idx, "path", idx->getName());
 }
 /*
     Close all left open indexwriters for this path.
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    Document *doc = docs[idx];
-    if (doc) {
-        if (writers.size() < activewriter+1) {
-            addIndexWriter();
-        }
-        writers[activewriter]->addDocument(doc);
-        delete doc;
-        docs[idx] = 0;
+    std::map<const jstreams::Indexable*, string>::iterator c
+        = content.find(idx);
+    std::map<const jstreams::Indexable*, lucene::document::Document>::iterator i
+        = docs.find(idx);
+    if (c != content.end()) {
+#if defined(_UCS2)
+        // this is wholy unsatisfactory
+        int s = c->second.length()+1;
+        TCHAR* fv = new TCHAR[s];
+        STRCPY_AtoT(fv, c->second.c_str(), s);
+        i->second.add( *Field::Keyword(L"content", fv) );
+        delete fv;
+#else
+        i->second.add(*Field::Keyword("content", c->second.c_str()));
+#endif
+        content.erase(c);
     }
+    writer->addDocument(&i->second);
+    docs.erase(i);
 }
