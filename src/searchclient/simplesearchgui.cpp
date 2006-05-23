@@ -44,9 +44,13 @@ SimpleSearchGui::query(const QString& item) {
 }
 void
 SimpleSearchGui::addItem(const QString& item) {
+    itemview->addItem(item);
+}
+void
+SimpleSearchGui::openItem(QListWidgetItem* i) {
     // if the file does not exist on the file system remove items of the end
     // until it does
-    QString file = item;
+    QString file = i->text();
     QFileInfo info(file);
     while (!info.exists()) {
         int pos = file.lastIndexOf('/');
@@ -54,12 +58,14 @@ SimpleSearchGui::addItem(const QString& item) {
         file = file.left(pos);
         info.setFile(file);
     }
-    itemview->addItem(file);
-}
-void
-SimpleSearchGui::openItem(QListWidgetItem* i) {
+    if (file.endsWith(".tar") || file.endsWith(".tar.bz2")
+            || file.endsWith(".tar.gz")) {
+        file = "tar:"+i->text();
+    } else if (file.endsWith(".zip") || file.endsWith(".jar")) {
+        file = "zip:"+i->text();
+    }
     QStringList args;
-    args << "openURL" << i->text();
+    args << "openURL" << file;
     QProcess::execute("kfmclient", args);
     qDebug() << i->text();
 }
