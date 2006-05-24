@@ -57,7 +57,7 @@ shortsleep(long nanoseconds) {
 }
 StreamIndexer* streamindexer;
 bool
-addFileCallback(const char *path, const char *filename) {
+addFileCallback(const char *path, const char *filename, time_t mtime) {
     if (!daemon_run) return false;
     std::string filepath(path);
     filepath += filename;

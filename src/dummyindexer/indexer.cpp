@@ -19,7 +19,7 @@ Indexer::index(const char *dir) {
 	}
 }
 bool
-Indexer::addFileCallback(const char *path, const char *filename) {
+Indexer::addFileCallback(const char *path, const char *filename, time_t mtime) {
 	std::string filepath(path);
 	filepath += filename;
 	workingIndexer->doFile(filepath);
