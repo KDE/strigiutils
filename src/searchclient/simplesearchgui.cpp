@@ -34,7 +34,7 @@ SimpleSearchGui::query(const QString& item) {
     itemview->setEnabled(false);
     itemview->clear();
     itemview->addItem("searching...");
-    executer.query(item);
+    executer.query(item.trimmed());
 }
 void
 SimpleSearchGui::handleQueryResult(const QString& item) {

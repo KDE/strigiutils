@@ -82,8 +82,10 @@ StreamIndexer::addEndAnalyzers() {
 char
 StreamIndexer::analyze(std::string &path, int64_t mtime, InputStream *input,
         uint depth) {
-//    static int count = 1;
-//    printf("%s %lli %i ", path.c_str(), input->getSize(), count++);
+    static int count = 1;
+    if (++count % 1000 == 0) {
+        printf("file #%i: %s\n", count, path.c_str());
+    }
     Indexable idx(path, mtime, writer);
     if (depth == 0 && idx.wasIndexed()) {
         return 0;

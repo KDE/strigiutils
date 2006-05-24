@@ -17,8 +17,12 @@ QueryExecuter::run() {
 
     QString oldq;
     do {
-        qDebug() << "querying for " << q;
-        r = client.query((const char*)q.toUtf8());
+        if (q.length() > 0) {
+            qDebug() << "querying for " << q;
+            r = client.query((const char*)q.toUtf8());
+        } else {
+            r.clear();
+        }
         oldq = q;
         mutex.lock();
         q = querystring;

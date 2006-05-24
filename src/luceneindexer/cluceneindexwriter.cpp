@@ -1,6 +1,7 @@
 #include "cluceneindexwriter.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include <assert.h>
 
 using namespace std;
 using namespace jstreams;

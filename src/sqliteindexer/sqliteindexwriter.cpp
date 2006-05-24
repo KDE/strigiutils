@@ -136,13 +136,13 @@ SqliteIndexWriter::setField(const Indexable*, const std::string &fieldname,
 void
 SqliteIndexWriter::startIndexable(Indexable* idx) {
     // get the file name
-    string name = SqliteIndexManager::escapeSqlValue(idx->getName());
+    const char* name = idx->getName().c_str();
+    size_t namelen = idx->getName().length();
 
     // remove the previous version of this file
     // check if there is a previous version
     manager->ref();
-    int r = sqlite3_bind_text(getfilestmt, 1, name.c_str(), name.length(),
-        SQLITE_STATIC);
+    int r = sqlite3_bind_text(getfilestmt, 1, name, namelen, SQLITE_STATIC);
     r = sqlite3_step(getfilestmt);
     if (r != SQLITE_ROW && r != SQLITE_DONE) {
         sqlite3_reset(getfilestmt);
@@ -170,7 +170,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     } else {
         setIndexed(idx, false);
         sqlite3_reset(getfilestmt);
-        sqlite3_bind_text(insertfilestmt, 1, name.c_str(), name.length(),
+        sqlite3_bind_text(insertfilestmt, 1, name, namelen,
             SQLITE_STATIC);
         sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
         r = sqlite3_step(insertfilestmt);

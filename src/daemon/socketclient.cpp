@@ -73,7 +73,6 @@ SocketClient::readResponse(int sd) {
             }
             return true;
         } else if (c == '\n') {
-            printf("%s\n", line.c_str());
             if (line.size() == 0) {
                 // finished reading the request
                 return true;
