@@ -13,10 +13,14 @@ friend class SqliteIndexManager;
 private:
     SqliteIndexManager* manager;
     sqlite3 *db;
-    sqlite3_stmt *stmt;
+    sqlite3_stmt *insertvaluestmt, *getfilestmt, *updatefilestmt,
+        *insertfilestmt;
     const std::string indexpath;
     std::map<int64_t, std::map<std::string, int> > content;
 
+    void prepareStmt(sqlite3_stmt*& stmt, const char* sql,
+        int sqllength);
+    void finalizeStmt(sqlite3_stmt*& stmt);
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
