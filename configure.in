@@ -64,6 +64,9 @@ dnl check for slqlite3
 PKG_CHECK_MODULES(sqlite3, sqlite3 >= 0, have_sqlite3="yes", have_sqlite3="no")
 AM_CONDITIONAL(HAVE_SQLITE3, test "$have_sqlite3" = "yes")
 
+dnl check for sys_ioprio_set
+AC_CHECK_HEADER(linux/ioprio.h, [have_linuxioprio=yes], )
+AM_CONDITIONAL(HAVE_LINUXIOPRIO, test "$have_linuxioprio" = "yes")
 
 dnl check for iconv
 AM_ICONV

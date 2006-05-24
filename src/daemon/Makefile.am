@@ -6,6 +6,9 @@ lib_LTLIBRARIES = libsearchclient.la
 daemon_SOURCES = daemon.cpp server.cpp socketserver.cpp interface.cpp
 daemon_CXXFLAGS = -I$(top_srcdir)/src/streamindexer \
 	-I$(top_srcdir)/src/sqliteindexer
+if HAVE_LINUXIOPRIO
+daemon_CXXFLAGS += -DHAVE_LINUXIOPRIO
+endif
 daemon_LDFLAGS = -lpthread $(top_builddir)/src/sqliteindexer/libsqliteindex.la
 
 client_SOURCES = client.cpp

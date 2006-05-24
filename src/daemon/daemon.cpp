@@ -14,6 +14,13 @@
 #include <cstdio>
 #include <cerrno>
 
+// linux specific includes for setting the indexer priority to low
+#include <sched.h>
+#include <sys/resource.h>
+#ifdef HAVE_LINUXIOPRIO
+#include <linux/ioprio.h>
+#endif
+
 using namespace jstreams;
 using namespace std;
 
@@ -61,14 +68,30 @@ addFileCallback(const char *path, const char *filename) {
     return true;
 }
 string homedir;
+#include <errno.h>
 void *
 indexloop(void *i) {
+    // give this thread job batch job priority
+    struct sched_param param;
+    param.sched_priority = 0;
+#ifndef SCHED_BATCH
+#define SCHED_BATCH 3
+#endif
+    int r = sched_setscheduler(0, SCHED_BATCH, &param);
+    if (r != 0) {
+        // fall back to renice if SCHED_BATCH is unknown
+        r = setpriority(PRIO_PROCESS, 0, 20);
+        if (r==-1) printf("error setting priority: %s\n", strerror(errno));
+        //nice(20);
+    }
+#ifdef HAVE_LINUXIOPRIO
+    sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
+#endif
+
     IndexManager* index = (IndexManager*)i;
 
-    IndexWriter* writer;
-    printf("getting writer\n");
-    streamindexer = new StreamIndexer(index->getIndexWriter());
-    printf("got writer\n");
+    IndexWriter* writer = index->getIndexWriter();
+    streamindexer = new StreamIndexer(writer);
 
     // first loop through all files
     FileLister lister;
