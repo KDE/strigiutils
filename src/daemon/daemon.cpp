@@ -61,7 +61,7 @@ bool
 addFileCallback(const string& path, const char *filename, time_t mtime) {
     if (!daemon_run) return false;
     // only read files that do not start with '.'
-    if (*filename == '.') return true;
+    if (path.find("/.") != string::npos || *filename == '.') return true;
 
     std::string filepath(path+filename);
 
@@ -100,12 +100,14 @@ indexloop(void *i) {
 #endif
 
     IndexManager* index = (IndexManager*)i;
+
+    IndexWriter* writer = index->getIndexWriter();
+    StreamIndexer* streamindexer = new StreamIndexer(writer);
+
     IndexReader* reader = index->getIndexReader();
 
     dbfiles = reader->getFiles(0);
     printf("%i real files in the database\n", dbfiles.size()); 
-    IndexWriter* writer = index->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(writer);
 
     // first loop through all files
     FileLister lister;
