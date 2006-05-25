@@ -52,7 +52,7 @@ createQuery(int n, bool filterpath) {
     // although we'll never be able to manage queries like 'a% b% c%'
     ostringstream q;
     q << "select path";
-    if (n > 0) q <<",";
+    if (n > 0) q <<", sum(";
     // the points for a file is the sum of the fraction of the total occurances
     // of that word in this file
     for (int i=0; i<n; ++i) {
@@ -61,7 +61,7 @@ createQuery(int n, bool filterpath) {
         q << "f"<<a<<".count*1.0/w"<<a<<".count";
     }
     if (n > 0) {
-    q <<" p ";
+    q <<") p ";
     }
     q <<" from ";
     for (int i=0; i<n; ++i) {
@@ -78,9 +78,8 @@ createQuery(int n, bool filterpath) {
         q <<"w"<<a<<".word like ? and w"<<a<<".wordid = f"<<a<<".wordid and ";
     }
     for (int i=1; i<n; ++i) {
-        char a = i+'a'-1;
-        char b = i+'a';
-        q <<"f"<<a<<".fileid = f"<<b<<".fileid and ";
+        char a = i+'a';
+        q <<"fa.fileid = f"<<a<<".fileid and ";
     }
     if (n > 0) {
         q <<"fa.fileid = files.fileid ";
@@ -89,7 +88,7 @@ createQuery(int n, bool filterpath) {
         if (n > 0) q <<"and ";
         q <<"files.path like ? ";
     }
-    if (n > 0) q <<"order by p ";
+    if (n > 0) q <<"group by fa.fileid order by p ";
     q <<"limit 100"; 
     return q.str();
 }
