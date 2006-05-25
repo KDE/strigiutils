@@ -18,8 +18,8 @@ private:
     QListWidget* itemview;
     QueryExecuter executer;
 
-    void showStatus();
 private slots:
+    void updateStatus();
     void query(const QString&);
     void handleQueryResult(const QString&);
     void openItem(QListWidgetItem*);

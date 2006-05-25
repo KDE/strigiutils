@@ -1,6 +1,7 @@
 #include "interface.h"
 #include "indexreader.h"
 #include "indexmanager.h"
+#include <sstream>
 using namespace std;
 using namespace jstreams;
 
@@ -12,8 +13,11 @@ Interface::query(const string& query) {
 }
 map<string, string>
 Interface::getStatus() {
+    static int calls = 0;
     map<string,string> status;
     status["status"]="running";
-    status["jaja"]="wow";
+    ostringstream out;
+    out << ++calls;
+    status["status calls"]= out.str();
     return status;
 }

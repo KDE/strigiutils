@@ -9,6 +9,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
+#include <QtCore/QTimer>
 #include <string>
 #include <vector>
 #include "socketclient.h"
@@ -22,6 +23,8 @@ SimpleSearchGui::SimpleSearchGui() {
     statusview->setMargin(25);
     mainview->addWidget(itemview);
     mainview->addWidget(statusview);
+    mainview->setCurrentIndex(1);
+
     queryfield = new QLineEdit();
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
@@ -37,13 +40,16 @@ SimpleSearchGui::SimpleSearchGui() {
     itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
-    showStatus();
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+    timer->start(2000);
+    updateStatus();
 }
 void
 SimpleSearchGui::query(const QString& item) {
     QString query = item.trimmed();
     if (query.length() == 0) {
-        showStatus();
+        mainview->setCurrentIndex(1);
     } else {
         mainview->setCurrentIndex(0);
         itemview->setEnabled(false);
@@ -53,7 +59,10 @@ SimpleSearchGui::query(const QString& item) {
     }
 }
 void
-SimpleSearchGui::showStatus() {
+SimpleSearchGui::updateStatus() {
+    static bool first = true;
+    if (!first && !statusview->isVisible()) return;
+    first = false;
     SocketClient client;
     std::string socket = getenv("HOME");
     socket += "/.kitten/socket";
@@ -68,7 +77,6 @@ SimpleSearchGui::showStatus() {
         text += "\n";
     }
     statusview->setText(text);
-    mainview->setCurrentIndex(1);
 }
 void
 SimpleSearchGui::handleQueryResult(const QString& item) {
