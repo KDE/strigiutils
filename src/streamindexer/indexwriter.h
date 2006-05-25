@@ -43,10 +43,11 @@ private:
     const int64_t mtime;
     const std::string& name;
     IndexWriter* writer;
+    char depth;
     bool wasindexed;
 public:
-    Indexable(const std::string& n, int64_t mt, IndexWriter* w)
-            :mtime(mt), name(n), writer(w) {
+    Indexable(const std::string& n, int64_t mt, IndexWriter* w, char d)
+            :mtime(mt), name(n), writer(w), depth(d) {
         wasindexed = true; // don't index per default
         w->startIndexable(this);
     }
@@ -64,6 +65,7 @@ public:
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
     bool wasIndexed() const { return wasindexed; }
+    char getDepth() const { return depth; }
 };
 inline void
 IndexWriter::setIndexed(Indexable* idx, bool indexed) {

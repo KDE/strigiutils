@@ -9,7 +9,8 @@ using namespace jstreams;
 
 bool
 GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    return headersize > 2 && header[0] == 0x1f && header[1] == 0x8b;
+    return headersize > 2 && (unsigned char)header[0] == 0x1f
+        && (unsigned char)header[1] == 0x8b;
 }
 char
 GZipEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,

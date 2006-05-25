@@ -55,15 +55,25 @@ shortsleep(long nanoseconds) {
     sleeptime.tv_nsec = nanoseconds;
     nanosleep(&sleeptime, 0);
 }
-StreamIndexer* streamindexer;
+map<string, time_t> dbfiles;
+map<string, time_t> toindex;
 bool
-addFileCallback(const char *path, const char *filename, time_t mtime) {
+addFileCallback(const string& path, const char *filename, time_t mtime) {
     if (!daemon_run) return false;
-    std::string filepath(path);
-    filepath += filename;
     // only read files that do not start with '.'
-    if (filepath.find("/.") == string::npos) {
-        streamindexer->indexFile(filepath.c_str());
+    if (*filename == '.') return true;
+
+    std::string filepath(path+filename);
+
+    map<string, time_t>::iterator i = dbfiles.find(filepath);
+    if (i == dbfiles.end()) {
+        toindex[filepath] = mtime;
+    } else {
+        if (i->second != mtime) {
+            // signal that file must be updated
+            toindex[filepath] = -1;
+        }
+        dbfiles.erase(i);
     }
     return true;
 }
@@ -73,6 +83,7 @@ void *
 indexloop(void *i) {
     // give this thread job batch job priority
     struct sched_param param;
+    memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
@@ -89,15 +100,30 @@ indexloop(void *i) {
 #endif
 
     IndexManager* index = (IndexManager*)i;
+    IndexReader* reader = index->getIndexReader();
 
+    dbfiles = reader->getFiles(0);
+    printf("%i real files in the database\n", dbfiles.size()); 
     IndexWriter* writer = index->getIndexWriter();
-    streamindexer = new StreamIndexer(writer);
+    StreamIndexer* streamindexer = new StreamIndexer(writer);
 
     // first loop through all files
     FileLister lister;
     lister.setCallbackFunction(&addFileCallback);
     printf("going to index\n");
     lister.listFiles(homedir.c_str());
+    printf("%i real files left in the database\n", dbfiles.size()); 
+    printf("%i files to add or update\n", toindex.size()); 
+
+    map<string,time_t>::iterator it = toindex.begin();
+    while (daemon_run && it != toindex.end()) {
+        if (it->second == -1) {
+        //    writer->erase(it->first);
+        }
+        streamindexer->indexFile(it->first);
+        toindex.erase(it++);
+    }
+
 /*
     while (daemon_run) {
         shortsleep(100000000);

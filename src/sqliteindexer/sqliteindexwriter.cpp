@@ -50,7 +50,7 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     prepareStmt(getfilestmt, sql, strlen(sql));
     sql = "update files set mtime = ?;";
     prepareStmt(updatefilestmt, sql, strlen(sql));
-    sql = "insert into files (path, mtime) values(?, ?);'";
+    sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
     prepareStmt(insertfilestmt, sql, strlen(sql));
     manager->deref();
 }
@@ -173,6 +173,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
         sqlite3_bind_text(insertfilestmt, 1, name, namelen,
             SQLITE_STATIC);
         sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
+        sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
         r = sqlite3_step(insertfilestmt);
         if (r != SQLITE_DONE) {
             printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));

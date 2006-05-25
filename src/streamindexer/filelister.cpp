@@ -57,7 +57,7 @@ FileLister::walk_directory(const char *dirname) {
 					expandPath(dirname);
 					expandedPath = true;
 				}
-				c = m_callback(m_path.c_str(), subdir->d_name,
+				c = m_callback(m_path, subdir->d_name,
 					dirstat.st_mtime);
 			} else if (S_ISDIR(dirstat.st_mode)) {
 				// add the name of this dir to the path

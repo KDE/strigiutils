@@ -2,6 +2,7 @@
 #define SQLITEINDEXREADER_H
 
 #include "indexreader.h"
+#include <map>
 
 struct sqlite3;
 class SqliteIndexManager;
@@ -15,6 +16,7 @@ private:
     ~SqliteIndexReader();
 public:
     std::vector<std::string> query(const std::string&);
+    std::map<std::string, time_t> getFiles(char depth);
 };
 
 #endif

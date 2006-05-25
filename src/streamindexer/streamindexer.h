@@ -36,8 +36,8 @@ public:
     StreamIndexer(IndexWriter *w);
     ~StreamIndexer();
     char indexFile(const char *filepath);
-    char indexFile(std::string& filepath);
-    char analyze(std::string &path, int64_t mtime,
+    char indexFile(const std::string& filepath);
+    char analyze(const std::string &path, int64_t mtime,
         jstreams::StreamBase<char> *input, uint depth);
 };
 }

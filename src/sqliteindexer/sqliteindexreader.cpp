@@ -158,3 +158,30 @@ SqliteIndexReader::query(const std::string& query) {
     manager->deref();
     return results;
 }
+map<string, time_t>
+SqliteIndexReader::getFiles(char depth) {
+    map<string, time_t> files;
+    manager->ref();
+    sqlite3_stmt* stmt;
+    int r = sqlite3_prepare(db, "select path, mtime from files where depth = ?",
+        0, &stmt, 0);
+    if (r != SQLITE_OK) {
+        printf("could not prepare query: %s\n", sqlite3_errmsg(db));
+        manager->deref();
+        return files;
+    }
+    sqlite3_bind_int(stmt, 1, depth);
+    r = sqlite3_step(stmt);
+    while (r == SQLITE_ROW) {
+        const char *path = (const char*)sqlite3_column_text(stmt, 0);
+        time_t mtime = sqlite3_column_int(stmt, 1);
+        files[path] = mtime;
+        r = sqlite3_step(stmt);
+    }
+    if (r != SQLITE_DONE) {
+        printf("error reading query results: %s\n", sqlite3_errmsg(db));
+    }
+    sqlite3_finalize(stmt);
+    manager->deref();
+    return files;
+}

@@ -42,7 +42,7 @@ StreamIndexer::indexFile(const char *filepath) {
     return indexFile(path);
 }
 char
-StreamIndexer::indexFile(std::string& filepath) {
+StreamIndexer::indexFile(const std::string& filepath) {
     struct stat s;
     stat(filepath.c_str(), &s);
     FileInputStream file(filepath.c_str());
@@ -80,13 +80,13 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
 }
 char
-StreamIndexer::analyze(std::string &path, int64_t mtime, InputStream *input,
-        uint depth) {
+StreamIndexer::analyze(const std::string &path, int64_t mtime,
+        InputStream *input, uint depth) {
     static int count = 1;
     if (++count % 1000 == 0) {
         printf("file #%i: %s\n", count, path.c_str());
     }
-    Indexable idx(path, mtime, writer);
+    Indexable idx(path, mtime, writer, depth);
     if (depth == 0 && idx.wasIndexed()) {
         return 0;
     }

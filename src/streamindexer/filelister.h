@@ -22,7 +22,7 @@ private:
 	std::vector<const char *> m_dirnames;
 	std::string m_path;
 	std::vector<int> m_pathSeparators;
-	bool (*m_callback)(const char *dirpath, const char *filename,
+	bool (*m_callback)(const std::string& dirpath, const char *filename,
         time_t mtime);
 
 	bool walk_directory(const char *dirname);
@@ -35,7 +35,7 @@ public:
 	/**
 	 * Specify the callback function that reports the files found.
          **/
-	void setCallbackFunction(bool (*callback)(const char *dirpath,
+	void setCallbackFunction(bool (*callback)(const std::string& dirpath,
 		const char *filename, time_t mtime)) {
 		m_callback = callback;
 	}

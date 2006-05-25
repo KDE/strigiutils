@@ -13,8 +13,8 @@ private:
 	SqliteIndexManager m_manager;
 	jstreams::StreamIndexer m_indexer;
 
-	static bool addFileCallback(const char *path, const char *filename,
-		time_t mtime);
+	static bool addFileCallback(const std::string& path,
+        const char *filename, time_t mtime);
 	static Indexer *workingIndexer;
 	void doFile(const std::string &filepath);
 public:
