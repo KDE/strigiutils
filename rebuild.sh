@@ -33,5 +33,6 @@ else
 	cd debug && \
 	CXXFLAGS="-Wall -O0 -g3" CPPFLAGS=-I$CLUCENESRCDIR \
 	LDFLAGS=-L$CLUCENESRCDIR ../configure --enable-debug=full && \
+	make && \
 	make check
 fi
