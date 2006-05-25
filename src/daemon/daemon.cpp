@@ -114,7 +114,7 @@ indexloop(void *i) {
     lister.setCallbackFunction(&addFileCallback);
     printf("going to index\n");
     lister.listFiles(homedir.c_str());
-    printf("%i real files left in the database\n", dbfiles.size()); 
+    printf("%i files to remove\n", dbfiles.size()); 
     printf("%i files to add or update\n", toindex.size()); 
 
     map<string,time_t>::iterator it = toindex.begin();

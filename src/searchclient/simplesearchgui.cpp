@@ -28,6 +28,16 @@ SimpleSearchGui::SimpleSearchGui() {
         this, SLOT(openItem(QListWidgetItem*)));
     itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
+
+    SocketClient client;
+    std::string socket = getenv("HOME");
+    socket += "/.kitten/socket";
+    client.setSocketName(socket.c_str());
+    map<string,string> s = client.getStatus();
+    map<string,string>::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        printf("%s\t%s\n", i->first.c_str(), i->second.c_str());
+    }
 }
 void
 SimpleSearchGui::query(const QString& item) {

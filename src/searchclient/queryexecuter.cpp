@@ -5,6 +5,8 @@ using namespace std;
 
 void
 QueryExecuter::run() {
+    // small delay to avoid querying incomplete queries
+    sleep(1);
     mutex.lock();
     QString q = querystring;
     mutex.unlock();

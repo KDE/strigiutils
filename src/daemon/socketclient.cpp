@@ -4,26 +4,11 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <assert.h>
+using namespace std;
 
 void
 SocketClient::setSocketName(const std::string& n) {
     socketpath = n;
-}
-const std::vector<std::string>&
-SocketClient::query(const std::string &query) {
-    response.clear();
-    request.clear();
-    request.push_back("query");
-    assert(query.find("\n") == std::string::npos);
-    request.push_back(query);
-    int sd = open();
-    if (sd < 0) {
-        printf("   %s\n", error.c_str());
-        return response;
-    }
-    sendRequest(sd);
-    readResponse(sd);
-    return response;
 }
 int
 SocketClient::open() {
@@ -104,4 +89,49 @@ SocketClient::sendRequest(int sd) {
     }
     r = send(sd, "\n", 1, MSG_NOSIGNAL);
     return r > 0;
+}
+std::vector<std::string>
+SocketClient::query(const std::string &query) {
+    response.clear();
+    request.clear();
+    request.push_back("query");
+    assert(query.find("\n") == std::string::npos);
+    request.push_back(query);
+    int sd = open();
+    if (sd < 0) {
+        printf("   %s\n", error.c_str());
+        response.push_back("error");
+        response.push_back(error);
+        return response;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    return response;
+}
+map<string, string>
+SocketClient::getStatus() {
+    map<string, string> status;
+    response.clear();
+    request.clear();
+    request.push_back("status");
+    int sd = open();
+    if (sd < 0) {
+        printf("   %s\n", error.c_str());
+        status["error"] = error;
+        return status;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    for (uint i=0; i<response.size(); ++i) {
+        string s = response[i];
+        uint p = s.find(":");
+        if (p == string::npos) {
+            printf("''%s''\n", s.c_str());
+            status.clear();
+            status["error"] = "Communication error.";
+            return status;
+        }
+        status[s.substr(0,i)] = s.substr(i+1);
+    }
+    return status;
 }

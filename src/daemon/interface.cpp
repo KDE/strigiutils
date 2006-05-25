@@ -10,3 +10,9 @@ Interface::query(const string& query) {
     x.push_back("impl");
     return manager->getIndexReader()->query(query);
 }
+map<string, string>
+Interface::getStatus() {
+    map<string,string> status;
+    status["hmm"]="supergeil";
+    return status;
+}

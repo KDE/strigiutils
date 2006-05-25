@@ -16,7 +16,8 @@ private:
 public:
     const std::string& getError() const { return error; }
     void setSocketName(const std::string& socketname);
-    const std::vector<std::string>& query(const std::string &query);
+    std::vector<std::string> query(const std::string &query);
+    std::map<std::string, std::string> getStatus();
 };
 
 #endif

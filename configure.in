@@ -33,16 +33,19 @@ PKG_CHECK_MODULES(QT, QtCore >= $QT_REQ_VERSION QtGui >= $QT_REQ_VERSION
 dnl of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
 if test "$have_qt" = "yes"; then
     QT_INCLUDE_DIR=$($PKG_CONFIG --variable=includedir Qt)
+    QT_EXEC_PREFIX=$($PKG_CONFIG --variable=exec_prefix Qt)
     EXTRA_QT_INCLUDE_DIR="$QT_INCLUDE_DIR/Qt"
     AC_CHECK_FILE([$QT_INCLUDE_DIR/QWidget],
     AC_MSG_NOTICE([No extra QT_INCLUDE_DIR needed]),
     AC_CHECK_FILE([$EXTRA_QT_INCLUDE_DIR/QWidget],
     QT_CXXFLAGS="$QT_CXXFLAGS -I$EXTRA_QT_INCLUDE_DIR",
-    AC_MSG_WARN([QWidget not found])))
+        AC_MSG_WARN([QWidget not found])))
+    MOC=`$PKG_CONFIG --variable=exec_prefix QtCore`
+    MOC=${MOC}/bin/moc
     AC_MSG_NOTICE([Set QT_CXXFLAGS... $QT_CXXFLAGS])
     AC_MSG_NOTICE([Set QT_LIBS... $QT_LIBS])
-    AC_CHECK_PROG(MOC, [moc], [moc])
-    AC_CHECK_PROG(LRELEASE, [lrelease], [lrelease])
+    AC_MSG_NOTICE([Set MOC... $MOC])
+    AC_SUBST(MOC)
     AC_SUBST(QT_CXXFLAGS)
     AC_SUBST(QT_LIBS)
 fi

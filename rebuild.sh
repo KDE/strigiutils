@@ -1,8 +1,7 @@
 #! /bin/sh
 
 # directory with clucene binaries and header
-CLUCENESRCDIR=/tmp/clucene/clucene/src
-#CLUCENESRCDIR=/
+CLUCENESRCDIR=/tmp/clucenecvs2/trunk/src
 
 rm -rf autom4te.cache configure COPYING depcomp INSTALL install-sh Makefile.in \
 	missing aclocal.m4 debug ltmain.sh config.guess config.sub config.log \

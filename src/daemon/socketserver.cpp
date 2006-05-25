@@ -120,6 +120,15 @@ SocketServer::handleRequest() {
         response = interface->query(request[1]);
         return;
     }
+    if (request.size() == 1 && request[0] == "getStatus") {
+        map<string, string> status = interface->getStatus();
+        map<string,string>::const_iterator i;
+        response.clear();
+        for (i = status.begin(); i != status.end(); ++i) {
+            response.push_back(i->first+":"+i->second);
+        }
+        return;
+    }
     printf("size %i\n", request.size());
     response.push_back("error");
     response.push_back("no valid request");

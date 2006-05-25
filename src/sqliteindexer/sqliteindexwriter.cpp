@@ -13,37 +13,10 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     if (r != SQLITE_OK) {
         printf("could not open db\n");
         db = 0;
-        manager->deref();
         return;
     }
-    // speed up by being unsafe and keeping temp tables in memory
-    r = sqlite3_exec(db, "PRAGMA synchronous = OFF;"
-        "PRAGMA temp_store = MEMORY;", 0, 0, 0);
-    if (r != SQLITE_OK) {
-        printf("could not speed up database\n");
-    }
-    // create the tables required
-    const char* sql ="create table files (fileid integer primary key, "
-        "path text, mtime integer, size integer, depth integer,"
-        "unique (path));"
-        "create index files_mtime on files(mtime);"
-        "create index files_size on files(size);"
-        "create table idx (fileid integer, name text, value, "
-        "unique (fileid, name, value) on conflict ignore);"
-        "create index idx_fileid on idx(fileid);"
-        "create index idx_name on idx(name);"
-        "create index idx_value on idx(value);"
-        "create table words (wordid integer primary key, "
-        "    word, count, unique(word));"
-        "create table filewords (fileid integer, wordid integer, count,"
-        "unique (fileid, wordid));"
-        "create index filewords_wordid on filewords(wordid);"
-;
-    r = sqlite3_exec(db, sql, 0, 0, 0);
-    if (r != SQLITE_OK) {
-        printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
-    }
-    // prepare the insert statement
+    // prepare the sql statements
+    const char* sql;
     sql = "insert or replace into idx (fileid, name, value) values(?, ?, ?)";
     prepareStmt(insertvaluestmt, sql, strlen(sql));
     sql = "select fileid, mtime from files where path = ?;";
@@ -52,7 +25,6 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     prepareStmt(updatefilestmt, sql, strlen(sql));
     sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
     prepareStmt(insertfilestmt, sql, strlen(sql));
-    manager->deref();
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
     finalizeStmt(insertvaluestmt);
@@ -62,7 +34,7 @@ SqliteIndexWriter::~SqliteIndexWriter() {
     if (db) {
         int r = sqlite3_close(db);
         if (r != SQLITE_OK) {
-            printf("could not create table\n");
+            printf("could not close the database\n");
         }
     }
 }
