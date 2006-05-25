@@ -13,6 +13,7 @@ Interface::query(const string& query) {
 map<string, string>
 Interface::getStatus() {
     map<string,string> status;
-    status["hmm"]="supergeil";
+    status["status"]="running";
+    status["jaja"]="wow";
     return status;
 }

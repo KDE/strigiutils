@@ -7,13 +7,18 @@
 class QLineEdit;
 class QListWidget;
 class QListWidgetItem;
+class QStackedWidget;
+class QLabel;
 class SimpleSearchGui : public QWidget {
 Q_OBJECT
 private:
+    QStackedWidget* mainview;
+    QLabel* statusview;
     QLineEdit* queryfield;
     QListWidget* itemview;
     QueryExecuter executer;
 
+    void showStatus();
 private slots:
     void query(const QString&);
     void handleQueryResult(const QString&);

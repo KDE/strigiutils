@@ -3,6 +3,8 @@
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QStackedWidget>
+#include <QtGui/QLabel>
 #include <QtCore/QProcess>
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
@@ -13,10 +15,16 @@
 using namespace std;
 
 SimpleSearchGui::SimpleSearchGui() {
+    mainview = new QStackedWidget();
     itemview = new QListWidget();
+    statusview = new QLabel();
+    statusview->setAlignment(Qt::AlignTop);
+    statusview->setMargin(25);
+    mainview->addWidget(itemview);
+    mainview->addWidget(statusview);
     queryfield = new QLineEdit();
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(itemview);
+    layout->addWidget(mainview);
     layout->addWidget(queryfield);
     setLayout(layout);
 
@@ -29,22 +37,38 @@ SimpleSearchGui::SimpleSearchGui() {
     itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
+    showStatus();
+}
+void
+SimpleSearchGui::query(const QString& item) {
+    QString query = item.trimmed();
+    if (query.length() == 0) {
+        showStatus();
+    } else {
+        mainview->setCurrentIndex(0);
+        itemview->setEnabled(false);
+        itemview->clear();
+        itemview->addItem("searching...");
+        executer.query(query);
+    }
+}
+void
+SimpleSearchGui::showStatus() {
     SocketClient client;
     std::string socket = getenv("HOME");
     socket += "/.kitten/socket";
     client.setSocketName(socket.c_str());
     map<string,string> s = client.getStatus();
     map<string,string>::const_iterator i;
+    QString text;
     for (i = s.begin(); i != s.end(); ++i) {
-        printf("%s\t%s\n", i->first.c_str(), i->second.c_str());
+        text += i->first.c_str();
+        text += ":\t";
+        text += i->second.c_str();
+        text += "\n";
     }
-}
-void
-SimpleSearchGui::query(const QString& item) {
-    itemview->setEnabled(false);
-    itemview->clear();
-    itemview->addItem("searching...");
-    executer.query(item.trimmed());
+    statusview->setText(text);
+    mainview->setCurrentIndex(1);
 }
 void
 SimpleSearchGui::handleQueryResult(const QString& item) {

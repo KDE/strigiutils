@@ -113,7 +113,7 @@ SocketClient::getStatus() {
     map<string, string> status;
     response.clear();
     request.clear();
-    request.push_back("status");
+    request.push_back("getStatus");
     int sd = open();
     if (sd < 0) {
         printf("   %s\n", error.c_str());
@@ -131,7 +131,7 @@ SocketClient::getStatus() {
             status["error"] = "Communication error.";
             return status;
         }
-        status[s.substr(0,i)] = s.substr(i+1);
+        status[s.substr(0,p)] = s.substr(p+1);
     }
     return status;
 }
