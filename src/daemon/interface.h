@@ -12,12 +12,14 @@
 namespace jstreams {
     class IndexManager;
 }
-
+class IndexScheduler;
 class Interface : public ClientInterface {
 private:
-    jstreams::IndexManager* manager;
+    jstreams::IndexManager& manager;
+    IndexScheduler& scheduler;
 public:
-    Interface(jstreams::IndexManager* m) :manager(m) {}
+    Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),
+        scheduler(s) {}
     std::vector<std::string> query(const std::string& query);
     std::map<std::string, std::string> getStatus();
 };

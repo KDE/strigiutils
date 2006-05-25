@@ -125,7 +125,7 @@ SqliteIndexReader::query(const std::string& query) {
     if (terms.size() == 0 && pathfilter.length() == 0) return results;
 
     string sql = createQuery(terms.size(), pathfilter.length() > 0);
-    printf("%s\n", sql.c_str());
+    //printf("%s\n", sql.c_str());
 
     manager->ref();
     sqlite3_stmt* stmt;
@@ -183,4 +183,25 @@ SqliteIndexReader::getFiles(char depth) {
     sqlite3_finalize(stmt);
     manager->deref();
     return files;
+}
+int
+SqliteIndexReader::countDocuments() {
+    manager->ref();
+    sqlite3_stmt* stmt;
+    int r = sqlite3_prepare(db, "select count(*) from files;",
+        0, &stmt, 0);
+    if (r != SQLITE_OK) {
+        printf("could not prepare count query: %s\n", sqlite3_errmsg(db));
+        manager->deref();
+        return -1;
+    }
+    r = sqlite3_step(stmt);
+    int count = sqlite3_column_int(stmt, 0);
+    r = sqlite3_step(stmt);
+    if (r != SQLITE_DONE) {
+        printf("error reading count query results: %s\n", sqlite3_errmsg(db));
+    }
+    sqlite3_finalize(stmt);
+    manager->deref();
+    return count;
 }

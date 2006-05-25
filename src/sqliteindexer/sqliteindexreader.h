@@ -17,6 +17,7 @@ private:
 public:
     std::vector<std::string> query(const std::string&);
     std::map<std::string, time_t> getFiles(char depth);
+    int countDocuments();
 };
 
 #endif

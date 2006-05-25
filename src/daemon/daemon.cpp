@@ -1,42 +1,33 @@
 #include "socketserver.h"
 #include "interface.h"
 #include "sqliteindexmanager.h"
-#include "sqliteindexreader.h"
-#include "filelister.h"
-#include "streamindexer.h"
-#include <pthread.h>
+#include "indexscheduler.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
-#include <string>
-#include <list>
 #include <cstdio>
 #include <cerrno>
-
-// linux specific includes for setting the indexer priority to low
-#include <sched.h>
-#include <sys/resource.h>
-#ifdef HAVE_LINUXIOPRIO
-#include <linux/ioprio.h>
-#endif
 
 using namespace jstreams;
 using namespace std;
 
-pthread_mutex_t stacklock = PTHREAD_MUTEX_INITIALIZER;
-std::list<std::string> filestack;
-bool daemon_run = true;
+IndexScheduler scheduler;
 
-/* function prototypes and global variables */
-void *do_chld(void *);
-
-
-int interruptcount = 0;
 void
 quit_daemon(int) {
-    if (++interruptcount >= 3) exit(1);
-    daemon_run = false;
+    static int interruptcount = 0;
+    switch (++interruptcount) {
+    case 1:
+        scheduler.stop();
+        break;
+    case 2:
+        scheduler.terminate();
+        break;
+    case 3:
+    default:
+        exit(1);
+    }
 }
 
 struct sigaction quitaction;
@@ -47,7 +38,7 @@ set_quit_on_signal(int signum) {
     sigaction(signum, &quitaction, 0);
 }
 
-void
+/*void
 shortsleep(long nanoseconds) {
     // set sleep time
     struct timespec sleeptime;
@@ -55,78 +46,6 @@ shortsleep(long nanoseconds) {
     sleeptime.tv_nsec = nanoseconds;
     nanosleep(&sleeptime, 0);
 }
-map<string, time_t> dbfiles;
-map<string, time_t> toindex;
-bool
-addFileCallback(const string& path, const char *filename, time_t mtime) {
-    if (!daemon_run) return false;
-    // only read files that do not start with '.'
-    if (path.find("/.") != string::npos || *filename == '.') return true;
-
-    std::string filepath(path+filename);
-
-    map<string, time_t>::iterator i = dbfiles.find(filepath);
-    if (i == dbfiles.end()) {
-        toindex[filepath] = mtime;
-    } else {
-        if (i->second != mtime) {
-            // signal that file must be updated
-            toindex[filepath] = -1;
-        }
-        dbfiles.erase(i);
-    }
-    return true;
-}
-string homedir;
-#include <errno.h>
-void *
-indexloop(void *i) {
-    // give this thread job batch job priority
-    struct sched_param param;
-    memset(&param, 0, sizeof(param));
-    param.sched_priority = 0;
-#ifndef SCHED_BATCH
-#define SCHED_BATCH 3
-#endif
-    int r = sched_setscheduler(0, SCHED_BATCH, &param);
-    if (r != 0) {
-        // fall back to renice if SCHED_BATCH is unknown
-        r = setpriority(PRIO_PROCESS, 0, 20);
-        if (r==-1) printf("error setting priority: %s\n", strerror(errno));
-        //nice(20);
-    }
-#ifdef HAVE_LINUXIOPRIO
-    sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
-#endif
-
-    IndexManager* index = (IndexManager*)i;
-
-    IndexWriter* writer = index->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(writer);
-
-    IndexReader* reader = index->getIndexReader();
-
-    dbfiles = reader->getFiles(0);
-    printf("%i real files in the database\n", dbfiles.size()); 
-
-    // first loop through all files
-    FileLister lister;
-    lister.setCallbackFunction(&addFileCallback);
-    printf("going to index\n");
-    lister.listFiles(homedir.c_str());
-    printf("%i files to remove\n", dbfiles.size()); 
-    printf("%i files to add or update\n", toindex.size()); 
-
-    map<string,time_t>::iterator it = toindex.begin();
-    while (daemon_run && it != toindex.end()) {
-        if (it->second == -1) {
-        //    writer->erase(it->first);
-        }
-        streamindexer->indexFile(it->first);
-        toindex.erase(it++);
-    }
-
-/*
     while (daemon_run) {
         shortsleep(100000000);
         pthread_mutex_lock(&stacklock);
@@ -139,9 +58,8 @@ indexloop(void *i) {
         }
         pthread_mutex_unlock(&stacklock);
     }*/
-    printf("stopping indexer\n");
-    return (void*)0;
-}
+
+
 /**
  * Initialize a directory for storing the index data and the socket.
  * Make sure it is well protected from peeping eyes.
@@ -172,10 +90,11 @@ main(int argc, char** argv) {
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
 
-    homedir = getenv("HOME");
+    string homedir = getenv("HOME");
     string daemondir = homedir+"/.kitten";
     string dbfile = daemondir+"/sqlite.db";
     string socketpath = daemondir+"/socket";
+    string dirtoindex = homedir;
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -184,23 +103,19 @@ main(int argc, char** argv) {
 
     // initialize the storage manager, for now we only use sqlite
     SqliteIndexManager* index = new SqliteIndexManager(dbfile.c_str());
+    scheduler.setDirToIndex(dirtoindex);
+    scheduler.setIndexManager(index);
 
     // start the indexer thread
-    pthread_t indexthread;
-    int r = pthread_create(&indexthread, NULL, indexloop, index);
-    if (r < 0) {
-        printf("cannot create thread\n");
-        return 1;
-    }
+    scheduler.start();
 
     // listen for requests
-    Interface interface(index);
+    Interface interface(*index, scheduler);
     SocketServer server(&interface);
     server.setSocketName(socketpath.c_str());
     server.start();
 
-    // wait for the indexer to finish
-    pthread_join(indexthread, 0);
+    scheduler.stop();
 
     // close the indexmanager
     delete index;

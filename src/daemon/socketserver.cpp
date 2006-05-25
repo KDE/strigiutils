@@ -43,7 +43,6 @@ SocketServer::listen() {
     int n = 0;
     while (n++ < 10000) {
         addlen = sizeof(work);
-        printf("waiting for a new connection\n");
         newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
         if (newSd < 0) {
             perror("cannot accept connection ");
