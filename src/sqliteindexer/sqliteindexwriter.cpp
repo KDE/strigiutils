@@ -222,12 +222,6 @@ SqliteIndexWriter::deleteEntry(const string& path) {
     manager->ref();
     int r = sqlite3_bind_text(getfilestmt, 1, path.c_str(), 0, SQLITE_STATIC);
     r = sqlite3_step(getfilestmt);
-    if (r != SQLITE_ROW && r != SQLITE_DONE) {
-        sqlite3_reset(getfilestmt);
-        printf("could not look for a document by path\n");
-        manager->deref();
-        return;
-    }
     if (r != SQLITE_ROW) {
         sqlite3_reset(getfilestmt);
         manager->deref();
@@ -245,4 +239,5 @@ SqliteIndexWriter::deleteEntry(const string& path) {
         printf("could not delete file %s: %s\n", path.c_str(),
             sqlite3_errmsg(db));
     }
+    manager->deref();
 }
