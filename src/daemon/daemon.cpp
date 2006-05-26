@@ -1,6 +1,10 @@
 #include "socketserver.h"
 #include "interface.h"
+#ifdef HAVE_CLUCENELIB
+#include "cluceneindexmanager.h"
+#else
 #include "sqliteindexmanager.h"
+#endif
 #include "indexscheduler.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -92,6 +96,7 @@ main(int argc, char** argv) {
 
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.kitten";
+    string lucenedir = daemondir+"/lucene";
     string dbfile = daemondir+"/sqlite.db";
     string socketpath = daemondir+"/socket";
     string dirtoindex = homedir;
@@ -100,11 +105,20 @@ main(int argc, char** argv) {
     if (!initializeDir(daemondir)) {
         exit(1);
     }
+    if (!initializeDir(lucenedir)) {
+        exit(1);
+    }
 
+    IndexManager* index;
+#ifdef HAVE_CLUCENELIB
+    index = new CLuceneIndexManager(lucenedir);
+#else
     // initialize the storage manager, for now we only use sqlite
-    SqliteIndexManager* index = new SqliteIndexManager(dbfile.c_str());
+    index = new SqliteIndexManager(dbfile.c_str());
+#endif
     scheduler.setDirToIndex(dirtoindex);
     scheduler.setIndexManager(index);
+
 
     // start the indexer thread
     scheduler.start();

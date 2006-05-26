@@ -16,18 +16,17 @@ private:
     pthread_mutex_t dblock;
     static pthread_mutex_t lock;
     std::string dbfile;
-    std::map<pthread_t, CLuceneIndexReader*> readers;
-    std::map<pthread_t, CLuceneIndexWriter*> writers;
+    CLuceneIndexReader* reader;
+    CLuceneIndexWriter* writer;
 public:
-    CLuceneIndexManager(const char* path);
+    CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
     const char* getDBFile() const { return dbfile.c_str(); }
 
-    void ref();
-    void deref();
+    void ref() {}
+    void deref() {}
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
-    static std::string escapeSqlValue(const std::string& value);
 };
 
 #endif
