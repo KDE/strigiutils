@@ -34,8 +34,9 @@ protected:
     void setIndexed(Indexable* idx, bool indexed);
 public:
     virtual ~IndexWriter() {}
-    virtual void commit() = 0;
+    virtual void commit() { return; }
     virtual void deleteEntry(const std::string& entry) = 0;
+    virtual int itemsInCache() { return 0; };
 };
 
 class Indexable {

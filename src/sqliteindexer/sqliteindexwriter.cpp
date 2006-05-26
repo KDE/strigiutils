@@ -15,8 +15,6 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         db = 0;
         return;
     }
-    temprows = 0;
-    maxtemprows = 100000;
 
     // create temporary tables
     const char* sql = "PRAGMA synchronous = OFF;"
@@ -31,6 +29,7 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     if (r != SQLITE_OK) {
         printf("could not init writer: %i %s\n", r, sqlite3_errmsg(db));
     }
+    temprows = 0;
 
     // prepare the sql statements
     sql = "insert into tempidx (fileid, name, value) values(?, ?, ?)";
@@ -102,6 +101,7 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
             
         return;
     }
+    manager->ref();
     sqlite3_bind_int64(insertvaluestmt, 1, idx->getId());
     sqlite3_bind_text(insertvaluestmt, 2, fieldname.c_str(),
         fieldname.length(), SQLITE_STATIC);
@@ -116,6 +116,7 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         printf("could not reset statement: %i %s\n", r, sqlite3_errmsg(db));
     }
     temprows++;
+    manager->deref();
 }
 void
 SqliteIndexWriter::setField(const Indexable*, const std::string &fieldname,
@@ -153,10 +154,10 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         = content.find(idx->getId());
 
     if (m == content.end()) {
-        if (temprows > maxtemprows) commit();
         return;
     }
 
+    manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db,
         "insert into tempfilewords (fileid, word, count) values(?, ?,?);",
@@ -186,7 +187,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         temprows++;
     }
     sqlite3_finalize(stmt);
-    if (temprows > maxtemprows) commit();
+    manager->deref();
     content.erase(m->first);
 }
 void
@@ -212,12 +213,11 @@ SqliteIndexWriter::commit() {
         printf("could not store new data: %s\n", sqlite3_errmsg(db));
     }
     manager->deref();
-    printf("end commit\n");
+    printf("end commit of %i rows\n", temprows);
     temprows = 0;
 }
 void
 SqliteIndexWriter::deleteEntry(const string& path) {
-    if (temprows) commit();
     int64_t id = -1;
     manager->ref();
     int r = sqlite3_bind_text(getfilestmt, 1, path.c_str(), path.length(),

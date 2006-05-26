@@ -112,12 +112,13 @@ IndexScheduler::run(void*) {
 
     it = toindex.begin();
     while (keeprunning && it != toindex.end()) {
-        if (it->second == -1) {
-        //    writer->erase(it->first);
-        }
         streamindexer->indexFile(it->first);
+        if (writer->itemsInCache() > 10000) {
+            writer->commit();
+        }
         toindex.erase(it++);
     }
+    writer->commit();
 
 /*
     while (daemon_run) {

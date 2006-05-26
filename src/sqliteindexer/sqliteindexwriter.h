@@ -17,9 +17,8 @@ private:
         *insertfilestmt;
     const std::string indexpath;
     std::map<int64_t, std::map<std::string, int> > content;
-    int temprows;
-    int maxtemprows;
 
+    int temprows;
     void prepareStmt(sqlite3_stmt*& stmt, const char* sql,
         int sqllength);
     void finalizeStmt(sqlite3_stmt*& stmt);
@@ -37,6 +36,7 @@ protected:
 public:
     void commit();
     void deleteEntry(const std::string& path);
+    int itemsInCache() { return temprows; };
 };
 
 #endif
