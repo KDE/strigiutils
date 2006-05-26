@@ -220,9 +220,11 @@ SqliteIndexWriter::deleteEntry(const string& path) {
     if (temprows) commit();
     int64_t id = -1;
     manager->ref();
-    int r = sqlite3_bind_text(getfilestmt, 1, path.c_str(), 0, SQLITE_STATIC);
+    int r = sqlite3_bind_text(getfilestmt, 1, path.c_str(), path.length(),
+        SQLITE_STATIC);
     r = sqlite3_step(getfilestmt);
     if (r != SQLITE_ROW) {
+        printf("could not find file %s:\n", path.c_str());
         sqlite3_reset(getfilestmt);
         manager->deref();
         return;
