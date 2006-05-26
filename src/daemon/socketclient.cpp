@@ -106,6 +106,7 @@ SocketClient::query(const std::string &query) {
     }
     sendRequest(sd);
     readResponse(sd);
+    close(sd);
     return response;
 }
 map<string, string>
@@ -122,6 +123,7 @@ SocketClient::getStatus() {
     }
     sendRequest(sd);
     readResponse(sd);
+    close(sd);
     for (uint i=0; i<response.size(); ++i) {
         string s = response[i];
         uint p = s.find(":");
