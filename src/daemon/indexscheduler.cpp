@@ -1,6 +1,7 @@
 #include "indexscheduler.h"
 #include "indexmanager.h"
 #include "indexreader.h"
+#include "indexwriter.h"
 #include "filelister.h"
 #include "streamindexer.h"
 #include <cerrno>
@@ -51,13 +52,9 @@ IndexScheduler::addFileCallback(const string& path, const char *filename, time_t
     std::string filepath(path+filename);
 
     map<string, time_t>::iterator i = sched->dbfiles.find(filepath);
-    if (i == sched->dbfiles.end()) {
+    if (i == sched->dbfiles.end() || i->second != mtime) {
         sched->toindex[filepath] = mtime;
     } else {
-        if (i->second != mtime) {
-            // signal that file must be updated
-            sched->toindex[filepath] = -1;
-        }
         sched->dbfiles.erase(i);
     }
     return true;
@@ -107,7 +104,13 @@ IndexScheduler::run(void*) {
     printf("%i files to remove\n", dbfiles.size()); 
     printf("%i files to add or update\n", toindex.size()); 
 
-    map<string,time_t>::iterator it = toindex.begin();
+    map<string,time_t>::iterator it = dbfiles.begin();
+    while (keeprunning && it != dbfiles.end()) {
+        writer->deleteEntry(it->first);
+        dbfiles.erase(it++);
+    }
+
+    it = toindex.begin();
     while (keeprunning && it != toindex.end()) {
         if (it->second == -1) {
         //    writer->erase(it->first);

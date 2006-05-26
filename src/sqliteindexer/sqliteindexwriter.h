@@ -17,6 +17,8 @@ private:
         *insertfilestmt;
     const std::string indexpath;
     std::map<int64_t, std::map<std::string, int> > content;
+    int temprows;
+    int maxtemprows;
 
     void prepareStmt(sqlite3_stmt*& stmt, const char* sql,
         int sqllength);
@@ -32,6 +34,9 @@ protected:
         int64_t value);
     SqliteIndexWriter(SqliteIndexManager*);
     ~SqliteIndexWriter();
+public:
+    void commit();
+    void deleteEntry(const std::string& path);
 };
 
 #endif

@@ -20,6 +20,7 @@ SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     }
     // speed up by being unsafe and keeping temp tables in memory
     r = sqlite3_exec(db, "PRAGMA synchronous = OFF;"
+        "PRAGMA auto_vacuum = 1;"
         "PRAGMA temp_store = MEMORY;", 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not speed up database\n");

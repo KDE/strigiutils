@@ -47,7 +47,7 @@ StreamIndexer::indexFile(const std::string& filepath) {
     stat(filepath.c_str(), &s);
     FileInputStream file(filepath.c_str());
     // ensure a decent buffer size
-    file.mark(1024);
+    file.mark(65530);
     return analyze(filepath, s.st_mtime, &file, 0);
 }
 void

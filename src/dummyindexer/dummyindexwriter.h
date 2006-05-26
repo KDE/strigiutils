@@ -16,6 +16,8 @@ protected:
 public:
     DummyIndexWriter() {}
     ~DummyIndexWriter() {}
+    void commit() {}
+    void deleteEntry(const std::string& entry) {};
 };
 
 #endif
