@@ -87,9 +87,6 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
         printf("file #%i: %s\n", count, path.c_str());
     }
     Indexable idx(path, mtime, writer, depth);
-    if (depth == 0 && idx.wasIndexed()) {
-        return 0;
-    }
 
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;

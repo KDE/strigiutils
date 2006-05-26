@@ -1,7 +1,7 @@
 
 bin_PROGRAMS = luceneindexer
 luceneindexer_SOURCES = luceneindexer.cpp indexer.cpp \
-	cluceneindexwriter.cpp
+	cluceneindexwriter.cpp cluceneindexreader.cpp cluceneindexmanager.cpp
 
 luceneindexer_LDFLAGS = 
 luceneindexer_LDADD = $(top_builddir)/src/streams/libstreams.la -lclucene \

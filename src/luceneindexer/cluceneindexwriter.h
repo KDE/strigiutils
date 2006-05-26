@@ -28,6 +28,8 @@ protected:
 public:
     CLuceneIndexWriter(const char* path);
     ~CLuceneIndexWriter();
+    void commit() {};
+    void deleteEntry(const std::string& path) {}
 };
 
 #endif

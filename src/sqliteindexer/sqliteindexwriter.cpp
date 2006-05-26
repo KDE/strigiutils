@@ -22,9 +22,11 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         "PRAGMA temp_store = MEMORY;"
         "create temp table tempidx (fileid integer, name text, value);"
         "create temp table tempfilewords (fileid integer, word text, "
-            "count integer); begin immediate transaction;"
+            "count integer); "
         "create index tempfilewords_word on tempfilewords(word);"
-        "create index tempfilewords_fileid on tempfilewords(fileid);";
+        "create index tempfilewords_fileid on tempfilewords(fileid);"
+        // "begin immediate transaction;"
+        ;
     r = sqlite3_exec(db, sql, 0,0,0);
     if (r != SQLITE_OK) {
         printf("could not init writer: %i %s\n", r, sqlite3_errmsg(db));
@@ -131,7 +133,6 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
 
     manager->ref();
     int64_t id = -1;
-    setIndexed(idx, false);
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
     sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
@@ -205,8 +206,9 @@ SqliteIndexWriter::commit() {
         "replace into idx select * from tempidx;"
         "delete from tempidx;"
         "delete from tempfilewords;"
-        "commit;"
-        "begin immediate transaction;";
+        //"commit;"
+        //"begin immediate transaction;"
+        ;
     manager->ref();
     int r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {

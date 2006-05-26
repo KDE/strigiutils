@@ -31,7 +31,6 @@ protected:
     virtual void setField(const Indexable*, const std::string &fieldname,
         int64_t value) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
-    void setIndexed(Indexable* idx, bool indexed);
 public:
     virtual ~IndexWriter() {}
     virtual void commit() { return; }
@@ -47,11 +46,9 @@ private:
     const std::string& name;
     IndexWriter* writer;
     char depth;
-    bool wasindexed;
 public:
     Indexable(const std::string& n, int64_t mt, IndexWriter* w, char d)
             :mtime(mt), name(n), writer(w), depth(d) {
-        wasindexed = true; // don't index per default
         w->startIndexable(this);
     }
     ~Indexable() { writer->finishIndexable(this); }
@@ -67,13 +64,9 @@ public:
     int64_t getMTime() const { return mtime; }
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
-    bool wasIndexed() const { return wasindexed; }
     char getDepth() const { return depth; }
 };
-inline void
-IndexWriter::setIndexed(Indexable* idx, bool indexed) {
-    idx->wasindexed = indexed;
-}
+
 
 }
 

@@ -1,6 +1,8 @@
 #include "cluceneindexwriter.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include "stringreader.h"
+#include "inputstreamreader.h"
 #include <assert.h>
 
 using namespace std;
@@ -95,12 +97,10 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         = docs.find(idx);
     if (c != content.end()) {
 #if defined(_UCS2)
-        // this is wholy unsatisfactory
-        int s = c->second.length()+1;
-        TCHAR* fv = new TCHAR[s];
-        STRCPY_AtoT(fv, c->second.c_str(), s);
-        i->second.add( *Field::Keyword(L"content", fv) );
-        delete fv;
+        StringReader<char> sr(c->second.c_str(), c->second.length(), false);
+        InputStreamReader streamreader(&sr);
+//        Reader* reader = new Reader(&streamreader, false);
+//        i->second.add( *Field::Text(L"content", reader) );
 #else
         i->second.add(*Field::Keyword("content", c->second.c_str()));
 #endif
