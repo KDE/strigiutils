@@ -1,8 +1,21 @@
+Kitten
+
+For my personal use I've written the jstreams classes that allow one to easily read nested files. These have proven very fast and have been included in the clucene c++ search engine. These classes would also be a cool extension to the kio plugins for allowing the user to browse e.g. files in a zip file that is stored in an email attachment. Another use would be to write a crawler that can gather information from all files in the filesystem even if they are hidden in emails or archives. I intended to add this feature to Kat, but because of the slowdown in the Kat project the latest Kat development version is not complete and does not build.
+
+So I developed a small daemon that can index information using the new crawler. Now i've reached a point that the crawler is very stable and fast. How fast exactly depends on you system. It comes complete with a simple gui to controll the daemon and to search. I've named the thing Kitten, because I hope it grows into a Kat.
+
+Here are the main features of Kitten:
+- very fast crawling
+- very small memory footprint
+- no hammering of the system
+- pluggable backend, currently sqlite3, but clucene is almost finished too
+- communication between daemon and search program over an abstract interface, this is currently  a simple socket but implementation of dbus is a possibility. There's a small perl program in the code as an example of how to query. This is so easy that any KDE app could implement this.
+- simple interface for implementing plugins for extracting information. we'll try to reuse the kat plugins, although native plugins will have a large speed advantage
+- calculation of sha1 for every file crawled (allows fast finding of duplicates)
+
+
 How to obtain and build ArchiveReader from SVN?
 -----------------------------------------------
-
-Make sure you have installed unsermake according the the instructions here:
-http://wiki.kde.org/tiki-index.php?page=unsermake
 
 Execute these commands:
 
