@@ -15,7 +15,7 @@ pthread_mutex_t IndexScheduler::initlock = PTHREAD_MUTEX_INITIALIZER;
 
 IndexScheduler::IndexScheduler() {
     sched = this;
-    keeprunning = true;
+    state = Idling;
 }
 IndexScheduler::~IndexScheduler() {
 }
@@ -44,8 +44,9 @@ indexschedulerstart(void *d) {
     return 0;
 }
 bool
-IndexScheduler::addFileCallback(const string& path, const char *filename, time_t mtime) {
-    if (!sched->keeprunning) return false;
+IndexScheduler::addFileCallback(const string& path, const char *filename,
+        time_t mtime) {
+    if (sched->state != Indexing) return false;
     // only read files that do not start with '.'
     if (path.find("/.") != string::npos || *filename == '.') return true;
 
@@ -71,7 +72,7 @@ IndexScheduler::start() {
 }
 void
 IndexScheduler::stop() {
-    keeprunning = false;
+    state = Stopping;
     if (thread) {
         // wait for the indexer to finish
         pthread_join(thread, 0);
@@ -82,12 +83,39 @@ void
 IndexScheduler::terminate() {
     // TODO
 }
+std::string
+IndexScheduler::getState() {
+    if (state == Idling) return "idling";
+    if (state == Indexing) return "indexing";
+    return "stopping";
+}
 int
 IndexScheduler::getQueueSize() {
     return toindex.size();
 }
+void
+shortsleep(long nanoseconds) {
+    // set sleep time
+    struct timespec sleeptime;
+    sleeptime.tv_sec = 0;
+    sleeptime.tv_nsec = nanoseconds;
+    nanosleep(&sleeptime, 0);
+}
 void *
 IndexScheduler::run(void*) {
+    while (state != Stopping) {
+        shortsleep(100000000);
+        if (state == Indexing) {
+            index();
+            if (state == Indexing) {
+                state = Idling;
+            }
+        }
+    }
+    return 0;
+}
+void
+IndexScheduler::index() {
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
 
@@ -96,22 +124,24 @@ IndexScheduler::run(void*) {
     dbfiles = reader->getFiles(0);
     printf("%i real files in the database\n", dbfiles.size()); 
 
-    // first loop through all files
-    FileLister lister;
-    lister.setCallbackFunction(&addFileCallback);
-    printf("going to index\n");
-    lister.listFiles(dirtoindex.c_str());
-    printf("%i files to remove\n", dbfiles.size()); 
-    printf("%i files to add or update\n", toindex.size()); 
+    if (dbfiles.size() == 0 && toindex.size() == 0) {
+        // first loop through all files
+        FileLister lister;
+        lister.setCallbackFunction(&addFileCallback);
+        printf("going to index\n");
+        lister.listFiles(dirtoindex.c_str());
+        printf("%i files to remove\n", dbfiles.size()); 
+        printf("%i files to add or update\n", toindex.size());
+    }
 
     map<string,time_t>::iterator it = dbfiles.begin();
-    while (keeprunning && it != dbfiles.end()) {
+    while (state == Indexing && it != dbfiles.end()) {
         writer->deleteEntry(it->first);
         dbfiles.erase(it++);
     }
 
     it = toindex.begin();
-    while (keeprunning && it != toindex.end()) {
+    while (state == Indexing && it != toindex.end()) {
         streamindexer->indexFile(it->first);
         if (writer->itemsInCache() > 10000) {
             writer->commit();
@@ -120,19 +150,5 @@ IndexScheduler::run(void*) {
     }
     writer->commit();
 
-/*
-    while (daemon_run) {
-        shortsleep(100000000);
-        pthread_mutex_lock(&stacklock);
-        if (filestack.size())
-            printf("doing %i file\n", filestack.size());
-        while (filestack.size()) {
-            std::string file = filestack.front();
-            filestack.pop();
-            filestack.push_front(file);
-        }
-        pthread_mutex_unlock(&stacklock);
-    }*/
-    printf("stopping indexer\n");
-    return 0;
+    delete streamindexer;
 }

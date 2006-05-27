@@ -10,6 +10,9 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
+#include <QtCore/QProcess>
+#include <QtGui/QPushButton>
+#include <QtCore/QCoreApplication>
 #include <string>
 #include <vector>
 #include "socketclient.h"
@@ -18,11 +21,24 @@ using namespace std;
 SimpleSearchGui::SimpleSearchGui() {
     mainview = new QStackedWidget();
     itemview = new QListWidget();
+
+    QWidget* statuswidget = new QWidget();
+    QVBoxLayout *statuslayout = new QVBoxLayout;
     statusview = new QLabel();
     statusview->setAlignment(Qt::AlignTop);
     statusview->setMargin(25);
+    indexing = false;
+    running = false;
+    starting = true;
+    toggleindexing = new QPushButton("start indexing");
+    toggledaemon = new QPushButton("stop daemon");
+    statuslayout->addWidget(statusview);
+    statuslayout->addWidget(toggleindexing);
+    statuslayout->addWidget(toggledaemon);
+    statuswidget->setLayout(statuslayout);
+
     mainview->addWidget(itemview);
-    mainview->addWidget(statusview);
+    mainview->addWidget(statuswidget);
     mainview->setCurrentIndex(1);
 
     queryfield = new QLineEdit();
@@ -37,8 +53,15 @@ SimpleSearchGui::SimpleSearchGui() {
         this, SLOT(handleQueryResult(const QString&)));
     connect(itemview, SIGNAL(itemClicked(QListWidgetItem*)),
         this, SLOT(openItem(QListWidgetItem*)));
+    connect(toggleindexing, SIGNAL(clicked()),
+        this, SLOT(toggleIndexing()));
+    connect(toggledaemon, SIGNAL(clicked()),
+        this, SLOT(toggleDaemon()));
     itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
+
+    socketfile = getenv("HOME");
+    socketfile += "/.kitten/socket";
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
@@ -61,13 +84,36 @@ SimpleSearchGui::query(const QString& item) {
 void
 SimpleSearchGui::updateStatus() {
     static bool first = true;
+    static bool attemptedstart = false;
     if (!first && !statusview->isVisible()) return;
     first = false;
     SocketClient client;
-    std::string socket = getenv("HOME");
-    socket += "/.kitten/socket";
-    client.setSocketName(socket.c_str());
+    client.setSocketName(socketfile.c_str());
     map<string,string> s = client.getStatus();
+    if (s.size() == 0) {
+        running = false;
+        if (!attemptedstart) {
+            s["Status"] = "Starting daemon";
+            startDaemon();
+            attemptedstart = true;
+        } else {
+            s["Status"] = "Daemon is not running";
+        }
+    } else {
+        attemptedstart = true;
+        starting = false;
+        running = true;
+    }
+    toggleindexing->setEnabled(running);
+    queryfield->setEnabled(running);
+    queryfield->setEnabled(!starting);
+    toggledaemon->setText((running)?"stop daemon":"start daemon");
+    bool idxng = s["Status"] == "indexing";
+    if (idxng != indexing) {
+        indexing = idxng;
+        toggleindexing->setText((indexing)?"stop indexing":"start indexing");
+    }
+    
     map<string,string>::const_iterator i;
     QString text;
     for (i = s.begin(); i != s.end(); ++i) {
@@ -77,6 +123,21 @@ SimpleSearchGui::updateStatus() {
         text += "\n";
     }
     statusview->setText(text);
+}
+void
+SimpleSearchGui::startDaemon() {
+    starting = true;
+    // try to start the daemon
+    QFileInfo exe = QCoreApplication::applicationDirPath()
+	+ "/../../daemon/kittendaemon";
+    if (exe.exists()) {
+	// start not installed version
+	QProcess::startDetached(exe.absoluteFilePath());
+	printf("start daemon\n");
+    } else {
+	// start installed version
+	QProcess::startDetached("kittendaemon");
+    }
 }
 void
 SimpleSearchGui::handleQueryResult(const QString& item) {
@@ -116,4 +177,24 @@ SimpleSearchGui::openItem(QListWidgetItem* i) {
     args << "openURL" << file;
     QProcess::execute("kfmclient", args);
     qDebug() << i->text();
+}
+void
+SimpleSearchGui::toggleDaemon() {
+    if (running) {
+        SocketClient client;
+        client.setSocketName(socketfile.c_str());
+        client.stopDaemon();
+    } else {
+        startDaemon();
+    }
+}
+void
+SimpleSearchGui::toggleIndexing() {
+    SocketClient client;
+    client.setSocketName(socketfile.c_str());
+    if (indexing) {
+        client.stopIndexing();
+    } else {
+        client.startIndexing();
+    }
 }

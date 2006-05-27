@@ -18,6 +18,9 @@ public:
     void setSocketName(const std::string& socketname);
     std::vector<std::string> query(const std::string &query);
     std::map<std::string, std::string> getStatus();
+    std::string stopDaemon();
+    std::string startIndexing();
+    std::string stopIndexing();
 };
 
 #endif

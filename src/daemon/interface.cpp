@@ -15,7 +15,7 @@ Interface::query(const string& query) {
 map<string, string>
 Interface::getStatus() {
     map<string,string> status;
-    status["Status"]="running";
+    status["Status"]=scheduler.getState();
     ostringstream out;
     out << scheduler.getQueueSize();
     status["Documents in queue"]= out.str();
@@ -24,4 +24,20 @@ Interface::getStatus() {
     out << reader->countDocuments();
     status["Documents indexed"]= out.str();
     return status;
+}
+std::string
+Interface::stopDaemon() {
+    active = false;
+    scheduler.stop();
+    return "";
+}
+std::string
+Interface::startIndexing() {
+    scheduler.startIndexing();
+    return "";
+}
+std::string
+Interface::stopIndexing() {
+    scheduler.stopIndexing();
+    return "";
 }

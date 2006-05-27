@@ -117,8 +117,9 @@ SocketClient::getStatus() {
     request.push_back("getStatus");
     int sd = open();
     if (sd < 0) {
-        printf("   %s\n", error.c_str());
-        status["error"] = error;
+        // no connection: return an empty map
+        //printf("   %s\n", error.c_str());
+        //status["error"] = error;
         return status;
     }
     sendRequest(sd);
@@ -136,4 +137,43 @@ SocketClient::getStatus() {
         status[s.substr(0,p)] = s.substr(p+1);
     }
     return status;
+}
+std::string
+SocketClient::stopDaemon() {
+    request.clear();
+    request.push_back("stopDaemon");
+    int sd = open();
+    if (sd < 0) {
+        return "";
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    return "";
+}
+std::string
+SocketClient::startIndexing() {
+    request.clear();
+    request.push_back("startIndexing");
+    int sd = open();
+    if (sd < 0) {
+        return "";
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    return "";
+}
+std::string
+SocketClient::stopIndexing() {
+    request.clear();
+    request.push_back("stopIndexing");
+    int sd = open();
+    if (sd < 0) {
+        return "";
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    return "";
 }

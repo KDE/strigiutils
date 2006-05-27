@@ -1,8 +1,11 @@
 #include "server.h"
 
-void
+/**
+ * return true if the system stopped normally
+ **/
+bool
 Server::start() {
-	listen();
+    return listen();
 }
 void
 Server::stop() {

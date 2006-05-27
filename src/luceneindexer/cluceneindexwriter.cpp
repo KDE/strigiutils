@@ -99,8 +99,8 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
 #if defined(_UCS2)
         StringReader<char> sr(c->second.c_str(), c->second.length(), false);
         InputStreamReader streamreader(&sr);
-//        Reader* reader = new Reader(&streamreader, false);
-//        i->second.add( *Field::Text(L"content", reader) );
+        Reader* reader = new Reader(&streamreader, false);
+        i->second.add( *Field::Text(L"content", reader) );
 #else
         i->second.add(*Field::Keyword("content", c->second.c_str()));
 #endif

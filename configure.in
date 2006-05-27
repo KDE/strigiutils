@@ -52,7 +52,8 @@ fi
 AM_CONDITIONAL(HAVE_QTLIB, test "$have_qt" = "yes")
 
 dnl check for CLucene
-AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
+dnl currently disabled because the code's not finished yet
+#AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
 AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
 
 dnl check for dbus

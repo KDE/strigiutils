@@ -42,28 +42,6 @@ set_quit_on_signal(int signum) {
     sigaction(signum, &quitaction, 0);
 }
 
-/*void
-shortsleep(long nanoseconds) {
-    // set sleep time
-    struct timespec sleeptime;
-    sleeptime.tv_sec = 0;
-    sleeptime.tv_nsec = nanoseconds;
-    nanosleep(&sleeptime, 0);
-}
-    while (daemon_run) {
-        shortsleep(100000000);
-        pthread_mutex_lock(&stacklock);
-        if (filestack.size())
-            printf("doing %i file\n", filestack.size());
-        while (filestack.size()) {
-            std::string file = filestack.front();
-            filestack.pop();
-            filestack.push_front(file);
-        }
-        pthread_mutex_unlock(&stacklock);
-    }*/
-
-
 /**
  * Initialize a directory for storing the index data and the socket.
  * Make sure it is well protected from peeping eyes.
@@ -127,9 +105,9 @@ main(int argc, char** argv) {
     Interface interface(*index, scheduler);
     SocketServer server(&interface);
     server.setSocketName(socketpath.c_str());
-    server.start();
-
-    scheduler.stop();
+    if (!server.start()) {
+        scheduler.stop();
+    }
 
     // close the indexmanager
     delete index;

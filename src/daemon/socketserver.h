@@ -16,7 +16,7 @@ private:
     bool sendResponse(int sd);
     void handleRequest();
 protected:
-    void listen();
+    bool listen();
 public:
     SocketServer(Interface* i) :Server(i) {}
     void setSocketName(const std::string& name) {

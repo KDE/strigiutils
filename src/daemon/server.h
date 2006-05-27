@@ -5,11 +5,11 @@ class Interface;
 class Server {
 protected:
     Interface* interface;
-    virtual void listen() = 0;
+    virtual bool listen() = 0;
 public:
     Server(Interface*i) :interface(i){}
     virtual ~Server() {}
-    void start();
+    bool start();
     void stop();
 };
 

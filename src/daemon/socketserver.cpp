@@ -7,7 +7,7 @@
 #include <assert.h>
 using namespace std;
 
-void
+bool
 SocketServer::listen() {
     int sd, newSd;
     size_t len;
@@ -19,7 +19,7 @@ SocketServer::listen() {
     sd = socket(AF_UNIX, SOCK_STREAM, 0);
     if(sd < 0) {
         perror("cannot open socket ");
-        return;
+        return false;
     }
 
     /* set the address */
@@ -32,21 +32,20 @@ SocketServer::listen() {
     sock.sun_family = AF_UNIX;
     if (bind(sd, (struct sockaddr *)&sock, sizeof(sock))<0) {
         perror("cannot bind port ");
-        return;
+        return false;
     }
 
     if (::listen(sd, 5) < 0) {
         perror("cannot listen to port");
-        return;
+        return false;
     }
 
-    int n = 0;
-    while (n++ < 10000) {
+    while (interface->isActive()) {
         addlen = sizeof(work);
         newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
         if (newSd < 0) {
             perror("cannot accept connection ");
-            return;
+            return false;
         }
 
         if (!readRequest(newSd)) {
@@ -63,6 +62,7 @@ SocketServer::listen() {
     if (close(sd) < 0) {
         perror("close socket");
     }
+    return true;
 }
 bool
 SocketServer::readRequest(int sd) {
@@ -91,6 +91,7 @@ SocketServer::readRequest(int sd) {
             line += c;
         }
     }
+    return true;
 }
 bool
 SocketServer::sendResponse(int sd) {
@@ -115,6 +116,7 @@ SocketServer::sendResponse(int sd) {
 }
 void
 SocketServer::handleRequest() {
+    response.clear();
     if (request.size() == 2 && request[0] == "query") {
         response = interface->query(request[1]);
         return;
@@ -126,6 +128,19 @@ SocketServer::handleRequest() {
         for (i = status.begin(); i != status.end(); ++i) {
             response.push_back(i->first+":"+i->second);
         }
+        return;
+    }
+    printf("request: '%s'\n", request[0].c_str());
+    if (request.size() == 1 && request[0] == "stopDaemon") {
+        interface->stopDaemon();
+        return;
+    }
+    if (request.size() == 1 && request[0] == "startIndexing") {
+        interface->startIndexing();
+        return;
+    }
+    if (request.size() == 1 && request[0] == "stopIndexing") {
+        interface->stopIndexing();
         return;
     }
     printf("size %i\n", request.size());

@@ -13,9 +13,10 @@ friend void* indexschedulerstart(void *);
 friend bool addFileCallback(const std::string& path, const char *filename,
     time_t mtime);
 private:
+    enum State {Idling, Indexing, Stopping};
+    State state;
     pthread_mutex_t lock;
     static pthread_mutex_t initlock;
-    bool keeprunning;
     pthread_t thread;
     std::string dirtoindex;
     jstreams::IndexManager* indexmanager;
@@ -23,6 +24,7 @@ private:
     std::map<std::string, time_t> toindex;
 
     void* run(void*);
+    void index();
 public:
     static bool addFileCallback(const std::string& path, const char *filename,
         time_t mtime);
@@ -36,7 +38,10 @@ public:
     int getQueueSize();
     int start();
     void stop();
+    void startIndexing() { state = Indexing; }
+    void stopIndexing() { state = Idling; }
     void terminate();
+    std::string getState();
     ~IndexScheduler();
 };
 
