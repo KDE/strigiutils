@@ -23,6 +23,5 @@ Execute these commands:
  ./rebuild.sh
 
 usage:
-start the daemon by starting 'daemon'
-start the gui by starting 'kittenclient'
+start Kitten by running 'kittenclient'
 
