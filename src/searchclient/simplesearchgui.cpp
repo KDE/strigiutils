@@ -133,10 +133,14 @@ SimpleSearchGui::startDaemon() {
     if (exe.exists()) {
 	// start not installed version
 	QProcess::startDetached(exe.absoluteFilePath());
-	printf("start daemon\n");
     } else {
-	// start installed version
-	QProcess::startDetached("kittendaemon");
+        exe = QCoreApplication::applicationDirPath()+"/kittendaemon";
+        if (exe.exists()) {
+            QProcess::startDetached(exe.absoluteFilePath());
+        } else {
+	    // start installed version
+	    QProcess::startDetached("kittendaemon");
+        }
     }
 }
 void
