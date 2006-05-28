@@ -22,6 +22,8 @@ Execute these commands:
  svn co svn://anonsvn.kde.org/home/kde/branches/work/kde4/playground/libs/archivereader
  ./rebuild.sh
 
+If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
+
 usage:
 start Kitten by running 'kittenclient'
 
