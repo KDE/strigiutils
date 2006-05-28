@@ -2,9 +2,9 @@
 #include "zipinputstream.h"
 #include "gzipinputstream.h"
 #include "subinputstream.h"
-extern "C" {
-    #include "dostime.h"
-}
+
+#include "dostime.h"
+
 using namespace jstreams;
 
 bool
