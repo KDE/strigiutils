@@ -1,6 +1,7 @@
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
 #include <sqlite3.h>
+#include <vector>
 #include <sstream>
 using namespace std;
 using namespace jstreams;
@@ -223,12 +224,12 @@ SqliteIndexWriter::commit() {
  **/
 void
 SqliteIndexWriter::deleteEntry(const string& path) {
-    int64_t id = -1;
     manager->ref();
     // turn on case sensitivity
     sqlite3_exec(db, "PRAGMA case_sensitive_like = 1", 0, 0, 0);
 
     sqlite3_stmt* getstmt;
+    vector<int64_t> ids;
     string pathplus = path+"%";
     const char* getsql = "select fileid from files where path like ?;";
     prepareStmt(getstmt, getsql, strlen(getsql));
@@ -236,7 +237,15 @@ SqliteIndexWriter::deleteEntry(const string& path) {
         SQLITE_STATIC);
     int r = sqlite3_step(getstmt);
     while (r == SQLITE_ROW) {
-        id = sqlite3_column_int64(getstmt, 0);
+        ids.push_back(sqlite3_column_int64(getstmt, 0));
+        r = sqlite3_step(getstmt);
+    }
+    sqlite3_finalize(getstmt);
+    if (r != SQLITE_DONE) {
+        printf("error in deleting file %s:\n", path.c_str());
+    }
+    for (uint i=0; i<ids.size(); ++i) {
+        int64_t id = ids[i];
         ostringstream sql;
         // todo adapt the word counts
         sql << "delete from idx where fileid = " << id
@@ -247,11 +256,6 @@ SqliteIndexWriter::deleteEntry(const string& path) {
             printf("could not delete file %s: %s\n", path.c_str(),
                 sqlite3_errmsg(db));
         }
-        r = sqlite3_step(getstmt);
-    }
-    sqlite3_finalize(getstmt);
-    if (r != SQLITE_DONE) {
-        printf("error in deleting file %s:\n", path.c_str());
     }
 
     // turn off case sensitivity
