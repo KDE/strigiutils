@@ -73,8 +73,11 @@ SubInputStream::reset(int64_t newpos) {
 }
 int64_t
 SubInputStream::skip(int64_t ntoskip) {
-    //printf("subskip pos: %lli ntoskip: %lli offset: %lli\n", position, ntoskip, offset);
-    if (size == position) return -1;
+//    printf("subskip pos: %lli ntoskip: %lli offset: %lli\n", position, ntoskip, offset);
+    if (size == position) {
+        status = Eof;
+        return -1;
+    }
     if (size != -1) {
         const int64_t left = size - position;
         // restrict the amount of data that can be skipped
