@@ -41,7 +41,9 @@ if test "$have_qt" = "yes"; then
     QT_CXXFLAGS="$QT_CXXFLAGS -I$EXTRA_QT_INCLUDE_DIR",
         AC_MSG_WARN([QWidget not found])))
     MOC=`$PKG_CONFIG --variable=exec_prefix QtCore`
-    MOC=${MOC}/bin/moc
+    AC_CHECK_FILE([$MOC/bin/moc-qt4],
+        MOC="$MOC/bin/moc-qt4",
+        MOC="$MOC/bin/moc")
     AC_MSG_NOTICE([Set QT_CXXFLAGS... $QT_CXXFLAGS])
     AC_MSG_NOTICE([Set QT_LIBS... $QT_LIBS])
     AC_MSG_NOTICE([Set MOC... $MOC])
