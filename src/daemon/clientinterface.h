@@ -16,6 +16,8 @@ public:
     virtual std::string stopDaemon() = 0;
     virtual std::string startIndexing() = 0;
     virtual std::string stopIndexing() = 0;
+    virtual std::vector<std::string> getIndexedDirectories() = 0;
+    virtual std::string setIndexedDirectories(std::vector<std::string>) = 0;
     bool isActive() { return active; }
 };
 

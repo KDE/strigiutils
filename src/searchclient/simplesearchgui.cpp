@@ -12,6 +12,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QProcess>
 #include <QtGui/QPushButton>
+#include <QtGui/QFileDialog>
 #include <QtCore/QCoreApplication>
 #include <string>
 #include <vector>
@@ -30,11 +31,21 @@ SimpleSearchGui::SimpleSearchGui() {
     indexing = false;
     running = false;
     starting = true;
+    indexeddirs = new QListWidget();
+    adddir = new QPushButton("add directory");
+    removedir = new QPushButton("remove directory");
     toggleindexing = new QPushButton("start indexing");
     toggledaemon = new QPushButton("stop daemon");
     statuslayout->addWidget(statusview);
-    statuslayout->addWidget(toggleindexing);
-    statuslayout->addWidget(toggledaemon);
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    hlayout->addWidget(toggledaemon);
+    hlayout->addWidget(toggleindexing);
+    statuslayout->addLayout(hlayout);
+    statuslayout->addWidget(indexeddirs);
+    hlayout = new QHBoxLayout;
+    hlayout->addWidget(adddir);
+    hlayout->addWidget(removedir);
+    statuslayout->addLayout(hlayout);
     statuswidget->setLayout(statuslayout);
 
     mainview->addWidget(itemview);
@@ -57,6 +68,10 @@ SimpleSearchGui::SimpleSearchGui() {
         this, SLOT(toggleIndexing()));
     connect(toggledaemon, SIGNAL(clicked()),
         this, SLOT(toggleDaemon()));
+    connect(adddir, SIGNAL(clicked()),
+        this, SLOT(addDirectory()));
+    connect(removedir, SIGNAL(clicked()),
+        this, SLOT(removeDirectory()));
     itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
@@ -103,6 +118,9 @@ SimpleSearchGui::updateStatus() {
         attemptedstart = true;
         starting = false;
         running = true;
+        if (indexeddirs->count() == 0) {
+            updateDirectories();
+        }
     }
     toggleindexing->setEnabled(running);
     queryfield->setEnabled(running);
@@ -188,6 +206,7 @@ SimpleSearchGui::toggleDaemon() {
         SocketClient client;
         client.setSocketName(socketfile.c_str());
         client.stopDaemon();
+        indexeddirs->clear();
     } else {
         startDaemon();
     }
@@ -200,5 +219,54 @@ SimpleSearchGui::toggleIndexing() {
         client.stopIndexing();
     } else {
         client.startIndexing();
+    }
+}
+void
+SimpleSearchGui::addDirectory() {
+    // open file dialog
+    QString dir = QFileDialog::getExistingDirectory (this);
+    if (dir.size() <= 0) return;
+    for (int i=0; i<indexeddirs->count(); ++i) {
+        QString text = indexeddirs->item(i)->text();
+        if (dir.startsWith(text)) {
+            return;
+        }
+        if (text.startsWith(dir)) {
+            indexeddirs->takeItem(i);
+            i = 0;
+        }
+    }
+    indexeddirs->addItem(dir);
+    setDirectories();
+}
+void
+SimpleSearchGui::removeDirectory() {
+    int i = indexeddirs->currentRow();
+    if (i == -1) return;
+    indexeddirs->takeItem(i);
+    setDirectories();
+}
+void
+SimpleSearchGui::setDirectories() {
+    vector<string> s;
+    for (int i=0; i<indexeddirs->count(); ++i) {
+        QString text = indexeddirs->item(i)->text();
+        s.push_back((const char*)text.toUtf8());
+    }
+    SocketClient client;
+    client.setSocketName(socketfile.c_str());
+    client.setIndexedDirectories(s);
+    updateDirectories();
+}
+void
+SimpleSearchGui::updateDirectories() {
+    indexeddirs->clear();
+    SocketClient client;
+    client.setSocketName(socketfile.c_str());
+    vector<string> s = client.getIndexedDirectories();
+    indexeddirs->clear();
+    for (uint i=0; i<s.size(); ++i) {
+        QString dir(s[i].c_str());
+        indexeddirs->addItem(dir);
     }
 }

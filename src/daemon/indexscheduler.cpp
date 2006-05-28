@@ -130,7 +130,10 @@ IndexScheduler::index() {
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
         printf("going to index\n");
-        lister.listFiles(dirtoindex.c_str());
+        set<string>::const_iterator i;
+        for (i = dirstoindex.begin(); i != dirstoindex.end(); ++i) {
+            lister.listFiles(i->c_str());
+        }
         printf("%i files to remove\n", dbfiles.size()); 
         printf("%i files to add or update\n", toindex.size());
     }
@@ -152,4 +155,30 @@ IndexScheduler::index() {
     writer->commit();
 
     delete streamindexer;
+}
+void
+IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {
+    dirstoindex.clear();
+    std::set<std::string>::const_iterator i;
+    for (i = d.begin(); i!=d.end(); ++i) {
+        bool ok = true;
+        std::set<std::string>::iterator j;
+        for (j = dirstoindex.begin(); ok && j != dirstoindex.end(); ++j) {
+            if (j->length() >= i->length()
+                && j->substr(0, i->length()) == *i) {
+                dirstoindex.erase(j);
+                j = dirstoindex.begin();
+            } else if (i->length() >= j->length()
+                && i->substr(0, j->length()) == *j) {
+                ok = false;
+            }
+        }
+        if (ok) {
+            string dir = *i;
+            if (dir[dir.length()-1] == '/') {
+                dir = dir.substr(0, dir.length()-1);
+            }
+            dirstoindex.insert(dir);
+        }
+    }
 }

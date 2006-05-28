@@ -6,6 +6,7 @@
 #include "sqliteindexmanager.h"
 #endif
 #include "indexscheduler.h"
+#include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -66,6 +67,30 @@ initializeDir(const string& dir) {
     }
     return true;
 }
+set<string>
+readdirstoindex(const string& file) {
+    set<string> dirs;
+    ifstream f(file.c_str());
+    string s;
+    do {
+        getline(f, s);
+        if (s.size()) {
+            dirs.insert(s);
+        }
+    } while (!f.eof() && f.good());
+    f.close();
+    return dirs;
+}
+void
+savedirstoindex(const string& file, const set<string> &dirs) {
+    ofstream f(file.c_str());
+    set<string>::const_iterator i;
+    for (i=dirs.begin(); i!=dirs.end(); ++i) {
+        f << *i << endl;
+    }
+    f.close();
+}
+
 int
 main(int argc, char** argv) {
     set_quit_on_signal(SIGINT);
@@ -76,8 +101,8 @@ main(int argc, char** argv) {
     string daemondir = homedir+"/.kitten";
     string lucenedir = daemondir+"/lucene";
     string dbfile = daemondir+"/sqlite.db";
+    string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
-    string dirtoindex = homedir;
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -94,7 +119,8 @@ main(int argc, char** argv) {
     // initialize the storage manager, for now we only use sqlite
     index = new SqliteIndexManager(dbfile.c_str());
 #endif
-    scheduler.setDirToIndex(dirtoindex);
+    set<string> dirs = readdirstoindex(dirsfile);
+    scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);
 
 
@@ -108,6 +134,8 @@ main(int argc, char** argv) {
     if (!server.start()) {
         scheduler.stop();
     }
+    dirs = scheduler.getIndexedDirectories();
+    savedirstoindex(dirsfile, dirs);
 
     // close the indexmanager
     delete index;

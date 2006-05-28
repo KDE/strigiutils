@@ -41,3 +41,22 @@ Interface::stopIndexing() {
     scheduler.stopIndexing();
     return "";
 }
+std::vector<std::string>
+Interface::getIndexedDirectories() {
+    vector<string> dirs;
+    const set<string>& d = scheduler.getIndexedDirectories();
+    set<string>::const_iterator i;
+    for (i=d.begin(); i!=d.end(); ++i) {
+        dirs.push_back(*i);
+    }
+    return dirs;
+}
+std::string
+Interface::setIndexedDirectories(std::vector<std::string> d) {
+    set<string> dirs;
+    for (uint i=0; i<d.size(); ++i) {
+        dirs.insert(d[i]);
+    }
+    scheduler.setIndexedDirectories(dirs);
+    return "";
+}

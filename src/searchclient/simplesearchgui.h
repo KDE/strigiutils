@@ -21,11 +21,16 @@ private:
     QLabel* statusview;
     QLineEdit* queryfield;
     QListWidget* itemview;
+    QListWidget* indexeddirs;
+    QPushButton* adddir;
+    QPushButton* removedir;
     QueryExecuter executer;
     QPushButton* toggleindexing;
     QPushButton* toggledaemon;
 
     void startDaemon();
+    void setDirectories();
+    void updateDirectories();
 private slots:
     void updateStatus();
     void toggleDaemon();
@@ -33,6 +38,8 @@ private slots:
     void query(const QString&);
     void handleQueryResult(const QString&);
     void openItem(QListWidgetItem*);
+    void addDirectory();
+    void removeDirectory();
 public:
     SimpleSearchGui();
 };

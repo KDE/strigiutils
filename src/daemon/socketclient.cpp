@@ -177,3 +177,33 @@ SocketClient::stopIndexing() {
     close(sd);
     return "";
 }
+std::vector<std::string>
+SocketClient::getIndexedDirectories() {
+    request.clear();
+    response .clear();
+    request.push_back("getIndexedDirectories");
+    int sd = open();
+    if (sd < 0) {
+        return response;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    return response;
+}
+std::string
+SocketClient::setIndexedDirectories(std::vector<std::string> dirs) {
+    request.clear();
+    request.push_back("setIndexedDirectories");
+    for (uint i=0; i<dirs.size(); ++i) {
+        request.push_back(dirs[i]);
+    }
+    int sd = open();
+    if (sd < 0) {
+        return "";
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    return "";
+}

@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <set>
 #include <pthread.h>
 
 namespace jstreams {
@@ -18,7 +19,7 @@ private:
     pthread_mutex_t lock;
     static pthread_mutex_t initlock;
     pthread_t thread;
-    std::string dirtoindex;
+    std::set<std::string> dirstoindex;
     jstreams::IndexManager* indexmanager;
     std::map<std::string, time_t> dbfiles;
     std::map<std::string, time_t> toindex;
@@ -29,8 +30,8 @@ public:
     static bool addFileCallback(const std::string& path, const char *filename,
         time_t mtime);
     IndexScheduler();
-    void setDirToIndex(const std::string& d) {
-        dirtoindex = d;
+    void addDirToIndex(const std::string& d) {
+        dirstoindex.insert(d);
     }
     void setIndexManager(jstreams::IndexManager* m) {
         indexmanager = m;
@@ -43,6 +44,10 @@ public:
     void terminate();
     std::string getState();
     ~IndexScheduler();
+    const std::set<std::string> &getIndexedDirectories() const {
+        return dirstoindex;
+    }
+    void setIndexedDirectories(const std::set<std::string> &d);
 };
 
 #endif

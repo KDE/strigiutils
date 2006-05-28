@@ -130,7 +130,6 @@ SocketServer::handleRequest() {
         }
         return;
     }
-    printf("request: '%s'\n", request[0].c_str());
     if (request.size() == 1 && request[0] == "stopDaemon") {
         interface->stopDaemon();
         return;
@@ -143,7 +142,20 @@ SocketServer::handleRequest() {
         interface->stopIndexing();
         return;
     }
-    printf("size %i\n", request.size());
+    if (request.size() == 1 && request[0] == "getIndexedDirectories") {
+        response = interface->getIndexedDirectories();
+        return;
+    }
+    if (request.size() >= 1 && request[0] == "setIndexedDirectories") {
+        vector<string> dirs;
+        for (uint i=1; i<request.size(); ++i) {
+            dirs.push_back(request[i]);
+        }
+        interface->setIndexedDirectories(dirs);
+        return;
+    }
+    printf("unknown request '%s' of size %i\n",
+        request[0].c_str(), request.size());
     response.push_back("error");
     response.push_back("no valid request");
 }
