@@ -218,30 +218,43 @@ SqliteIndexWriter::commit() {
     printf("end commit of %i rows\n", temprows);
     temprows = 0;
 }
+/**
+ * Delete all files that start with the specified path.
+ **/
 void
 SqliteIndexWriter::deleteEntry(const string& path) {
     int64_t id = -1;
     manager->ref();
-    int r = sqlite3_bind_text(getfilestmt, 1, path.c_str(), path.length(),
-        SQLITE_STATIC);
-    r = sqlite3_step(getfilestmt);
-    if (r != SQLITE_ROW) {
-        printf("could not find file %s:\n", path.c_str());
-        sqlite3_reset(getfilestmt);
-        manager->deref();
-        return;
-    }
-    id = sqlite3_column_int64(getfilestmt, 0);
-    sqlite3_reset(getfilestmt);
+    // turn on case sensitivity
+    sqlite3_exec(db, "PRAGMA case_sensitive_like = 1", 0, 0, 0);
 
-    ostringstream sql;
-    sql << "delete from idx where fileid = " << id
-        << "; delete from filewords where fileid = " << id
-        << "; delete from files where fileid = " << id;
-    r = sqlite3_exec(db, sql.str().c_str(), 0, 0, 0);
-    if (r != SQLITE_OK) {
-        printf("could not delete file %s: %s\n", path.c_str(),
-            sqlite3_errmsg(db));
+    sqlite3_stmt* getstmt;
+    string pathplus = path+"%";
+    const char* getsql = "select fileid from files where path like ?;";
+    prepareStmt(getstmt, getsql, strlen(getsql));
+    sqlite3_bind_text(getstmt, 1, pathplus.c_str(), pathplus.length(),
+        SQLITE_STATIC);
+    int r = sqlite3_step(getstmt);
+    while (r == SQLITE_ROW) {
+        id = sqlite3_column_int64(getstmt, 0);
+        ostringstream sql;
+        // todo adapt the word counts
+        sql << "delete from idx where fileid = " << id
+            << "; delete from filewords where fileid = " << id
+            << "; delete from files where fileid = " << id;
+        int sr = sqlite3_exec(db, sql.str().c_str(), 0, 0, 0);
+        if (sr != SQLITE_OK) {
+            printf("could not delete file %s: %s\n", path.c_str(),
+                sqlite3_errmsg(db));
+        }
+        r = sqlite3_step(getstmt);
     }
+    sqlite3_finalize(getstmt);
+    if (r != SQLITE_DONE) {
+        printf("error in deleting file %s:\n", path.c_str());
+    }
+
+    // turn off case sensitivity
+    sqlite3_exec(db, "PRAGMA case_sensitive_like = 0", 0, 0, 0);
     manager->deref();
 }

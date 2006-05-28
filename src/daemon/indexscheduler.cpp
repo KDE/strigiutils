@@ -116,15 +116,16 @@ IndexScheduler::run(void*) {
 }
 void
 IndexScheduler::index() {
+    IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
 
-    IndexReader* reader = indexmanager->getIndexReader();
-
-    dbfiles = reader->getFiles(0);
-    printf("%i real files in the database\n", dbfiles.size()); 
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
+        // retrieve the list of real files currently in the database
+        dbfiles = reader->getFiles(0);
+        printf("%i real files in the database\n", dbfiles.size()); 
+
         // first loop through all files
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
