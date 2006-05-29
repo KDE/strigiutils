@@ -29,7 +29,7 @@ public:
     CLuceneIndexWriter(const char* path);
     ~CLuceneIndexWriter();
     void commit() {};
-    void deleteEntry(const std::string& path) {}
+    void deleteEntries(const std::vector<std::string>& entries) {}
 };
 
 #endif

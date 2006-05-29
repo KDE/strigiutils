@@ -138,11 +138,14 @@ IndexScheduler::index() {
         printf("%i files to add or update\n", toindex.size());
     }
 
+    vector<string> todelete;
     map<string,time_t>::iterator it = dbfiles.begin();
     while (state == Indexing && it != dbfiles.end()) {
-        writer->deleteEntry(it->first);
+        todelete.push_back(it->first);
+//        writer->deleteEntry(it->first);
         dbfiles.erase(it++);
     }
+    writer->deleteEntries(todelete);
 
     it = toindex.begin();
     while (state == Indexing && it != toindex.end()) {

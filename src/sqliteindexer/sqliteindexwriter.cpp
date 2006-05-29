@@ -223,42 +223,40 @@ SqliteIndexWriter::commit() {
  * Delete all files that start with the specified path.
  **/
 void
-SqliteIndexWriter::deleteEntry(const string& path) {
+SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     manager->ref();
     // turn on case sensitivity
     sqlite3_exec(db, "PRAGMA case_sensitive_like = 1", 0, 0, 0);
 
-    sqlite3_stmt* getstmt;
-    vector<int64_t> ids;
-    string pathplus = path+"%";
-    const char* getsql = "select fileid from files where path like ?;";
-    prepareStmt(getstmt, getsql, strlen(getsql));
-    sqlite3_bind_text(getstmt, 1, pathplus.c_str(), pathplus.length(),
-        SQLITE_STATIC);
-    int r = sqlite3_step(getstmt);
-    while (r == SQLITE_ROW) {
-        ids.push_back(sqlite3_column_int64(getstmt, 0));
-        r = sqlite3_step(getstmt);
-    }
-    sqlite3_finalize(getstmt);
-    if (r != SQLITE_DONE) {
-        printf("error in deleting file %s:\n", path.c_str());
-    }
-    for (uint i=0; i<ids.size(); ++i) {
-        int64_t id = ids[i];
-        ostringstream sql;
-        // todo adapt the word counts
-        sql << "delete from idx where fileid = " << id
-            << "; delete from filewords where fileid = " << id
-            << "; delete from files where fileid = " << id;
-        int sr = sqlite3_exec(db, sql.str().c_str(), 0, 0, 0);
-        if (sr != SQLITE_OK) {
-            printf("could not delete file %s: %s\n", path.c_str(),
+    sqlite3_stmt* delstmt;
+    const char* delsql = "delete from files where path like ?;";
+    prepareStmt(delstmt, delsql, strlen(delsql));
+    vector<string>::const_iterator i;
+    for (i = entries.begin(); i != entries.end(); ++i) {
+        string f = *i+'%';
+        sqlite3_bind_text(delstmt, 1, f.c_str(), f.length(), SQLITE_STATIC);
+        int r = sqlite3_step(delstmt);
+        if (r != SQLITE_DONE) {
+            printf("could not delete file %s: %s\n", i->c_str(),
                 sqlite3_errmsg(db));
         }
+        sqlite3_reset(delstmt);
     }
-
+    sqlite3_finalize(delstmt);
     // turn off case sensitivity
     sqlite3_exec(db, "PRAGMA case_sensitive_like = 0", 0, 0, 0);
+
+    // remove all information that now is orphaned
+    int r = sqlite3_exec(db,
+        "delete from idx where fileid not in (select fileid from files);"
+        "delete from filewords where fileid not in (select fileid from files);"
+        "update words set count = (select sum(f.count) from filewords f "
+            "where words.wordid = f.wordid group by f.wordid);"
+        "delete from words where count is null or count = 0;"
+        , 0, 0, 0);
+    if (r != SQLITE_OK) {
+        printf("could not delete associated information: %s\n",
+            sqlite3_errmsg(db));
+    }
     manager->deref();
 }

@@ -17,7 +17,7 @@ public:
     DummyIndexWriter() {}
     ~DummyIndexWriter() {}
     void commit() {}
-    void deleteEntry(const std::string& entry) {};
+    void deleteEntries(const std::vector<std::string>& entries) {}
 };
 
 #endif

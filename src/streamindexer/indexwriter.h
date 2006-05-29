@@ -2,6 +2,7 @@
 #define INDEXWRITER_H
 
 #include <string>
+#include <vector>
 
 namespace jstreams {
 
@@ -34,7 +35,7 @@ protected:
 public:
     virtual ~IndexWriter() {}
     virtual void commit() { return; }
-    virtual void deleteEntry(const std::string& entry) = 0;
+    virtual void deleteEntries(const std::vector<std::string>& entries) = 0;
     virtual int itemsInCache() { return 0; };
 };
 

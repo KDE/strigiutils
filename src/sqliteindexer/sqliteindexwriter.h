@@ -35,7 +35,7 @@ protected:
     ~SqliteIndexWriter();
 public:
     void commit();
-    void deleteEntry(const std::string& path);
+    void deleteEntries(const std::vector<std::string>& entries);
     int itemsInCache() { return temprows; };
 };
 
