@@ -11,7 +11,7 @@ bool
 SocketServer::listen() {
     int sd, newSd;
     size_t len;
-        unsigned int addlen;
+    socklen_t addlen;
     struct sockaddr_un sock, work;
 
     /* create new socket */
