@@ -105,7 +105,9 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         i->second.add(*Field::Keyword("content", c->second.c_str()));
 #endif
         content.erase(c);
+        writer->addDocument(&i->second);
+    } else {
+        writer->addDocument(&i->second);
     }
-    writer->addDocument(&i->second);
     docs.erase(i);
 }

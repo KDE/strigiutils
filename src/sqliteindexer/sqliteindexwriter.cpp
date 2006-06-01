@@ -181,7 +181,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
             SQLITE_STATIC);
         sqlite3_bind_int(stmt, 3, i->second);
         r = sqlite3_step(stmt);
-        if (r != SQLITE_DONE) {
+        if (r != 21) { // what is 21?
             printf("could not write content into database: %i %s\n", r,
                 sqlite3_errmsg(db));
         }

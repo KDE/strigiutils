@@ -1,8 +1,12 @@
 #include "socketserver.h"
 #include "interface.h"
-#ifdef HAVE_CLUCENELIB
+#ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
-#else
+#endif
+#ifdef HAVE_ESTRAIER
+#include "estraierindexmanager.h"
+#endif
+#ifdef HAVE_SQLITE
 #include "sqliteindexmanager.h"
 #endif
 #include "indexscheduler.h"
@@ -100,6 +104,7 @@ main(int argc, char** argv) {
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.kitten";
     string lucenedir = daemondir+"/lucene";
+    string estraierdir = daemondir+"/estraier";
     string dbfile = daemondir+"/sqlite.db";
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
@@ -111,13 +116,26 @@ main(int argc, char** argv) {
     if (!initializeDir(lucenedir)) {
         exit(1);
     }
+    if (!initializeDir(estraierdir)) {
+        exit(1);
+    }
 
-    IndexManager* index;
-#ifdef HAVE_CLUCENELIB
-    index = new CLuceneIndexManager(lucenedir);
-#else
-    // initialize the storage manager, for now we only use sqlite
-    index = new SqliteIndexManager(dbfile.c_str());
+    // initialize the storage manager
+    IndexManager* index = 0;
+#ifdef HAVE_ESTRAIER
+    if (index == 0) {
+        index = new EstraierIndexManager(estraierdir.c_str());
+    }
+#endif
+#ifdef HAVE_CLUCENE
+    if (index == 0) {
+        index = new CLuceneIndexManager(lucenedir);
+    }
+#endif
+#ifdef HAVE_SQLITE
+    if (index == 0) {
+        index = new SqliteIndexManager(dbfile.c_str());
+    }
 #endif
     set<string> dirs = readdirstoindex(dirsfile);
     scheduler.setIndexedDirectories(dirs);

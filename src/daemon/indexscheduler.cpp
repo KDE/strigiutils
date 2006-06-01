@@ -41,7 +41,7 @@ indexschedulerstart(void *d) {
 
     // start the actual work
     static_cast<IndexScheduler*>(d)->run(0);
-    return 0;
+    pthread_exit(0);
 }
 bool
 IndexScheduler::addFileCallback(const string& path, const char *filename,

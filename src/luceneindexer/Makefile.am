@@ -11,7 +11,7 @@ luceneindexer_SOURCES = luceneindexer.cpp indexer.cpp
 
 luceneindexer_LDFLAGS = libcluceneindex.la
 luceneindexer_LDADD = $(top_builddir)/src/streams/libstreams.la -lclucene \
-	$(top_builddir)/src/streamindexer/libstreamindexer.la
+	$(top_builddir)/src/streamindexer/libstreamindexer.la -lpthread
 luceneindexer_CPPFLAGS = -I$(top_srcdir)/src/streams \
 	-I$(top_srcdir)/src/streamindexer  -fexceptions
 

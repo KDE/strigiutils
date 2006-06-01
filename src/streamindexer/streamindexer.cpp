@@ -109,7 +109,9 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
     int32_t headersize = 1024;
     const char* header;
     headersize = input->read(header, headersize, 0);
-    if (input->reset(0) != 0) printf("resetting is impossible!!\n");
+    if (input->reset(0) != 0) {
+        printf("resetting is impossible!! pos: %lli status: %i\n", input->getPosition(), input->getStatus());
+    }
     if (headersize < 0) finished = true;
     int es = 0, size = eIter->size();
     while (!finished && es != size) {

@@ -53,11 +53,6 @@ if test "$have_qt" = "yes"; then
 fi
 AM_CONDITIONAL(HAVE_QTLIB, test "$have_qt" = "yes")
 
-dnl check for CLucene
-dnl currently disabled because the code's not finished yet
-#AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
-AM_CONDITIONAL(HAVE_CLUCENELIB, test "$have_clucenelib" = "yes")
-
 dnl check for dbus
 PKG_CHECK_MODULES(dbus, dbus, have_dbus="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_DBUS, test "$have_dubs" = "yes")
@@ -66,9 +61,33 @@ dnl check for openssl
 PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
+dnl check for CLucene
+dnl currently disabled because the code's not finished yet
+AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
+AM_CONDITIONAL(HAVE_CLUCENE, test "$have_clucenelib" = "yes")
+
+dnl check for xapian
+AC_PATH_PROG(XAPIAN_CONFIG, xapian-config, no)
+AM_CONDITIONAL(HAVE_XAPIAN, test "$XAPIAN_CONFIG" != "no")
+LIBXAPIAN=`$XAPIAN_CONFIG --libs`
+# Workaround for problem in xapian-config in some versions: wrongly lists
+# libstdc++.la in the lib list
+for i in $LIBXAPIAN ; do
+    case $i in
+    *libstdc++.la);;
+    *) tmpxaplib="$tmpxaplib $i";;
+    esac
+done
+LIBXAPIAN=$tmpxaplib
+XAPIANCXXFLAGS=`$XAPIAN_CONFIG --cxxflags`
+
+dnl check for estraier
+PKG_CHECK_MODULES(hyperestraier, hyperestraier >= 0, have_estraier="yes", have_estraier="no")
+AM_CONDITIONAL(HAVE_ESTRAIER, test "$have_estraier" = "yes")
+
 dnl check for slqlite3
 PKG_CHECK_MODULES(sqlite3, sqlite3 >= 0, have_sqlite3="yes", have_sqlite3="no")
-AM_CONDITIONAL(HAVE_SQLITE3, test "$have_sqlite3" = "yes")
+AM_CONDITIONAL(HAVE_SQLITE, test "$have_sqlite3" = "yes")
 
 dnl check for sys_ioprio_set
 AC_CHECK_HEADER(linux/ioprio.h, [have_linuxioprio=yes], )
@@ -84,6 +103,8 @@ AC_OUTPUT( Makefile \
         src/streamindexer/Makefile \
         src/luceneindexer/Makefile \
         src/sqliteindexer/Makefile \
+        src/estraierindexer/Makefile \
+        src/xapianindexer/Makefile \
         src/dummyindexer/Makefile \
         src/daemon/Makefile \
         src/archiveengine/Makefile \

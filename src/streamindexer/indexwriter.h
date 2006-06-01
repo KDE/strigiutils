@@ -43,6 +43,7 @@ class Indexable {
 friend class IndexWriter;
 private:
     int64_t id;
+    void* writerData;
     const int64_t mtime;
     const std::string& name;
     IndexWriter* writer;
@@ -66,6 +67,8 @@ public:
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
     char getDepth() const { return depth; }
+    void* getWriterData() const { return writerData; }
+    void setWriterData(void* wd) { writerData = wd; }
 };
 
 

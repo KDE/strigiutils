@@ -1,11 +1,21 @@
 if HAVE_QTLIB
 QT_SUBDIRS = archiveengine qclient searchclient
 endif
-if HAVE_CLUCENELIB
-LUCENE_SUBDIRS = luceneindexer
+INDEXERS=
+if HAVE_CLUCENE
+INDEXERS += luceneindexer
+endif
+if HAVE_ESTRAIER
+INDEXERS += estraierindexer
+endif
+if HAVE_XAPIAN
+INDEXERS += xapianindexer
+endif
+if HAVE_SQLITE
+INDEXERS += sqliteindexer
 endif
 if HAVE_OPENSSL
-INDEXER_SUBDIRS = streams streamindexer sqliteindexer dummyindexer
+INDEXER_SUBDIRS = streams streamindexer dummyindexer
 endif
-SUBDIRS = $(INDEXER_SUBDIRS) $(LUCENE_SUBDIRS) daemon $(QT_SUBDIRS)
+SUBDIRS = $(INDEXERS) daemon $(QT_SUBDIRS)
 
