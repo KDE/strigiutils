@@ -2,22 +2,18 @@
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
 #include "filereader.h"
+#include "cluceneindexmanager.h"
 
-using lucene::analysis::standard::StandardAnalyzer;
-using lucene::index::IndexReader;
 using lucene::index::IndexWriter;
-using lucene::index::Term;
-using lucene::document::Document;
-using lucene::document::Field;
-using lucene::util::Reader;
+using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-		m_writer(indexdir), m_indexer(&m_writer) {
+        m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer) {
 }
 Indexer::~Indexer() {
-	_lucene_shutdown();
+    _lucene_shutdown();
 }
 void
 Indexer::index(const char *dir) {

@@ -15,7 +15,7 @@ vector<string>
 EstraierIndexReader::query(const std::string& query) {
     ESTCOND* cond = est_cond_new();
     est_cond_set_phrase(cond, query.c_str());
-    est_cond_set_max(cond, 10);
+    est_cond_set_max(cond, 100);
     int n;
     int* ids;
 

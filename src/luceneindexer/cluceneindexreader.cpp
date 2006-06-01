@@ -5,21 +5,16 @@
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;
-using lucene::analysis::standard::StandardAnalyzer;
 using lucene::document::Document;
 using lucene::index::Term;
 using lucene::search::TermQuery;
 
-CLuceneIndexReader::CLuceneIndexReader(const char* path) {
-    analyzer = new StandardAnalyzer();
-    searcher = new IndexSearcher(path);
-}
 CLuceneIndexReader::~CLuceneIndexReader() {
-    delete searcher;
-    delete analyzer;
 }
 std::vector<std::string>
 CLuceneIndexReader::query(const std::string& query) {
+    lucene::index::IndexReader* reader = manager->refReader();
+    IndexSearcher searcher(reader);
     std::vector<std::string> results;
     printf("so you want info about %s\n", query.c_str());
     TCHAR tf[CL_MAX_DIR];
@@ -27,7 +22,7 @@ CLuceneIndexReader::query(const std::string& query) {
     STRCPY_AtoT(tf, query.c_str(), CL_MAX_DIR);
     Term term(_T("path"), tf);
     TermQuery termquery(&term);
-    Hits *hits = searcher->search(&termquery);
+    Hits *hits = searcher.search(&termquery);
     int s = hits->length();
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
     for (int i = 0; i < s; ++i) {
@@ -36,7 +31,8 @@ CLuceneIndexReader::query(const std::string& query) {
         STRCPY_TtoA(path, v, CL_MAX_DIR);
         results.push_back(path);
     }
-
+    searcher.close();
+    manager->derefReader();
     return results;
 }
 std::map<std::string, time_t>

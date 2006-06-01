@@ -3,6 +3,9 @@
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
 #endif
+#ifdef HAVE_XAPIAN
+#include "xapianindexmanager.h"
+#endif
 #ifdef HAVE_ESTRAIER
 #include "estraierindexmanager.h"
 #endif
@@ -105,6 +108,7 @@ main(int argc, char** argv) {
     string daemondir = homedir+"/.kitten";
     string lucenedir = daemondir+"/lucene";
     string estraierdir = daemondir+"/estraier";
+    string xapiandir = daemondir+"/xapian";
     string dbfile = daemondir+"/sqlite.db";
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
@@ -122,14 +126,19 @@ main(int argc, char** argv) {
 
     // initialize the storage manager
     IndexManager* index = 0;
-#ifdef HAVE_ESTRAIER
-    if (index == 0) {
-        index = new EstraierIndexManager(estraierdir.c_str());
-    }
-#endif
 #ifdef HAVE_CLUCENE
     if (index == 0) {
         index = new CLuceneIndexManager(lucenedir);
+    }
+#endif
+#ifdef HAVE_XAPIAN
+    if (index == 0) {
+        index = new XapianIndexManager(xapiandir.c_str());
+    }
+#endif
+#ifdef HAVE_ESTRAIER
+    if (index == 0) {
+        index = new EstraierIndexManager(estraierdir.c_str());
     }
 #endif
 #ifdef HAVE_SQLITE

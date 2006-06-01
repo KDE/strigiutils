@@ -1,8 +1,8 @@
 #ifndef INDEXER_H
 #define INDEXER_H
 
-#include <string>
 #include "filelister.h"
+#include "cluceneindexmanager.h"
 #include "cluceneindexwriter.h"
 #include "streamindexer.h"
 
@@ -10,7 +10,8 @@ class Indexer {
 private:
 	FileLister m_lister;
 	const std::string m_indexdir;
-	CLuceneIndexWriter m_writer;
+        CLuceneIndexManager m_manager;
+        CLuceneIndexWriter m_writer;
 	jstreams::StreamIndexer m_indexer;
 
 	static bool addFileCallback(const std::string& path,

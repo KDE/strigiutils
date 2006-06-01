@@ -24,7 +24,7 @@ XapianIndexReader::getFiles(char depth) {
 }
 int
 XapianIndexReader::countDocuments() {
-    int count;
+    int count = 0;
     manager->ref();
     manager->deref();
     return count;

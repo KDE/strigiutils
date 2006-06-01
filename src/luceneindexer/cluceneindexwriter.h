@@ -2,20 +2,12 @@
 #define CLUCENEINDEXWRITER_H
 
 #include "indexwriter.h"
-#include <CLucene/clucene-config.h>
-#include <CLucene.h>
-#include <vector>
-#include <map>
 
+class CLuceneIndexManager;
 class CLuceneIndexWriter : public jstreams::IndexWriter {
 private:
+    CLuceneIndexManager* manager;
     int doccount;
-    std::string indexpath;
-    lucene::index::IndexWriter* writer;
-    lucene::analysis::Analyzer* analyzer;
-    std::map<const jstreams::Indexable*, lucene::document::Document> docs;
-    std::map<const jstreams::Indexable*, std::string> content;
-
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
@@ -26,7 +18,7 @@ protected:
     void setField(const jstreams::Indexable*, const std::string &fieldname,
         int64_t value);
 public:
-    CLuceneIndexWriter(const char* path);
+    CLuceneIndexWriter(CLuceneIndexManager* m) :manager(m), doccount(0) {}
     ~CLuceneIndexWriter();
     void commit() {};
     void deleteEntries(const std::vector<std::string>& entries) {}

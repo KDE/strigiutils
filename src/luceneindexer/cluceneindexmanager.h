@@ -9,22 +9,44 @@
 /**
  **/
 
+namespace lucene {
+    namespace analysis {
+        class Analyzer;
+    }
+    namespace index {
+        class IndexWriter;
+        class IndexReader;
+    }
+    namespace store {
+        class FSDirectory;
+    }
+}
+
 class CLuceneIndexReader;
 class CLuceneIndexWriter;
 class CLuceneIndexManager : public jstreams::IndexManager {
 private:
     pthread_mutex_t dblock;
     static pthread_mutex_t lock;
-    std::string dbfile;
+    std::string dbdir;
     CLuceneIndexReader* reader;
     CLuceneIndexWriter* writer;
+    lucene::index::IndexWriter* indexwriter;
+    lucene::index::IndexReader* indexreader;
+    lucene::analysis::Analyzer* analyzer;
+
+    void openReader();
+    void closeReader();
+    void openWriter();
+    void closeWriter();
 public:
     CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
-    const char* getDBFile() const { return dbfile.c_str(); }
 
-    void ref() {}
-    void deref() {}
+    lucene::index::IndexWriter* refWriter();
+    void derefWriter();
+    lucene::index::IndexReader* refReader();
+    void derefReader();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
 };

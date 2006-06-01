@@ -19,6 +19,10 @@ if HAVE_ESTRAIER
 kittendaemon_CXXFLAGS += -DHAVE_ESTRAIER -I$(top_srcdir)/src/estraierindexer
 kittendaemon_LDFLAGS += $(top_builddir)/src/estraierindexer/libestraierindex.la
 endif
+if HAVE_XAPIAN
+kittendaemon_CXXFLAGS += -DHAVE_XAPIAN -I$(top_srcdir)/src/xapianindexer
+kittendaemon_LDFLAGS += $(top_builddir)/src/xapianindexer/libxapianindex.la
+endif
 if HAVE_LINUXIOPRIO
 kittendaemon_CXXFLAGS += -DHAVE_LINUXIOPRIO
 endif

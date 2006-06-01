@@ -5,23 +5,11 @@
 #include <map>
 
 class CLuceneIndexManager;
-namespace lucene {
-    namespace search {
-        class IndexSearcher;
-    }
-    namespace analysis {
-        namespace standard {
-            class StandardAnalyzer;
-        }
-    }
-}
-
 class CLuceneIndexReader : public jstreams::IndexReader {
 friend class CLuceneIndexManager;
 private:
-    lucene::search::IndexSearcher* searcher;
-    lucene::analysis::standard::StandardAnalyzer* analyzer;
-    CLuceneIndexReader(const char* path);
+    CLuceneIndexManager* manager;
+    CLuceneIndexReader(CLuceneIndexManager* m) :manager(m) {}
     ~CLuceneIndexReader();
 public:
     std::vector<std::string> query(const std::string&);
