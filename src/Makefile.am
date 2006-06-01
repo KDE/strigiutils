@@ -17,5 +17,5 @@ endif
 if HAVE_OPENSSL
 INDEXER_SUBDIRS = streams streamindexer dummyindexer
 endif
-SUBDIRS = $(INDEXERS) daemon $(QT_SUBDIRS)
+SUBDIRS = $(INDEXER_SUBDIRS) $(INDEXERS) daemon $(QT_SUBDIRS)
 
