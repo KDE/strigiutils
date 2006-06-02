@@ -16,7 +16,8 @@ kittendaemon_CXXFLAGS += -DHAVE_SQLITE -I$(top_srcdir)/src/sqliteindexer
 kittendaemon_LDFLAGS += $(top_builddir)/src/sqliteindexer/libsqliteindex.la
 endif
 if HAVE_ESTRAIER
-kittendaemon_CXXFLAGS += -DHAVE_ESTRAIER -I$(top_srcdir)/src/estraierindexer
+kittendaemon_CXXFLAGS += -DHAVE_ESTRAIER -I$(top_srcdir)/src/estraierindexer \
+	$(ESTRAIERCFLAGS)
 kittendaemon_LDFLAGS += $(top_builddir)/src/estraierindexer/libestraierindex.la
 endif
 if HAVE_XAPIAN

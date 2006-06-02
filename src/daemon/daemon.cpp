@@ -126,6 +126,11 @@ main(int argc, char** argv) {
 
     // initialize the storage manager
     IndexManager* index = 0;
+#ifdef HAVE_ESTRAIER
+    if (index == 0) {
+        index = new EstraierIndexManager(estraierdir.c_str());
+    }
+#endif
 #ifdef HAVE_CLUCENE
     if (index == 0) {
         index = new CLuceneIndexManager(lucenedir);
@@ -134,11 +139,6 @@ main(int argc, char** argv) {
 #ifdef HAVE_XAPIAN
     if (index == 0) {
         index = new XapianIndexManager(xapiandir.c_str());
-    }
-#endif
-#ifdef HAVE_ESTRAIER
-    if (index == 0) {
-        index = new EstraierIndexManager(estraierdir.c_str());
     }
 #endif
 #ifdef HAVE_SQLITE
