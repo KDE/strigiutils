@@ -82,8 +82,10 @@ LIBXAPIAN=$tmpxaplib
 XAPIANCXXFLAGS=`$XAPIAN_CONFIG --cxxflags`
 
 dnl check for estraier
-PKG_CHECK_MODULES(hyperestraier, hyperestraier >= 0, have_estraier="yes", have_estraier="no")
-AM_CONDITIONAL(HAVE_ESTRAIER, test "$have_estraier" = "yes")
+AC_PATH_PROG(ESTRAIER_CONFIG, estconfig, no)
+AM_CONDITIONAL(HAVE_ESTRAIER, test "$ESTRAIER_CONFIG" != "no")
+ESTRAIERLDFLAGS=`$ESTRAIER_CONFIG --ldflags`
+ESTRAIERCFLAGS=`$ESTRAIER_CONFIG --cflags`
 
 dnl check for slqlite3
 PKG_CHECK_MODULES(sqlite3, sqlite3 >= 0, have_sqlite3="yes", have_sqlite3="no")

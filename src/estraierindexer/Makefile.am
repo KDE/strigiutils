@@ -4,8 +4,8 @@ bin_PROGRAMS = estraierindexer
 libestraierindex_la_SOURCES = estraierindexwriter.cpp estraierindexmanager.cpp \
 	estraierindexreader.cpp
 libestraierindex_la_CPPFLAGS = -I$(top_srcdir)/src/streams \
-	-I$(top_srcdir)/src/streamindexer
-libestraierindex_la_LIBADD = -lestraier -lqdbm \
+	-I$(top_srcdir)/src/streamindexer $(ESTRAIERCFLAGS)
+libestraierindex_la_LIBADD = $(ESTRAIERLDFLAGS) \
 	$(top_builddir)/src/streams/libstreams.la \
 	$(top_builddir)/src/streamindexer/libstreamindexer.la
 
