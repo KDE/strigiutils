@@ -8,14 +8,15 @@ using lucene::search::IndexSearcher;
 using lucene::document::Document;
 using lucene::index::Term;
 using lucene::search::TermQuery;
+using namespace jstreams;
 
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
-std::vector<std::string>
+std::vector<IndexedDocument>
 CLuceneIndexReader::query(const std::string& query) {
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
-    std::vector<std::string> results;
+    std::vector<IndexedDocument> results;
     printf("so you want info about %s\n", query.c_str());
     TCHAR tf[CL_MAX_DIR];
     char path[CL_MAX_DIR];
@@ -29,7 +30,9 @@ CLuceneIndexReader::query(const std::string& query) {
         Document *d = &hits->doc(i);
         const wchar_t *v = d->get(tf);
         STRCPY_TtoA(path, v, CL_MAX_DIR);
-        results.push_back(path);
+        IndexedDocument doc;
+        doc.filepath = path;
+        results.push_back(doc);
     }
     searcher.close();
     manager->derefReader();

@@ -15,7 +15,7 @@ private:
     XapianIndexReader(XapianIndexManager* m, Xapian::WritableDatabase* d);
     ~XapianIndexReader();
 public:
-    std::vector<std::string> query(const std::string&);
+    std::vector<jstreams::IndexedDocument> query(const std::string&);
     std::map<std::string, time_t> getFiles(char depth);
     int countDocuments();
 };

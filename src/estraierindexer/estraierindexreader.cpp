@@ -5,13 +5,14 @@
 #include <sstream>
 #include <assert.h>
 using namespace std;
+using namespace jstreams;
 
 EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m, ESTDB* d)
     : manager(m), db(d) {
 }
 EstraierIndexReader::~EstraierIndexReader() {
 }
-vector<string>
+vector<IndexedDocument>
 EstraierIndexReader::query(const std::string& query) {
     ESTCOND* cond = est_cond_new();
     est_cond_set_phrase(cond, query.c_str());
@@ -22,11 +23,13 @@ EstraierIndexReader::query(const std::string& query) {
     manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
     
-    std::vector<std::string> results;
+    std::vector<IndexedDocument> results;
     for (int i=0; i<n; ++i) {
         char* uri = est_db_get_doc_attr(db, ids[i], "@uri");
         if (uri) {
-            results.push_back(uri);
+            IndexedDocument doc;
+            doc.filepath = uri;
+            results.push_back(doc);
             free(uri);
         }
     }
@@ -68,6 +71,20 @@ int
 EstraierIndexReader::countDocuments() {
     manager->ref();
     int count = est_db_doc_num(db);
+    manager->deref();
+    return count;
+}
+int
+EstraierIndexReader::countWords() {
+    manager->ref();
+    int count = est_db_word_num(db);
+    manager->deref();
+    return count;
+}
+int
+EstraierIndexReader::getIndexSize() {
+    manager->ref();
+    int count = (int)est_db_size(db);
     manager->deref();
     return count;
 }

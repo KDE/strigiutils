@@ -7,12 +7,20 @@
 
 namespace jstreams {
 
+struct IndexedDocument {
+    std::string filepath;
+    std::string title;
+    std::string fragment;
+};
+
 class IndexReader {
 public:
     virtual ~IndexReader() {}
-    virtual std::vector<std::string> query(const std::string&) = 0;
+    virtual std::vector<IndexedDocument> query(const std::string&) = 0;
     virtual std::map<std::string, time_t> getFiles(char depth) = 0;
-    virtual int countDocuments() = 0;
+    virtual int countDocuments() { return -1; }
+    virtual int countWords() { return -1; }
+    virtual int getIndexSize() { return -1; }
 };
 
 }

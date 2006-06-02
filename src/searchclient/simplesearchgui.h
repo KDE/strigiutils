@@ -6,9 +6,12 @@
 
 class QLineEdit;
 class QListWidget;
+class QTextBrowser;
+class QTextDocument;
 class QListWidgetItem;
 class QStackedWidget;
 class QLabel;
+class QUrl;
 class QPushButton;
 class SimpleSearchGui : public QWidget {
 Q_OBJECT
@@ -20,7 +23,7 @@ private:
     QStackedWidget* mainview;
     QLabel* statusview;
     QLineEdit* queryfield;
-    QListWidget* itemview;
+    QTextBrowser* itemview;
     QListWidget* indexeddirs;
     QPushButton* adddir;
     QPushButton* removedir;
@@ -37,7 +40,7 @@ private slots:
     void toggleIndexing();
     void query(const QString&);
     void handleQueryResult(const QString&);
-    void openItem(QListWidgetItem*);
+    void openItem(const QUrl&);
     void addDirectory();
     void removeDirectory();
 public:

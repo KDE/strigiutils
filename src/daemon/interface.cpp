@@ -8,9 +8,12 @@ using namespace jstreams;
 
 vector<string>
 Interface::query(const string& query) {
-    vector<string> x;
-    x.push_back("impl");
-    return manager.getIndexReader()->query(query);
+    vector<IndexedDocument> docs = manager.getIndexReader()->query(query);
+    vector<string> r;
+    for (uint i=0; i <= docs.size(); ++i) {
+        r.push_back(docs[i].filepath);
+    }
+    return r;
 }
 map<string, string>
 Interface::getStatus() {
@@ -23,6 +26,12 @@ Interface::getStatus() {
     IndexReader* reader = manager.getIndexReader();
     out << reader->countDocuments();
     status["Documents indexed"]= out.str();
+    out.str("");
+    out << reader->countWords();
+    status["Unique words indexed"] = out.str();
+    out.str("");
+    out << reader->getIndexSize()/1024/1024;
+    status["Index size"] = out.str()+" Mb";
     return status;
 }
 std::string

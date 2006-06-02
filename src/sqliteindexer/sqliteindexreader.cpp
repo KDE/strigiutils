@@ -4,6 +4,7 @@
 #include <set>
 #include <sstream>
 using namespace std;
+using namespace jstreams;
 
 SqliteIndexReader::SqliteIndexReader(SqliteIndexManager* m) :manager(m) {
 
@@ -92,7 +93,7 @@ createQuery(int n, bool filterpath) {
     q <<"limit 100"; 
     return q.str();
 }
-vector<string>
+vector<IndexedDocument>
 SqliteIndexReader::query(const std::string& query) {
     string q = query;
     // replace * by %
@@ -109,7 +110,7 @@ SqliteIndexReader::query(const std::string& query) {
     }
     // split up in terms
     set<string> terms = split(q);
-    std::vector<std::string> results;
+    std::vector<IndexedDocument> results;
     if (terms.size() == 0) return results;
     string pathfilter;
     set<string>::iterator i = terms.begin();
@@ -147,7 +148,9 @@ SqliteIndexReader::query(const std::string& query) {
     }
     r = sqlite3_step(stmt);
     while (r == SQLITE_ROW) {
-        results.push_back((const char*)sqlite3_column_text(stmt, 0));
+        IndexedDocument doc;
+        doc.filepath = (const char*)sqlite3_column_text(stmt, 0);
+        results.push_back(doc);
         r = sqlite3_step(stmt);
     }
     if (r != SQLITE_DONE) {

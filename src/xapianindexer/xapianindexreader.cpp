@@ -5,6 +5,7 @@
 #include <sstream>
 #include <assert.h>
 using namespace std;
+using namespace jstreams;
 using namespace Xapian;
 
 XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
@@ -12,9 +13,9 @@ XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
 }
 XapianIndexReader::~XapianIndexReader() {
 }
-vector<string>
+vector<IndexedDocument>
 XapianIndexReader::query(const std::string& query) {
-    std::vector<std::string> results;
+    std::vector<IndexedDocument> results;
     return results;
 }
 map<string, time_t>
