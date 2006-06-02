@@ -8,13 +8,14 @@ libestraierindex_la_CPPFLAGS = -I$(top_srcdir)/src/streams \
 libestraierindex_la_LIBADD = $(ESTRAIERLIBS) \
 	$(top_builddir)/src/streams/libstreams.la \
 	$(top_builddir)/src/streamindexer/libstreamindexer.la
+libestraierindex_la_LDFLAGS = $(ESTRAIERLDFLAGS)
 
 estraierindexer_SOURCES = estraierindexer.cpp indexer.cpp
 estraierindexer_LDFLAGS = libestraierindex.la
 estraierindexer_LDADD = $(top_builddir)/src/streams/libstreams.la \
 	$(top_builddir)/src/streamindexer/libstreamindexer.la
 estraierindexer_CPPFLAGS = -I$(top_srcdir)/src/streams \
-	-I$(top_srcdir)/src/streamindexer
+	-I$(top_srcdir)/src/streamindexer $(ESTRAIERCFLAGS)
 
 noinst_HEADERS = indexer.h estraierindexmanager.h estraierindexreader.h \
 	estraierindexwriter.h
