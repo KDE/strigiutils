@@ -5,6 +5,11 @@
 using namespace std;
 using namespace jstreams;
 
+struct EstraierData {
+    ESTDOC* doc;
+    int nwords;
+};
+
 EstraierIndexWriter::EstraierIndexWriter(EstraierIndexManager *m, ESTDB* d)
         : manager(m), db(d) {
 }
@@ -19,9 +24,13 @@ EstraierIndexWriter::addStream(const Indexable* idx, const string& fieldname,
 void
 EstraierIndexWriter::addField(const Indexable* idx, const string& name,
         const string& value) {
-    ESTDOC* doc = (ESTDOC*)idx->getWriterData();
+    EstraierData* data = static_cast<EstraierData*>(idx->getWriterData());
+    ESTDOC* doc = data->doc;
     if (name == "content") {
-        est_doc_add_text(doc, value.c_str());
+        if (data->nwords < 10000) {
+            est_doc_add_text(doc, value.c_str());
+            data->nwords++;
+        }
     } else {
         est_doc_add_attr(doc, name.c_str(), value.c_str());
     }
@@ -34,16 +43,21 @@ EstraierIndexWriter::setField(const Indexable* idx, const std::string& name,
 void
 EstraierIndexWriter::startIndexable(Indexable* idx) {
     // allocate a new estraier document
-    ESTDOC* doc = est_doc_new();
-    idx->setWriterData(doc);
+    EstraierData* data = new EstraierData();
+    data->doc = est_doc_new();
+    data->nwords = 0;
+    idx->setWriterData(data);
 }
 /*
     Close all left open indexwriters for this path.
 */
 void
 EstraierIndexWriter::finishIndexable(const Indexable* idx) {
-    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());
+    EstraierData* data = static_cast<EstraierData*>(idx->getWriterData());
+    ESTDOC* doc = data->doc;
     // add required url field
+    printf("saving %s\n", idx->getName().c_str());
+
     est_doc_add_attr(doc, "@uri", idx->getName().c_str());
     char numbuf[64];
     sprintf(numbuf, "%lli", idx->getMTime());
@@ -56,6 +70,7 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
     if (!ok) printf("could not write document\n");
     // deallocate the estraier document
     est_doc_delete(doc);
+    delete data;
     manager->deref();
 }
 void
