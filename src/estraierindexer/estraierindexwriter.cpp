@@ -56,7 +56,6 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
     EstraierData* data = static_cast<EstraierData*>(idx->getWriterData());
     ESTDOC* doc = data->doc;
     // add required url field
-    printf("saving %s\n", idx->getName().c_str());
 
     est_doc_add_attr(doc, "@uri", idx->getName().c_str());
     char numbuf[64];
@@ -75,33 +74,41 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
 }
 void
 EstraierIndexWriter::commit() {
+    manager->ref();
+    //est_db_optimize(db, 0);
+    est_db_sync(db);
+    manager->deref();
 }
 /**
  * Delete all files that start with the specified path.
  **/
 void
 EstraierIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
-    vector<string>::const_iterator i;
-    for (i = entries.begin(); i != entries.end(); ++i) {
-        deleteEntry(*i);
-    }
-}
-void
-EstraierIndexWriter::deleteEntry(const string& path) {
-    ESTCOND* cond = est_cond_new();
-    string q = "@uri STRBW "+path;
-    est_cond_add_attr(cond, q.c_str());
-    int n;
-    int* ids;
     manager->ref();
-    ids = est_db_search(db, cond, &n, NULL);
-    
-    for (int i=0; i<n; ++i) {
-        est_db_out_doc(db, ids[i], 0);
-    }
-    manager->deref();
 
-    // clean up
-    est_cond_delete(cond);
-    free(ids);
+    // retrieve the ids of all documents
+    int n;
+    int* all;
+    ESTCOND* c = est_cond_new();
+    est_cond_add_attr(c, "@id NUMGE 0");
+    all = est_db_search(db, c, &n, NULL);
+    est_cond_delete(c);
+
+    // loop over all documents and check if they should be deleted
+    vector<string>::const_iterator j;
+    for (int i=0; i<n; ++i) {
+        int id = all[i];
+        char* uri = est_db_get_doc_attr(db, id, "@uri");
+        int len = strlen(uri);
+        for (j = entries.begin(); j != entries.end(); ++j) {
+            if (j->length() <= len
+                    && strncmp(j->c_str(), uri, j->length()) == 0) {
+                est_db_out_doc(db, id, 0);
+                break;
+            }
+        }
+        free(uri);
+    }
+    free(all);
+    manager->deref();
 }
