@@ -19,32 +19,12 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 char
 TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
-    // very simple algorithm to get out sequences of ascii characters
-    // we actually miss characters that are not on the edge between reads
+    // pass a piece of text to the indexer. it's up to the indexer to break
+    // it down into words
     const char* b;
-    int32_t nread = in->read(b, 1, 0);
-    // check that this is text file
-    const char* end;
-    const char* p;
-
-    while (nread >= 0) {
-        end = b + nread;
-        p = b;
-        while (p != end) {
-            // find the start of a word
-            while (p < end && !isalpha(*p)) ++p;
-            if (p != end) {
-                const char* e = p + 1;
-                while (e < end && isalpha(*e)) ++e;
-                if (e != end && e-p > 2 && e-p < 30) {
-                    std::string field(p, e-p);
-//                    printf("%s %s\n", filename.c_str(), field.c_str());
-                    i->addField("content", field);
-                }
-                p = e;
-            }
-        }
-        nread = in->read(b, 1, 0);
+    int32_t nread = in->read(b, 1024*1024, 0);
+    if (nread > 0) {
+        i->addText(b, nread);
     }
     if (nread != Eof) {
         error = in->getError();

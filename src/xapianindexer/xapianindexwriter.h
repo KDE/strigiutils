@@ -15,12 +15,10 @@ private:
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
-    void addStream(const jstreams::Indexable*, const std::string& fieldname,
-        jstreams::StreamBase<wchar_t>* datastream);
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void addText(const jstreams::Indexable* idx, const char* text,
+        int32_t length);
+    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
-    void setField(const jstreams::Indexable*, const std::string &fieldname,
-        int64_t value);
     XapianIndexWriter(XapianIndexManager*, Xapian::WritableDatabase*);
     ~XapianIndexWriter();
 public:

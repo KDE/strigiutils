@@ -22,48 +22,15 @@ struct CLuceneDocData {
 CLuceneIndexWriter::~CLuceneIndexWriter() {
 }
 void
-CLuceneIndexWriter::addStream(const Indexable* idx,
-        const string& fieldname, StreamBase<wchar_t>* datastream) {
-    // i'm rethinking how to feed streams
-    assert(0);
-/*    Document *doc = docs[idx];
-    if (doc == 0) {
-        doc = new Document();
-    } else {
-        docs[idx] = 0;
-    }
-    Reader* reader = new Reader(datastream, false);
-#if defined(_UCS2)
-    TCHAR fn[CL_MAX_DIR];
-    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
-    doc->add( *Field::Text(fn, reader) );
-#endif
-    if (writers.size() < activewriter+1) {
-        addIndexWriter();
-    }
-    lucene::index::IndexWriter* writer = writers[activewriter];
-    activewriter++;
-    try {
-        writer->addDocument(doc);
-    } catch (...) {
-        // empty catch: the exception is the result of the document encoding
-        // not being correct
-    }
-
-    delete doc;
-    activewriter--;*/
+CLuceneIndexWriter::addText(const Indexable* idx, const char* text,
+        int32_t length) {
+    CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
+    doc->content.append(text, length);
 }
-/*
-   If there's an open document, add fields to that. If there isn't open one.
-*/
 void
-CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
+CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
         const string& value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
-    if (fieldname == "content") {
-        doc->content += value + " ";
-        return;
-    }
 #if defined(_UCS2)
     TCHAR fn[CL_MAX_DIR];
     TCHAR fv[CL_MAX_DIR];
@@ -73,10 +40,6 @@ CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
 #else
     doc->doc.add(*Field::Keyword(fieldname.c_str(), value.c_str()));
 #endif
-}
-void
-CLuceneIndexWriter::setField(const Indexable*, const std::string &fieldname,
-        int64_t value) {
 }
 void
 CLuceneIndexWriter::startIndexable(Indexable* idx) {
@@ -89,7 +52,7 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    addField(idx, "path", idx->getName());
+    setField(idx, "path", idx->getName());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     if (doc->content.length() > 0) {
 #if defined(_UCS2)

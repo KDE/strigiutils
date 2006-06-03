@@ -10,7 +10,6 @@ class SqliteIndexManager;
 class SqliteIndexReader : public jstreams::IndexReader {
 friend class SqliteIndexManager;
 private:
-    sqlite3 *db;
     SqliteIndexManager* manager;
     SqliteIndexReader(SqliteIndexManager* m);
     ~SqliteIndexReader();

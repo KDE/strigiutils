@@ -11,12 +11,9 @@ private:
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
-    void addStream(const jstreams::Indexable*, const std::string& fieldname,
-        jstreams::StreamBase<wchar_t>* datastream);
-    void addField(const jstreams::Indexable*, const std::string &fieldname,
-        const std::string &value);
+    void addText(const jstreams::Indexable*, const char* text, int32_t length);
     void setField(const jstreams::Indexable*, const std::string &fieldname,
-        int64_t value);
+        const std::string &value);
 public:
     CLuceneIndexWriter(CLuceneIndexManager* m) :manager(m), doccount(0) {}
     ~CLuceneIndexWriter();

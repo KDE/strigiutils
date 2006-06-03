@@ -1,33 +1,13 @@
 #include "sqliteindexreader.h"
 #include "sqliteindexmanager.h"
-#include <sqlite3.h>
 #include <set>
 #include <sstream>
 using namespace std;
 using namespace jstreams;
 
 SqliteIndexReader::SqliteIndexReader(SqliteIndexManager* m) :manager(m) {
-
-    int r = sqlite3_open(manager->getDBFile(), &db);
-    // any value other than SQLITE_OK is an error
-    if (r != SQLITE_OK) {
-        printf("could not open db\n");
-        db = 0;
-        return;
-    }
-    // speed up by being unsafe (we're only reading anyway)
-    r = sqlite3_exec(db, "PRAGMA synchronous = OFF", 0, 0, 0);
-    if (r != SQLITE_OK) {
-        printf("could not speed up database\n");
-    }
 }
 SqliteIndexReader::~SqliteIndexReader() {
-    if (db) {
-        int r = sqlite3_close(db);
-        if (r != SQLITE_OK) {
-            printf("could not create table\n");
-        }
-    }
 }
 set<string>
 split(const std::string& q) {
@@ -128,7 +108,7 @@ SqliteIndexReader::query(const std::string& query) {
     string sql = createQuery(terms.size(), pathfilter.length() > 0);
     //printf("%s\n", sql.c_str());
 
-    manager->ref();
+    sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
     if (r != SQLITE_OK) {
@@ -163,7 +143,8 @@ SqliteIndexReader::query(const std::string& query) {
 map<string, time_t>
 SqliteIndexReader::getFiles(char depth) {
     map<string, time_t> files;
-    manager->ref();
+    sqlite3* db = manager->ref();
+    printf("%p\n", db);
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, "select path, mtime from files where depth = ?",
         0, &stmt, 0);
@@ -181,7 +162,7 @@ SqliteIndexReader::getFiles(char depth) {
         r = sqlite3_step(stmt);
     }
     if (r != SQLITE_DONE) {
-        printf("error reading query results: %s\n", sqlite3_errmsg(db));
+        printf("error reading query results: %i %s\n", r, sqlite3_errmsg(db));
     }
     sqlite3_finalize(stmt);
     manager->deref();
@@ -189,20 +170,25 @@ SqliteIndexReader::getFiles(char depth) {
 }
 int
 SqliteIndexReader::countDocuments() {
-    manager->ref();
+    sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare(db, "select count(*) from files;",
-        0, &stmt, 0);
+    int r = sqlite3_prepare(db, "select count(*) from files;", 0, &stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare count query: %s\n", sqlite3_errmsg(db));
         manager->deref();
         return -1;
     }
     r = sqlite3_step(stmt);
+    if (r != SQLITE_ROW) {
+        printf("could not read count query: %i %s\n", r, sqlite3_errmsg(db));
+        manager->deref();
+        return -1;
+    }
     int count = sqlite3_column_int(stmt, 0);
     r = sqlite3_step(stmt);
     if (r != SQLITE_DONE) {
-        printf("error reading count query results: %s\n", sqlite3_errmsg(db));
+        printf("error reading count query results: %i %s\n", r,
+            sqlite3_errmsg(db));
     }
     sqlite3_finalize(stmt);
     manager->deref();

@@ -25,12 +25,11 @@ class IndexWriter {
 friend class Indexable;
 protected:
     virtual void startIndexable(Indexable*) = 0;
-    virtual void addStream(const Indexable*, const std::string& fieldname,
-        jstreams::StreamBase<wchar_t>* datastream) = 0;
-    virtual void addField(const Indexable*, const std::string &fieldname,
-        const std::string& value) = 0;
+    virtual void addText(const Indexable*, const char* text, int32_t length)=0;
     virtual void setField(const Indexable*, const std::string &fieldname,
-        int64_t value) = 0;
+        const std::string& value) = 0;
+//    virtual void setField(const Indexable*, const std::string &fieldname,
+//        int64_t value) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
 public:
     virtual ~IndexWriter() {}
@@ -54,13 +53,11 @@ public:
         w->startIndexable(this);
     }
     ~Indexable() { writer->finishIndexable(this); }
-    void addStream(const std::string& fieldname,
-            jstreams::StreamBase<wchar_t>* datastream) {
-        writer->addStream(this, fieldname, datastream);
+    void addText(const char* text, int32_t length) {
+        writer->addText(this, text, length);
     }
-    void addField(const std::string &fieldname,
-            const std::string &value) {
-        writer->addField(this, fieldname, value);
+    void setField(const std::string& fieldname, const std::string& value) {
+        writer->setField(this, fieldname, value);
     }
     const std::string& getName() const { return name; }
     int64_t getMTime() const { return mtime; }

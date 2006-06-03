@@ -8,33 +8,10 @@ using namespace jstreams;
 
 SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
         : manager(m) {
-
-    int r = sqlite3_open(manager->getDBFile(), &db);
-    // any value other than SQLITE_OK is an error
-    if (r != SQLITE_OK) {
-        printf("could not open db\n");
-        db = 0;
-        return;
-    }
-
-    // create temporary tables
-    const char* sql = "PRAGMA synchronous = OFF;"
-        "PRAGMA auto_vacuum = 1;"
-        "PRAGMA temp_store = MEMORY;"
-        "create temp table tempidx (fileid integer, name text, value);"
-        "create temp table tempfilewords (fileid integer, word text, "
-            "count integer); "
-        "create index tempfilewords_word on tempfilewords(word);"
-        "create index tempfilewords_fileid on tempfilewords(fileid);"
-        // "begin immediate transaction;"
-        ;
-    r = sqlite3_exec(db, sql, 0,0,0);
-    if (r != SQLITE_OK) {
-        printf("could not init writer: %i %s\n", r, sqlite3_errmsg(db));
-    }
     temprows = 0;
 
     // prepare the sql statements
+    const char* sql;
     sql = "insert into tempidx (fileid, name, value) values(?, ?, ?)";
     prepareStmt(insertvaluestmt, sql, strlen(sql));
     sql = "select fileid, mtime from files where path = ?;";
@@ -50,25 +27,22 @@ SqliteIndexWriter::~SqliteIndexWriter() {
     finalizeStmt(getfilestmt);
     finalizeStmt(updatefilestmt);
     finalizeStmt(insertfilestmt);
-    if (db) {
-        int r = sqlite3_close(db);
-        if (r != SQLITE_OK) {
-            printf("could not close the database\n");
-        }
-    }
 }
 void
 SqliteIndexWriter::prepareStmt(sqlite3_stmt*& stmt, const char* sql,
         int sqllength) {
+    sqlite3* db = manager->ref();
     int r = sqlite3_prepare(db, sql, sqllength,& stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
         stmt = 0;
     }
+    manager->deref();
 }
 void
 SqliteIndexWriter::finalizeStmt(sqlite3_stmt*& stmt) {
+    sqlite3* db = manager->ref();
     if (stmt) {
         int r = sqlite3_finalize(stmt);
         stmt = 0;
@@ -76,35 +50,49 @@ SqliteIndexWriter::finalizeStmt(sqlite3_stmt*& stmt) {
             printf("could not prepare statement: %s\n", sqlite3_errmsg(db));
         }
     }
+    manager->deref();
 }
 void
-SqliteIndexWriter::addStream(const Indexable* idx, const string& fieldname,
-        StreamBase<wchar_t>* datastream) {
+SqliteIndexWriter::addText(const Indexable* idx, const char* text,
+        int32_t length) {
+    // very simple algorithm to get out sequences of ascii characters
+    // we actually miss characters that are not on the edge between reads
+    int64_t id = idx->getId();
+    map<int64_t, map<string, int> >::iterator m = content.find(id);
+    if (m == content.end()) {
+        content[id];
+        m = content.find(id);
+    }
+    map<string, int>* words = &m->second;
+ 
+    const char* end = text + length;
+    const char* p = text;
+    while (p != end) {
+        // find the start of a word
+        while (p < end && !isalpha(*p)) ++p;
+        if (p != end) {
+            const char* e = p + 1;
+            while (e < end && isalpha(*e)) ++e;
+            if (e != end && e-p > 2 && e-p < 30) {
+                std::string field(p, e-p);
+                map<string, int>::iterator i = words->find(field);
+                if (i == m->second.end()) {
+                    (*words)[field] = 1;
+                } else {
+                    i->second++;
+                }
+            }
+            p = e;
+        }
+    }
 }
 void
-SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
+SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
         const string& value) {
     int64_t id = idx->getId();
     //id = -1; // debug
     if (id == -1) return;
-    if (fieldname == "content") {
-        // find a pointer to the value
-        map<int64_t, map<string, int> >::iterator m = content.find(id);
-        if (m == content.end()) {
-            // no value at all yet, so fine to add one
-            content[id][value]++;
-        } else if (m->second.size() >= 1000) {
-            map<string, int>::iterator i = m->second.find(value);
-            if (i != m->second.end()) {
-                i->second++;
-            }
-        } else {
-            content[id][value]++;
-        }
-            
-        return;
-    }
-    manager->ref();
+    sqlite3* db = manager->ref();
     sqlite3_bind_int64(insertvaluestmt, 1, idx->getId());
     sqlite3_bind_text(insertvaluestmt, 2, fieldname.c_str(),
         fieldname.length(), SQLITE_STATIC);
@@ -122,17 +110,12 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
     manager->deref();
 }
 void
-SqliteIndexWriter::setField(const Indexable*, const std::string &fieldname,
-        int64_t value) {
-}
-
-void
 SqliteIndexWriter::startIndexable(Indexable* idx) {
     // get the file name
     const char* name = idx->getName().c_str();
     size_t namelen = idx->getName().length();
 
-    manager->ref();
+    sqlite3* db = manager->ref();
     int64_t id = -1;
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
@@ -159,7 +142,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         return;
     }
 
-    manager->ref();
+    sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db,
         "insert into tempfilewords (fileid, word, count) values(?, ?,?);",
@@ -210,7 +193,7 @@ SqliteIndexWriter::commit() {
         //"commit;"
         //"begin immediate transaction;"
         ;
-    manager->ref();
+    sqlite3* db = manager->ref();
     int r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not store new data: %s\n", sqlite3_errmsg(db));
@@ -224,7 +207,7 @@ SqliteIndexWriter::commit() {
  **/
 void
 SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
-    manager->ref();
+    sqlite3* db = manager->ref();
     // turn on case sensitivity
     sqlite3_exec(db, "PRAGMA case_sensitive_like = 1", 0, 0, 0);
 

@@ -1,7 +1,6 @@
 #include "sqliteindexmanager.h"
 #include "sqliteindexreader.h"
 #include "sqliteindexwriter.h"
-#include "sqlite3.h"
 using namespace std;
 using namespace jstreams;
 
@@ -16,12 +15,30 @@ SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     dblock = lock;
     this->dbfile = dbfile;
 
+}
+SqliteIndexManager::~SqliteIndexManager() {
+    std::map<pthread_t, SqliteIndexReader*>::iterator r;
+    for (r = readers.begin(); r != readers.end(); ++r) {
+        delete r->second;
+    }
+    std::map<pthread_t, SqliteIndexWriter*>::iterator w;
+    for (w = writers.begin(); w != writers.end(); ++w) {
+        delete w->second;
+    }
+    std::map<pthread_t, sqlite3*>::iterator d;
+    for (d = dbs.begin(); d != dbs.end(); ++d) {
+        sqlite3_close(d->second);
+    }
+}
+sqlite3*
+SqliteIndexManager::opendb(const char* path) {
+    printf("opening db\n");
     sqlite3* db;
-    int r = sqlite3_open(dbfile, &db);
+    int r = sqlite3_open(path, &db);
     // any value other than SQLITE_OK is an error
     if (r != SQLITE_OK) {
         printf("could not open db\n");
-        return;
+        return 0;
     }
     // speed up by being unsafe and keeping temp tables in memory
     r = sqlite3_exec(db, "PRAGMA synchronous = OFF;"
@@ -31,7 +48,8 @@ SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
         printf("could not speed up database\n");
     }
     // create the tables required
-    const char* sql ="create table files (fileid integer primary key, "
+    const char* sql;
+    sql ="create table files (fileid integer primary key, "
         "path text, mtime integer, size integer, depth integer,"
         "unique (path));"
         "create index files_mtime on files(mtime);"
@@ -51,21 +69,31 @@ SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     if (r != SQLITE_OK) {
         printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
     }
-    sqlite3_close(db);
-}
-SqliteIndexManager::~SqliteIndexManager() {
-    std::map<pthread_t, SqliteIndexReader*>::iterator r;
-    for (r = readers.begin(); r != readers.end(); ++r) {
-        delete r->second;
+
+    // create temporary tables
+    sql = "create temp table tempidx (fileid integer, name text, value);"
+        "create temp table tempfilewords (fileid integer, word text, "
+            "count integer); "
+        "create index tempfilewords_word on tempfilewords(word);"
+        "create index tempfilewords_fileid on tempfilewords(fileid);"
+        // "begin immediate transaction;"
+        ;
+    r = sqlite3_exec(db, sql, 0,0,0);
+    if (r != SQLITE_OK) {
+        printf("could not init writer: %i %s\n", r, sqlite3_errmsg(db));
     }
-    std::map<pthread_t, SqliteIndexWriter*>::iterator w;
-    for (w = writers.begin(); w != writers.end(); ++w) {
-        delete w->second;
-    }
+    return db;
 }
-void
+sqlite3*
 SqliteIndexManager::ref() {
     pthread_mutex_lock(&dblock);
+    pthread_t self = pthread_self();
+    sqlite3* db = dbs[self];
+    if (db == 0) {
+        db = opendb(dbfile.c_str());
+        dbs[self] = db;
+    }
+    return db;
 }
 void
 SqliteIndexManager::deref() {
@@ -105,4 +133,4 @@ SqliteIndexManager::escapeSqlValue(const string& value) {
         p = v.find('\'', p+2);
     }
     return v; 
-}    
+}

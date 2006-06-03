@@ -12,16 +12,12 @@ XapianIndexWriter::XapianIndexWriter(XapianIndexManager *m,
 XapianIndexWriter::~XapianIndexWriter() {
 }
 void
-XapianIndexWriter::addStream(const Indexable* idx, const string& fieldname,
-        StreamBase<wchar_t>* datastream) {
+XapianIndexWriter::addText(const Indexable* idx, const char* text,
+        int32_t length) {
 }
 void
-XapianIndexWriter::addField(const Indexable* idx, const string& name,
+XapianIndexWriter::setField(const Indexable* idx, const string& name,
         const string& value) {
-}
-void
-XapianIndexWriter::setField(const Indexable* idx, const std::string& name,
-        int64_t value) {
 }
 
 void

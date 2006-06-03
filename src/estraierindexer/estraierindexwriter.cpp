@@ -18,43 +18,30 @@ EstraierIndexWriter::~EstraierIndexWriter() {
     commit();
 }
 void
-EstraierIndexWriter::addStream(const Indexable* idx, const string& fieldname,
-        StreamBase<wchar_t>* datastream) {
+EstraierIndexWriter::addText(const Indexable* idx, const char* text,
+        int32_t length) {
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
+    string value(text, length);
+    est_doc_add_text(doc, value.c_str());
 }
 void
-EstraierIndexWriter::addField(const Indexable* idx, const string& name,
+EstraierIndexWriter::setField(const Indexable* idx, const string& name,
         const string& value) {
-    EstraierData* data = static_cast<EstraierData*>(idx->getWriterData());
-    ESTDOC* doc = data->doc;
-    if (name == "content") {
-        if (data->nwords < 10000) {
-            est_doc_add_text(doc, value.c_str());
-            data->nwords++;
-        }
-    } else {
-        est_doc_add_attr(doc, name.c_str(), value.c_str());
-    }
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
+    est_doc_add_attr(doc, name.c_str(), value.c_str());
 }
-void
-EstraierIndexWriter::setField(const Indexable* idx, const std::string& name,
-        int64_t value) {
-}
-
 void
 EstraierIndexWriter::startIndexable(Indexable* idx) {
     // allocate a new estraier document
-    EstraierData* data = new EstraierData();
-    data->doc = est_doc_new();
-    data->nwords = 0;
-    idx->setWriterData(data);
+    ESTDOC* doc = est_doc_new();
+    idx->setWriterData(doc);
 }
 /*
     Close all left open indexwriters for this path.
 */
 void
 EstraierIndexWriter::finishIndexable(const Indexable* idx) {
-    EstraierData* data = static_cast<EstraierData*>(idx->getWriterData());
-    ESTDOC* doc = data->doc;
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
     // add required url field
 
     est_doc_add_attr(doc, "@uri", idx->getName().c_str());
@@ -69,7 +56,6 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
     if (!ok) printf("could not write document\n");
     // deallocate the estraier document
     est_doc_delete(doc);
-    delete data;
     manager->deref();
 }
 void
@@ -99,7 +85,7 @@ EstraierIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     for (int i=0; i<n; ++i) {
         int id = all[i];
         char* uri = est_db_get_doc_attr(db, id, "@uri");
-        int len = strlen(uri);
+        uint len = strlen(uri);
         for (j = entries.begin(); j != entries.end(); ++j) {
             if (j->length() <= len
                     && strncmp(j->c_str(), uri, j->length()) == 0) {

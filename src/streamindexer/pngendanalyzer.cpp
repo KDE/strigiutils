@@ -25,10 +25,10 @@ PngEndAnalyzer::analyze(std::string filename, InputStream *in,
          + ((unsigned char)h[21]<<16) + ((unsigned char)h[20]<<24);
     ostringstream v;
     v << x;
-    i->addField("width", v.str());
+    i->setField("width", v.str());
     v.str("");
     v << y;
-    i->addField("height", v.str());
+    i->setField("height", v.str());
     return 0;
 }
 

@@ -2,6 +2,7 @@
 #define SQLITEINDEXMANAGER_H
 
 #include "indexmanager.h"
+#include <sqlite3.h>
 #include <pthread.h>
 #include <string>
 #include <map>
@@ -21,16 +22,18 @@ private:
     std::string dbfile;
     std::map<pthread_t, SqliteIndexReader*> readers;
     std::map<pthread_t, SqliteIndexWriter*> writers;
+    std::map<pthread_t, sqlite3*> dbs;
+
 public:
     SqliteIndexManager(const char* path);
     ~SqliteIndexManager();
-    const char* getDBFile() const { return dbfile.c_str(); }
 
-    void ref();
+    sqlite3* ref();
     void deref();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
     static std::string escapeSqlValue(const std::string& value);
+    static sqlite3* opendb(const char*);
 };
 jstreams::IndexManager*
 createSqliteIndexManager(const char* path);
