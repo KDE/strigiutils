@@ -106,7 +106,7 @@ main(int argc, char** argv) {
 
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.kitten";
-    string lucenedir = daemondir+"/lucene";
+    string lucenedir = daemondir+"/clucene";
     string estraierdir = daemondir+"/estraier";
     string xapiandir = daemondir+"/xapian";
     string dbfile = daemondir+"/sqlite.db";

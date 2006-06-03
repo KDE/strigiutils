@@ -41,9 +41,42 @@ CLuceneIndexReader::query(const std::string& query) {
 std::map<std::string, time_t>
 CLuceneIndexReader::getFiles(char depth) {
     std::map<std::string, time_t> files;
+    lucene::index::IndexReader* reader = manager->refReader();
+    IndexSearcher searcher(reader);
+    TCHAR tstr[CL_MAX_DIR];
+    char cstr[CL_MAX_DIR];
+    snprintf(cstr, CL_MAX_DIR, "%i", depth);
+    STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
+    Term term(_T("depth"), tstr);
+    TermQuery termquery(&term);
+    Hits *hits = searcher.search(&termquery);
+    int s = hits->length();
+    STRCPY_AtoT(tstr, "path", CL_MAX_DIR);
+    TCHAR tstr2[CL_MAX_DIR];
+    STRCPY_AtoT(tstr2, "mtime", CL_MAX_DIR);
+    for (int i = 0; i < s; ++i) {
+        Document *d = &hits->doc(i);
+        const TCHAR* v = d->get(tstr2);
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        time_t mtime = atoi(cstr);
+        v = d->get(tstr);
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        files[cstr] = mtime;
+    }
+    searcher.close();
+    manager->derefReader();
+    printf("got %i files at depth %i\n", files.size(), depth);
     return files;
 }
 int
 CLuceneIndexReader::countDocuments() {
-    return 0;
+    return manager->docCount();
+}
+int
+CLuceneIndexReader::countWords() {
+    return -1;
+}
+int
+CLuceneIndexReader::getIndexSize() {
+    return -1;
 }

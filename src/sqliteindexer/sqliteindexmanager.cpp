@@ -102,25 +102,25 @@ SqliteIndexManager::deref() {
 IndexReader*
 SqliteIndexManager::getIndexReader() {
     pthread_t self = pthread_self();
-    ref();
     SqliteIndexReader* r = readers[self];
     if (r == 0) {
         r = new SqliteIndexReader(this);
+        ref();
         readers[self] = r;
+        deref();
     }
-    deref();
     return r;
 }
 IndexWriter*
 SqliteIndexManager::getIndexWriter() {
     pthread_t self = pthread_self();
-    ref();
     SqliteIndexWriter* w = writers[self];
     if (w == 0) {
         w = new SqliteIndexWriter(this);
+        ref();
         writers[self] = w;
+        deref();
     }
-    deref();
     return w;
 }
 string

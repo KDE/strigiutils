@@ -4,6 +4,7 @@
 #include <CLucene.h>
 #include "stringreader.h"
 #include "inputstreamreader.h"
+#include <sstream>
 #include <assert.h>
 
 using lucene::index::IndexWriter;
@@ -53,6 +54,13 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     setField(idx, "path", idx->getName());
+//    printf("%s\n", idx->getName().c_str());
+    ostringstream o;
+    o << (int)idx->getDepth();
+    setField(idx, "depth", o.str());
+    o.str("");
+    o << idx->getMTime();
+    setField(idx, "mtime", o.str());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
@@ -60,9 +68,9 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
             false);
         InputStreamReader streamreader(&sr);
         Reader* reader = new Reader(&streamreader, false);
-        doc->doc.add( *Field::Text(L"content", reader) );
+        doc->doc.add( *Field::Text(L"content", reader, true) );
 #else
-        doc->doc.add(*Field::Keyword("content", doc->content.c_str()));
+        doc->doc.add(*Field::Text("content", doc->content.c_str(), true));
 #endif
         lucene::index::IndexWriter* writer = manager->refWriter();
         writer->addDocument(&doc->doc);

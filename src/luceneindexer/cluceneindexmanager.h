@@ -49,6 +49,7 @@ public:
     void derefReader();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
+    int docCount();
 };
 
 jstreams::IndexManager*

@@ -11,6 +11,7 @@ class SqliteIndexManager;
 class SqliteIndexWriter : public jstreams::IndexWriter {
 friend class SqliteIndexManager;
 private:
+    sqlite3* dbcheck;
     SqliteIndexManager* manager;
     sqlite3_stmt *insertvaluestmt, *getfilestmt, *updatefilestmt,
         *insertfilestmt;
@@ -18,9 +19,9 @@ private:
     std::map<int64_t, std::map<std::string, int> > content;
 
     int temprows;
-    void prepareStmt(sqlite3_stmt*& stmt, const char* sql,
+    void prepareStmt(sqlite3* db, sqlite3_stmt*& stmt, const char* sql,
         int sqllength);
-    void finalizeStmt(sqlite3_stmt*& stmt);
+    void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);

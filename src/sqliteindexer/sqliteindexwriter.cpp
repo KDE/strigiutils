@@ -1,8 +1,8 @@
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
-#include <sqlite3.h>
 #include <vector>
 #include <sstream>
+#include <cassert>
 using namespace std;
 using namespace jstreams;
 
@@ -12,37 +12,39 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
 
     // prepare the sql statements
     const char* sql;
+    sqlite3* db = manager->ref();
+    dbcheck = db;
     sql = "insert into tempidx (fileid, name, value) values(?, ?, ?)";
-    prepareStmt(insertvaluestmt, sql, strlen(sql));
+    prepareStmt(db, insertvaluestmt, sql, strlen(sql));
     sql = "select fileid, mtime from files where path = ?;";
-    prepareStmt(getfilestmt, sql, strlen(sql));
+    prepareStmt(db, getfilestmt, sql, strlen(sql));
     sql = "update files set mtime = ?;";
-    prepareStmt(updatefilestmt, sql, strlen(sql));
+    prepareStmt(db, updatefilestmt, sql, strlen(sql));
     sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
-    prepareStmt(insertfilestmt, sql, strlen(sql));
+    prepareStmt(db, insertfilestmt, sql, strlen(sql));
+    manager->deref();
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
     commit();
-    finalizeStmt(insertvaluestmt);
-    finalizeStmt(getfilestmt);
-    finalizeStmt(updatefilestmt);
-    finalizeStmt(insertfilestmt);
+    sqlite3* db = manager->ref();
+    finalizeStmt(db, insertvaluestmt);
+    finalizeStmt(db, getfilestmt);
+    finalizeStmt(db, updatefilestmt);
+    finalizeStmt(db, insertfilestmt);
+    manager->deref();
 }
 void
-SqliteIndexWriter::prepareStmt(sqlite3_stmt*& stmt, const char* sql,
-        int sqllength) {
-    sqlite3* db = manager->ref();
+SqliteIndexWriter::prepareStmt(sqlite3* db, sqlite3_stmt*& stmt,
+        const char* sql, int sqllength) {
     int r = sqlite3_prepare(db, sql, sqllength,& stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
         stmt = 0;
     }
-    manager->deref();
 }
 void
-SqliteIndexWriter::finalizeStmt(sqlite3_stmt*& stmt) {
-    sqlite3* db = manager->ref();
+SqliteIndexWriter::finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt) {
     if (stmt) {
         int r = sqlite3_finalize(stmt);
         stmt = 0;
@@ -50,7 +52,6 @@ SqliteIndexWriter::finalizeStmt(sqlite3_stmt*& stmt) {
             printf("could not prepare statement: %s\n", sqlite3_errmsg(db));
         }
     }
-    manager->deref();
 }
 void
 SqliteIndexWriter::addText(const Indexable* idx, const char* text,
@@ -93,6 +94,7 @@ SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
     //id = -1; // debug
     if (id == -1) return;
     sqlite3* db = manager->ref();
+    assert(db == dbcheck);
     sqlite3_bind_int64(insertvaluestmt, 1, idx->getId());
     sqlite3_bind_text(insertvaluestmt, 2, fieldname.c_str(),
         fieldname.length(), SQLITE_STATIC);
@@ -115,7 +117,13 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     const char* name = idx->getName().c_str();
     size_t namelen = idx->getName().length();
 
+    // remove old entry
+    vector<string> v;
+    v.push_back(idx->getName());
+    deleteEntries(v);
+
     sqlite3* db = manager->ref();
+    assert(db == dbcheck);
     int64_t id = -1;
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
@@ -213,7 +221,7 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 
     sqlite3_stmt* delstmt;
     const char* delsql = "delete from files where path like ?;";
-    prepareStmt(delstmt, delsql, strlen(delsql));
+    prepareStmt(db, delstmt, delsql, strlen(delsql));
     vector<string>::const_iterator i;
     for (i = entries.begin(); i != entries.end(); ++i) {
         string f = *i+'%';

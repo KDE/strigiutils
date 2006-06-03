@@ -22,6 +22,8 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path) {
     writer = new CLuceneIndexWriter(this);
     reader = new CLuceneIndexReader(this);
     analyzer = new StandardAnalyzer();
+    // make sure there's at least an index
+    openWriter();
 }
 CLuceneIndexManager::~CLuceneIndexManager() {
     // close the writer and analyzer
@@ -68,6 +70,7 @@ CLuceneIndexManager::derefReader() {
 void
 CLuceneIndexManager::openReader() {
     try {
+        printf("reader at %s\n", dbdir.c_str());
         indexreader = IndexReader::open(dbdir.c_str());
     } catch (...) {
         printf("could not create reader\n");
@@ -83,7 +86,12 @@ CLuceneIndexManager::closeReader() {
 void
 CLuceneIndexManager::openWriter() {
     try {
-        indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true, true);
+        printf("writer at %s\n", dbdir.c_str());
+        if (IndexReader::indexExists(dbdir.c_str())) {
+            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, false);
+        } else {
+            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true, true);
+        }
     } catch (...) {
         printf("could not create writer\n");
     }
@@ -95,4 +103,19 @@ CLuceneIndexManager::closeWriter() {
     indexwriter->close();
     delete indexwriter;
     indexwriter = 0;
+}
+int
+CLuceneIndexManager::docCount() {
+    int count;
+    pthread_mutex_lock(&dblock);
+    if (indexwriter) {
+        count = indexwriter->docCount();
+    } else {
+        if (indexreader == 0) {
+            openReader();
+        }
+        count = indexreader->numDocs();
+    }
+    pthread_mutex_unlock(&dblock);
+    return count;
 }
