@@ -13,15 +13,18 @@ using namespace jstreams;
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
 std::vector<IndexedDocument>
-CLuceneIndexReader::query(const std::string& query) {
+CLuceneIndexReader::query(const Query& quer) {
+    std::string query;
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
+    manager->derefReader();
+    return results;
     printf("so you want info about %s\n", query.c_str());
     TCHAR tf[CL_MAX_DIR];
     char path[CL_MAX_DIR];
     STRCPY_AtoT(tf, query.c_str(), CL_MAX_DIR);
-    Term term(_T("path"), tf);
+    Term term(_T("content"), tf);
     TermQuery termquery(&term);
     Hits *hits = searcher.search(&termquery);
     int s = hits->length();

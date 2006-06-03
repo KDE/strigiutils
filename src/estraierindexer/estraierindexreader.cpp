@@ -13,7 +13,8 @@ EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m, ESTDB* d)
 EstraierIndexReader::~EstraierIndexReader() {
 }
 vector<IndexedDocument>
-EstraierIndexReader::query(const std::string& query) {
+EstraierIndexReader::query(const Query& quer) {
+    string query;
     ESTCOND* cond = est_cond_new();
     est_cond_set_phrase(cond, query.c_str());
     est_cond_set_max(cond, 100);

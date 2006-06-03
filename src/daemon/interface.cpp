@@ -8,7 +8,8 @@ using namespace jstreams;
 
 vector<string>
 Interface::query(const string& query) {
-    vector<IndexedDocument> docs = manager.getIndexReader()->query(query);
+    Query q(query);
+    vector<IndexedDocument> docs = manager.getIndexReader()->query(q);
     vector<string> r;
     for (uint i=0; i < docs.size(); ++i) {
         r.push_back(docs[i].filepath);

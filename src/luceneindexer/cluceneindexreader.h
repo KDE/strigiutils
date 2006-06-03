@@ -12,7 +12,7 @@ private:
     CLuceneIndexReader(CLuceneIndexManager* m) :manager(m) {}
     ~CLuceneIndexReader();
 public:
-    std::vector<jstreams::IndexedDocument> query(const std::string&);
+    std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int countDocuments();
     int countWords();

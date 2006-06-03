@@ -105,7 +105,6 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
             // no data was read
             return -1;
         }
-        printf("%i\n", status);
     }
     // make sure we can write into the buffer
     zstream->avail_out = space;

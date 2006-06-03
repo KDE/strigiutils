@@ -74,8 +74,8 @@ createQuery(int n, bool filterpath) {
     return q.str();
 }
 vector<IndexedDocument>
-SqliteIndexReader::query(const std::string& query) {
-    string q = query;
+SqliteIndexReader::query(const Query& query) {
+    string q;
     // replace * by %
     size_t p = q.find('*');
     while (p != string::npos) {

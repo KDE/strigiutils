@@ -14,7 +14,7 @@ XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
 XapianIndexReader::~XapianIndexReader() {
 }
 vector<IndexedDocument>
-XapianIndexReader::query(const std::string& query) {
+XapianIndexReader::query(const jstreams::Query& query) {
     std::vector<IndexedDocument> results;
     return results;
 }
