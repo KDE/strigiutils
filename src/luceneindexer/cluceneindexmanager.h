@@ -51,4 +51,7 @@ public:
     jstreams::IndexWriter* getIndexWriter();
 };
 
+jstreams::IndexManager*
+createCLuceneIndexManager(const char* path);
+
 #endif

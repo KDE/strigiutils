@@ -8,6 +8,11 @@ using namespace Xapian;
 
 pthread_mutex_t XapianIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
+jstreams::IndexManager*
+createXapianIndexManager(const char* path) {
+    return new XapianIndexManager(path);
+}
+
 XapianIndexManager::XapianIndexManager(const char* dbd)
         : dblock(lock), dbdir(dbd) {
     db = new WritableDatabase(dbdir.c_str(), DB_CREATE_OR_OPEN);

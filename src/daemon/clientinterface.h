@@ -19,6 +19,7 @@ public:
     virtual std::vector<std::string> getIndexedDirectories() = 0;
     virtual std::string setIndexedDirectories(std::vector<std::string>) = 0;
     bool isActive() { return active; }
+    static std::vector<std::string> getBackEnds();
 };
 
 #endif

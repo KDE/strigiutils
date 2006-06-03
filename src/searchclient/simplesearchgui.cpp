@@ -15,6 +15,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QTextDocument>
+#include <QtGui/QComboBox>
 #include <QtCore/QCoreApplication>
 #include <string>
 #include <vector>
@@ -43,6 +44,17 @@ SimpleSearchGui::SimpleSearchGui() {
     hlayout->addWidget(toggledaemon);
     hlayout->addWidget(toggleindexing);
     statuslayout->addLayout(hlayout);
+    vector<string> backends = ClientInterface::getBackEnds();
+    if (backends.size() > 1) {
+        backendsList = new QComboBox();
+        for (uint i = 0; i< backends.size(); ++i) {
+            QString backend = backends[i].c_str();
+            backendsList->insertItem(i, backend);
+        }
+        statuslayout->addWidget(backendsList);
+    } else {
+        backendsList = 0;
+    }
     statuslayout->addWidget(indexeddirs);
     hlayout = new QHBoxLayout;
     hlayout->addWidget(adddir);
@@ -109,13 +121,13 @@ SimpleSearchGui::updateStatus() {
     map<string,string> s = client.getStatus();
     if (s.size() == 0) {
         running = false;
-        if (!attemptedstart) {
+        /*if (!attemptedstart) {
             s["Status"] = "Starting daemon";
             startDaemon();
             attemptedstart = true;
-        } else {
+        } else {*/
             s["Status"] = "Daemon is not running";
-        }
+        //}
     } else {
         attemptedstart = true;
         starting = false;
@@ -128,6 +140,9 @@ SimpleSearchGui::updateStatus() {
     queryfield->setEnabled(running);
     queryfield->setEnabled(!starting);
     toggledaemon->setText((running)?"stop daemon":"start daemon");
+    if (backendsList) {
+        backendsList->setEnabled(!running);
+    }
     bool idxng = s["Status"] == "indexing";
     if (idxng != indexing) {
         indexing = idxng;
@@ -150,13 +165,17 @@ SimpleSearchGui::startDaemon() {
     // try to start the daemon
     QFileInfo exe = QCoreApplication::applicationDirPath()
 	+ "/../../daemon/kittendaemon";
+    QStringList args;
+    if (backendsList) {
+        args += backendsList->currentText();
+    }
     if (exe.exists()) {
 	// start not installed version
-	QProcess::startDetached(exe.absoluteFilePath());
+	QProcess::startDetached(exe.absoluteFilePath(), args);
     } else {
         exe = QCoreApplication::applicationDirPath()+"/kittendaemon";
         if (exe.exists()) {
-            QProcess::startDetached(exe.absoluteFilePath());
+            QProcess::startDetached(exe.absoluteFilePath(), args);
         } else {
 	    // start installed version
 	    QProcess::startDetached("kittendaemon");

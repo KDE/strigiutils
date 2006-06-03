@@ -35,4 +35,7 @@ public:
     void deref();
 };
 
+jstreams::IndexManager*
+createEstraierIndexManager(const char* path);
+
 #endif

@@ -9,6 +9,11 @@ using lucene::store::FSDirectory;
 
 pthread_mutex_t CLuceneIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
+jstreams::IndexManager*
+createCLuceneIndexManager(const char* path) {
+    return new CLuceneIndexManager(path);
+}
+
 CLuceneIndexManager::CLuceneIndexManager(const std::string& path) {
     dblock = lock;
     dbdir = path;

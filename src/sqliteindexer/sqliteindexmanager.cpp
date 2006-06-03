@@ -7,6 +7,11 @@ using namespace jstreams;
 
 pthread_mutex_t SqliteIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
+jstreams::IndexManager*
+createSqliteIndexManager(const char* path) {
+    return new SqliteIndexManager(path);
+}
+
 SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     dblock = lock;
     this->dbfile = dbfile;

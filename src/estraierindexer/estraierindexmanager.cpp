@@ -7,6 +7,11 @@ using namespace jstreams;
 
 pthread_mutex_t EstraierIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
+jstreams::IndexManager*
+createEstraierIndexManager(const char* path) {
+    return new EstraierIndexManager(path);
+}
+
 EstraierIndexManager::EstraierIndexManager(const char* dbd)
         : dblock(lock), dbdir(dbd) {
     int errorcode;

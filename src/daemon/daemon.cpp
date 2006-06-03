@@ -124,28 +124,31 @@ main(int argc, char** argv) {
         exit(1);
     }
 
-    // initialize the storage manager
-    IndexManager* index = 0;
+    // determine the right index manager
+    map<string, IndexManager*(*)(const char*)> factories;
 #ifdef HAVE_ESTRAIER
-    if (index == 0) {
-        index = new EstraierIndexManager(estraierdir.c_str());
-    }
+    factories["estraier"] = createEstraierIndexManager;
 #endif
 #ifdef HAVE_CLUCENE
-    if (index == 0) {
-        index = new CLuceneIndexManager(lucenedir);
-    }
+    factories["clucene"] = createCLuceneIndexManager;
 #endif
 #ifdef HAVE_XAPIAN
-    if (index == 0) {
-        index = new XapianIndexManager(xapiandir.c_str());
-    }
+    factories["xapian"] = createXapianIndexManager;
 #endif
 #ifdef HAVE_SQLITE
-    if (index == 0) {
-        index = new SqliteIndexManager(dbfile.c_str());
-    }
+    factories["sqlite"] = createSqliteIndexManager;
 #endif
+    const char *backend = "estraier";
+    if (argc > 1) backend = argv[1];
+    map<string, IndexManager*(*)(const char*)>::const_iterator f
+        = factories.find(backend);
+    if (f == factories.end()) {
+        f = factories.begin();
+    }
+    string indexdir = daemondir + "/" + f->first;
+    IndexManager* index = f->second(indexdir.c_str());
+
+
     set<string> dirs = readdirstoindex(dirsfile);
     scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);

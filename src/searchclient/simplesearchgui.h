@@ -13,6 +13,7 @@ class QStackedWidget;
 class QLabel;
 class QUrl;
 class QPushButton;
+class QComboBox;
 class SimpleSearchGui : public QWidget {
 Q_OBJECT
 private:
@@ -30,6 +31,7 @@ private:
     QueryExecuter executer;
     QPushButton* toggleindexing;
     QPushButton* toggledaemon;
+    QComboBox* backendsList;
 
     void startDaemon();
     void setDirectories();

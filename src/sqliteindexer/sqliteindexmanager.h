@@ -32,5 +32,7 @@ public:
     jstreams::IndexWriter* getIndexWriter();
     static std::string escapeSqlValue(const std::string& value);
 };
+jstreams::IndexManager*
+createSqliteIndexManager(const char* path);
 
 #endif

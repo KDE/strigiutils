@@ -35,4 +35,7 @@ public:
     void deref();
 };
 
+jstreams::IndexManager*
+createXapianIndexManager(const char* path);
+
 #endif
