@@ -14,6 +14,8 @@ private:
     ESTDB* db;
     EstraierIndexReader(EstraierIndexManager* m, ESTDB* d);
     ~EstraierIndexReader();
+    static ESTCOND* createCondition(const jstreams::Query&);
+    static const char* mapId(const std::string& id);
 public:
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);

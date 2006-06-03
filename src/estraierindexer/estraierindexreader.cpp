@@ -12,11 +12,69 @@ EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m, ESTDB* d)
 }
 EstraierIndexReader::~EstraierIndexReader() {
 }
-vector<IndexedDocument>
-EstraierIndexReader::query(const Query& quer) {
-    string query;
+ESTCOND*
+EstraierIndexReader::createCondition(const jstreams::Query& query) {
+    // build the phrase string
+    string phrase;
+    set<string> terms;
+    const map<string, set<string> >& includes = query.getIncludes();
+    map<string, set<string> >::const_iterator i = includes.find("");
+    if (i != includes.end()) terms = i->second;
+    set<string>::const_iterator j;
+    for (j = terms.begin(); j != terms.end(); ++j) {
+        if (phrase.length() > 0) {
+            phrase += " AND ";
+        }
+        phrase += *j;
+    }
+    if (phrase.length() == 0) {
+        phrase = "*";
+    }
+    terms.clear();
+    const map<string, set<string> >& excludes = query.getExcludes();
+    i = excludes.find("");
+    if (i != excludes.end()) terms = i->second;
+    for (j = terms.begin(); j != terms.end(); ++j) {
+        phrase += " ANDNOT " + *j;
+    }
     ESTCOND* cond = est_cond_new();
-    est_cond_set_phrase(cond, query.c_str());
+    printf("%s", phrase.c_str());
+    est_cond_set_phrase(cond, phrase.c_str());
+
+    // add the attributes
+    for (i = includes.begin(); i != includes.end(); ++i) {
+        if (i->first.length() == 0) continue;
+        string id = mapId(i->first);
+        for (j = i->second.begin(); j != i->second.end(); ++j) {
+            string att = id + " STRINC " + *j;
+            printf(" && %s", att.c_str());
+            est_cond_add_attr(cond, att.c_str());
+        }
+    }
+    for (i = excludes.begin(); i != excludes.end(); ++i) {
+        if (i->first.length() == 0) continue;
+        string id = mapId(i->first);
+        for (j = i->second.begin(); j != i->second.end(); ++j) {
+            string att = id + " !STRINC " + *j;
+            printf(" && %s", att.c_str());
+            est_cond_add_attr(cond, att.c_str());
+        }
+    }
+    printf("\n");
+
+    return cond;
+}
+const char*
+EstraierIndexReader::mapId(const std::string& id) {
+    if (id == "path") return "@uri";
+    if (id == "mtime") return "@mdata";
+    if (id == "title") return "@title";
+    if (id == "size") return "@size";
+    return id.c_str();
+}
+vector<IndexedDocument>
+EstraierIndexReader::query(const Query& query) {
+    ESTCOND* cond = createCondition(query);
     est_cond_set_max(cond, 100);
     int n;
     int* ids;
