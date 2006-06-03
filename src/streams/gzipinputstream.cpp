@@ -86,9 +86,14 @@ GZipInputStream::readFromStream() {
     nread = input->read(inStart, 1, 0);
     if (nread < -1) {
         status = Error;
+        error = input->getError();
+    } else if (nread < 1) {
+        status = Error;
+        error = "unexpected end of stream";
+    } else {
+        zstream->next_in = (Bytef*)inStart;
+        zstream->avail_in = nread;
     }
-    zstream->next_in = (Bytef*)inStart;
-    zstream->avail_in = nread;
 }
 int32_t
 GZipInputStream::fillBuffer(char* start, int32_t space) {
@@ -100,6 +105,7 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
             // no data was read
             return -1;
         }
+        printf("%i\n", status);
     }
     // make sure we can write into the buffer
     zstream->avail_out = space;
