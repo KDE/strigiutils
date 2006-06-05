@@ -8,25 +8,70 @@ using lucene::search::IndexSearcher;
 using lucene::document::Document;
 using lucene::index::Term;
 using lucene::search::TermQuery;
+using lucene::search::BooleanQuery;
 using namespace jstreams;
 
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
+
+const char*
+CLuceneIndexReader::mapId(const std::string& id) {
+    if (id == "") return "content";
+    return id.c_str();
+}
+Term*
+CLuceneIndexReader::createTerm(const string& name, const string& value) {
+#ifndef _CL_HAVE_WCSLEN
+    return new Term(name.c_str(), value.c_str());
+#else 
+#endif
+    printf("'%s' '%s'\n", name.c_str(), value.c_str());
+    TCHAR* n = new TCHAR[name.length()+1];
+    STRCPY_AtoT(n, name.c_str(), name.length()+1);
+    TCHAR* v = new TCHAR[value.length()+1];
+    STRCPY_AtoT(v, value.c_str(), value.length()+1);
+    Term* t = new Term(n, v);
+    delete [] n;
+    delete [] v;
+    return t;
+}
+void
+CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
+    // add the attributes
+    const map<string, set<string> >& includes = query.getIncludes();
+    map<string, set<string> >::const_iterator i;
+    set<string>::const_iterator j;
+    for (i = includes.begin(); i != includes.end(); ++i) {
+        string id = mapId(i->first);
+        for (j = i->second.begin(); j != i->second.end(); ++j) {
+            Term* t = createTerm(mapId(i->first), *j);
+            TermQuery* tq = new TermQuery(t);
+            bq.add(tq, true, true, false);
+        }
+    }
+    const map<string, set<string> >& excludes = query.getExcludes();
+    for (i = excludes.begin(); i != excludes.end(); ++i) {
+        string id = mapId(i->first);
+        for (j = i->second.begin(); j != i->second.end(); ++j) {
+            Term* t = createTerm(mapId(i->first), *j);
+            TermQuery* tq = new TermQuery(t);
+            bq.add(tq, true, false, true);
+        }
+    }
+
+}
+
 std::vector<IndexedDocument>
-CLuceneIndexReader::query(const Query& quer) {
-    std::string query;
+CLuceneIndexReader::query(const Query& q) {
+    BooleanQuery bq;
+    createBooleanQuery(q, bq);
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
     manager->derefReader();
-    return results;
-    printf("so you want info about %s\n", query.c_str());
     TCHAR tf[CL_MAX_DIR];
     char path[CL_MAX_DIR];
-    STRCPY_AtoT(tf, query.c_str(), CL_MAX_DIR);
-    Term term(_T("content"), tf);
-    TermQuery termquery(&term);
-    Hits *hits = searcher.search(&termquery);
+    Hits *hits = searcher.search(&bq);
     int s = hits->length();
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
     for (int i = 0; i < s; ++i) {
