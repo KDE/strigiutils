@@ -25,9 +25,10 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
     }
     if (zip.getStatus() == jstreams::Error) {
         error = zip.getError();
+        return -1;
     } else {
         error.resize(0);
     }
-    return zip.getStatus() != jstreams::Error;
+    return 0;
 }
 

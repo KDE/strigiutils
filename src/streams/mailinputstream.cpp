@@ -304,7 +304,6 @@ MailInputStream::handleBodyLine() {
 }
 StreamBase<char>*
 MailInputStream::nextEntry() {
-//    printf("--------- %lli\n", input->getPosition());
     if (status != Ok) return 0;
     // if the mail does not consist of multiple parts, we give a pointer to
     // the input stream

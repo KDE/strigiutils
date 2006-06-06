@@ -25,10 +25,11 @@ TarEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
         s = tar.nextEntry();
     }
     if (tar.getStatus() == jstreams::Error) {
+        return -1;
 //        printf("Error: %s\n", tar.getError());
     } else {
 //        printf("finished ok\n");
     }
-    return tar.getStatus();
+    return 0;
 }
 

@@ -14,7 +14,8 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
     if (mail.getStatus() == jstreams::Error) {
-        printf("error reading mail: %i %s\n", mail.getStatus(), mail.getError());
+        fprintf(stderr, "error reading mail: %i %s\n", mail.getStatus(),
+            mail.getError());
         exit(1);
     }
     int n = 1;
@@ -32,9 +33,10 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
     }
     if (mail.getStatus() == jstreams::Error) {
         error = mail.getError();
+        return -1;
     } else {
         error.resize(0);
     }
-    return mail.getStatus();
+    return 0;
 }
 
