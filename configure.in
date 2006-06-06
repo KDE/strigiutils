@@ -10,6 +10,9 @@ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
 dnl check for pkg-config
 PKG_PROG_PKG_CONFIG
+if test "$PKG_CONFIG" = ""; then
+    AC_MSG_ERROR(["You need pkgconfig."]);
+fi
 
 dnl check for c++
 AC_PROG_CXX
