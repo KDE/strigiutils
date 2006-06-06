@@ -225,14 +225,13 @@ SimpleSearchGui::openItem(const QUrl& url) {
     }
     if (file.endsWith(".tar") || file.endsWith(".tar.bz2")
             || file.endsWith(".tar.gz")) {
-        file = "tar:"+file;
+        file = "tar:"+url.toString();
     } else if (file.endsWith(".zip") || file.endsWith(".jar")) {
-        file = "zip:"+file;
+        file = "zip:"+url.toString();
     }
     QStringList args;
     args << "openURL" << file;
     QProcess::execute("kfmclient", args);
-    qDebug() << file;
 }
 void
 SimpleSearchGui::toggleDaemon() {
