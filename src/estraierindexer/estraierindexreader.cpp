@@ -40,6 +40,7 @@ EstraierIndexReader::createCondition(const jstreams::Query& query) {
     ESTCOND* cond = est_cond_new();
     printf("%s", phrase.c_str());
     est_cond_set_phrase(cond, phrase.c_str());
+    est_cond_set_options(cond, ESTCONDSCFB);
 
     // add the attributes
     for (i = includes.begin(); i != includes.end(); ++i) {
@@ -72,6 +73,16 @@ EstraierIndexReader::mapId(const std::string& id) {
     if (id == "size") return "@size";
     return id.c_str();
 }
+string
+EstraierIndexReader::getFragment(int id, const Query& query) {
+    printf("--\n");
+    ESTDOC* doc = est_db_get_doc(db, id, ESTGDNOATTR|ESTGDNOKWD);
+    char*f = est_doc_cat_texts(doc);
+    string fragment = f;
+//    printf("%s\n", f);
+    free(f);
+    return fragment;
+}
 vector<IndexedDocument>
 EstraierIndexReader::query(const Query& query) {
     ESTCOND* cond = createCondition(query);
@@ -84,12 +95,15 @@ EstraierIndexReader::query(const Query& query) {
     
     std::vector<IndexedDocument> results;
     for (int i=0; i<n; ++i) {
-        char* uri = est_db_get_doc_attr(db, ids[i], "@uri");
+        int id = ids[i];
+        char* uri = est_db_get_doc_attr(db, id, "@uri");
         if (uri) {
             IndexedDocument doc;
             doc.filepath = uri;
             results.push_back(doc);
             free(uri);
+            doc.score = est_cond_score(cond, i);
+            doc.fragment = getFragment(id, query);
         }
     }
     manager->deref();

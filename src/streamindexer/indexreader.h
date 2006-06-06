@@ -9,9 +9,11 @@
 namespace jstreams {
 
 struct IndexedDocument {
+    IndexedDocument() :score(0) {}
     std::string filepath;
-    std::string title;
     std::string fragment;
+    float score;
+    std::map<std::string, std::string> properties;
 };
 
 /**
