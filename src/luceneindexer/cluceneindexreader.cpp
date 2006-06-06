@@ -22,15 +22,14 @@ CLuceneIndexReader::mapId(const std::string& id) {
 Term*
 CLuceneIndexReader::createTerm(const string& name, const string& value) {
 #ifndef _CL_HAVE_WCSLEN
-    return new Term(name.c_str(), value.c_str());
+    return  Term(name.c_str(), value.c_str());
 #else 
 #endif
-    printf("'%s' '%s'\n", name.c_str(), value.c_str());
     TCHAR* n = new TCHAR[name.length()+1];
     STRCPY_AtoT(n, name.c_str(), name.length()+1);
     TCHAR* v = new TCHAR[value.length()+1];
     STRCPY_AtoT(v, value.c_str(), value.length()+1);
-    Term* t = new Term(n, v);
+    Term* t = _CLNEW Term(n, v);
     delete [] n;
     delete [] v;
     return t;
@@ -45,7 +44,8 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             Term* t = createTerm(mapId(i->first), *j);
-            TermQuery* tq = new TermQuery(t);
+            TermQuery* tq = _CLNEW TermQuery(t);
+            _CLDECDELETE(t);
             bq.add(tq, true, true, false);
         }
     }
@@ -54,11 +54,11 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             Term* t = createTerm(mapId(i->first), *j);
-            TermQuery* tq = new TermQuery(t);
+            TermQuery* tq = _CLNEW TermQuery(t);
+            _CLDECDELETE(t);
             bq.add(tq, true, false, true);
         }
     }
-
 }
 
 std::vector<IndexedDocument>
@@ -68,7 +68,6 @@ CLuceneIndexReader::query(const Query& q) {
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
-    manager->derefReader();
     TCHAR tf[CL_MAX_DIR];
     char path[CL_MAX_DIR];
     Hits *hits = searcher.search(&bq);
@@ -96,9 +95,9 @@ CLuceneIndexReader::getFiles(char depth) {
     char cstr[CL_MAX_DIR];
     snprintf(cstr, CL_MAX_DIR, "%i", depth);
     STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
-    Term term(_T("depth"), tstr);
-    TermQuery termquery(&term);
-    Hits *hits = searcher.search(&termquery);
+    Term* term = _CLNEW Term(_T("depth"), tstr);
+    TermQuery* termquery = _CLNEW TermQuery(term);
+    Hits *hits = searcher.search(termquery);
     int s = hits->length();
     STRCPY_AtoT(tstr, "path", CL_MAX_DIR);
     TCHAR tstr2[CL_MAX_DIR];
@@ -113,9 +112,10 @@ CLuceneIndexReader::getFiles(char depth) {
         files[cstr] = mtime;
     }
     searcher.close();
-    delete hits;
+    _CLDELETE(hits);
+    _CLDELETE(termquery);
+    _CLDECDELETE(term);
     manager->derefReader();
-    printf("got %i files at depth %i\n", files.size(), depth);
     return files;
 }
 int

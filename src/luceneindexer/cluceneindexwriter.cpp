@@ -105,15 +105,17 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     IndexSearcher searcher(reader);
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, entry.c_str(), CL_MAX_DIR);
-    Term term(_T("path"), tstr);
-    PrefixQuery query(&term);
-    Hits *hits = searcher.search(&query);
+    Term* term = _CLNEW Term(_T("path"), tstr);
+    PrefixQuery* query = _CLNEW PrefixQuery(term);
+    Hits *hits = searcher.search(query);
     int s = hits->length();
     vector<int32_t> ids;
     for (int i = 0; i < s; ++i) {
         ids.push_back(hits->id(i));
     }
-    delete hits;
+    _CLDELETE(hits);
+    _CLDELETE(query);
+    _CLDECDELETE(term);
     searcher.close();
     for (int i = 0; i < s; ++i) {
         reader->deleteDocument(ids[i]);
