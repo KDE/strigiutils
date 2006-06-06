@@ -14,7 +14,7 @@ Here are the main features of Kitten:
 - calculation of sha1 for every file crawled (allows fast finding of duplicates)
 
 
-How to obtain and build ArchiveReader from SVN?
+How to obtain and build Kitten from SVN?
 -----------------------------------------------
 
 Execute these commands:
@@ -24,6 +24,13 @@ Execute these commands:
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 
-usage:
-start Kitten by running 'kittenclient'
+Kitten can currently use 2 different backends with 2 more in the works. Install at least CLucene or Hyper Estraier.
+
+++ CLucene        http://clucene.sf.net/
+++ Hyper Estraier http://hyperestraier.sourceforge.net/
++  Sqlite3        http://sqlite.org/
++  Xapian         http://xapian.org/
+
+Usage:
+Start Kitten by running 'kittenclient', then choose a backend and press 'Start daemon'. Now you can configure directories to index and start indexing.
 
