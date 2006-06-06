@@ -90,7 +90,7 @@ SocketClient::sendRequest(int sd) {
     r = send(sd, "\n", 1, MSG_NOSIGNAL);
     return r > 0;
 }
-std::vector<std::string>
+ClientInterface::Hits
 SocketClient::query(const std::string &query) {
     response.clear();
     request.clear();
@@ -98,16 +98,21 @@ SocketClient::query(const std::string &query) {
     assert(query.find("\n") == std::string::npos);
     request.push_back(query);
     int sd = open();
+    Hits hits;
     if (sd < 0) {
         printf("   %s\n", error.c_str());
-        response.push_back("error");
-        response.push_back(error);
-        return response;
+        hits.error = error;
+        return hits;
     }
     sendRequest(sd);
     readResponse(sd);
     close(sd);
-    return response;
+    for (uint i=0; i<response.size(); ++i) {
+        Hit h;
+        h.uri = response[i];
+        hits.hits.push_back(h);
+    }
+    return hits;
 }
 map<string, string>
 SocketClient::getStatus() {

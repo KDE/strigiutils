@@ -118,7 +118,12 @@ void
 SocketServer::handleRequest() {
     response.clear();
     if (request.size() == 2 && request[0] == "query") {
-        response = interface->query(request[1]);
+        ClientInterface::Hits hits = interface->query(request[1]);
+        response.clear();
+        vector<ClientInterface::Hit>::const_iterator i;
+        for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
+            response.push_back(i->uri);
+        }
         return;
     }
     if (request.size() == 1 && request[0] == "getStatus") {

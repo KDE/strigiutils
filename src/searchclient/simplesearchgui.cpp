@@ -185,25 +185,28 @@ SimpleSearchGui::startDaemon() {
 void
 SimpleSearchGui::handleQueryResult(const QString& item) {
     itemview->clear();
-    vector<string> results = executer.getResults();
-    if (results.size() > 0) {
+    ClientInterface::Hits hits = executer.getResults();
+    if (hits.hits.size() > 0) {
         QString html;
-        if (results[0] != "error") {
+        if (hits.error.length() == 0) {
             itemview->setEnabled(true);
-        }
-        for (uint i=0; i<results.size(); ++i) {
-            QString path = results[i].c_str();
-            QString name;
-            int l = path.lastIndexOf('/');
-            html += "<a href='"+path+"'>";
-            if (l != -1) {
-                name = path.mid(l+1);
-                path = path.left(l);
-                html += name + "</a> <a href='"+path+"'>" + path;
-            } else {
-                html += path;
+            for (uint i=0; i<hits.hits.size(); ++i) {
+                QString path = hits.hits[i].uri.c_str();
+                QString name;
+                int l = path.lastIndexOf('/');
+                html += "<div><a href='"+path+"'>";
+                if (l != -1) {
+                    name = path.mid(l+1);
+                    path = path.left(l);
+                    html += name + "</a> from folder <a href='"+path+"'>"
+                        + path;
+                } else {
+                    html += path;
+                }
+                html += "</a></div>";
             }
-            html += "</a><br/>";
+        } else {
+            html = "<h2>";html+=hits.error.c_str();html+="</h2>";
         }
         itemview->setHtml(html);
     } else {

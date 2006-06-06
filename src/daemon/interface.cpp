@@ -6,15 +6,17 @@
 using namespace std;
 using namespace jstreams;
 
-vector<string>
+ClientInterface::Hits
 Interface::query(const string& query) {
     Query q(query);
     vector<IndexedDocument> docs = manager.getIndexReader()->query(q);
-    vector<string> r;
+    Hits hits;
     for (uint i=0; i < docs.size(); ++i) {
-        r.push_back(docs[i].filepath);
+        Hit h;
+        h.uri = docs[i].filepath;
+        hits.hits.push_back(h);
     }
-    return r;
+    return hits;
 }
 map<string, string>
 Interface::getStatus() {

@@ -15,15 +15,16 @@ QueryExecuter::run() {
     std::string socket = getenv("HOME");
     socket += "/.kitten/socket";
     client.setSocketName(socket.c_str());
-    vector<string> r;
+    ClientInterface::Hits hits;
 
     QString oldq;
     do {
         if (q.length() > 0) {
             qDebug() << "querying for " << q;
-            r = client.query((const char*)q.toUtf8());
+            hits = client.query((const char*)q.toUtf8());
         } else {
-            r.clear();
+            hits.hits.clear();
+            hits.error = "";
         }
         oldq = q;
         mutex.lock();
@@ -31,7 +32,7 @@ QueryExecuter::run() {
         mutex.unlock();
     } while (q != oldq);
     mutex.lock();
-    results = r;
+    results = hits;
     mutex.unlock();
     emit queryFinished(q);
 }
@@ -40,10 +41,10 @@ QueryExecuter::QueryExecuter() {
 QueryExecuter::~QueryExecuter() {
     // TODO add a timeout
 }
-std::vector<std::string>
+ClientInterface::Hits
 QueryExecuter::getResults() {
     mutex.lock();
-    std::vector<std::string> r = results;
+    ClientInterface::Hits r = results;
     mutex.unlock();
     return r;
 }

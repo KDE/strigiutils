@@ -1,23 +1,22 @@
 #ifndef QUERYEXECUTOR_H
 #define QUERYEXECUTOR_H
 
+#include "clientinterface.h"
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
-#include <string>
-#include <vector>
 
 class QueryExecuter : public QThread {
 Q_OBJECT
 private:
     QString querystring;
     QMutex mutex;
-    std::vector<std::string> results;
+    ClientInterface::Hits results;
 
     void run();
 public:
     QueryExecuter();
     ~QueryExecuter();
-    std::vector<std::string> getResults();
+    ClientInterface::Hits getResults();
 public slots:
     void query(const QString&);
 signals:

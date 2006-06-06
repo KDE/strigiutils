@@ -15,7 +15,8 @@ createEstraierIndexManager(const char* path) {
 EstraierIndexManager::EstraierIndexManager(const char* dbd)
         : dblock(lock), dbdir(dbd) {
     int errorcode;
-    db = est_db_open(dbdir.c_str(), ESTDBWRITER|ESTDBCREAT, &errorcode);
+    db = est_db_open(dbdir.c_str(), ESTDBWRITER|ESTDBCREAT|ESTDBPERFNG,
+        &errorcode);
     if (db == 0) printf("could not open db %s: %s\n", dbdir.c_str(),
         est_err_msg(errorcode));
 }
