@@ -7,11 +7,15 @@
 #include <sstream>
 #include <assert.h>
 
-using lucene::index::IndexWriter;
 using lucene::analysis::Analyzer;
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::document::Document;
 using lucene::document::Field;
+using lucene::index::IndexWriter;
+using lucene::index::Term;
+using lucene::search::IndexSearcher;
+using lucene::search::Hits;
+using lucene::search::PrefixQuery;
 using lucene::util::Reader;
 using namespace std;
 using namespace jstreams;
@@ -54,7 +58,7 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     setField(idx, "path", idx->getName());
-//    printf("%s\n", idx->getName().c_str());
+//    printf("%i %s\n", idx->getDepth(), idx->getName().c_str());
     ostringstream o;
     o << (int)idx->getDepth();
     setField(idx, "depth", o.str());
@@ -68,16 +72,51 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
             false);
         InputStreamReader streamreader(&sr);
         Reader* reader = new Reader(&streamreader, false);
-        doc->doc.add( *Field::Text(L"content", reader, true) );
+        doc->doc.add( *Field::Text(L"content", reader) );
 #else
-        doc->doc.add(*Field::Text("content", doc->content.c_str(), true));
+        doc->doc.add(*Field::Text("content", doc->content.c_str()));
 #endif
         lucene::index::IndexWriter* writer = manager->refWriter();
-        writer->addDocument(&doc->doc);
+        try {
+            writer->addDocument(&doc->doc);
+        } catch (CLuceneError& err) {
+            fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+        }
     } else {
         lucene::index::IndexWriter* writer = manager->refWriter();
-        writer->addDocument(&doc->doc);
+        try {
+            writer->addDocument(&doc->doc);
+        } catch (CLuceneError& err)  {
+            fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+        }
     }
     manager->derefWriter();
     delete doc;
+}
+void
+CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
+    for (uint i=0; i<entries.size(); ++i) {
+        deleteEntry(entries[i]);
+    }
+}
+void
+CLuceneIndexWriter::deleteEntry(const string& entry) {
+    lucene::index::IndexReader* reader = manager->refReader();
+    IndexSearcher searcher(reader);
+    TCHAR tstr[CL_MAX_DIR];
+    STRCPY_AtoT(tstr, entry.c_str(), CL_MAX_DIR);
+    Term term(_T("path"), tstr);
+    PrefixQuery query(&term);
+    Hits *hits = searcher.search(&query);
+    int s = hits->length();
+    vector<int32_t> ids;
+    for (int i = 0; i < s; ++i) {
+        ids.push_back(hits->id(i));
+    }
+    delete hits;
+    searcher.close();
+    for (int i = 0; i < s; ++i) {
+        reader->deleteDocument(ids[i]);
+    }
+    manager->derefReader();
 }

@@ -82,6 +82,7 @@ CLuceneIndexReader::query(const Query& q) {
         doc.filepath = path;
         results.push_back(doc);
     }
+    delete hits;
     searcher.close();
     manager->derefReader();
     return results;
@@ -112,6 +113,7 @@ CLuceneIndexReader::getFiles(char depth) {
         files[cstr] = mtime;
     }
     searcher.close();
+    delete hits;
     manager->derefReader();
     printf("got %i files at depth %i\n", files.size(), depth);
     return files;
@@ -126,5 +128,5 @@ CLuceneIndexReader::countWords() {
 }
 int
 CLuceneIndexReader::getIndexSize() {
-    return -1;
+    return manager->getIndexSize();
 }

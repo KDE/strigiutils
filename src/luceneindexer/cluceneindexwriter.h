@@ -18,7 +18,8 @@ public:
     CLuceneIndexWriter(CLuceneIndexManager* m) :manager(m), doccount(0) {}
     ~CLuceneIndexWriter();
     void commit() {};
-    void deleteEntries(const std::vector<std::string>& entries) {}
+    void deleteEntries(const std::vector<std::string>& entries);
+    void deleteEntry(const std::string& entry);
 };
 
 #endif

@@ -5,7 +5,9 @@
 
 class DummyIndexWriter : public jstreams::IndexWriter {
 protected:
-    void startIndexable(jstreams::Indexable*) {}
+    void startIndexable(jstreams::Indexable*i) {
+//        printf("%s\n",i->getName().c_str());
+    }
     void finishIndexable(const jstreams::Indexable*) {}
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length) {}

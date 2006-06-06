@@ -2,6 +2,8 @@
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include <CLucene.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
@@ -14,7 +16,10 @@ createCLuceneIndexManager(const char* path) {
     return new CLuceneIndexManager(path);
 }
 
+int CLuceneIndexManager::numberOfManagers = 0;
+
 CLuceneIndexManager::CLuceneIndexManager(const std::string& path) {
+    ++numberOfManagers;
     dblock = lock;
     dbdir = path;
     indexreader = 0;
@@ -32,6 +37,10 @@ CLuceneIndexManager::~CLuceneIndexManager() {
     closeReader();
     closeWriter();
     delete analyzer;
+    if (--numberOfManagers == 0) {
+// temporarily commented out because of problem with clucene
+//        _lucene_shutdown();
+    }
 }
 jstreams::IndexReader*
 CLuceneIndexManager::getIndexReader() {
@@ -72,8 +81,8 @@ CLuceneIndexManager::openReader() {
     try {
         printf("reader at %s\n", dbdir.c_str());
         indexreader = IndexReader::open(dbdir.c_str());
-    } catch (...) {
-        printf("could not create reader\n");
+    } catch (CLuceneError& err) {
+        printf("could not create reader: %s\n", err.what());
     }
 }
 void
@@ -92,8 +101,8 @@ CLuceneIndexManager::openWriter() {
         } else {
             indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true, true);
         }
-    } catch (...) {
-        printf("could not create writer\n");
+    } catch (CLuceneError& err) {
+        printf("could not create writer: %s\n", err.what());
     }
 }
 void
@@ -118,4 +127,31 @@ CLuceneIndexManager::docCount() {
     }
     pthread_mutex_unlock(&dblock);
     return count;
+}
+int
+CLuceneIndexManager::getIndexSize() {
+    // sum the sizes of the files in the index
+    // loop over directory entries
+    DIR* dir = opendir(dbdir.c_str());
+    if (dir == 0) {
+        fprintf(stderr, "could not open index directory.\n");
+        return -1;
+    }
+    struct dirent* e = readdir(dir);
+    int size = 0;
+    while (e != 0) {
+        string filename = dbdir+"/"+e->d_name;
+        struct stat s;
+        int r = stat(filename.c_str(), &s);
+        if (r == 0) {
+            if (S_ISREG(s.st_mode)) {
+                size += s.st_size;
+            }
+        } else {
+            fprintf(stderr, "could not open file %s\n");
+        }
+        e = readdir(dir);
+    }
+    closedir(dir);
+    return size;
 }
