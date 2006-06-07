@@ -8,7 +8,8 @@
 
 namespace jstreams {
 
-struct IndexedDocument {
+class IndexedDocument {
+public:
     IndexedDocument() :score(0) {}
     std::string filepath;
     std::string fragment;

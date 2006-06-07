@@ -75,9 +75,8 @@ EstraierIndexReader::mapId(const std::string& id) {
 }
 string
 EstraierIndexReader::getFragment(int id, const Query& query) {
-    printf("--\n");
     ESTDOC* doc = est_db_get_doc(db, id, ESTGDNOATTR|ESTGDNOKWD);
-    char*f = est_doc_cat_texts(doc);
+    char* f = est_doc_cat_texts(doc);
     string fragment = f;
 //    printf("%s\n", f);
     free(f);
@@ -100,10 +99,10 @@ EstraierIndexReader::query(const Query& query) {
         if (uri) {
             IndexedDocument doc;
             doc.filepath = uri;
-            results.push_back(doc);
-            free(uri);
             doc.score = est_cond_score(cond, i);
             doc.fragment = getFragment(id, query);
+            results.push_back(doc);
+            free(uri);
         }
     }
     manager->deref();

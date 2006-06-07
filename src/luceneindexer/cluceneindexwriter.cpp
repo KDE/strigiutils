@@ -71,10 +71,15 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         StringReader<char> sr(doc->content.c_str(), doc->content.length(),
             false);
         InputStreamReader streamreader(&sr);
-        Reader* reader = new Reader(&streamreader, false);
-        doc->doc.add( *Field::Text(L"content", reader) );
+        const wchar_t* data;
+        int32_t nread = streamreader.read(data, 10000000, 0);
+        if (nread > 0) {
+            wchar_t *naughty = (wchar_t*)(data);
+            naughty[nread-1] = '\0';
+            doc->doc.add(*Field::Text(L"content", naughty));
+        }
 #else
-        doc->doc.add(*Field::Text("content", doc->content.c_str()));
+        doc->doc.add(*Field::Text("content", doc->content.c_str());
 #endif
         lucene::index::IndexWriter* writer = manager->refWriter();
         try {

@@ -11,9 +11,13 @@ Interface::query(const string& query) {
     Query q(query);
     vector<IndexedDocument> docs = manager.getIndexReader()->query(q);
     Hits hits;
-    for (uint i=0; i < docs.size(); ++i) {
+    vector<IndexedDocument>::const_iterator i;
+    for (i = docs.begin(); i != docs.end(); ++i) {
         Hit h;
-        h.uri = docs[i].filepath;
+        h.uri = i->filepath;
+        h.fragment = i->fragment;
+        h.score = i->score;
+        h.properties = i->properties;
         hits.hits.push_back(h);
     }
     return hits;

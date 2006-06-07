@@ -107,9 +107,11 @@ SocketClient::query(const std::string &query) {
     sendRequest(sd);
     readResponse(sd);
     close(sd);
-    for (uint i=0; i<response.size(); ++i) {
+    for (uint i=0; i+2<response.size(); i += 3) {
         Hit h;
         h.uri = response[i];
+        h.fragment = response[i+1];
+        h.score = atof(response[i+2].c_str());
         hits.hits.push_back(h);
     }
     return hits;

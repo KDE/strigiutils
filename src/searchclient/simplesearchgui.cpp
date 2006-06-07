@@ -190,8 +190,9 @@ SimpleSearchGui::handleQueryResult(const QString& item) {
         QString html;
         if (hits.error.length() == 0) {
             itemview->setEnabled(true);
-            for (uint i=0; i<hits.hits.size(); ++i) {
-                QString path = hits.hits[i].uri.c_str();
+            vector<ClientInterface::Hit>::const_iterator i;
+            for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
+                QString path = i->uri.c_str();
                 QString name;
                 int l = path.lastIndexOf('/');
                 html += "<div><a href='"+path+"'>";
@@ -203,7 +204,10 @@ SimpleSearchGui::handleQueryResult(const QString& item) {
                 } else {
                     html += path;
                 }
-                html += "</a></div>";
+                html += "</a><br/>score: ";
+                html += QString::number(i->score) + "<br/><i>";
+                html += QString(i->fragment.c_str()).left(100).replace("<", "&lt;");
+                html += "</i></div>";
             }
         } else {
             html = "<h2>";html+=hits.error.c_str();html+="</h2>";

@@ -1,5 +1,6 @@
 #include "socketserver.h"
 #include "interface.h"
+#include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -121,8 +122,17 @@ SocketServer::handleRequest() {
         ClientInterface::Hits hits = interface->query(request[1]);
         response.clear();
         vector<ClientInterface::Hit>::const_iterator i;
+        ostringstream score;
         for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
             response.push_back(i->uri);
+            if (i->fragment.length()) {
+                response.push_back(i->fragment);
+            } else {
+                response.push_back(" ");
+            }
+            score << i->score;
+            response.push_back(score.str());
+            score.str("");
         }
         return;
     }

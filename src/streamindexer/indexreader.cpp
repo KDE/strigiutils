@@ -99,4 +99,3 @@ Query::parseTerm(const char* s) {
     if (p != '\0') p++;
     return p;
 }
-

@@ -6,6 +6,7 @@
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;
 using lucene::document::Document;
+using lucene::document::Field;
 using lucene::index::Term;
 using lucene::search::TermQuery;
 using lucene::search::BooleanQuery;
@@ -75,10 +76,24 @@ CLuceneIndexReader::query(const Query& q) {
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
     for (int i = 0; i < s; ++i) {
         Document *d = &hits->doc(i);
-        const wchar_t *v = d->get(tf);
+        const TCHAR* v = d->get(tf);
         STRCPY_TtoA(path, v, CL_MAX_DIR);
         IndexedDocument doc;
         doc.filepath = path;
+        doc.score = hits->score(i);
+        Field* f = d->getField(_T("content"));
+        if (f) {
+            v = f->stringValue();
+            STRCPY_TtoA(path, v, CL_MAX_DIR);
+            // remove newlines
+            char *p = path;
+            while (true) {
+                if (*p == '\0') break;
+                if (*p == '\n' || *p == '\r') *p = ' ';
+                p++;
+            }
+            doc.fragment = path;
+        }
         results.push_back(doc);
     }
     delete hits;

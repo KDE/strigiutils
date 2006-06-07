@@ -108,7 +108,6 @@ CLuceneIndexManager::openWriter() {
 void
 CLuceneIndexManager::closeWriter() {
     if (indexwriter == 0) return;
-    indexwriter->optimize();
     indexwriter->close();
     delete indexwriter;
     indexwriter = 0;

@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # directory with clucene binaries and header
-CLUCENESRCDIR=/tmp/clucene/src
+CLUCENESRCDIR=/tmp/clucene/clucene/src
 #CLUCENESRCDIR=.
 
 rm -rf autom4te.cache configure COPYING depcomp INSTALL install-sh Makefile.in \
