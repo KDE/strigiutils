@@ -2,6 +2,7 @@
 #include "mailinputstream.h"
 #include "streamindexer.h"
 #include "indexwriter.h"
+#include "textendanalyzer.h"
 using namespace jstreams;
 
 bool
@@ -10,14 +11,25 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 MailEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* i) {
+        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
-    if (mail.getStatus() == jstreams::Error) {
+    if (s == 0 || mail.getStatus() == jstreams::Error) {
         fprintf(stderr, "error reading mail: %i %s\n", mail.getStatus(),
             mail.getError());
         exit(1);
     }
+    idx->setField("title", mail.getSubject());
+    idx->setField("contenttype", mail.getContentType());
+    if (mail.getSubject().length() == 0) {
+        printf("no subject for %s\n", filename.c_str());
+    }
+    TextEndAnalyzer tea;
+    if (tea.analyze(filename, s, depth, indexer, idx) != 0) {
+        error = "Error reading mail body.";
+        return -1;
+    }
+    s = mail.nextEntry();
     int n = 1;
     while (s) {
         std::string file = filename+"/";
@@ -27,7 +39,7 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
             file += mail.getEntryInfo().filename;
         }
         // maybe use the date of sending the mail here
-        indexer->analyze(file, i->getMTime(), s, depth);
+        indexer->analyze(file, idx->getMTime(), s, depth);
         s = mail.nextEntry();
         n++;
     }

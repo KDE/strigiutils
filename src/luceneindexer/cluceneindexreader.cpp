@@ -10,6 +10,7 @@ using lucene::document::Field;
 using lucene::index::Term;
 using lucene::search::TermQuery;
 using lucene::search::BooleanQuery;
+using lucene::document::DocumentFieldEnumeration;
 using namespace jstreams;
 
 CLuceneIndexReader::~CLuceneIndexReader() {
@@ -61,7 +62,31 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         }
     }
 }
-
+std::string
+CLuceneIndexReader::convertValue(const TCHAR* v) {
+    if (v == 0) return 0;
+    char after[CL_MAX_DIR];
+    STRCPY_TtoA(after, v, CL_MAX_DIR);
+    // remove newlines
+    char *p = after;
+    while (true) {
+        if (*p == '\0') break;
+        if (*p == '\n' || *p == '\r') *p = ' ';
+        p++;
+    }
+    return after;
+}
+void
+CLuceneIndexReader::addField(lucene::document::Field* field,
+        std::map<std::string, std::string>& props) {
+    const TCHAR* value = field->stringValue();
+    if (value == 0) return;
+    char name[CL_MAX_DIR];
+    STRCPY_TtoA(name, field->name(), CL_MAX_DIR);
+    if (strcmp(name, "content") != 0 && strcmp(name, "path") != 0) {
+        props[name] = convertValue(value);
+    }
+}
 std::vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {
     BooleanQuery bq;
@@ -70,29 +95,19 @@ CLuceneIndexReader::query(const Query& q) {
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
     TCHAR tf[CL_MAX_DIR];
-    char path[CL_MAX_DIR];
     Hits *hits = searcher.search(&bq);
     int s = hits->length();
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
-    for (int i = 0; i < s; ++i) {
+    for (int i = 0; i < s && i < 10; ++i) {
         Document *d = &hits->doc(i);
-        const TCHAR* v = d->get(tf);
-        STRCPY_TtoA(path, v, CL_MAX_DIR);
         IndexedDocument doc;
-        doc.filepath = path;
         doc.score = hits->score(i);
-        Field* f = d->getField(_T("content"));
-        if (f) {
-            v = f->stringValue();
-            STRCPY_TtoA(path, v, CL_MAX_DIR);
-            // remove newlines
-            char *p = path;
-            while (true) {
-                if (*p == '\0') break;
-                if (*p == '\n' || *p == '\r') *p = ' ';
-                p++;
-            }
-            doc.fragment = path;
+        doc.filepath = convertValue(d->get(_T("path")));
+        doc.fragment = convertValue(d->get(_T("content")));
+        DocumentFieldEnumeration* e = d->fields();
+        while (e->hasMoreElements()) {
+            Field* f = e->nextElement();
+            addField(f, doc.properties);
         }
         results.push_back(doc);
     }

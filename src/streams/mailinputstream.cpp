@@ -240,10 +240,14 @@ MailInputStream::handleHeaderLine() {
         lastHeader = 0;
         return;
     } else if (strncasecmp(linestart, subject, 8) == 0) {
-        this->subject = std::string(linestart, len);
+        int32_t offset = 8;
+        while (offset < len && isspace(linestart[offset])) offset++;
+        this->subject = std::string(linestart+offset, len-offset);
         lastHeader = &this->subject;
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
-        this->contenttype = std::string(linestart, len);
+        int32_t offset = 13;
+        while (offset < len && isspace(linestart[offset])) offset++;
+        this->contenttype = std::string(linestart+offset, len-offset);
         lastHeader = &this->contenttype;
     } else if (strncasecmp(linestart, contenttransferencoding, 26) == 0) {
         this->contenttransferencoding = std::string(linestart, len);
@@ -373,7 +377,6 @@ MailInputStream::nextEntry() {
 }
 void
 MailInputStream::clearHeaders() {
-    subject.resize(0);
     contenttype.resize(0);
     contenttransferencoding.resize(0);
     contentdisposition.resize(0);

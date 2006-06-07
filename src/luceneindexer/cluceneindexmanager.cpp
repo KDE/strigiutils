@@ -147,7 +147,7 @@ CLuceneIndexManager::getIndexSize() {
                 size += s.st_size;
             }
         } else {
-            fprintf(stderr, "could not open file %s\n");
+            fprintf(stderr, "could not open file %s\n", filename.c_str());
         }
         e = readdir(dir);
     }

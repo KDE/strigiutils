@@ -14,7 +14,7 @@ private:
     ESTDB* db;
     EstraierIndexReader(EstraierIndexManager* m, ESTDB* d);
     ~EstraierIndexReader();
-    std::string getFragment(int id, const jstreams::Query& query);
+    std::string getFragment(ESTDOC* doc, const jstreams::Query& query);
     static ESTCOND* createCondition(const jstreams::Query&);
     static const char* mapId(const std::string& id);
 public:

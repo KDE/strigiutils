@@ -11,6 +11,10 @@ namespace lucene {
     namespace search {
         class BooleanQuery;
     }
+    namespace document {
+        class Document;
+        class Field;
+    }
 }
 
 class CLuceneIndexManager;
@@ -26,6 +30,9 @@ private:
         const std::string& value);
     static void createBooleanQuery(const jstreams::Query& query,
         lucene::search::BooleanQuery& bq);
+    static std::string convertValue(const wchar_t* value);
+    static void addField(lucene::document::Field* field,
+        std::map<std::string, std::string>& props);
 public:
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);

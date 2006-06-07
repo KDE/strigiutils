@@ -41,9 +41,9 @@ CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
     TCHAR fv[CL_MAX_DIR];
     STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
     STRCPY_AtoT(fv, value.c_str(), CL_MAX_DIR);
-    doc->doc.add( *Field::Keyword(fn, fv) );
+    doc->doc.add( *Field::Text(fn, fv) );
 #else
-    doc->doc.add(*Field::Keyword(fieldname.c_str(), value.c_str()));
+    doc->doc.add(*Field::Text(fieldname.c_str(), value.c_str()));
 #endif
 }
 void

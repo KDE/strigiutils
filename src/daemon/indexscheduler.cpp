@@ -155,7 +155,10 @@ IndexScheduler::index() {
         }
         toindex.erase(it++);
     }
-    writer->commit();
+    if (state == Indexing) {
+        writer->commit();
+        writer->optimize();
+    }
 
     delete streamindexer;
 }

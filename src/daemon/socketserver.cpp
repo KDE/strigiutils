@@ -133,6 +133,10 @@ SocketServer::handleRequest() {
             score << i->score;
             response.push_back(score.str());
             score.str("");
+            map<string, string>::const_iterator j;
+            for (j = i->properties.begin(); j != i->properties.end(); ++j) {
+                 response.push_back(j->first+":"+j->second);
+            }
         }
         return;
     }

@@ -194,15 +194,27 @@ SimpleSearchGui::handleQueryResult(const QString& item) {
             for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
                 QString path = i->uri.c_str();
                 QString name;
+                map<string, string>::const_iterator t
+                    = i->properties.find("title");
+                if (t != i->properties.end()) {
+                    name = t->second.c_str();
+                }
                 int l = path.lastIndexOf('/');
                 html += "<div><a href='"+path+"'>";
                 if (l != -1) {
-                    name = path.mid(l+1);
+                    if (name.length()) {
+                        html += name;
+                    } else {
+                        html += path.mid(l+1);
+                    }
                     path = path.left(l);
-                    html += name + "</a> from folder <a href='"+path+"'>"
-                        + path;
+                    html += "</a> from folder <a href='"+path+"'>" + path;
                 } else {
-                    html += path;
+                    if (name.length()) {
+                        html += name;
+                    } else {
+                        html += path;
+                    }
                 }
                 html += "</a><br/>score: ";
                 html += QString::number(i->score) + "<br/><i>";

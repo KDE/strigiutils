@@ -74,8 +74,7 @@ EstraierIndexReader::mapId(const std::string& id) {
     return id.c_str();
 }
 string
-EstraierIndexReader::getFragment(int id, const Query& query) {
-    ESTDOC* doc = est_db_get_doc(db, id, ESTGDNOATTR|ESTGDNOKWD);
+EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     char* f = est_doc_cat_texts(doc);
     string fragment = f;
 //    printf("%s\n", f);
@@ -85,7 +84,7 @@ EstraierIndexReader::getFragment(int id, const Query& query) {
 vector<IndexedDocument>
 EstraierIndexReader::query(const Query& query) {
     ESTCOND* cond = createCondition(query);
-    est_cond_set_max(cond, 100);
+    est_cond_set_max(cond, 10);
     int n;
     int* ids;
 
@@ -100,7 +99,18 @@ EstraierIndexReader::query(const Query& query) {
             IndexedDocument doc;
             doc.filepath = uri;
             doc.score = est_cond_score(cond, i);
-            doc.fragment = getFragment(id, query);
+            ESTDOC* d = est_db_get_doc(db, id, ESTGDNOKWD);
+            doc.fragment = getFragment(d, query);
+            CBLIST* atts = est_doc_attr_names(d);
+            for (int j = 0; j < cblistnum(atts); ++j) {
+                const char* name = cblistval(atts, j, 0);
+                const char* value = est_doc_attr(d, name);
+                if (*name == '@') name++;
+                if (strcmp(name, "uri") != 0) {
+                    doc.properties[name] = value;
+                }
+            }
+            cblistclose(atts);
             results.push_back(doc);
             free(uri);
         }
