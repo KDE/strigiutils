@@ -8,7 +8,8 @@ kittendaemon_SOURCES = daemon.cpp server.cpp socketserver.cpp interface.cpp \
 kittendaemon_CXXFLAGS = -I$(top_srcdir)/src/streamindexer
 kittendaemon_LDFLAGS = -lpthread
 
-libsearchclient_la_SOURCES = socketclient.cpp clientinterface.cpp
+libsearchclient_la_SOURCES = socketclient.cpp clientinterface.cpp \
+	asyncsocket.cpp asyncsocketclient.cpp
 libsearchclient_la_CXXFLAGS = 
 
 if HAVE_CLUCENE
@@ -36,5 +37,5 @@ if HAVE_LINUXIOPRIO
 kittendaemon_CXXFLAGS += -DHAVE_LINUXIOPRIO
 endif
 
-noinst_HEADERS = clientinterface.h daemon.h interface.h server.h socketclient.h\
-	socketserver.h indexscheduler.h
+noinst_HEADERS = daemon.h interface.h server.h socketserver.h indexscheduler.h \
+	asyncsocket.h
