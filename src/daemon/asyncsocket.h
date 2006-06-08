@@ -27,7 +27,7 @@ public:
     ~AsyncSocket();
     bool statusChanged();
     bool sendRequest(const std::string& req);
-    const std::string& getResponse() { return response; }
+    const std::string& getResponse() const { return response; }
     Status getStatus() const { return status; }
     const std::string& getError() const { return error; }
 };

@@ -13,6 +13,7 @@ private:
 
     void handleQueryResponse();
     void handleCountHitsResponse();
+    std::vector<std::string> splitResponse() const;
 public:
     void setSocketPath(const std::string& path) {
         socket.setSocketPath(path);

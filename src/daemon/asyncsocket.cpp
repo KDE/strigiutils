@@ -41,7 +41,9 @@ AsyncSocket::open() {
 }
 void
 AsyncSocket::close() {
-    ::close(socket);
+    if (socket >= 0) {
+        ::close(socket);
+    }
 }
 bool
 AsyncSocket::sendRequest(const std::string& req) {
@@ -95,7 +97,7 @@ void
 AsyncSocket::read() {
     char c;
     while (true) {
-        int r = recv(socket, &c, 1, MSG_DONTWAIT);
+        int r = recv(socket, &c, 1, MSG_DONTWAIT|MSG_NOSIGNAL);
         switch (r) {
         case 0:
             close();
@@ -106,6 +108,7 @@ AsyncSocket::read() {
             break;
         default:
             if (errno != EAGAIN) {
+                printf("hmm %i\n", errno);
                 status = Error;
                 error = strerror(EAGAIN);
                 close();
