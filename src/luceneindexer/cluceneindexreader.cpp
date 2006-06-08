@@ -67,6 +67,7 @@ CLuceneIndexReader::convertValue(const TCHAR* v) {
     if (v == 0) return 0;
     char after[CL_MAX_DIR];
     STRCPY_TtoA(after, v, CL_MAX_DIR);
+    after[CL_MAX_DIR-1] = '\0';
     // remove newlines
     char *p = after;
     while (true) {
@@ -86,6 +87,20 @@ CLuceneIndexReader::addField(lucene::document::Field* field,
     if (strcmp(name, "content") != 0 && strcmp(name, "path") != 0) {
         props[name] = convertValue(value);
     }
+}
+int
+CLuceneIndexReader::countHits(const Query& q) {
+    BooleanQuery bq;
+    createBooleanQuery(q, bq);
+    lucene::index::IndexReader* reader = manager->refReader();
+    IndexSearcher searcher(reader);
+    std::vector<IndexedDocument> results;
+    Hits *hits = searcher.search(&bq);
+    int s = hits->length();
+    delete hits;
+    searcher.close();
+    manager->derefReader();
+    return s;
 }
 std::vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {

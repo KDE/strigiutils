@@ -73,8 +73,14 @@ createQuery(int n, bool filterpath) {
     q <<"limit 100"; 
     return q.str();
 }
+int
+SqliteIndexReader::countHits(const jstreams::Query& q) {
+    // very inefficient: needs refactoring
+    vector<IndexedDocument> r = query(q);
+    return r.size();
+}
 vector<IndexedDocument>
-SqliteIndexReader::query(const Query& query) {
+SqliteIndexReader::query(const jstreams::Query& query) {
     string q;
     // replace * by %
     size_t p = q.find('*');

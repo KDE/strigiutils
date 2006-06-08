@@ -13,6 +13,10 @@ XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
 }
 XapianIndexReader::~XapianIndexReader() {
 }
+int
+XapianIndexReader::countHits(const jstreams::Query& query) {
+    return -1;
+}
 vector<IndexedDocument>
 XapianIndexReader::query(const jstreams::Query& query) {
     std::vector<IndexedDocument> results;

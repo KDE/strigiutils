@@ -14,16 +14,16 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
         int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
-    if (s == 0 || mail.getStatus() == jstreams::Error) {
-        fprintf(stderr, "error reading mail: %i %s\n", mail.getStatus(),
-            mail.getError());
-        exit(1);
+    if (mail.getStatus() == jstreams::Error) {
+        error = mail.getError();
+        return -1;
+    }
+    if (s == 0) {
+        error = "mail contains no body";
+        return -1;
     }
     idx->setField("title", mail.getSubject());
     idx->setField("contenttype", mail.getContentType());
-    if (mail.getSubject().length() == 0) {
-        printf("no subject for %s\n", filename.c_str());
-    }
     TextEndAnalyzer tea;
     if (tea.analyze(filename, s, depth, indexer, idx) != 0) {
         error = "Error reading mail body.";

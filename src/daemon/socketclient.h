@@ -16,6 +16,7 @@ private:
 public:
     const std::string& getError() const { return error; }
     void setSocketName(const std::string& socketname);
+    int countHits(const std::string &query);
     Hits query(const std::string &query);
     std::map<std::string, std::string> getStatus();
     std::string stopDaemon();

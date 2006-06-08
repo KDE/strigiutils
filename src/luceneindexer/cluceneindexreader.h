@@ -34,6 +34,7 @@ private:
     static void addField(lucene::document::Field* field,
         std::map<std::string, std::string>& props);
 public:
+    int countHits(const jstreams::Query&);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int countDocuments();

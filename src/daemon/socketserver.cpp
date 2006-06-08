@@ -140,6 +140,14 @@ SocketServer::handleRequest() {
         }
         return;
     }
+    if (request.size() == 2 && request[0] == "countHits") {
+        int count = interface->countHits(request[1]);
+        response.clear();
+        ostringstream c;
+        c << count;
+        response.push_back(c.str());
+        return;
+    }
     if (request.size() == 1 && request[0] == "getStatus") {
         map<string, string> status = interface->getStatus();
         map<string,string>::const_iterator i;

@@ -81,6 +81,20 @@ EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     free(f);
     return fragment;
 }
+int
+EstraierIndexReader::countHits(const jstreams::Query& query) {
+    ESTCOND* cond = createCondition(query);
+    est_cond_set_max(cond, 10);
+    int n;
+    int* ids;
+
+    manager->ref();
+    ids = est_db_search(db, cond, &n, NULL);
+    manager->deref();
+    est_cond_delete(cond);
+    free(ids);
+    return n;
+}
 vector<IndexedDocument>
 EstraierIndexReader::query(const Query& query) {
     ESTCOND* cond = createCondition(query);

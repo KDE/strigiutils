@@ -20,6 +20,7 @@ private:
 public:
     Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),
         scheduler(s) {}
+    int countHits(const std::string& query);
     Hits query(const std::string& query);
     std::map<std::string, std::string> getStatus();
     std::string stopDaemon();

@@ -6,6 +6,12 @@
 using namespace std;
 using namespace jstreams;
 
+int
+Interface::countHits(const std::string& query) {
+    Query q(query);
+    int count = manager.getIndexReader()->countHits(q);
+    return count;
+}
 ClientInterface::Hits
 Interface::query(const string& query) {
     Query q(query);

@@ -18,6 +18,7 @@ private:
     static ESTCOND* createCondition(const jstreams::Query&);
     static const char* mapId(const std::string& id);
 public:
+    int countHits(const jstreams::Query&);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int countDocuments();

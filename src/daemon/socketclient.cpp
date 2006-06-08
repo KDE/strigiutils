@@ -90,6 +90,25 @@ SocketClient::sendRequest(int sd) {
     r = send(sd, "\n", 1, MSG_NOSIGNAL);
     return r > 0;
 }
+int
+SocketClient::countHits(const std::string &query) {
+    response.clear();
+    request.clear();
+    request.push_back("countHits");
+    assert(query.find("\n") == std::string::npos);
+    request.push_back(query);
+    int sd = open();
+    if (sd < 0) {
+        fprintf(stderr, "   %s\n", error.c_str());
+        return -1;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    if (response.size() == 0) return -1;
+    int count = atoi(response[0].c_str());
+    return count;
+}
 ClientInterface::Hits
 SocketClient::query(const std::string &query) {
     response.clear();
@@ -126,6 +145,7 @@ SocketClient::query(const std::string &query) {
         }
         hits.hits.push_back(h);
     }
+    response.clear();
     return hits;
 }
 map<string, string>

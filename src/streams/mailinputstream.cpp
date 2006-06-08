@@ -38,7 +38,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
                 // if at least 5 header lines were read and an empty line is
                 // encountered, the mail header is valid
                 return true;
-            } else if (c != '-' && !isalpha(c)) {
+            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)) {
                 // an invalid character in the key
                 return false;
             }

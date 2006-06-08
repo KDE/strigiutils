@@ -40,6 +40,7 @@ public:
 class IndexReader {
 public:
     virtual ~IndexReader() {}
+    virtual int countHits(const Query&) = 0;
     virtual std::vector<IndexedDocument> query(const Query&) = 0;
     virtual std::map<std::string, time_t> getFiles(char depth) = 0;
     virtual int countDocuments() { return -1; }
