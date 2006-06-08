@@ -5,6 +5,7 @@ using namespace std;
 
 void
 QueryExecuter::run() {
+    return;
     // small delay to avoid querying incomplete queries
     sleep(1);
     mutex.lock();

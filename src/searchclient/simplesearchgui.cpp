@@ -1,30 +1,25 @@
 #include "simplesearchgui.h"
+#include "searchtabs.h"
+#include "socketclient.h"
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QLabel>
-#include <QtGui/QTextBrowser>
-#include <QtCore/QProcess>
-#include <QtCore/QDebug>
-#include <QtCore/QFileInfo>
-#include <QtCore/QString>
-#include <QtCore/QTimer>
-#include <QtCore/QProcess>
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
-#include <QtGui/QTextDocument>
 #include <QtGui/QComboBox>
+#include <QtCore/QString>
+#include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QProcess>
 #include <string>
 #include <vector>
-#include "socketclient.h"
 using namespace std;
 
 SimpleSearchGui::SimpleSearchGui() {
     mainview = new QStackedWidget();
-    itemview = new QTextBrowser();
 
     QWidget* statuswidget = new QWidget();
     QVBoxLayout *statuslayout = new QVBoxLayout;
@@ -62,7 +57,12 @@ SimpleSearchGui::SimpleSearchGui() {
     statuslayout->addLayout(hlayout);
     statuswidget->setLayout(statuslayout);
 
-    mainview->addWidget(itemview);
+    tabs = new SearchTabs();
+    tabs->addTab("kitten", "kitten");
+    tabs->addTab("kde", "kde");
+    tabs->addTab("cpp", "cpp");
+    tabs->addTab("all", "");
+    mainview->addWidget(tabs);
     mainview->addWidget(statuswidget);
     mainview->setCurrentIndex(1);
 
@@ -74,10 +74,6 @@ SimpleSearchGui::SimpleSearchGui() {
 
     connect(queryfield, SIGNAL(textChanged(const QString&)),
         this, SLOT(query(const QString&)));
-    connect(&executer, SIGNAL(queryFinished(const QString&)),
-        this, SLOT(handleQueryResult(const QString&)));
-    connect(itemview, SIGNAL(anchorClicked(const QUrl&)),
-        this, SLOT(openItem(const QUrl&)));
     connect(toggleindexing, SIGNAL(clicked()),
         this, SLOT(toggleIndexing()));
     connect(toggledaemon, SIGNAL(clicked()),
@@ -86,7 +82,6 @@ SimpleSearchGui::SimpleSearchGui() {
         this, SLOT(addDirectory()));
     connect(removedir, SIGNAL(clicked()),
         this, SLOT(removeDirectory()));
-    itemview->setEnabled(false);
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
     socketfile = getenv("HOME");
@@ -99,15 +94,12 @@ SimpleSearchGui::SimpleSearchGui() {
 }
 void
 SimpleSearchGui::query(const QString& item) {
+    tabs->setQuery(item);
     QString query = item.trimmed();
     if (query.length() == 0) {
         mainview->setCurrentIndex(1);
     } else {
         mainview->setCurrentIndex(0);
-        itemview->setEnabled(false);
-        itemview->clear();
-        itemview->append("searching...");
-        executer.query(query);
     }
 }
 void
@@ -181,76 +173,6 @@ SimpleSearchGui::startDaemon() {
 	    QProcess::startDetached("kittendaemon");
         }
     }
-}
-void
-SimpleSearchGui::handleQueryResult(const QString& item) {
-    itemview->clear();
-    ClientInterface::Hits hits = executer.getResults();
-    if (hits.hits.size() > 0) {
-        QString html;
-        if (hits.error.length() == 0) {
-            itemview->setEnabled(true);
-            vector<ClientInterface::Hit>::const_iterator i;
-            for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
-                QString path = i->uri.c_str();
-                QString name;
-                map<string, string>::const_iterator t
-                    = i->properties.find("title");
-                if (t != i->properties.end()) {
-                    name = t->second.c_str();
-                }
-                int l = path.lastIndexOf('/');
-                html += "<div><a href='"+path+"'>";
-                if (l != -1) {
-                    if (name.length()) {
-                        html += name;
-                    } else {
-                        html += path.mid(l+1);
-                    }
-                    path = path.left(l);
-                    html += "</a> from folder <a href='"+path+"'>" + path;
-                } else {
-                    if (name.length()) {
-                        html += name;
-                    } else {
-                        html += path;
-                    }
-                }
-                html += "</a><br/>score: ";
-                html += QString::number(i->score) + "<br/><i>";
-                html += QString(i->fragment.c_str()).left(100).replace("<", "&lt;");
-                html += "</i></div>";
-            }
-        } else {
-            html = "<h2>";html+=hits.error.c_str();html+="</h2>";
-        }
-        itemview->setHtml(html);
-    } else {
-        itemview->append("no results");
-    }
-}
-void
-SimpleSearchGui::openItem(const QUrl& url) {
-    // if the file does not exist on the file system remove items of the end
-    // until it does
-    QString file = url.toString();
-    itemview->setSource(itemview->source());
-    QFileInfo info(file);
-    while (!info.exists()) {
-        int pos = file.lastIndexOf('/');
-        if (pos <= 0) return;
-        file = file.left(pos);
-        info.setFile(file);
-    }
-    if (file.endsWith(".tar") || file.endsWith(".tar.bz2")
-            || file.endsWith(".tar.gz")) {
-        file = "tar:"+url.toString();
-    } else if (file.endsWith(".zip") || file.endsWith(".jar")) {
-        file = "zip:"+url.toString();
-    }
-    QStringList args;
-    args << "openURL" << file;
-    QProcess::execute("kfmclient", args);
 }
 void
 SimpleSearchGui::toggleDaemon() {

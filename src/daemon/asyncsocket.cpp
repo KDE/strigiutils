@@ -108,7 +108,7 @@ AsyncSocket::read() {
             break;
         default:
             if (errno != EAGAIN) {
-                printf("hmm %i\n", errno);
+                printf("error %i: %s\n", errno, strerror(errno));
                 status = Error;
                 error = strerror(EAGAIN);
                 close();

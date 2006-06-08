@@ -22,7 +22,7 @@ AsyncSocketClient::splitResponse() const {
     const char* l = p;
     while (true) {
         while (*p != '\n' && *p != '\0') {p++;}
-        if (p != l) {
+        if (p-l > 1) {
             string line(l, p-l);
             response.push_back(line);
             l = p+1;
@@ -55,8 +55,8 @@ AsyncSocketClient::query(const std::string& query) {
 }
 void
 AsyncSocketClient::handleQueryResponse() {
+    hits.hits.clear();
     if (socket.getStatus() == AsyncSocket::Error) {
-        hits.hits.clear();
         return;
     }
     vector<string> response(splitResponse());
