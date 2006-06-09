@@ -22,7 +22,7 @@ AsyncSocketClient::splitResponse() const {
     const char* l = p;
     while (true) {
         while (*p != '\n' && *p != '\0') {p++;}
-        if (p-l > 1) {
+        if (p-l > 0) {
             string line(l, p-l);
             response.push_back(line);
             l = p+1;
@@ -61,11 +61,14 @@ AsyncSocketClient::handleQueryResponse() {
     }
     vector<string> response(splitResponse());
     uint i = 0;
-    while (i+2 < response.size()) {
-        ClientInterface::Hit h;
+    while (i+6 < response.size()) {
+        jstreams::IndexedDocument h;
         h.uri = response[i++];
         h.fragment = response[i++];
+        h.mimetype = response[i++];
         h.score = atof(response[i++].c_str());
+        h.size = atoi(response[i++].c_str());
+        h.mtime = atoi(response[i++].c_str());
         while (i < response.size()) {
             const char* s = response[i].c_str();
             const char* v = strchr(s, ':');

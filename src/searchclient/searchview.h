@@ -13,6 +13,8 @@ private:
     QTextBrowser* view;
     QString query;
     Qt4KittenClient& kitten;
+
+    QString iconHTML(const QString& mimetype);
 private slots:
     void openItem(const QUrl& url);
 public:

@@ -1,21 +1,12 @@
 #ifndef INDEXREADER_H
 #define INDEXREADER_H
 
-#include <string>
+#include "indexeddocument.h"
 #include <vector>
-#include <map>
 #include <set>
 
 namespace jstreams {
 
-class IndexedDocument {
-public:
-    IndexedDocument() :score(0) {}
-    std::string filepath;
-    std::string fragment;
-    float score;
-    std::map<std::string, std::string> properties;
-};
 
 /**
  * Break up a string in a query.

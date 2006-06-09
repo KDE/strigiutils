@@ -121,18 +121,21 @@ SocketServer::handleRequest() {
     if (request.size() == 2 && request[0] == "query") {
         ClientInterface::Hits hits = interface->query(request[1]);
         response.clear();
-        vector<ClientInterface::Hit>::const_iterator i;
-        ostringstream score;
+        vector<jstreams::IndexedDocument>::const_iterator i;
+        ostringstream oss;
         for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
-            response.push_back(i->uri);
-            if (i->fragment.length()) {
-                response.push_back(i->fragment);
-            } else {
-                response.push_back(" ");
-            }
-            score << i->score;
-            response.push_back(score.str());
-            score.str("");
+            response.push_back((i->uri.length())?i->uri:" ");
+            response.push_back((i->fragment.length())?i->fragment:" ");
+            response.push_back((i->mimetype.length())?i->mimetype:" ");
+            oss << i->score;
+            response.push_back(oss.str());
+            oss.str("");
+            oss << i->size;
+            response.push_back(oss.str());
+            oss.str("");
+            oss << i->mtime;
+            response.push_back(oss.str());
+            oss.str("");
             map<string, string>::const_iterator j;
             for (j = i->properties.begin(); j != i->properties.end(); ++j) {
                  response.push_back(j->first+":"+j->second);

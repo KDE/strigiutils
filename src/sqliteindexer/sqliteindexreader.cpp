@@ -135,7 +135,7 @@ SqliteIndexReader::query(const jstreams::Query& query) {
     r = sqlite3_step(stmt);
     while (r == SQLITE_ROW) {
         IndexedDocument doc;
-        doc.filepath = (const char*)sqlite3_column_text(stmt, 0);
+        doc.uri = (const char*)sqlite3_column_text(stmt, 0);
         results.push_back(doc);
         r = sqlite3_step(stmt);
     }

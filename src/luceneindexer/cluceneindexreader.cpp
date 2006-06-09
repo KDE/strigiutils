@@ -2,6 +2,7 @@
 #include "cluceneindexmanager.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include <sstream>
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;
@@ -92,13 +93,25 @@ CLuceneIndexReader::convertValue(const TCHAR* v) {
 }
 void
 CLuceneIndexReader::addField(lucene::document::Field* field,
-        std::map<std::string, std::string>& props) {
+        IndexedDocument& doc) {
     const TCHAR* value = field->stringValue();
     if (value == 0) return;
     char name[CL_MAX_DIR];
     STRCPY_TtoA(name, field->name(), CL_MAX_DIR);
-    if (strcmp(name, "content") != 0 && strcmp(name, "path") != 0) {
-        props[name] = convertValue(value);
+    if (strcmp(name, "content") == 0) {
+        doc.fragment = convertValue(value);
+    } else if (strcmp(name, "path") == 0) {
+        doc.uri = convertValue(value);
+    } else if (strcmp(name, "mimetype") == 0) {
+        doc.mimetype = convertValue(value);
+    } else if (strcmp(name, "mtime") == 0) {
+        istringstream iss(convertValue(value));
+        iss >> doc.mtime;
+    } else if (strcmp(name, "size") == 0) {
+        istringstream iss(convertValue(value));
+        iss >> doc.size;
+    } else {
+        doc.properties[name] = convertValue(value);
     }
 }
 int
@@ -144,12 +157,10 @@ CLuceneIndexReader::query(const Query& q) {
         Document *d = &hits->doc(i);
         IndexedDocument doc;
         doc.score = hits->score(i);
-        doc.filepath = convertValue(d->get(_T("path")));
-        doc.fragment = convertValue(d->get(_T("content")));
         DocumentFieldEnumeration* e = d->fields();
         while (e->hasMoreElements()) {
             Field* f = e->nextElement();
-            addField(f, doc.properties);
+            addField(f, doc);
         }
         results.push_back(doc);
     }

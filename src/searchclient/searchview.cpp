@@ -4,6 +4,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
+#include <QtCore/QDateTime>
 using namespace std;
 
 SearchView::SearchView(Qt4KittenClient& k) :kitten(k) {
@@ -24,11 +25,12 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     view->clear();
     setEnabled(true);
     if (q != query) return;
+    QDateTime time;
     if (hits.hits.size() > 0) {
         QString html;
         if (hits.error.length() == 0) {
             view->setEnabled(true);
-            vector<ClientInterface::Hit>::const_iterator i;
+            vector<jstreams::IndexedDocument>::const_iterator i;
             for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
                 QString path = i->uri.c_str();
                 QString name;
@@ -38,7 +40,9 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                     name = t->second.c_str();
                 }
                 int l = path.lastIndexOf('/');
-                html += "<div><a href='"+path+"'>";
+                html += "<div>";
+                html += iconHTML(i->mimetype.c_str());
+                html += "<a href='"+path+"'>";
                 if (l != -1) {
                     if (name.length()) {
                         html += name;
@@ -55,7 +59,11 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                     }
                 }
                 html += "</a><br/>score: ";
-                html += QString::number(i->score) + "<br/><i>";
+                html += QString::number(i->score) + ", mime-type: "
+                    + QString(i->mimetype.c_str()) + ", size: "
+                    + QString::number(i->size) + ", last modified: ";
+                time.setTime_t(i->mtime);
+                html += time.toString() + "<br/><i>";
                 html += QString(i->fragment.c_str()).left(100).replace("<", "&lt;");
                 html += "</i><br/><table>";
                 map<string, string>::const_iterator j;
@@ -72,6 +80,19 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     } else {
         view->append("no results");
     }
+}
+QString
+SearchView::iconHTML(const QString& mimetype) {
+    QString gnome = "/opt/gnome/share/icons/gnome/48x48/mimetypes/gnome-mime-";
+    QString icon = mimetype;
+    icon.replace("/", "-");
+    icon = gnome + icon + ".png";
+    QFileInfo i(icon);
+    QString html;
+    if (i.exists()) {
+        html = "<img src='"+icon+"'/>";
+    }
+    return html;
 }
 void
 SearchView::setHTML(const QString& html) {

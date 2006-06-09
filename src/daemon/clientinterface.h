@@ -1,24 +1,26 @@
 #ifndef CLIENTINTERFACE_H
 #define CLIENTINTERFACE_H
 
-#include <string>
+#include "indexeddocument.h"
 #include <vector>
-#include <map>
 
 class ClientInterface {
 protected:
     bool active;
 public:
-    class Hit {
+/*    class Hit {
     public:
         std::string uri;
         double score;
         std::string fragment;
+        std::string mimetype;
+        int64_t size;
+        time_t mtime;
         std::map<std::string, std::string> properties;
-    };
+    };*/
     class Hits {
     public:
-        std::vector<Hit> hits;
+        std::vector<jstreams::IndexedDocument> hits;
         std::string error;
     };
 

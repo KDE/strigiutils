@@ -127,14 +127,18 @@ SocketClient::query(const std::string &query) {
     readResponse(sd);
     close(sd);
     uint i = 0;
-    while (i+2 < response.size()) {
-        Hit h;
+    while (i+6 < response.size()) {
+        jstreams::IndexedDocument h;
         h.uri = response[i++];
         h.fragment = response[i++];
+        h.mimetype = response[i++];
         h.score = atof(response[i++].c_str());
+        h.size = atoi(response[i++].c_str());
+        h.mtime = atoi(response[i++].c_str());
         while (i < response.size()) {
             const char* s = response[i].c_str();
             const char* v = strchr(s, ':');
+            if (!v) break;
             const char* d = strchr(s, '/');
             if (d && d < v) {
                 break;

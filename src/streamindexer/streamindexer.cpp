@@ -12,6 +12,7 @@
 #include "mimetypethroughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexwriter.h"
+#include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -145,6 +146,11 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
         removeIndexable(depth);
         return -2;
     }
+
+    // store the size of the stream
+    ostringstream sizestr;
+    sizestr << input->getSize();
+    idx.setField("size", sizestr.str());
 
     // remove references to the indexable before it goes out of scope
     removeIndexable(depth);

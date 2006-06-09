@@ -68,7 +68,7 @@ EstraierIndexReader::createCondition(const jstreams::Query& query) {
 const char*
 EstraierIndexReader::mapId(const std::string& id) {
     if (id == "path") return "@uri";
-    if (id == "mtime") return "@mdata";
+    if (id == "mtime") return "@mdate";
     if (id == "title") return "@title";
     if (id == "size") return "@size";
     return id.c_str();
@@ -106,26 +106,31 @@ EstraierIndexReader::query(const Query& query) {
     std::vector<IndexedDocument> results;
     for (int i=0; i<n; ++i) {
         int id = ids[i];
-        char* uri = est_db_get_doc_attr(db, id, "@uri");
-        if (uri) {
-            IndexedDocument doc;
-            doc.filepath = uri;
-            doc.score = est_cond_score(cond, i);
-            ESTDOC* d = est_db_get_doc(db, id, ESTGDNOKWD);
-            doc.fragment = getFragment(d, query);
-            CBLIST* atts = est_doc_attr_names(d);
-            for (int j = 0; j < cblistnum(atts); ++j) {
-                const char* name = cblistval(atts, j, 0);
-                const char* value = est_doc_attr(d, name);
-                if (*name == '@') name++;
-                if (strcmp(name, "uri") != 0) {
-                    doc.properties[name] = value;
-                }
+        IndexedDocument doc;
+        doc.score = est_cond_score(cond, i);
+        ESTDOC* d = est_db_get_doc(db, id, ESTGDNOKWD);
+        doc.fragment = getFragment(d, query);
+        CBLIST* atts = est_doc_attr_names(d);
+        for (int j = 0; j < cblistnum(atts); ++j) {
+            const char* name = cblistval(atts, j, 0);
+            const char* value = est_doc_attr(d, name);
+            if (*name == '@') name++;
+            if (strcmp(name, "uri") == 0) {
+                doc.uri = value;
+            } else if (strcmp(name, "mimetype") == 0) {
+                doc.mimetype = value;
+            } else if (strcmp(name, "mdate") == 0) {
+                istringstream iss(value);
+                iss >> doc.mtime;
+            } else if (strcmp(name, "size") == 0) {
+                istringstream iss(value);
+                iss >> doc.size;
+            } else {
+                doc.properties[name] = value;
             }
-            cblistclose(atts);
-            results.push_back(doc);
-            free(uri);
         }
+        cblistclose(atts);
+        results.push_back(doc);
     }
     manager->deref();
 

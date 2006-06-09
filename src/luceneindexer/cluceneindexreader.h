@@ -32,7 +32,7 @@ private:
         lucene::search::BooleanQuery& bq);
     static std::string convertValue(const wchar_t* value);
     static void addField(lucene::document::Field* field,
-        std::map<std::string, std::string>& props);
+        jstreams::IndexedDocument&);
 public:
     int countHits(const jstreams::Query&);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);

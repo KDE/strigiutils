@@ -10,7 +10,7 @@ kittendaemon_LDFLAGS = -lpthread
 
 libsearchclient_la_SOURCES = socketclient.cpp clientinterface.cpp \
 	asyncsocket.cpp asyncsocketclient.cpp
-libsearchclient_la_CXXFLAGS = 
+libsearchclient_la_CXXFLAGS = -I$(top_srcdir)/src/streamindexer
 
 if HAVE_CLUCENE
 libsearchclient_la_CXXFLAGS += -DHAVE_CLUCENE

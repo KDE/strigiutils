@@ -7,6 +7,7 @@
 
 SearchTabs::SearchTabs() {
     tabs = new QTabBar();
+    tabs->setDrawBase(false);
     view = new SearchView(kitten);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);

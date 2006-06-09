@@ -15,17 +15,8 @@ Interface::countHits(const std::string& query) {
 ClientInterface::Hits
 Interface::query(const string& query) {
     Query q(query);
-    vector<IndexedDocument> docs = manager.getIndexReader()->query(q);
     Hits hits;
-    vector<IndexedDocument>::const_iterator i;
-    for (i = docs.begin(); i != docs.end(); ++i) {
-        Hit h;
-        h.uri = i->filepath;
-        h.fragment = i->fragment;
-        h.score = i->score;
-        h.properties = i->properties;
-        hits.hits.push_back(h);
-    }
+    hits.hits = manager.getIndexReader()->query(q);
     return hits;
 }
 map<string, string>

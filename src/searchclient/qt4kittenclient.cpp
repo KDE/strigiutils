@@ -9,7 +9,6 @@ Qt4KittenClient::Qt4KittenClient() {
     poller.setSingleShot(false);
     poller.setInterval(1);
     connect(&poller, SIGNAL(timeout()), this, SLOT(poll()));
-    qDebug() << "construct";
 }
 void
 Qt4KittenClient::poll() {
