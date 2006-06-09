@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <cstdio>
 #include <cerrno>
@@ -97,15 +98,37 @@ savedirstoindex(const string& file, const set<string> &dirs) {
     }
     f.close();
 }
-
+FILE*
+aquireLock(const char* lockfile, struct flock& lock) {
+    FILE* f = fopen(lockfile, "w");
+    if (f == 0) {
+        fprintf(stderr, strerror(errno));
+        return 0;
+    }
+    lock.l_type = F_WRLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    int r = fcntl(fileno(f), F_SETLK, &lock);
+    if (r == -1) {
+        fprintf(stderr, strerror(errno));
+        fclose(f);
+        return 0;
+    }
+    return f;
+}
+void
+releaseLock(FILE* f, struct flock& lock) {
+    lock.l_type = F_UNLCK;
+    fcntl(fileno(f), F_SETLK, &lock);
+    fclose(f);
+}
 int
 main(int argc, char** argv) {
-    set_quit_on_signal(SIGINT);
-    set_quit_on_signal(SIGQUIT);
-    set_quit_on_signal(SIGTERM);
-
+    // set up the directory paths
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.kitten";
+    string lockfilename = daemondir+"/lock";
     string lucenedir = daemondir+"/clucene";
     string estraierdir = daemondir+"/estraier";
     string xapiandir = daemondir+"/xapian";
@@ -115,14 +138,32 @@ main(int argc, char** argv) {
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
+        fprintf(stderr, "Could not initialize the daemon directory.\n");
         exit(1);
     }
     if (!initializeDir(lucenedir)) {
+        fprintf(stderr, "Could not initialize the clucene directory.\n");
         exit(1);
     }
     if (!initializeDir(estraierdir)) {
+        fprintf(stderr, "Could not initialize the estraier directory.\n");
         exit(1);
     }
+
+    // check that no other daemon is running
+    struct flock lock;
+    FILE* lockfile = aquireLock(lockfilename.c_str(), lock);
+    if (lockfile == 0) {
+        printf("Daemon cannot run: the file %s is locked.\n",
+            lockfilename.c_str());
+        exit(1);
+    } 
+
+    // set up signal handling 
+    set_quit_on_signal(SIGINT);
+    set_quit_on_signal(SIGQUIT);
+    set_quit_on_signal(SIGTERM);
+
 
     // determine the right index manager
     map<string, IndexManager*(*)(const char*)> factories;
@@ -169,5 +210,8 @@ main(int argc, char** argv) {
 
     // close the indexmanager
     delete index;
+
+    // release lock
+    releaseLock(lockfile, lock);
 }
 

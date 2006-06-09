@@ -79,7 +79,7 @@ CLuceneIndexManager::derefReader() {
 void
 CLuceneIndexManager::openReader() {
     try {
-        printf("reader at %s\n", dbdir.c_str());
+//        printf("reader at %s\n", dbdir.c_str());
         indexreader = IndexReader::open(dbdir.c_str());
     } catch (CLuceneError& err) {
         printf("could not create reader: %s\n", err.what());
@@ -95,8 +95,11 @@ CLuceneIndexManager::closeReader() {
 void
 CLuceneIndexManager::openWriter() {
     try {
-        printf("writer at %s\n", dbdir.c_str());
+//        printf("writer at %s\n", dbdir.c_str());
         if (IndexReader::indexExists(dbdir.c_str())) {
+            if (IndexReader::isLocked(dbdir.c_str())) {
+                IndexReader::unlock(dbdir.c_str());
+            }
             indexwriter = new IndexWriter(dbdir.c_str(), analyzer, false);
         } else {
             indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true, true);

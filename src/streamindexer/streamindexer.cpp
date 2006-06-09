@@ -9,6 +9,7 @@
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
+#include "mimetypethroughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexwriter.h"
 #include <sys/types.h>
@@ -56,6 +57,8 @@ StreamIndexer::addThroughAnalyzers() {
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
     StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
+    tIter->push_back(ana);
+    ana = new MimeTypeThroughAnalyzer();
     tIter->push_back(ana);
 }
 void

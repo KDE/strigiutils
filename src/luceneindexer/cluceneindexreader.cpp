@@ -9,6 +9,7 @@ using lucene::document::Document;
 using lucene::document::Field;
 using lucene::index::Term;
 using lucene::search::TermQuery;
+using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
 using lucene::document::DocumentFieldEnumeration;
 using namespace jstreams;
@@ -46,7 +47,13 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             Term* t = createTerm(mapId(i->first), *j);
-            TermQuery* tq = _CLNEW TermQuery(t);
+            lucene::search::Query* tq;
+            bool wildcard = strpbrk(j->c_str(), "*?");
+            if (wildcard) {
+                tq = _CLNEW WildcardQuery(t);
+            } else {
+                tq = _CLNEW TermQuery(t);
+            }
             _CLDECDELETE(t);
             bq.add(tq, true, true, false);
         }
@@ -56,7 +63,13 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             Term* t = createTerm(mapId(i->first), *j);
-            TermQuery* tq = _CLNEW TermQuery(t);
+            lucene::search::Query* tq;
+            bool wildcard = strpbrk(j->c_str(), "*?");
+            if (wildcard) {
+                tq = _CLNEW WildcardQuery(t);
+            } else {
+                tq = _CLNEW TermQuery(t);
+            }
             _CLDECDELETE(t);
             bq.add(tq, true, false, true);
         }
@@ -64,7 +77,7 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
 }
 std::string
 CLuceneIndexReader::convertValue(const TCHAR* v) {
-    if (v == 0) return 0;
+    if (v == 0) return "";
     char after[CL_MAX_DIR];
     STRCPY_TtoA(after, v, CL_MAX_DIR);
     after[CL_MAX_DIR-1] = '\0';
@@ -95,9 +108,17 @@ CLuceneIndexReader::countHits(const Query& q) {
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
-    Hits *hits = searcher.search(&bq);
-    int s = hits->length();
-    delete hits;
+    Hits* hits = 0;
+    int s = 0;
+    try {
+        hits = searcher.search(&bq);
+        s = hits->length();
+    } catch (CLuceneError& err) {
+        printf("could not query: %s\n", err.what());
+    }
+    if (hits) {
+        delete hits;
+    }
     searcher.close();
     manager->derefReader();
     return s;
@@ -110,8 +131,14 @@ CLuceneIndexReader::query(const Query& q) {
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
     TCHAR tf[CL_MAX_DIR];
-    Hits *hits = searcher.search(&bq);
-    int s = hits->length();
+    Hits* hits = 0;
+    int s = 0;
+    try {
+        hits = searcher.search(&bq);
+        s = hits->length();
+    } catch (CLuceneError& err) {
+        printf("could not query: %s\n", err.what());
+    }
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
     for (int i = 0; i < s && i < 10; ++i) {
         Document *d = &hits->doc(i);
@@ -126,7 +153,9 @@ CLuceneIndexReader::query(const Query& q) {
         }
         results.push_back(doc);
     }
-    delete hits;
+    if (hits) {
+        delete hits;
+    }
     searcher.close();
     manager->derefReader();
     return results;

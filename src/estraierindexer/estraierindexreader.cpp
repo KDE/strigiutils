@@ -77,14 +77,12 @@ string
 EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     char* f = est_doc_cat_texts(doc);
     string fragment = f;
-//    printf("%s\n", f);
     free(f);
     return fragment;
 }
 int
 EstraierIndexReader::countHits(const jstreams::Query& query) {
     ESTCOND* cond = createCondition(query);
-    //est_cond_set_max(cond, 10);
     int n;
     int* ids;
 

@@ -41,9 +41,11 @@ Qt4KittenClient::countHits(const QString& query) {
 }
 void
 Qt4KittenClient::query(const QString& query) {
-    queryQueue.append(query);
-    if (mode == Idle) {
-        startQuery();
+    if (query.length()) {
+        queryQueue.append(query);
+        if (mode == Idle) {
+            startQuery();
+        }
     }
 }
 void

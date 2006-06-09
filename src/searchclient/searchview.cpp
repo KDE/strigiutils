@@ -57,7 +57,13 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                 html += "</a><br/>score: ";
                 html += QString::number(i->score) + "<br/><i>";
                 html += QString(i->fragment.c_str()).left(100).replace("<", "&lt;");
-                html += "</i></div>";
+                html += "</i><br/><table>";
+                map<string, string>::const_iterator j;
+                for (j = i->properties.begin(); j != i->properties.end(); ++j) {
+                    html += "<tr><td>"+QString(j->first.c_str())+"</td><td>"
+                        +QString(j->second.c_str())+"</td></tr>";
+                }
+                html += "</table></div>";
             }
         } else {
             html = "<h2>";html+=hits.error.c_str();html+="</h2>";

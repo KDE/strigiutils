@@ -58,9 +58,11 @@ SimpleSearchGui::SimpleSearchGui() {
     statuswidget->setLayout(statuslayout);
 
     tabs = new SearchTabs();
-    tabs->addTab("kitten", "kitten");
     tabs->addTab("kde", "kde");
-    tabs->addTab("cpp", "cpp");
+    tabs->addTab("msg", "mimetype:message/*");
+    tabs->addTab("mail", "mimetype:text/x-mail");
+    tabs->addTab("audio", "mimetype:audio/*");
+    tabs->addTab("other", "-kde -mimetype:mesage/* -mimetype:text/x-mail -mimetype:audio/*");
     tabs->addTab("all", "");
     mainview->addWidget(tabs);
     mainview->addWidget(statuswidget);
@@ -94,7 +96,9 @@ SimpleSearchGui::SimpleSearchGui() {
 }
 void
 SimpleSearchGui::query(const QString& item) {
-    tabs->setQuery(item);
+    if (item.length()) {
+        tabs->setQuery(item);
+    }
     QString query = item.trimmed();
     if (query.length() == 0) {
         mainview->setCurrentIndex(1);
