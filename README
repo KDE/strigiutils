@@ -8,7 +8,7 @@ Here are the main features of Kitten:
 - very fast crawling
 - very small memory footprint
 - no hammering of the system
-- pluggable backend, currently sqlite3, but clucene is almost finished too
+- pluggable backend, currently clucene and hyperestraier, sqlite3 and xapian are in the works
 - communication between daemon and search program over an abstract interface, this is currently  a simple socket but implementation of dbus is a possibility. There's a small perl program in the code as an example of how to query. This is so easy that any KDE app could implement this.
 - simple interface for implementing plugins for extracting information. we'll try to reuse the kat plugins, although native plugins will have a large speed advantage
 - calculation of sha1 for every file crawled (allows fast finding of duplicates)
