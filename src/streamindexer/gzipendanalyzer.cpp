@@ -6,6 +6,7 @@
 #include "streamindexer.h"
 #include "indexwriter.h"
 using namespace jstreams;
+using namespace std;
 
 bool
 GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
@@ -28,7 +29,19 @@ GZipEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         return TarEndAnalyzer::staticAnalyze(filename, &stream, depth, indexer,
             idx);
     } else {
-        std::string file = filename+"/bunzipped";
+        std::string file;
+        uint p1 = filename.rfind("/");
+        if (p1 != string::npos) {
+            int len = filename.length();
+            if (len > 3 && filename.substr(len-3) == ".gz") {
+                file = filename + filename.substr(p1,len-p1-3);
+            } else {
+                file = filename + filename.substr(p1);
+            }
+        } else {
+            // last resort
+            file = filename+"/gunzipped";
+        }
         return indexer->analyze(file, idx->getMTime(), &stream, depth);
     }
 }
