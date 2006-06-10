@@ -64,6 +64,9 @@ dnl check for openssl
 PKG_CHECK_MODULES(openssl, openssl >= 0, have_openssl="yes", have_openssl="no")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$have_openssl" = "yes")
 
+dnl check for magic
+AC_CHECK_HEADER(magic.h, , AC_MSG_ERROR(["You need magic.h from file-devel."]))
+
 dnl check for CLucene
 dnl currently disabled because the code's not finished yet
 AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
