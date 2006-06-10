@@ -123,6 +123,6 @@ SearchView::openItem(const QUrl& url) {
         file = "zip:"+url.toString();
     }
     QStringList args;
-    args << "openURL" << file;
+    args << "exec" << file;
     QProcess::execute("kfmclient", args);
 }
