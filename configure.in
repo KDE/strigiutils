@@ -124,4 +124,5 @@ AC_OUTPUT( Makefile \
         src/archiveengine/Makefile \
         src/archiveengine/tests/Makefile \
         src/searchclient/Makefile \
+        src/htmlgui/Makefile \
         src/qclient/Makefile )

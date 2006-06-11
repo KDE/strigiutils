@@ -46,6 +46,7 @@ private:
     void* writerData;
     const int64_t mtime;
     const std::string& name;
+    std::string encoding;
     IndexWriter* writer;
     char depth;
 public:
@@ -65,6 +66,8 @@ public:
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
     char getDepth() const { return depth; }
+    void setEncoding(const char* enc) { encoding = enc; }
+    const char* getEncoding() const { return encoding.c_str(); }
     void* getWriterData() const { return writerData; }
     void setWriterData(void* wd) { writerData = wd; }
 };

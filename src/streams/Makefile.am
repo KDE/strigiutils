@@ -5,13 +5,16 @@ libstreams_la_SOURCES = bz2inputstream.cpp digestinputstream.cpp \
 	inputstreamreader.cpp filereader.cpp kmpsearcher.cpp \
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp \
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp \
-	dostime.cpp
+	dostime.cpp substreamproviderprovider.cpp
 
 libstreams_la_CXXFLAGS =
 libstreams_la_LDFLAGS = 
 libstreams_la_LIBADD = -lz -lbz2 -lcrypto
 
 SUBDIRS = . tests
+
+include_HEADERS = streambase.h substreamprovider.h substreamproviderprovider.h \
+	fileinputstream.h bufferedstream.h inputstreambuffer.h
 
 noinst_HEADERS = base64inputstream.h bufferedstream.h bz2inputstream.h \
 	digestinputstream.h dostime.h fileinputstream.h filereader.h \

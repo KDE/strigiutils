@@ -302,7 +302,6 @@ MailInputStream::handleBodyLine() {
     substream->mark(10*boundary.length());
     //printf("%s\n", contenttransferencoding.c_str());
     if (strcasestr(contenttransferencoding.c_str(), "base64")) {
-        //printf("base64 %p\n", substream);
         entrystream = new Base64InputStream(substream);
     }
 }
@@ -372,7 +371,6 @@ MailInputStream::nextEntry() {
         scanBody();
     }
     if (substream == 0) status = Eof;
-
     return entrystream ?entrystream : substream;
 }
 void
