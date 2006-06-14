@@ -17,7 +17,8 @@ public:
      * Function that maps mimetype onto an image url that points to
      * an image portraying the mimetype.
      **/
-    virtual std::string mapMimetypeIcon(const std::string& url) = 0;
+    virtual std::string mapMimetypeIcon(const std::string& url,
+        const std::string& mimetype) = 0;
     /**
      * Function that encodes string into an escaped string suitable
      * for use in a url.

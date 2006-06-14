@@ -51,8 +51,8 @@ KittenHtmlGui::Private::printSearchResult(std::ostream& out,
         const jstreams::IndexedDocument& doc) {
     string link, icon, name, folder;
     link = h->mapLinkUrl(doc.uri);
-    icon = "<img src='";
-    icon += h->mapMimetypeIcon(doc.mimetype);
+    icon = "<img style='float:left;' class='icon' src='";
+    icon += h->mapMimetypeIcon(doc.uri, doc.mimetype);
     icon += "'/>";
     map<string, string>::const_iterator t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
@@ -66,8 +66,8 @@ KittenHtmlGui::Private::printSearchResult(std::ostream& out,
     if (l != string::npos) {
         folder = doc.uri.substr(0, l);
     } 
-    out << "<div class='hit'><h2><a href='" << link << "'>" << icon;
-    out << " " << name << "</a></h2><br/>score: ";
+    out << "<div class='hit'>" << icon << "<h2><a href='" << link << "'>";
+    out << name << "</a></h2><br/>score: ";
     out << doc.score << ", mime-type: " << doc.mimetype.c_str() << ", size: ";
     out << doc.size << ", last modified: " << h->formatDate(doc.mtime);
     string fragment = h->escapeString(doc.fragment.substr(0,100));
