@@ -34,3 +34,50 @@ Kitten can currently use 2 different backends with 2 more in the works. Install 
 Usage:
 Start Kitten by running 'kittenclient', then choose a backend and press 'Start daemon'. Now you can configure directories to index and start indexing.
 
+Software design:
+
+ Here's what's in the different subdirectories:
+ 
+ streams
+ A collection of stream classes that are inspired by java.io.Inputstream. These
+ classes can be nicely nested so that you can transform streams or read
+ substreams that represent a nested file. E.g. ZipStreamProvider takes a
+ stream as input and gives out substreams with the contents of the files in
+ the zipfile/zipstream.
+ 
+ streamIndexer
+ If you want to crawl nested files, you need a special crawler that can work on
+ files in different levels at the same time. This is what StreamIndexer does.
+ It takes a stream as an input and passes is through two types of analyzers:
+ TroughStreamAnalyzers and one EndStreamAnalyzer. One ThroughStreamAnalyzer
+ can e.g. calculate sha1 or md5 from a stream and another one can extract URL
+ or email addresses. An EndStreamAnalyzer is an analyzer that 'consumes' the
+ stream. Usually, these split up a stream into it's substreams and pass these
+ into the indexer again. I hope to write a plugin mechanism for these
+ analyzers. Maybe I'll just add wrappers around other efforts such as
+ kio-plugins and libextractor. These usually don't like streams very much, but
+ that may be solved.
+ 
+ All information for a document is stored into an Indexable document. This
+ calls an IndexWriter to actually store the information. An IndexReader allows
+ one to read from an index and to query. Handling of concurrency and resources
+ of the particular index implementation is done by an IndexManager. These are
+ all abstract classes that can be implemented for different types of indexes,
+ eg clucene, sqlite or xapian.
+ 
+ daemon
+ Code to run a daemon for handling indexing and client requests. Also code to
+ handle re-indexing a directory. Will have code for filtering out directories
+ and selecting which plugins to use for which files. Maybe add code for
+ merging different IndexReaders for querying multiple databases.
+ 
+ *indexer
+ Implementations of IndexManager, IndexReader and IndexWriter.
+ 
+ archivereader
+ Yeah, the original project. It has glue between jstreams and Qt4
+ QAbstractFileEngine. This allows you to let Qt4 read an arbitrarily deeply
+ nested file.
+ 
+ qclient
+ Qt4 file dialog that uses libarchivereader.
