@@ -25,3 +25,5 @@ testrunner_LDADD = $(top_builddir)/src/archiveengine/libarchiveengine.la
 noinst_HEADERS = ArchiveEngineHandlerTest.h
 
 CLEANFILES = testrunner.cpp
+
+EXTRA_DIST = makestestrunner.pl valgrindtest.sh
