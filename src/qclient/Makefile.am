@@ -2,11 +2,10 @@ INCLUDES = $(all_includes)
 
 bin_PROGRAMS = qclient archivecat archivedialog
 
-AM_CXXFLAGS = $(QT_CFLAGS) \
+AM_CXXFLAGS = $(QTCORE_CFLAGS) $(QTGUI_CFLAGS) \
 	-I$(top_srcdir)/src/archiveengine
-AM_LDFLAGS = $(QT_LIBS)
-LDADD = $(QT_LIBS) \
-	$(top_builddir)/src/archiveengine/libarchiveengine.la
+AM_LDFLAGS = $(QTCORE_LIBS) $(QTGUI_LIBS)
+LDADD = $(top_builddir)/src/archiveengine/libarchiveengine.la
 
 # rule to generate source files from headers
 %_moc.cpp: %.h

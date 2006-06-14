@@ -31,6 +31,9 @@ Kitten can currently use 2 different backends with 2 more in the works. Install 
 +  Sqlite3        http://sqlite.org/
 +  Xapian         http://xapian.org/
 
+You need to use at least version 0.9.13 of CLucene. It can be found here:
+http://sourceforge.net/project/showfiles.php?group_id=80013
+
 Usage:
 Start Kitten by running 'kittenclient', then choose a backend and press 'Start daemon'. Now you can configure directories to index and start indexing.
 

@@ -1,6 +1,6 @@
 INCLUDES = $(all_includes)
 
-if HAVE_QTLIB
+if HAVE_QTTEST
 QT_PROGS = testrunner
 TESTS = $(check_PROGRAMS) $(srcdir)/valgrindtest.sh
 endif
@@ -45,8 +45,8 @@ nodist_testrunner_SOURCES = ZipInputStreamTest_moc.cpp \
 	DigestInputStreamTest_moc.cpp \
         inputstreamtests_moc.cpp
 
-testrunner_CXXFLAGS = $(QT_CFLAGS)
-testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
+testrunner_CXXFLAGS = $(QTCORE_CFLAGS) $(QTTEST_CFLAGS)
+testrunner_LDFLAGS = $(QTCORE_LIBS) $(QTTEST_LIBS)
 testrunner_LDADD = $(top_builddir)/src/streams/libstreams.la
 
 mailtester_SOURCES = mailtester.cpp

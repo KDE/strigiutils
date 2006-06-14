@@ -1,8 +1,13 @@
 INCLUDES = $(all_includes)
 
-check_PROGRAMS = testrunner
+if HAVE_QTTEST
+QT_PROGS = testrunner
+TESTS = $(check_PROGRAMS) $(srcdir)/valgrindtest.sh
+endif
 
-TESTS = $(srcdir)/valgrindtest.sh
+noinst_PROGRAMS = $(QT_PROGS)
+
+check_PROGRAMS = $(QT_PROGS)
 
 testrunner.cpp: makestestrunner.pl
 	perl $(srcdir)/makestestrunner.pl $(srcdir) $(top_builddir)/testdata
@@ -13,10 +18,9 @@ testrunner.cpp: makestestrunner.pl
 
 testrunner_SOURCES = ArchiveEngineHandlerTest.cpp testrunner.cpp
 nodist_testrunner_SOURCES = ArchiveEngineHandlerTest_moc.cpp
-testrunner_CXXFLAGS = $(QT_CFLAGS) -I$(srcdir)/..
-testrunner_LDFLAGS = $(QT_LDFLAGS) -lQtTest
-testrunner_LDADD = $(LIB_QT) \
-        $(top_builddir)/src/archiveengine/libarchiveengine.la
+testrunner_CXXFLAGS = $(QTCORE_CFLAGS) $(QTTEST_CFLAGS) -I$(srcdir)/..
+testrunner_LDFLAGS = $(QTCORE_LIBS) $(QTTEST_LIBS) -lQtTest
+testrunner_LDADD = $(top_builddir)/src/archiveengine/libarchiveengine.la
 
 noinst_HEADERS = ArchiveEngineHandlerTest.h
 

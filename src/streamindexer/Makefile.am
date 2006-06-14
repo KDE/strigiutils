@@ -10,6 +10,8 @@ libstreamindexer_la_SOURCES = bz2endanalyzer.cpp \
 libstreamindexer_la_CXXFLAGS = -I$(top_srcdir)/src/streams
 libstreamindexer_la_LIBADD = -lmagic $(top_builddir)/src/streams/libstreams.la
 
+include_HEADERS = indexeddocument.h
+
 noinst_HEADERS = bz2endanalyzer.h digestthroughanalyzer.h filelister.h \
 	gzipendanalyzer.h indexmanager.h indexreader.h indexwriter.h \
 	mailendanalyzer.h pngendanalyzer.h streamendanalyzer.h streamindexer.h \

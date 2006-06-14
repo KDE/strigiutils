@@ -6,9 +6,9 @@ bin_PROGRAMS = kittenclient cmdlinekitten
 %_moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-kittenclient_CXXFLAGS = $(QT_CFLAGS) -I$(top_srcdir)/src/daemon \
-	-I$(top_srcdir)/src/streamindexer
-kittenclient_LDFLAGS = $(QT_LIBS)
+kittenclient_CXXFLAGS = $(QTCORE_CFLAGS) $(QTGUI_CFLAGS) \
+	-I$(top_srcdir)/src/daemon -I$(top_srcdir)/src/streamindexer
+kittenclient_LDFLAGS = $(QTCORE_LIBS) $(QTGUI_LIBS)
 kittenclient_LDADD = $(top_builddir)/src/daemon/libsearchclient.la
 kittenclient_SOURCES = kittenclient.cpp simplesearchgui.cpp \
 	qt4kittenclient.cpp searchtabs.cpp searchview.cpp
@@ -20,4 +20,4 @@ cmdlinekitten_CXXFLAGS = -I$(top_srcdir)/src/daemon \
 cmdlinekitten_LDADD = $(top_builddir)/src/daemon/libsearchclient.la
 cmdlinekitten_SOURCES = cmdlinekitten.cpp
 
-noinst_HEADERS = simplesearchgui.h
+noinst_HEADERS = simplesearchgui.h searchtabs.h qt4kittenclient.h searchview.h

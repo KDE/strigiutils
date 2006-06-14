@@ -1,9 +1,9 @@
 #! /bin/sh
 
 # directory with clucene binaries and header
-CLUCENESRCDIR=/tmp/clucene/clucene/src
+CLUCENEDIR=$HOME/testinstall
 #CLUCENESRCDIR=.
-PREFIX=$HOME/testinstalls
+PREFIX=$HOME/testinstall
 
 rm -rf autom4te.cache configure COPYING depcomp INSTALL install-sh Makefile.in \
 	missing aclocal.m4 debug ltmain.sh config.guess config.sub config.log \
@@ -27,15 +27,14 @@ if [ test $TARGET == "dist" ]; then
 elif [ test $TARGET == "release" ]; then
 	mkdir release && \
 	cd release && \
-	CXXFLAGS="-Wall -O3" CPPFLAGS=-I$CLUCENESRCDIR \
-	LDFLAGS=-L$CLUCENESRCDIR ../configure --enable-debug=no && \
+	CXXFLAGS="-Wall -O3" CPPFLAGS=-I$CLUCENEDIR/include \
+	LDFLAGS=-L$CLUCENEDIR/lib ../configure --enable-debug=no && \
 	make
 else
 	mkdir debug && \
 	cd debug && \
-	CXXFLAGS="-Wall -O0 -g3" CPPFLAGS=-I$CLUCENESRCDIR \
-	LDFLAGS=-L$CLUCENESRCDIR ../configure --enable-debug=full \
-            --prefix=$HOME/testinstall && \
+	CXXFLAGS="-Wall -O0 -g3" ../configure --enable-debug=full \
+            --prefix=$PREFIX --with-clucene=$CLUCENEDIR && \
 	make && \
 	make check
 fi

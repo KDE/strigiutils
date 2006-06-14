@@ -37,5 +37,7 @@ if HAVE_LINUXIOPRIO
 kittendaemon_CXXFLAGS += -DHAVE_LINUXIOPRIO
 endif
 
+include_HEADERS = asyncsocketclient.h asyncsocket.h clientinterface.h
+
 noinst_HEADERS = daemon.h interface.h server.h socketserver.h indexscheduler.h \
-	asyncsocket.h
+	asyncsocket.h socketclient.h

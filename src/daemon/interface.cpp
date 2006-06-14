@@ -35,7 +35,7 @@ Interface::getStatus() {
     status["Unique words indexed"] = out.str();
     out.str("");
     out << reader->getIndexSize()/1024/1024;
-    status["Index size"] = out.str()+" Mb";
+    status["Index size"] = out.str()+" MB";
     return status;
 }
 std::string

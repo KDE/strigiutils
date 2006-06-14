@@ -1,7 +1,7 @@
 AC_INIT(src/streams/streambase.h)
  
-PACKAGE=jstreams
-VERSION=0.1.0
+PACKAGE=kitten
+VERSION=0.3.0
 
 dnl use libtool
 AC_PROG_LIBTOOL
@@ -31,30 +31,35 @@ dnl configure QT
 QT_REQ_VERSION=4.1.2
 dnl Qt has split over multiple libraries, so we must check
 dnl for the all the modules we need
-PKG_CHECK_MODULES(QT, QtCore >= $QT_REQ_VERSION QtGui >= $QT_REQ_VERSION
-        QtTest >= $QT_REQ_VERSION, have_qt="yes", have_qt="no")
-dnl of the modules are there set up the variable QT_CXXFLAGS and QT_LIBS
-if test "$have_qt" = "yes"; then
-    QT_INCLUDE_DIR=$($PKG_CONFIG --variable=includedir Qt)
-    QT_EXEC_PREFIX=$($PKG_CONFIG --variable=exec_prefix Qt)
-    EXTRA_QT_INCLUDE_DIR="$QT_INCLUDE_DIR/Qt"
-    AC_CHECK_FILE([$QT_INCLUDE_DIR/QWidget],
-    AC_MSG_NOTICE([No extra QT_INCLUDE_DIR needed]),
-    AC_CHECK_FILE([$EXTRA_QT_INCLUDE_DIR/QWidget],
-    QT_CXXFLAGS="$QT_CXXFLAGS -I$EXTRA_QT_INCLUDE_DIR",
-        AC_MSG_WARN([QWidget not found])))
+PKG_CHECK_MODULES(QtCore, QtCore >= $QT_REQ_VERSION, have_qtcore="yes")
+AM_CONDITIONAL(HAVE_QTCORE, test "$have_qtcore" = "yes")
+if test "$have_qtcore" = "yes"; then
+    QTCORE_CFLAGS=`$PKG_CONFIG --cflags QtCore`
+    QTCORE_LIBS=`$PKG_CONFIG --libs QtCore`
     MOC=`$PKG_CONFIG --variable=exec_prefix QtCore`
     AC_CHECK_FILE([$MOC/bin/moc-qt4],
         MOC="$MOC/bin/moc-qt4",
         MOC="$MOC/bin/moc")
-    AC_MSG_NOTICE([Set QT_CXXFLAGS... $QT_CXXFLAGS])
-    AC_MSG_NOTICE([Set QT_LIBS... $QT_LIBS])
-    AC_MSG_NOTICE([Set MOC... $MOC])
+    AC_SUBST(QTCORE_CFLAGS)
+    AC_SUBST(QTCORE_LIBS)
     AC_SUBST(MOC)
-    AC_SUBST(QT_CXXFLAGS)
-    AC_SUBST(QT_LIBS)
 fi
-AM_CONDITIONAL(HAVE_QTLIB, test "$have_qt" = "yes")
+PKG_CHECK_MODULES(QtGui, QtGui >= $QT_REQ_VERSION, have_qtgui="yes")
+AM_CONDITIONAL(HAVE_QTGUI, test "$have_qtgui" = "yes")
+if test "$have_qtgui" = "yes"; then
+    QTGUI_CFLAGS=`$PKG_CONFIG --cflags QtGui`
+    QTGUI_LIBS=`$PKG_CONFIG --libs QtGui`
+    AC_SUBST(QTGUI_CFLAGS)
+    AC_SUBST(QTGUI_LIBS)
+fi
+PKG_CHECK_MODULES(QtTest, QtTest >= $QT_REQ_VERSION, have_qttest="yes")
+AM_CONDITIONAL(HAVE_QTTEST, test "$have_qttest" = "yes")
+if test "$have_qttest" = "yes"; then
+    QTTEST_CFLAGS=`$PKG_CONFIG --cflags QtTest`
+    QTTEST_LIBS=`$PKG_CONFIG --libs QtTest`
+    AC_SUBST(QTTEST_CFLAGS)
+    AC_SUBST(QTTEST_LIBS)
+fi
 
 dnl check for dbus
 PKG_CHECK_MODULES(dbus, dbus, have_dbus="yes", have_openssl="no")
@@ -68,9 +73,8 @@ dnl check for magic
 AC_CHECK_HEADER(magic.h, , AC_MSG_ERROR(["You need magic.h from file-devel."]))
 
 dnl check for CLucene
-dnl currently disabled because the code's not finished yet
-AC_CHECK_HEADER(CLucene/clucene-config.h, [have_clucenelib=yes], )
-AM_CONDITIONAL(HAVE_CLUCENE, test "$have_clucenelib" = "yes")
+ACX_CLUCENE
+AM_CONDITIONAL(HAVE_CLUCENE, test "yes" = "yes")
 
 dnl check for xapian
 AC_PATH_PROG(XAPIAN_CONFIG, xapian-config, no)

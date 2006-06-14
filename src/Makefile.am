@@ -1,4 +1,4 @@
-if HAVE_QTLIB
+if HAVE_QTGUI
 QT_SUBDIRS = archiveengine qclient searchclient
 endif
 INDEXERS=
