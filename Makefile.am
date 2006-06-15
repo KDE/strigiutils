@@ -3,3 +3,5 @@
 AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src
+
+include $(top_srcdir)/admin/Doxyfile.am
