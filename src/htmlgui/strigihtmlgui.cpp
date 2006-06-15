@@ -1,13 +1,13 @@
-#include "kittenhtmlgui.h"
+#include "strigihtmlgui.h"
 #include "socketclient.h"
 using namespace std;
 using namespace jstreams;
 
-class KittenHtmlGui::Private {
+class StrigiHtmlGui::Private {
 private:
     HtmlHelper* h;
 public:
-    SocketClient kitten;
+    SocketClient strigi;
 
     Private(HtmlHelper* h);
     void printSearchResult(std::ostream& out,
@@ -15,39 +15,39 @@ public:
     void printSearchResults(std::ostream& out, const ClientInterface::Hits&);
 };
 
-KittenHtmlGui::KittenHtmlGui(HtmlHelper* h) : helper(h) {
+StrigiHtmlGui::StrigiHtmlGui(HtmlHelper* h) : helper(h) {
     p = new Private(helper);
 }
-KittenHtmlGui::~KittenHtmlGui() {
+StrigiHtmlGui::~StrigiHtmlGui() {
     delete p;
 }
 void
-KittenHtmlGui::printPage(ostream&out,
+StrigiHtmlGui::printPage(ostream&out,
         const std::map<std::string, std::string> &params) {
 
     std::string query;
     map<string, string>::const_iterator i = params.find("q");
     if (i != params.end()) query = i->second;
 
-    out << "<html><title>Kitten Desktop Search</title></head><body>";
+    out << "<html><title>Strigi Desktop Search</title></head><body>";
 
-    out << "<h1>Kitten Desktop Search</h1>";
+    out << "<h1>Strigi Desktop Search</h1>";
 
     out << "<form method='get'>";
     out << "<input type='text' name='q' value='" << query << "'/>";
     out << "<input type='submit'/></form>";
 
-    const ClientInterface::Hits hits = p->kitten.query(query);
+    const ClientInterface::Hits hits = p->strigi.query(query);
     p->printSearchResults(out, hits);
 
     out << "</body></html>";
 }
-KittenHtmlGui::Private::Private(HtmlHelper* helper) :h(helper) {
+StrigiHtmlGui::Private::Private(HtmlHelper* helper) :h(helper) {
     string homedir = getenv("HOME");
-    kitten.setSocketName(homedir+"/.kitten/socket");
+    strigi.setSocketName(homedir+"/.strigi/socket");
 }
 void
-KittenHtmlGui::Private::printSearchResult(std::ostream& out,
+StrigiHtmlGui::Private::printSearchResult(std::ostream& out,
         const jstreams::IndexedDocument& doc) {
     string link, icon, name, folder;
     link = h->mapLinkUrl(doc.uri);
@@ -80,7 +80,7 @@ KittenHtmlGui::Private::printSearchResult(std::ostream& out,
     out << "</table></div>";
 }
 void
-KittenHtmlGui::Private::printSearchResults(std::ostream& out,
+StrigiHtmlGui::Private::printSearchResults(std::ostream& out,
         const ClientInterface::Hits& hits) {
     std::vector<jstreams::IndexedDocument>::const_iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {

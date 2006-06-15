@@ -5,7 +5,7 @@ use Socket;
 my $query = join(" ", @ARGV);
 
 # define the socket location
-my $rendezvous = "$ENV{HOME}/.kitten/socket";
+my $rendezvous = "$ENV{HOME}/.strigi/socket";
 # 
 socket(SOCK, PF_UNIX, SOCK_STREAM, 0)       || die "socket: $!";
 select(SOCK);

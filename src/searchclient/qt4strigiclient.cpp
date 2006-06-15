@@ -1,9 +1,9 @@
-#include "qt4kittenclient.h"
+#include "qt4strigiclient.h"
 #include <QDir>
 #include <QDebug>
 
-Qt4KittenClient::Qt4KittenClient() {
-    QString socketpath = QDir::homePath()+"/.kitten/socket";
+Qt4StrigiClient::Qt4StrigiClient() {
+    QString socketpath = QDir::homePath()+"/.strigi/socket";
     socket.setSocketPath((const char*)socketpath.toUtf8());
     mode = Idle;
     poller.setSingleShot(false);
@@ -11,7 +11,7 @@ Qt4KittenClient::Qt4KittenClient() {
     connect(&poller, SIGNAL(timeout()), this, SLOT(poll()));
 }
 void
-Qt4KittenClient::poll() {
+Qt4StrigiClient::poll() {
     if (socket.statusChanged()) {
         poller.stop();
         if (mode == Query) {
@@ -32,14 +32,14 @@ Qt4KittenClient::poll() {
     }
 }
 void
-Qt4KittenClient::countHits(const QString& query) {
+Qt4StrigiClient::countHits(const QString& query) {
     countQueue.append(query);
     if (mode == Idle) {
         startCountHits();
     }
 }
 void
-Qt4KittenClient::query(const QString& query) {
+Qt4StrigiClient::query(const QString& query) {
     if (query.length()) {
         queryQueue.append(query);
         if (mode == Idle) {
@@ -48,7 +48,7 @@ Qt4KittenClient::query(const QString& query) {
     }
 }
 void
-Qt4KittenClient::startCountHits() {
+Qt4StrigiClient::startCountHits() {
     bool ok = socket.countHits((const char*)countQueue.head().toUtf8());
     if (ok) {
         mode = CountHits;
@@ -59,7 +59,7 @@ Qt4KittenClient::startCountHits() {
     }
 }
 void
-Qt4KittenClient::startQuery() {
+Qt4StrigiClient::startQuery() {
     bool ok = socket.query((const char*)queryQueue.head().toUtf8());
     if (ok) {
         mode = Query;

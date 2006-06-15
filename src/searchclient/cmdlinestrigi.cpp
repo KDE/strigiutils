@@ -26,7 +26,7 @@ main(int argc, char** argv) {
     }
     string homedir = getenv("HOME");
     AsyncSocketClient client;
-    client.setSocketPath(homedir+"/.kitten/socket");
+    client.setSocketPath(homedir+"/.strigi/socket");
     bool ok = client.query(query.c_str());
     if (ok) {
         while (!client.statusChanged()) {

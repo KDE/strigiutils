@@ -1,13 +1,13 @@
 INCLUDES = $(all_includes)
 
-lib_LTLIBRARIES = libkittenhtmlgui.la
+lib_LTLIBRARIES = libstrigihtmlgui.la
 
-libkittenhtmlgui_la_CXXFLAGS = -I$(top_srcdir)/src/daemon \
+libstrigihtmlgui_la_CXXFLAGS = -I$(top_srcdir)/src/daemon \
 	-I$(top_srcdir)/src/streamindexer
-libkittenhtmlgui_la_LDFLAGS =
-libkittenhtmlgui_la_LIBADD = $(top_builddir)/src/daemon/libsearchclient.la
-libkittenhtmlgui_la_SOURCES = kittenhtmlgui.cpp
+libstrigihtmlgui_la_LDFLAGS =
+libstrigihtmlgui_la_LIBADD = $(top_builddir)/src/daemon/libsearchclient.la
+libstrigihtmlgui_la_SOURCES = strigihtmlgui.cpp
 
-include_HEADERS = kittenhtmlgui.h
+include_HEADERS = strigihtmlgui.h
 
 noinst_HEADERS = 

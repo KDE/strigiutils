@@ -1,6 +1,12 @@
 #ifndef STRINGREADER_H
 #define STRINGREADER_H
 
+/**
+ * Author: Jos van den Oever
+ *         Ben van Klinken
+ **/
+
+
 #include "streambase.h"
 
 namespace jstreams {
@@ -26,10 +32,9 @@ template <class T>
 StringReader<T>::StringReader(const T* value, int32_t length, bool copy)
         : markpt(0), dataowner(copy) {
     if (length < 0) {
-        if (sizeof(T) > 1) {
-            length = wcslen((const wchar_t*)value);
-        } else {
-            length = strlen((const char*)value);
+        length = 0; 
+        while (value[length] != '\0') {
+            length++;
         }
     }
     StreamBase<T>::size = length;

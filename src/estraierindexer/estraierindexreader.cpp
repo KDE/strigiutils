@@ -80,7 +80,7 @@ EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     free(f);
     return fragment;
 }
-int
+int32_t
 EstraierIndexReader::countHits(const jstreams::Query& query) {
     ESTCOND* cond = createCondition(query);
     int n;
@@ -166,21 +166,21 @@ EstraierIndexReader::getFiles(char depth) {
     free(ids);
     return files;
 }
-int
+int32_t
 EstraierIndexReader::countDocuments() {
     manager->ref();
     int count = est_db_doc_num(db);
     manager->deref();
     return count;
 }
-int
+int32_t
 EstraierIndexReader::countWords() {
     manager->ref();
     int count = est_db_word_num(db);
     manager->deref();
     return count;
 }
-int
+int64_t
 EstraierIndexReader::getIndexSize() {
     manager->ref();
     int count = (int)est_db_size(db);

@@ -127,7 +127,7 @@ int
 main(int argc, char** argv) {
     // set up the directory paths
     string homedir = getenv("HOME");
-    string daemondir = homedir+"/.kitten";
+    string daemondir = homedir+"/.strigi";
     string lockfilename = daemondir+"/lock";
     string lucenedir = daemondir+"/clucene";
     string estraierdir = daemondir+"/estraier";

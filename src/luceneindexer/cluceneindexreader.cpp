@@ -114,7 +114,7 @@ CLuceneIndexReader::addField(lucene::document::Field* field,
         doc.properties[name] = convertValue(value);
     }
 }
-int
+int32_t
 CLuceneIndexReader::countHits(const Query& q) {
     BooleanQuery bq;
     createBooleanQuery(q, bq);
@@ -203,15 +203,15 @@ CLuceneIndexReader::getFiles(char depth) {
     manager->derefReader();
     return files;
 }
-int
+int32_t
 CLuceneIndexReader::countDocuments() {
     return manager->docCount();
 }
-int
+int32_t
 CLuceneIndexReader::countWords() {
     return -1;
 }
-int
+int64_t
 CLuceneIndexReader::getIndexSize() {
     return manager->getIndexSize();
 }

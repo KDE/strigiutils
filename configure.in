@@ -1,6 +1,6 @@
 AC_INIT(src/streams/streambase.h)
  
-PACKAGE=kitten
+PACKAGE=strigi
 VERSION=0.3.0
 
 dnl use libtool

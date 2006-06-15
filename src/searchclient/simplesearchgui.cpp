@@ -87,7 +87,7 @@ SimpleSearchGui::SimpleSearchGui() {
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
     socketfile = getenv("HOME");
-    socketfile += "/.kitten/socket";
+    socketfile += "/.strigi/socket";
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
@@ -160,7 +160,7 @@ SimpleSearchGui::startDaemon() {
     starting = true;
     // try to start the daemon
     QFileInfo exe = QCoreApplication::applicationDirPath()
-	+ "/../../daemon/kittendaemon";
+	+ "/../../daemon/strigidaemon";
     QStringList args;
     if (backendsList) {
         args += backendsList->currentText();
@@ -169,12 +169,12 @@ SimpleSearchGui::startDaemon() {
 	// start not installed version
 	QProcess::startDetached(exe.absoluteFilePath(), args);
     } else {
-        exe = QCoreApplication::applicationDirPath()+"/kittendaemon";
+        exe = QCoreApplication::applicationDirPath()+"/strigidaemon";
         if (exe.exists()) {
             QProcess::startDetached(exe.absoluteFilePath(), args);
         } else {
 	    // start installed version
-	    QProcess::startDetached("kittendaemon");
+	    QProcess::startDetached("strigidaemon");
         }
     }
 }

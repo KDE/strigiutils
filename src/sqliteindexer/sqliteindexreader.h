@@ -14,10 +14,10 @@ private:
     SqliteIndexReader(SqliteIndexManager* m);
     ~SqliteIndexReader();
 public:
-    int countHits(const jstreams::Query& query);
+    int32_t countHits(const jstreams::Query& query);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);
-    int countDocuments();
+    int32_t countDocuments();
 };
 
 #endif

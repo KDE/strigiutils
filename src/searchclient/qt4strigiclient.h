@@ -1,12 +1,12 @@
-#ifndef QT4KITTENCLIENT_H
-#define QT4KITTENCLIENT_H
+#ifndef QT4STRIGICLIENT_H
+#define QT4STRIGICLIENT_H
 
 #include <QObject>
 #include <QQueue>
 #include <QTimer>
 #include "asyncsocketclient.h"
 
-class Qt4KittenClient : public QObject {
+class Qt4StrigiClient : public QObject {
 Q_OBJECT
 private:
     enum Mode { Idle, CountHits, Query };
@@ -21,7 +21,7 @@ private:
     void startCountHits();
     void startQuery();
 public:
-    Qt4KittenClient();
+    Qt4StrigiClient();
 private slots:
     void poll();
 public slots:

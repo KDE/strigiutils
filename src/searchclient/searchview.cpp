@@ -7,14 +7,14 @@
 #include <QtCore/QDateTime>
 using namespace std;
 
-SearchView::SearchView(Qt4KittenClient& k) :kitten(k) {
+SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
     view = new QTextBrowser();
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->addWidget(view);
     setLayout(layout);
 
-    connect(&kitten,
+    connect(&strigi,
         SIGNAL(gotHits(const QString&, const ClientInterface::Hits&)),
         this, SLOT(handleHits(const QString&, const ClientInterface::Hits&)));
     connect(view, SIGNAL(anchorClicked(const QUrl&)),
@@ -101,7 +101,7 @@ SearchView::setHTML(const QString& html) {
 void
 SearchView::setQuery(const QString& q) {
     query = q;
-    kitten.query(query);
+    strigi.query(query);
 }
 void
 SearchView::openItem(const QUrl& url) {

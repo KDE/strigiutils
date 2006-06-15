@@ -1,5 +1,5 @@
-#ifndef KITTENHTMLGUI_H
-#define KITTENHTMLGUI_H
+#ifndef STRIGIHTMLGUI_H
+#define STRIGIHTMLGUI_H
 
 #include <ostream>
 #include <map>
@@ -28,15 +28,15 @@ public:
     virtual std::string formatDate(time_t date) = 0;
 };
 
-class KittenHtmlGui {
+class StrigiHtmlGui {
 class Private;
 private:
     HtmlHelper* helper;
     Private* p;
 
 public:
-    KittenHtmlGui(HtmlHelper*);
-    ~KittenHtmlGui();
+    StrigiHtmlGui(HtmlHelper*);
+    ~StrigiHtmlGui();
     void printPage(std::ostream& out,
         const std::map<std::string, std::string> &params);
 };

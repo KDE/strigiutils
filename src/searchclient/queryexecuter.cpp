@@ -14,7 +14,7 @@ QueryExecuter::run() {
 
     SocketClient client;
     std::string socket = getenv("HOME");
-    socket += "/.kitten/socket";
+    socket += "/.strigi/socket";
     client.setSocketName(socket.c_str());
     ClientInterface::Hits hits;
 

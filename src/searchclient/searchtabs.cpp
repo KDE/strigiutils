@@ -8,14 +8,14 @@
 SearchTabs::SearchTabs() {
     tabs = new QTabBar();
     tabs->setDrawBase(false);
-    view = new SearchView(kitten);
+    view = new SearchView(strigi);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->addWidget(tabs);
     layout->addWidget(view);
     setLayout(layout);
 
-    connect(&kitten, SIGNAL(gotHitsCount(const QString&, int)),
+    connect(&strigi, SIGNAL(gotHitsCount(const QString&, int)),
         this, SLOT(handleHitsCount(const QString&, int)));
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
@@ -35,7 +35,7 @@ SearchTabs::setQuery(const QString& query) {
     while (i.hasNext()) {
         i.next();
         QString tabquery = i.key() + query;
-        kitten.countHits(tabquery);
+        strigi.countHits(tabquery);
     }
 }
 void
