@@ -11,6 +11,7 @@
 #include "mailendanalyzer.h"
 #include "mimetypethroughanalyzer.h"
 #include "digestthroughanalyzer.h"
+#include "pluginthroughanalyzer.h"
 #include "indexwriter.h"
 #include <sstream>
 #include <sys/types.h>
@@ -61,6 +62,14 @@ StreamIndexer::addThroughAnalyzers() {
     tIter->push_back(ana);
     ana = new MimeTypeThroughAnalyzer();
     tIter->push_back(ana);
+    PluginThroughAnalyzer::loadPlugins("/usr/local/lib/");
+    PluginThroughAnalyzer::loadPlugins("/usr/lib/");
+    PluginThroughAnalyzer::loadPlugins("/lib/");
+    PluginThroughAnalyzer::loadPlugins("/home/oever/testinstall/lib/");
+    PluginThroughAnalyzer *pta = new PluginThroughAnalyzer();
+    ana = pta;
+    tIter->push_back(ana);
+    
 }
 void
 StreamIndexer::addEndAnalyzers() {
@@ -114,7 +123,8 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
     const char* header;
     headersize = input->read(header, headersize, 0);
     if (input->reset(0) != 0) {
-        printf("resetting is impossible!! pos: %lli status: %i\n", input->getPosition(), input->getStatus());
+        printf("resetting is impossible!! pos: %lli status: %i\n",
+            input->getPosition(), input->getStatus());
     }
     if (headersize < 0) finished = true;
     int es = 0, size = eIter->size();
@@ -125,7 +135,10 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
-                    printf("could not reset stream of %s from pos %lli to 0 after reading with %s: %s\n", path.c_str(), input->getPosition(), sea->getName(), sea->getError().c_str());
+                    printf("could not reset stream of %s from pos %lli to 0 "
+                        "after reading with %s: %s\n", path.c_str(),
+                        input->getPosition(), sea->getName(),
+                        sea->getError().c_str());
                     removeIndexable(depth);
                     return -2;
                 }

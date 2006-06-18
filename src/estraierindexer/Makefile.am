@@ -1,6 +1,8 @@
 lib_LTLIBRARIES = libestraierindex.la
 bin_PROGRAMS = estraierindexer
 
+MODULELDFLAGS = @LIBLTDL@ -export-dynamic -lltdl
+
 libestraierindex_la_SOURCES = estraierindexwriter.cpp estraierindexmanager.cpp \
 	estraierindexreader.cpp
 libestraierindex_la_CPPFLAGS = -I$(top_srcdir)/src/streams \
@@ -11,7 +13,7 @@ libestraierindex_la_LIBADD = $(ESTRAIERLIBS) \
 libestraierindex_la_LDFLAGS = $(ESTRAIERLDFLAGS)
 
 estraierindexer_SOURCES = estraierindexer.cpp indexer.cpp
-estraierindexer_LDFLAGS = libestraierindex.la
+estraierindexer_LDFLAGS = libestraierindex.la $(MODULELDFLAGS)
 estraierindexer_LDADD = $(top_builddir)/src/streams/libstreams.la \
 	$(top_builddir)/src/streamindexer/libstreamindexer.la
 estraierindexer_CPPFLAGS = -I$(top_srcdir)/src/streams \

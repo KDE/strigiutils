@@ -3,8 +3,13 @@ AC_INIT(src/streams/streambase.h)
 PACKAGE=strigi
 VERSION=0.3.0
 
-dnl use libtool
+dnl use libtool with loadable module support
+AC_LIBTOOL_DLOPEN
+AC_LIBLTDL_CONVENIENCE
 AC_PROG_LIBTOOL
+AC_SUBST(INCLTDL)
+AC_SUBST(LIBLTDL)
+AC_CONFIG_SUBDIRS(libltdl)
  
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
@@ -114,11 +119,12 @@ AM_CONDITIONAL(HAVE_LINUXIOPRIO, test "$have_linuxioprio" = "yes")
 dnl check for iconv
 AM_ICONV
 
-AC_OUTPUT( Makefile \
+AC_OUTPUT(Makefile \
 	src/Makefile \
 	src/streams/Makefile \
         src/streams/tests/Makefile \
         src/streamindexer/Makefile \
+	src/streamindexer/throughplugins/Makefile \
         src/luceneindexer/Makefile \
         src/sqliteindexer/Makefile \
         src/estraierindexer/Makefile \

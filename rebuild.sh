@@ -17,7 +17,7 @@ if [[ -n $1 ]]; then
 	fi
 fi
 
-libtoolize --force --copy && \
+libtoolize --ltdl --force --copy && \
 aclocal -I m4 && \
 autoconf && \
 automake --add-missing || exit;
