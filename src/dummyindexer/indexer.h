@@ -17,7 +17,7 @@ private:
 	static Indexer *workingIndexer;
 	void doFile(const std::string &filepath);
 public:
-	Indexer() :m_indexer(&writer) {}
+	Indexer(int verbosity) :writer(verbosity), m_indexer(&writer) {}
 	void index(const char *dir);
 };
 
