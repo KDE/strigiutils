@@ -7,7 +7,7 @@ PREFIX=$HOME/testinstall
 
 rm -rf autom4te.cache configure COPYING depcomp INSTALL install-sh Makefile.in \
 	missing aclocal.m4 debug ltmain.sh config.guess config.sub config.log \
-	config.status Makefile libtool 2> /dev/null
+	config.status Makefile libtool libltdl 2> /dev/null
 find -name Makefile.in -exec rm {} \;
 
 if [[ -n $1 ]]; then
@@ -17,8 +17,8 @@ if [[ -n $1 ]]; then
 	fi
 fi
 
-libtoolize --ltdl --force --copy && \
 aclocal -I m4 && \
+libtoolize --ltdl --force --copy && \
 autoconf && \
 automake --add-missing || exit;
 
