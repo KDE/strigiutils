@@ -11,7 +11,7 @@ libstreamindexer_la_LIBADD = -lmagic $(top_builddir)/src/streams/libstreams.la \
 	-lltdl
 
 include_HEADERS = indexeddocument.h streamthroughanalyzer.h \
-	pluginthroughanalyzer.h
+	pluginthroughanalyzer.h indexwriter.h
 
 noinst_HEADERS = bz2endanalyzer.h digestthroughanalyzer.h filelister.h \
 	gzipendanalyzer.h indexmanager.h indexreader.h indexwriter.h \

@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include "streamthroughanalyzer.h"
+#include "indexwriter.h"
 
 typedef jstreams::StreamThroughAnalyzer* (*createThroughAnalyzer_t)();
 typedef void (*destroyThroughAnalyzer_t)(
@@ -16,27 +17,17 @@ public:
         Factory(const Factory& f);
         void operator=(const Factory& f);
     public:
-        createThroughAnalyzer_t* create;
+        const createThroughAnalyzer_t create;
         const destroyThroughAnalyzer_t destroy;
 
-        Factory(createThroughAnalyzer_t* c, destroyThroughAnalyzer_t d);
+        Factory(createThroughAnalyzer_t c, destroyThroughAnalyzer_t d);
         ~Factory();
     };
 private:
-/*    struct Plugin {
-        std::string pluginfile;
-        lt_dlhandle handle;
-        Factory* factory;
-        std::vector<jstreams::StreamThroughAnalyzer*> analyzers;
-    };
-
-    std::vector<Plugin> plugins;*/
     static std::list<const Factory*> factories;
     std::vector<jstreams::StreamThroughAnalyzer*> analyzers;
 
     static void loadPlugin(const std::string& lib);
-//    void destroyAnalyzers(const Plugin& plugin);
-//    void unloadPlugin(const Plugin& plugin);
 
 public:
     static void loadPlugins(const char* dir);
@@ -46,5 +37,18 @@ public:
     void setIndexable(jstreams::Indexable* i);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
 };
+
+// macro for registering a ThroughAnalyzer in a module
+#define REGISTER_THROUGHANALYZER(CLASS) \
+jstreams::StreamThroughAnalyzer* create ## CLASS() { \
+    return new CLASS(); \
+} \
+void destroy ## CLASS(const jstreams::StreamThroughAnalyzer* a) { \
+    delete a; \
+} \
+extern "C" { \
+PluginThroughAnalyzer::Factory CLASS ## Factory(create ## CLASS, \
+    destroy ## CLASS); \
+}
 
 #endif

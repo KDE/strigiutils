@@ -11,9 +11,8 @@ using namespace jstreams;
 
 list<const PluginThroughAnalyzer::Factory*> PluginThroughAnalyzer::factories;
 
-PluginThroughAnalyzer::Factory::Factory(createThroughAnalyzer_t* c,
+PluginThroughAnalyzer::Factory::Factory(createThroughAnalyzer_t c,
         destroyThroughAnalyzer_t d) : create(c), destroy(d) {
-    printf("Factory constructor\n");
     PluginThroughAnalyzer::factories.push_back(this);
 }
             
@@ -30,12 +29,8 @@ PluginThroughAnalyzer::PluginThroughAnalyzer() {
     printf("factories: %i\n", factories.size());
     std::list<const Factory*>::iterator i;
     for (i = factories.begin(); i != factories.end(); ++i) {
-        createThroughAnalyzer_t* c = (*i)->create;
-        while (*c) {
-            StreamThroughAnalyzer* a = (*c)();
-            analyzers.push_back(a);
-            c++;
-        }
+        StreamThroughAnalyzer* a = (*i)->create();
+        analyzers.push_back(a);
     }
 }
 PluginThroughAnalyzer::~PluginThroughAnalyzer() {
@@ -46,13 +41,9 @@ PluginThroughAnalyzer::~PluginThroughAnalyzer() {
 }
 void
 PluginThroughAnalyzer::loadPlugin(const string& lib) {
-    printf("loading %s\n", lib.c_str());
-
     void* handle = dlopen (lib.c_str(), RTLD_NOW);
-    if (!handle) {
-        // TODO handle error
-        printf("could not load library: %s\n", dlerror());
-        return;
+    if (handle) {
+        printf("loaded %s\n", lib.c_str());
     }
 }
 void
