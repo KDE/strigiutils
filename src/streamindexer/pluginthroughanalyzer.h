@@ -23,9 +23,20 @@ public:
         Factory(createThroughAnalyzer_t c, destroyThroughAnalyzer_t d);
         ~Factory();
     };
+    class FactoryCleaner {
+    private:
+        std::list<void*> loadedModules;
+    public:
+        ~FactoryCleaner();
+        void addModule(void*h) {
+            loadedModules.push_back(h);
+        }
+    };
 private:
     static std::list<const Factory*> factories;
     std::vector<jstreams::StreamThroughAnalyzer*> analyzers;
+
+    static FactoryCleaner cleaner;
 
     static void loadPlugin(const std::string& lib);
 

@@ -2,9 +2,14 @@
 
 /* test class 1 */
 class Analyzer1 : public jstreams::StreamThroughAnalyzer {
+private:
+    jstreams::Indexable* idx;
 public:
-    void setIndexable(jstreams::Indexable*) {}
+    void setIndexable(jstreams::Indexable*i) {
+        idx = i;
+    }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
+        idx->setField("hi", "hi");
         return in;
     }
 };

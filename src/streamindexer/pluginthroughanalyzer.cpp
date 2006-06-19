@@ -11,6 +11,14 @@ using namespace jstreams;
 
 list<const PluginThroughAnalyzer::Factory*> PluginThroughAnalyzer::factories;
 
+PluginThroughAnalyzer::FactoryCleaner PluginThroughAnalyzer::cleaner;
+PluginThroughAnalyzer::FactoryCleaner::~FactoryCleaner() {
+    list<void*>::const_iterator i;
+    for (i = loadedModules.begin(); i != loadedModules.end(); ++i) {
+        dlclose(*i);
+    }
+}
+
 PluginThroughAnalyzer::Factory::Factory(createThroughAnalyzer_t c,
         destroyThroughAnalyzer_t d) : create(c), destroy(d) {
     PluginThroughAnalyzer::factories.push_back(this);
@@ -26,7 +34,6 @@ PluginThroughAnalyzer::Factory::~Factory() {
 }
 
 PluginThroughAnalyzer::PluginThroughAnalyzer() {
-    printf("factories: %i\n", factories.size());
     std::list<const Factory*>::iterator i;
     for (i = factories.begin(); i != factories.end(); ++i) {
         StreamThroughAnalyzer* a = (*i)->create();
@@ -43,6 +50,7 @@ void
 PluginThroughAnalyzer::loadPlugin(const string& lib) {
     void* handle = dlopen (lib.c_str(), RTLD_NOW);
     if (handle) {
+        cleaner.addModule(handle);
         printf("loaded %s\n", lib.c_str());
     }
 }
