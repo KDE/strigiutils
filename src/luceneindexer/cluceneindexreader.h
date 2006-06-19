@@ -22,7 +22,10 @@ class CLuceneIndexReader : public jstreams::IndexReader {
 friend class CLuceneIndexManager;
 private:
     CLuceneIndexManager* manager;
-    CLuceneIndexReader(CLuceneIndexManager* m) :manager(m) {}
+    int countversion;
+    int32_t count;
+
+    CLuceneIndexReader(CLuceneIndexManager* m) :manager(m), countversion(-1) {}
     ~CLuceneIndexReader();
 
     static const char* mapId(const std::string& id);

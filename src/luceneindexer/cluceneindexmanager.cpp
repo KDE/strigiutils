@@ -24,6 +24,7 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path) {
     dbdir = path;
     indexreader = 0;
     indexwriter = 0;
+    version = 0;
     writer = new CLuceneIndexWriter(this);
     reader = new CLuceneIndexReader(this);
     analyzer = new StandardAnalyzer();
@@ -94,6 +95,7 @@ CLuceneIndexManager::closeReader() {
 }
 void
 CLuceneIndexManager::openWriter() {
+    version++;
     try {
 //        printf("writer at %s\n", dbdir.c_str());
         if (IndexReader::indexExists(dbdir.c_str())) {

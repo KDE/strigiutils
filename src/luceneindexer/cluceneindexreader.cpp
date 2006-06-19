@@ -209,7 +209,17 @@ CLuceneIndexReader::countDocuments() {
 }
 int32_t
 CLuceneIndexReader::countWords() {
-    return -1;
+    if (manager->getVersion() == countversion) {
+        return count;
+    }
+    lucene::index::IndexReader* reader = manager->refReader();
+    count = 0;
+    countversion = manager->getVersion();
+    lucene::index::TermEnum *terms = reader->terms();
+    while (terms->next()) count++;
+    _CLDELETE(terms);
+    manager->derefReader();
+    return count;
 }
 int64_t
 CLuceneIndexReader::getIndexSize() {

@@ -34,6 +34,7 @@ private:
     lucene::index::IndexWriter* indexwriter;
     lucene::index::IndexReader* indexreader;
     lucene::analysis::Analyzer* analyzer;
+    int version;
     static int numberOfManagers;
 
     void openReader();
@@ -52,6 +53,7 @@ public:
     jstreams::IndexWriter* getIndexWriter();
     int docCount();
     int getIndexSize();
+    int getVersion() const { return version; }
 };
 
 jstreams::IndexManager*
