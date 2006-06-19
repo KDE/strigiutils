@@ -14,11 +14,11 @@ libstreams_la_LIBADD = -lz -lbz2 -lcrypto
 SUBDIRS = . tests
 
 include_HEADERS = streambase.h substreamprovider.h substreamproviderprovider.h \
-	fileinputstream.h bufferedstream.h inputstreambuffer.h
+	fileinputstream.h bufferedstream.h inputstreambuffer.h inputstream.h
 
 noinst_HEADERS = base64inputstream.h bufferedstream.h bz2inputstream.h \
 	digestinputstream.h dostime.h fileinputstream.h filereader.h \
-	gzipinputstream.h inputstreambuffer.h inputstream.h inputstreamreader.h\
+	gzipinputstream.h inputstreambuffer.h inputstreamreader.h\
 	jstreamsconfig.h kmpsearcher.h mailinputstream.h Reader.h streambase.h \
 	stringreader.h stringterminatedsubstream.h subinputstream.h \
 	substreamprovider.h tarinputstream.h zipinputstream.h
