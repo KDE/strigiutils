@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # directory with clucene binaries and header
-CLUCENEDIR=$HOME/testinstall
+#CLUCENEDIR=$HOME/testinstall
 #CLUCENESRCDIR=.
 PREFIX=$HOME/testinstall
 
