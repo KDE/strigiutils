@@ -4,4 +4,4 @@ AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = libltdl src
 
-include $(top_srcdir)/admin/Doxyfile.am
+#include $(top_srcdir)/admin/Doxyfile.am
