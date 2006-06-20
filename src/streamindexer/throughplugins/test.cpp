@@ -9,7 +9,7 @@ public:
         idx = i;
     }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
-        idx->setField("hi", "hi");
+//        idx->setField("hi", "hi");
         return in;
     }
 };
