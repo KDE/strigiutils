@@ -73,8 +73,9 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
             valsize *= 2;
             valbuffer = (char*)realloc(valbuffer, valsize);
         }
-        s = lgetxattr(idx->getName().c_str(), name, valbuffer, valsize);
+        s = lgetxattr(idx->getName().c_str(), name, valbuffer, valsize-1);
     } while (s == -1 && errno == ERANGE && valsize < maxvalsize);
     if (s == -1) return 0;
+    valbuffer[s] = '\0';
     return valbuffer;
 }
