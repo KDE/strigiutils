@@ -35,6 +35,7 @@ REGISTER_THROUGHANALYZER(XattrAnalyzer)
 
 jstreams::InputStream *
 XattrAnalyzer::connectInputStream(jstreams::InputStream *in) {
+    if (idx->getDepth() != 0) return in;
     ssize_t s;
     errno = 0;
     do {
