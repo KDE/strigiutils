@@ -52,6 +52,8 @@ PluginThroughAnalyzer::loadPlugin(const string& lib) {
     if (handle) {
         cleaner.addModule(handle);
         printf("loaded %s\n", lib.c_str());
+    } else {
+        printf("%s\n", dlerror());
     }
 }
 void
@@ -64,7 +66,9 @@ PluginThroughAnalyzer::loadPlugins(const char*d) {
     struct dirent* ent = readdir(dir);
     while(ent) {
         //printf("%s\n", ent->d_name);
-        if (strncmp(ent->d_name, "strigita_", 9) == 0) {
+        ssize_t len = strlen(ent->d_name);
+        if (strncmp(ent->d_name, "strigita_", 9) == 0
+                && strcmp(ent->d_name+len-3, ".so") == 0) {
             string plugin = d;
             if (plugin[plugin.length()-1] != '/') plugin += '/';
             plugin += ent->d_name;

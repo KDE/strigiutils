@@ -67,7 +67,7 @@ StreamIndexer::addThroughAnalyzers() {
     PluginThroughAnalyzer::loadPlugins("/lib/");
 // two dirs that make development easier, harmless for releases
     PluginThroughAnalyzer::loadPlugins("/home/oever/testinstall/lib/");
-    PluginThroughAnalyzer::loadPlugins("/tmp/ar/strigi/debug/src/streamindexer/throughplugins/.libs/");
+    PluginThroughAnalyzer::loadPlugins("/home/jos/testinstall/lib/");
     PluginThroughAnalyzer *pta = new PluginThroughAnalyzer();
     ana = pta;
     tIter->push_back(ana);
