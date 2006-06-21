@@ -8,7 +8,9 @@ private:
     int verbosity;
 protected:
     void startIndexable(jstreams::Indexable*i) {
-//        printf("%s\n",i->getName().c_str());
+        if (verbosity >= 1) {
+            printf("%s\n", i->getName().c_str());
+        }
     }
     void finishIndexable(const jstreams::Indexable*) {}
     void addText(const jstreams::Indexable* idx, const char* text,

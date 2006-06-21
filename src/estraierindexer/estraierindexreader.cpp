@@ -75,9 +75,15 @@ EstraierIndexReader::mapId(const std::string& id) {
 }
 string
 EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
-    char* f = est_doc_cat_texts(doc);
-    string fragment = f;
-    free(f);
+    string fragment;
+    const CBLIST *list = est_doc_texts(doc);
+    for (int j = 0; j < cblistnum(list); ++j) {
+        if (j) fragment += " ";
+        fragment += cblistval(list, j, 0);
+    }
+//    char* f = est_doc_cat_texts(doc);
+//    string fragment = f;
+//    free(f);
     return fragment;
 }
 int32_t
@@ -109,6 +115,7 @@ EstraierIndexReader::query(const Query& query) {
         IndexedDocument doc;
         doc.score = est_cond_score(cond, i);
         ESTDOC* d = est_db_get_doc(db, id, ESTGDNOKWD);
+        if (!d) continue;
         doc.fragment = getFragment(d, query);
         CBLIST* atts = est_doc_attr_names(d);
         for (int j = 0; j < cblistnum(atts); ++j) {

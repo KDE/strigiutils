@@ -5,6 +5,7 @@
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDateTime>
+#include <QtCore/QUrl>
 using namespace std;
 
 SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
@@ -20,6 +21,9 @@ SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
     connect(view, SIGNAL(anchorClicked(const QUrl&)),
         this, SLOT(openItem(const QUrl&)));
 }
+QString str(const string&s) {
+    return QString::fromUtf8(s.c_str(), s.length());
+}
 void
 SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     view->clear();
@@ -32,17 +36,17 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
             view->setEnabled(true);
             vector<jstreams::IndexedDocument>::const_iterator i;
             for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
-                QString path = i->uri.c_str();
+                QString path(str(i->uri));
                 QString name;
                 map<string, string>::const_iterator t
                     = i->properties.find("title");
                 if (t != i->properties.end()) {
-                    name = t->second.c_str();
+                    name = str(t->second);
                 }
                 int l = path.lastIndexOf('/');
                 html += "<div>";
-                html += iconHTML(i->mimetype.c_str());
-                html += "<a href='"+path+"'>";
+                html += iconHTML(str(i->mimetype));
+                html += "<a href='"+QUrl::toPercentEncoding(path)+"'>";
                 if (l != -1) {
                     if (name.length()) {
                         html += name;
@@ -60,21 +64,21 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                 }
                 html += "</a><br/>score: ";
                 html += QString::number(i->score) + ", mime-type: "
-                    + QString(i->mimetype.c_str()) + ", size: "
+                    + QString(str(i->mimetype)) + ", size: "
                     + QString::number(i->size) + ", last modified: ";
                 time.setTime_t(i->mtime);
                 html += time.toString() + "<br/><i>";
-                html += QString(i->fragment.c_str()).left(100).replace("<", "&lt;");
+                html += QString(str(i->fragment)).left(100).replace("<", "&lt;");
                 html += "</i><br/><table>";
                 map<string, string>::const_iterator j;
                 for (j = i->properties.begin(); j != i->properties.end(); ++j) {
-                    html += "<tr><td>"+QString(j->first.c_str())+"</td><td>"
-                        +QString(j->second.c_str())+"</td></tr>";
+                    html += "<tr><td>"+str(j->first)+"</td><td>"
+                        +str(j->second)+"</td></tr>";
                 }
                 html += "</table></div>";
             }
         } else {
-            html = "<h2>";html+=hits.error.c_str();html+="</h2>";
+            html = "<h2>";html+=str(hits.error);html+="</h2>";
         }
         view->setHtml(html);
     } else {
@@ -107,7 +111,7 @@ void
 SearchView::openItem(const QUrl& url) {
     // if the file does not exist on the file system remove items of the end
     // until it does
-    QString file = url.toString();
+    QString file = QUrl::fromPercentEncoding(url.toString().toAscii());
     view->setSource(view->source());
     QFileInfo info(file);
     while (!info.exists()) {

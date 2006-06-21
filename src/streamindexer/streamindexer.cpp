@@ -62,12 +62,12 @@ StreamIndexer::addThroughAnalyzers() {
     tIter->push_back(ana);
     ana = new MimeTypeThroughAnalyzer();
     tIter->push_back(ana);
-    PluginThroughAnalyzer::loadPlugins("/usr/local/lib/");
-    PluginThroughAnalyzer::loadPlugins("/usr/lib/");
-    PluginThroughAnalyzer::loadPlugins("/lib/");
+    PluginThroughAnalyzer::loadPlugins("/usr/local/lib");
+    PluginThroughAnalyzer::loadPlugins("/usr/lib");
+    PluginThroughAnalyzer::loadPlugins("/lib");
 // two dirs that make development easier, harmless for releases
-    PluginThroughAnalyzer::loadPlugins("/home/oever/testinstall/lib/");
-    PluginThroughAnalyzer::loadPlugins("/home/jos/testinstall/lib/");
+    PluginThroughAnalyzer::loadPlugins("/home/oever/testinstall/lib");
+    PluginThroughAnalyzer::loadPlugins("/home/jos/testinstall/lib");
     PluginThroughAnalyzer *pta = new PluginThroughAnalyzer();
     ana = pta;
     tIter->push_back(ana);
