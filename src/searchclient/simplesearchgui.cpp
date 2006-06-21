@@ -244,7 +244,7 @@ SimpleSearchGui::updateDirectories() {
     vector<string> s = client.getIndexedDirectories();
     indexeddirs->clear();
     for (uint i=0; i<s.size(); ++i) {
-        QString dir(s[i].c_str());
+        QString dir(QString::fromUtf8(s[i].c_str()));
         indexeddirs->addItem(dir);
     }
 }
