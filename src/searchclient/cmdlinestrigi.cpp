@@ -27,7 +27,7 @@ main(int argc, char** argv) {
     string homedir = getenv("HOME");
     AsyncSocketClient client;
     client.setSocketPath(homedir+"/.strigi/socket");
-    bool ok = client.query(query.c_str());
+    bool ok = client.query(query.c_str(), -1, 0);
     if (ok) {
         while (!client.statusChanged()) {
             printf(".");

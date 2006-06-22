@@ -60,7 +60,7 @@ Qt4StrigiClient::startCountHits() {
 }
 void
 Qt4StrigiClient::startQuery() {
-    bool ok = socket.query((const char*)queryQueue.head().toUtf8());
+    bool ok = socket.query((const char*)queryQueue.head().toUtf8(), 10, 0);
     if (ok) {
         mode = Query;
         poller.start();

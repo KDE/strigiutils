@@ -27,7 +27,7 @@ public:
     ClientInterface() :active(true) {}
     virtual ~ClientInterface() {}
     virtual int countHits(const std::string& query) = 0;
-    virtual Hits query(const std::string& query) = 0;
+    virtual Hits getHits(const std::string& query, int max, int offset) = 0;
     virtual std::map<std::string, std::string> getStatus() = 0;
     virtual std::string stopDaemon() = 0;
     virtual std::string startIndexing() = 0;

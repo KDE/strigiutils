@@ -8,13 +8,13 @@ using namespace jstreams;
 
 int
 Interface::countHits(const std::string& query) {
-    Query q(query);
+    Query q(query, -1, 0);
     int count = manager.getIndexReader()->countHits(q);
     return count;
 }
 ClientInterface::Hits
-Interface::query(const string& query) {
-    Query q(query);
+Interface::getHits(const string& query, int max, int off) {
+    Query q(query, max, off);
     Hits hits;
     hits.hits = manager.getIndexReader()->query(q);
     return hits;

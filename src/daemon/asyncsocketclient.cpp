@@ -48,10 +48,11 @@ AsyncSocketClient::handleCountHitsResponse() {
     i >> hitcount;
 }
 bool
-AsyncSocketClient::query(const std::string& query) {
+AsyncSocketClient::query(const std::string& query, int max, int off) {
     method = "query";
-    string msg = method+"\n"+query+"\n\n";
-    return socket.sendRequest(msg);
+    ostringstream oss;
+    oss << method << "\n" << query << "\n" << max << "\n" << off << "\n\n";
+    return socket.sendRequest(oss.str());
 }
 void
 AsyncSocketClient::handleQueryResponse() {

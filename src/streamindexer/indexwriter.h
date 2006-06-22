@@ -59,7 +59,9 @@ public:
         writer->addText(this, text, length);
     }
     void setField(const std::string& fieldname, const std::string& value) {
-        writer->setField(this, fieldname, value);
+        if (strchr(fieldname.c_str(), '/') == 0) {
+            writer->setField(this, fieldname, value);
+        }
     }
     const std::string& getName() const { return name; }
     int64_t getMTime() const { return mtime; }

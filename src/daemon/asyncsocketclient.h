@@ -20,7 +20,7 @@ public:
     }
     bool countHits(const std::string& query);
     int getHitCount() const { return hitcount; }
-    bool query(const std::string& query);
+    bool query(const std::string& query, int max, int off);
     const ClientInterface::Hits& getHits() const {
         return hits;
     }

@@ -21,7 +21,7 @@ public:
     Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),
         scheduler(s) {}
     int countHits(const std::string& query);
-    Hits query(const std::string& query);
+    Hits getHits(const std::string& query, int max, int offset);
     std::map<std::string, std::string> getStatus();
     std::string stopDaemon();
     std::string startIndexing();

@@ -22,25 +22,80 @@ StrigiHtmlGui::~StrigiHtmlGui() {
     delete p;
 }
 void
-StrigiHtmlGui::printPage(ostream&out,
+StrigiHtmlGui::printHeader(ostream& out, const string& path,
         const std::map<std::string, std::string> &params) {
-
+    out << "<html><title>Strigi Desktop Search</title></head><body>";
+    out << "<h1>Strigi Desktop Search</h1>";
+}
+void
+StrigiHtmlGui::printFooter(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    out << "</body></html>";
+}
+void
+StrigiHtmlGui::printHelp(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    out << "Help!";
+}
+void
+StrigiHtmlGui::printAbout(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    out << "About";
+}
+void
+StrigiHtmlGui::printConfig(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    out << "configuration";
+}
+void
+StrigiHtmlGui::printStatus(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    out << "status...";
+}
+void
+StrigiHtmlGui::printSearch(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
     std::string query;
     map<string, string>::const_iterator i = params.find("q");
     if (i != params.end()) query = i->second;
-
-    out << "<html><title>Strigi Desktop Search</title></head><body>";
-
-    out << "<h1>Strigi Desktop Search</h1>";
+    int max = 10;
+    i = params.find("m");
+    if (i != params.end()) {
+        max = atoi(i->second.c_str());
+    }
+    int off = 0;
+    i = params.find("o");
+    if (i != params.end()) {
+        off = atoi(i->second.c_str());
+    }
 
     out << "<form method='get'>";
     out << "<input type='text' name='q' value='" << query << "'/>";
+    out << "<input type='hidden' name='o' value='" << off << "'/>";
+    out << "<input type='hidden' name='m' value='" << max << "'/>";
     out << "<input type='submit'/></form>";
 
-    const ClientInterface::Hits hits = p->strigi.query(query);
+    const ClientInterface::Hits hits = p->strigi.getHits(query, max, off);
     p->printSearchResults(out, hits);
+}
+void
+StrigiHtmlGui::printPage(ostream& out, const string& path,
+        const std::map<std::string, std::string> &params) {
+    printHeader(out, path, params);
 
-    out << "</body></html>";
+    if (strncmp(path.c_str(), "help", 4) == 0) {
+        printHelp(out, path, params);
+    } else if (strncmp(path.c_str(), "about", 5) == 0) {
+        printAbout(out, path, params);
+    } else if (strncmp(path.c_str(), "config", 6) == 0) {
+        printConfig(out, path, params);
+    } else if (strncmp(path.c_str(), "status", 6) == 0) {
+        printStatus(out, path, params);
+    } else {
+        printSearch(out, path, params);
+    }
+
+    printFooter(out, path, params);
 }
 StrigiHtmlGui::Private::Private(HtmlHelper* helper) :h(helper) {
     string homedir = getenv("HOME");

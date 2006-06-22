@@ -34,10 +34,24 @@ private:
     HtmlHelper* helper;
     Private* p;
 
+    void printHeader(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printFooter(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printConfig(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printSearch(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printHelp(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printAbout(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printStatus(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
 public:
     StrigiHtmlGui(HtmlHelper*);
     ~StrigiHtmlGui();
-    void printPage(std::ostream& out,
+    void printPage(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
 };
 

@@ -4,6 +4,7 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <assert.h>
+#include <sstream>
 using namespace std;
 
 void
@@ -110,12 +111,18 @@ SocketClient::countHits(const std::string &query) {
     return count;
 }
 ClientInterface::Hits
-SocketClient::query(const std::string &query) {
+SocketClient::getHits(const std::string &query, int max, int off) {
     response.clear();
     request.clear();
     request.push_back("query");
     assert(query.find("\n") == std::string::npos);
     request.push_back(query);
+    ostringstream oss;
+    oss << max;
+    request.push_back(oss.str());
+    oss.str("");
+    oss << off;
+    request.push_back(oss.str());
     int sd = open();
     Hits hits;
     if (sd < 0) {

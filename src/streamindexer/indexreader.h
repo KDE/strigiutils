@@ -14,18 +14,22 @@ namespace jstreams {
  **/
 class Query {
 private:
+    int max;
+    int offset;
     std::map<std::string, std::set<std::string> > includes;
     std::map<std::string, std::set<std::string> > excludes;
 
     const char* parseTerm(const char*);
 public:
-    Query(const std::string& q);
+    Query(const std::string& q, int max, int offset);
     const std::map<std::string, std::set<std::string> > &getIncludes() const {
         return includes;
     }
     const std::map<std::string, std::set<std::string> > &getExcludes() const {
         return excludes;
     }
+    int getMax() const { return max; }
+    int getOffset() const { return offset; }
 };
 
 class IndexReader {

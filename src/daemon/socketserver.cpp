@@ -118,8 +118,10 @@ SocketServer::sendResponse(int sd) {
 void
 SocketServer::handleRequest() {
     response.clear();
-    if (request.size() == 2 && request[0] == "query") {
-        ClientInterface::Hits hits = interface->query(request[1]);
+    if (request.size() == 4 && request[0] == "query") {
+        int max = atoi(request[2].c_str());
+        int off = atoi(request[3].c_str());
+        ClientInterface::Hits hits = interface->getHits(request[1], max, off);
         response.clear();
         vector<jstreams::IndexedDocument>::const_iterator i;
         ostringstream oss;

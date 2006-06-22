@@ -18,7 +18,9 @@ using namespace std;
  * term ::= [-][prefix]:("searchphrase"|searchphrase)
  **/
 
-Query::Query(const string& query) {
+Query::Query(const string& query, int max, int offset) {
+    this->max = max;
+    this->offset = offset;
     const char* q = query.c_str();
     const char* end = q+query.length();
     const char* p = q;

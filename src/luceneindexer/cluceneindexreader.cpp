@@ -153,7 +153,12 @@ CLuceneIndexReader::query(const Query& q) {
         printf("could not query: %s\n", err.what());
     }
     STRCPY_AtoT(tf, "path", CL_MAX_DIR);
-    for (int i = 0; i < s && i < 10; ++i) {
+    int off = q.getOffset();
+    if (off < 0) off = 0;
+    int max = q.getMax() + off;
+    if (max < 0) max = s;
+    if (max > s) max = s;
+    for (int i = off; i < max; ++i) {
         Document *d = &hits->doc(i);
         IndexedDocument doc;
         doc.score = hits->score(i);
