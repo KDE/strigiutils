@@ -7,7 +7,7 @@ using namespace std;
 using namespace jstreams;
 
 int
-Interface::countHits(const std::string& query) {
+Interface::countHits(const string& query) {
     Query q(query, -1, 0);
     int count = manager.getIndexReader()->countHits(q);
     return count;
@@ -38,38 +38,28 @@ Interface::getStatus() {
     status["Index size"] = out.str()+" MB";
     return status;
 }
-std::string
+string
 Interface::stopDaemon() {
     active = false;
     scheduler.stop();
     return "";
 }
-std::string
+string
 Interface::startIndexing() {
     scheduler.startIndexing();
     return "";
 }
-std::string
+string
 Interface::stopIndexing() {
     scheduler.stopIndexing();
     return "";
 }
-std::vector<std::string>
+set<string>
 Interface::getIndexedDirectories() {
-    vector<string> dirs;
-    const set<string>& d = scheduler.getIndexedDirectories();
-    set<string>::const_iterator i;
-    for (i=d.begin(); i!=d.end(); ++i) {
-        dirs.push_back(*i);
-    }
-    return dirs;
+    return scheduler.getIndexedDirectories();
 }
-std::string
-Interface::setIndexedDirectories(std::vector<std::string> d) {
-    set<string> dirs;
-    for (uint i=0; i<d.size(); ++i) {
-        dirs.insert(d[i]);
-    }
+string
+Interface::setIndexedDirectories(set<string> dirs) {
     scheduler.setIndexedDirectories(dirs);
     return "";
 }

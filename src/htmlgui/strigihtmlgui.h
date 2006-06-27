@@ -36,6 +36,8 @@ private:
 
     void printHeader(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
+    void printMenu(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
     void printFooter(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
     void printConfig(std::ostream& out, const std::string& path,
@@ -47,6 +49,8 @@ private:
     void printAbout(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
     void printStatus(std::ostream& out, const std::string& path,
+        const std::map<std::string, std::string> &params);
+    void printIndexedDirs(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
 public:
     StrigiHtmlGui(HtmlHelper*);

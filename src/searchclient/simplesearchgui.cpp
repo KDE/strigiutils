@@ -226,10 +226,10 @@ SimpleSearchGui::removeDirectory() {
 }
 void
 SimpleSearchGui::setDirectories() {
-    vector<string> s;
+    set<string> s;
     for (int i=0; i<indexeddirs->count(); ++i) {
         QString text = indexeddirs->item(i)->text();
-        s.push_back((const char*)text.toUtf8());
+        s.insert((const char*)text.toUtf8());
     }
     SocketClient client;
     client.setSocketName(socketfile.c_str());
@@ -241,10 +241,11 @@ SimpleSearchGui::updateDirectories() {
     indexeddirs->clear();
     SocketClient client;
     client.setSocketName(socketfile.c_str());
-    vector<string> s = client.getIndexedDirectories();
+    set<string> s = client.getIndexedDirectories();
     indexeddirs->clear();
-    for (uint i=0; i<s.size(); ++i) {
-        QString dir(QString::fromUtf8(s[i].c_str()));
+    set<string>::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        QString dir(QString::fromUtf8(i->c_str()));
         indexeddirs->addItem(dir);
     }
 }

@@ -8,7 +8,7 @@
 using namespace std;
 
 void
-SocketClient::setSocketName(const std::string& n) {
+SocketClient::setSocketName(const string& n) {
     socketpath = n;
 }
 int
@@ -44,7 +44,7 @@ SocketClient::open() {
 bool
 SocketClient::readResponse(int sd) {
     response.clear();
-    std::string line;
+    string line;
     char c;
     while (true) {
         int r = recv(sd, &c, 1, 0);
@@ -74,8 +74,8 @@ bool
 SocketClient::sendRequest(int sd) {
     ssize_t r;
     for (uint i=0; i<request.size(); ++i) {
-        std::string line = request[i];
-        assert(line.find('\n') == std::string::npos);
+        string line = request[i];
+        assert(line.find('\n') == string::npos);
         line += '\n';
         int p = 0;
         int len = line.length();
@@ -92,11 +92,11 @@ SocketClient::sendRequest(int sd) {
     return r > 0;
 }
 int
-SocketClient::countHits(const std::string &query) {
+SocketClient::countHits(const string &query) {
     response.clear();
     request.clear();
     request.push_back("countHits");
-    assert(query.find("\n") == std::string::npos);
+    assert(query.find("\n") == string::npos);
     request.push_back(query);
     int sd = open();
     if (sd < 0) {
@@ -111,11 +111,11 @@ SocketClient::countHits(const std::string &query) {
     return count;
 }
 ClientInterface::Hits
-SocketClient::getHits(const std::string &query, int max, int off) {
+SocketClient::getHits(const string &query, int max, int off) {
     response.clear();
     request.clear();
     request.push_back("query");
-    assert(query.find("\n") == std::string::npos);
+    assert(query.find("\n") == string::npos);
     request.push_back(query);
     ostringstream oss;
     oss << max;
@@ -188,7 +188,7 @@ SocketClient::getStatus() {
     }
     return status;
 }
-std::string
+string
 SocketClient::stopDaemon() {
     request.clear();
     request.push_back("stopDaemon");
@@ -201,7 +201,7 @@ SocketClient::stopDaemon() {
     close(sd);
     return "";
 }
-std::string
+string
 SocketClient::startIndexing() {
     request.clear();
     request.push_back("startIndexing");
@@ -214,7 +214,7 @@ SocketClient::startIndexing() {
     close(sd);
     return "";
 }
-std::string
+string
 SocketClient::stopIndexing() {
     request.clear();
     request.push_back("stopIndexing");
@@ -227,26 +227,32 @@ SocketClient::stopIndexing() {
     close(sd);
     return "";
 }
-std::vector<std::string>
+set<string>
 SocketClient::getIndexedDirectories() {
+    set<string> r;
     request.clear();
-    response .clear();
+    response.clear();
     request.push_back("getIndexedDirectories");
     int sd = open();
     if (sd < 0) {
-        return response;
+        return r;
     }
     sendRequest(sd);
     readResponse(sd);
     close(sd);
-    return response;
+    vector<string>::const_iterator i;
+    for (i = response.begin(); i != response.end(); ++i) {
+        r.insert(*i);
+    }
+    return r;
 }
-std::string
-SocketClient::setIndexedDirectories(std::vector<std::string> dirs) {
+string
+SocketClient::setIndexedDirectories(set<string> dirs) {
     request.clear();
     request.push_back("setIndexedDirectories");
-    for (uint i=0; i<dirs.size(); ++i) {
-        request.push_back(dirs[i]);
+    set<string>::const_iterator i;
+    for (i = dirs.begin(); i != dirs.end(); ++i) {
+        request.push_back(*i);
     }
     int sd = open();
     if (sd < 0) {

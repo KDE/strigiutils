@@ -175,13 +175,18 @@ SocketServer::handleRequest() {
         return;
     }
     if (request.size() == 1 && request[0] == "getIndexedDirectories") {
-        response = interface->getIndexedDirectories();
+        response.clear();
+        set<string> d = interface->getIndexedDirectories();
+        set<string>::const_iterator i;
+        for (i = d.begin(); i != d.end(); ++i) {
+            response.push_back(*i);
+        }
         return;
     }
     if (request.size() >= 1 && request[0] == "setIndexedDirectories") {
-        vector<string> dirs;
+        set<string> dirs;
         for (uint i=1; i<request.size(); ++i) {
-            dirs.push_back(request[i]);
+            dirs.insert(request[i]);
         }
         interface->setIndexedDirectories(dirs);
         return;

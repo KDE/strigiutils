@@ -26,8 +26,8 @@ public:
     std::string stopDaemon();
     std::string startIndexing();
     std::string stopIndexing();
-    std::vector<std::string> getIndexedDirectories();
-    std::string setIndexedDirectories(std::vector<std::string>);
+    std::set<std::string> getIndexedDirectories();
+    std::string setIndexedDirectories(std::set<std::string>);
 };
 
 #endif
