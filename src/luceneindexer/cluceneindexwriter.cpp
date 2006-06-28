@@ -2,6 +2,7 @@
 #include "cluceneindexmanager.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include <CLucene/search/QueryFilter.h>
 #include "stringreader.h"
 #include "inputstreamreader.h"
 #include <sstream>
@@ -16,6 +17,9 @@ using lucene::index::Term;
 using lucene::search::IndexSearcher;
 using lucene::search::Hits;
 using lucene::search::PrefixQuery;
+using lucene::search::QueryFilter;
+using lucene::util::BitSet;
+
 using lucene::util::Reader;
 using namespace std;
 using namespace jstreams;
@@ -58,6 +62,8 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     setField(idx, "path", idx->getName());
+    setField(idx, "encoding", idx->getEncoding());
+    setField(idx, "mimetype", idx->getMimeType());
 //    printf("%i %s\n", idx->getDepth(), idx->getName().c_str());
     ostringstream o;
     o << (int)idx->getDepth();
@@ -107,23 +113,48 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
     lucene::index::IndexReader* reader = manager->refReader();
-    IndexSearcher searcher(reader);
+
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, entry.c_str(), CL_MAX_DIR);
     Term* term = _CLNEW Term(_T("path"), tstr);
     PrefixQuery* query = _CLNEW PrefixQuery(term);
-    Hits *hits = searcher.search(query);
+    QueryFilter* filter = _CLNEW QueryFilter(query);
+    BitSet* bits = filter->bits(reader);
+    for (int32_t i = 0; i < bits->size(); ++i) {
+        if (bits->get(i) && !reader->isDeleted(i)) {
+            reader->deleteDocument(i);
+        }
+    }
+/*    Hits *hits;
+    IndexSearcher searcher(reader);
+    try {
+        hits = searcher.search(query);
+    } catch (CLuceneError& err) {
+        // probably throws 'Too many clauses'
+        fprintf(stderr, "error in retrieving documents to delete (%s): %s\n",
+            entry.c_str(), err.what());
+        _CLDELETE(query);
+        _CLDECDELETE(term);
+        searcher.close();
+        manager->derefReader();
+        return;
+    }
     int s = hits->length();
     vector<int32_t> ids;
     for (int i = 0; i < s; ++i) {
         ids.push_back(hits->id(i));
     }
-    _CLDELETE(hits);
+    _CLDELETE(hits);*/
+    _CLDELETE(filter);
     _CLDELETE(query);
     _CLDECDELETE(term);
-    searcher.close();
-    for (int i = 0; i < s; ++i) {
-        reader->deleteDocument(ids[i]);
-    }
+//    searcher.close();
+/*    for (int i = 0; i < s; ++i) {
+        try {
+            reader->deleteDocument(ids[i]);
+        } catch (CLuceneError& err) {
+            fprintf(stderr, "error deleting document: %s\n", err.what());
+        }
+    }*/
     manager->derefReader();
 }
