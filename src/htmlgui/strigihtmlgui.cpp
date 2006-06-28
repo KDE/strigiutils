@@ -37,10 +37,10 @@ StrigiHtmlGui::printHeader(ostream& out, const string& path,
         << "'/>"
         "<title>Strigi Desktop Search</title>"
         "</head><body>"
-        "<div id='header'>";
+        "<div class='header'>";
     printMenu(out, path, params);
-    out << "<div id='title'>Strigi Desktop Search</div>";
-    out << "</div><div id='box'>";
+    out << "<div class='title'>Strigi Desktop Search</div>";
+    out << "</div><div class='box'>";
 }
 void
 StrigiHtmlGui::printFooter(ostream& out, const string& path,
@@ -51,12 +51,12 @@ StrigiHtmlGui::printFooter(ostream& out, const string& path,
 void
 StrigiHtmlGui::printHelp(ostream& out, const string& path,
         const map<std::string, std::string> &params) {
-    out << "Help!";
+    out << "For help see the <a href='http://strigi.sf.net'>Strigi Wiki</a>";
 }
 void
 StrigiHtmlGui::printAbout(ostream& out, const string& path,
         const map<std::string, std::string> &params) {
-    out << "About";
+    out << "<a href='http://www.vandenoever.info/software/strigi'>The Strigi Website</a>";
 }
 void
 StrigiHtmlGui::printConfig(ostream& out, const string& path,
@@ -115,7 +115,7 @@ StrigiHtmlGui::printStatus(ostream& out, const string& path,
     }
     // automatically reload the status page
     out << "<script type='text/javascript'>\n"
-        "setTimeout('window.location.replace(window.location.href)', 2000);\n"
+        "setTimeout('window.location.replace(\"/status\")', 2000);\n"
         "</script>\n";
 }
 void
@@ -210,9 +210,11 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     out << "</form></div>\n";
 
     if (activequery.length()) {
+        out << "<div class='hits'>";
         const ClientInterface::Hits hits = p->strigi.getHits(activequery,
             max, off);
         p->printSearchResults(out, hits);
+        out << "</div>";
     }
 }
 void
