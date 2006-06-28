@@ -137,7 +137,10 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     }
 
     // print tabs
-    int count = p->strigi.countHits(query);
+    int count = 0;
+    if (query.length()) {
+        count = p->strigi.countHits(query);
+    }
     string activetab;
     string activequery = query;
     map<string, int> hitcounts;
@@ -201,8 +204,11 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     }
     out << "</form></div>\n";
 
-    const ClientInterface::Hits hits = p->strigi.getHits(activequery, max, off);
-    p->printSearchResults(out, hits);
+    if (activequery.length()) {
+        const ClientInterface::Hits hits = p->strigi.getHits(activequery,
+            max, off);
+        p->printSearchResults(out, hits);
+    }
 }
 void
 StrigiHtmlGui::printMenu(ostream& out, const std::string& path,
@@ -232,7 +238,7 @@ StrigiHtmlGui::printIndexedDirs(ostream& out, const std::string& path,
     i = params.find("deldir");
     if (i != params.end()) {
         uint oldsize = dirs.size();
-        dirs.insert(i->second);
+        dirs.erase(i->second);
         if (dirs.size() != oldsize) {
             p->strigi.setIndexedDirectories(dirs);
         }
