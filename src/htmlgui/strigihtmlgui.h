@@ -26,6 +26,7 @@ public:
     virtual std::string encodeString(const std::string& url) = 0;
     virtual std::string escapeString(const std::string& url) = 0;
     virtual std::string formatDate(time_t date) = 0;
+    virtual std::string getCssUrl() = 0;
 };
 
 class StrigiHtmlGui {

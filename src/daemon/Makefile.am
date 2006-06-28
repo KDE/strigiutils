@@ -6,7 +6,7 @@ lib_LTLIBRARIES = libsearchclient.la
 strigidaemon_SOURCES = daemon.cpp server.cpp socketserver.cpp interface.cpp \
 	indexscheduler.cpp clientinterface.cpp
 strigidaemon_CXXFLAGS = -I$(top_srcdir)/src/streamindexer
-strigidaemon_LDFLAGS = -lpthread
+strigidaemon_LDFLAGS = -lpthread 
 
 libsearchclient_la_SOURCES = socketclient.cpp clientinterface.cpp \
 	asyncsocket.cpp asyncsocketclient.cpp

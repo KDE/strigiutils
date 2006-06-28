@@ -7,9 +7,8 @@ using namespace std;
 using namespace jstreams;
 
 class StrigiHtmlGui::Private {
-private:
-    HtmlHelper* h;
 public:
+    HtmlHelper* h;
     SocketClient strigi;
 
     Private(HtmlHelper* h);
@@ -28,19 +27,25 @@ void
 StrigiHtmlGui::printHeader(ostream& out, const string& path,
         const map<std::string, std::string> &params) {
     out << "<?xml version='1.0' encoding='utf-8'?>\n"
-        << "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' "
-        << "'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n"
-        << "<html xmlns='http://www.w3.org/1999/xhtml'>"
-        << "<head><meta http-equiv='Content-Type' "
-        << "content='text/html; charset=utf-8' />";
-    out << "<title>Strigi Desktop Search</title>";
-    out << "</head><body>";
-    out << "<h1 style='float:right'>Strigi Desktop Search</h1>";
+        "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' "
+        "'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n"
+        "<html xmlns='http://www.w3.org/1999/xhtml'>"
+        "<head><meta http-equiv='Content-Type' "
+        "content='text/html; charset=utf-8' />"
+        "<link rel='stylesheet' type='text/css' href='"
+        << p->h->getCssUrl()
+        << "'/>"
+        "<title>Strigi Desktop Search</title>"
+        "</head><body>"
+        "<div id='header'>";
     printMenu(out, path, params);
+    out << "<div id='title'>Strigi Desktop Search</div>";
+    out << "</div><div id='box'>";
 }
 void
 StrigiHtmlGui::printFooter(ostream& out, const string& path,
         const map<std::string, std::string> &params) {
+    out << "</div>";
     out << "</body></html>";
 }
 void
