@@ -47,6 +47,7 @@ private:
     const int64_t mtime;
     const std::string& name;
     std::string encoding;
+    std::string mimetype;
     IndexWriter* writer;
     char depth;
 public:
@@ -69,9 +70,11 @@ public:
     int64_t getId() const { return id; }
     char getDepth() const { return depth; }
     void setEncoding(const char* enc) { encoding = enc; }
-    const char* getEncoding() const { return encoding.c_str(); }
+    const std::string& getEncoding() const { return encoding; }
     void* getWriterData() const { return writerData; }
     void setWriterData(void* wd) { writerData = wd; }
+    void setMimeType(const std::string& mt) { mimetype = mt; }
+    const std::string& getMimeType() const { return mimetype; }
 };
 
 

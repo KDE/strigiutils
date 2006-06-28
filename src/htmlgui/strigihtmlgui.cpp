@@ -145,8 +145,9 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         map<string, string> tabs;
         bool doother = true;
         tabs["Images"] = "mimetype:image*";
-        tabs["Jos"] = "jos";
-        tabs["kde"] = "kde";
+        tabs["Mail"] = "mimetype:message/*";
+        tabs["Web"] = "mimetype:text/html";
+        tabs["Text"] = "mimetype:text/*";
         map<string, string>::const_iterator j;
         string otherq = query;
         for (j = tabs.begin(); j != tabs.end(); ++j) {
@@ -166,10 +167,12 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         int othercount = 0;
         if (doother) {
             othercount = p->strigi.countHits(otherq);
-            hitcounts["Other"] = othercount;
-            if (selectedtab == "Other") {
-                activetab = selectedtab;
-                activequery = otherq;
+            if (othercount > 0) {
+                hitcounts["Other"] = othercount;
+                if (selectedtab == "Other") {
+                    activetab = selectedtab;
+                    activequery = otherq;
+                }
             }
         }
     }

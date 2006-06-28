@@ -23,11 +23,11 @@ MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
         if (slash == 0) return in;
         int l = strcspn(mime, " \t;\\");
         if (l < slash-mime) return in;
-        idx->setField("mimetype", string(mime, l));
+        idx->setMimeType(string(mime, l));
         const char* charset = strstr(mime+l, "charset=");
         if (charset == 0) return in;
         charset += 8;
-        idx->setField("charset", charset);
+        idx->setEncoding(charset);
     }
     return in;
 }
