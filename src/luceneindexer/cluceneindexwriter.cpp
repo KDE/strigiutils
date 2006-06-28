@@ -119,42 +119,22 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     Term* term = _CLNEW Term(_T("path"), tstr);
     PrefixQuery* query = _CLNEW PrefixQuery(term);
     QueryFilter* filter = _CLNEW QueryFilter(query);
-    BitSet* bits = filter->bits(reader);
-    for (int32_t i = 0; i < bits->size(); ++i) {
-        if (bits->get(i) && !reader->isDeleted(i)) {
-            reader->deleteDocument(i);
+    BitSet* bits;
+    try {
+        bits = filter->bits(reader);
+    } catch (CLuceneError& err) {
+        fprintf(stderr, "error creating filter: %s", err.what());
+        bits = 0;
+    }
+    if (bits) {
+        for (int32_t i = 0; i < bits->size(); ++i) {
+            if (bits->get(i) && !reader->isDeleted(i)) {
+                reader->deleteDocument(i);
+            }
         }
     }
-/*    Hits *hits;
-    IndexSearcher searcher(reader);
-    try {
-        hits = searcher.search(query);
-    } catch (CLuceneError& err) {
-        // probably throws 'Too many clauses'
-        fprintf(stderr, "error in retrieving documents to delete (%s): %s\n",
-            entry.c_str(), err.what());
-        _CLDELETE(query);
-        _CLDECDELETE(term);
-        searcher.close();
-        manager->derefReader();
-        return;
-    }
-    int s = hits->length();
-    vector<int32_t> ids;
-    for (int i = 0; i < s; ++i) {
-        ids.push_back(hits->id(i));
-    }
-    _CLDELETE(hits);*/
     _CLDELETE(filter);
     _CLDELETE(query);
     _CLDECDELETE(term);
-//    searcher.close();
-/*    for (int i = 0; i < s; ++i) {
-        try {
-            reader->deleteDocument(ids[i]);
-        } catch (CLuceneError& err) {
-            fprintf(stderr, "error deleting document: %s\n", err.what());
-        }
-    }*/
     manager->derefReader();
 }
