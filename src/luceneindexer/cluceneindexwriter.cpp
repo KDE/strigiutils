@@ -123,7 +123,8 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     try {
         bits = filter->bits(reader);
     } catch (CLuceneError& err) {
-        fprintf(stderr, "error creating filter: %s", err.what());
+        fprintf(stderr, "error creating filter %s: %s\n", entry.c_str(),
+            err.what());
         bits = 0;
     }
     if (bits) {
