@@ -1,20 +1,26 @@
 #include "strigihtmlgui.h"
 #include "socketclient.h"
+#include "indexreader.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <sstream>
 using namespace std;
 using namespace jstreams;
 
 class StrigiHtmlGui::Private {
-public:
+private:
     HtmlHelper* h;
+    string highlightTerms(const string& t, const Query& q,
+        const vector<string>& fields) const;
+    void printSearchResult(ostream& out,
+        const jstreams::IndexedDocument& doc, const Query& q) const;
+public:
     SocketClient strigi;
 
     Private(HtmlHelper* h);
-    void printSearchResult(ostream& out,
-        const jstreams::IndexedDocument& doc);
-    void printSearchResults(ostream& out, const ClientInterface::Hits&);
+    void printSearchResults(ostream& out, const ClientInterface::Hits&,
+        const string& query) const;
 };
 
 StrigiHtmlGui::StrigiHtmlGui(HtmlHelper* h) : helper(h) {
@@ -25,7 +31,7 @@ StrigiHtmlGui::~StrigiHtmlGui() {
 }
 void
 StrigiHtmlGui::printHeader(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     out << "<?xml version='1.0' encoding='utf-8'?>\n"
         "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' "
         "'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n"
@@ -33,7 +39,7 @@ StrigiHtmlGui::printHeader(ostream& out, const string& path,
         "<head><meta http-equiv='Content-Type' "
         "content='text/html; charset=utf-8' />"
         "<link rel='stylesheet' type='text/css' href='"
-        << p->h->getCssUrl()
+        << helper->getCssUrl()
         << "'/>"
         "<title>Strigi Desktop Search</title>"
         "</head><body>"
@@ -44,23 +50,23 @@ StrigiHtmlGui::printHeader(ostream& out, const string& path,
 }
 void
 StrigiHtmlGui::printFooter(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     out << "</div>";
     out << "</body></html>";
 }
 void
 StrigiHtmlGui::printHelp(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     out << "For help see the <a href='http://strigi.sf.net'>Strigi Wiki</a>";
 }
 void
 StrigiHtmlGui::printAbout(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     out << "<a href='http://www.vandenoever.info/software/strigi'>The Strigi Website</a>";
 }
 void
 StrigiHtmlGui::printConfig(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     printIndexedDirs(out, path, params);
 }
 void
@@ -72,7 +78,7 @@ startDaemon() {
 }
 void
 StrigiHtmlGui::printStatus(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     map<string, string> status;
     if (path == "status/start") {
         status = p->strigi.getStatus();
@@ -120,7 +126,7 @@ StrigiHtmlGui::printStatus(ostream& out, const string& path,
 }
 void
 StrigiHtmlGui::printSearch(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     string query;
     map<string, string>::const_iterator i = params.find("q");
     if (i != params.end()) query = i->second;
@@ -213,13 +219,30 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         out << "<div class='hits'>";
         const ClientInterface::Hits hits = p->strigi.getHits(activequery,
             max, off);
-        p->printSearchResults(out, hits);
+        p->printSearchResults(out, hits, activequery);
         out << "</div>";
     }
 }
+string
+StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q,
+        const vector<string>& fields) const {
+    string out = t;
+    vector<string> terms;
+    vector<string>::const_iterator i;
+    for (i = fields.begin(); i != fields.end(); ++i) {
+        map<string, set<string> >::const_iterator j = q.getIncludes().find(*i);
+        if (j != q.getIncludes().end()) {
+            set<string>::const_iterator k;
+            for (k = j->second.begin(); k != j->second.end(); ++k) {
+                terms.push_back(*k);
+            }
+        }
+    }
+    return h->highlight(out, terms);
+}
 void
-StrigiHtmlGui::printMenu(ostream& out, const std::string& path,
-        const map<std::string, std::string> &params) {
+StrigiHtmlGui::printMenu(ostream& out, const string& path,
+        const map<string, string> &params) {
     out << "<div class='menu'>" << endl;
     out << "<a href='/'>search</a> " << endl;
     out << "<a href='/status'>status</a> " << endl;
@@ -229,8 +252,8 @@ StrigiHtmlGui::printMenu(ostream& out, const std::string& path,
     out << "</div>" << endl;
 }
 void
-StrigiHtmlGui::printIndexedDirs(ostream& out, const std::string& path,
-        const map<std::string, std::string> &params) {
+StrigiHtmlGui::printIndexedDirs(ostream& out, const string& path,
+        const map<string, string> &params) {
     set<string> dirs = p->strigi.getIndexedDirectories();
     map<string,string>::const_iterator i = params.find("adddir");
     if (i != params.end()) {
@@ -265,7 +288,7 @@ StrigiHtmlGui::printIndexedDirs(ostream& out, const std::string& path,
 }
 void
 StrigiHtmlGui::printPage(ostream& out, const string& path,
-        const map<std::string, std::string> &params) {
+        const map<string, string> &params) {
     printHeader(out, path, params);
 
     bool running = p->strigi.getStatus().size() > 0;
@@ -289,14 +312,24 @@ StrigiHtmlGui::Private::Private(HtmlHelper* helper) :h(helper) {
     string homedir = getenv("HOME");
     strigi.setSocketName(homedir+"/.strigi/socket");
 }
+string
+toSizeString(int s) {
+    ostringstream o;
+    if (s > 1024) {
+        o << (s+512)/1024 << "k";
+    } else {
+        o << s << " bytes";
+    }
+    return o.str();
+}
 void
 StrigiHtmlGui::Private::printSearchResult(ostream& out,
-        const jstreams::IndexedDocument& doc) {
+        const jstreams::IndexedDocument& doc, const Query& query) const {
     string link, icon, name, folder;
     link = h->mapLinkUrl(doc.uri);
-    icon = "<img style='float:left;' class='icon' src='";
+    icon = "<div class='iconbox'><img class='icon' src='";
     icon += h->mapMimetypeIcon(doc.uri, doc.mimetype);
-    icon += "'/>";
+    icon += "'/></div>\n";
     map<string, string>::const_iterator t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
@@ -310,23 +343,37 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         folder = doc.uri.substr(0, l);
     } 
     out << "<div class='hit'>" << icon << "<h2><a href='" << link << "'>";
-    out << name << "</a></h2><br/>score: ";
+    out << name << "</a></h2>";
+/*    out << "<br/>score: ";
     out << doc.score << ", mime-type: " << doc.mimetype.c_str() << ", size: ";
-    out << doc.size << ", last modified: " << h->formatDate(doc.mtime);
-    string fragment = h->escapeString(doc.fragment.substr(0,100));
-    out << "<br/><i>" << fragment << "</i><br/><table>";
+    out << doc.size << ", last modified: " << h->formatDate(doc.mtime);*/
+    string fragment = h->escapeString(doc.fragment);
+    vector<string> fields;
+    fields.push_back("");
+    fields.push_back("content");
+    fragment = highlightTerms(fragment, query, fields);
+    out << "<div class='fragment'>" << fragment << "</div>";
+    fields.clear();
+    string path = h->escapeString(doc.uri);
+    path = highlightTerms(path, query, fields);
+    out << "<div class='path'><a href='" << link << "'>" << path << "</a> - "
+        << toSizeString(doc.size) << " - "
+        << h->mimetypeDescription(doc.mimetype) << "</div>";
+    /*out << "<table>";
     map<string, string>::const_iterator j;
     for (j = doc.properties.begin(); j != doc.properties.end(); ++j) {
         out << "<tr><td>" << j->first << ":</td><td>" << j->second.c_str()
             << "</td></tr>";
     }
-    out << "</table></div>";
+    out << "</table>";*/
+    out << "</div>";
 }
 void
 StrigiHtmlGui::Private::printSearchResults(ostream& out,
-        const ClientInterface::Hits& hits) {
+        const ClientInterface::Hits& hits, const string& q) const {
+    Query query(q, 0, 0);
     vector<jstreams::IndexedDocument>::const_iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
-        printSearchResult(out, *i);
+        printSearchResult(out, *i, query);
     }
 }

@@ -4,6 +4,7 @@
 #include <ostream>
 #include <map>
 #include <string>
+#include <vector>
 
 class HtmlHelper {
 public:
@@ -27,6 +28,11 @@ public:
     virtual std::string escapeString(const std::string& url) = 0;
     virtual std::string formatDate(time_t date) = 0;
     virtual std::string getCssUrl() = 0;
+    virtual std::string highlight(const std::string& text,
+        const std::vector<std::string>& queryterms) = 0;
+    virtual std::string mimetypeDescription(const std::string& mimetype) const {
+        return mimetype;
+    }
 };
 
 class StrigiHtmlGui {
