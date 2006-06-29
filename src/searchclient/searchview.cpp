@@ -24,6 +24,61 @@ SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
 QString str(const string&s) {
     return QString::fromUtf8(s.c_str(), s.length());
 }
+QString
+highlightText(const QString& text, const QString query) {
+    int pre = 5, post = 5, maxlen = 100;
+    QString t = text;
+    t.replace("<", "&lt;").replace(">", "&gt;");
+    QStringList items = query.split(" ", QString::SkipEmptyParts);
+    vector<QRegExp> res;
+    QString out;
+    for (int i=0; i<items.size(); ++i) {
+        items[i].replace('*', "\\w*").replace('?',"\\w");
+        res.push_back(QRegExp("\\b("+items[i]+")\\b",Qt::CaseInsensitive));
+    }
+    int pos = 0;
+    int lasts = -1;
+    int laste = -1;
+    while (pos >= 0 && out.length()+laste-lasts < maxlen) {
+        int rep = -1;
+        int len;
+        for (uint i=0; i<res.size(); ++i) {
+            int p = t.indexOf(res[i], pos);
+            if (p > 0 && (rep == -1 || p < rep)) {
+                rep = p;
+                len = items[i].length();
+            }
+        }
+        if (rep >= 0) {
+            int s = t.lastIndexOf(" ", rep-pre);
+            if (s == -1) s = (rep-pre < 0) ?0 : rep-pre;
+            int e = t.indexOf(" ", rep+len+post);
+            if (e == -1) e = t.length();
+            if (lasts == -1) {
+                lasts = s;
+            } else if (s > laste) {
+                if (out.length() == 0 && lasts > 0) out += "... ";
+                out += t.mid(lasts, laste - lasts) + " ... ";
+                lasts = s;
+            }
+            laste = e;
+            pos = rep+1;
+        } else {
+            pos = rep;
+        }
+    }
+    if (lasts != -1) {
+        if (out.length() == 0 && lasts > 0) out += "... ";
+        out += t.mid(lasts, laste - lasts) + " ... ";
+    }
+    for (uint i = 0; i < res.size(); ++i) {
+        out.replace(res[i], "<b>\\1</b>");
+    }
+    if (out.length() == 0) {
+        out = t.left(100);
+    }
+    return out;
+}
 void
 SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     view->clear();
@@ -68,7 +123,7 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                     + QString::number(i->size) + ", last modified: ";
                 time.setTime_t(i->mtime);
                 html += time.toString() + "<br/><i>";
-                html += QString(str(i->fragment)).left(100).replace("<", "&lt;");
+                html += highlightText(str(i->fragment), q);
                 html += "</i><br/><table>";
                 map<string, string>::const_iterator j;
                 for (j = i->properties.begin(); j != i->properties.end(); ++j) {
