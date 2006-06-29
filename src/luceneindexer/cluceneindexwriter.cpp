@@ -62,8 +62,14 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     setField(idx, "path", idx->getName());
-    setField(idx, "encoding", idx->getEncoding());
-    setField(idx, "mimetype", idx->getMimeType());
+    string field = idx->getEncoding();
+    if (field.length()) setField(idx, "encoding", field);
+    field = idx->getMimeType();
+    if (field.length()) setField(idx, "mimetype", field);
+    field = idx->getFileName();
+    if (field.length()) setField(idx, "filename", field);
+    field = idx->getExtension();
+    if (field.length()) setField(idx, "ext", field);
 //    printf("%i %s\n", idx->getDepth(), idx->getName().c_str());
     ostringstream o;
     o << (int)idx->getDepth();

@@ -75,6 +75,8 @@ public:
     void setWriterData(void* wd) { writerData = wd; }
     void setMimeType(const std::string& mt) { mimetype = mt; }
     const std::string& getMimeType() const { return mimetype; }
+    std::string getExtension() const;
+    std::string getFileName() const;
 };
 
 
