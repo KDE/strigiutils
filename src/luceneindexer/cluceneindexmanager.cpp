@@ -89,7 +89,11 @@ CLuceneIndexManager::openReader() {
 void
 CLuceneIndexManager::closeReader() {
     if (indexreader == 0) return;
-    indexreader->close();
+    try {
+        indexreader->close();
+    } catch (CLuceneError& err) {
+        printf("could not close clucene: %s\n", err.what());
+    }
     delete indexreader;
     indexreader = 0;
 }
