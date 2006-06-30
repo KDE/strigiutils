@@ -17,6 +17,11 @@ Interface::getHits(const string& query, int max, int off) {
     Query q(query, max, off);
     Hits hits;
     hits.hits = manager.getIndexReader()->query(q);
+    // highlight the hits in the results
+    vector<IndexedDocument>::iterator i;
+    for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
+        i->fragment = q.highlight(i->fragment);
+    }
     return hits;
 }
 map<string, string>

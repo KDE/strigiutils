@@ -123,7 +123,8 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
                     + QString::number(i->size) + ", last modified: ";
                 time.setTime_t(i->mtime);
                 html += time.toString() + "<br/><i>";
-                html += highlightText(str(i->fragment), q);
+                //html += highlightText(str(i->fragment), q);
+                html += str(i->fragment);
                 html += "</i><br/><table>";
                 map<string, string>::const_iterator j;
                 for (j = i->properties.begin(); j != i->properties.end(); ++j) {

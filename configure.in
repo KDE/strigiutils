@@ -112,6 +112,14 @@ dnl check for slqlite3
 PKG_CHECK_MODULES(sqlite3, sqlite3 >= 0, have_sqlite3="yes", have_sqlite3="no")
 AM_CONDITIONAL(HAVE_SQLITE, test "$have_sqlite3" = "yes")
 
+dnl check for libxml-2.0
+PKG_CHECK_MODULES(libxml-2.0, libXML >= 2.6, have_libxml2="yes", have_libxml2="no")
+AM_CONDITIONAL(HAVE_LIBXML2, test "$have_libxml2" = "yes")
+LIBXML2_CFLAGS=`$PKG_CONFIG --cflags libxml-2.0`
+LIBXML2_LIBS=`$PKG_CONFIG --libs libxml-2.0`
+AC_SUBST(LIBXML2_CFLAGS)
+AC_SUBST(LIBXML2_LIBS)
+
 dnl check for sys_ioprio_set
 dnl AC_CHECK_HEADER(linux/ioprio.h, [have_linuxioprio=yes], )
 AM_CONDITIONAL(HAVE_LINUXIOPRIO, test "$have_linuxioprio" = "yes")

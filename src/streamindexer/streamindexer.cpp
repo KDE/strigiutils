@@ -4,6 +4,7 @@
 #include "streamthroughanalyzer.h"
 #include "bz2endanalyzer.h"
 #include "textendanalyzer.h"
+#include "saxendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "zipendanalyzer.h"
 #include "pngendanalyzer.h"
@@ -89,6 +90,9 @@ StreamIndexer::addEndAnalyzers() {
     ana = new ZipEndAnalyzer();
     eIter->push_back(ana);
     ana = new PngEndAnalyzer();
+    eIter->push_back(ana);
+    // add a sax analyzer before the text analyzer
+    ana = new SaxEndAnalyzer();
     eIter->push_back(ana);
     // add a text analyzer to the end of the queue
     ana = new TextEndAnalyzer();

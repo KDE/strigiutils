@@ -30,6 +30,7 @@ public:
     }
     int getMax() const { return max; }
     int getOffset() const { return offset; }
+    std::string highlight(const std::string& text) const;
 };
 
 class IndexReader {
