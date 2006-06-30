@@ -13,6 +13,7 @@ replaceall(string& text, const string& a, const string& b) {
 }
 string
 Query::highlight(const string& text) const {
+    return text;
     int pre = 5, post = 5, maxlen = 100;
     string t = text;
     replaceall(t, "<", "&lt;");
