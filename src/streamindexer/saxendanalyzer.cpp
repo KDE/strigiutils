@@ -13,16 +13,25 @@ public:
     Indexable* idx;
     bool error;
     bool stop;
+    string rootelement;
     int32_t chars;
 
     static void charactersSAXFunc(void* ctx, const xmlChar * ch, int len);
     static void errorSAXFunc(void* ctx, const char * msg, ...);
+    static void startElementSAXFunc(void * ctx, const xmlChar * name, 
+        const xmlChar ** atts);
+    static void startElementNsSAX2Func(void * ctx,
+        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI, 
+        int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
+        int nb_defaulted, const xmlChar ** attributes);
 
     Private() {
         ctxt = 0;
         memset(&handler, 0, sizeof(xmlSAXHandler));
         handler.characters = charactersSAXFunc;
         handler.error = errorSAXFunc;
+        handler.startElement = startElementSAXFunc;
+        handler.startElementNs = startElementNsSAX2Func;
     }
     ~Private() {
         reset();
@@ -35,6 +44,7 @@ public:
         error = false;
         stop = false;
         chars = 0;
+        rootelement = "";
     }
     void init(Indexable*i, const char* data, int32_t len) {
         reset();
@@ -48,7 +58,7 @@ public:
             error = true;
             stop = true;
         } else {
-            ctxt->validate = 1;
+//            ctxt->sax2 = 1;
             // we need to call push once to do validation
             push(data+initlen, len-initlen);
         }
@@ -84,6 +94,24 @@ SaxEndAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     Private* p = (Private*)ctx;
     p->stop = p->error = true;
 }
+void
+SaxEndAnalyzer::Private::startElementNsSAX2Func(void * ctx,
+        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI, 
+        int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
+        int nb_defaulted, const xmlChar ** attributes) {
+    Private* p = (Private*)ctx;
+    if(URI && p->rootelement.size() == 0) {
+        p->rootelement = (const char*)URI;
+    }
+}
+void
+SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const xmlChar* name, 
+        const xmlChar** atts) {
+    Private* p = (Private*)ctx;
+    if(name && p->rootelement.size() == 0) {
+        p->rootelement = (const char*)name;
+    }
+}
 SaxEndAnalyzer::SaxEndAnalyzer() {
     p = new Private();
 }
@@ -116,6 +144,7 @@ SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         i->setField("encoding", (const char*)p->ctxt->encoding);
     }
     i->setMimeType("text/xml");
+    i->setField("root", p->rootelement);
     if (nread != Eof) {
         error = in->getError();
         return -1;
