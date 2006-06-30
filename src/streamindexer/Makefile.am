@@ -3,7 +3,7 @@ lib_LTLIBRARIES = libstreamindexer.la
 libstreamindexer_la_SOURCES = bz2endanalyzer.cpp digestthroughanalyzer.cpp \
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp \
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp\
-	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp indexreader.cpp \
+	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp \
 	mimetypethroughanalyzer.cpp pluginthroughanalyzer.cpp indexwriter.cpp \
 	saxendanalyzer.cpp
 
