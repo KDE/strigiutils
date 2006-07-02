@@ -29,9 +29,9 @@
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
-#include "mimetypethroughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
+#include "pdfendanalyzer.h"
 #include "indexwriter.h"
 #include <sstream>
 #include <sys/types.h>
@@ -80,8 +80,6 @@ StreamIndexer::addThroughAnalyzers() {
     tIter = through.rbegin();
     StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
     tIter->push_back(ana);
-    ana = new MimeTypeThroughAnalyzer();
-    tIter->push_back(ana);
     PluginThroughAnalyzer::loadPlugins("/usr/local/lib");
     PluginThroughAnalyzer::loadPlugins("/usr/lib");
     PluginThroughAnalyzer::loadPlugins("/lib");
@@ -110,6 +108,8 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
     ana = new PngEndAnalyzer();
     eIter->push_back(ana);
+/*    ana = new PdfEndAnalyzer();
+    eIter->push_back(ana);*/
     // add a sax analyzer before the text analyzer
     ana = new SaxEndAnalyzer();
     eIter->push_back(ana);

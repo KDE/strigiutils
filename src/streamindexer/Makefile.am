@@ -5,11 +5,12 @@ libstreamindexer_la_SOURCES = bz2endanalyzer.cpp digestthroughanalyzer.cpp \
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp\
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp \
 	mimetypethroughanalyzer.cpp pluginthroughanalyzer.cpp indexwriter.cpp \
-	saxendanalyzer.cpp
+	saxendanalyzer.cpp pdfendanalyzer.cpp
 
-libstreamindexer_la_CXXFLAGS = -I$(top_srcdir)/src/streams $(LIBXML2_CFLAGS)
+libstreamindexer_la_CXXFLAGS = -I$(top_srcdir)/src/streams $(LIBXML2_CFLAGS) \
+	-I/usr/include/poppler
 libstreamindexer_la_LIBADD = -lmagic $(top_builddir)/src/streams/libstreams.la \
-	-lltdl $(LIBXML2_LIBS)
+	-lltdl $(LIBXML2_LIBS) -lpoppler
 
 include_HEADERS = indexeddocument.h streamthroughanalyzer.h \
 	pluginthroughanalyzer.h indexwriter.h
@@ -18,6 +19,6 @@ noinst_HEADERS = bz2endanalyzer.h digestthroughanalyzer.h filelister.h \
 	gzipendanalyzer.h indexmanager.h indexreader.h indexwriter.h \
 	mailendanalyzer.h pngendanalyzer.h streamendanalyzer.h streamindexer.h \
 	tarendanalyzer.h textendanalyzer.h zipendanalyzer.h \
-	mimetypethroughanalyzer.h saxendanalyzer.h
+	mimetypethroughanalyzer.h saxendanalyzer.h pdfendanalyzer.h
 
 SUBDIRS = throughplugins 
