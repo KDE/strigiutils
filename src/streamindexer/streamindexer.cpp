@@ -31,7 +31,6 @@
 #include "mailendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
-#include "pdfendanalyzer.h"
 #include "indexwriter.h"
 #include <sstream>
 #include <sys/types.h>

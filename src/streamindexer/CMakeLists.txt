@@ -1,3 +1,5 @@
+subdirs (throughplugins)
+
 include_directories( ../streams )
 
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp 
