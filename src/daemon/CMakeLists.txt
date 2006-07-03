@@ -1,11 +1,11 @@
 include_directories( ../streamindexer ../streams )
 
-if (FOUND_CLUCENE)
+if (CLUCENE_FOUND)
     add_definitions(-DHAVE_CLUCENE)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} ${CLUCENE_LIBRARIES}
         cluceneindex)
     include_directories( ../luceneindexer )
-endif (FOUND_CLUCENE)
+endif (CLUCENE_FOUND)
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp clientinterface.cpp)

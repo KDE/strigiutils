@@ -84,3 +84,5 @@ Software design:
  
  qclient
  Qt4 file dialog that uses libarchivereader.
+cmake -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall ..
+cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall ..

@@ -5,7 +5,7 @@
 # CLUCENE_INCLUDE_DIR  = where CLucene/StdHeader.h can be found
 # CLUCENE_LIBRARY_DIR  = where CLucene/clucene-config.h can be found
 # CLUCENE_LIBRARY      = the library to link against CLucene
-# FOUND_CLUCENE        = set to 1 if clucene is found
+# CLUCENE_FOUND        = set to 1 if clucene is found
 #
 IF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   INCLUDE(${PROJECT_CMAKE}/CLuceneConfig.cmake)
@@ -38,10 +38,20 @@ ELSE(CLucene_INCLUDE_DIRS)
 ENDIF(CLucene_INCLUDE_DIRS)
 
 IF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY)
-  SET(FOUND_CLUCENE 1 CACHE BOOL "Found CLucene library")
+  SET(CLUCENE_FOUND 1 CACHE BOOL "Found CLucene library")
 ELSE(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY)
-  SET(FOUND_CLUCENE 0 CACHE BOOL "Not found CLucene library")
+  SET(CLUCENE_FOUND 0 CACHE BOOL "Not found CLucene library")
 ENDIF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY)
+
+IF(CLUCENE_FOUND)
+  IF(NOT CLUCENE_FIND_QUIETLY)
+    MESSAGE(STATUS "Found CLucene: ${CLUCEN_LIBRARY}")
+  ENDIF(NOT CLUCENE_FIND_QUIETLY)
+ELSE(CLUCENE_FOUND)
+  IF(CLucene_FIND_REQUIRED)
+    MESSAGE(FATAL_ERROR "Could not find CLucene")
+  ENDIF(CLucene_FIND_REQUIRED)
+ENDIF(CLUCENE_FOUND)
 
 MARK_AS_ADVANCED(
   CLUCENE_INCLUDE_DIR 
