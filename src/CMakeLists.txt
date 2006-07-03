@@ -1,8 +1,8 @@
 set(DIRS streams streamindexer dummyindexer)
 
-if (FOUND_CLUCENE)
+if (CLUCENE_FOUND)
   set(DIRS ${DIRS} luceneindexer)
-endif (FOUND_CLUCENE)
+endif (CLUCENE_FOUND)
 
 set(DIRS ${DIRS} daemon htmlgui searchclient)
 
