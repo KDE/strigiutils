@@ -23,3 +23,7 @@ endif (FOUND_MAGIC)
 add_library(streamindexer ${streamindexer_SRCS})
 
 target_link_libraries(streamindexer streams ${streamindex_LIBS})
+
+install(FILES indexeddocument.h indexwriter.h pluginthroughanalyzer.h
+	streamthroughanalyzer.h
+	DESTINATION include)
