@@ -4,7 +4,7 @@ libstreamindexer_la_SOURCES = bz2endanalyzer.cpp digestthroughanalyzer.cpp \
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp \
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp\
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp \
-	mimetypethroughanalyzer.cpp pluginthroughanalyzer.cpp indexwriter.cpp \
+	pluginthroughanalyzer.cpp indexwriter.cpp \
 	saxendanalyzer.cpp pdfendanalyzer.cpp
 
 libstreamindexer_la_CXXFLAGS = -I$(top_srcdir)/src/streams $(LIBXML2_CFLAGS) \
@@ -19,6 +19,6 @@ noinst_HEADERS = bz2endanalyzer.h digestthroughanalyzer.h filelister.h \
 	gzipendanalyzer.h indexmanager.h indexreader.h indexwriter.h \
 	mailendanalyzer.h pngendanalyzer.h streamendanalyzer.h streamindexer.h \
 	tarendanalyzer.h textendanalyzer.h zipendanalyzer.h \
-	mimetypethroughanalyzer.h saxendanalyzer.h pdfendanalyzer.h
+	saxendanalyzer.h pdfendanalyzer.h
 
 SUBDIRS = throughplugins 

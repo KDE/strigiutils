@@ -52,7 +52,7 @@ IF(CLUCENE_FOUND)
   ENDIF(NOT CLUCENE_FIND_QUIETLY)
 ELSE(CLUCENE_FOUND)
   IF(CLucene_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could not find CLucene")
+    MESSAGE(FATAL_ERROR "Could not find CLucene. Please download CLucene from http://clucene.sf.net")
   ENDIF(CLucene_FIND_REQUIRED)
 ENDIF(CLUCENE_FOUND)
 
