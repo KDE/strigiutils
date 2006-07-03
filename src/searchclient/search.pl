@@ -13,9 +13,12 @@ $|=1;
 select(STDOUT);
 connect(SOCK, sockaddr_un($rendezvous))     || die "connect: $!";
 
+my $offset = 0;
+my $maxresults = 10;
+
 # send the request
 if (length($query)) {
-    print SOCK "query\n$query\n\n";
+    print SOCK "query\n$query\n$maxresults\n$offset\n\n";
 } else {
     print SOCK "getStatus\n\n";
 }
