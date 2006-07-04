@@ -7,6 +7,8 @@
 # CLUCENE_LIBRARY      = the library to link against CLucene
 # CLUCENE_FOUND        = set to 1 if clucene is found
 #
+ INCLUDE(CheckSymbolExists)
+
 IF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   INCLUDE(${PROJECT_CMAKE}/CLuceneConfig.cmake)
 ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
@@ -38,6 +40,14 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   FIND_PATH(CLUCENE_LIBRARY_DIR CLucene/clucene-config.h ${TRIAL_LIBRARY_PATHS})
   if (CLUCENE_LIBRARY_DIR)
     MESSAGE(STATUS "Found CLucene library dir: ${CLUCENE_LIBRARY_DIR}")
+    FILE(READ ${CLUCENE_LIBRARY_DIR}/CLucene/clucene-config.h CLCONTENT)
+    STRING(REGEX MATCH "_CL_VERSION +\".*\"" CLMATCH ${CLCONTENT})
+    if (CLMATCH)
+      STRING(REGEX REPLACE "_CL_VERSION +\"(.*)\"" "\\1" CLVERSION ${CLMATCH})
+    endif (CLMATCH)
+    if (CLVERSION STRLESS "0.9.14")
+      MESSAGE(FATAL_ERROR "CLucene version is less than 0.9.14")
+    endif (CLVERSION STRLESS "0.9.14")
   endif(CLUCENE_LIBRARY_DIR)
 
 IF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
