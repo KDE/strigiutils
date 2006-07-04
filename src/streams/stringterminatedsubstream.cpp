@@ -31,7 +31,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     // convenience parameter
     int32_t tl = searcher.getQueryLength();
 
-    // increase min and max to accomodate for the length of the terminator
+    // increase min and max to accommodate for the length of the terminator
     int32_t tlmin = min;
     int32_t tlmax = max;
     if (tlmin == 0) {

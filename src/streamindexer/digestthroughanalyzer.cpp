@@ -21,7 +21,6 @@
 #include "digestinputstream.h"
 #include "inputstream.h"
 #include "indexwriter.h"
-#include <openssl/sha.h>
 using namespace std;
 using namespace jstreams;
 

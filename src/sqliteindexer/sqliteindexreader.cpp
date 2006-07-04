@@ -53,7 +53,7 @@ createQuery(int n, bool filterpath) {
     ostringstream q;
     q << "select path";
     if (n > 0) q <<", sum(";
-    // the points for a file is the sum of the fraction of the total occurances
+    // the points for a file is the sum of the fraction of the total occurrences
     // of that word in this file
     for (int i=0; i<n; ++i) {
         char a = i+'a';

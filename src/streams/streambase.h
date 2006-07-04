@@ -69,7 +69,7 @@ public:
      *              is undefined.
      * @return the number of characters that were read. If 0 is returned, the
      *         end of the stream has been reached. If -1 is returned, an error
-     *         has occured.
+     *         has occurred.
      **/
  //   virtual int32_t read(const T*& start) = 0;
     /** 
@@ -86,7 +86,7 @@ public:
      *                @p is @c 0 the stream reads at least 1 character.
      * @return the number of characters that were read. If -1 is returned, the
      *         end of the stream has been reached. If -2 is returned, an error
-     *         has occured.
+     *         has occurred.
      **/
     virtual int32_t read(const T*& start, int32_t min, int32_t max) = 0;
     /**
@@ -100,7 +100,7 @@ public:
      * encountered, this amount of bytes is skipped.
      * The optional @param skipped can be use to find out how many bites were skipped.
      * If the end of stream is reached, Eof is returned.
-     * If an error occured, Error is returned.
+     * If an error occurred, Error is returned.
      **/
     virtual int64_t skip(int64_t ntoskip);
      /**
@@ -123,7 +123,7 @@ public:
       /**
        * \short Repositions this stream to given requested position.
        * The general contract of reset is:
-       * - Reset is guaranteed to work after a successfull call to read(),
+       * - Reset is guaranteed to work after a successful call to read(),
        *   when new position is in the range of the data returned by read().
        *   This means that @p pos must lie between than the position
        *   corresponding to the @p start parameter (x) of the @r read function

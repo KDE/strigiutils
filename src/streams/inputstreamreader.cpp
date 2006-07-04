@@ -26,7 +26,7 @@ using namespace jstreams;
 #ifndef ICONV_CONST
      //we try to guess whether the iconv function requires
      //a const char. We have no way of automatically figuring
-     //this out if we didnt use autoconf, so we guess based
+     //this out if we did not use autoconf, so we guess based
      //on certain parameters:
      #ifdef _LIBICONV_H
           #define ICONV_CONST const
