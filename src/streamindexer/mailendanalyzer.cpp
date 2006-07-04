@@ -51,7 +51,7 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
     s = mail.nextEntry();
     int n = 1;
     while (s) {
-        std::string file = filename+"/";
+        std::string file = filename+'/';
         if (mail.getEntryInfo().filename.length() == 0) {
             file += (char)(n+'1');
         } else {

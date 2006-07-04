@@ -106,7 +106,7 @@ void
 FileLister::expandPath(const char *name) {
 	m_pathSeparators.push_back(m_path.length());
 	m_path += name;
-	m_path += "/";
+	m_path += '/';
 }
 void
 FileLister::shortenPath() {

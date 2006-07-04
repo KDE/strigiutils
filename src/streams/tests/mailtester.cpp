@@ -82,7 +82,7 @@ testMails(const char* path) {
     if (S_ISDIR(s.st_mode)) {
         std::string dir(path);
         if (dir[dir.length()-1] == '.') return;
-        dir += "/";
+        dir += '/';
         DIR* d = opendir(dir.c_str());
         if (d == 0) return;
         struct dirent* e = readdir(d);

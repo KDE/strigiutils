@@ -54,7 +54,7 @@ AsyncSocketClient::splitResponse() const {
 bool
 AsyncSocketClient::countHits(const std::string& query) {
     method = "countHits";
-    string msg = method+"\n"+query+"\n\n";
+    string msg = method+'\n'+query+"\n\n";
     return socket.sendRequest(msg);
 }
 void

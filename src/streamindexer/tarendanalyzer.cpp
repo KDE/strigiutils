@@ -38,7 +38,7 @@ TarEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
-        std::string file = filename+"/";
+        std::string file = filename+'/';
         file += tar.getEntryInfo().filename;
         indexer->analyze(file, tar.getEntryInfo().mtime, s, depth);
         s = tar.nextEntry();

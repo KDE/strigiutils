@@ -97,7 +97,7 @@ EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     string fragment;
     const CBLIST *list = est_doc_texts(doc);
     for (int j = 0; j < cblistnum(list); ++j) {
-        if (j) fragment += " ";
+        if (j) fragment += ' ';
         fragment += cblistval(list, j, 0);
     }
 //    char* f = est_doc_cat_texts(doc);

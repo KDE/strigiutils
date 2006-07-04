@@ -167,7 +167,7 @@ CLuceneIndexManager::getIndexSize() {
     struct dirent* e = readdir(dir);
     int size = 0;
     while (e != 0) {
-        string filename = dbdir+"/"+e->d_name;
+        string filename = dbdir+'/'+e->d_name;
         struct stat s;
         int r = stat(filename.c_str(), &s);
         if (r == 0) {

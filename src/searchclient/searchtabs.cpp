@@ -40,7 +40,7 @@ SearchTabs::SearchTabs() {
 }
 void
 SearchTabs::addTab(const QString& name, const QString& query) {
-    querynames[query+" "] = name;    
+    querynames[query+' '] = name;    
 }
 void
 SearchTabs::setQuery(const QString& query) {
@@ -65,7 +65,7 @@ SearchTabs::handleHitsCount(const QString& query, int count) {
     while (i.hasNext()) {
         i.next();
         if (query == i.key() + this->query) {
-            QString tabname = i.value() + " (" + QString::number(count) + ")";
+            QString tabname = i.value() + " (" + QString::number(count) + ')';
             int t = tabs->addTab(tabname);
             tabs->setTabData(t, query);
             break;

@@ -170,7 +170,7 @@ SimpleSearchGui::updateStatus() {
         text += i->first.c_str();
         text += ":\t";
         text += i->second.c_str();
-        text += "\n";
+        text += '\n';
     }
     statusview->setText(text);
 }

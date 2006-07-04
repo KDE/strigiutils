@@ -41,7 +41,7 @@ main(int argc, char** argv) {
     string query;
     for (int i=1; i<argc; ++i) {
         query += argv[i];
-        query += " ";
+        query += ' ';
     }
     string homedir = getenv("HOME");
     AsyncSocketClient client;

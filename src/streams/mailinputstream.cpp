@@ -160,7 +160,7 @@ MailInputStream::readLine() {
 string
 MailInputStream::getValue(const char* n, const string& headerline) const {
     string name = n;
-    name += "=";
+    name += '=';
     string value;
     // get the value
     const char* hl = headerline.c_str();

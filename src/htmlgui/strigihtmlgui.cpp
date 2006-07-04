@@ -184,7 +184,7 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         map<string, string>::const_iterator j;
         string otherq = query;
         for (j = tabs.begin(); j != tabs.end(); ++j) {
-            string q = query+" "+j->second;
+            string q = query+' '+j->second;
             int c = p->strigi.countHits(q);
             if (c > 0) {
                 hitcounts[j->first] = c;

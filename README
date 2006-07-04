@@ -13,6 +13,18 @@ Here are the main features of Strigi:
 - simple interface for implementing plugins for extracting information. we'll try to reuse the kat plugins, although native plugins will have a large speed advantage
 - calculation of sha1 for every file crawled (allows fast finding of duplicates)
 
+Requirements:
+- CLucene >= 0.9.13 (http://clucene.sf.net)
+- CMake >= 2.4.2 (http://www.cmake.org)
+- ZLib >= 1.2.3 (http://www.zlib.net)
+- BZip2 >= 1.0.3 (http://www.bzip.org)
+- OpenSSL (http://http://www.openssl.org)
+
+Optional:
+- Qt4 >= 4.1.2
+- libxml2
+- magic-dev   
+
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------

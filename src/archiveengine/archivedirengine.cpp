@@ -86,7 +86,7 @@ ArchiveDirEngine::fileName(FileName file) const {
         break;
     case DefaultName:
     default:
-        name = parent->fileName(DefaultName)+"/"+entry->name;
+        name = parent->fileName(DefaultName)+'/'+entry->name;
     }
     return name;
 }

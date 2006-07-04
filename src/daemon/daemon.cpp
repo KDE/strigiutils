@@ -205,7 +205,7 @@ main(int argc, char** argv) {
     if (f == factories.end()) {
         f = factories.begin();
     }
-    string indexdir = daemondir + "/" + f->first;
+    string indexdir = daemondir + '/' + f->first;
     IndexManager* index = f->second(indexdir.c_str());
 
 

@@ -159,7 +159,7 @@ SocketServer::handleRequest() {
             oss.str("");
             map<string, string>::const_iterator j;
             for (j = i->properties.begin(); j != i->properties.end(); ++j) {
-                 response.push_back(j->first+":"+j->second);
+                 response.push_back(j->first+':'+j->second);
             }
         }
         return;
@@ -177,7 +177,7 @@ SocketServer::handleRequest() {
         map<string,string>::const_iterator i;
         response.clear();
         for (i = status.begin(); i != status.end(); ++i) {
-            response.push_back(i->first+":"+i->second);
+            response.push_back(i->first+':'+i->second);
         }
         return;
     }

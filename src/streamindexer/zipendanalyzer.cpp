@@ -37,7 +37,7 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
 //        exit(1);
     }
     while (s) {
-        std::string file = filename+"/";
+        std::string file = filename+'/';
         file += zip.getEntryInfo().filename;
         indexer->analyze(file, zip.getEntryInfo().mtime, s, depth);
         s = zip.nextEntry();
