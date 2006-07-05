@@ -7,11 +7,11 @@ if (HAVE_SYS_XATTR_H)
   install(TARGETS xattr LIBRARY DESTINATION lib)
 endif (HAVE_SYS_XATTR_H)
 
-if (FOUND_MAGIC)
+if (Magic_FOUND)
   include_directories(MAGIC_INCLUDE_DIR)
   add_library(magic MODULE mimetypethroughanalyzer.cpp)
   set_target_properties(magic PROPERTIES PREFIX strigita_)
   target_link_libraries(magic ${MAGIC_LIBRARIES})
   install(TARGETS magic LIBRARY DESTINATION lib)
-endif (FOUND_MAGIC)
+endif (Magic_FOUND)
 

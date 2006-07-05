@@ -5,6 +5,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2 FATAL_ERROR)
 # include specific modules
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+# include general modules
+include(UsePkgConfig)
+
 # compile in debug mode
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
@@ -19,10 +22,11 @@ find_package(BZip2 REQUIRED)
 find_package(Sha REQUIRED)
 find_package(Threads REQUIRED)
 find_package(CLucene REQUIRED)
+find_package(HyperEstraier)
 find_package(Magic)
 find_package(Libxml2)
 find_package(Qt4)
-check_include_files(sys/xattr.h   HAVE_SYS_XATTR_H)
+check_include_files(sys/xattr.h HAVE_SYS_XATTR_H)
 
 # packaging target
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Strigi Desktop Search")

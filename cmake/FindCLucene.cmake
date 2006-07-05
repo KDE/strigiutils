@@ -5,7 +5,7 @@
 # CLUCENE_INCLUDE_DIR  = where CLucene/StdHeader.h can be found
 # CLUCENE_LIBRARY_DIR  = where CLucene/clucene-config.h can be found
 # CLUCENE_LIBRARY      = the library to link against CLucene
-# CLUCENE_FOUND        = set to 1 if clucene is found
+# CLucene_FOUND        = set to 1 if clucene is found
 #
  INCLUDE(CheckSymbolExists)
 
@@ -51,20 +51,20 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   endif(CLUCENE_LIBRARY_DIR)
 
 IF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
-  SET(CLUCENE_FOUND 1 CACHE BOOL "Found CLucene library")
+  SET(CLucene_FOUND 1 CACHE BOOL "Found CLucene library")
 ELSE(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
-  SET(CLUCENE_FOUND 0 CACHE BOOL "Not found CLucene library")
+  SET(CLucene_FOUND 0 CACHE BOOL "Not found CLucene library")
 ENDIF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
 
-IF(CLUCENE_FOUND)
-  IF(NOT CLUCENE_FIND_QUIETLY)
+IF(CLucene_FOUND)
+  IF(NOT CLucene_FIND_QUIETLY)
     MESSAGE(STATUS "Found CLucene: ${CLUCENE_LIBRARY}")
-  ENDIF(NOT CLUCENE_FIND_QUIETLY)
-ELSE(CLUCENE_FOUND)
+  ENDIF(NOT CLucene_FIND_QUIETLY)
+ELSE(CLucene_FOUND)
   IF(CLucene_FIND_REQUIRED)
     MESSAGE(FATAL_ERROR "Could not find CLucene. Please download CLucene from http://clucene.sf.net")
   ENDIF(CLucene_FIND_REQUIRED)
-ENDIF(CLUCENE_FOUND)
+ENDIF(CLucene_FOUND)
 
 MARK_AS_ADVANCED(
   CLUCENE_INCLUDE_DIR 
