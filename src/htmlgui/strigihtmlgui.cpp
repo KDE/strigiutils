@@ -214,7 +214,6 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     out << "<div class='control' style='text-align:right;' padding='5px'>";
     out << "<form method='get'>";
     out << "<input type='text' name='q' value='" << query << "'/>";
-    out << "<input type='hidden' name='o' value='" << off << "'/>";
     out << "<input type='hidden' name='m' value='" << max << "'/>";
     out << "<input type='hidden' name='t' value='" << activetab << "'/>";
     out << "<input type='submit' value='search'/>";
