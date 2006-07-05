@@ -218,6 +218,7 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     out << "<input type='hidden' name='m' value='" << max << "'/>";
     out << "<input type='hidden' name='t' value='" << activetab << "'/>";
     out << "<input type='submit' value='search'/>";
+    int activecount = count;
     if (hitcounts.size() == 0 && count > 0) {
         out << " Found " << count << " results.";
     } else {
@@ -225,6 +226,7 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         for (l = hitcounts.begin(); l != hitcounts.end(); ++l) {
             if (l->first == activetab) {
                 out << " <a class='activetab' ";
+                activecount = l->second;
             } else {
                 out << " <a class='tab' ";
             }
@@ -235,10 +237,26 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     out << "</form></div>\n";
 
     if (activequery.length()) {
-        out << "<div class='hits'>";
+        // print results
         const ClientInterface::Hits hits = p->strigi.getHits(activequery,
             max, off);
-        p->printSearchResults(out, hits, activequery);
+        if (hits.hits.size()) {
+            out << "<div class='hits'>";
+            p->printSearchResults(out, hits, activequery);
+            out << "</div>";
+        }
+    }
+    if (count >= max) {
+        ostringstream oss;
+        oss << ".?q=" << query << "&m=" << max << "&t=" << activetab << "&o=";
+        out << "<div class='pager'>";
+        int o = 0;
+        int n = 1;
+        while (o < activecount) {
+            out << "<a href='" << oss.str() << o << "'>" << n << "</a> ";
+            o += max;
+            n++;
+        }
         out << "</div>";
     }
 }
