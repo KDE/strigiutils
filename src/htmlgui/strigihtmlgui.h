@@ -32,7 +32,7 @@ public:
      * Function that maps a url for a retrieved file to a link
      * that is shown on the results page.
      **/
-    virtual std::string mapLinkUrl(const std::string& url) = 0;
+    virtual std::string mapLinkUrl(const std::string& url, int depth = 0) = 0;
     /**
      * Function that maps mimetype onto an image url that points to
      * an image portraying the mimetype.

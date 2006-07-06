@@ -245,13 +245,13 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
             out << "</div>";
         }
     }
-    if (count >= max) {
+    if (count > max) {
         ostringstream oss;
         oss << ".?q=" << query << "&m=" << max << "&t=" << activetab << "&o=";
         out << "<div class='pager'>";
         int o = 0;
         int n = 1;
-        while (o < activecount) {
+        while (o < activecount && n <= 20) {
             out << "<a href='" << oss.str() << o << "'>" << n << "</a> ";
             o += max;
             n++;
@@ -361,12 +361,18 @@ toSizeString(int s) {
 void
 StrigiHtmlGui::Private::printSearchResult(ostream& out,
         const jstreams::IndexedDocument& doc, const Query& query) const {
+    map<string, string>::const_iterator t;
     string link, icon, name, folder;
-    link = h->mapLinkUrl(doc.uri);
+    int depth = 0;
+    t = doc.properties.find("depth");
+    if (t != doc.properties.end()) {
+        depth = atoi(t->second.c_str());
+    }
+    link = h->mapLinkUrl(doc.uri, depth);
     icon = "<div class='iconbox'><img class='icon' src='";
     icon += h->mapMimetypeIcon(doc.uri, doc.mimetype);
     icon += "'/></div>\n";
-    map<string, string>::const_iterator t = doc.properties.find("title");
+    t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
         name = t->second.c_str();
@@ -392,7 +398,24 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     fields.clear();
     string path = h->escapeString(doc.uri);
     path = highlightTerms(path, query, fields);
-    out << "<div class='path'><a href='" << link << "'>" << path << "</a> - "
+
+    out << "<div class='path'>";
+    int p = path.find('/');
+    int pp = 0;
+    string subpath;
+    while (p != string::npos) {
+        subpath = path.substr(pp, p-pp+1);
+        link = h->mapLinkUrl(path.substr(0, p));
+        out << "<a href='" << link << "'>" << subpath << "</a>";
+        pp = p+1;
+        p = path.find('/', pp);
+    }
+    subpath = path.substr(pp, path.length()-pp+1);
+    link = h->mapLinkUrl(path);
+    out << "<a href='" << link << "'>" << subpath << "</a>";
+
+//    out << "<div class='path'><a href='" << link << "'>" << path << "</a> - "
+    out << " - "
         << toSizeString(doc.size) << " - "
         << h->mimetypeDescription(doc.mimetype) << "</div>";
     /*out << "<table>";
