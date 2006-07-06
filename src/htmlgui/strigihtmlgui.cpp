@@ -406,7 +406,10 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     while (p != string::npos) {
         subpath = path.substr(pp, p-pp+1);
         link = h->mapLinkUrl(path.substr(0, p));
-        out << "<a href='" << link << "'>" << subpath << "</a>";
+        out << "<a href='" << link << "'>" << subpath << "</a>"
+            // the images are meant to allow line break between characters
+            //"<img class='softbreak' src=''/><span style=''>/</span>"
+            "<img class='softbreak' src=''/>";
         pp = p+1;
         p = path.find('/', pp);
     }
@@ -414,7 +417,6 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     link = h->mapLinkUrl(path);
     out << "<a href='" << link << "'>" << subpath << "</a>";
 
-//    out << "<div class='path'><a href='" << link << "'>" << path << "</a> - "
     out << " - "
         << toSizeString(doc.size) << " - "
         << h->mimetypeDescription(doc.mimetype) << "</div>";
