@@ -8,11 +8,18 @@ set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
 	pluginthroughanalyzer.cpp indexwriter.cpp)
 
-if (Libxml2_FOUND)
-  set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
-  set(streamindex_LIBS $(streamindex_LIBS) ${LIBXML2_LIBRARY})
-  include_directories(${LIBXML2_INCLUDE_DIR})
-endif (Libxml2_FOUND)
+if (Expat_FOUND)
+  set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
+  set(streamindex_LIBS $(streamindex_LIBS) ${EXPAT_LIBRARY})
+  include_directories(${EXPAT_INCLUDE_DIR})
+else (Expat_FOUND)
+  if (Libxml2_FOUND)
+    set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
+    set(streamindex_LIBS $(streamindex_LIBS) ${LIBXML2_LIBRARY})
+    include_directories(${LIBXML2_INCLUDE_DIR})
+  endif (Libxml2_FOUND)
+endif(Expat_FOUND)
+
 add_library(streamindexer ${streamindexer_SRCS})
 
 target_link_libraries(streamindexer streams ${streamindex_LIBS})

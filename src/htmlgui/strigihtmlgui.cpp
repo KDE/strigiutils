@@ -245,7 +245,7 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
             out << "</div>";
         }
     }
-    if (count > max) {
+    if (activecount > max) {
         ostringstream oss;
         oss << ".?q=" << query << "&m=" << max << "&t=" << activetab << "&o=";
         out << "<div class='pager'>";
