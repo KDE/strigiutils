@@ -36,7 +36,7 @@ public:
     int depth;
     bool stop;
     bool error;
-    bool welformed;
+    bool wellformed;
     bool html;
     string errorstring;
 
@@ -63,7 +63,7 @@ public:
         stop = false;
         error = false;
         html = false;
-        welformed = true;
+        wellformed = true;
         depth = 0;
     }
     void init(Indexable*i, const char* data, int32_t len) {
@@ -78,9 +78,8 @@ public:
             if (!(html && e == XML_ERROR_TAG_MISMATCH)) {
                 errorstring = XML_ErrorString(e);
                 error = stop = true;
-            } else {
-                welformed = false;
             }
+            wellformed = false;
         }
     }
     void finish() {
@@ -164,7 +163,11 @@ SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
 /*    if (p->ctxt->encoding) {
         i->setField("encoding", (const char*)p->ctxt->encoding);
     }*/
-    i->setMimeType("text/xml");
+    if (p->html) {
+        i->setMimeType("text/html");
+    } else if (p->wellformed) {
+        i->setMimeType("text/xml");
+    }
 //    i->setField("root", p->rootelement);
     if (nread != Eof) {
         error = in->getError();
