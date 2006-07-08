@@ -37,7 +37,8 @@ createCLuceneIndexManager(const char* path) {
 
 int CLuceneIndexManager::numberOfManagers = 0;
 
-CLuceneIndexManager::CLuceneIndexManager(const std::string& path) {
+CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
+        : bitsets(this) {
     ++numberOfManagers;
     dblock = lock;
     dbdir = path;
@@ -69,6 +70,10 @@ CLuceneIndexManager::getIndexReader() {
 jstreams::IndexWriter*
 CLuceneIndexManager::getIndexWriter() {
     return writer;
+}
+jstreams::QueryBitsetCache*
+CLuceneIndexManager::getBitSets() {
+    return &bitsets;
 }
 IndexWriter*
 CLuceneIndexManager::refWriter() {
@@ -139,6 +144,8 @@ CLuceneIndexManager::closeWriter() {
     indexwriter->close();
     delete indexwriter;
     indexwriter = 0;
+    // clear the cache
+    bitsets.clear();
 }
 int
 CLuceneIndexManager::docCount() {

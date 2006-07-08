@@ -6,7 +6,7 @@ set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
-	pluginthroughanalyzer.cpp indexwriter.cpp)
+	pluginthroughanalyzer.cpp indexwriter.cpp querybitset.cpp)
 
 if (Expat_FOUND)
   set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)

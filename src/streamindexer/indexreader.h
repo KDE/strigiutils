@@ -26,7 +26,6 @@
 
 namespace jstreams {
 
-
 /**
  * Break up a string in a query.
  * Currently very simple. Currently always combines terms with AND.

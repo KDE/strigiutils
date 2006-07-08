@@ -33,71 +33,91 @@ public:
     XML_Parser parser;
     Indexable* idx;
     int chars;
-    bool stop, error;
+    int depth;
+    bool stop;
+    bool error;
+    bool welformed;
+    bool html;
+    string errorstring;
 
     static void charactersSAXFunc(void* ctx, const char * ch, int len);
-    static void errorSAXFunc(void* ctx, const char * msg, ...);
     static void startElementSAXFunc(void * ctx, const char * name, 
         const char ** atts);
     static void endElementSAXFunc(void * ctx, const char * name);
 
     Private() {
         idx = 0;
-        chars = 0;
-        stop = false;
-        error = false;
         parser = XML_ParserCreate(NULL);
+    }
+    ~Private() {
+        XML_ParserFree(parser);
+    }
+    void reset() {
+        XML_ParserReset(parser, 0);
         XML_SetElementHandler(this->parser,
             startElementSAXFunc, endElementSAXFunc);
         XML_SetCharacterDataHandler(this->parser, charactersSAXFunc);
-    }
-    ~Private() {
-    }
-    void reset() {
+        XML_SetUserData(parser, this);
+        error = stop = false;
+        chars = 0;
+        stop = false;
+        error = false;
+        html = false;
+        welformed = true;
+        depth = 0;
     }
     void init(Indexable*i, const char* data, int32_t len) {
+        idx = i;
+        reset();
+        push(data, len);
     }
     void push(const char* data, int32_t len) {
+        if (XML_Parse(parser, data, len, false) == 0) {
+            XML_Error e = XML_GetErrorCode(parser);
+            // handle the error unless it is a tag mismatch in html
+            if (!(html && e == XML_ERROR_TAG_MISMATCH)) {
+                errorstring = XML_ErrorString(e);
+                error = stop = true;
+            } else {
+                welformed = false;
+            }
+        }
     }
     void finish() {
+        XML_Parse(parser, 0, 0, false);
     }
 };
 void
 SaxEndAnalyzer::Private::charactersSAXFunc(void* ctx, const char * ch,
         int len) {
+    if (ctx == 0) return;
     Private* p = (Private*)ctx;
+    if (p->idx == 0) return;
 
     // skip whitespace
-    const char* end = (const char*)ch+len;
-    const char* c = (const char*)ch;
-    while (c < end && isspace(*c)) c++;
-    if (c == end) return;
-
-    if (p->idx && p->fieldtype != NONE) {
+    const char* end = ch+len;
+    while (ch < end && isspace(*ch)) ch++;
+    if (ch == end) return;
+    len = end-ch;
+    if (p->fieldtype != NONE) {
         if (p->fieldtype == TEXT) {
-            p->idx->addText((const char*)c, end-c);
+            p->idx->addText(ch, len);
         } else {
-            p->fieldvalue += string((const char*)c, end-c);
+            p->fieldvalue += string(ch, len);
         }
     }
-    p->chars += end-c;
+    p->chars += len;
     if (p->chars > 1000000) {
         p->stop = true;
     }
-}
-#include <iostream>
-void
-SaxEndAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
-    Private* p = (Private*)ctx;
-    p->stop = p->error = true;
-    string e;
-
-    printf("%s", e.c_str());
 }
 void
 SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const char* name, 
         const char** atts) {
     Private* p = (Private*)ctx;
+    if (p->depth++ == 0 && strcasecmp((const char*)name, "html") == 0) {
+        p->html = true;
+    }
     if (strcasecmp((const char*)name, "title") == 0) {
         p->fieldtype = TITLE;
         p->fieldvalue = "";
@@ -110,6 +130,7 @@ SaxEndAnalyzer::Private::endElementSAXFunc(void* ctx, const char* name) {
         p->idx->setField("title", p->fieldvalue);
         p->fieldvalue = "";
     }
+    if (p->depth) p->depth--;
     p->fieldtype = TEXT;
 }
 SaxEndAnalyzer::SaxEndAnalyzer() {

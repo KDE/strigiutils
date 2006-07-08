@@ -23,11 +23,13 @@
 namespace jstreams {
 class IndexReader;
 class IndexWriter;
+class QueryBitsetCache;
 class IndexManager {
 public:
     virtual ~IndexManager() {}
     virtual IndexReader* getIndexReader() = 0;
     virtual IndexWriter* getIndexWriter() = 0;
+    virtual QueryBitsetCache* getBitSets() = 0;
 };
 }
 

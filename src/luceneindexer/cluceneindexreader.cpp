@@ -21,6 +21,7 @@
 #include "cluceneindexmanager.h"
 #include <CLucene/clucene-config.h>
 #include <CLucene.h>
+#include <CLucene/search/QueryFilter.h>
 #include <sstream>
 
 using lucene::search::Hits;
@@ -31,6 +32,7 @@ using lucene::index::Term;
 using lucene::search::TermQuery;
 using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
+using lucene::search::QueryFilter;
 using lucene::document::DocumentFieldEnumeration;
 using namespace jstreams;
 
@@ -146,6 +148,9 @@ CLuceneIndexReader::countHits(const Query& q) {
         hits = searcher.search(&bq);
         s = hits->length();
     } catch (CLuceneError& err) {
+        // try to do a constant score query
+        //QueryFilter* filter = _CLNEW QueryFilter(&bq);
+        //ConstantScoreQuery csq(filter);
         printf("could not query: %s\n", err.what());
     }
     if (hits) {

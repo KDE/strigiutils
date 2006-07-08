@@ -21,6 +21,7 @@
 #define CLUCENEINDEXMANAGER_H
 
 #include "indexmanager.h"
+#include "querybitset.h"
 #include <pthread.h>
 #include <string>
 #include <map>
@@ -52,6 +53,7 @@ private:
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
     lucene::index::IndexReader* indexreader;
+    jstreams::QueryBitsetCache bitsets;
     lucene::analysis::Analyzer* analyzer;
     int version;
     static int numberOfManagers;
@@ -70,6 +72,7 @@ public:
     void derefReader();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
+    jstreams::QueryBitsetCache* getBitSets();
     int docCount();
     int getIndexSize();
     int getVersion() const { return version; }
