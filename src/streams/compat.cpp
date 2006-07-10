@@ -2,11 +2,12 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 
 #ifndef HAVE_STRCASESTR
 int strncasecmp(const char* sa, const char* sb, int l){
-	TCHAR ca,cb;
+	char ca,cb;
     if (sa == sb)
     	return 0;
     int i=0;

@@ -47,9 +47,7 @@
 //types
 //////////////////////////////
 #cmakedefine HAVE_INT64_T
-#cmakedefine HAVE_UINT64_T
 #cmakedefine HAVE_INT32_T
-#cmakedefine HAVE_UINT32_T
 #cmakedefine HAVE_UINT
 #cmakedefine HAVE_SOCKLEN_T
 #cmakedefine HAVE___INT64
@@ -65,7 +63,7 @@
  #endif
 #endif
 
-#ifndef HAVE_INT32_t
+#ifndef HAVE_INT32_T
  #if 0${SIZEOF_INT}==4 //is int 4bits?
   typedef int int32_t;
   typedef unsigned int uint32_t;
