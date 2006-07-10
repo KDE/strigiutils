@@ -5,19 +5,23 @@
 
 
 #ifndef HAVE_STRCASESTR
-int strncasecmp(const char* a, const char* b, int l){
-	char* tmp1=strdup(a);
-	char* tmp2=strdup(b);
+int strncasecmp(const char* sa, const char* sb, int l){
+	TCHAR ca,cb;
+    if (sa == sb)
+    	return 0;
+    int i=0;
 
-	strlwr(tmp1);
-	strlwr(tmp2);
+    do{
+    	if ( i >= l )
+    		break;
 
-	int ret = strncmp(tmp1,tmp2,l);
-
-	free(tmp1);
-	free(tmp2);
-
-	return ret;
+        ca = tolower( (*(sa++)) );
+        cb = tolower( (*(sb++)) );
+        
+        i++;
+    } while ( ca != L'\0' && (ca == cb) );
+    
+    return (int)(ca - cb);
 }
 #endif
 
