@@ -17,9 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "jstreamsconfig.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
-#include <CLucene/clucene-config.h>
 #include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
 #include <sstream>
