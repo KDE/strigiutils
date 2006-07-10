@@ -24,3 +24,8 @@ ELSE(SHA_FOUND)
       MESSAGE(FATAL_ERROR "Could not find Sha. Please install libssl-dev")
    ENDIF(OpenSSL_FIND_REQUIRED)
 ENDIF(SHA_FOUND)
+
+MARK_AS_ADVANCED(
+  SHA_INCLUDE_DIR
+  SHA_LIBRARY
+)
