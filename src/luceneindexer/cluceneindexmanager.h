@@ -22,7 +22,7 @@
 
 #include "indexmanager.h"
 #include "querybitset.h"
-#include <pthread.h>
+#include <strigi_thread.h>
 #include <string>
 #include <map>
 
@@ -46,8 +46,8 @@ class CLuceneIndexReader;
 class CLuceneIndexWriter;
 class CLuceneIndexManager : public jstreams::IndexManager {
 private:
-    pthread_mutex_t dblock;
-    static pthread_mutex_t lock;
+    StrigiMutex* dblock;
+    static StrigiMutex lock;
     std::string dbdir;
     CLuceneIndexReader* reader;
     CLuceneIndexWriter* writer;

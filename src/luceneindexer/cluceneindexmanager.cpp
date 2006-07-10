@@ -23,13 +23,13 @@
 #include "cluceneindexreader.h"
 #include <CLucene.h>
 #include <sys/types.h>
-#include <dirent.h>
+#include "stgdirent.h" //our dirent compatibilty header... uses native if available
 
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::store::FSDirectory;
 
-pthread_mutex_t CLuceneIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
+StrigiMutex CLuceneIndexManager::lock;
 
 jstreams::IndexManager*
 createCLuceneIndexManager(const char* path) {
@@ -41,7 +41,7 @@ int CLuceneIndexManager::numberOfManagers = 0;
 CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
         : bitsets(this) {
     ++numberOfManagers;
-    dblock = lock;
+    dblock = &lock;
     dbdir = path;
     indexreader = 0;
     indexwriter = 0;
@@ -78,7 +78,7 @@ CLuceneIndexManager::getBitSets() {
 }
 IndexWriter*
 CLuceneIndexManager::refWriter() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_LOCK_MUTEX(dblock->lock);
     if (indexwriter == 0) {
         closeReader();
         openWriter();
@@ -87,11 +87,11 @@ CLuceneIndexManager::refWriter() {
 }
 void
 CLuceneIndexManager::derefWriter() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_LOCK_MUTEX(dblock->lock);
 }
 IndexReader*
 CLuceneIndexManager::refReader() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_LOCK_MUTEX(dblock->lock);
     if (indexreader == 0) {
         closeWriter();
         openReader();
@@ -100,7 +100,7 @@ CLuceneIndexManager::refReader() {
 }
 void
 CLuceneIndexManager::derefReader() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_UNLOCK_MUTEX(dblock->lock);
 }
 void
 CLuceneIndexManager::openReader() {
@@ -151,7 +151,7 @@ CLuceneIndexManager::closeWriter() {
 int
 CLuceneIndexManager::docCount() {
     int count;
-    pthread_mutex_lock(&dblock);
+    STRIGI_LOCK_MUTEX(dblock->lock);
     if (indexwriter) {
         count = indexwriter->docCount();
     } else {
@@ -160,7 +160,7 @@ CLuceneIndexManager::docCount() {
         }
         count = indexreader->numDocs();
     }
-    pthread_mutex_unlock(&dblock);
+    STRIGI_LOCK_MUTEX(dblock->lock);
     return count;
 }
 int
@@ -179,7 +179,7 @@ CLuceneIndexManager::getIndexSize() {
         struct stat s;
         int r = stat(filename.c_str(), &s);
         if (r == 0) {
-            if (S_ISREG(s.st_mode)) {
+            if ( !(s.st_mode & S_IFREG)) {
                 size += s.st_size;
             }
         } else {
