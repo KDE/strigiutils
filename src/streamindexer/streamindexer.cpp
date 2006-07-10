@@ -17,6 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "jstreamsconfig.h"
 #include "streamindexer.h"
 #include "fileinputstream.h"
 #include "streamendanalyzer.h"
@@ -32,10 +33,8 @@
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
 #include "indexwriter.h"
-#include <sstream>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
 using namespace std;
 using namespace jstreams;
 
@@ -185,9 +184,12 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
     }
 
     // store the size of the stream
-    ostringstream sizestr;
-    sizestr << input->getSize();
-    idx.setField("size", sizestr.str());
+    {   
+		//tmp scope out tmp mem
+		char tmp[100];
+		sprintf(tmp, "%d", input->getSize());
+		idx.setField("size", tmp);
+	}
 
     // remove references to the indexable before it goes out of scope
     removeIndexable(depth);
