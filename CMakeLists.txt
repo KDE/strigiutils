@@ -15,8 +15,15 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+#add extra search paths for libraries and includes
+SET ( STRIGI_EXTRA_INC_DIRECTORY "" CACHE STRING "Extra include directories to search in")
+SET ( STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to search in" )
+SET (CMAKE_INCLUDE_PATH "${STRIGI_EXTRA_INC_DIRECTORY};${CMAKE_INCLUDE_PATH}")
+SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
+
 SUBDIRS (src)
 
+find_package(IConv REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Sha REQUIRED)
@@ -29,6 +36,46 @@ find_package(Magic)
 find_package(Libxml2)
 find_package(Qt4)
 check_include_files(attr/xattr.h HAVE_ATTR_XATTR_H)
+
+#need to find a few default headers:
+INCLUDE(CheckIncludeFileCXX)
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)
+CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)
+CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)
+CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)
+CHECK_INCLUDE_FILE_CXX(sys/dir.h HAVE_SYS_DIR_H)
+CHECK_INCLUDE_FILE_CXX(ndir.h HAVE_NDIR_H)
+CHECK_INCLUDE_FILE_CXX(dirent.h HAVE_DIRENT_H)
+CHECK_INCLUDE_FILE_CXX(windows.h HAVE_WINDOWS_H)
+CHECK_INCLUDE_FILE_CXX(dlfcn.h HAVE_DLFCN_H)
+
+#test for ansi scope (needed for msvc6)
+INCLUDE(TestForANSIForScope)
+
+#test for some functions that are missing on windows
+INCLUDE(CheckFunctionExists)
+CHECK_FUNCTION_EXISTS(strcasestr HAVE_STRCASESTR)
+CHECK_FUNCTION_EXISTS(strncasecmp HAVE_STRNCASECMP)
+CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)
+
+#test for missing types
+INCLUDE(CheckTypeSize)
+SET(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} stdint.h")
+CHECK_TYPE_SIZE(int64_t HAVE_INT64_T)
+CHECK_TYPE_SIZE(__int64 HAVE___INT64)
+CHECK_TYPE_SIZE("long long" SIZEOF_LONGLONG)
+
+CHECK_TYPE_SIZE(int32_t HAVE_INT32_T)
+CHECK_TYPE_SIZE(long SIZEOF_LONG)
+CHECK_TYPE_SIZE(int SIZEOF_INT)
+
+CHECK_TYPE_SIZE(uint HAVE_UINT)
+CHECK_TYPE_SIZE(socklen_t HAVE_SOCKLEN_T)
+CHECK_TYPE_SIZE(intptr_t HAVE_INTPTR_T)
+
+#now write out our configuration....
+CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h.cmake ${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h)
 
 # packaging target
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Strigi Desktop Search")
