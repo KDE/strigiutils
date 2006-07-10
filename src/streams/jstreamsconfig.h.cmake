@@ -21,10 +21,11 @@
  #ifndef JSTREAMSCONFIG_H
  #define JSTREAMSCONFIG_H
 
-//autoconfigure stuff:
 #cmakedefine HAVE_STRNCASECMP
 #cmakedefine HAVE_STRCASESTR
 #cmakedefine HAVE_ISBLANK
+#cmakedefine HAVE_FCHDIR
+
 #cmakedefine HAVE_UNISTD_H
 #cmakedefine HAVE_SYS_NDIR_H
 #cmakedefine HAVE_SYS_DIR_H
@@ -32,9 +33,19 @@
 #cmakedefine HAVE_DIRENT_H
 #cmakedefine HAVE_WINDOWS_H
 #cmakedefine HAVE_DLFCN_H
+#cmakedefine HAVE_DIRECT_H
 
 #cmakedefine CMAKE_ANSI_FOR_SCOPE
 
+//////////////////////////////
+//thread stuff
+//////////////////////////////
+#cmakedefine CMAKE_USE_WIN32_THREADS_INIT
+#cmakedefine CMAKE_USE_PTHREADS_INIT
+
+//////////////////////////////
+//types
+//////////////////////////////
 #cmakedefine HAVE_INT64_T
 #cmakedefine HAVE_UINT64_T
 #cmakedefine HAVE_INT32_T
@@ -55,12 +66,12 @@
 #endif
 
 #ifndef HAVE_INT32_t
- #if 0${SIZEOF_LONG}==4
-  typedef long int32_t;
-  typedef unsigned long uint32_t;
- #elif 0${SIZEOF_INT}==4
+ #if 0${SIZEOF_INT}==4 //is int 4bits?
   typedef int int32_t;
   typedef unsigned int uint32_t;
+ #elif 0${SIZEOF_LONG}==4 //is long 4bits?
+  typedef long int32_t;
+  typedef unsigned long uint32_t;
  #endif
 #endif
 
@@ -76,6 +87,9 @@
 typedef int socklen_t;
 #endif
 
+//////////////////////////////
+//missing functions
+//////////////////////////////
 #ifndef HAVE_STRCASESTR
 int strncasecmp(const char* a, const char* b, int l);
 #endif
@@ -92,8 +106,21 @@ bool isblank(char c);
  #define for if (0); else for
 #endif
 
+
+//////////////////////////////
+//windows stuff
+//////////////////////////////
 #if defined(HAVE_WINDOWS_H) && !defined(__CYGWIN__)
  #include <windows.h>
+ #ifndef snprintf
+ 	#define snprintf _snprintf
+ #endif
 #endif
+
+#if defined(_MSC_VER) && (_MSC_VER == 1200)
+	#pragma warning(disable: 4503) //decorated name length exceeded
+	#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
+#endif
+
 
 #endif
