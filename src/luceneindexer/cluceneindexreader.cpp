@@ -47,7 +47,7 @@ CLuceneIndexReader::mapId(const std::string& id) {
 Term*
 CLuceneIndexReader::createTerm(const string& name, const string& value) {
 #ifndef _CL_HAVE_WCSLEN
-    return  Term(name.c_str(), value.c_str());
+    return _CLNEW Term(name.c_str(), value.c_str());
 #else 
 #endif
     TCHAR* n = new TCHAR[name.length()+1];
@@ -129,8 +129,8 @@ CLuceneIndexReader::addField(lucene::document::Field* field,
         istringstream iss(convertValue(value));
         iss >> doc.mtime;
     } else if (strcmp(name, "size") == 0) {
-        istringstream iss(convertValue(value));
-        iss >> doc.size;
+		string size = convertValue(value);
+        doc.size = atoi(size.c_str());
     } else {
         doc.properties[name] = convertValue(value);
     }

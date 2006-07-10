@@ -52,7 +52,7 @@ private:
         const std::string& value);
     static void createBooleanQuery(const jstreams::Query& query,
         lucene::search::BooleanQuery& bq);
-    static std::string convertValue(const wchar_t* value);
+    static std::string convertValue(const TCHAR* value);
     static void addField(lucene::document::Field* field,
         jstreams::IndexedDocument&);
 public:
