@@ -7,7 +7,9 @@ add_library(streams SHARED compat.cpp stgdirent.cpp bz2inputstream.cpp digestinp
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp 
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp 
 	dostime.cpp substreamproviderprovider.cpp)
-set_target_properties(streams PROPERTIES SOVERSION ${STRIGI_VERSION})
+set_target_properties(streams PROPERTIES
+    VERSION ${STRIGI_VERSION}
+    SOVERSION ${STRIGI_VERSION_MAJOR})
 
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARY} ${SHA_LIBRARY} ${ICONV_LIBRARY})
 

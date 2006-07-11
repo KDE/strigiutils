@@ -18,7 +18,9 @@ target_link_libraries(strigidaemon streamindexer ${CMAKE_THREAD_LIBS_INIT}
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 
         asyncsocket.cpp asyncsocketclient.cpp)
-set_target_properties(searchclient PROPERTIES SOVERSION ${STRIGI_VERSION})
+set_target_properties(searchclient PROPERTIES
+    VERSION ${STRIGI_VERSION}
+    SOVERSION ${STRIGI_VERSION_MAJOR})
 
 install(TARGETS strigidaemon searchclient
 	RUNTIME DESTINATION bin

@@ -78,12 +78,13 @@ StreamIndexer::addThroughAnalyzers() {
     tIter = through.rbegin();
     StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
     tIter->push_back(ana);
-    PluginThroughAnalyzer::loadPlugins("/usr/local/lib");
-    PluginThroughAnalyzer::loadPlugins("/usr/lib");
-    PluginThroughAnalyzer::loadPlugins("/lib");
+    PluginThroughAnalyzer::loadPlugins("/usr/local/lib/strigi");
+    PluginThroughAnalyzer::loadPlugins("/usr/lib/strigi");
+    PluginThroughAnalyzer::loadPlugins("/lib/strigi");
 // two dirs that make development easier, harmless for releases
-    PluginThroughAnalyzer::loadPlugins("/home/oever/testinstall/lib");
-    PluginThroughAnalyzer::loadPlugins("/home/jos/testinstall/lib");
+    string homedir = getenv("HOME");
+    homedir += "/testinstall/lib/strigi";
+    PluginThroughAnalyzer::loadPlugins(homedir.c_str());
     PluginThroughAnalyzer *pta = new PluginThroughAnalyzer();
     ana = pta;
     tIter->push_back(ana);
