@@ -41,7 +41,7 @@
 //thread stuff
 //////////////////////////////
 #cmakedefine CMAKE_USE_WIN32_THREADS_INIT
-#cmakedefine CMAKE_USE_PTHREADS_INIT
+#cmakedefine CMAKE_HAVE_PTHREAD_CREATE
 
 //////////////////////////////
 //types
@@ -49,7 +49,8 @@
 #cmakedefine HAVE_INT64_T
 #cmakedefine HAVE_INT32_T
 #cmakedefine HAVE_UINT
-#cmakedefine HAVE_SOCKLEN_T
+#cmakedefine HAVE_SYS_SOCKET_H
+#cmakedefine HAVE_SOCKET_H
 #cmakedefine HAVE___INT64
 #cmakedefine HAVE_INTPTR_T
 
@@ -81,7 +82,7 @@
  typedef long intptr_t;
 #endif
 
-#ifndef HAVE_SOCKLEN_T
+#ifndef HAVE_SYS_SOCKET_H
 typedef int socklen_t;
 #endif
 

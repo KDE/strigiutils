@@ -29,7 +29,7 @@ public:
     virtual ~IndexManager() {}
     virtual IndexReader* getIndexReader() = 0;
     virtual IndexWriter* getIndexWriter() = 0;
-    virtual QueryBitsetCache* getBitSets() = 0;
+//    virtual QueryBitsetCache* getBitSets() = 0;
 };
 }
 

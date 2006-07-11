@@ -1,7 +1,7 @@
 #ifndef STRIGI_THREAD_H
 #define STRIGI_THREAD_H
 
-#if defined(CMAKE_USE_PTHREADS_INIT)
+#if defined(CMAKE_HAVE_PTHREAD_CREATE)
 	#include <pthread.h>
 	#define STRIGI_DEFINE_MUTEX(x) pthread_mutex_t x;
 	#define STRIGI_INIT_MUTEX(x) pthread_mutex_init(&x, 0)

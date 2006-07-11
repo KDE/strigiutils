@@ -21,6 +21,7 @@
 #define CLUCENEINDEXREADER_H
 
 #include "indexreader.h"
+#include <CLucene.h>
 #include <map>
 
 namespace lucene {

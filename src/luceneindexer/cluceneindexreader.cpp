@@ -20,7 +20,6 @@
 #include "jstreamsconfig.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
-#include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
 #include <sstream>
 

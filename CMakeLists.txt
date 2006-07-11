@@ -1,5 +1,5 @@
 PROJECT (strigi)
-set(STRIGI_VERSION "0.3.2")
+
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2 FATAL_ERROR)
 
@@ -35,12 +35,14 @@ find_package(HyperEstraier)
 find_package(Magic)
 find_package(Libxml2)
 find_package(Qt4)
-check_include_files(attr/xattr.h HAVE_ATTR_XATTR_H)
 
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)
+check_include_file_cxx(sys/xattr.h HAVE_ATTR_XATTR_H)
 CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)
 CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)
+CHECK_INCLUDE_FILE_CXX(socket.h HAVE_SOCKET_H)
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)
 CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)
 CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)
@@ -63,22 +65,24 @@ CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)
 
 #test for missing types
 INCLUDE(CheckTypeSize)
-SET(CHECK_TYPE_SIZE_PREINCLUDE "#include <socket.h>")
+
+SET(CHECK_TYPE_SIZE_PREINCLUDE "#include <sys/socket.h>")
 SET(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} stdint.h")
-CHECK_TYPE_SIZE(int64_t HAVE_INT64_T)
-CHECK_TYPE_SIZE(__int64 HAVE___INT64)
+CHECK_TYPE_SIZE(int64_t INT64_T)
+CHECK_TYPE_SIZE(__int64 __INT64)
 CHECK_TYPE_SIZE("long long" SIZEOF_LONGLONG)
 
-CHECK_TYPE_SIZE(int32_t HAVE_INT32_T)
+CHECK_TYPE_SIZE(int32_t INT32_T)
 CHECK_TYPE_SIZE(long SIZEOF_LONG)
 CHECK_TYPE_SIZE(int SIZEOF_INT)
 
-CHECK_TYPE_SIZE(uint HAVE_UINT)
-CHECK_TYPE_SIZE(socklen_t HAVE_SOCKLEN_T)
-CHECK_TYPE_SIZE(intptr_t HAVE_INTPTR_T)
+CHECK_TYPE_SIZE(uint UINT)
+#CHECK_SYMBOL_EXISTS(socklen_t sys/socket.h socket.h SOCKLEN_T)
+CHECK_TYPE_SIZE(intptr_t INTPTR_T)
 
 #now write out our configuration....
-CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h.cmake ${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h)
+CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h.cmake
+  ${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h)
 
 # packaging target
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Strigi Desktop Search")
@@ -87,5 +91,6 @@ SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
 SET(CPACK_PACKAGE_VERSION_MAJOR "0")
 SET(CPACK_PACKAGE_VERSION_MINOR "3")
 SET(CPACK_PACKAGE_VERSION_PATCH "2")
+set(STRIGI_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 #SET(CPACK_PACKAGE_EXECUTABLES "strigi" "strigi")
 INCLUDE(CPack)

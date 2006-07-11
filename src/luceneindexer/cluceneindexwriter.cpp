@@ -23,7 +23,6 @@
 #include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
 #include "stringreader.h"
-#include "querybitset.h"
 #include "inputstreamreader.h"
 #include <sstream>
 #include <assert.h>
@@ -144,7 +143,7 @@ void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
     lucene::index::IndexReader* reader = manager->refReader();
 
-    QueryBitset qbs = manager->getBitSets()->getBitset("path:"+entry);
+//    QueryBitset qbs = manager->getBitSets()->getBitset("path:"+entry);
 
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, entry.c_str(), CL_MAX_DIR);
