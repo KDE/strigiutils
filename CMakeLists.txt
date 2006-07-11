@@ -24,7 +24,6 @@ SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
 
 SUBDIRS (src)
 
-find_package(IConv REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Sha REQUIRED)
