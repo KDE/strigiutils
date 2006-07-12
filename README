@@ -32,7 +32,20 @@ How to obtain and build Strigi from SVN?
 Execute these commands:
 
  svn co svn://anonsvn.kde.org/home/kde/trunk/playground/base/strigi
- ./rebuild.sh
+ cd strigi
+ mkdir build
+ cd build
+ cmake -DCMAKE_BUILD_TYPE=DEBUG ..
+ make
+ make install
+
+Some possible cmake options:
+ -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall
+   install strigi in a custom directory
+ -DCMAKE_INCLUDE_PATH=${HOME}/testinstall/include
+   include a custom include directory
+ -DCMAKE_LIBRARY_PATH=${HOME}/testinstall/lib
+   include a custom library directory
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 
@@ -96,5 +109,3 @@ Software design:
  
  qclient
  Qt4 file dialog that uses libarchivereader.
-cmake -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall ..
-cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall ..
