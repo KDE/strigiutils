@@ -20,10 +20,15 @@ else (Expat_FOUND)
   endif (Libxml2_FOUND)
 endif(Expat_FOUND)
 
-add_library(streamindexer ${streamindexer_SRCS})
+add_library(streamindexer SHARED ${streamindexer_SRCS})
+set_target_properties(streamindexer PROPERTIES
+    VERSION ${STRIGI_VERSION}
+    SOVERSION ${STRIGI_VERSION_MAJOR})
 
 target_link_libraries(streamindexer streams ${streamindex_LIBS})
 
+install(TARGETS streamindexer
+	LIBRARY DESTINATION lib)
 install(FILES indexeddocument.h indexwriter.h pluginthroughanalyzer.h
 	streamthroughanalyzer.h
 	DESTINATION include)
