@@ -87,7 +87,7 @@ CLuceneIndexManager::refWriter() {
 }
 void
 CLuceneIndexManager::derefWriter() {
-    STRIGI_LOCK_MUTEX(dblock->lock);
+    STRIGI_UNLOCK_MUTEX(dblock->lock);
 }
 IndexReader*
 CLuceneIndexManager::refReader() {
@@ -160,7 +160,7 @@ CLuceneIndexManager::docCount() {
         }
         count = indexreader->numDocs();
     }
-    STRIGI_LOCK_MUTEX(dblock->lock);
+    STRIGI_UNLOCK_MUTEX(dblock->lock);
     return count;
 }
 int
