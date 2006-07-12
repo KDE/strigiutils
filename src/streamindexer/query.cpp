@@ -17,11 +17,25 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "query.h"
 #include "jstreamsconfig.h"
 #include "indexreader.h"
 using namespace std;
 using namespace jstreams;
 
+class Query::Term {
+public:
+    string prefix;
+    string term;
+    bool include;
+
+    void clear() {
+        prefix = term = "";
+    }
+};
+
+Query::Query() {
+}
 /**
  * The constructor parses the query in include and exclude statements.
  * The following lines contain example queries.
@@ -37,16 +51,29 @@ using namespace jstreams;
  * query ::= [term]*
  * term ::= [-][prefix]:("searchphrase"|searchphrase)
  **/
-
 Query::Query(const string& query, int max, int offset) {
     this->max = max;
     this->offset = offset;
     const char* q = query.c_str();
     const char* end = q+query.length();
     const char* p = q;
+    Term term;
+    Term lastterm;
+    bool hador = false;
     while (p < end) {
-        p = parseTerm(p);
+        term.clear();
+        p = parseTerm(p, term);
+        if (term.term == "OR") {
+            hador = true;
+            Query q;
+            q.addTerm(lastterm);
+            alternatives.insert(q);
+        } else {
+            addTerm(lastterm);
+            lastterm = term;
+        }
     }
+    addTerm(lastterm);
 /*    map<string, set<string> >::const_iterator i;
     set<string>::const_iterator j;
     for (i = includes.begin(); i != includes.end(); ++i) {
@@ -60,9 +87,22 @@ Query::Query(const string& query, int max, int offset) {
         }
     }
     printf("--\n");*/
+}/*
+bool
+operator<(const jstreams::Query&a,const jstreams::Query&b) {
+    return &a < &b;
+}*/
+void
+Query::addTerm(const Term& term) {
+    if (term.term.size() == 0) return;
+    if (term.include) {
+        includes[term.prefix].insert(term.term);
+    } else {
+        excludes[term.prefix].insert(term.term);
+    }
 }
 const char*
-Query::parseTerm(const char* s) {
+Query::parseTerm(const char* s, Term& parsedterm) {
     bool include = true;
     const char* p = s;
     // skip whitespace
@@ -105,17 +145,11 @@ Query::parseTerm(const char* s) {
     }
     if (*term == '\0') return term;
     if (p - term > 0) {
-        string pre;
-        string ter;
+        parsedterm.include = include;
         if (prefix != 0 && term - prefix > 1) {
-            pre = string(prefix, prefend-prefix);
+            parsedterm.prefix = string(prefix, prefend-prefix);
         }
-        ter = string(term, p-term);
-        if (include) {
-            includes[pre].insert(ter);
-        } else {
-            excludes[pre].insert(ter);
-        }
+        parsedterm.term = string(term, p-term);
     }
     // skip the terminating character
     if (p != '\0') p++;

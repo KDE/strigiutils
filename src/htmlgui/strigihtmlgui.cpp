@@ -20,10 +20,12 @@
 #include "strigihtmlgui.h"
 #include "socketclient.h"
 #include "indexreader.h"
+#include "query.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <sstream>
+#include <fstream>
 using namespace std;
 using namespace jstreams;
 
@@ -177,10 +179,13 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     if (count) {
         map<string, string> tabs;
         bool doother = true;
-        tabs["Images"] = "mimetype:image*";
-        tabs["Mail"] = "mimetype:message/*";
-        tabs["Web"] = "mimetype:text/html";
-        tabs["Text"] = "mimetype:text/*";
+        tabs = readTabQueries();
+        if (tabs.size() == 0) {
+            tabs["Images"] = "mimetype:image*";
+            tabs["Mail"] = "mimetype:message/*";
+            tabs["Web"] = "mimetype:text/html";
+            tabs["Text"] = "mimetype:text/*";
+        }
         map<string, string>::const_iterator j;
         string otherq = query;
         for (j = tabs.begin(); j != tabs.end(); ++j) {
@@ -437,4 +442,31 @@ StrigiHtmlGui::Private::printSearchResults(ostream& out,
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
         printSearchResult(out, *i, query);
     }
+}
+/**
+ * Read the tab queries from a configuration file.
+ * This file is, in the current implementation, located at ~/.strigi/tabqueries.
+ * The format is a tab separated table with two columns: the name and the query.
+ **/
+map<string, string>
+StrigiHtmlGui::readTabQueries() const {
+    map<string, string> tabs;
+    string path = getenv("HOME");
+    path += "/.strigi/tabqueries";
+    ifstream in;
+    in.open(path.c_str());
+    string s;
+    do {
+        getline(in, s);
+        if (s.size()) {
+            int p = s.find('\t');
+            if (p != string::npos) {
+                string name = s.substr(0, p);
+                string value = s.substr(p);
+                tabs[name] = value;
+            }
+        }
+    } while (!in.eof() && in.good());
+    in.close();
+    return tabs;
 }

@@ -22,35 +22,9 @@
 
 #include "indexeddocument.h"
 #include <vector>
-#include <set>
 
 namespace jstreams {
-
-/**
- * Break up a string in a query.
- * Currently very simple. Currently always combines terms with AND.
- **/
-class Query {
-private:
-    int max;
-    int offset;
-    std::map<std::string, std::set<std::string> > includes;
-    std::map<std::string, std::set<std::string> > excludes;
-
-    const char* parseTerm(const char*);
-public:
-    Query(const std::string& q, int max, int offset);
-    const std::map<std::string, std::set<std::string> > &getIncludes() const {
-        return includes;
-    }
-    const std::map<std::string, std::set<std::string> > &getExcludes() const {
-        return excludes;
-    }
-    int getMax() const { return max; }
-    int getOffset() const { return offset; }
-    std::string highlight(const std::string& text) const;
-};
-
+class Query;
 class IndexReader {
 public:
     virtual ~IndexReader() {}

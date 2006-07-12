@@ -78,6 +78,7 @@ private:
         const std::map<std::string, std::string> &params);
     void printIndexedDirs(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
+    std::map<std::string, std::string> readTabQueries() const;
 public:
     StrigiHtmlGui(HtmlHelper*);
     ~StrigiHtmlGui();

@@ -21,6 +21,7 @@
 #include "indexreader.h"
 #include "indexmanager.h"
 #include "indexscheduler.h"
+#include "query.h"
 #include <sstream>
 using namespace std;
 using namespace jstreams;
