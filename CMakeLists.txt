@@ -37,6 +37,9 @@ find_package(HyperEstraier)
 find_package(Magic)
 find_package(Libxml2)
 find_package(Qt4)
+if (NOT QT4_FOUND)
+    MESSAGE(STATUS "Qt4 was not found. No GUI will be built.")
+endif (NOT QT4_FOUND)
 
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)
