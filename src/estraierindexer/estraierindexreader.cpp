@@ -19,6 +19,7 @@
  */
 #include "estraierindexreader.h"
 #include "estraierindexmanager.h"
+#include "query.h"
 #include <estraier.h>
 #include <set>
 #include <sstream>
