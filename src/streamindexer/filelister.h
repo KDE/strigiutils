@@ -37,32 +37,28 @@
 
 class FileLister {
 private:
-	time_t m_oldestdate;
-	std::vector<const char *> m_dirnames;
-	std::string m_path;
-	std::vector<int> m_pathSeparators;
-	bool (*m_callback)(const std::string& dirpath, const char *filename,
-        time_t mtime);
+    time_t m_oldestdate;
+    bool (*m_callback)(const std::string& dirpath, const char *filename, time_t mtime);
 
-	bool walk_directory(const char *dirname);
-	void expandPath(const char *);
-	void shortenPath();
+    bool walk_directory(const char *dirname);
 public:
-	FileLister() {
-		m_callback = 0;
-	}; 
-	/**
-	 * Specify the callback function that reports the files found.
+    FileLister() {
+        m_callback = 0;
+    }; 
+    /**
+     * Specify the callback function that reports the files found.
          **/
-	void setCallbackFunction(bool (*callback)(const std::string& dirpath,
-		const char *filename, time_t mtime)) {
-		m_callback = callback;
-	}
-	/**
-	 * List all the files in directory dir that have been modified more
-         * recently then oldestdate.
-         **/
-	void listFiles(const char *dir, time_t oldestdate = 0);
+    void setCallbackFunction(bool (*callback)(const std::string& dirpath,
+        const char *filename, time_t mtime)) {
+        m_callback = callback;
+    }
+    /**
+     * List all the files in directory dir that have been modified more
+     * recently then oldestdate.
+	 * dir should end with a /
+	 * on windows the root directory must be formatted like c:/ or c:\
+     **/
+    void listFiles(const char *dir, time_t oldestdate = 0);
 };
 
 #endif
