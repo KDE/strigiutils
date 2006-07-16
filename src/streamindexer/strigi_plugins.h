@@ -5,11 +5,11 @@
 #include "streamendanalyzer.h"
 #include <vector>
 
-
-class ThroughAnalyzerFactory{
+class ThroughAnalyzerFactory {
 public:
     virtual jstreams::StreamThroughAnalyzer* create() = 0;
 };
+
 template<typename CLASS>
 class ThroughAnalyzerFactoryImpl: public ThroughAnalyzerFactory{
 public:
@@ -31,19 +31,29 @@ std::vector<ThroughAnalyzerFactory*> strigi_through_analyzer_factories;
 
 
   // macro for registering a ThroughAnalyzer in a module
-#define STRIGI_THROUGH_PLUGINS_START() extern "C"{ \
-    STRIGI_PLUGIN_API bool createThroughAnalyzer(int item, jstreams::StreamThroughAnalyzer** ret){ \
-        if ( strigi_through_analyzer_factories.size() == 0 ){
-#define STRIGI_THROUGH_PLUGINS_REGISTER(CLASS) strigi_through_analyzer_factories.push_back((ThroughAnalyzerFactory*)new ThroughAnalyzerFactoryImpl<CLASS>);
-#define STRIGI_THROUGH_PLUGINS_END() \
+#define STRIGI_THROUGH_PLUGINS_START \
+extern "C" { \
+    STRIGI_PLUGIN_API bool createThroughAnalyzer(int item, \
+            jstreams::StreamThroughAnalyzer** ret) { \
+        if (strigi_through_analyzer_factories.size() == 0) {
+
+#define STRIGI_THROUGH_PLUGINS_REGISTER(CLASS) \
+            strigi_through_analyzer_factories.push_back( \
+                (ThroughAnalyzerFactory*)new ThroughAnalyzerFactoryImpl<CLASS>);
+
+#define STRIGI_THROUGH_PLUGINS_END \
         } \
-        if ( item < 0 || item >= strigi_through_analyzer_factories.size() ) return false; \
-        *ret = strigi_through_analyzer_factories.at(item)->create(); return true;\
+        if ( item < 0 || item >= strigi_through_analyzer_factories.size() ) { \
+            return false; \
+        } \
+        *ret = strigi_through_analyzer_factories.at(item)->create(); \
+        return true; \
     } \
-    STRIGI_PLUGIN_API void deleteAnalyzer(void* analyzer){ delete analyzer; } \
+    STRIGI_PLUGIN_API void deleteAnalyzer( \
+            jstreams::StreamThroughAnalyzer* analyzer) { \
+        delete analyzer; \
+    } \
 }
-
-
 
 
 class EndAnalyzerFactory{

@@ -59,6 +59,6 @@ MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
 
 
 //define all the available analyzers in this plugin
-STRIGI_THROUGH_PLUGINS_START();
-STRIGI_THROUGH_PLUGINS_REGISTER(MimeTypeThroughAnalyzer);
-STRIGI_THROUGH_PLUGINS_END();
+STRIGI_THROUGH_PLUGINS_START
+STRIGI_THROUGH_PLUGINS_REGISTER(MimeTypeThroughAnalyzer)
+STRIGI_THROUGH_PLUGINS_END

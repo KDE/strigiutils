@@ -18,8 +18,12 @@
  * Boston, MA 02110-1301, USA.
  */
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
-#include "jstreamsconfig.h"
-#include "strigi_plugins.h"
+#include <jstreamsconfig.h>
+#include <strigi_plugins.h>
+#include <indexwriter.h>
+#include <sys/types.h>
+#include <attr/xattr.h>
+#include <errno.h>
 
 class XattrAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
@@ -49,10 +53,7 @@ public:
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
 };
 
-REGISTER_THROUGHANALYZER(XattrAnalyzer)
-
-#include <sys/types.h>
-#include <attr/xattr.h>
+//REGISTER_THROUGHANALYZER(XattrAnalyzer)
 
 jstreams::InputStream *
 XattrAnalyzer::connectInputStream(jstreams::InputStream *in) {
@@ -103,6 +104,6 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
 }
 
 //define all the available analyzers in this plugin
-STRIGI_PLUGINS_START();
-STRIGI_PLUGINS_REGISTER(XattrAnalyzer);
-STRIGI_PLUGINS_END();
+STRIGI_THROUGH_PLUGINS_START
+STRIGI_THROUGH_PLUGINS_REGISTER(XattrAnalyzer)
+STRIGI_THROUGH_PLUGINS_END
