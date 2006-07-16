@@ -19,7 +19,6 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
-#include <CLucene/clucene-config.h>
 #include <CLucene.h>
 #include "filereader.h"
 #include "cluceneindexmanager.h"
