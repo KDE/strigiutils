@@ -21,6 +21,7 @@
 #define STREAMINDEXER_H
 
 #include <vector>
+#include "moduleloader.h"
 
 namespace jstreams {
 class StreamEndAnalyzer;
@@ -48,6 +49,7 @@ private:
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
     std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
 
+	ModuleLoader moduleLoader;
     void addThroughAnalyzers();
     void addEndAnalyzers();
     void removeIndexable(uint depth);

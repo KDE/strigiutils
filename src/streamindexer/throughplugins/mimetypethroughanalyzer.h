@@ -24,7 +24,7 @@
 extern "C" {
     #include <magic.h>
 }
-class MimeTypeThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class STRIGI_PLUGIN_API MimeTypeThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     magic_t magic;
     jstreams::Indexable* idx;

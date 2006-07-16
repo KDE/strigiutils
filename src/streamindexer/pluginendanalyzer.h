@@ -17,23 +17,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef PLUGINTHROUGHANALYZER_H
-#define PLUGINTHROUGHANALYZER_H
+#ifndef PluginEndAnalyzer_H
+#define PluginEndAnalyzer_H
 
 #include "moduleloader.h"
 
-class PluginThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class PluginEndAnalyzer : public jstreams::StreamEndAnalyzer {
+public:
 private:
     //a map of analyzers that this plugin has created, and their corresponding modules 
     //for cleanup purposes.
-    std::list<ModuleLoader::ThroughPair> analyzers; 
+    std::list<ModuleLoader::EndPair> analyzers; 
     ModuleLoader* moduleLoader;
+
+    mutable jstreams::StreamEndAnalyzer* selectedEndAnalyzer;
 public:
-    PluginThroughAnalyzer(ModuleLoader* moduleLoader);
-    ~PluginThroughAnalyzer();
-    void setIndexable(jstreams::Indexable* i);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
-    static void loadPlugins(const char* dir);
+    PluginEndAnalyzer(ModuleLoader* moduleLoader);
+    ~PluginEndAnalyzer();
+    bool checkHeader(const char* header, int32_t headersize) const;
+    char analyze(std::string filename, jstreams::InputStream *in, int depth,
+        jstreams::StreamIndexer *indexer, jstreams::Indexable*);
+    const char* getName() const { return "PluginEndAnalyzer"; }
+	static void loadPlugins(const char* dir);
 };
 
 

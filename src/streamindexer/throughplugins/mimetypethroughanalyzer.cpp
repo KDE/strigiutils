@@ -17,13 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#define STRIGI_IMPORT_API //todo: could also define this in cmake...
+#include "jstreamsconfig.h"
+#include "strigi_plugins.h"
+
 #include "mimetypethroughanalyzer.h"
 #include "indexwriter.h"
 using namespace std;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
-    magic_load(magic, 0);
+    if ( magic_load(magic, "magic") == -1 ){
+        printf("magic_load: %s\n",magic_error(magic));
+    }
 }
 MimeTypeThroughAnalyzer::~MimeTypeThroughAnalyzer() {
     magic_close(magic);
@@ -50,3 +56,9 @@ MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
     }
     return in;
 }
+
+
+//define all the available analyzers in this plugin
+STRIGI_THROUGH_PLUGINS_START();
+STRIGI_THROUGH_PLUGINS_REGISTER(MimeTypeThroughAnalyzer);
+STRIGI_THROUGH_PLUGINS_END();

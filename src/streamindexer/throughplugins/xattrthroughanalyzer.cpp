@@ -17,7 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include <pluginthroughanalyzer.h>
+#define STRIGI_IMPORT_API //todo: could also define this in cmake...
+#include "jstreamsconfig.h"
+#include "strigi_plugins.h"
 
 class XattrAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
@@ -99,3 +101,8 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
     valbuffer[s] = '\0';
     return valbuffer;
 }
+
+//define all the available analyzers in this plugin
+STRIGI_PLUGINS_START();
+STRIGI_PLUGINS_REGISTER(XattrAnalyzer);
+STRIGI_PLUGINS_END();

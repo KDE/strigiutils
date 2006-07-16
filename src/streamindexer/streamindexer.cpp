@@ -32,6 +32,7 @@
 #include "mailendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
+#include "pluginendanalyzer.h"
 #include "indexwriter.h"
 #include <sys/stat.h>
 
@@ -39,6 +40,18 @@ using namespace std;
 using namespace jstreams;
 
 StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
+	
+    moduleLoader.loadPlugins("/usr/local/lib/strigi");
+    moduleLoader.loadPlugins("/usr/lib/strigi");
+    moduleLoader.loadPlugins("/lib/strigi");
+
+	// todo: remove this
+    moduleLoader.loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
+    if ( getenv("HOME") != NULL ){
+        string homedir = getenv("HOME");
+        homedir += "/testinstall/lib/strigi";
+        moduleLoader.loadPlugins(homedir.c_str());
+    }
 }
 StreamIndexer::~StreamIndexer() {
     // delete the through analyzers and end analyzers
@@ -78,15 +91,7 @@ StreamIndexer::addThroughAnalyzers() {
     tIter = through.rbegin();
     StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
     tIter->push_back(ana);
-    PluginThroughAnalyzer::loadPlugins("/usr/local/lib/strigi");
-    PluginThroughAnalyzer::loadPlugins("/usr/lib/strigi");
-    PluginThroughAnalyzer::loadPlugins("/lib/strigi");
-// two dirs that make development easier, harmless for releases
-    string homedir = getenv("HOME");
-    homedir += "/testinstall/lib/strigi";
-    PluginThroughAnalyzer::loadPlugins(homedir.c_str());
-    PluginThroughAnalyzer *pta = new PluginThroughAnalyzer();
-    ana = pta;
+    ana = new PluginThroughAnalyzer(&moduleLoader);
     tIter->push_back(ana);
     
 }
@@ -107,11 +112,14 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
     ana = new PngEndAnalyzer();
     eIter->push_back(ana);
+    ana = new PluginEndAnalyzer(&moduleLoader);
+    eIter->push_back(ana);
+
 /*    ana = new PdfEndAnalyzer();
     eIter->push_back(ana);*/
     // add a sax analyzer before the text analyzer
-    ana = new SaxEndAnalyzer();
-    eIter->push_back(ana);
+    //ana = new SaxEndAnalyzer();
+    //eIter->push_back(ana);
     // add a text analyzer to the end of the queue
     ana = new TextEndAnalyzer();
     eIter->push_back(ana);
@@ -186,11 +194,11 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
 
     // store the size of the stream
     {   
-		//tmp scope out tmp mem
-		char tmp[100];
-		sprintf(tmp, "%d", input->getSize());
-		idx.setField("size", tmp);
-	}
+        //tmp scope out tmp mem
+        char tmp[100];
+        sprintf(tmp, "%d", input->getSize());
+        idx.setField("size", tmp);
+    }
 
     // remove references to the indexable before it goes out of scope
     removeIndexable(depth);
