@@ -114,7 +114,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
             doc->doc.add(*Field::Text(L"content", naughty));
         }
 #else
-        doc->doc.add(*Field::Text("content", doc->content.c_str());
+        doc->doc.add(*Field::Text("content", doc->content.c_str()) );
 #endif
         lucene::index::IndexWriter* writer = manager->refWriter();
         try {
