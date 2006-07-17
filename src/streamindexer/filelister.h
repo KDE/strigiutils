@@ -40,7 +40,7 @@ private:
     time_t m_oldestdate;
     bool (*m_callback)(const std::string& dirpath, const char *filename, time_t mtime);
 
-    bool walk_directory(const char *dirname, int len);
+    bool walk_directory(const std::string& dirname);
 public:
     FileLister() {
         m_callback = 0;

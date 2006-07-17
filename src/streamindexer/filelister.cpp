@@ -31,6 +31,8 @@
  #define PATH_MAX _MAX_PATH
 #endif
 
+using namespace std;
+
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_callback == 0) return;
@@ -40,13 +42,13 @@ FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (dir[len-1] != '/') {
         return;
     }
-    walk_directory(dir, len);
+    walk_directory(dir);
 }
 /**
  * Walk through a directory. The directory name must end in a '/'.
  **/
 bool
-FileLister::walk_directory(const char *dirname, int len) {
+FileLister::walk_directory(const string& dirname) {
     bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
@@ -54,31 +56,25 @@ FileLister::walk_directory(const char *dirname, int len) {
 
     /* The full path of the current file. todo: how to determine the max
        expanded path? */
-    char cwd[PATH_MAX*32];
-    strcpy(cwd, dirname);
+    string cwd = dirname;
+    int len = cwd.length();
 
-    // remove the trailing '/' on windows machines
 #ifdef _WIN32
-    // dont strip off the trailing slash from windows c:/
+    // remove the trailing '/' on windows machines,
+    // but dont strip off the trailing slash from windows c:/
     if ( len > 3) {
-        cwd[len-1] = 0;
-        len--;
+        cwd.resize(len-1);
     }
 #endif
 
     // open the directory
-    dir = opendir(cwd);
+    dir = opendir(cwd.c_str());
     if (dir == 0) {
         return true;
     }
-
-    // a pointer past the last character in the current directory name
-    char* pcwd = cwd + len;
-    // add the trailing '/'
-    if ( *(pcwd-1) != '/' ) {
-        *pcwd = '/';
-        pcwd++;
-    }
+#ifdef _WIN32
+    cwd += '/';
+#endif
 
     subdir = readdir(dir);
     while (subdir) {
@@ -93,22 +89,22 @@ FileLister::walk_directory(const char *dirname, int len) {
             }
         }
 
-        int l = strlen(subdir->d_name);
-        strcpy(pcwd, subdir->d_name);
-        if (stat(cwd, &dirstat) == 0) {
+        cwd += subdir->d_name;
+        if (stat(cwd.c_str(), &dirstat) == 0) {
             bool c = true;
             if ( dirstat.st_mode & S_IFREG
                     && dirstat.st_mtime >= m_oldestdate) {
                 c = m_callback(dirname, subdir->d_name, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR ) {
-                strcat(pcwd+l, "/");
-                c = walk_directory(cwd, len+l+1);
+                cwd += '/';
+                c = walk_directory(cwd);
             }
             if (!c) break;
         } else {
-            fprintf(stderr, "Could not stat '%s': %s\n", cwd, strerror(errno));
+            fprintf(stderr, "Could not stat '%s': %s\n", cwd.c_str(),
+                strerror(errno));
         }
-        
+        cwd.resize(len);
         subdir = readdir(dir);
     }
 
