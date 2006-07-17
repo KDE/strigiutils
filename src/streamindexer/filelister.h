@@ -36,16 +36,14 @@
 
 class FileLister {
 private:
-    char** paths;
-    uint* lengths;
-    uint npaths;
+    char* path;
+    uint length;
     time_t m_oldestdate;
-    bool (*m_callback)(const char* fullpath, uint dirlen,
+    bool (*m_callback)(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
 
-    void setNumPaths(uint n);
-    char* resize(uint depth, uint len);
-    bool walk_directory(uint depth, const char* dirname, uint len);
+    char* resize(uint len);
+    bool walk_directory(uint len);
 public:
     FileLister();
     ~FileLister();
@@ -53,7 +51,7 @@ public:
      * Specify the callback function that reports the files found.
          **/
     void setCallbackFunction(bool (*callback)(const char* fullpath,
-            uint dirlen, time_t mtime)) {
+            uint dirlen, uint len, time_t mtime)) {
         m_callback = callback;
     }
     /**

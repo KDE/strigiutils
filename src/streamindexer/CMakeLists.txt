@@ -32,3 +32,9 @@ install(TARGETS streamindexer
 install(FILES indexeddocument.h indexwriter.h pluginthroughanalyzer.h
 	streamthroughanalyzer.h
 	DESTINATION include)
+
+
+# test executable
+add_executable(filelister filelistertest.cpp)
+
+target_link_libraries(filelister streamindexer)

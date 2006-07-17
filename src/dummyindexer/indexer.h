@@ -31,8 +31,8 @@ private:
     DummyIndexWriter writer;
     jstreams::StreamIndexer m_indexer;
 
-    static bool addFileCallback(const char* fullpath,
-        uint dirlen, time_t mtime);
+    static bool addFileCallback(const char* fullpath, uint dirlen,
+        uint len, time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:

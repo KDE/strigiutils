@@ -63,12 +63,13 @@ indexschedulerstart(void *d) {
     pthread_exit(0);
 }
 bool
-IndexScheduler::addFileCallback(const char* path, uint dirlen, time_t mtime) {
+IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
+        time_t mtime) {
     if (sched->state != Indexing) return false;
     // only read files that do not start with '.'
     if (strstr(path, "/.")) return true;
 
-    std::string filepath(path);
+    std::string filepath(path, len);
 
     map<string, time_t>::iterator i = sched->dbfiles.find(filepath);
     // if the file has not yet been indexed or if the mtime has changed,
