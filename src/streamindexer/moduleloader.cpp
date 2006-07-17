@@ -12,9 +12,10 @@
 #endif
 
 using namespace std;
+using namespace jstreams;
 
 ModuleLoader::~ModuleLoader(){
-    std::list<Module*>::iterator mod_itr = modules.begin();
+    list<Module*>::iterator mod_itr = modules.begin();
     while ( mod_itr != modules.end() ){
        Module* mod = *mod_itr;
        delete mod;
@@ -22,7 +23,7 @@ ModuleLoader::~ModuleLoader(){
     }
     modules.clear();
 }
-void ModuleLoader::loadPlugins(const char*d) {
+void ModuleLoader::loadPlugins(const char* d) {
     DIR *dir = opendir(d);
     if (dir == 0) {
         // TODO handle error
@@ -44,7 +45,7 @@ void ModuleLoader::loadPlugins(const char*d) {
             // check that the file is a regular file
             struct stat s;
             if (stat(plugin.c_str(), &s) == 0 && (S_IFREG & s.st_mode)) {
-                Module* mod = ModuleLoader::loadModule(plugin.c_str());
+                Module* mod = loadModule(plugin.c_str());
                 if ( mod ){
                     modules.push_back(mod);
                     printf("loaded %s\n", plugin.c_str());
@@ -96,72 +97,69 @@ ModuleLoader::Module* ModuleLoader::loadModule(const char* lib) {
         return mod;
     }
 }
-
 void
-ModuleLoader::getThroughAnalyzers(std::list<ThroughPair>* analyzers){
-    std::list<Module*>::iterator mod_itr = modules.begin();
+ModuleLoader::getThroughAnalyzers(
+        multimap<void*, StreamThroughAnalyzer*>& analyzers){
+    list<Module*>::iterator mod_itr = modules.begin();
     while ( mod_itr != modules.end() ){
        Module* mod = *mod_itr;
        if ( mod->createThroughFunc ){
-           int i=0;
-           do{
-                jstreams::StreamThroughAnalyzer* a = NULL;
-                if ( !mod->createThroughFunc( i, &a ) ){
-                    if ( i==0 )
-                        printf("Warning: doesn't contain any through analyzers\n");
-                    break;
-                }else if ( a != NULL ){
-                    ThroughPair pair = {a,mod};
-                    analyzers->push_back( pair );
+           StreamThroughAnalyzer* a = NULL;
+           int i = 0;
+           while (mod->createThroughFunc( i, &a )) {
+                if (a) {
+                    analyzers.insert(make_pair(mod, a));
                 }
                 ++i;
-            }while(true);
+            }
+            if (analyzers.size() == 0) {
+                printf("Warning: doesn't contain any through analyzers\n");
+            }
         }
-       mod_itr++;
+        mod_itr++;
     }
 }
-
-void ModuleLoader::getEndAnalyzers(std::list<EndPair>* analyzers){
-    std::list<Module*>::iterator mod_itr = modules.begin();
+void
+ModuleLoader::getEndAnalyzers(multimap<void*, StreamEndAnalyzer*>& analyzers){
+    list<Module*>::iterator mod_itr = modules.begin();
     while ( mod_itr != modules.end() ){
-       Module* mod = *mod_itr;
-       if ( mod->createEndFunc ){
-           int i=0;
-           do{
-                jstreams::StreamEndAnalyzer* a = NULL;
-                if ( !mod->createEndFunc(i, &a) ){
-                    if ( i==0 )
-                        printf("Warning: doesn't contain any end analyzers\n");
-                    break;
-                }else if ( a != NULL ){
-                    EndPair pair = {a,mod};
-                    analyzers->push_back( pair );
+        Module* mod = *mod_itr;
+        if ( mod->createEndFunc ){
+            StreamEndAnalyzer* a = NULL;
+            int i=0;
+            while (mod->createEndFunc(i, &a)) {
+                if (a) {
+                    analyzers.insert(make_pair(mod, a));
                 }
                 ++i;
-            }while(true);
+            }
+            if (analyzers.size() == 0) {
+                printf("Warning: doesn't contain any end analyzers\n");
+            }
         }
-       mod_itr++;
-    }
-}
-
-void
-ModuleLoader::deleteThroughAnalyzers(std::list<ThroughPair>* analyzers){
-    std::list<ThroughPair>::iterator itr = analyzers->begin();
-    while ( itr != analyzers->end() ){
-        Module* mod = itr->mod;
-        if ( mod->deleteFunc )
-            mod->deleteFunc(itr->analyzer);
-        ++itr;
+        mod_itr++;
     }
 }
 void
-ModuleLoader::deleteEndAnalyzers(std::list<EndPair>* analyzers){
-    std::list<EndPair>::iterator itr = analyzers->begin();
-    while ( itr != analyzers->end() ){
-        Module* mod = itr->mod;
-        if ( mod->deleteFunc )
-            mod->deleteFunc(itr->analyzer);
-        ++itr;
+ModuleLoader::deleteThroughAnalyzers(multimap<void*, StreamThroughAnalyzer*>&
+        analyzers) {
+    multimap<void*, StreamThroughAnalyzer*>::const_iterator i;
+    for (i = analyzers.begin(); i != analyzers.end(); i++) {
+        Module* mod = static_cast<Module*>(i->first);
+        if ( mod->deleteFunc ) {
+            mod->deleteFunc(i->second);
+        }
+    }
+}
+void
+ModuleLoader::deleteEndAnalyzers(multimap<void*, StreamEndAnalyzer*>&
+        analyzers){
+    multimap<void*, StreamEndAnalyzer*>::const_iterator i;
+    for (i = analyzers.begin(); i != analyzers.end(); i++) {
+        Module* mod = static_cast<Module*>(i->first);
+        if ( mod->deleteFunc ) {
+            mod->deleteFunc(i->second);
+        }
     }
 }
 

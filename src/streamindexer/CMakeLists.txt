@@ -29,8 +29,8 @@ target_link_libraries(streamindexer streams ${streamindex_LIBS})
 
 install(TARGETS streamindexer
 	LIBRARY DESTINATION lib)
-install(FILES indexeddocument.h indexwriter.h pluginthroughanalyzer.h
-	streamthroughanalyzer.h
+install(FILES indexeddocument.h indexwriter.h strigi_plugins.h
+	streamthroughanalyzer.h streamendanalyzer.h
 	DESTINATION include)
 
 

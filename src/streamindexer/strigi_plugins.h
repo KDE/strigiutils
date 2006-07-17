@@ -7,6 +7,7 @@
 
 class ThroughAnalyzerFactory {
 public:
+    virtual ~ThroughAnalyzerFactory() {}
     virtual jstreams::StreamThroughAnalyzer* create() = 0;
 };
 
@@ -58,6 +59,7 @@ extern "C" { \
 
 class EndAnalyzerFactory{
 public:
+    virtual ~EndAnalyzerFactory() {}
     virtual jstreams::StreamEndAnalyzer* create() = 0;
 };
 template<typename CLASS>
@@ -93,5 +95,6 @@ std::vector<EndAnalyzerFactory*> strigi_end_analyzer_factories;
     STRIGI_PLUGIN_API void deleteAnalyzer(void* analyzer){ delete analyzer; } \
 }
 
+#include "indexwriter.h"
 
 #endif //STRIGI_PLUGINS_H

@@ -17,4 +17,5 @@ install(TARGETS streams
 	LIBRARY DESTINATION lib)
 install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	bufferedstream.h streambase.h inputstreambuffer.h inputstream.h
+	jstreamsconfig.h
 	DESTINATION include)

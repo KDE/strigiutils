@@ -19,34 +19,35 @@
  */
 #include "jstreamsconfig.h"
 #include "pluginthroughanalyzer.h"
+#include "moduleloader.h"
 
 using namespace std;
 using namespace jstreams;
 
-
 PluginThroughAnalyzer::PluginThroughAnalyzer(ModuleLoader* ml) {
     moduleLoader = ml;
     
-    //for now we just load all the plugins in any order... configuration required
-    moduleLoader->getThroughAnalyzers(&analyzers);
+    /* For now we just load all the plugins in any order...
+     * configuration required
+     */
+    moduleLoader->getThroughAnalyzers(analyzers);
 }
 PluginThroughAnalyzer::~PluginThroughAnalyzer() {
-    moduleLoader->deleteThroughAnalyzers(&analyzers);
+    moduleLoader->deleteThroughAnalyzers(analyzers);
 }
-
-jstreams::InputStream *
-PluginThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
-    list<ModuleLoader::ThroughPair>::const_iterator i;
+InputStream *
+PluginThroughAnalyzer::connectInputStream(InputStream *in) {
+    multimap<void*, StreamThroughAnalyzer*>::const_iterator i;
     for (i = analyzers.begin(); i!= analyzers.end(); ++i) {
-        in = (i->analyzer)->connectInputStream(in);
+        in = (i->second)->connectInputStream(in);
     }
     return in;
 }
 void
-PluginThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
-    list<ModuleLoader::ThroughPair>::const_iterator i;
+PluginThroughAnalyzer::setIndexable(Indexable* idx) {
+    multimap<void*, StreamThroughAnalyzer*>::const_iterator i;
     for (i = analyzers.begin(); i!= analyzers.end(); ++i) {
-        StreamThroughAnalyzer* a = i->analyzer;
-            a->setIndexable(idx);
+        StreamThroughAnalyzer* a = i->second;
+        a->setIndexable(idx);
     }
 }
