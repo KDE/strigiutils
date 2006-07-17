@@ -186,9 +186,9 @@ ModuleLoader::Module::init(){
     createEndFunc = (createEndAnalyzer_t*)dlsym(handle, "createEndAnalyzer");
     deleteFunc = (deleteAnalyzer_t*)dlsym(handle, "deleteAnalyzer");
 #else
-    createThroughFunc = (createThroughAnalyzer*)GetProcAddress(handle, "createThroughAnalyzer");
-    createEndFunc = (createEndAnalyzer*)GetProcAddress(handle, "createEndAnalyzer");
-    deleteFunc = (deleteAnalyzer*)GetProcAddress(handle, "deleteAnalyzer");
+    createThroughFunc = (createThroughAnalyzer_t*)GetProcAddress(handle, "createThroughAnalyzer");
+    createEndFunc = (createEndAnalyzer_t*)GetProcAddress(handle, "createEndAnalyzer");
+    deleteFunc = (deleteAnalyzer_t*)GetProcAddress(handle, "deleteAnalyzer");
 #endif
 
     if ( !createThroughFunc && !createEndFunc ){
