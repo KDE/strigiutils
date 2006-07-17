@@ -32,24 +32,28 @@
       - no need to spawn a separate process
 **/
 
-#include <vector>
-#include <string>
+#include <sys/types.h>
 
 class FileLister {
 private:
+    char** paths;
+    uint* lengths;
+    uint npaths;
     time_t m_oldestdate;
-    bool (*m_callback)(const std::string& dirpath, const char *filename, time_t mtime);
+    bool (*m_callback)(const char* fullpath, uint dirlen,
+        time_t mtime);
 
-    bool walk_directory(const std::string& dirname);
+    void setNumPaths(uint n);
+    char* resize(uint depth, uint len);
+    bool walk_directory(uint depth, const char* dirname, uint len);
 public:
-    FileLister() {
-        m_callback = 0;
-    }; 
+    FileLister();
+    ~FileLister();
     /**
      * Specify the callback function that reports the files found.
          **/
-    void setCallbackFunction(bool (*callback)(const std::string& dirpath,
-        const char *filename, time_t mtime)) {
+    void setCallbackFunction(bool (*callback)(const char* fullpath,
+            uint dirlen, time_t mtime)) {
         m_callback = callback;
     }
     /**

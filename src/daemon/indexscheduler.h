@@ -30,8 +30,7 @@ namespace jstreams {
 }
 class IndexScheduler {
 friend void* indexschedulerstart(void *);
-friend bool addFileCallback(const std::string& path, const char *filename,
-    time_t mtime);
+friend bool addFileCallback(const char* path, uint dirlen, time_t mtime);
 private:
     enum State {Idling, Indexing, Stopping};
     State state;
@@ -46,8 +45,7 @@ private:
     void* run(void*);
     void index();
 public:
-    static bool addFileCallback(const std::string& path, const char *filename,
-        time_t mtime);
+    static bool addFileCallback(const char* path, uint dirlen, time_t mtime);
     IndexScheduler();
     void addDirToIndex(const std::string& d) {
         dirstoindex.insert(d);

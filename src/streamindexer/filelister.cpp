@@ -21,6 +21,8 @@
 #include "filelister.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <string.h>
 #include "stgdirent.h" //dirent replacement (includes native if available)
 
 #ifdef HAVE_DIRECT_H
@@ -33,6 +35,34 @@
 
 using namespace std;
 
+FileLister::FileLister() {
+    m_callback = 0;
+    paths = 0;
+    npaths = 0;
+}
+FileLister::~FileLister() {
+    if (npaths == 0) return;
+    for (int i=0; i<npaths; ++i) {
+        if (paths[i]) free(paths[i]);
+    }
+    free(paths);
+    free(lengths);
+}
+void
+FileLister::setNumPaths(uint n) {
+    if (paths == 0) {
+        paths = (char**)calloc(n, sizeof(const char*));
+        lengths = (uint*)calloc(n, sizeof(uint));
+    } else {
+        paths = (char**)realloc(paths, sizeof(const char*)*n);
+        lengths = (uint*)realloc(lengths, sizeof(uint)*n);
+        for (uint i=npaths; i<n; ++i) {
+            paths[i] = 0;
+            lengths[i] = 0;
+        }
+    }
+    npaths = n;
+}
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_callback == 0) return;
@@ -42,38 +72,45 @@ FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (dir[len-1] != '/') {
         return;
     }
-    walk_directory(dir);
+    walk_directory(0, dir, len);
+}
+char*
+FileLister::resize(uint depth, uint len) {
+    if (depth >= npaths) setNumPaths(npaths+10);
+    if (lengths[depth] <= len) {
+        paths[depth] = (char*)realloc(paths[depth], len+100);
+        lengths[depth] = len+100;
+    }
+    return paths[depth];
 }
 /**
  * Walk through a directory. The directory name must end in a '/'.
  **/
 bool
-FileLister::walk_directory(const string& dirname) {
+FileLister::walk_directory(uint depth, const char* dirname, uint len) {
     bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
 
-    /* The full path of the current file. todo: how to determine the max
-       expanded path? */
-    string cwd = dirname;
-    int len = cwd.length();
+    char* cwd = resize(depth, len);
+    strcpy(cwd, dirname);
 
 #ifdef _WIN32
     // remove the trailing '/' on windows machines,
     // but dont strip off the trailing slash from windows c:/
     if ( len > 3) {
-        cwd.resize(len-1);
+        cwd[len-1] = '\0';
     }
 #endif
 
     // open the directory
-    dir = opendir(cwd.c_str());
+    dir = opendir(cwd);
     if (dir == 0) {
         return true;
     }
 #ifdef _WIN32
-    cwd += '/';
+    cwd[len-1] = '/';
 #endif
 
     subdir = readdir(dir);
@@ -89,28 +126,30 @@ FileLister::walk_directory(const string& dirname) {
             }
         }
 
-        cwd += subdir->d_name;
-        if (stat(cwd.c_str(), &dirstat) == 0) {
+        uint l = strlen(subdir->d_name);
+        cwd = resize(depth, len+l+1);
+        strcpy(cwd+len, subdir->d_name);
+        if (stat(cwd, &dirstat) == 0) {
             bool c = true;
             if ( dirstat.st_mode & S_IFREG
                     && dirstat.st_mtime >= m_oldestdate) {
-                c = m_callback(dirname, subdir->d_name, dirstat.st_mtime);
+                c = m_callback(cwd, len, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR ) {
-                cwd += '/';
-                c = walk_directory(cwd);
+                strcpy(cwd+len+l, "/");
+                c = walk_directory(depth+1, cwd, len+l+1);
             }
             if (!c) break;
-        } else {
-            fprintf(stderr, "Could not stat '%s': %s\n", cwd.c_str(),
-                strerror(errno));
+/*        } else {
+            fprintf(stderr, "Could not stat '%s': %s\n", cwd,
+                strerror(errno));*/
         }
-        cwd.resize(len);
+        //cwd.resize(len);
         subdir = readdir(dir);
     }
 
     // clean up
     closedir(dir);
     // go back to where we came from
-    chdir("..");
+    //chdir("..");
     return true;
 }

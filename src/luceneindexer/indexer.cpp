@@ -52,12 +52,11 @@ Indexer::index(const char *dir) {
     }
 }
 bool
-Indexer::addFileCallback(const string& path, const char *filename,
-        time_t mtime) {
-    workingIndexer->doFile(path+filename);
+Indexer::addFileCallback(const char* path, uint dirlen, time_t mtime) {
+    workingIndexer->doFile(path);
     return true;
 }
 void
-Indexer::doFile(const std::string &filepath) {
-    m_indexer.indexFile(filepath.c_str());
+Indexer::doFile(const char* filepath) {
+    m_indexer.indexFile(filepath);
 }
