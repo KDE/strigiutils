@@ -83,16 +83,16 @@ std::vector<EndAnalyzerFactory*> strigi_end_analyzer_factories;
 
 
   // macro for registering a EndAnalyzer in a module
-#define STRIGI_END_PLUGINS_START() extern "C"{ \
+#define STRIGI_END_PLUGINS_START extern "C"{ \
     STRIGI_PLUGIN_API bool createEndAnalyzer(int item, jstreams::StreamEndAnalyzer** ret){ \
         if ( strigi_end_analyzer_factories.size() == 0 ){
 #define STRIGI_END_PLUGINS_REGISTER(CLASS) strigi_end_analyzer_factories.push_back((EndAnalyzerFactory*)new EndAnalyzerFactoryImpl<CLASS>);
-#define STRIGI_END_PLUGINS_END() \
+#define STRIGI_END_PLUGINS_END \
         } \
         if ( item < 0 || item >= strigi_end_analyzer_factories.size() ) return false; \
         *ret = strigi_end_analyzer_factories.at(item)->create(); return true;\
     } \
-    STRIGI_PLUGIN_API void deleteAnalyzer(void* analyzer){ delete analyzer; } \
+    STRIGI_PLUGIN_API void deleteAnalyzer(jstreams::StreamEndAnalyzer* analyzer){ delete analyzer; } \
 }
 
 #include "indexwriter.h"
