@@ -35,22 +35,22 @@ using namespace jstreams;
 
 
 PluginEndAnalyzer::PluginEndAnalyzer(ModuleLoader* ml) {
-	moduleLoader = ml;
-	selectedEndAnalyzer = NULL;
-	
-	//for now we just load all the plugins in any order... configuration required
+    moduleLoader = ml;
+    selectedEndAnalyzer = NULL;
+    
+    //for now we just load all the plugins in any order... configuration required
     moduleLoader->getEndAnalyzers(&analyzers);
 }
 PluginEndAnalyzer::~PluginEndAnalyzer() {
-	moduleLoader->deleteEndAnalyzers(&analyzers);
+    moduleLoader->deleteEndAnalyzers(&analyzers);
 }
 
 bool PluginEndAnalyzer::checkHeader(const char* header, int32_t headersize) const{
     std::list<ModuleLoader::EndPair>::const_iterator i;
     for (i = analyzers.begin(); i!= analyzers.end(); ++i) {
         if ( (i->analyzer)->checkHeader(header, headersize) ){
-        	selectedEndAnalyzer = i->analyzer;
-        	return true;
+            selectedEndAnalyzer = i->analyzer;
+            return true;
         }
     }
     return false;
@@ -58,11 +58,11 @@ bool PluginEndAnalyzer::checkHeader(const char* header, int32_t headersize) cons
 char PluginEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in, int depth,
         jstreams::StreamIndexer *indexer, jstreams::Indexable* idx) {
 
-	if ( selectedEndAnalyzer ){
-    	char ret = selectedEndAnalyzer->analyze(filename,in,depth,indexer, idx);
-		selectedEndAnalyzer = NULL;
-		return ret;
+    if ( selectedEndAnalyzer ){
+        char ret = selectedEndAnalyzer->analyze(filename,in,depth,indexer, idx);
+        selectedEndAnalyzer = NULL;
+        return ret;
     }else
-    	return -1;
+        return -1;
 }
 

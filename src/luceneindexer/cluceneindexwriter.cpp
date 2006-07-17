@@ -94,11 +94,11 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     o << (int)idx->getDepth();
     setField(idx, "depth", o.str());
     o.str("");
-	{
-		char tmp[100];
-		snprintf(tmp,100,"%d",idx->getMTime());
-		o << tmp;
-	}
+    {
+        char tmp[100];
+        snprintf(tmp,100,"%d",idx->getMTime());
+        o << tmp;
+    }
     setField(idx, "mtime", o.str());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     if (doc->content.length() > 0) {

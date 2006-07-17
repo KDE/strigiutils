@@ -36,8 +36,8 @@ Base64InputStream::Base64InputStream(StreamBase<char>* i) :input(i) {
         inalphabet[i] = 0;
     }
     for (int i=0; i<64; ++i) {
-	inalphabet[alphabet[i]] = true;
-	decoder[alphabet[i]] = i;
+    inalphabet[alphabet[i]] = true;
+    decoder[alphabet[i]] = i;
     }
 
     nleft = 0;

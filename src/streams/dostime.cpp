@@ -53,8 +53,8 @@
  * month<<21  (month is tm_mon + 1, 1=Jan through 12=Dec)
  * day<<16    (day is tm_mday, 1-31)
  * hour<<11   (hour is tm_hour, 0-23)
- * min<<5	   (min is tm_min, 0-59)
- * sec>>1	   (sec is tm_sec, 0-59, that's right, we throw away the LSB)
+ * min<<5       (min is tm_min, 0-59)
+ * sec>>1       (sec is tm_sec, 0-59, that's right, we throw away the LSB)
  * 
  * DOS uses local time, so the localtime() call is used to turn the time_t
  * into a struct tm.

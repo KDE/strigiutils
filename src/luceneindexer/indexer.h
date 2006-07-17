@@ -27,20 +27,20 @@
 
 class Indexer {
 private:
-	FileLister m_lister;
-	const std::string m_indexdir;
+    FileLister m_lister;
+    const std::string m_indexdir;
         CLuceneIndexManager m_manager;
         CLuceneIndexWriter m_writer;
-	jstreams::StreamIndexer m_indexer;
+    jstreams::StreamIndexer m_indexer;
 
-	static bool addFileCallback(const std::string& path,
-		const char *filename, time_t mtime);
-	static Indexer *workingIndexer;
-	void doFile(const std::string &filepath);
+    static bool addFileCallback(const std::string& path,
+        const char *filename, time_t mtime);
+    static Indexer *workingIndexer;
+    void doFile(const std::string &filepath);
 public:
-	Indexer(const char *indexdir);
-	~Indexer();
-	void index(const char *dir);
+    Indexer(const char *indexdir);
+    ~Indexer();
+    void index(const char *dir);
 };
 
 #endif

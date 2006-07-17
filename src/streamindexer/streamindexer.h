@@ -49,7 +49,7 @@ private:
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
     std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
 
-	ModuleLoader moduleLoader;
+    ModuleLoader moduleLoader;
     void addThroughAnalyzers();
     void addEndAnalyzers();
     void removeIndexable(uint depth);

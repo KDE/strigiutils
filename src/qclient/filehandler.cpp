@@ -24,9 +24,9 @@
 
 int
 main(int argc, char **argv) {
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-	ArchiveEngineHandler engine;
+    ArchiveEngineHandler engine;
 
     if (argc > 1) {
         QFile file(argv[1]);
@@ -53,7 +53,7 @@ main(int argc, char **argv) {
     } else {
         FileBrowser fb;
         fb.show();
-    	return app.exec();
+        return app.exec();
     }
 }
 

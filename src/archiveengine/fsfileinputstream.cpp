@@ -32,7 +32,7 @@ FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize
     if (!open) {
         // handle error
         error = (const char*)fse->errorString().toUtf8();
-	printf("error: %s %s\n",  (const char*)filename.toUtf8(), error.c_str());
+    printf("error: %s %s\n",  (const char*)filename.toUtf8(), error.c_str());
         status = Error;
         return;
     }

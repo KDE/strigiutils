@@ -179,21 +179,21 @@ SimpleSearchGui::startDaemon() {
     starting = true;
     // try to start the daemon
     QFileInfo exe = QCoreApplication::applicationDirPath()
-	+ "/../../daemon/strigidaemon";
+    + "/../../daemon/strigidaemon";
     QStringList args;
     if (backendsList) {
         args += backendsList->currentText();
     }
     if (exe.exists()) {
-	// start not installed version
-	QProcess::startDetached(exe.absoluteFilePath(), args);
+    // start not installed version
+    QProcess::startDetached(exe.absoluteFilePath(), args);
     } else {
         exe = QCoreApplication::applicationDirPath()+"/strigidaemon";
         if (exe.exists()) {
             QProcess::startDetached(exe.absoluteFilePath(), args);
         } else {
-	    // start installed version
-	    QProcess::startDetached("strigidaemon");
+        // start installed version
+        QProcess::startDetached("strigidaemon");
         }
     }
 }

@@ -40,12 +40,12 @@ using namespace std;
 using namespace jstreams;
 
 StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
-	
+    
     moduleLoader.loadPlugins("/usr/local/lib/strigi");
     moduleLoader.loadPlugins("/usr/lib/strigi");
     moduleLoader.loadPlugins("/lib/strigi");
 
-	// todo: remove this
+    // todo: remove this
     moduleLoader.loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
     if ( getenv("HOME") != NULL ){
         string homedir = getenv("HOME");

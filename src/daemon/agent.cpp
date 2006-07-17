@@ -44,62 +44,62 @@
  **/
 int
 getLoad() {
-	FILE *f;
-	char line[128];
-	char *end;
-	int read, load;
+    FILE *f;
+    char line[128];
+    char *end;
+    int read, load;
 
-	f = fopen("/proc/loadavg", "r");
-	read = fread(line, 1, 128, f);
-	fclose(f);
-	line[read] = 0;
-	load = (int)(100*strtod(line, &end));
-	if (load < 0) {
-		load = 0;
-	} else if (load > 100) {
-		load = 100;
-	}
-	return load;
+    f = fopen("/proc/loadavg", "r");
+    read = fread(line, 1, 128, f);
+    fclose(f);
+    line[read] = 0;
+    load = (int)(100*strtod(line, &end));
+    if (load < 0) {
+        load = 0;
+    } else if (load > 100) {
+        load = 100;
+    }
+    return load;
 }
 int
 listenSocket(const char* socketname) {
-	int sd, newSd, len, load;
+    int sd, newSd, len, load;
         unsigned int addlen;
-	char msg[16];
-	struct sockaddr_un sock, work;
+    char msg[16];
+    struct sockaddr_un sock, work;
 
-	/* create socket */
-	sd = socket(AF_UNIX, SOCK_STREAM, 0);
-	if(sd < 0) {
-		perror("cannot open socket ");
-		return ERROR;
-	}
+    /* create socket */
+    sd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if(sd < 0) {
+        perror("cannot open socket ");
+        return ERROR;
+    }
 
-	/* set the address */
-	len = strlen(socketname)+1;
-	len = (len > sizeof(sock.sun_path)) ?sizeof(sock.sun_path) :len;
-	strncpy(sock.sun_path, socketname, len);
-	sock.sun_path[len] = '\0';
+    /* set the address */
+    len = strlen(socketname)+1;
+    len = (len > sizeof(sock.sun_path)) ?sizeof(sock.sun_path) :len;
+    strncpy(sock.sun_path, socketname, len);
+    sock.sun_path[len] = '\0';
 
-	/* bind server port */
-	sock.sun_family = AF_UNIX;
-	if (bind(sd, (struct sockaddr *)&sock, sizeof(sock))<0) {
-		perror("cannot bind port ");
-		return ERROR;
-	}
+    /* bind server port */
+    sock.sun_family = AF_UNIX;
+    if (bind(sd, (struct sockaddr *)&sock, sizeof(sock))<0) {
+        perror("cannot bind port ");
+        return ERROR;
+    }
 
-	if (listen(sd, 5) < 0) {
-		perror("cannot listen to port");
-		return ERROR;
-	}
+    if (listen(sd, 5) < 0) {
+        perror("cannot listen to port");
+        return ERROR;
+    }
 
-	while (1) {
-		addlen = sizeof(work);
-		newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
-		if(newSd < 0) {
-			perror("cannot accept connection ");
-			return ERROR;
-		}
+    while (1) {
+        addlen = sizeof(work);
+        newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
+        if(newSd < 0) {
+            perror("cannot accept connection ");
+            return ERROR;
+        }
                 // read request
                 std::string req;
                 char buf[1001];
@@ -136,69 +136,69 @@ listenSocket(const char* socketname) {
                 }
                 printf("after writing\n");
 
-		close(newSd);
+        close(newSd);
                 printf("after closing\n");
-	}
+    }
 }
 
 void
 runDaemon() {
 
-	/* Our process ID and Session ID */
-	pid_t pid, sid;
+    /* Our process ID and Session ID */
+    pid_t pid, sid;
 
-	/* Fork off the parent process */
-	pid = fork();
-	if (pid < 0) {
-		exit(EXIT_FAILURE);
-	}
-	/* If we got a good PID, then
-	we can exit the parent process. */
-	if (pid > 0) {
-		exit(EXIT_SUCCESS);
-	}
+    /* Fork off the parent process */
+    pid = fork();
+    if (pid < 0) {
+        exit(EXIT_FAILURE);
+    }
+    /* If we got a good PID, then
+    we can exit the parent process. */
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
 
-	/* Change the file mode mask */
-	umask(0);
+    /* Change the file mode mask */
+    umask(0);
 
-	/* Open any logs here */        
+    /* Open any logs here */        
 
-	/* Create a new SID for the child process */
-	sid = setsid();
-	if (sid < 0) {
-	/* Log the failure */
-		exit(EXIT_FAILURE);
-	}
+    /* Create a new SID for the child process */
+    sid = setsid();
+    if (sid < 0) {
+    /* Log the failure */
+        exit(EXIT_FAILURE);
+    }
 
-	/* Change the current working directory */
-	if ((chdir("/")) < 0) {
-	/* Log the failure */
-		exit(EXIT_FAILURE);
-	}
+    /* Change the current working directory */
+    if ((chdir("/")) < 0) {
+    /* Log the failure */
+        exit(EXIT_FAILURE);
+    }
 
-	/* Close out the standard file descriptors */
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
+    /* Close out the standard file descriptors */
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
 
-	/* Daemon-specific initialization goes here */
+    /* Daemon-specific initialization goes here */
 
-	/* The Big Loop */
-	while (1) {
-	/* Do some task here ... */
-		listenSocket("socket");
-		sleep(30); /* wait 30 seconds */
-	}
-	exit(EXIT_SUCCESS);
+    /* The Big Loop */
+    while (1) {
+    /* Do some task here ... */
+        listenSocket("socket");
+        sleep(30); /* wait 30 seconds */
+    }
+    exit(EXIT_SUCCESS);
 }
 
 
 
 
 int main(void) {
-	unlink("socket");
-	listenSocket("socket");
-	unlink("socket");
-	//runDaemon();
-	return 0;
+    unlink("socket");
+    listenSocket("socket");
+    unlink("socket");
+    //runDaemon();
+    return 0;
 }

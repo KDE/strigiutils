@@ -29,34 +29,34 @@
 /** dirent structure - used by the dirent.h directory iteration functions */
 struct dirent
 {
-	unsigned short	d_namlen;	/* Length of name in d_name. */
-	char *d_name;		/* File name. */
+    unsigned short    d_namlen;    /* Length of name in d_name. */
+    char *d_name;        /* File name. */
 };
 
 /** DIR structure - used by the dirent.h directory iteration functions*/
 struct DIR
 {
-	/** disk transfer area for this dir */
-	struct _finddata_t dd_dta;
+    /** disk transfer area for this dir */
+    struct _finddata_t dd_dta;
 
-	/* dirent struct to return from dir (NOTE: this makes this thread
-	 * safe as long as only one thread uses a particular DIR struct at
-	 * a time) */
-	struct dirent		dd_dir;
+    /* dirent struct to return from dir (NOTE: this makes this thread
+     * safe as long as only one thread uses a particular DIR struct at
+     * a time) */
+    struct dirent        dd_dir;
 
-	/** _findnext handle */
-	intptr_t			dd_handle;
+    /** _findnext handle */
+    intptr_t            dd_handle;
 
-	/**
+    /**
          * Status of search:
-	 *   0 = not started yet (next entry to read is first entry)
-	 *  -1 = off the end
-	 *   positive = 0 based index of next entry
-	 */
-	int32_t			dd_stat;
-	
-	/** given path for dir with search pattern (struct is extended) */
-	char			dd_name[MAX_PATH];
+     *   0 = not started yet (next entry to read is first entry)
+     *  -1 = off the end
+     *   positive = 0 based index of next entry
+     */
+    int32_t            dd_stat;
+    
+    /** given path for dir with search pattern (struct is extended) */
+    char            dd_name[MAX_PATH];
 
 };
 
@@ -74,12 +74,12 @@ DIR* opendir (const char* filespec);
 * Return a pointer to a dirent structure filled with the information on the
 * next entry in the directory.
 */
-struct dirent*	readdir (DIR* dir);
+struct dirent*    readdir (DIR* dir);
 
 /**
 * Frees up resources allocated by opendir.
 */
-int32_t	closedir (DIR* dir);
+int32_t    closedir (DIR* dir);
 
 
 #elif defined (HAVE_DIRENT_H)

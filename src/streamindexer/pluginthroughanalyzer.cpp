@@ -25,8 +25,8 @@ using namespace jstreams;
 
 
 PluginThroughAnalyzer::PluginThroughAnalyzer(ModuleLoader* ml) {
-	moduleLoader = ml;
-	
+    moduleLoader = ml;
+    
     //for now we just load all the plugins in any order... configuration required
     moduleLoader->getThroughAnalyzers(&analyzers);
 }
@@ -46,7 +46,7 @@ void
 PluginThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
     list<ModuleLoader::ThroughPair>::const_iterator i;
     for (i = analyzers.begin(); i!= analyzers.end(); ++i) {
-		StreamThroughAnalyzer* a = i->analyzer;
-	        a->setIndexable(idx);
+        StreamThroughAnalyzer* a = i->analyzer;
+            a->setIndexable(idx);
     }
 }

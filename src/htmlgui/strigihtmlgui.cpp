@@ -194,7 +194,7 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
             if (c > 0) {
                 hitcounts[j->first] = c;
                 doother &= c < count;
-		otherq += " -" + j->second;
+        otherq += " -" + j->second;
                 if (j->first == selectedtab || activetab.size() == 0) {
                     activetab = j->first;
                     activequery = q;

@@ -348,7 +348,7 @@ MailInputStream::nextEntry() {
                 printf("NONDEJU size should be determined %lli\n",
                     substream->getSize());
                 status = Eof;
-		// make sure valgrind is called
+        // make sure valgrind is called
 /*                substream = 0;
                 substream->getSize();
                 exit(0);*/

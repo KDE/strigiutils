@@ -46,17 +46,17 @@ FileLister::walk_directory(const char *dirname) {
 
     char cwd[PATH_MAX*32]; //the full path of the current file. todo: how to determine the max expanded path?
     strcpy(cwd,dirname);
-	int len = strlen(cwd);
-	if ( len > 2 && (cwd[len-1] == '/' || cwd[len-1] == '\\') ){
+    int len = strlen(cwd);
+    if ( len > 2 && (cwd[len-1] == '/' || cwd[len-1] == '\\') ) {
 #ifdef _WIN32
-		if ( len > 3 ){ //dont strip off the trailing slash from windows c:/
-			cwd[len-1] = 0;
-			len--;
-		}
+        if ( len > 3 ){ //dont strip off the trailing slash from windows c:/
+            cwd[len-1] = 0;
+            len--;
+        }
 #else
-		cwd[len-1] = 0;
+    cwd[len-1] = 0;
 #endif
-	}
+    }
 
     // open the directory
     dir = opendir(cwd);
@@ -91,7 +91,7 @@ FileLister::walk_directory(const char *dirname) {
                     && dirstat.st_mtime >= m_oldestdate) {
                 c = m_callback(dirname, subdir->d_name, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR ) {
-				strcat(cwd,"/");
+                strcat(cwd,"/");
                 c = walk_directory(cwd);
             }
             if (!c) break;

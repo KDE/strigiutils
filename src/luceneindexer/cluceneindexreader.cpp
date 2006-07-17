@@ -129,7 +129,7 @@ CLuceneIndexReader::addField(lucene::document::Field* field,
         istringstream iss(convertValue(value));
         iss >> doc.mtime;
     } else if (strcmp(name, "size") == 0) {
-		string size = convertValue(value);
+        string size = convertValue(value);
         doc.size = atoi(size.c_str());
     } else {
         doc.properties[name] = convertValue(value);

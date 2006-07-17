@@ -28,12 +28,12 @@
  **/
 int
 main(int argc, char **argv) {
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-	ArchiveEngineHandler engine;
-	QFileDialog dialog;
-	dialog.show();
+    ArchiveEngineHandler engine;
+    QFileDialog dialog;
+    dialog.show();
 
-	return app.exec();
+    return app.exec();
 }
 

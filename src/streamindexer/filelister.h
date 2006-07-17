@@ -55,8 +55,8 @@ public:
     /**
      * List all the files in directory dir that have been modified more
      * recently then oldestdate.
-	 * dir should end with a /
-	 * on windows the root directory must be formatted like c:/ or c:\
+     * dir should end with a /
+     * on windows the root directory must be formatted like c:/ or c:\
      **/
     void listFiles(const char *dir, time_t oldestdate = 0);
 };

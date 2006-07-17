@@ -38,7 +38,7 @@ public:
     char analyze(std::string filename, jstreams::InputStream *in, int depth,
         jstreams::StreamIndexer *indexer, jstreams::Indexable*);
     const char* getName() const { return "PluginEndAnalyzer"; }
-	static void loadPlugins(const char* dir);
+    static void loadPlugins(const char* dir);
 };
 
 

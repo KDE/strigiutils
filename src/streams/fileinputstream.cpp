@@ -34,7 +34,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
         error = "Could not read file '";
         error += filepath;
         error += "': ";
-	error += strerror(errno);
+    error += strerror(errno);
         status = Error;
         return;
     }
