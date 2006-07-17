@@ -26,7 +26,7 @@
 #ifdef HAVE_DIRECT_H
 #include <direct.h>
 #endif
-
+#include <errno.h>
 #ifndef PATH_MAX
  #define PATH_MAX _MAX_PATH
 #endif
@@ -35,28 +35,36 @@ void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_callback == 0) return;
     m_oldestdate = oldestdate;
-    walk_directory(dir);
+    int len = strlen(dir);
+    // check that the dirname ends in '/'
+    if (dir[len-1] != '/') {
+        return;
+    }
+    walk_directory(dir, len);
 }
+/**
+ * Walk through a directory. The directory name must end in a '/'.
+ **/
 bool
-FileLister::walk_directory(const char *dirname) {
+FileLister::walk_directory(const char *dirname, int len) {
     bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
 
-    char cwd[PATH_MAX*32]; //the full path of the current file. todo: how to determine the max expanded path?
-    strcpy(cwd,dirname);
-    int len = strlen(cwd);
-    if ( len > 2 && (cwd[len-1] == '/' || cwd[len-1] == '\\') ) {
+    /* The full path of the current file. todo: how to determine the max
+       expanded path? */
+    char cwd[PATH_MAX*32];
+    strcpy(cwd, dirname);
+
+    // remove the trailing '/' on windows machines
 #ifdef _WIN32
-        if ( len > 3 ){ //dont strip off the trailing slash from windows c:/
-            cwd[len-1] = 0;
-            len--;
-        }
-#else
-    cwd[len-1] = 0;
-#endif
+    // dont strip off the trailing slash from windows c:/
+    if ( len > 3) {
+        cwd[len-1] = 0;
+        len--;
     }
+#endif
 
     // open the directory
     dir = opendir(cwd);
@@ -64,12 +72,13 @@ FileLister::walk_directory(const char *dirname) {
         return true;
     }
 
-    char* pcwd = cwd + len; //a pointer to the end of the current directory
-    if ( *(pcwd-1) != '/' && *(pcwd-1) != '\\' ){//make sure we have a trailing /
+    // a pointer past the last character in the current directory name
+    char* pcwd = cwd + len;
+    // add the trailing '/'
+    if ( *(pcwd-1) != '/' ) {
         *pcwd = '/';
         pcwd++;
     }
-    int cwd_rem = PATH_MAX - (pcwd-cwd);
 
     subdir = readdir(dir);
     while (subdir) {
@@ -84,6 +93,7 @@ FileLister::walk_directory(const char *dirname) {
             }
         }
 
+        int l = strlen(subdir->d_name);
         strcpy(pcwd, subdir->d_name);
         if (stat(cwd, &dirstat) == 0) {
             bool c = true;
@@ -91,10 +101,12 @@ FileLister::walk_directory(const char *dirname) {
                     && dirstat.st_mtime >= m_oldestdate) {
                 c = m_callback(dirname, subdir->d_name, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR ) {
-                strcat(cwd,"/");
-                c = walk_directory(cwd);
+                strcat(pcwd+l, "/");
+                c = walk_directory(cwd, len+l+1);
             }
             if (!c) break;
+        } else {
+            fprintf(stderr, "Could not stat '%s': %s\n", cwd, strerror(errno));
         }
         
         subdir = readdir(dir);
