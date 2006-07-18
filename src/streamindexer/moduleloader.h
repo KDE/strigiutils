@@ -70,7 +70,7 @@ public:
         jstreams::StreamEndAnalyzer*>& analyzers);
 
     //finds and loads all strigi plugins from the given directory into this moduleloader
-    void ModuleLoader::loadPlugins(const char* d);
+    void loadPlugins(const char* d);
 
     //load a given module from the specified file path
     static Module* loadModule(const char* lib);

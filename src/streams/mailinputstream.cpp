@@ -69,7 +69,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
                 // ':' signals the end of the key, a line starting with space
                 // is a continuation of the previous line's value
                 key = false;
-            } else if ((c == '\n' || c == '\r') && reqheader && linecount > 5
+            } else if ((c == '\n' || c == '\r') && reqheader && linecount >= 5
                     && (prevc == '\n' || prevc == '\r')) {
                 // if at least 5 header lines were read and an empty line is
                 // encountered, the mail header is valid
@@ -94,7 +94,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
         }
         prevc = c;
     }
-    return reqheader;
+    return reqheader && linecount >= 5;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), entrystream(0), substream(0),
