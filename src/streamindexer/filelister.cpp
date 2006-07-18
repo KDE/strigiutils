@@ -111,12 +111,12 @@ FileLister::walk_directory(uint len) {
         uint l = len+strlen(subdir->d_name);
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
-        if (stat(path, &dirstat) == 0) {
+        if (lstat(path, &dirstat) == 0) {
             bool c = true;
             if ( dirstat.st_mode & S_IFREG
                     && dirstat.st_mtime >= m_oldestdate) {
                 c = m_callback(path, len, l, dirstat.st_mtime);
-            } else if ( dirstat.st_mode & S_IFDIR ) {
+            } else if ( dirstat.st_mode & S_IFDIR) {
                 strcpy(path+l, "/");
                 c = walk_directory(l+1);
             }
