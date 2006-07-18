@@ -26,6 +26,17 @@
 using namespace jstreams;
 using namespace std;
 
+bool
+checkHeaderKey(const char* data, int32_t left) {
+    if (left >= 9 && strncasecmp("Received:", data, 9) == 0) {
+        return true;
+    }
+    if (left >= 5 && strncasecmp("From:", data, 5) == 0) {
+        return true;
+    }
+    return false;
+}
+
 /**
  * Validate a mail header. The header format is checked, but not the presence
  * of required fields. It is recommended to use a datasize of at least 512
@@ -33,17 +44,23 @@ using namespace std;
  **/
 bool
 MailInputStream::checkHeader(const char* data, int32_t datasize) {
-    if (datasize < 512) return false;
+    // the fileheader should contain a required header and have at least 5
+    // header lines
+    // 'Received' or 'From' (case insensitive)
     int linecount = 1;
     bool key = true;
     bool slashr = false;
-    char prevc = 0;
     int32_t pos = 0;
+    bool reqheader = checkHeaderKey(data, datasize);
+    char prevc = 0;
     while (pos < datasize) {
         char c = data[pos++];
         if (slashr) {
             slashr = false;
             if (c == '\n') {
+                if (!reqheader) {
+                    reqheader = checkHeaderKey(data+pos, datasize-pos);
+                }
                 continue;
             }
         }
@@ -52,7 +69,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
                 // ':' signals the end of the key, a line starting with space
                 // is a continuation of the previous line's value
                 key = false;
-            } else if ((c == '\n' || c == '\r') && linecount > 5
+            } else if ((c == '\n' || c == '\r') && reqheader && linecount > 5
                     && (prevc == '\n' || prevc == '\r')) {
                 // if at least 5 header lines were read and an empty line is
                 // encountered, the mail header is valid
@@ -63,7 +80,6 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
             }
         } else {
             // check that the text is 7-bit
-            //if (c <= 0) return false;
             if (c == '\n' || c == '\r') {
                 // a new line starts, so a new key
                 key = true;
@@ -71,12 +87,14 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
                 // enable reading of \r\n line endings
                 if (c == '\r') {
                     slashr = true;
+                } else if (!reqheader) {
+                    reqheader = checkHeaderKey(data+pos, datasize-pos);
                 }
             }
         }
         prevc = c;
     }
-    return true;
+    return reqheader;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), entrystream(0), substream(0),
