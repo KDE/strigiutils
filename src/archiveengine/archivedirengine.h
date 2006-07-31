@@ -37,8 +37,8 @@ public:
     ArchiveDirEngine(ArchiveEngineBase* parent,
         const FileEntry* e);
     ~ArchiveDirEngine();
-    StreamEngine *openEntry(const QString &filename);
-    ArchiveDirEngine *openDir(QString filename);
+    StreamEngine *openEntry(const QString& filename);
+    ArchiveDirEngine *openDir(const QString& filename);
     QString fileName ( FileName file = DefaultName ) const;
     QStringList entryList(QDir::Filters filters,
         const QStringList& filterNames) const;

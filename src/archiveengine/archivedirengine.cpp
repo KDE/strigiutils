@@ -61,7 +61,7 @@ ArchiveDirEngine::openEntry(const QString &filename) {
     return 0;
 }
 ArchiveDirEngine*
-ArchiveDirEngine::openDir(QString dirname) {
+ArchiveDirEngine::openDir(const QString& dirname) {
     const FileEntry *fe;
     do {
         fe = entry->getEntry(dirname);

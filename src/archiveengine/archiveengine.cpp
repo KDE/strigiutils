@@ -323,7 +323,7 @@ ArchiveEngine::openEntry(const QString &filename) {
     return 0;
 }
 ArchiveDirEngine*
-ArchiveEngine::openDir(QString dirname) {
+ArchiveEngine::openDir(const QString& dirname) {
     if (entrystream == 0) return 0;
     do {
         if (dirname == current->name) {

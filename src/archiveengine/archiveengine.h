@@ -60,8 +60,8 @@ private:
 protected:
     const FileEntry* entry;
 public:
-    virtual StreamEngine *openEntry(const QString &filename) = 0;
-    virtual ArchiveDirEngine *openDir(QString filename) = 0;
+    virtual StreamEngine *openEntry(const QString& filename) = 0;
+    virtual ArchiveDirEngine *openDir(const QString& filename) = 0;
     virtual jstreams::StreamBase<char>* getInputStream(const FileEntry* entry) = 0;
     // lose references to engines so that they are not deleted
     virtual void releaseEngines() {};
@@ -136,7 +136,7 @@ public:
     ArchiveEngine(StreamEngine *fs);
     ~ArchiveEngine();
     StreamEngine *openEntry(const QString &filename);
-    ArchiveDirEngine *openDir(QString filename);
+    ArchiveDirEngine *openDir(const QString& filename);
     QStringList entryList(QDir::Filters filters,
         const QStringList& filterNames) const;
     QString fileName ( FileName file = DefaultName ) const;
