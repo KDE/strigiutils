@@ -23,7 +23,7 @@
 #include "cluceneindexreader.h"
 #include <CLucene.h>
 #include <sys/types.h>
-#include "stgdirent.h" //our dirent compatibilty header... uses native if available
+#include "stgdirent.h" //our dirent compatibility header... uses native if available
 
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;

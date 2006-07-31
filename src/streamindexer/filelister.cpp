@@ -80,7 +80,7 @@ FileLister::walk_directory(uint len) {
 
 #ifdef _WIN32
     // remove the trailing '/' on windows machines before the call to opendir(),
-    // but dont strip off the trailing slash from windows c:/
+    // but do not strip off the trailing slash from windows c:/
     if ( len > 3) {
         path[len-1] = '\0';
     }
