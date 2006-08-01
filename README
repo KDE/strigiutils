@@ -24,7 +24,7 @@ Optional:
 - Qt4 >= 4.1.2
 - libxml2
 - magic-dev   
-
+- linux kernel >= 2.6.13 (for inotify support)
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------
@@ -46,6 +46,8 @@ Some possible cmake options:
    include a custom include directory
  -DCMAKE_LIBRARY_PATH=${HOME}/testinstall/lib
    include a custom library directory
+ -DENABLE_INOTIFY:BOOL=ON
+   enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 

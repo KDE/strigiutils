@@ -32,13 +32,26 @@ namespace jstreams {
     class IndexManager;
 }
 class IndexScheduler;
+
+#ifdef HAVE_INOTIFY
+class InotifyManager;
+#endif
+
 class Interface : public ClientInterface {
 private:
     jstreams::IndexManager& manager;
     IndexScheduler& scheduler;
+    
+#ifdef HAVE_INOTIFY
+    InotifyManager& inotify;
+#endif
+
 public:
-    Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),
-        scheduler(s) {}
+#ifdef HAVE_INOTIFY
+    Interface(jstreams::IndexManager& m, IndexScheduler& s, InotifyManager& i) :manager(m),scheduler(s), inotify(i) {}
+#else
+    Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),scheduler(s) {}
+#endif
     int countHits(const std::string& query);
     Hits getHits(const std::string& query, int max, int offset);
     std::map<std::string, std::string> getStatus();

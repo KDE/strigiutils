@@ -1,5 +1,10 @@
 include_directories( ../streamindexer ../streams )
 
+IF(ENABLE_INOTIFY)
+  add_definitions(-DHAVE_INOTIFY)
+  MESSAGE("-- inotify support enabled")
+ENDIF(ENABLE_INOTIFY)
+
 if (CLucene_FOUND)
     add_definitions(-DHAVE_CLUCENE)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} cluceneindex)
@@ -12,7 +17,7 @@ if (HyperEstraier_FOUND)
 endif (HyperEstraier_FOUND)
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp)
+	indexscheduler.cpp inotifyevent.cpp inotifyeventqueue.cpp inotifymanager.cpp clientinterface.cpp)
 target_link_libraries(strigidaemon streamindexer ${CMAKE_THREAD_LIBS_INIT}
 	${strigidaemon_LIBS})
 

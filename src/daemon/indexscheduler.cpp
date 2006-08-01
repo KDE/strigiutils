@@ -21,6 +21,12 @@
 #include "indexmanager.h"
 #include "indexreader.h"
 #include "indexwriter.h"
+
+#ifdef HAVE_INOTIFY
+#include "inotifyevent.h"
+#include "inotifyeventqueue.h"
+#endif
+
 #include "filelister.h"
 #include "streamindexer.h"
 #include <cerrno>
@@ -35,6 +41,9 @@ pthread_mutex_t IndexScheduler::initlock = PTHREAD_MUTEX_INITIALIZER;
 IndexScheduler::IndexScheduler() {
     sched = this;
     state = Idling;
+#ifdef HAVE_INOTIFY
+    m_inotifyEventQueue = NULL;
+#endif
 }
 IndexScheduler::~IndexScheduler() {
 }
@@ -132,6 +141,27 @@ IndexScheduler::run(void*) {
                 state = Idling;
             }
         }
+#ifdef HAVE_INOTIFY
+        else if (state == Idling)
+        {
+            if (m_inotifyEventQueue == NULL)
+            {
+                fprintf(stderr, "IndexScheduler: m_inotifyEventQueue == NULL!\n");
+                return 0;
+            }
+            
+            if (pthread_mutex_trylock (&(m_inotifyEventQueue->m_mutex)))
+            {
+                if (m_inotifyEventQueue->size() > 0)
+                {
+                    state = Indexing;
+                    processInotifyEvents();
+                    state = Idling;
+                }
+                pthread_mutex_unlock (&(m_inotifyEventQueue->m_mutex));
+            }
+        }
+#endif
     }
     return 0;
 }
@@ -183,6 +213,41 @@ IndexScheduler::index() {
 
     delete streamindexer;
 }
+
+#ifdef HAVE_INOTIFY
+void IndexScheduler::processInotifyEvents()
+{
+    IndexReader* reader = indexmanager->getIndexReader();
+    IndexWriter* writer = indexmanager->getIndexWriter();
+    StreamIndexer* streamindexer = new StreamIndexer(writer);
+
+    printf ("processing inotify's events\n");
+
+    m_inotifyEventQueue->optimize();
+    
+    vector<string> toDelete = m_inotifyEventQueue->getEventStrings (InotifyEvent::DELETED|InotifyEvent::UPDATED);
+    
+    writer->deleteEntries(toDelete);
+
+    vector<string> toIndex = m_inotifyEventQueue->getEventStrings (InotifyEvent::CREATED|InotifyEvent::UPDATED);
+    
+    for (unsigned int i = 0; i < toIndex.size(); i++)
+    {
+        streamindexer->indexFile(toIndex[i]);
+        if (writer->itemsInCache() > 10000) {
+            writer->commit();
+        }
+    }
+    
+    writer->commit();
+    writer->optimize();
+
+    m_inotifyEventQueue->clear();
+    
+    delete streamindexer;
+}
+#endif
+
 void
 IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {
     dirstoindex.clear();

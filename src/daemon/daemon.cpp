@@ -32,7 +32,13 @@
 #ifdef HAVE_SQLITE
 #include "sqliteindexmanager.h"
 #endif
+
 #include "indexscheduler.h"
+#ifdef HAVE_INOTIFY
+#include "inotifyeventqueue.h"
+#include "inotifymanager.h"
+#endif
+
 #include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -47,11 +53,18 @@ using namespace std;
 
 IndexScheduler scheduler;
 
+#ifdef HAVE_INOTIFY
+InotifyManager inotifyManager;
+#endif
+
 void
 quit_daemon(int) {
     static int interruptcount = 0;
     switch (++interruptcount) {
     case 1:
+#ifdef HAVE_INOTIFY
+        inotifyManager.stop();
+#endif
         scheduler.stop();
         break;
     case 2:
@@ -214,16 +227,38 @@ main(int argc, char** argv) {
     scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);
 
+#ifdef HAVE_INOTIFY
+    InotifyEventQueue inotfyEventQueue;
+    scheduler.setInotifyEventQueue (&inotfyEventQueue);
+#endif
 
     // start the indexer thread
     scheduler.start();
 
+#ifdef HAVE_INOTIFY
+    // configure & start inotfy's watcher thread
+    if (inotifyManager.init())
+    {
+        inotifyManager.setInotifyEventQueue (&inotfyEventQueue);
+        inotifyManager.setIndexedDirectories(dirs);
+        inotifyManager.start();
+    }
+#endif
+    
     // listen for requests
+#ifdef HAVE_INOTIFY
+    Interface interface(*index, scheduler, inotifyManager);
+#else
     Interface interface(*index, scheduler);
+#endif
+
     SocketServer server(&interface);
     server.setSocketName(socketpath.c_str());
     if (!server.start()) {
         scheduler.stop();
+#ifdef HAVE_INOTIFY
+        inotifyManager.stop();
+#endif
     }
     dirs = scheduler.getIndexedDirectories();
     savedirstoindex(dirsfile, dirs);

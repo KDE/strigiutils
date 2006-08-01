@@ -37,6 +37,7 @@ using namespace std;
 
 FileLister::FileLister() {
     m_callback = 0;
+    m_dirCallback = 0;
     path = 0;
     length = 0;
 }
@@ -77,6 +78,12 @@ FileLister::walk_directory(uint len) {
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
+
+#ifndef _WIN32
+    // call dir function callback, actually there's only inotify dir callback
+    if (m_dirCallback != 0)
+        m_dirCallback (path);
+#endif
 
 #ifdef _WIN32
     // remove the trailing '/' on windows machines before the call to opendir(),

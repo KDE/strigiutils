@@ -25,6 +25,10 @@
 #include <set>
 #include <pthread.h>
 
+#ifdef HAVE_INOTIFY
+class InotifyEventQueue;
+#endif
+
 namespace jstreams {
     class IndexManager;
 }
@@ -43,6 +47,11 @@ private:
     std::map<std::string, time_t> dbfiles;
     std::map<std::string, time_t> toindex;
 
+#ifdef HAVE_INOTIFY
+    InotifyEventQueue* m_inotifyEventQueue;
+    void processInotifyEvents();
+#endif
+
     void* run(void*);
     void index();
 public:
@@ -55,6 +64,9 @@ public:
     void setIndexManager(jstreams::IndexManager* m) {
         indexmanager = m;
     }
+#ifdef HAVE_INOTIFY
+    void setInotifyEventQueue (InotifyEventQueue* eventQueue) { m_inotifyEventQueue = eventQueue; }
+#endif
     int getQueueSize();
     int start();
     void stop();

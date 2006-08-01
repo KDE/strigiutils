@@ -21,6 +21,7 @@
 #include "indexreader.h"
 #include "indexmanager.h"
 #include "indexscheduler.h"
+#include "inotifymanager.h"
 #include "query.h"
 #include <sstream>
 using namespace std;
@@ -85,6 +86,11 @@ Interface::getIndexedDirectories() {
 }
 string
 Interface::setIndexedDirectories(set<string> dirs) {
+
+#ifdef HAVE_INOTIFY
+    inotify.setIndexedDirectories( dirs);
+#endif
+
     scheduler.setIndexedDirectories(dirs);
     return "";
 }
