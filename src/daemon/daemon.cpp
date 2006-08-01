@@ -240,16 +240,16 @@ main(int argc, char** argv) {
     if (inotifyManager.init())
     {
         inotifyManager.setInotifyEventQueue (&inotfyEventQueue);
+        inotifyManager.setIndexReader (index->getIndexReader());
         inotifyManager.setIndexedDirectories(dirs);
         inotifyManager.start();
     }
 #endif
     
     // listen for requests
-#ifdef HAVE_INOTIFY
-    Interface interface(*index, scheduler, inotifyManager);
-#else
     Interface interface(*index, scheduler);
+#ifdef HAVE_INOTIFY
+    interface.setInotifyManager (&inotifyManager);
 #endif
 
     SocketServer server(&interface);

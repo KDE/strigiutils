@@ -43,15 +43,11 @@ private:
     IndexScheduler& scheduler;
     
 #ifdef HAVE_INOTIFY
-    InotifyManager& inotify;
+    InotifyManager* inotify;
 #endif
 
 public:
-#ifdef HAVE_INOTIFY
-    Interface(jstreams::IndexManager& m, IndexScheduler& s, InotifyManager& i) :manager(m),scheduler(s), inotify(i) {}
-#else
-    Interface(jstreams::IndexManager& m, IndexScheduler& s) :manager(m),scheduler(s) {}
-#endif
+    Interface(jstreams::IndexManager& m, IndexScheduler& s);
     int countHits(const std::string& query);
     Hits getHits(const std::string& query, int max, int offset);
     std::map<std::string, std::string> getStatus();
@@ -60,6 +56,9 @@ public:
     std::string stopIndexing();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
+#ifdef HAVE_INOTIFY
+    void setInotifyManager (InotifyManager* imanager);
+#endif
 };
 
 #endif

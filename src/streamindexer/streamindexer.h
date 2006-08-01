@@ -58,7 +58,7 @@ public:
     ~StreamIndexer();
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);
-    char analyze(const std::string &path, int64_t mtime,
+    char analyze(const std::string &path, time_t mtime,
         jstreams::StreamBase<char> *input, uint depth);
 };
 }

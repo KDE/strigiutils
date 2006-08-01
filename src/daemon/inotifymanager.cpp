@@ -30,12 +30,14 @@
 #include "inotify/inotify-syscalls.h"
 
 #include "filelister.h"
+#include "indexreader.h"
 #include "inotifyevent.h"
 #include "inotifyeventqueue.h"
 
 InotifyManager* manager;
 
 using namespace std;
+using namespace jstreams;
 
 void* InotifyManagerStart (void *inotifymanager)
 {
@@ -73,6 +75,7 @@ InotifyManager::InotifyManager()
     m_state = Idling;
     m_bInitialized = false;
     m_eventQueue = NULL;
+    m_pIndexReader = NULL;
 }
 
 InotifyManager::~InotifyManager()
@@ -211,7 +214,7 @@ void InotifyManager::watch ()
     
     do
     {
-        string this_event_str;
+//         string this_event_str;
         
         this_event = (struct inotify_event *)this_event_char;
         
@@ -226,13 +229,13 @@ void InotifyManager::watch ()
         if (!(((IN_ISDIR & this_event->mask) == 0) && (this_event->len > 0) && ((this_event->name)[0] == '.')))
         // we ignore every action on a file starting with '.'
         {
-            // cout << "inotify: " << iter->second << " changed\n";
+//             cout << "inotify: " << iter->second << " changed\n";
             
-            this_event_str = eventToString( this_event->mask);
-            // cout << "event str: |" << this_event_str << "|\n";
+//             this_event_str = eventToString( this_event->mask);
+//             cout << "event str: |" << this_event_str << "|\n";
         
-            /*if ((this_event->len > 0))
-            printf("event name |%s|\n", this_event->name );*/
+//             if ((this_event->len > 0))
+//                 printf("event name |%s|\n", this_event->name );
             
             //TODO: fix path creation
             string file = iter->second;
@@ -247,19 +250,37 @@ void InotifyManager::watch ()
                 InotifyEvent* event = new InotifyEvent (InotifyEvent::UPDATED, file, this_event->wd, time (NULL));
                 events.push_back (event);
             }
-            else if (( (IN_DELETE & this_event->mask) != 0 ) || ( (IN_MOVED_FROM & this_event->mask) != 0 ) || ( (IN_DELETE_SELF & this_event->mask) != 0 ))
+            else if (( (IN_DELETE & this_event->mask) != 0 ) || ( (IN_MOVED_FROM & this_event->mask) != 0 ) || ( (IN_DELETE_SELF & this_event->mask) != 0 ) || ( (IN_MOVE_SELF & this_event->mask) != 0 ))
             {
-                InotifyEvent* event = new InotifyEvent (InotifyEvent::DELETED, file, this_event->wd, time (NULL));
-                events.push_back (event);
-                
                 if ( (IN_DELETE_SELF & this_event->mask) != 0 )
                     watchesToDel.insert (iter->first);
                 
-                //TODO: to handle
-            }
-            else if ( (IN_MOVE_SELF & this_event->mask) != 0 )
-            {
-                //TODO: to handle
+                if ((IN_ISDIR & this_event->mask) != 0)
+                {   
+                    // we've to de-index all files contained into the deleted/moved directory
+                    if (m_pIndexReader != NULL)
+                    {
+                        // all indexed files
+                        map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
+                        
+                         for (map<string, time_t>::iterator it = indexedFiles.begin(); it != indexedFiles.end(); it++)
+                        {
+                            string::size_type pos = (it->first).find (file);
+                            if (pos == 0)
+                            {
+                                InotifyEvent* event = new InotifyEvent (InotifyEvent::DELETED, it->first, this_event->wd, time (NULL));
+                                events.push_back (event);
+                            }
+                        }
+                    }
+                    else
+                        cout << "InotifyManager:: m_pIndexReader == NULL!\n";
+                }
+                else
+                {
+                    InotifyEvent* event = new InotifyEvent (InotifyEvent::DELETED, file, this_event->wd, time (NULL));
+                    events.push_back (event);
+                }
             }
             else if ( (IN_CLOSE_WRITE & this_event->mask) != 0 )
             {
@@ -317,11 +338,7 @@ void InotifyManager::watch ()
         if (m_eventQueue == NULL)
             cerr << "InotifyManager: m_eventQueue == NULL!\n";
         else
-        {
-            pthread_mutex_lock (&(m_eventQueue->m_mutex));
             m_eventQueue->addEvents (events);
-            pthread_mutex_unlock (&(m_eventQueue->m_mutex));
-        }
     }
     
     // remove deleted watches

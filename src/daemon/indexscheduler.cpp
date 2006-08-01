@@ -150,15 +150,12 @@ IndexScheduler::run(void*) {
                 return 0;
             }
             
-            if (pthread_mutex_trylock (&(m_inotifyEventQueue->m_mutex)))
+            vector <InotifyEvent*> events = m_inotifyEventQueue->getEvents();
+            if (events.size() > 0)
             {
-                if (m_inotifyEventQueue->size() > 0)
-                {
-                    state = Indexing;
-                    processInotifyEvents();
-                    state = Idling;
-                }
-                pthread_mutex_unlock (&(m_inotifyEventQueue->m_mutex));
+                state = Indexing;
+                processInotifyEvents(events);
+                state = Idling;
             }
         }
 #endif
@@ -176,7 +173,7 @@ IndexScheduler::index() {
         // retrieve the list of real files currently in the database
         dbfiles = reader->getFiles(0);
         printf("%i real files in the database\n", dbfiles.size()); 
-
+        
         // first loop through all files
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
@@ -215,22 +212,37 @@ IndexScheduler::index() {
 }
 
 #ifdef HAVE_INOTIFY
-void IndexScheduler::processInotifyEvents()
+void IndexScheduler::processInotifyEvents(vector<InotifyEvent*>& events)
 {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
-
+    
+    vector<string> toDelete, toIndex;
+    
     printf ("processing inotify's events\n");
 
-    m_inotifyEventQueue->optimize();
-    
-    vector<string> toDelete = m_inotifyEventQueue->getEventStrings (InotifyEvent::DELETED|InotifyEvent::UPDATED);
-    
+    for (vector<InotifyEvent*>::iterator iter = events.begin(); iter != events.end(); iter++)
+    {
+        InotifyEvent* event = *iter;
+        switch (event->getType())
+        {
+            case InotifyEvent::CREATED:
+                toIndex.push_back (event->getPath());
+                break;
+            case InotifyEvent::UPDATED:
+                toIndex.push_back (event->getPath());
+                toDelete.push_back (event->getPath());
+                break;
+            case InotifyEvent::DELETED:
+                toDelete.push_back (event->getPath());
+                break;
+        }
+        
+        delete event;
+    }
     writer->deleteEntries(toDelete);
 
-    vector<string> toIndex = m_inotifyEventQueue->getEventStrings (InotifyEvent::CREATED|InotifyEvent::UPDATED);
-    
     for (unsigned int i = 0; i < toIndex.size(); i++)
     {
         streamindexer->indexFile(toIndex[i]);
@@ -241,8 +253,6 @@ void IndexScheduler::processInotifyEvents()
     
     writer->commit();
     writer->optimize();
-
-    m_inotifyEventQueue->clear();
     
     delete streamindexer;
 }

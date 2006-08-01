@@ -27,6 +27,22 @@
 using namespace std;
 using namespace jstreams;
 
+Interface::Interface(IndexManager& m, IndexScheduler& s)
+    :manager(m),
+     scheduler(s)
+{
+#ifdef HAVE_INOTIFY
+inotify = NULL;
+#endif
+}
+
+#ifdef HAVE_INOTIFY
+void Interface::setInotifyManager (InotifyManager* imanager)
+{
+    inotify = imanager;
+}
+#endif
+
 int
 Interface::countHits(const string& query) {
     Query q(query, -1, 0);
@@ -88,7 +104,10 @@ string
 Interface::setIndexedDirectories(set<string> dirs) {
 
 #ifdef HAVE_INOTIFY
-    inotify.setIndexedDirectories( dirs);
+    if (inotify != NULL)
+        inotify->setIndexedDirectories( dirs);
+    else
+        printf ("Interface: inotify == NULL!\n");
 #endif
 
     scheduler.setIndexedDirectories(dirs);

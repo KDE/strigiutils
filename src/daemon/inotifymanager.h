@@ -27,6 +27,11 @@
 
 class InotifyEventQueue;
 
+namespace jstreams
+{
+    class IndexReader;
+}
+
 class InotifyManager
 {
     public:
@@ -41,6 +46,8 @@ class InotifyManager
         void setIndexedDirectories (const std::set<std::string> &dirs);
         
         void setInotifyEventQueue (InotifyEventQueue* eventQueue) { m_eventQueue = eventQueue; }
+        
+        void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
         
         bool start();
         void* run(void*);
@@ -68,6 +75,7 @@ class InotifyManager
         bool m_bMonitor;
         bool m_bInitialized;
         std::set<std::string> m_toIndex;
+        jstreams::IndexReader* m_pIndexReader;
 };
 
 #endif

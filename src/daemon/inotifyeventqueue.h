@@ -37,12 +37,12 @@ class InotifyEventQueue
         void addEvents (std::vector<InotifyEvent*> events);
         unsigned int size() { return m_events.size(); }
         std::vector<std::string> getEventStrings (unsigned char type);
-        void optimize();
+        std::vector <InotifyEvent*> getEvents();
         
         friend class InotifyManager;
-        friend class IndexScheduler;
         
     protected:
+        void optimize();
         void clear();
         void clearMap();
         void clearVector();

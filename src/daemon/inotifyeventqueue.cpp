@@ -71,12 +71,16 @@ void InotifyEventQueue::addEvents (vector<InotifyEvent*> events)
 {
     vector<InotifyEvent*>::iterator iter;
     
+    pthread_mutex_lock (&m_mutex);
+    
     for (iter = events.begin(); iter != events.end(); iter++)
     {
         InotifyEvent* event = *iter;
         
         m_events[event->hash()].push_back(event);
     }
+    
+    pthread_mutex_unlock (&m_mutex);
 }
 
 vector<string> InotifyEventQueue::getEventStrings (unsigned char type)
@@ -93,6 +97,22 @@ vector<string> InotifyEventQueue::getEventStrings (unsigned char type)
     }
     
     return strings;
+}
+
+vector <InotifyEvent*> InotifyEventQueue::getEvents()
+{
+    vector <InotifyEvent*> result;
+    
+    if (pthread_mutex_trylock (&m_mutex))
+    {
+        optimize();
+        result = m_optEvents;
+        m_optEvents.clear();
+        
+        pthread_mutex_unlock (&m_mutex);
+    }
+    
+    return result;
 }
 
 void InotifyEventQueue::optimize()
@@ -149,14 +169,12 @@ void InotifyEventQueue::optimize()
             m_optEvents.push_back (new InotifyEvent (event));
     }
     
-    /*
-    printf ("optimized events:\n");
-    for (std::vector<InotifyEvent*>::iterator it = m_optEvents.begin(); it != m_optEvents.end(); it++)
-    {
-        printf ("event\n");
-        cout << *it;
-    }
-    */
+//     printf ("optimized events:\n");
+//     for (std::vector<InotifyEvent*>::iterator it = m_optEvents.begin(); it != m_optEvents.end(); it++)
+//     {
+//         printf ("event\n");
+//         cout << *it;
+//     }
     
     clearMap();
 }

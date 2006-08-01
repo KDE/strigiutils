@@ -125,7 +125,7 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
 }
 char
-StreamIndexer::analyze(const std::string &path, int64_t mtime,
+StreamIndexer::analyze(const std::string &path, time_t mtime,
         InputStream *input, uint depth) {
     static int count = 1;
     if (++count % 1000 == 0) {
@@ -133,7 +133,7 @@ StreamIndexer::analyze(const std::string &path, int64_t mtime,
     }
     //printf("depth #%i: %s\n", depth, path.c_str());
     Indexable idx(path, mtime, writer, depth);
-
+    
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;

@@ -26,7 +26,9 @@
 #include <pthread.h>
 
 #ifdef HAVE_INOTIFY
+class InotifyEvent;
 class InotifyEventQueue;
+#include <vector>
 #endif
 
 namespace jstreams {
@@ -49,7 +51,7 @@ private:
 
 #ifdef HAVE_INOTIFY
     InotifyEventQueue* m_inotifyEventQueue;
-    void processInotifyEvents();
+    void processInotifyEvents(std::vector<InotifyEvent*>& events);
 #endif
 
     void* run(void*);

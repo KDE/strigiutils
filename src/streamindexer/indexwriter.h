@@ -63,14 +63,14 @@ friend class IndexWriter;
 private:
     int64_t id;
     void* writerData;
-    const int64_t mtime;
+    const time_t mtime;
     const std::string& name;
     std::string encoding;
     std::string mimetype;
     IndexWriter* writer;
     char depth;
 public:
-    Indexable(const std::string& n, int64_t mt, IndexWriter* w, char d)
+    Indexable(const std::string& n, time_t mt, IndexWriter* w, char d)
             :mtime(mt), name(n), writer(w), depth(d) {
         w->startIndexable(this);
     }
@@ -84,7 +84,7 @@ public:
         }
     }
     const std::string& getName() const { return name; }
-    int64_t getMTime() const { return mtime; }
+    time_t getMTime() const { return mtime; }
     void setId(int64_t i) { id = i; }
     int64_t getId() const { return id; }
     char getDepth() const { return depth; }
