@@ -17,36 +17,32 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INOTIFYEVENT_H
-#define INOTIFYEVENT_H
+#ifndef EVENT_H
+#define EVENT_H
 
 #include <string>
 #include <time.h>
 #include <ostream>
 
-class InotifyEvent
+class Event
 {
     public:
         enum Type{ CREATED = 0x01, UPDATED = 0x02, DELETED = 0x04};
         
-        InotifyEvent(Type type, std::string path, int wd, time_t t);
-        InotifyEvent(InotifyEvent* event);
-        ~InotifyEvent();
+        Event(Type type, std::string path, time_t t);
+        Event(Event* event);
+        ~Event();
         
         Type getType() { return m_type; }
         void setType(Type type) { m_type = type; }
         std::string getPath() { return m_path; }
-        int getWD () { return m_wd; }
         time_t getTime() { return m_time; }
         
-        std::pair< int, std::string> hash() { return std::make_pair (m_wd, m_path); }
-        
-        friend std::ostream &operator<< (std::ostream &stream, InotifyEvent* event);
+        friend std::ostream &operator<< (std::ostream &stream, Event* event);
         
     protected:
         Type m_type;
         std::string m_path;
-        int m_wd;
         time_t m_time;
 };
 

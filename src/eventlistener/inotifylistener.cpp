@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "inotifymanager.h"
+#include "inotifylistener.h"
 
 #include <iostream>
 #include <vector>
@@ -29,17 +29,17 @@
 #include "inotify/inotify.h"
 #include "inotify/inotify-syscalls.h"
 
+#include "event.h"
+#include "eventlistenerqueue.h"
 #include "filelister.h"
 #include "indexreader.h"
-#include "inotifyevent.h"
-#include "inotifyeventqueue.h"
 
-InotifyManager* manager;
+InotifyListener* manager;
 
 using namespace std;
 using namespace jstreams;
 
-void* InotifyManagerStart (void *inotifymanager)
+void* InotifyListenerStart (void *inotifylistener)
 {
     // give this thread job batch job priority
     struct sched_param param;
@@ -60,11 +60,11 @@ void* InotifyManagerStart (void *inotifymanager)
 #endif
 
     // start the actual work
-    static_cast<InotifyManager*>(inotifymanager)->run(0);
+    static_cast<InotifyListener*>(inotifylistener)->run(0);
     pthread_exit(0);
 }
 
-InotifyManager::InotifyManager()
+InotifyListener::InotifyListener()
 {
     manager = this;
     
@@ -78,11 +78,11 @@ InotifyManager::InotifyManager()
     m_pIndexReader = NULL;
 }
 
-InotifyManager::~InotifyManager()
+InotifyListener::~InotifyListener()
 {
 }
 
-bool InotifyManager::init()
+bool InotifyListener::init()
 {
     m_iInotifyFD = inotify_init();
     if (m_iInotifyFD < 0)
@@ -93,12 +93,12 @@ bool InotifyManager::init()
     
     m_bInitialized = true;
     
-    printf ("InotifyManager successfully initialized\n");
+    printf ("InotifyListener successfully initialized\n");
     
     return true;
 }
 
-bool InotifyManager::start()
+bool InotifyListener::start()
 {
     if (!m_bInitialized)
     {
@@ -107,7 +107,7 @@ bool InotifyManager::start()
     }
     
     // start the inotify thread
-    int ret = pthread_create(&m_thread, NULL, InotifyManagerStart, this);
+    int ret = pthread_create(&m_thread, NULL, InotifyListenerStart, this);
     if (ret < 0)
     {
         printf("cannot create thread\n");
@@ -117,7 +117,7 @@ bool InotifyManager::start()
     return true;
 }
 
-void* InotifyManager::run(void*)
+void* InotifyListener::run(void*)
 {
     while (m_state != Stopping)
     {
@@ -130,7 +130,7 @@ void* InotifyManager::run(void*)
     return 0;
 }
 
-void InotifyManager::stop()
+void InotifyListener::stop()
 {
     m_state = Stopping;
     
@@ -143,11 +143,11 @@ void InotifyManager::stop()
     m_thread = 0;
 }
 
-void InotifyManager::watch ()
+void InotifyListener::watch ()
 {
     // some code taken from inotify-tools (http://inotify-tools.sourceforge.net/)
     
-    vector <InotifyEvent*> events;
+    vector <Event*> events;
     set <unsigned int> watchesToDel;
     
     struct timeval read_timeout;
@@ -247,7 +247,7 @@ void InotifyManager::watch ()
             
             if ( (IN_MODIFY & this_event->mask) != 0 )
             {
-                InotifyEvent* event = new InotifyEvent (InotifyEvent::UPDATED, file, this_event->wd, time (NULL));
+                Event* event = new Event (Event::UPDATED, file, time (NULL));
                 events.push_back (event);
             }
             else if (( (IN_DELETE & this_event->mask) != 0 ) || ( (IN_MOVED_FROM & this_event->mask) != 0 ) || ( (IN_DELETE_SELF & this_event->mask) != 0 ) || ( (IN_MOVE_SELF & this_event->mask) != 0 ))
@@ -268,23 +268,23 @@ void InotifyManager::watch ()
                             string::size_type pos = (it->first).find (file);
                             if (pos == 0)
                             {
-                                InotifyEvent* event = new InotifyEvent (InotifyEvent::DELETED, it->first, this_event->wd, time (NULL));
+                                Event* event = new Event (Event::DELETED, it->first, time (NULL));
                                 events.push_back (event);
                             }
                         }
                     }
                     else
-                        cout << "InotifyManager:: m_pIndexReader == NULL!\n";
+                        cout << "InotifyListener:: m_pIndexReader == NULL!\n";
                 }
                 else
                 {
-                    InotifyEvent* event = new InotifyEvent (InotifyEvent::DELETED, file, this_event->wd, time (NULL));
+                    Event* event = new Event (Event::DELETED, file, time (NULL));
                     events.push_back (event);
                 }
             }
             else if ( (IN_CLOSE_WRITE & this_event->mask) != 0 )
             {
-                InotifyEvent* event = new InotifyEvent (InotifyEvent::UPDATED, file, this_event->wd, time (NULL));
+                Event* event = new Event (Event::UPDATED, file, time (NULL));
                 events.push_back (event);
             }
             else if (( (IN_CREATE & this_event->mask) != 0 ) || ( (IN_MOVED_TO & this_event->mask) != 0 ))
@@ -304,7 +304,7 @@ void InotifyManager::watch ()
                     
                     for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
                     {
-                        InotifyEvent* event = new InotifyEvent (InotifyEvent::CREATED, *i, this_event->wd, time (NULL));
+                        Event* event = new Event (Event::CREATED, *i, time (NULL));
                         events.push_back (event);
                     }
                     
@@ -312,7 +312,7 @@ void InotifyManager::watch ()
                 }
                 else
                 {
-                    InotifyEvent* event = new InotifyEvent (InotifyEvent::CREATED, file, this_event->wd, time (NULL));
+                    Event* event = new Event (Event::CREATED, file, time (NULL));
                     events.push_back (event);
                 }
             }
@@ -336,7 +336,7 @@ void InotifyManager::watch ()
     if (events.size() > 0)
     {
         if (m_eventQueue == NULL)
-            cerr << "InotifyManager: m_eventQueue == NULL!\n";
+            cerr << "InotifyListener: m_eventQueue == NULL!\n";
         else
             m_eventQueue->addEvents (events);
     }
@@ -351,7 +351,7 @@ void InotifyManager::watch ()
     fflush( NULL );
 }
 
-void InotifyManager::addWatch (const string path)
+void InotifyListener::addWatch (const string path)
 {
     if (!m_bInitialized)
         return;
@@ -378,7 +378,7 @@ void InotifyManager::addWatch (const string path)
     }
 }
 
-void InotifyManager::addWatches (const set<string> &watches)
+void InotifyListener::addWatches (const set<string> &watches)
 {
     set<string>::iterator iter;
     
@@ -386,7 +386,7 @@ void InotifyManager::addWatches (const set<string> &watches)
         addWatch (*iter);
 }
 
-void InotifyManager::setIndexedDirectories (const set<string> &dirs)
+void InotifyListener::setIndexedDirectories (const set<string> &dirs)
 {
     FileLister lister;
     
@@ -398,12 +398,12 @@ void InotifyManager::setIndexedDirectories (const set<string> &dirs)
         lister.listFiles(iter->c_str());
 }
 
-bool InotifyManager::ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
+bool InotifyListener::ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
     return true;
 }
 
-bool InotifyManager::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
+bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
     if (strstr(path, "/.")) return true;
     
@@ -412,12 +412,12 @@ bool InotifyManager::indexFileCallback(const char* path, uint dirlen, uint len, 
     return true;
 }
 
-void InotifyManager::watchDirCallback(const char* path)
+void InotifyListener::watchDirCallback(const char* path)
 {
     manager->addWatch( string (path));
 }
 
-string InotifyManager::eventToString(int events)
+string InotifyListener::eventToString(int events)
 {
     string message;
 
@@ -461,26 +461,4 @@ string InotifyManager::eventToString(int events)
         message = "UNKNOWN";
     
     return message;
-}
-
-bool InotifyManager::isRelevant (struct inotify_event * event)
-{
-    if ((IN_CLOSE_WRITE & event->mask) != 0)
-        return true;
-    else if ( (IN_MODIFY & event->mask) != 0 )
-        return true;
-    else if ((IN_MOVED_FROM & event->mask) != 0)
-        return true;
-    else if ((IN_MOVED_TO & event->mask) != 0)
-        return true;
-    else if ((IN_CREATE & event->mask) != 0)
-        return true;
-    else if ((IN_DELETE & event->mask) != 0)
-        return true;
-    else if ((IN_DELETE_SELF & event->mask) != 0)
-        return true;
-    else if ((IN_MOVE_SELF & event->mask) != 0)
-        return true;
-    else
-        return false;
 }

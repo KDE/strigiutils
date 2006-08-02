@@ -21,7 +21,7 @@
 #include "indexreader.h"
 #include "indexmanager.h"
 #include "indexscheduler.h"
-#include "inotifymanager.h"
+#include "eventlistener.h"
 #include "query.h"
 #include <sstream>
 using namespace std;
@@ -31,17 +31,13 @@ Interface::Interface(IndexManager& m, IndexScheduler& s)
     :manager(m),
      scheduler(s)
 {
-#ifdef HAVE_INOTIFY
-inotify = NULL;
-#endif
+    eventListener = NULL;
 }
 
-#ifdef HAVE_INOTIFY
-void Interface::setInotifyManager (InotifyManager* imanager)
+void Interface::setEventListener (EventListener* eListener)
 {
-    inotify = imanager;
+    eventListener = eListener;
 }
-#endif
 
 int
 Interface::countHits(const string& query) {
@@ -102,13 +98,8 @@ Interface::getIndexedDirectories() {
 }
 string
 Interface::setIndexedDirectories(set<string> dirs) {
-
-#ifdef HAVE_INOTIFY
-    if (inotify != NULL)
-        inotify->setIndexedDirectories( dirs);
-    else
-        printf ("Interface: inotify == NULL!\n");
-#endif
+    if (eventListener != NULL)
+        eventListener->setIndexedDirectories( dirs);
 
     scheduler.setIndexedDirectories(dirs);
     return "";

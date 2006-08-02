@@ -35,9 +35,9 @@
 
 #include "indexscheduler.h"
 #ifdef HAVE_INOTIFY
-#include "inotifyeventqueue.h"
-#include "inotifymanager.h"
+#include "inotifylistener.h"
 #endif
+#include "eventlistenerqueue.h"
 
 #include <fstream>
 #include <sys/types.h>
@@ -54,7 +54,7 @@ using namespace std;
 IndexScheduler scheduler;
 
 #ifdef HAVE_INOTIFY
-InotifyManager inotifyManager;
+InotifyListener inotifyListener;
 #endif
 
 void
@@ -63,7 +63,7 @@ quit_daemon(int) {
     switch (++interruptcount) {
     case 1:
 #ifdef HAVE_INOTIFY
-        inotifyManager.stop();
+        inotifyListener.stop();
 #endif
         scheduler.stop();
         break;
@@ -226,30 +226,28 @@ main(int argc, char** argv) {
     set<string> dirs = readdirstoindex(dirsfile);
     scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);
-
-#ifdef HAVE_INOTIFY
-    InotifyEventQueue inotfyEventQueue;
-    scheduler.setInotifyEventQueue (&inotfyEventQueue);
-#endif
+    
+    EventListenerQueue listenerEventQueue;
+    scheduler.setEventListenerQueue (&listenerEventQueue);
 
     // start the indexer thread
     scheduler.start();
 
 #ifdef HAVE_INOTIFY
     // configure & start inotfy's watcher thread
-    if (inotifyManager.init())
+    if (inotifyListener.init())
     {
-        inotifyManager.setInotifyEventQueue (&inotfyEventQueue);
-        inotifyManager.setIndexReader (index->getIndexReader());
-        inotifyManager.setIndexedDirectories(dirs);
-        inotifyManager.start();
+        inotifyListener.setEventListenerQueue (&listenerEventQueue);
+        inotifyListener.setIndexReader (index->getIndexReader());
+        inotifyListener.setIndexedDirectories(dirs);
+        inotifyListener.start();
     }
 #endif
     
     // listen for requests
     Interface interface(*index, scheduler);
 #ifdef HAVE_INOTIFY
-    interface.setInotifyManager (&inotifyManager);
+    interface.setEventListener (&inotifyListener);
 #endif
 
     SocketServer server(&interface);
@@ -257,7 +255,7 @@ main(int argc, char** argv) {
     if (!server.start()) {
         scheduler.stop();
 #ifdef HAVE_INOTIFY
-        inotifyManager.stop();
+        inotifyListener.stop();
 #endif
     }
     dirs = scheduler.getIndexedDirectories();

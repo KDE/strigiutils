@@ -16,9 +16,13 @@ if (HyperEstraier_FOUND)
     include_directories( ../estraierindexer )
 endif (HyperEstraier_FOUND)
 
+include_directories( ../eventlistener )
+
+LINK_DIRECTORIES(../eventlistener)
+
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp inotifyevent.cpp inotifyeventqueue.cpp inotifymanager.cpp clientinterface.cpp)
-target_link_libraries(strigidaemon streamindexer ${CMAKE_THREAD_LIBS_INIT}
+	indexscheduler.cpp clientinterface.cpp)
+target_link_libraries(strigidaemon streamindexer eventlistener ${CMAKE_THREAD_LIBS_INIT}
 	${strigidaemon_LIBS})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 

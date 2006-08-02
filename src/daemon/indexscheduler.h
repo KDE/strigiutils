@@ -24,12 +24,10 @@
 #include <string>
 #include <set>
 #include <pthread.h>
-
-#ifdef HAVE_INOTIFY
-class InotifyEvent;
-class InotifyEventQueue;
 #include <vector>
-#endif
+
+class Event;
+class EventListenerQueue;
 
 namespace jstreams {
     class IndexManager;
@@ -49,10 +47,8 @@ private:
     std::map<std::string, time_t> dbfiles;
     std::map<std::string, time_t> toindex;
 
-#ifdef HAVE_INOTIFY
-    InotifyEventQueue* m_inotifyEventQueue;
-    void processInotifyEvents(std::vector<InotifyEvent*>& events);
-#endif
+    EventListenerQueue* m_listenerEventQueue;
+    void processListenerEvents(std::vector<Event*>& events);
 
     void* run(void*);
     void index();
@@ -66,9 +62,7 @@ public:
     void setIndexManager(jstreams::IndexManager* m) {
         indexmanager = m;
     }
-#ifdef HAVE_INOTIFY
-    void setInotifyEventQueue (InotifyEventQueue* eventQueue) { m_inotifyEventQueue = eventQueue; }
-#endif
+    void setEventListenerQueue (EventListenerQueue* eventQueue) { m_listenerEventQueue = eventQueue; }
     int getQueueSize();
     int start();
     void stop();

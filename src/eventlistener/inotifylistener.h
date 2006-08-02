@@ -17,35 +17,29 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INOTIFYMANAGER_H
-#define INOTIFYMANAGER_H
+#ifndef INOTIFYLISTENER_H
+#define INOTIFYLISTENER_H
 
-#include <string>
+#include "eventlistener.h"
 #include <map>
-#include <set>
-#include <pthread.h>
-
-class InotifyEventQueue;
 
 namespace jstreams
 {
     class IndexReader;
 }
 
-class InotifyManager
+class InotifyListener : public EventListener
 {
     public:
-        InotifyManager();
+        InotifyListener();
 
-        ~InotifyManager();
+        ~InotifyListener();
     
         bool init();
         
         void addWatch (const std::string path);
         void addWatches (const std::set<std::string> &watches);
         void setIndexedDirectories (const std::set<std::string> &dirs);
-        
-        void setInotifyEventQueue (InotifyEventQueue* eventQueue) { m_eventQueue = eventQueue; }
         
         void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
         
@@ -57,20 +51,14 @@ class InotifyManager
         static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static void watchDirCallback(const char* path);
         
-        friend void* InotifyManagerStart (void* inotifyManager);
+        friend void* InotifyListenerStart (void* inotifylistener);
         
     private:
-        enum State {Idling, Watching, Stopping};
-        State m_state;
-        
         std::string eventToString(int events);
-        bool isRelevant (struct inotify_event * event);
         void watch ();
         
-        InotifyEventQueue* m_eventQueue;
         int m_iInotifyFD;
         int m_iEvents;
-        pthread_t m_thread;
         std::map<unsigned int, std::string> m_watches;
         bool m_bMonitor;
         bool m_bInitialized;

@@ -32,19 +32,14 @@ namespace jstreams {
     class IndexManager;
 }
 class IndexScheduler;
+class EventListener;
 
-#ifdef HAVE_INOTIFY
-class InotifyManager;
-#endif
 
 class Interface : public ClientInterface {
 private:
     jstreams::IndexManager& manager;
     IndexScheduler& scheduler;
-    
-#ifdef HAVE_INOTIFY
-    InotifyManager* inotify;
-#endif
+    EventListener* eventListener;
 
 public:
     Interface(jstreams::IndexManager& m, IndexScheduler& s);
@@ -56,9 +51,7 @@ public:
     std::string stopIndexing();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
-#ifdef HAVE_INOTIFY
-    void setInotifyManager (InotifyManager* imanager);
-#endif
+    void setEventListener (EventListener* eListener);
 };
 
 #endif

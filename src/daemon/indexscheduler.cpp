@@ -22,10 +22,8 @@
 #include "indexreader.h"
 #include "indexwriter.h"
 
-#ifdef HAVE_INOTIFY
-#include "inotifyevent.h"
-#include "inotifyeventqueue.h"
-#endif
+#include "event.h"
+#include "eventlistenerqueue.h"
 
 #include "filelister.h"
 #include "streamindexer.h"
@@ -41,9 +39,7 @@ pthread_mutex_t IndexScheduler::initlock = PTHREAD_MUTEX_INITIALIZER;
 IndexScheduler::IndexScheduler() {
     sched = this;
     state = Idling;
-#ifdef HAVE_INOTIFY
-    m_inotifyEventQueue = NULL;
-#endif
+    m_listenerEventQueue = NULL;
 }
 IndexScheduler::~IndexScheduler() {
 }
@@ -141,24 +137,19 @@ IndexScheduler::run(void*) {
                 state = Idling;
             }
         }
-#ifdef HAVE_INOTIFY
         else if (state == Idling)
         {
-            if (m_inotifyEventQueue == NULL)
-            {
-                fprintf(stderr, "IndexScheduler: m_inotifyEventQueue == NULL!\n");
+            if (m_listenerEventQueue == NULL)
                 return 0;
-            }
             
-            vector <InotifyEvent*> events = m_inotifyEventQueue->getEvents();
+            vector <Event*> events = m_listenerEventQueue->getEvents();
             if (events.size() > 0)
             {
                 state = Indexing;
-                processInotifyEvents(events);
+                processListenerEvents(events);
                 state = Idling;
             }
         }
-#endif
     }
     return 0;
 }
@@ -211,8 +202,7 @@ IndexScheduler::index() {
     delete streamindexer;
 }
 
-#ifdef HAVE_INOTIFY
-void IndexScheduler::processInotifyEvents(vector<InotifyEvent*>& events)
+void IndexScheduler::processListenerEvents(vector<Event*>& events)
 {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
@@ -220,21 +210,21 @@ void IndexScheduler::processInotifyEvents(vector<InotifyEvent*>& events)
     
     vector<string> toDelete, toIndex;
     
-    printf ("processing inotify's events\n");
+    printf ("processing listener's events\n");
 
-    for (vector<InotifyEvent*>::iterator iter = events.begin(); iter != events.end(); iter++)
+    for (vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
     {
-        InotifyEvent* event = *iter;
+        Event* event = *iter;
         switch (event->getType())
         {
-            case InotifyEvent::CREATED:
+            case Event::CREATED:
                 toIndex.push_back (event->getPath());
                 break;
-            case InotifyEvent::UPDATED:
+            case Event::UPDATED:
                 toIndex.push_back (event->getPath());
                 toDelete.push_back (event->getPath());
                 break;
-            case InotifyEvent::DELETED:
+            case Event::DELETED:
                 toDelete.push_back (event->getPath());
                 break;
         }
@@ -256,7 +246,6 @@ void IndexScheduler::processInotifyEvents(vector<InotifyEvent*>& events)
     
     delete streamindexer;
 }
-#endif
 
 void
 IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {

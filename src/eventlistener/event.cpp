@@ -17,39 +17,48 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INOTIFYEVENTQUEUE_H
-#define INOTIFYEVENTQUEUE_H
+#include "event.h"
 
-#include <map>
-#include <vector>
-#include <pthread.h>
-
-class InotifyEvent;
-class InotifyManager;
-class IndexScheduler;
-
-class InotifyEventQueue
+Event::Event(Type type, std::string path, time_t t)
+    : m_type (type),
+      m_path (path),
+      m_time (t)
 {
-    public:
-        InotifyEventQueue();
-        ~InotifyEventQueue();
-        
-        void addEvents (std::vector<InotifyEvent*> events);
-        unsigned int size() { return m_events.size(); }
-        std::vector<std::string> getEventStrings (unsigned char type);
-        std::vector <InotifyEvent*> getEvents();
-        
-        friend class InotifyManager;
-        
-    protected:
-        void optimize();
-        void clear();
-        void clearMap();
-        void clearVector();
-        
-        std::map <std::pair <int, std::string>, std::vector <InotifyEvent*> > m_events;
-        std::vector <InotifyEvent*> m_optEvents;
-        pthread_mutex_t m_mutex;
-};
+}
 
-#endif
+Event::Event(Event* event)
+    : m_type (event->m_type),
+      m_path (event->m_path),
+      m_time (event->m_time)
+{
+    
+}
+
+Event::~Event()
+{
+}
+
+std::ostream &operator<< (std::ostream &stream, Event* event)
+{
+    stream << "\ttype: ";
+    
+    switch (event->getType())
+    {
+        case Event::CREATED:
+            stream << "CREATED\n";
+            break;
+        case Event::UPDATED:
+            stream << "UPDATED\n";
+            break;
+        case Event::DELETED:
+            stream << "DELETED\n";
+            break;
+    }
+    
+    stream << "\tpath: " << event->getPath() << std::endl;
+    
+    const time_t time = event->getTime();
+    stream << "\ttime: " << ctime (&time) << std::endl;
+    
+    return stream;
+}
