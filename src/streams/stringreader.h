@@ -97,12 +97,6 @@ StringReader<T>::skip(int64_t ntoskip) {
 }
 template <class T>
 int64_t
-StringReader<T>::mark(int32_t /*readlimit*/) {
-    markpt = StreamBase<T>::position;
-    return markpt;
-}
-template <class T>
-int64_t
 StringReader<T>::reset(int64_t newpos) {
     if (newpos < 0) {
         StreamBase<T>::status = Ok;
