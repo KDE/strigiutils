@@ -86,11 +86,11 @@ DigestInputStream::skip(int64_t ntoskip) {
     //int32_t skipped = read(d, ntoskip, ntoskip);
     return skipped;
 }
-int64_t
+/*int64_t
 DigestInputStream::mark(int32_t readlimit) {
     if (status == Error) return -2;
     return input->mark(readlimit);
-}
+}*/
 int64_t
 DigestInputStream::reset(int64_t np) {
 //    printf("reset from %lli to %lli\n", position, np);

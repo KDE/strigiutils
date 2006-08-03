@@ -45,11 +45,6 @@ FileReader::read(const wchar_t*& start, int32_t min, int32_t max) {
     return nread;
 }
 int64_t
-FileReader::mark(int32_t readlimit) {
-    int64_t mp = reader->mark(readlimit);
-    return mp;
-}
-int64_t
 FileReader::reset(int64_t newpos) {
     position = reader->reset(newpos);
     if (position < -1) {

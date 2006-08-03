@@ -336,7 +336,7 @@ MailInputStream::handleBodyLine() {
     // create a stream that's limited to the content
     substream = new StringTerminatedSubStream(input, "--"+boundary);
     // set a reasonable buffer size
-    substream->mark(10*boundary.length());
+    //substream->mark(10*boundary.length());
     //printf("%s\n", contenttransferencoding.c_str());
     if (strcasestr(contenttransferencoding.c_str(), "base64")) {
         entrystream = new Base64InputStream(substream);

@@ -62,7 +62,7 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
         return;
     }
     charbuf.setSize(262);
-    mark(262);
+    //mark(262);
     charsLeft = 0;
 }
 InputStreamReader::~InputStreamReader() {

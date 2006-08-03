@@ -93,11 +93,11 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 //    printf("str2 %i\n", nread);
     return nread;
 }
-int64_t
+/*int64_t
 StringTerminatedSubStream::mark(int32_t readlimit) {
 //    printf("mark %i\n", readlimit);
     return input->mark(readlimit) - offset;
-}
+}*/
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
 //    printf("stssreset %lli\n", newpos);

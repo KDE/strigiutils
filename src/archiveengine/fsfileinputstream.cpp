@@ -38,14 +38,14 @@ FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize
     }
 
     // allocate memory in the buffer
-    mark(buffersize);
+    //mark(buffersize);
 }
 FSFileInputStream::FSFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
     status = Ok;
     open = true; // fse must be have been opened
     this->fse = fse;
     // allocate memory in the buffer
-    mark(buffersize);
+    //mark(buffersize);
 }
 FSFileInputStream::~FSFileInputStream() {
     delete fse;

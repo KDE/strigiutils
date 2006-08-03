@@ -37,7 +37,7 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     }
 
     // initialize the buffer
-    mark(262144);
+    //mark(262144);
 
     // initialize the z_stream
     zstream = (z_stream_s*)malloc(sizeof(z_stream_s));
@@ -87,9 +87,9 @@ GZipInputStream::checkMagic() {
     const char* begin;
     int32_t nread;
 
-    int64_t markpos = input->mark(2);
+    int64_t pos = input->getPosition();
     nread = input->read(begin, 2, 2);
-    input->reset(markpos);
+    input->reset(pos);
     if (nread != 2) {
         return false;
     }

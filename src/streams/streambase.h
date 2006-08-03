@@ -119,7 +119,6 @@ public:
       * When calling the method mark more than once at the same position in the
       * stream, the call with the largest value for \p readlimit is defining.
       **/
-    virtual int64_t mark(int32_t readlimit) = 0;
       /**
        * \short Repositions this stream to given requested position.
        * The general contract of reset is:

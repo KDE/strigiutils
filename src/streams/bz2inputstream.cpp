@@ -78,9 +78,9 @@ BZ2InputStream::checkMagic() {
     const char* begin;
     int32_t nread;
 
-    int64_t markpos = input->mark(5);
+    int64_t pos = input->getPosition();
     nread = input->read(begin, 5, 5);
-    input->reset(markpos);
+    input->reset(pos);
     if (nread != 5) {
         return false;
     }

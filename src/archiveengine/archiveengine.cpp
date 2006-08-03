@@ -175,13 +175,13 @@ ArchiveEngine::openArchive() {
         return;
     }
     int32_t bufsize = 1000;
-    parentstream->mark(bufsize); // make sure this is enough
+    //parentstream->mark(bufsize); // make sure this is enough
     InputStream* compressed = parentstream;
     InputStream* decompressed = decompress(compressed, bufsize);
     while (decompressed) {
         compressed = decompressed;
         compressedstreams.append(compressed);
-        compressed->mark(bufsize);
+        //compressed->mark(bufsize);
         decompressed = decompress(compressed, bufsize);
     }
 
@@ -230,7 +230,7 @@ ArchiveEngine::read(char* data, qint64 maxlen) {
 bool
 ArchiveEngine::testStream(InputStream* is, int32_t readsize) const {
     const char *start;
-    is->mark(readsize);
+    //is->mark(readsize);
     return is->read(start, readsize, readsize) == readsize;
 }
 InputStream*
@@ -281,7 +281,7 @@ bool
 ArchiveEngine::nextEntry() const {
     entrystream = zipstream->nextEntry();
     if (entrystream) {
-        entrystream->mark(1);
+        //entrystream->mark(1);
         const EntryInfo& info = zipstream->getEntryInfo();
         QString name(info.filename.c_str());
         QStringList path = name.split("/", QString::SkipEmptyParts);

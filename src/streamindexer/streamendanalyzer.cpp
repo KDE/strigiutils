@@ -27,7 +27,7 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     int32_t testsize = 1;
     const char *dummyptr;
     int32_t nread;
-    int64_t r = in->mark(testsize);
+    int64_t r = in->getPosition();
     if (r < 0) {
         return -1;
     }

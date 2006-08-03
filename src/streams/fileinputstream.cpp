@@ -60,7 +60,7 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     }
 
     // allocate memory in the buffer
-    mark(buffersize);
+    //mark(buffersize);
 }
 FileInputStream::~FileInputStream() {
     if (file) {

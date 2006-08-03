@@ -43,7 +43,6 @@ public:
     ~StringReader();
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
-    int64_t mark(int32_t readlimit);
     int64_t reset(int64_t pos);
 };
 
