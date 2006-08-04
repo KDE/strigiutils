@@ -107,7 +107,7 @@ public:
     int64_t mark(int32_t readlimit) {
         int64_t p = getPosition();
         const T* ptr;
-        read(ptr, readlimit, 0);
+        read(ptr, readlimit, -1);
         return reset(p);
     }
 };

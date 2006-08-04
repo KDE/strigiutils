@@ -27,11 +27,8 @@ DigestInputStream::DigestInputStream(StreamBase<char> *input) {
     assert(input->getPosition() == 0);
     this->input = input;
     size = input->getSize();
-#ifndef NDEBUG
     totalread = 0;
-#endif
     status = Ok;
-    ignoreBytes = 0;
     finished = false;
     SHA1_Init(&sha1);
 }
@@ -48,14 +45,10 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
     if (nread > 0) {
         position += nread;
     }
-    if (ignoreBytes < nread) {
-        SHA1_Update(&sha1, start+ignoreBytes, nread-ignoreBytes);
-#ifndef NDEBUG
-        totalread += nread-ignoreBytes;
-#endif
-        ignoreBytes = 0;
-    } else {
-        ignoreBytes -= nread;
+    if (totalread < position) {
+        int32_t toSha1 = (int32_t)(position - totalread);
+        SHA1_Update(&sha1, start+nread-toSha1, toSha1);
+        totalread = position;
     }
     if (nread < min) {
         status = Eof;
@@ -86,11 +79,6 @@ DigestInputStream::skip(int64_t ntoskip) {
     //int32_t skipped = read(d, ntoskip, ntoskip);
     return skipped;
 }
-/*int64_t
-DigestInputStream::mark(int32_t readlimit) {
-    if (status == Error) return -2;
-    return input->mark(readlimit);
-}*/
 int64_t
 DigestInputStream::reset(int64_t np) {
 //    printf("reset from %lli to %lli\n", position, np);
@@ -106,9 +94,6 @@ DigestInputStream::reset(int64_t np) {
         status = Error;
         error = input->getError();
     } else {
-        if (newpos < position) {
-            ignoreBytes += position - newpos;
-        }
         status = (newpos == size) ?Eof :Ok;
     }
     position = newpos;

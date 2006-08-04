@@ -91,11 +91,6 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     }
 
     int32_t nread = buffer.read(start, max);
-/*    if (nread == 0) {
-        printf("bis: start %p min %i max %i nread %i avail %i bsize %i pos %lli size %lli\n",
-        start, min, max, nread, buffer.avail, buffer.size, BufferedInputStream<T>::position, BufferedInputStream<T>::size);
-        printf("buf: start %p readpos %p marpos %p\n", buffer.start, buffer.readPos, buffer.markPos);
-    }*/
 
     BufferedInputStream<T>::position += nread;
     if (BufferedInputStream<T>::position > BufferedInputStream<T>::size

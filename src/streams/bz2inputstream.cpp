@@ -40,9 +40,6 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
         return;
     }
 
-    // set the minimum size for the output buffer
-    mark(262144);
-
     bzstream = (bz_stream*)malloc(sizeof(bz_stream));
     bzstream->bzalloc = NULL;
     bzstream->bzfree = NULL;
@@ -61,6 +58,9 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     allocatedBz = true;
     // signal that we need to read into the buffer
     bzstream->avail_out = 1;
+
+    // set the minimum size for the output buffer
+    mark(262144);
 }
 BZ2InputStream::~BZ2InputStream() {
     dealloc();

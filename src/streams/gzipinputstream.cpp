@@ -36,9 +36,6 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
         return;
     }
 
-    // initialize the buffer
-    mark(262144);
-
     // initialize the z_stream
     zstream = (z_stream_s*)malloc(sizeof(z_stream_s));
     zstream->zalloc = Z_NULL;
@@ -67,8 +64,12 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
         status = Error;
         return;
     }
+
     // signal that we need to read into the buffer
     zstream->avail_out = 1;
+
+    // initialize the buffer
+    mark(262144);
 }
 GZipInputStream::~GZipInputStream() {
     dealloc();

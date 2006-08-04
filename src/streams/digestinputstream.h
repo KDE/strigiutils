@@ -26,13 +26,11 @@ namespace jstreams {
 class DigestInputStream : public StreamBase<char> {
 private:
     bool finished;
-    int32_t ignoreBytes;
+//    int32_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
     StreamBase<char> *input;
-#ifndef NDEBUG
     int64_t totalread;
-#endif
 
     void finishDigest();
 public:
