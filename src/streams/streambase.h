@@ -101,6 +101,15 @@ public:
        * buffer (x + @p nread).
        **/
     virtual int64_t reset(int64_t pos) = 0;
+    /**
+     * deprecated function
+     **/
+    int64_t mark(int32_t readlimit) {
+        int64_t p = getPosition();
+        const T* ptr;
+        read(ptr, readlimit, 0);
+        return reset(p);
+    }
 };
 #define SKIPSTEP 1024
 template <class T>
