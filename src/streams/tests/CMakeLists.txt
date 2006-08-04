@@ -3,7 +3,6 @@ CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
 	ZipInputStreamTest.cpp 
 	GZipInputStreamTest.cpp 
 	TarInputStreamTest.cpp 
-	FileInputStreamTest.cpp 
 	SubInputStreamTest.cpp 
 	InputStreamTest.cpp 
 	StringReaderTest.cpp 

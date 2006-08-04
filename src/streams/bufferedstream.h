@@ -45,8 +45,9 @@ protected:
     virtual int32_t fillBuffer(T* start, int32_t space) = 0;
     // this function might be useful if you want to reuse a bufferedstream
     void resetBuffer() {printf("implement 'resetBuffer'\n");}
-public:
+    int32_t makeSpace(int32_t size) { return buffer.makeSpace(size); }
     BufferedInputStream<T>();
+public:
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t reset(int64_t);
     virtual int64_t skip(int64_t ntoskip);
