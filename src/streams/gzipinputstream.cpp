@@ -37,7 +37,7 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     }
 
     // initialize the buffer
-    makeSpace(262144);
+    mark(262144);
 
     // initialize the z_stream
     zstream = (z_stream_s*)malloc(sizeof(z_stream_s));

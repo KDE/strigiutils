@@ -41,7 +41,7 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     }
 
     // set the minimum size for the output buffer
-    makeSpace(262144);
+    mark(262144);
 
     bzstream = (bz_stream*)malloc(sizeof(bz_stream));
     bzstream->bzalloc = NULL;
