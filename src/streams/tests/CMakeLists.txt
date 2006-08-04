@@ -1,5 +1,6 @@
 
-CREATE_TEST_SOURCELIST(Tests testrunner.cpp ZipInputStreamTest.cpp 
+CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
+	ZipInputStreamTest.cpp 
 	GZipInputStreamTest.cpp 
 	TarInputStreamTest.cpp 
 	FileInputStreamTest.cpp 
@@ -21,6 +22,6 @@ REMOVE (TestsToRun testrunner.cpp)
 
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  ADD_TEST(${TName} testrunner ${TName})
+  ADD_TEST(${TName} testrunner ${TName} ${CMAKE_SOURCE_DIR}/testdata)
 ENDFOREACH (test)
 

@@ -43,7 +43,7 @@ inputStreamTest1(StreamBase<T>* s) {
     VERIFY(size == -1 || n == -1 || size == n);
     VERIFY(s->getPosition() == n);
     if (s->getStatus() == jstreams::Error) {
-        printf("error %s\n", s->getError());
+        fprintf(stderr, "error %s\n", s->getError());
     }
     VERIFY(s->getStatus() == jstreams::Eof);
 }
@@ -52,7 +52,11 @@ template <class T>
 void
 inputStreamTest2(StreamBase<T>* s) {
     int64_t p = s->getPosition();
-    int64_t n = s->skip(100);
+    const T* ptr;
+    int64_t n = s->read(ptr, 100, 0);
+    VERIFY(n > 0);
+    n = s->reset(p);
+    n = s->skip(100);
     VERIFY(n > 0);
     n = s->reset(p);
     VERIFY(n == p);
@@ -67,7 +71,7 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
         s = ssp->nextEntry();
     }
     if (ssp->getStatus() == jstreams::Error) {
-        printf("%s\n", ssp->getError());
+        fprintf(stderr, "%s\n", ssp->getError());
     }
     VERIFY(ssp->getStatus() == jstreams::Eof);
 }
@@ -79,7 +83,7 @@ subStreamProviderTest2(SubStreamProvider* ssp) {
         s = ssp->nextEntry();
     }
     if (ssp->getStatus() == jstreams::Error) {
-        printf("%s\n", ssp->getError());
+        fprintf(stderr, "%s\n", ssp->getError());
     }
     VERIFY(ssp->getStatus() == jstreams::Eof);
 }

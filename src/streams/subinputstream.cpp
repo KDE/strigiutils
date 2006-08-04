@@ -44,7 +44,7 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     int32_t nread = input->read(start, min, max);
     if (nread < -1) {
-        printf("substream too short.\n");
+        fprintf(stderr, "substream too short.\n");
         status = Error;
         error = input->getError();
     } else if (nread < min) {
@@ -55,9 +55,9 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
                 size = position;
             }
         } else {
-            printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i size %lli\n", nread, min, max, size);
-            printf("pos %lli parentpos %lli\n", position, input->getPosition());
-            printf("status: %i error: %s\n", input->getStatus(), input->getError());
+            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i size %lli\n", nread, min, max, size);
+            fprintf(stderr, "pos %lli parentpos %lli\n", position, input->getPosition());
+            fprintf(stderr, "status: %i error: %s\n", input->getStatus(), input->getError());
             // we expected data but didn't get enough so that's an error
             status = Error;
             error = "Premature end of stream\n";
@@ -78,8 +78,8 @@ SubInputStream::mark(int32_t readlimit) {
 }*/
 int64_t
 SubInputStream::reset(int64_t newpos) {
-    //printf("subreset pos: %lli newpos: %lli offset: %lli\n", position,
-    //    newpos, offset);
+//    fprintf(stderr, "subreset pos: %lli newpos: %lli offset: %lli\n", position,
+//        newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
         printf("###########\n");

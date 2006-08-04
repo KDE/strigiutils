@@ -23,8 +23,11 @@
 using namespace jstreams;
 
 int
-MailInputStreamTest(int,char**) {
+MailInputStreamTest(int argc, char** argv) {
+    if (argc < 2) return 0;
     founderrors = 0;
+    VERIFY(chdir(argv[1]) == 0);
+
     for (int i=0; i<nstreamprovidertests; ++i) {
         FileInputStream file("mail");
         MailInputStream mail(&file);

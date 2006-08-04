@@ -43,7 +43,8 @@ extern void (*streamprovidertests[])(jstreams::SubStreamProvider*);
 
 extern int founderrors;
 #define VERIFY(TESTBOOL) if (!(TESTBOOL)) {\
-	fprintf(stderr, "test TESTBOOL failed\n"); \
+	fprintf(stderr, "test '%s' failed at\n\t%s:%i\n", \
+		#TESTBOOL, __FILE__, __LINE__); \
 	founderrors++; \
 }
 
