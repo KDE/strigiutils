@@ -29,6 +29,7 @@ OPTION(ENABLE_INOTIFY
   OFF)
 
 SUBDIRS (src)
+ENABLE_TESTING()
 
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)

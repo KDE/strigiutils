@@ -17,16 +17,17 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "StringReaderTest.h"
 #include "../stringreader.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-StringReaderTest::testStream() {
+int
+StringReaderTest(int, char*[]) {
+    founderrors = 0;
     for (int i=0; i<ninputstreamtests; ++i) {
         StringReader<char> s1("a.zip", 5);
         charinputstreamtests[i](&s1);
     }
+    return founderrors;
 }
 

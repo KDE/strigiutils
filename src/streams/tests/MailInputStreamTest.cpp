@@ -17,18 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "MailInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "../mailinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-MailInputStreamTest::testStream() {
+int
+MailInputStreamTest(int,char**) {
+    founderrors = 0;
     for (int i=0; i<nstreamprovidertests; ++i) {
         FileInputStream file("mail");
         MailInputStream mail(&file);
         streamprovidertests[i](&mail);
     }
+    return founderrors;
 }
 

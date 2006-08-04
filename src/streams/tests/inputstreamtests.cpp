@@ -19,8 +19,9 @@
  */
 #include "inputstreamtests.h"
 #include "../substreamprovider.h"
-#include <QtTest/QtTest>
 using namespace jstreams;
+
+int founderrors = 0;
 
 template <class T>
 void
@@ -39,25 +40,23 @@ inputStreamTest1(StreamBase<T>* s) {
         // read past the end
         n = s->read(ptr, size+1, size+1);
     }
-    QVERIFY(size == -1 || n == -1 || size == n);
-    QVERIFY(s->getPosition() == n);
+    VERIFY(size == -1 || n == -1 || size == n);
+    VERIFY(s->getPosition() == n);
     if (s->getStatus() == jstreams::Error) {
         printf("error %s\n", s->getError());
     }
-    QVERIFY(s->getStatus() == jstreams::Eof);
+    VERIFY(s->getStatus() == jstreams::Eof);
 }
 
 template <class T>
 void
 inputStreamTest2(StreamBase<T>* s) {
     int64_t p = s->getPosition();
-    int64_t n = s->mark(100);
-    QVERIFY(n >= 0);
-    n = s->skip(100);
-    QVERIFY(n > 0);
+    int64_t n = s->skip(100);
+    VERIFY(n > 0);
     n = s->reset(p);
-    QVERIFY(n == p);
-    QVERIFY(s->getPosition() == p);
+    VERIFY(n == p);
+    VERIFY(s->getPosition() == p);
     inputStreamTest1(s);
 }
 void
@@ -70,7 +69,7 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     if (ssp->getStatus() == jstreams::Error) {
         printf("%s\n", ssp->getError());
     }
-    QVERIFY(ssp->getStatus() == jstreams::Eof);
+    VERIFY(ssp->getStatus() == jstreams::Eof);
 }
 void
 subStreamProviderTest2(SubStreamProvider* ssp) {
@@ -82,7 +81,7 @@ subStreamProviderTest2(SubStreamProvider* ssp) {
     if (ssp->getStatus() == jstreams::Error) {
         printf("%s\n", ssp->getError());
     }
-    QVERIFY(ssp->getStatus() == jstreams::Eof);
+    VERIFY(ssp->getStatus() == jstreams::Eof);
 }
 
 int ninputstreamtests = 2;

@@ -40,4 +40,12 @@ extern void (*wcharinputstreamtests[])(jstreams::StreamBase<wchar_t>*);
 
 extern int nstreamprovidertests;
 extern void (*streamprovidertests[])(jstreams::SubStreamProvider*);
+
+extern int founderrors;
+#define VERIFY(TESTBOOL) if (!(TESTBOOL)) {\
+	fprintf(stderr, "test TESTBOOL failed\n"); \
+	founderrors++; \
+}
+
+
 #endif

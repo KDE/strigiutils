@@ -17,15 +17,15 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "StringTerminatedSubStreamTest.h"
 #include "../fileinputstream.h"
 #include "../stringreader.h"
 #include "../stringterminatedsubstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-StringTerminatedSubStreamTest::testStream() {
+int
+StringTerminatedSubStreamTest(int, char**) {
+    founderrors = 0;
     StringReader<char> sr("abc");
     StringTerminatedSubStream sub(&sr, "b");
     const char* start;
@@ -37,5 +37,6 @@ StringTerminatedSubStreamTest::testStream() {
         StringTerminatedSubStream sub(&file, "THEEND");
         charinputstreamtests[i](&sub);
     }*/
+    return founderrors;
 }
 

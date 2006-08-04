@@ -17,18 +17,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "ZipInputStreamTest.h"
+
 #include "../fileinputstream.h"
 #include "../zipinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-ZipInputStreamTest::testStream() {
+int
+ZipInputStreamTest(int, char**) {
+    founderrors = 0;
+
     for (int i=0; i<nstreamprovidertests; ++i) {
         FileInputStream file("a.zip");
         ZipInputStream zip(&file);
         streamprovidertests[i](&zip);
     }
+
+    return founderrors;
 }
 

@@ -17,18 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "TarInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "../tarinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-TarInputStreamTest::testStream() {
+int
+TarInputStreamTest(int, char**) {
+    founderrors = 0;
     for (int i=0; i<nstreamprovidertests; ++i) {
         FileInputStream file("a.tar");
         TarInputStream tar(&file);
         streamprovidertests[i](&tar);
     }
+    return founderrors;
 }
 

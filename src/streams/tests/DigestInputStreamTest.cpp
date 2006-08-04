@@ -17,18 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "DigestInputStreamTest.h"
 #include "../fileinputstream.h"
 #include "../digestinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-DigestInputStreamTest::testStream() {
+int
+DigestInputStreamTest(int, char**) {
+    founderrors = 0;
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         DigestInputStream sub(&file);
         charinputstreamtests[i](&sub);
     }
+    return founderrors;
 }
 

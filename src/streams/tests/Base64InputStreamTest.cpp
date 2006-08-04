@@ -17,17 +17,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "Base64InputStreamTest.h"
 #include "../base64inputstream.h"
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
-void
-Base64InputStreamTest::testStream() {
+int
+Base64InputStreamTest(int, char**) {
+    founderrors = 0;
     FileInputStream file("base64enc.txt");
     Base64InputStream b64(&file);
-    b64.mark(1);
     const char* start;
     int32_t nread = b64.read(start, 1, 0);
     while (nread > 0) {
@@ -42,5 +41,6 @@ Base64InputStreamTest::testStream() {
         FileInputStream file("a.zip");
         charinputstreamtests[i](&file);
     }*/
+    return founderrors;
 }
 
