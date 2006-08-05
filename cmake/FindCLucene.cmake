@@ -33,14 +33,18 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   IF (CLUCENE_LIBRARY)
     MESSAGE(STATUS "Found CLucene library: ${CLUCENE_LIBRARY}")
   ENDIF (CLUCENE_LIBRARY)
-  FIND_PATH(CLUCENE_INCLUDE_DIR CLucene/util/streambase.h ${TRIAL_INCLUDE_PATHS})
+  FIND_PATH(CLUCENE_INCLUDE_DIR CLucene.h ${TRIAL_INCLUDE_PATHS})
 
   # check if version 0.9.15 is patched
-  FILE(READ ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h CLCONTENT)
-  STRING(REGEX MATCH "Apache" CLMATCH ${CLCONTENT})
-  IF (CLMATCH)
-    MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See READMO)")
-  ENDIF (CLMATCH)
+  IF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
+    FILE(READ ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h CLCONTENT)
+    STRING(REGEX MATCH "Apache" CLMATCH ${CLCONTENT})
+    IF (CLMATCH)
+      MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See READMO)")
+    ENDIF (CLMATCH)
+  ELSE (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
+      MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See READMO)")
+  ENDIF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
 
   # end check
 
