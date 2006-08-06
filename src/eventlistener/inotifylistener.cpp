@@ -351,7 +351,7 @@ void InotifyListener::watch ()
     fflush( NULL );
 }
 
-void InotifyListener::addWatch (const string path)
+void InotifyListener::addWatch (const string& path)
 {
     if (!m_bInitialized)
         return;

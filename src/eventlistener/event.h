@@ -28,21 +28,21 @@ class Event
 {
     public:
         enum Type{ CREATED = 0x01, UPDATED = 0x02, DELETED = 0x04};
-        
-        Event(Type type, std::string path, time_t t);
+
+        Event(Type type, const std::string& path, time_t t);
         Event(Event* event);
         ~Event();
-        
+
         Type getType() { return m_type; }
         void setType(Type type) { m_type = type; }
-        std::string getPath() { return m_path; }
+        const std::string &getPath() { return m_path; }
         time_t getTime() { return m_time; }
-        
+
         friend std::ostream &operator<< (std::ostream &stream, Event* event);
-        
+
     protected:
         Type m_type;
-        std::string m_path;
+        const std::string m_path;
         time_t m_time;
 };
 

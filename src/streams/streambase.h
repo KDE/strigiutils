@@ -30,7 +30,7 @@ enum StreamStatus { Ok, Eof, Error };
 
 /**
  * @short Base class for stream read access to many different file types.
- * 
+ *
  * This class is based on the interface java.io.InputStream. It allows
  * for uniform access to streamed resources.
  * The main difference with the java equivalent is a performance improvement.
@@ -68,7 +68,7 @@ public:
      * always known.
      **/
     int64_t getSize() const { return size; }
-    /** 
+    /**
      * @brief Reads characters from the stream and sets \a start to
      * the first character that was read.
      *

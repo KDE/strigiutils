@@ -32,16 +32,16 @@ class EventListener
         EventListener() { m_state = Idling; }
 
         ~EventListener() {};
-        
-        virtual void addWatch (const std::string path) = 0;
-        virtual void addWatches (const std::set<std::string> &watches) = 0;
-        virtual void setIndexedDirectories (const std::set<std::string> &dirs) = 0;
+
+        virtual void addWatch (const std::string& path) = 0;
+        virtual void addWatches (const std::set<std::string>& watches) = 0;
+        virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
         void setEventListenerQueue (EventListenerQueue* eventQueue) { m_eventQueue = eventQueue; }
-        
+
         virtual bool start() = 0;
         virtual void* run(void*) = 0;
         virtual void stop() = 0;
-        
+
     protected:
         enum State {Idling, Watching, Stopping};
         State m_state;

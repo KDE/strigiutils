@@ -19,7 +19,7 @@
  */
 #include "event.h"
 
-Event::Event(Type type, std::string path, time_t t)
+Event::Event(Type type, const std::string& path, time_t t)
     : m_type (type),
       m_path (path),
       m_time (t)
@@ -31,7 +31,7 @@ Event::Event(Event* event)
       m_path (event->m_path),
       m_time (event->m_time)
 {
-    
+
 }
 
 Event::~Event()
@@ -41,7 +41,7 @@ Event::~Event()
 std::ostream &operator<< (std::ostream &stream, Event* event)
 {
     stream << "\ttype: ";
-    
+
     switch (event->getType())
     {
         case Event::CREATED:
@@ -54,11 +54,11 @@ std::ostream &operator<< (std::ostream &stream, Event* event)
             stream << "DELETED\n";
             break;
     }
-    
+
     stream << "\tpath: " << event->getPath() << std::endl;
-    
+
     const time_t time = event->getTime();
     stream << "\ttime: " << ctime (&time) << std::endl;
-    
+
     return stream;
 }

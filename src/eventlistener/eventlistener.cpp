@@ -1,7 +1,7 @@
 //
 // C++ Implementation: eventlistener
 //
-// Description: 
+// Description:
 //
 //
 // Author: Flavio Castelli <micron@madlab.it>, (C) 2006

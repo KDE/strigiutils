@@ -1,3 +1,5 @@
+subdirs(xsd)
+
 include_directories( ../streamindexer ../streams )
 
 IF(ENABLE_INOTIFY)
@@ -21,7 +23,7 @@ include_directories( ../eventlistener )
 LINK_DIRECTORIES(../eventlistener)
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp)
+	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp)
 target_link_libraries(strigidaemon streamindexer eventlistener ${CMAKE_THREAD_LIBS_INIT}
 	${strigidaemon_LIBS})
 
