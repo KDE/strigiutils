@@ -8,7 +8,7 @@ if (HyperEstraier_FOUND)
   set(DIRS ${DIRS} estraierindexer)
 endif (HyperEstraier_FOUND)
 
-set(DIRS ${DIRS} daemon htmlgui searchclient eventlistener)
+set(DIRS ${DIRS} daemon htmlgui searchclient)
 
 if (QT4_FOUND)
   set(DIRS ${DIRS} archiveengine qclient)

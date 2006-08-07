@@ -1,6 +1,6 @@
-subdirs(xsd)
+subdirs(xsd eventlistener)
 
-include_directories( ../streamindexer ../streams )
+include_directories( ../streamindexer ../streams xsd )
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)
@@ -18,14 +18,13 @@ if (HyperEstraier_FOUND)
     include_directories( ../estraierindexer )
 endif (HyperEstraier_FOUND)
 
-include_directories( ../eventlistener )
-
-LINK_DIRECTORIES(../eventlistener)
+include_directories( eventlistener )
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp)
-target_link_libraries(strigidaemon streamindexer eventlistener ${CMAKE_THREAD_LIBS_INIT}
-	${strigidaemon_LIBS})
+target_link_libraries(strigidaemon streamindexer eventlistener
+	daemonconfiguration
+	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 
         asyncsocket.cpp asyncsocketclient.cpp)

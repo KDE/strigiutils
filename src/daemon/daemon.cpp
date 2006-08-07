@@ -34,6 +34,7 @@
 #endif
 
 #include "indexscheduler.h"
+
 #ifdef HAVE_INOTIFY
 #include "inotifylistener.h"
 #endif

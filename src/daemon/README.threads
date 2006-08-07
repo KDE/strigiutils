@@ -1,0 +1,11 @@
+The Strigi daemon has three threads running most of the time.
+- Socket server thread
+  This is the thread that starts in main(). It performs daemon initialization and starts the other two threads.
+
+- Scheduler thread
+  This thread performs all indexing tasks. It reacts to events from the other threads. At the moment it runs in a loop and checks for a change in status ever so often. For efficient cpu usage, it would be better if this thread would really sleep and would wake up on events. Implementing such behavior should be possible by using pthread_cond_wait.
+
+- Event thread
+  This thread watches the filesystem and signals events to the scheduler thread.
+
+

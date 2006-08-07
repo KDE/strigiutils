@@ -6,5 +6,5 @@ IF(XSD_FOUND)
 ENDIF(XSD_FOUND)
 
 include_directories(${XERCESC_INCLUDE_DIR})
-add_library(daemonxsd strigidaemon.cxx)
-target_link_libraries(daemonxsd ${XERCESC_LIBRARIES})
+add_library(daemonconfiguration strigidaemon.cxx)
+target_link_libraries(daemonconfiguration ${XERCESC_LIBRARIES})
