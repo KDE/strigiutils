@@ -1,6 +1,7 @@
 # Locate Xerces-C include paths and libraries
 # Xerces-C can be found at http://xml.apache.org/xerces-c/
 # Written by Frederic Heem, frederic.heem _at_ telsey.it
+# Modified by Jos van den Oever
 
 # This module defines
 # XERCESC_INCLUDE_DIR, where to find ptlib.h, etc.
@@ -27,13 +28,19 @@ FIND_LIBRARY(XERCESC_LIBRARIES
 )
 
 # if the include a the library are found then we have it
-IF(XERCESC_INCLUDE_DIR)
-  IF(XERCESC_LIBRARIES)
-    SET( XERCESC_FOUND "YES" )
-  ENDIF(XERCESC_LIBRARIES)
-ENDIF(XERCESC_INCLUDE_DIR)
-
-
+IF(XERCESC_INCLUDE_DIR AND XERCESC_LIBRARIES)
+  SET(XERCESC_FOUND "YES" )
+  IF(NOT XERCESC__FIND_QUIETLY)
+    MESSAGE(STATUS "Found Xerces-C: ${XERCESC_LIBRARIES}")
+  ENDIF(NOT XERCESC__FIND_QUIETLY)
+ELSE(XERCESC_INCLUDE_DIR AND XERCESC_LIBRARIES)
+  IF(XERCESC_FIND_REQUIRED)
+    MESSAGE(FATAL "Xerces-C was not found.")
+  ENDIF(XERCESC_FIND_REQUIRED)
+  IF(NOT XERCESC__FIND_QUIETLY)
+    MESSAGE(STATUS "Xerces-C was not found.")
+  ENDIF(NOT XERCESC__FIND_QUIETLY)
+ENDIF(XERCESC_INCLUDE_DIR AND XERCESC_LIBRARIES)
 
 MARK_AS_ADVANCED(
   XERCESC_INCLUDE_DIR
