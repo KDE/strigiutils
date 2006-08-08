@@ -1,3 +1,5 @@
+# Compile the c++ code from the xsd file. Since the C++ code is also distributed
+# this should not be necessary.
 IF(XSD_FOUND)
   ADD_CUSTOM_COMMAND(OUTPUT strigidaemon.cxx
     COMMAND ${XSD_EXECUTABLE} cxx-tree --generate-serialization strigidaemon.xsd
@@ -5,6 +7,7 @@ IF(XSD_FOUND)
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/daemon/xsd )
 ENDIF(XSD_FOUND)
 
+# Compile the C++ code into a library
 include_directories(${XERCESC_INCLUDE_DIR})
 add_library(daemonconfiguration strigidaemon.cxx)
 target_link_libraries(daemonconfiguration ${XERCESC_LIBRARIES})
