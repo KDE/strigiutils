@@ -64,6 +64,11 @@ ArInputStream::readHeader() {
     int32_t toread;
     int32_t nread;
 
+    int64_t pos = input->getPosition();
+    if (pos%2) {
+        input->skip(1);
+    }
+
     // read the first 60 characters
     toread = 60;
     nread = input->read(b, toread, toread);
@@ -79,16 +84,37 @@ ArInputStream::readHeader() {
             error += " premature end of file.";
         }
         status = Error;
-        printf("%s\n", error.c_str());
         return;
     }
     int len;
     for (len=0; len<16; len++) {
-        if (b[len] == ' ') {
+        char c = b[len];
+        if (c == ' ' || c == '/' || c == '\0') {
             break;
         }
     }
-    entryinfo.filename = std::string(b, len);
+
     entryinfo.size = atoi(b+48);
     entryinfo.mtime = atoi(b+16);
+    if (len == 0) {
+        if (b[1] == '/') {
+            nread = input->read(b, entryinfo.size, entryinfo.size);
+            gnufilenames = std::string(b, entryinfo.size);
+            readHeader();
+        } else if (b[1] == ' ') {
+            input->skip(entryinfo.size);
+            readHeader();
+        } else {
+            int p = atoi(b+1);
+            const char* c = gnufilenames.c_str() + p;
+            const char* e = strchr(c, '/');
+            if (e) {
+                entryinfo.filename = std::string(c, e-c);
+            } else {
+                entryinfo.filename = c;
+            }
+        }
+    } else {
+        entryinfo.filename = std::string(b, len);
+    }
 }
