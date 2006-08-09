@@ -8,7 +8,8 @@ add_library(streams SHARED compat.cpp stgdirent.cpp bz2inputstream.cpp
 	inputstreamreader.cpp filereader.cpp kmpsearcher.cpp 
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp 
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp 
-	dostime.cpp substreamproviderprovider.cpp arinputstream.cpp)
+	dostime.cpp substreamproviderprovider.cpp arinputstream.cpp
+	rpminputstream.cpp)
 set_target_properties(streams PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
