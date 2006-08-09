@@ -36,6 +36,7 @@ ArEndAnalyzer::analyze(std::string filename, InputStream *in,
 char
 ArEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
         int depth, jstreams::StreamIndexer *indexer, jstreams::Indexable*) {
+    printf("ar file: %s\n", filename.c_str());
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {
