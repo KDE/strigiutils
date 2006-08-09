@@ -38,16 +38,15 @@ namespace jstreams {
 class RpmInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    StreamBase<char>* compressedEntryStream;
-    GZipInputStream *uncompressionStream;
-    StreamBase<char>* uncompressedEntryStream;
+    StreamBase<char>* uncompressionStream;
+    StreamBase<char>* entryStream;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
+    char padding;
 
-    void readFileName(int32_t len);
     void readHeader();
-    static int32_t read2bytes(const unsigned char *b);
     static int32_t read4bytes(const unsigned char *b);
+    int32_t readHexField(const char *b);
 public:
     RpmInputStream(StreamBase<char>* input);
     ~RpmInputStream();
