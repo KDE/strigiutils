@@ -26,6 +26,7 @@
 #include "textendanalyzer.h"
 #include "saxendanalyzer.h"
 #include "tarendanalyzer.h"
+#include "arendanalyzer.h"
 #include "zipendanalyzer.h"
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
@@ -105,6 +106,8 @@ StreamIndexer::addEndAnalyzers() {
     ana = new GZipEndAnalyzer();
     eIter->push_back(ana);
     ana = new TarEndAnalyzer();
+    eIter->push_back(ana);
+    ana = new ArEndAnalyzer();
     eIter->push_back(ana);
     ana = new MailEndAnalyzer();
     eIter->push_back(ana);
