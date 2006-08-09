@@ -22,11 +22,14 @@
 
 #include "eventlistener.h"
 #include <map>
+#include <vector>
 
 namespace jstreams
 {
     class IndexReader;
 }
+
+class Event;
 
 class InotifyListener : public EventListener
 {
@@ -34,35 +37,39 @@ class InotifyListener : public EventListener
         InotifyListener();
 
         ~InotifyListener();
-
+    
         bool init();
-
+        
         void addWatch (const std::string& path);
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
-
+        
         void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
-
+        
         bool start();
         void* run(void*);
         void stop();
-
+        
         static bool ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static void watchDirCallback(const char* path);
-
+        
         friend void* InotifyListenerStart (void* inotifylistener);
-
+        
     private:
         std::string eventToString(int events);
         void watch ();
-
+        void dirRemoved (std::string dir, std::vector<Event*>& events);
+        void rmWatch(int wd, std::string path);
+        void clearWatches();
+        
         int m_iInotifyFD;
         int m_iEvents;
         std::map<unsigned int, std::string> m_watches;
         bool m_bMonitor;
         bool m_bInitialized;
         std::set<std::string> m_toIndex;
+        std::set<std::string> m_toWatch;
         jstreams::IndexReader* m_pIndexReader;
 };
 

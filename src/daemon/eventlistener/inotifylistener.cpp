@@ -19,20 +19,20 @@
  */
 #include "inotifylistener.h"
 
-#include <iostream>
-#include <vector>
-#include <sys/types.h>
-#include <sys/select.h>
-#include <cerrno>
-#include <sys/resource.h>
-
-#include "inotify/inotify.h"
-#include "inotify/inotify-syscalls.h"
-
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "filelister.h"
 #include "indexreader.h"
+
+#include <cerrno>
+#include <iostream>
+#include <sys/resource.h>
+#include <sys/select.h>
+#include <sys/types.h>
+#include <vector>
+
+#include "inotify.h"
+#include "inotify-syscalls.h"
 
 InotifyListener* manager;
 
@@ -80,6 +80,7 @@ InotifyListener::InotifyListener()
 
 InotifyListener::~InotifyListener()
 {
+    clearWatches();
 }
 
 bool InotifyListener::init()
@@ -256,26 +257,7 @@ void InotifyListener::watch ()
                     watchesToDel.insert (iter->first);
                 
                 if ((IN_ISDIR & this_event->mask) != 0)
-                {   
-                    // we've to de-index all files contained into the deleted/moved directory
-                    if (m_pIndexReader != NULL)
-                    {
-                        // all indexed files
-                        map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
-                        
-                         for (map<string, time_t>::iterator it = indexedFiles.begin(); it != indexedFiles.end(); it++)
-                        {
-                            string::size_type pos = (it->first).find (file);
-                            if (pos == 0)
-                            {
-                                Event* event = new Event (Event::DELETED, it->first, time (NULL));
-                                events.push_back (event);
-                            }
-                        }
-                    }
-                    else
-                        cout << "InotifyListener:: m_pIndexReader == NULL!\n";
-                }
+                    dirRemoved (file, events);
                 else
                 {
                     Event* event = new Event (Event::DELETED, file, time (NULL));
@@ -336,7 +318,13 @@ void InotifyListener::watch ()
     if (events.size() > 0)
     {
         if (m_eventQueue == NULL)
+        {
             cerr << "InotifyListener: m_eventQueue == NULL!\n";
+            
+            for (unsigned int i = 0 ; i < events.size(); i++)
+                delete events[i];
+            events.clear();
+        }
         else
             m_eventQueue->addEvents (events);
     }
@@ -355,6 +343,12 @@ void InotifyListener::addWatch (const string& path)
 {
     if (!m_bInitialized)
         return;
+    
+    for (map<unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
+    {
+        if ((iter->second).compare (path) == 0) // dir is already watched
+            return;
+    }
     
     static int wd;
     wd = inotify_add_watch (m_iInotifyFD, path.c_str(), m_iEvents);
@@ -386,16 +380,114 @@ void InotifyListener::addWatches (const set<string> &watches)
         addWatch (*iter);
 }
 
+void InotifyListener::rmWatch(int wd, string path)
+{
+    if (inotify_rm_watch (m_iInotifyFD, wd) == -1)
+    {
+        cout << "Error removing watch for " << path << endl;
+        cout << "error: " << strerror(errno) << endl;
+    }
+    else
+        cout << "Removed watch for " << path << endl; 
+}
+
+void InotifyListener::clearWatches ()
+{
+    for (map<unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
+        rmWatch (iter->first, iter->second);
+    
+    m_watches.clear();
+}
+
+void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
+{
+    // we've to de-index all files contained into the deleted/moved directory
+    if (m_pIndexReader != NULL)
+    {
+        // all indexed files
+        map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
+        
+        for (map<string, time_t>::iterator it = indexedFiles.begin(); it != indexedFiles.end(); it++)
+        {
+            string::size_type pos = (it->first).find (dir);
+            if (pos == 0)
+            {
+                Event* event = new Event (Event::DELETED, it->first, time (NULL));
+                events.push_back (event);
+            }
+        }
+    }
+    else
+        cout << "InotifyListener:: m_pIndexReader == NULL!\n";
+}
+
 void InotifyListener::setIndexedDirectories (const set<string> &dirs)
 {
+    vector<Event*> events;
+    vector<string> old_watches;
+    map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
+    Event* event;
     FileLister lister;
     
-    lister.setCallbackFunction(&ignoreFileCallback);
+    for (map <unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
+        old_watches.push_back (iter->second);
+    
+    m_toWatch.clear();
+    m_toIndex.clear();
+    
+    lister.setCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
     
-    set<string>::const_iterator iter;
-    for (iter = dirs.begin(); iter != dirs.end(); iter++)
+    for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
         lister.listFiles(iter->c_str());
+    
+    for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
+    {
+        Event* event;
+        
+        map<string,time_t>::iterator iter = indexedFiles.find(*i);
+        
+        if ( iter == indexedFiles.end()) 
+            event = new Event (Event::CREATED, *i, time (NULL));
+        else
+            event = new Event (Event::UPDATED, *i, time (NULL));
+        
+        events.push_back (event);
+    }
+    
+    m_toIndex.clear();
+    
+    for (vector<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
+    {
+        set<string>::iterator dirIt = m_toWatch.begin();
+        
+        while (dirIt != m_toWatch.end())
+        {
+            if (dirIt->compare (*iter) == 0)
+                break;
+            
+            dirIt++;
+        }
+        
+        if (dirIt == m_toWatch.end())
+            dirRemoved (*iter, events);
+    }
+    
+    m_toWatch.clear();
+    
+    if (events.size() > 0)
+    {
+        if (m_eventQueue == NULL)
+        {
+            cerr << "InotifyListener: m_eventQueue == NULL!\n";
+            
+            for (unsigned int i = 0 ; i < events.size(); i++)
+                delete events[i];
+            events.clear();
+        }
+        else
+            m_eventQueue->addEvents (events);
+    }
 }
 
 bool InotifyListener::ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
@@ -414,7 +506,10 @@ bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len,
 
 void InotifyListener::watchDirCallback(const char* path)
 {
-    manager->addWatch( string (path));
+    string dir (path);
+    
+    manager->addWatch( dir);
+    (manager->m_toWatch).insert (dir);
 }
 
 string InotifyListener::eventToString(int events)
