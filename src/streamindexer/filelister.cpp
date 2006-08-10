@@ -120,7 +120,7 @@ FileLister::walk_directory(uint len) {
         strcpy(path+len, subdir->d_name);
         if (lstat(path, &dirstat) == 0) {
             bool c = true;
-            if ( dirstat.st_mode & S_IFREG
+            if ( S_ISREG(dirstat.st_mode)
                     && dirstat.st_mtime >= m_oldestdate) {
                 c = m_callback(path, len, l, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR) {
