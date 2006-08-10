@@ -16,7 +16,6 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   SET(TRIAL_LIBRARY_PATHS
     $ENV{CLUCENE_HOME}/lib
     $ENV{HOME}/testinstall/lib
-    PATHS
     /usr/lib
     /usr/local/lib
     /sw/lib
@@ -24,17 +23,20 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   SET(TRIAL_INCLUDE_PATHS
     $ENV{CLUCENE_HOME}/include
     $ENV{HOME}/testinstall/include
-    PATHS
     /usr/include
     /usr/local/include
     /sw/include
   ) 
 
-  FIND_LIBRARY(CLUCENE_LIBRARY clucene NAMES clucene-core ${TRIAL_LIBRARY_PATHS})
+  FIND_LIBRARY(CLUCENE_LIBRARY clucene
+      NAMES clucene-core
+      PATHS ${TRIAL_LIBRARY_PATHS})
   IF (CLUCENE_LIBRARY)
     MESSAGE(STATUS "Found CLucene library: ${CLUCENE_LIBRARY}")
   ENDIF (CLUCENE_LIBRARY)
-  FIND_PATH(CLUCENE_INCLUDE_DIR CLucene.h ${TRIAL_INCLUDE_PATHS})
+  FIND_PATH(CLUCENE_INCLUDE_DIR
+      NAMES CLucene.h
+      PATHS ${TRIAL_INCLUDE_PATHS})
 
   # check if version 0.9.15 is patched
   IF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
@@ -54,7 +56,8 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   ENDIF (CLUCENE_INCLUDE_DIR)
   
   IF(NOT MSVC)
-    FIND_PATH(CLUCENE_LIBRARY_DIR CLucene/clucene-config.h ${TRIAL_LIBRARY_PATHS})
+    FIND_PATH(CLUCENE_LIBRARY_DIR
+        NAMES CLucene/clucene-config.h PATHS ${TRIAL_LIBRARY_PATHS})
     IF (CLUCENE_LIBRARY_DIR)
       MESSAGE(STATUS "Found CLucene library dir: ${CLUCENE_LIBRARY_DIR}")
       FILE(READ ${CLUCENE_LIBRARY_DIR}/CLucene/clucene-config.h CLCONTENT)
