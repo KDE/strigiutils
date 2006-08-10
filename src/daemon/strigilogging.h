@@ -22,44 +22,47 @@
 #ifndef STRIGI_LOGGING_H
 #define STRIGI_LOGGING_H
 
+#ifdef HAVE_LOG4CXX
 // log4cxx libraries
 #include <logger.h>
 #include <basicconfigurator.h>
 
-
-#define STRIGI_LOG_INIT() \
-{ \
+#define STRIGI_LOG_INIT() { \
     log4cxx::BasicConfigurator::configure();\
 }
 
-#define STRIGI_LOG_DEBUG(loggerName, message) \
-{ \
+#define STRIGI_LOG_DEBUG(loggerName, message) { \
     log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(loggerName); \
     LOG4CXX_DEBUG(logger, message) \
 }
 
-#define STRIGI_LOG_INFO(loggerName, message) \
-{ \
+#define STRIGI_LOG_INFO(loggerName, message) { \
     log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(loggerName); \
     LOG4CXX_INFO(logger, message) \
 }
 
-#define STRIGI_LOG_WARNING(loggerName, message) \
-{ \
+#define STRIGI_LOG_WARNING(loggerName, message) { \
     log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(loggerName); \
     LOG4CXX_WARN(logger, message) \
 }
 
-#define STRIGI_LOG_ERROR(loggerName, message) \
-{ \
+#define STRIGI_LOG_ERROR(loggerName, message) { \
     log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(loggerName); \
     LOG4CXX_ERROR(logger, message) \
 }
 
-#define STRIGI_LOG_FATAL(loggerName, message) \
-{ \
+#define STRIGI_LOG_FATAL(loggerName, message) { \
     log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(loggerName); \
     LOG4CXX_FATAL(logger, message) \
 }
+
+#else
+#define STRIGI_LOG_INIT();
+#define STRIGI_LOG_DEBUG(loggerName, message);
+#define STRIGI_LOG_INFO(loggerName, message);
+#define STRIGI_LOG_WARNING(loggerName, message);
+#define STRIGI_LOG_ERROR(loggerName, message);
+#define STRIGI_LOG_FATAL(loggerName, message);
+#endif
 
 #endif
