@@ -167,7 +167,7 @@ RpmInputStream::readHeader() {
         status = Error;
         return;
     }
-    entryinfo.filename = std::string((const char*)b, filenamesize);
+    entryinfo.filename = std::string((const char*)b, filenamesize-1);
 }
 int32_t
 RpmInputStream::readHexField(const char *b) {
