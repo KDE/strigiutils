@@ -63,7 +63,13 @@ TarInputStream::checkHeader(const char* h, const int32_t hsize) {
         // header is too small to check
         return false;
     }
-    return !(h[107] || h[115] || h[123] || h[135] || h[147] || h[256]);
+    // check for field values that should be '\0' for the header to be a
+    // tar header. Two positions are also accepted if they are ' ' because a
+    // kde program (ktar) produces files with this erroneous output. Allowing
+    // for working around this bug in ktar should not make the detection much
+    // less reliable.
+    return !(h[107] || h[115] || h[123] || (h[135]&&h[135]!=' ')
+            || (h[147] && h[147] != ' ') || h[256]);
 }
 void
 TarInputStream::parseHeader() {
@@ -72,7 +78,7 @@ TarInputStream::parseHeader() {
     if (status) return;
 
     // check for terminators ('\0') on the first couple of fields
-    if (hb[107] || hb[115] || hb[123] || hb[135] || hb[147] || hb[256]) {
+    if (!checkHeader(hb, 257)) {
         error = "Invalid tar header.\n";
         status = Error;
         return;
