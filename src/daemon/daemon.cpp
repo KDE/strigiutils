@@ -39,6 +39,7 @@
 #include "inotifylistener.h"
 #endif
 #include "eventlistenerqueue.h"
+#include "strigilogging.h"
 
 #include <fstream>
 #include <sys/types.h>
@@ -159,6 +160,9 @@ releaseLock(FILE* f, struct flock& lock) {
 }
 int
 main(int argc, char** argv) {
+    // init logging interface
+    STRIGI_LOG_INIT()
+    
     // set up the directory paths
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.strigi";
@@ -227,10 +231,10 @@ main(int argc, char** argv) {
     set<string> dirs = readdirstoindex(dirsfile);
     scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);
-    
+
     EventListenerQueue listenerEventQueue;
     scheduler.setEventListenerQueue (&listenerEventQueue);
-
+    
     // start the indexer thread
     scheduler.start();
 

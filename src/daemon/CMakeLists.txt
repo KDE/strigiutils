@@ -19,12 +19,13 @@ if (HyperEstraier_FOUND)
 endif (HyperEstraier_FOUND)
 
 include_directories( eventlistener )
+include_directories( ${LOG4CXX_INCLUDE_DIR} )
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp)
+	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp strigilogging.h)
 target_link_libraries(strigidaemon streamindexer eventlistener
 	daemonconfiguration
-	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
+	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 
         asyncsocket.cpp asyncsocketclient.cpp)

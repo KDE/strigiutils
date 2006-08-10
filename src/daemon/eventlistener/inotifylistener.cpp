@@ -23,9 +23,9 @@
 #include "eventlistenerqueue.h"
 #include "filelister.h"
 #include "indexreader.h"
+#include "../strigilogging.h"
 
 #include <cerrno>
-#include <iostream>
 #include <sys/resource.h>
 #include <sys/select.h>
 #include <sys/types.h>
@@ -39,12 +39,16 @@ InotifyListener* manager;
 using namespace std;
 using namespace jstreams;
 
+
 void* InotifyListenerStart (void *inotifylistener)
 {
     // give this thread job batch job priority
     struct sched_param param;
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
+    
+    InotifyListener* listener = static_cast<InotifyListener*>(inotifylistener);
+    
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
 #endif
@@ -52,7 +56,12 @@ void* InotifyListenerStart (void *inotifylistener)
     if (r != 0) {
         // fall back to renice if SCHED_BATCH is unknown
         r = setpriority(PRIO_PROCESS, 0, 20);
-        if (r==-1) printf("error setting priority: %s\n", strerror(errno));
+        if (r==-1)// printf("error setting priority: %s\n", strerror(errno));
+        {
+            string msg ("error setting priority: ");
+            msg += strerror(errno);
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", msg)
+        }
         //nice(20);
     }
 #ifdef HAVE_LINUXIOPRIO
@@ -60,7 +69,7 @@ void* InotifyListenerStart (void *inotifylistener)
 #endif
 
     // start the actual work
-    static_cast<InotifyListener*>(inotifylistener)->run(0);
+    listener->run(0);
     pthread_exit(0);
 }
 
@@ -88,13 +97,13 @@ bool InotifyListener::init()
     m_iInotifyFD = inotify_init();
     if (m_iInotifyFD < 0)
     {
-        cerr << "inotify_init() failed.  Are you running Linux 2.6.13 or later?\nIf so, something mysterious has gone wrong.\n";
+        STRIGI_LOG_ERROR ("strigi.InotifyListener", "inotify_init() failed.  Are you running Linux 2.6.13 or later? If so, something mysterious has gone wrong.")
         return false;
     }
     
     m_bInitialized = true;
     
-    printf ("InotifyListener successfully initialized\n");
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener", "successfully initialized")
     
     return true;
 }
@@ -111,7 +120,7 @@ bool InotifyListener::start()
     int ret = pthread_create(&m_thread, NULL, InotifyListenerStart, this);
     if (ret < 0)
     {
-        printf("cannot create thread\n");
+        STRIGI_LOG_ERROR ("strigi.InotifyListener", "cannot create thread");
         return false;
     }
     
@@ -177,7 +186,7 @@ void InotifyListener::watch ()
         
         if ( rc < 0 )
         {
-            cerr << "Select on inotify failed\n";
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Select on inotify failed");
             return;
         }
         else if ( rc == 0 )
@@ -190,13 +199,13 @@ void InotifyListener::watch ()
         
         if ( thisBytes < 0 )
         {
-            cerr << "Read from inotify failed\n";
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Read from inotify failed")
             return;
         }
         
         if ( thisBytes == 0 )
         {
-            cerr << "Inotify reported end-of-file.  Possibly too many events occurred at once.\n";
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", "Inotify reported end-of-file.  Possibly too many events occurred at once.")
             return;
         }
         
@@ -215,7 +224,7 @@ void InotifyListener::watch ()
     
     do
     {
-//         string this_event_str;
+        string message;
         
         this_event = (struct inotify_event *)this_event_char;
         
@@ -223,20 +232,27 @@ void InotifyListener::watch ()
     
         if (iter == m_watches.end())
         {
-            cerr << "inotify: returned an unknown watch descriptor\n";
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", "inotify: returned an unknown watch descriptor")
             continue;
         }
         
         if (!(((IN_ISDIR & this_event->mask) == 0) && (this_event->len > 0) && ((this_event->name)[0] == '.')))
         // we ignore every action on a file starting with '.'
         {
-//             cout << "inotify: " << iter->second << " changed\n";
+            message = iter->second;
+            message += " changed"; 
+            STRIGI_LOG_DEBUG ("strigi.InotifyListener", message)
             
-//             this_event_str = eventToString( this_event->mask);
-//             cout << "event str: |" << this_event_str << "|\n";
+            message = "catched inotify event: ";
+            message += eventToString( this_event->mask);
+            STRIGI_LOG_DEBUG ("strigi.InotifyListener", message)
         
-//             if ((this_event->len > 0))
-//                 printf("event name |%s|\n", this_event->name );
+            if ((this_event->len > 0))
+            {
+                message = "event regards ";
+                message += this_event->name;
+                STRIGI_LOG_DEBUG ("strigi.InotifyListener", message)
+            }
             
             //TODO: fix path creation
             string file = iter->second;
@@ -299,7 +315,7 @@ void InotifyListener::watch ()
                 }
             }
             else
-                 cout << "inotify: event unknown\n";
+                STRIGI_LOG_DEBUG ("strigi.InotifyListener", "inotify's unknown event") 
         }
 
         this_event_char += sizeof(struct inotify_event) + this_event->len;
@@ -309,17 +325,24 @@ void InotifyListener::watch ()
 
     // I _think_ this should never happen.
     if (remaining_bytes != 0 ) {
-        fprintf(stderr,
-                "%f event(s) may have been lost!\n",
-                ((float)remaining_bytes)/((float)sizeof(struct inotify_event))
-                );
+        string message;
+        char buff [20];
+        
+        sprintf(buff, "%f", (((float)remaining_bytes)/((float)sizeof(struct inotify_event)))); 
+        message = buff;
+        message += "event(s) may have been lost!";
+        STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
+//         fprintf(stderr,
+//                 "%f event(s) may have been lost!\n",
+//                 ((float)remaining_bytes)/((float)sizeof(struct inotify_event))
+//                 );
     }
     
     if (events.size() > 0)
     {
         if (m_eventQueue == NULL)
         {
-            cerr << "InotifyListener: m_eventQueue == NULL!\n";
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", "m_eventQueue == NULL!")
             
             for (unsigned int i = 0 ; i < events.size(); i++)
                 delete events[i];
@@ -341,6 +364,8 @@ void InotifyListener::watch ()
 
 void InotifyListener::addWatch (const string& path)
 {
+    string message;
+    
     if (!m_bInitialized)
         return;
     
@@ -357,18 +382,34 @@ void InotifyListener::addWatch (const string& path)
     {
         if ( wd == -1 )
         {
-            cerr << "Failed to watch "<< path<< "because of: " << strerror(-wd)<<endl;
+            message = "Failed to watch ";
+            message += path;
+            message += "because of: ";
+            message += strerror(-wd);
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
         }
         else
         {
-            cerr << "Failed to watch " << path <<": returned wd was "<<wd<<" (expected -1 or >0 )\n";
+            char buff [20];
+        
+            sprintf(buff, "%i", wd);
+            
+            message = "Failed to watch ";
+            message += path;
+            message += ": returned wd was ";
+            message += buff;
+            message += " (expected -1 or >0 )";
+            
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
         }
     }
     else
     {
         m_watches.insert(make_pair(wd, path));
         
-        cout << "inotify: added watch for " << path << endl;
+        message = "inotify: added watch for ";
+        message += path;
+        STRIGI_LOG_INFO ("strigi.InotifyListener", message)
     }
 }
 
@@ -382,13 +423,24 @@ void InotifyListener::addWatches (const set<string> &watches)
 
 void InotifyListener::rmWatch(int wd, string path)
 {
+    string message;
+    
     if (inotify_rm_watch (m_iInotifyFD, wd) == -1)
     {
-        cout << "Error removing watch for " << path << endl;
-        cout << "error: " << strerror(errno) << endl;
+        message = "Error removing watch for ";
+        message += path;
+        STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
+        
+        message = "error: ";
+        message += strerror(errno);
+        STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
     }
     else
-        cout << "Removed watch for " << path << endl; 
+    {
+        message = "Removed watch for ";
+        message += path;
+        STRIGI_LOG_DEBUG ("strigi.InotifyListener", message)
+    }
 }
 
 void InotifyListener::clearWatches ()
@@ -418,7 +470,7 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
         }
     }
     else
-        cout << "InotifyListener:: m_pIndexReader == NULL!\n";
+        STRIGI_LOG_WARNING ("strigi.InotifyListener", "InotifyListener:: m_pIndexReader == NULL!")
 }
 
 void InotifyListener::setIndexedDirectories (const set<string> &dirs)
@@ -479,7 +531,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs)
     {
         if (m_eventQueue == NULL)
         {
-            cerr << "InotifyListener: m_eventQueue == NULL!\n";
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", "InotifyListener: m_eventQueue == NULL!\n")
             
             for (unsigned int i = 0 ; i < events.size(); i++)
                 delete events[i];
