@@ -27,7 +27,7 @@ using namespace std;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
-    if ( magic_load(magic, "magic") == -1 ){
+    if ( magic_load(magic, 0) == -1 ) { // "magic"
         printf("magic_load: %s\n",magic_error(magic));
     }
 }
@@ -39,6 +39,7 @@ MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
     // determine the mimetype
     const char* mime;
     int64_t pos = in->getPosition();
+    // min == 1 and max == 0 means: 'use whatever buffer size you have already
     int32_t n = in->read(mime, 1, 0);
     in->reset(pos);
     if (n >= 0) {
