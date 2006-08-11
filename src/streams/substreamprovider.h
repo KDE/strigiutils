@@ -29,7 +29,7 @@ struct EntryInfo {
     std::string filename;
     int32_t size;
     uint mtime;
-    enum Type {Dir, File};
+    enum Type {Unknown, Dir, File};
     Type type;
 };
 

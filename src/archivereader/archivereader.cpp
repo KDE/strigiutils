@@ -7,6 +7,11 @@
 using namespace jstreams;
 using namespace std;
 
+void
+ArchiveReader::StreamPtr::free() {
+    if (stream) delete stream;
+    if (provider) delete provider;
+}
 ArchiveReader::ArchiveReader() {
 }
 ArchiveReader::~ArchiveReader() {
@@ -21,8 +26,7 @@ ArchiveReader::openStream(const string& url) {
     size_t p = url.rfind('/');
     while (p != string::npos && !stream) {
         stream = open(url.substr(0, p));
-        printf("%s\n", url.substr(0, p).c_str());
-        partpos.push_back(p);
+        partpos.push_back(p+1);
         p = url.rfind('/', p-1);
     }
     if (!stream) {
@@ -32,21 +36,58 @@ ArchiveReader::openStream(const string& url) {
     // open the substreams until have opened the complete path
     SubStreamProvider* provider;
     StreamBase<char>* substream = stream;
-    vector<size_t>::iterator i = partpos.begin();
-    for (i++; i != partpos.end(); ++i) {
-        provider = getSubStreamProvider(substream);
+    vector<size_t>::reverse_iterator i;
+    list<StreamPtr> streams;
+    for (i = partpos.rbegin(); i != partpos.rend(); ++i) {
+        const char* sn = url.c_str() + *i;
+        size_t len = url.length();
+        provider = getSubStreamProvider(substream, streams);
         if (provider == 0) {
             return 0;
         }
-        string name = url.substr(*i);
+        bool nextstream = false;
         do {
             substream = provider->nextEntry();
-            if (substream && provider->getEntryInfo().type == EntryInfo::File) {
-                // check that the filename matches at least one entry
+            const EntryInfo& e = provider->getEntryInfo();
+            // check that the filename matches at least one entry
+            if (substream && e.type == EntryInfo::File
+                    && e.filename.length() < len
+                    && strncmp(e.filename.c_str(), sn,
+                           e.filename.length()) == 0) {
+                nextstream = true;
+                // skip the number of entries that are matched
+                int end = *i + e.filename.length();
+                do {
+                    ++i;
+                } while (i != partpos.rend() && *i < end);
+                if (i == partpos.rend()) {
+                    openstreams[substream] = streams;
+                    return substream;
+                }
+                --i;
             }
-        } while(substream);
+        } while(substream && !nextstream);
+    }
+    if (substream) {
+        openstreams[substream] = streams;
+    } else {
+        free(streams);
     }
     return substream;
+}
+void
+ArchiveReader::closeStream(jstreams::StreamBase<char>* s) {
+    openstreamsType::iterator i = openstreams.find(s);
+    if (i == openstreams.end()) return;
+    free(i->second);
+    openstreams.erase(i);
+}
+void
+ArchiveReader::free(list<StreamPtr>& l) {
+    list<StreamPtr>::iterator i;
+    for (i=l.begin(); i!=l.end(); ++i) {
+        i->free();
+    }
 }
 StreamBase<char>*
 ArchiveReader::open(const string& url) {
@@ -58,6 +99,36 @@ ArchiveReader::open(const string& url) {
     return stream;
 }
 SubStreamProvider*
-ArchiveReader::getSubStreamProvider(StreamBase<char>* input) {
-    return new TarInputStream(new BZ2InputStream(input));
+ArchiveReader::getSubStreamProvider(StreamBase<char>* input,
+        list<ArchiveReader::StreamPtr>& streams) {
+    if (input == 0) return 0;
+    StreamBase<char>* s = new BZ2InputStream(input);
+    if (s->getStatus() == Ok) {
+        streams.push_back(s);
+    } else {
+        printf("no bz2\n", input);
+        delete s;
+        input->reset(0);
+        s = new GZipInputStream(input);
+        if (s->getStatus() != Ok) {
+            printf("no gz\n", input);
+            delete s;
+            input->reset(0);
+            s = input;
+        } else {
+            streams.push_back(s);
+        }
+    }
+    SubStreamProvider* ss = new TarInputStream(s);
+    if (ss->getStatus() == Ok) {
+        streams.push_back(ss);
+    } else {
+        delete ss;
+        ss = 0;
+    }
+    return ss;
+}
+int
+ArchiveReader::stat(const std::string& url, jstreams::EntryInfo& e) {
+    return -1;
 }

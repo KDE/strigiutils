@@ -64,10 +64,7 @@ TarInputStream::checkHeader(const char* h, const int32_t hsize) {
         return false;
     }
     // check for field values that should be '\0' for the header to be a
-    // tar header. Two positions are also accepted if they are ' ' because a
-    // kde program (ktar) produces files with this erroneous output. Allowing
-    // for working around this bug in ktar should not make the detection much
-    // less reliable.
+    // tar header. Two positions are also accepted if they are ' ' because they
     return !(h[107] || h[115] || h[123] || (h[135]&&h[135]!=' ')
             || (h[147] && h[147] != ' ') || h[256]);
 }
@@ -115,11 +112,16 @@ TarInputStream::parseHeader() {
     len = entryinfo.filename.length();
     if (entryinfo.filename[len-1] == '/') {
         entryinfo.filename.resize(len-1);
+    }
+    // read file type
+    if (hb[156] == 0 || hb[156] == '0') {
+        entryinfo.type = EntryInfo::File;
+    } else if (hb[156] == '5') {
         entryinfo.type = EntryInfo::Dir;
     } else {
-        entryinfo.type = EntryInfo::File;
+        entryinfo.type = EntryInfo::Unknown;
     }
-    //printf("%s\n", entryfilename.c_str());
+//    printf("!%s %i\n", entryinfo.filename.c_str(), hb[156]);
 }
 int32_t
 TarInputStream::readOctalField(const char *b, int32_t offset) {

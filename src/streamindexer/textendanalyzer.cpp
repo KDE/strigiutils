@@ -56,7 +56,8 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     // pass a piece of text to the indexer. it's up to the indexer to break
     // it down into words
     const char* b;
-    int32_t nread = in->read(b, 1024*1024, 0);
+    // store and index the first 20k of a text file
+    int32_t nread = in->read(b, 20*1024, 0);
     if (nread > 0) {
         i->addText(b, nread);
     }
