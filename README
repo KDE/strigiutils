@@ -26,7 +26,7 @@ Optional:
 - libxml2
 - magic-dev   
 - linux kernel >= 2.6.13 (for inotify support)
-- log4cxx >= 0.9.7-5 (http://logging.apache.org/log4cxx/) for advanced logging features
+- log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------
