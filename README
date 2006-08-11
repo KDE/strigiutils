@@ -20,13 +20,13 @@ Requirements:
 - BZip2 >= 1.0.3 (http://www.bzip.org)
 - OpenSSL (http://http://www.openssl.org)
 - Xerces-C >= 2.6.0 (http://xml.apache.org/xerces-c/)
-- log4cxx >= 0.9.7-5 (http://logging.apache.org/log4cxx/)
 
 Optional:
 - Qt4 >= 4.1.2
 - libxml2
 - magic-dev   
 - linux kernel >= 2.6.13 (for inotify support)
+- log4cxx >= 0.9.7-5 (http://logging.apache.org/log4cxx/) for advanced logging features
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------
@@ -50,6 +50,8 @@ Some possible cmake options:
    include a custom library directory
  -DENABLE_INOTIFY:BOOL=ON
    enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
+ -ENABLE_LOG4CXX:BOOL=ON
+   enable log4cxx support, provides advanced logging features using log4cxx lib
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 

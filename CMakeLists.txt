@@ -28,6 +28,10 @@ OPTION(ENABLE_INOTIFY
   "enable inotify support"
   OFF)
 
+OPTION(ENABLE_LOG4CXX
+  "enable log4cxx support for advanced logging"
+  OFF)
+
 SUBDIRS (src)
 ENABLE_TESTING()
 
@@ -44,10 +48,14 @@ find_package(XSD)
 find_package(HyperEstraier)
 find_package(Libxml2)
 find_package(Qt4)
-find_package (Log4cxx)
 if (NOT QT4_FOUND)
     MESSAGE(STATUS "Qt4 was not found. No GUI will be built.")
 endif (NOT QT4_FOUND)
+
+if (ENABLE_LOG4CXX)
+    find_package (Log4cxx)
+endif (ENABLE_LOG4CXX)
+
 
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)

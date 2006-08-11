@@ -7,6 +7,17 @@ IF(ENABLE_INOTIFY)
   MESSAGE("-- inotify support enabled")
 ENDIF(ENABLE_INOTIFY)
 
+IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+    add_definitions(-DHAVE_LOG4CXX)
+    set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
+    include_directories( ${LOG4CXX_INCLUDE_DIR} )
+    MESSAGE("-- log4cxx support enabled")
+ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+
+IF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
+    MESSAGE("-- log4cxx WONT be enabled")
+ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
+
 if (CLucene_FOUND)
     add_definitions(-DHAVE_CLUCENE)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} cluceneindex)
@@ -19,9 +30,6 @@ if (HyperEstraier_FOUND)
 endif (HyperEstraier_FOUND)
 
 include_directories( eventlistener )
-if(LOG4CXX_FOUND)
-    include_directories( ${LOG4CXX_INCLUDE_DIR} )
-endif(LOG4CXX_FOUND)
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp
@@ -29,9 +37,6 @@ add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
 
 set(strigidaemon_LIBS streamindexer eventlistener daemonconfiguration
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
-if(LOG4CXX_FOUND)
-    set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
-endif(LOG4CXX_FOUND)
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 

@@ -24,8 +24,8 @@
 
 #ifdef HAVE_LOG4CXX
 // log4cxx libraries
-#include <logger.h>
-#include <basicconfigurator.h>
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
 
 #define STRIGI_LOG_INIT() { \
     log4cxx::BasicConfigurator::configure();\
@@ -57,12 +57,21 @@
 }
 
 #else
+// no log4cxx support
+
+#include <iostream>
+
 #define STRIGI_LOG_INIT();
-#define STRIGI_LOG_DEBUG(loggerName, message);
-#define STRIGI_LOG_INFO(loggerName, message);
-#define STRIGI_LOG_WARNING(loggerName, message);
-#define STRIGI_LOG_ERROR(loggerName, message);
-#define STRIGI_LOG_FATAL(loggerName, message);
+
+#define STRIGI_LOG(loggerName, message) { \
+    std::cerr << loggerName << ": " << message << std::endl; \
+}
+
+#define STRIGI_LOG_DEBUG(loggerName, message) { STRIGI_LOG (loggerName, message) }
+#define STRIGI_LOG_INFO(loggerName, message)  { STRIGI_LOG (loggerName, message) }
+#define STRIGI_LOG_WARNING(loggerName, message)  { STRIGI_LOG (loggerName, message) }
+#define STRIGI_LOG_ERROR(loggerName, message)  { STRIGI_LOG (loggerName, message) }
+#define STRIGI_LOG_FATAL(loggerName, message)  { STRIGI_LOG (loggerName, message) }
 #endif
 
 #endif
