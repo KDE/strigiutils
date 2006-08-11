@@ -73,8 +73,8 @@ public:
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
 //    jstreams::QueryBitsetCache* getBitSets();
-    int docCount();
-    int getIndexSize();
+    int32_t docCount();
+    int64_t getIndexSize();
     int getVersion() const { return version; }
 };
 

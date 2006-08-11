@@ -163,7 +163,7 @@ CLuceneIndexManager::docCount() {
     STRIGI_UNLOCK_MUTEX(dblock->lock);
     return count;
 }
-int
+int64_t
 CLuceneIndexManager::getIndexSize() {
     // sum the sizes of the files in the index
     // loop over directory entries
@@ -173,13 +173,13 @@ CLuceneIndexManager::getIndexSize() {
         return -1;
     }
     struct dirent* e = readdir(dir);
-    int size = 0;
+    int64_t size = 0;
     while (e != 0) {
         string filename = dbdir+'/'+e->d_name;
         struct stat s;
         int r = stat(filename.c_str(), &s);
         if (r == 0) {
-            if ( !(s.st_mode & S_IFREG)) {
+            if ( S_ISREG(s.st_mode)) {
                 size += s.st_size;
             }
         } else {
