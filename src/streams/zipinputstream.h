@@ -40,7 +40,6 @@ private:
     // information relating to the current entry
     StreamBase<char>* compressedEntryStream;
     GZipInputStream *uncompressionStream;
-    StreamBase<char>* uncompressedEntryStream;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
 

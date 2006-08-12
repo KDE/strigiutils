@@ -42,7 +42,6 @@ ZipInputStream::ZipInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
     uncompressionStream = 0;
-    uncompressedEntryStream = 0;
 }
 ZipInputStream::~ZipInputStream() {
     if (compressedEntryStream) {
@@ -51,15 +50,12 @@ ZipInputStream::~ZipInputStream() {
     if (uncompressionStream) {
         delete uncompressionStream;
     }
-    if (uncompressedEntryStream) {
-        delete uncompressedEntryStream;
-    }
 }
 StreamBase<char>*
 ZipInputStream::nextEntry() {
     if (status) return 0;
     // clean up the last stream(s)
-    if (uncompressedEntryStream) {
+    if (entrystream) {
         if (compressedEntryStream) {
             compressedEntryStream->skip(compressedEntryStream->getSize());
             delete compressedEntryStream;
@@ -67,10 +63,10 @@ ZipInputStream::nextEntry() {
             delete uncompressionStream;
             uncompressionStream = 0;
         } else {
-            uncompressedEntryStream->skip(uncompressedEntryStream->getSize());
+            entrystream->skip(entrystream->getSize());
         }
-        delete uncompressedEntryStream;
-        uncompressedEntryStream = 0;
+        delete entrystream;
+        entrystream = 0;
     }
     readHeader();
     if (status) return 0;
@@ -81,12 +77,12 @@ ZipInputStream::nextEntry() {
         }
         uncompressionStream = new GZipInputStream(compressedEntryStream,
                 GZipInputStream::ZIPFORMAT);
-        uncompressedEntryStream
+        entrystream
             = new SubInputStream(uncompressionStream, entryinfo.size);
     } else {
-        uncompressedEntryStream = new SubInputStream(input, entryinfo.size);
+        entrystream = new SubInputStream(input, entryinfo.size);
     }
-    return uncompressedEntryStream;
+    return entrystream;
 }
 int32_t
 ZipInputStream::read2bytes(const unsigned char *b) {
