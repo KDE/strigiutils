@@ -43,9 +43,8 @@ private:
     const char* bufstart;
     const char* bufend;
 
-    StreamBase<char>* entrystream;
     StringTerminatedSubStream* substream;
-    SubInputStream* bodysubstream;
+//    SubInputStream* bodysubstream;
     std::string subject;
     std::string contenttype;
     std::string contenttransferencoding;

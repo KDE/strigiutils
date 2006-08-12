@@ -27,7 +27,6 @@ namespace jstreams {
 class ArInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    StreamBase<char> *output;
     std::string gnufilenames;
 
     void readHeader();

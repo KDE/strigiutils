@@ -25,27 +25,23 @@ using namespace jstreams;
 
 TarInputStream::TarInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
-    output = 0;
 }
 
 TarInputStream::~TarInputStream() {
-    if (output) {
-        delete output;
-    }
 }
 StreamBase<char>*
 TarInputStream::nextEntry() {
     if (status) return 0;
-    if (output) {
-        output->skip(output->getSize());
+    if (entrystream) {
+        entrystream->skip(entrystream->getSize());
         input->skip(numPaddingBytes);
-        delete output;
-        output = 0;
+        delete entrystream;
+        entrystream = 0;
     }
     parseHeader();
     if (status) return 0;
-    output = new SubInputStream(input, entryinfo.size);
-    return output;
+    entrystream = new SubInputStream(input, entryinfo.size);
+    return entrystream;
 }
 const char*
 TarInputStream::readHeader() {

@@ -42,7 +42,6 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
 RpmInputStream::RpmInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
     uncompressionStream = 0;
-    entryStream = 0;
 
     // skip the header
     const char* b;
@@ -98,27 +97,24 @@ RpmInputStream::~RpmInputStream() {
     if (uncompressionStream) {
         delete uncompressionStream;
     }
-    if (entryStream) {
-        delete entryStream;
-    }
 }
 StreamBase<char>*
 RpmInputStream::nextEntry() {
     if (status) return 0;
-    if (entryStream) {
-        while (entryStream->getStatus() == Ok) {
-            entryStream->skip(entryStream->getSize());
+    if (entrystream) {
+        while (entrystream->getStatus() == Ok) {
+            entrystream->skip(entrystream->getSize());
         }
-        delete entryStream;
-        entryStream = 0;
+        delete entrystream;
+        entrystream = 0;
         if (padding) {
             uncompressionStream->skip(padding);
         }
     }
     readHeader();
     if (status) return 0;
-    entryStream = new SubInputStream(uncompressionStream, entryinfo.size);
-    return entryStream;
+    entrystream = new SubInputStream(uncompressionStream, entryinfo.size);
+    return entrystream;
 }
 int32_t
 RpmInputStream::read4bytes(const unsigned char *b) {

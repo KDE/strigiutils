@@ -38,16 +38,18 @@ protected:
     StreamStatus status;
     std::string error;
     StreamBase<char> *input;
+    StreamBase<char> *entrystream;
     EntryInfo entryinfo;
 public:
-    SubStreamProvider(StreamBase<char> *i) :status(Ok), input(i) {}
-    virtual ~SubStreamProvider() {}
+    SubStreamProvider(StreamBase<char> *i) :status(Ok), input(i), entrystream(0)
+        {}
+    virtual ~SubStreamProvider() { if (entrystream) delete entrystream; }
     StreamStatus getStatus() const { return status; }
     virtual StreamBase<char>* nextEntry() = 0;
+    StreamBase<char>* currentEntry() { return entrystream; }
     const EntryInfo &getEntryInfo() const {
         return entryinfo;
     }
-//    std::string getEntryFileName() const { return entryfilename; }
     const char* getError() const { return error.c_str(); }
 };
 

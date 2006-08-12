@@ -97,8 +97,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
     return reqheader && linecount >= 5;
 }
 MailInputStream::MailInputStream(StreamBase<char>* input)
-        : SubStreamProvider(input), entrystream(0), substream(0),
-          bodysubstream(0) {
+        : SubStreamProvider(input), substream(0) {
 //    printf("%p\n", input);
     linenum = 0;
     skipHeader();
@@ -111,14 +110,8 @@ MailInputStream::MailInputStream(StreamBase<char>* input)
     boundary = getValue("boundary", contenttype);
 }
 MailInputStream::~MailInputStream() {
-    if (entrystream) {
-        delete entrystream;
-    }
-    if (substream) {
+    if (substream && substream != entrystream) {
         delete substream;
-    }
-    if (bodysubstream) {
-        delete bodysubstream;
     }
 }
 void
@@ -340,6 +333,8 @@ MailInputStream::handleBodyLine() {
     //printf("%s\n", contenttransferencoding.c_str());
     if (strcasestr(contenttransferencoding.c_str(), "base64")) {
         entrystream = new Base64InputStream(substream);
+    } else {
+        entrystream = substream;
     }
 }
 StreamBase<char>*
@@ -350,8 +345,8 @@ MailInputStream::nextEntry() {
     if (boundary.length() == 0) {
         // signal eof because we only return eof once
         status = Eof;
-        bodysubstream = new SubInputStream(input);
-        return bodysubstream;
+        entrystream = new SubInputStream(input);
+        return entrystream;
     }
     // read anything that's left over in the previous stream
     if (substream) {
@@ -390,13 +385,13 @@ MailInputStream::nextEntry() {
                 input->read(dummy, 2, 2);
             }
         }
-
-        delete substream;
-        substream = 0;
-        if (entrystream) {
-            delete entrystream;
-            entrystream = 0;
+        if (substream && substream != entrystream) {
+            delete substream;
         }
+        substream = 0;
+        delete entrystream;
+        entrystream = 0;
+
         if (status != Ok) {
             return 0;
         }
@@ -407,8 +402,10 @@ MailInputStream::nextEntry() {
     } else {
         scanBody();
     }
-    if (substream == 0) status = Eof;
-    return entrystream ?entrystream : substream;
+    if (entrystream == 0) {
+        status = Eof;
+    }
+    return entrystream;
 }
 void
 MailInputStream::clearHeaders() {

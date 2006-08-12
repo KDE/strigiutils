@@ -39,7 +39,6 @@ class RpmInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     StreamBase<char>* uncompressionStream;
-    StreamBase<char>* entryStream;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
     char padding;

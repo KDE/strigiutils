@@ -41,7 +41,6 @@ namespace jstreams {
 class TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    StreamBase<char> *output;
     int32_t numPaddingBytes;
 
     void readFileName(int32_t len);
