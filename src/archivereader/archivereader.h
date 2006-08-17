@@ -3,13 +3,26 @@
 
 #include <map>
 #include <list>
+#include <vector>
 #include <string>
+#include "substreamprovider.h"
 
 namespace jstreams {
     template <class T> class StreamBase;
     class SubStreamProvider;
     class EntryInfo;
 }
+
+class DirLister {
+private:
+    int pos;
+    std::vector<jstreams::EntryInfo> entries;
+public:
+    DirLister(const std::vector<jstreams::EntryInfo>& e)
+        : pos(0), entries(e) {
+    }
+    bool nextEntry(jstreams::EntryInfo& e);
+};
 
 class StreamOpener {
 public:
@@ -20,32 +33,16 @@ public:
 
 class ArchiveReader : public StreamOpener {
 private:
-    class StreamPtr {
-    public:
-        jstreams::StreamBase<char>* stream;
-        jstreams::SubStreamProvider* provider;
-        StreamPtr(jstreams::StreamBase<char>*s) :stream(s), provider(0) {}
-        StreamPtr(jstreams::SubStreamProvider*p) :stream(0), provider(p) {}
-        void free();
-    };
-    typedef std::map<jstreams::StreamBase<char>*,
-        std::list<StreamPtr> > openstreamsType;
-    openstreamsType openstreams;
-    std::list<StreamOpener*> openers;
-
-    jstreams::StreamBase<char>* open(const std::string& url);
-    jstreams::SubStreamProvider* getSubStreamProvider(
-        jstreams::StreamBase<char>*, std::list<StreamPtr>& streams);
-    static void free(std::list<StreamPtr>& l);
+    class ArchiveReaderPrivate;
+    ArchiveReaderPrivate *p;
 public:
     ArchiveReader();
     ~ArchiveReader();
     jstreams::StreamBase<char>* openStream(const std::string& url);
     void closeStream(jstreams::StreamBase<char>*);
     int stat(const std::string& url, jstreams::EntryInfo& e);
-    void addStreamOpener(StreamOpener* opener) {
-        openers.push_back(opener);
-    }
+    void addStreamOpener(StreamOpener* opener);
+    DirLister getDirEntries(const std::string& url);
 };
 
 #endif

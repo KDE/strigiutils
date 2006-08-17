@@ -55,15 +55,24 @@ main(int argc, char** argv) {
     reader.addStreamOpener(&opener);
 
     for (int i=1; i<argc; ++i) {
-        if (reader.stat(argv[i], e) != -1) {
+        DirLister dl = reader.getDirEntries(argv[i]);
+        while (dl.nextEntry(e)) {
+            printf("%s\n", e.filename.c_str());
+        }
+/*        if (reader.stat(argv[i], e) != -1) {
+            printf("name: %s\n", e.filename.c_str());
+            printf("size: %i\n", e.size);
+            printf("type: %i\n", e.type);
             if (e.type == EntryInfo::Dir) {
+                printf("get dir\n");
+                reader.getDirEntries(argv[i]);
             } else {
                 StreamBase<char>* s = reader.openStream(argv[i]);
                 reader.closeStream(s);
             }
         } else {
             fprintf(stderr, "Could not read '%s'\n", argv[i]);
-        }
+        }*/
     }
     return 0;
 }
