@@ -11,4 +11,4 @@ target_link_libraries(archivecat streams archivereader)
 
 add_executable(pdftest pdftest.cpp)
 
-target_link_libraries(pdftest streams)
+target_link_libraries(pdftest streams ${MAGIC_LIBRARIES})
