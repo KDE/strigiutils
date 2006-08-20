@@ -1,0 +1,467 @@
+#include "fileinputstream.h"
+#include "stringreader.h"
+#include "gzipinputstream.h"
+#include "kmpsearcher.h"
+#include "subinputstream.h"
+#include "stringterminatedsubstream.h"
+using namespace jstreams;
+using namespace std;
+
+int32_t streamcount = 0;
+
+class PdfParser {
+private:
+    // stream status
+    const char* start;
+    const char* end;
+    const char* pos;
+    int64_t objdefstart;
+    StreamBase<char>* stream;
+
+    // parsed objects
+    double lastNumber;
+    string lastName;
+    void* lastObject;
+
+    StreamStatus read(int32_t min, int32_t max);
+    StreamStatus read2(int32_t min, int32_t max);
+    StreamStatus checkForData(int32_t m);
+    bool isInString(char c, const char* s, int32_t n);
+    StreamStatus skipFromString(const char*str, int32_t n);
+    StreamStatus skipNotFromString(const char*str, int32_t n);
+    StreamStatus skipWhitespaceOrComment();
+    StreamStatus skipWhitespace();
+    StreamStatus skipKeyword(const char* str, int32_t len);
+    StreamStatus parseObjectStreamObject();
+    StreamStatus parseComment();
+    StreamStatus parseBoolean();
+    StreamStatus parseNumber();
+    StreamStatus parseNumberOrIndirectObject();
+    StreamStatus parseLiteralString();
+    StreamStatus parseHexString();
+    StreamStatus parseName();
+    StreamStatus parseDictionaryOrStream();
+    StreamStatus parseArray();
+    StreamStatus parseNull();
+    StreamStatus parseObjectStreamObjectDef();
+
+    StreamStatus handleSubStream(StreamBase<char>*);
+public:
+    PdfParser();
+    StreamStatus parse(StreamBase<char>* s);
+};
+
+PdfParser::PdfParser() {
+}
+
+StreamStatus
+PdfParser::read(int32_t min, int32_t max) {
+    int32_t off = pos-start;
+    int32_t d = stream->getPosition() - objdefstart;
+    min += d;
+    if (max > 0) max += d;
+    stream->reset(objdefstart);
+    int32_t n = stream->read(start, min, max);
+//    printf("objstart %i %i\n", d, n);
+    if (n < min) return stream->getStatus();
+    pos = start + off;
+    end = start + n;
+    return Ok;
+}
+StreamStatus
+PdfParser::read2(int32_t min, int32_t max) {
+    printf("pos %i\n", stream->getPosition());
+    int32_t n = stream->read(start, min, max);
+    if (n < min) return stream->getStatus();
+    pos = start;
+    end = pos + n;
+    return Ok;
+}
+StreamStatus
+PdfParser::checkForData(int32_t m) {
+    StreamStatus n = Ok;
+    if (end - pos < m) {
+        n = read(m, 0);
+    }
+    return n;
+}
+
+bool
+PdfParser::isInString(char c, const char* s, int32_t n) {
+    for (int i=0; i<n; ++i) {
+        if (s[i] == c) return true;
+    }
+    return false;
+}
+StreamStatus
+PdfParser::skipFromString(const char*str, int32_t n) {
+    StreamStatus s;
+    do {
+        if ((s = checkForData(1)) != Ok) return s;
+        while (pos < end && isInString(*pos, str, n)) pos++;
+    } while (pos == end);
+    return Ok;
+}
+StreamStatus
+PdfParser::skipNotFromString(const char*str, int32_t n) {
+    StreamStatus s;
+    do {
+        if ((s = checkForData(1)) != Ok) return s;
+        while (pos < end && !isInString(*pos, str, n)) pos++;
+    } while (pos == end);
+    return Ok;
+}
+StreamStatus
+PdfParser::skipKeyword(const char* str, int32_t len) {
+    if (end - pos < len) {
+        StreamStatus s;
+        if ((s = read(len, 0)) != Ok) return Error;
+    }
+//    printf("skipKeyword %s '%.*s'\n", str, (len>end-pos)?end-pos:len, pos);
+    if (strncmp(pos, str, len) != 0) return Error;
+    pos += len;
+    return Ok;
+}
+/**
+ * Skip whitespace in the stream. Return amount of whitespace skipped.
+ * After calling this function the position in the stream is after the
+ * whitespace.
+ **/
+StreamStatus
+PdfParser::skipWhitespace() {
+    return skipFromString("\t\n\f\r ", 5);
+}
+StreamStatus
+PdfParser::parseComment() {
+    if (*pos != '%') return Ok;
+    pos++; // skip '%'
+    return skipNotFromString("\r\n", 2);
+}
+StreamStatus
+PdfParser::skipWhitespaceOrComment() {
+//    printf("skipWhitespaceOrComment\n");
+    int64_t o;
+    int64_t no = pos - start;
+    StreamStatus s;
+    do {
+        o = no;
+        if ((s = skipWhitespace()) != Ok) return s;
+        if ((s = parseComment()) != Ok) return s;
+        no = pos - start;
+    } while (o != no);
+    return Ok; 
+}
+StreamStatus
+PdfParser::parseBoolean() {
+    return (*pos == 't') ?skipKeyword("true", 4) :skipKeyword("false", 5);
+}
+// - number : [+-]?\d+(.\d+)?
+StreamStatus
+PdfParser::parseNumber() {
+//    printf("parseNumber\n");
+    static const char* nc = "0123456789";
+    int64_t p = pos - start;
+    char ch = *pos;
+    if (ch == '+' || ch == '-') pos++;
+    StreamStatus n = skipFromString(nc, 10);
+    if (n != Ok) return n;
+    if (pos < end && *pos == '.') {
+        pos++;
+        n = skipFromString(nc, 10);
+    }
+    const char *s = start + p;
+    // parse an integer
+    lastNumber = strtod(s, 0);
+    lastObject = &lastNumber;
+    return n;
+}
+StreamStatus
+PdfParser::parseNumberOrIndirectObject() {
+//    printf("parseNumberOrIndirectObject\n");
+    StreamStatus s = parseNumber();
+    if (s != Ok) return s;
+    s = skipWhitespace();
+    if (s != Ok) return s;
+    // now we must check if this is an indirect object
+    if (isdigit(*pos)) {
+        const char*ss= start;
+        int64_t p = pos - start;
+        s = parseNumber();
+        if (s != Ok) return s;
+        s = skipWhitespace();
+        if (s != Ok) return s;
+        if (*pos == 'R') {
+            pos++;
+            lastObject = 0;
+        } else {
+            // set the position in front of the previous number
+            // because it is a separate number and not part of a reference
+            pos = start + p;
+        }
+    }
+//    printf("<parseNumberOrIndirectObject\n");
+    return Ok;
+}
+StreamStatus
+PdfParser::parseLiteralString() {
+    StreamStatus s;
+    int par = 1;
+    pos++;
+    bool escape = false;
+    do {
+        if ((s = checkForData(1)) != Ok) return s;
+        while (pos < end) {
+            char c = *pos;
+            if (escape) {
+                escape = false;
+            } else {
+                if (c == ')') {
+                    if (--par == 0) {
+                        pos++;
+                        return Ok;
+                    }
+                } else if (c == '(') {
+                    par++;
+                } else if (c == '\\') {
+                    escape = true;
+                }
+            }
+            pos++;
+        }
+    } while (1);
+    return Ok;
+}
+StreamStatus
+PdfParser::parseHexString() {
+//    printf("parseHexString\n");
+    if (skipNotFromString(">", 1) != Ok) return Error;
+    return skipKeyword(">", 1);
+}
+StreamStatus
+PdfParser::parseName() {
+//    printf("parseName %.*s\n", (10>end-pos)?end-pos:10, pos);
+    pos++;
+    int64_t p = pos - start;
+    StreamStatus r = skipNotFromString("()<>[]{}/%\t\n\f\r ", 16);
+    if (r == Error) return r;
+    const char *s = start + p;
+    lastName.assign(s, pos-s);
+    lastObject = &lastName;
+    return r;
+}
+StreamStatus
+PdfParser::parseDictionaryOrStream() {
+    enum Mode {None, Length, Filter};
+    Mode mode = None;
+//    printf("parseDictionary\n");
+    StreamStatus r;
+    pos += 2;
+    skipWhitespaceOrComment();
+    string filter;
+    int length = -1;
+    while (*pos != '>') {
+        if (parseName() != Ok) return Error;
+        if (lastName == "Length") mode = Length;
+        else if (lastName == "Filter") mode = Filter;
+        else mode = None;
+        if (skipWhitespaceOrComment() != Ok) return Error;
+        lastObject = 0;
+        if (parseObjectStreamObject() != Ok) return Error;
+        if (mode == Length && lastObject == &lastNumber) {
+            length = (int32_t)lastNumber;
+        } else if (mode == Filter && lastObject == &lastName) {
+            filter = lastName;
+        }
+        if (skipWhitespaceOrComment() != Ok) return Error;
+    }
+    if (skipKeyword(">>", 2) != Ok) return Error;
+    r = skipWhitespaceOrComment();
+    if (r != Ok) return r;
+    if (*pos == 's') {
+//        printf("stream %i\n", end-pos);
+        skipKeyword("stream", 6);
+        if (checkForData(11) != Ok) return Error;
+        if (*pos == '\r') pos++;
+        if (*pos != '\n') return Error;
+        pos++;
+
+        // read stream until 'endstream'
+        int64_t p = pos-start;
+        if (p != stream->reset(p)) return Error;
+//        printf("filter: %s\n", filter.c_str());
+//        printf("left: %i\n", (end-pos));
+        if (length == -1) {
+            StringTerminatedSubStream sub(stream, "endstream");
+            if (filter == "FlateDecode") {
+                GZipInputStream gzip(&sub, GZipInputStream::ZLIBFORMAT);
+                if (handleSubStream(&gzip) != Eof) return Error;
+            } else {
+                if (handleSubStream(&sub) != Eof) return Error;
+            }
+            p += sub.getSize();
+        } else {
+            SubInputStream sub(stream, length);
+            if (filter == "FlateDecode") {
+                GZipInputStream gzip(&sub, GZipInputStream::ZLIBFORMAT);
+                if (handleSubStream(&gzip) != Eof) return Error;
+            } else {
+                if (handleSubStream(&sub) != Eof) return Error;
+            }
+            p += sub.getSize();
+        }
+        if (p != stream->reset(p)) return Error;
+        if (read(1, 0) != Ok) return Error;
+        pos = start + p;
+        //pos = start + (stream->getPosition()-objdefstart);
+//        printf("hi %i\n", off+(pos-start));
+        //printf("hi %i\n", *pos);
+        if (skipWhitespaceOrComment() != Ok) return Error;
+//        printf("hi %i %.*s\n", pos-start, 10, pos);
+        if (skipKeyword("endstream", 9) != Ok) return Error;
+//        printf("endstream\n");
+        streamcount++;
+    }
+    return Ok;
+}
+StreamStatus
+PdfParser::parseArray() {
+//    printf("parseArray\n");
+    pos++;
+    if (skipWhitespaceOrComment() != Ok) return Error;
+    while (*pos != ']') {
+        if (parseObjectStreamObject() != Ok) return Error;
+        if (skipWhitespaceOrComment() != Ok) return Error;
+    }
+    pos++;
+    return Ok;
+}
+StreamStatus
+PdfParser::parseNull() {
+    return skipKeyword("null", 4);
+}
+StreamStatus
+PdfParser::parseObjectStreamObject() {
+//    printf("parseObjectStreamObject %.*s\n", (5>end-pos)?end-pos:5, pos);
+    StreamStatus r = read(2,0);
+    if (r == Error) return r;
+
+    char ch = *pos;
+    if (ch == 't' || ch == 'f') {
+        r = parseBoolean();
+    } else if (ch == '+' || ch == '-' || ch == '.' || isdigit(ch)) {
+        r = parseNumberOrIndirectObject();
+    } else if (ch == '(') {
+        r = parseLiteralString();
+    } else if (ch == '/') {
+        r = parseName();
+    } else if (ch == '<') {
+        if (end-pos > 1 && pos[1] == '<') {
+            r = parseDictionaryOrStream();
+        } else {
+            r = parseHexString();
+        }
+    } else if (ch == '[') {
+        r = parseArray();
+    } else if (ch == 'n') {
+        r = parseNull();
+    } else {
+        return Error;
+    }
+    if (r != Ok) return r;
+    r = skipWhitespaceOrComment();
+    return r;
+}
+StreamStatus
+PdfParser::parseObjectStreamObjectDef() {
+//    objdefstart = pos-start;
+    // if we are at 'xref' or 'startxref' we're ready
+    if (*pos == 'x' || *pos == 's') return Eof;
+    if (checkForData(13) != Ok) return Error;
+//    printf("parseObjectStreamObjectDef %.*s\n", ((10>end-pos)?end-pos:10), pos);
+    if (parseNumber() != Ok || skipWhitespaceOrComment() != Ok
+        || parseNumber() != Ok || skipWhitespaceOrComment() != Ok
+        || skipKeyword("obj", 3) != Ok || skipWhitespaceOrComment() != Ok
+        || parseObjectStreamObject() != Ok || skipWhitespaceOrComment() != Ok
+        || skipKeyword("endobj", 6) != Ok) {
+        return Error;
+    }
+
+    return skipWhitespaceOrComment();
+}
+StreamStatus
+PdfParser::parse(StreamBase<char>* stream) {
+    // for now we need to load the entire stream in memory :(
+    // this is due to a sneaky bug somewhere, not a design issue
+    const char* c;
+    //warning:use limited to sized streams
+    stream->read(c, 1+stream->getSize(), 0);
+    stream->reset(0);
+    StreamStatus r = stream->getStatus();
+    if (r != Ok) return r;
+
+    // initialize the stream status
+    this->stream = stream;
+    end = pos = start = 0;
+    objdefstart = 0;
+
+    // initialize the parsed field containers
+    lastNumber = -1;
+    lastName.resize(0);
+    lastObject = 0;
+
+    r = skipWhitespaceOrComment();
+    if (r != Ok) return r;
+    while ((r = parseObjectStreamObjectDef()) == Ok) {};
+    printf("%i %i\n", r, streamcount);
+    return r;
+}
+#include <cstdio>
+void
+saveFile(const char* start, const char* end, const char* suf=0) {
+    static int count = 0;
+    char name[32];
+    if (suf) {
+        sprintf(name, "out/%i.%s", ++count, suf);
+    } else {
+        sprintf(name, "out/%i", ++count);
+    }
+    FILE* file = fopen(name, "wb");
+    if (file == 0) return;
+    fwrite(start, 1, end-start, file);
+    fclose(file);
+}
+StreamStatus
+PdfParser::handleSubStream(StreamBase<char>* s) {
+    const char* c;
+    int32_t n = s->read(c, 1024, 0);
+    while (n >= 0 && s->getStatus() == Ok) {
+        n = s->read(c, 2*n, 0);
+    }
+    if (n <= 0) {
+        return Error;
+    }
+    if (n > 10) {
+        bool allascii = true;
+        for (int i=0; i<10; ++i) {
+            allascii &= isascii(c[i]);
+        }
+        if (!allascii) {
+            saveFile(c, c+n);
+        }
+    }
+    return s->getStatus();
+}
+
+int
+main(int argc, char** argv) {
+    streamcount = 0;
+    PdfParser parser;
+    for (int i=1; i<argc; ++i) {
+        FileInputStream file(argv[i]);
+        StreamStatus r = parser.parse(&file);
+        if (r != Eof) {
+            printf("error in %s\n", argv[i]);
+        }
+    }
+    return 0;
+}

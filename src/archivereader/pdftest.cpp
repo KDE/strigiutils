@@ -7,6 +7,24 @@ extern "C" {
     #include <magic.h>
 }
 
+/* functions missing from the stream:
+   - is the next value a certain string?
+   - skip x character, throw exception on failure
+   - advance one character
+   - ensure the pointer points to the next 4 characters
+*/
+
+bool
+isPdfWhitespace(char c) {
+    return c==0x00||c==0x09||c==0x0A||c==0x0C||c==0x0D||c==0x20;
+}
+bool
+isPdfDelimiter(char c) {
+    return c=='('||c==')'||c=='<'||c=='>'||c=='['||c==']'||c=='{'||c=='}'
+        ||c=='/'||c=='%';
+}
+
+
 /*
  * parser for files like this one:
  * http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf
@@ -33,6 +51,7 @@ saveFile(const char* start, const char* end, const char* suf=0) {
         sprintf(name, "out/%i", count);
     }
     FILE* file = fopen(name, "wb");
+    if (file == 0) return;
     fwrite(start, 1, end-start, file);
     fclose(file);
 }
@@ -55,6 +74,53 @@ analyzeMime(const char* start, const char* end) {
     }
 }
 void
+extractText(const char* start, const char* end) {
+    printf("%i\n", count);
+    const char* p=start;
+    bool on1 = false;
+    bool on2 = false;
+    bool space = false;
+    bool escape = false;
+    while (p != end && isascii(*p)) {
+        char c = *p;
+        space = c == ' ';
+        switch (c) {
+        case ('['): on1 =  true; break;
+        case (']'): on1 = false; if (!space) printf(" "); break;
+        case ('('): on2 =  true; break;
+        case (')'): on2 = false; break;
+        default: if (on1 && on2) printf("%c", c);
+        }
+        p++;
+
+    }
+    printf("\n");
+}
+void
+extractText2(const char* start, const char* end) {
+    printf("%i\n", count);
+    const char* p=start;
+    bool on = false;
+    bool space = false;
+    bool escape = false;
+    while (p != end && isascii(*p)) {
+        char c = *p;
+        if (on) {
+            if (escape) {
+                printf("%c", c);
+                escape = false;
+            } else if (c == ')') {
+                on = false;
+            } else {
+                printf("%c", c);
+            }
+        } else if (c == '(') {
+            on = true;
+        }
+        p++;
+    }
+}
+void
 analyze(StreamBase<char>* s) {
     const char* c;
     int32_t n = s->read(c, 1024, 0);
@@ -66,10 +132,31 @@ analyze(StreamBase<char>* s) {
     }
 //    saveFile(c, c+n);
 //    printf("%i\n", n);
-    if (*c == '/') return;
+//    if (n > 7 && strncmp(c, "/GS2 gs", 7) == 0) extractText2(c, c+n);
     analyzeMime(c, c+n);
 }
-
+const char*
+findDictStart(const char* start, const char* end) {
+    const char* d = end - 7;
+    int count = 1;
+    // move to the last '>' of the dict
+    while (d > start && *d != '>') --d;
+    --d;
+    while (count && d > start && isascii(*d)) {
+        switch (*d) {
+        case '>':
+            count++;
+            --d;
+            break;
+        case '<':
+            count--;
+        default:
+            --d;
+        }
+    }
+    d++;
+    return d;
+}
 const char*
 getStream(const char*start, const char* end) {
     // find the start of the next stream
@@ -80,9 +167,9 @@ getStream(const char*start, const char* end) {
     s += 7;
 
     // find the start of the preceding dictionary
-    const char* d = s-7;
-    while (d > start && isascii(*d) && *d != '<') --d;
+    const char* d = findDictStart(start, s);
     d++;
+    //printf("%i %.*s\n", count, s-d, d);
 
     // find the end of the stream
     int32_t l = -1;
@@ -116,7 +203,7 @@ getStream(const char*start, const char* end) {
 
     // now we have a stream from s to e
     StringReader<char> ss(s, e-s, false);
-//    printf("%.*s\n", s-d, d);
+    //printf("%.*s\n", s-d, d);
 
     // do we have a type?
     bool havetype = type.search(d, s-d);
