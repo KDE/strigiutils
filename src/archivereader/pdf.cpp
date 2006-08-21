@@ -17,6 +17,7 @@ private:
     const char* pos;
     int64_t objdefstart;
     StreamBase<char>* stream;
+    string error;
 
     // parsed objects
     double lastNumber;
@@ -45,10 +46,15 @@ private:
     StreamStatus parseNull();
     StreamStatus parseObjectStreamObjectDef();
 
-    StreamStatus handleSubStream(StreamBase<char>*);
+    StreamStatus handleSubStream(StreamBase<char>*, const std::string& type,
+        int32_t offset, int32_t n);
+    StreamStatus parseObjectStream(StreamBase<char>*, int32_t offset,
+        int32_t n);
+    StreamStatus parseContentStream(StreamBase<char>*);
 public:
     PdfParser();
     StreamStatus parse(StreamBase<char>* s);
+    const std::string& getError() { return error; }
 };
 
 PdfParser::PdfParser() {
@@ -115,10 +121,18 @@ StreamStatus
 PdfParser::skipKeyword(const char* str, int32_t len) {
     if (end - pos < len) {
         StreamStatus s;
-        if ((s = read(len, 0)) != Ok) return Error;
+        if ((s = read(len, 0)) != Ok) {
+            error.assign("Premature end of stream.");
+            return Error;
+        }
     }
 //    printf("skipKeyword %s '%.*s'\n", str, (len>end-pos)?end-pos:len, pos);
-    if (strncmp(pos, str, len) != 0) return Error;
+    if (strncmp(pos, str, len) != 0) {
+            error.assign("Keyword ");
+            error.append(str, len);
+            error.append(" not found.");
+            return Error;
+    }
     pos += len;
     return Ok;
 }
@@ -234,7 +248,10 @@ PdfParser::parseLiteralString() {
 StreamStatus
 PdfParser::parseHexString() {
 //    printf("parseHexString\n");
-    if (skipNotFromString(">", 1) != Ok) return Error;
+    if (skipNotFromString(">", 1) != Ok) {
+         error.assign("Premature end of stream while parsing a hexstring.");
+         return Error;
+    }
     return skipKeyword(">", 1);
 }
 StreamStatus
@@ -243,7 +260,10 @@ PdfParser::parseName() {
     pos++;
     int64_t p = pos - start;
     StreamStatus r = skipNotFromString("()<>[]{}/%\t\n\f\r ", 16);
-    if (r == Error) return r;
+    if (r == Error) {
+        error.assign(stream->getError());
+        return r;
+    }
     const char *s = start + p;
     lastName.assign(s, pos-s);
     lastObject = &lastName;
@@ -251,28 +271,52 @@ PdfParser::parseName() {
 }
 StreamStatus
 PdfParser::parseDictionaryOrStream() {
-    enum Mode {None, Length, Filter};
+    enum Mode {None, Length, Filter, Type, First, N};
     Mode mode = None;
 //    printf("parseDictionary\n");
     StreamStatus r;
     pos += 2;
     skipWhitespaceOrComment();
     string filter;
+    string type;
     int length = -1;
+    int offset = 0;
+    int numberofobjects = 0;
     while (*pos != '>') {
-        if (parseName() != Ok) return Error;
+        if (parseName() != Ok) {
+            error.assign("Expected a name.");
+            return Error;
+        }
         if (lastName == "Length") mode = Length;
         else if (lastName == "Filter") mode = Filter;
+        else if (lastName == "Type") mode = Type;
+        else if (lastName == "First") mode = First;
+        else if (lastName == "N") mode = N;
         else mode = None;
-        if (skipWhitespaceOrComment() != Ok) return Error;
+        if (skipWhitespaceOrComment() != Ok) {
+            error.assign("Error parsing whitespace in dictionary.");
+            return Error;
+        }
         lastObject = 0;
-        if (parseObjectStreamObject() != Ok) return Error;
+        if (parseObjectStreamObject() != Ok) {
+            error.assign("Error parsing dictionary value.");
+            return Error;
+        }
         if (mode == Length && lastObject == &lastNumber) {
             length = (int32_t)lastNumber;
         } else if (mode == Filter && lastObject == &lastName) {
             filter = lastName;
+        } else if (mode == Type && lastObject == &lastName) {
+            type = lastName;
+        } else if (mode == First && lastObject == &lastNumber) {
+            offset = (int32_t)lastNumber;
+        } else if (mode == N && lastObject == &lastNumber) {
+            numberofobjects = (int32_t)lastNumber;
         }
-        if (skipWhitespaceOrComment() != Ok) return Error;
+        if (skipWhitespaceOrComment() != Ok) {
+            error.assign("Error reading whitespace after dictionary value.");
+            return Error;
+        }
     }
     if (skipKeyword(">>", 2) != Ok) return Error;
     r = skipWhitespaceOrComment();
@@ -289,23 +333,27 @@ PdfParser::parseDictionaryOrStream() {
         int64_t p = pos-start;
         if (p != stream->reset(p)) return Error;
 //        printf("filter: %s\n", filter.c_str());
-//        printf("left: %i\n", (end-pos));
+        printf("length: %i\n", length);
         if (length == -1) {
             StringTerminatedSubStream sub(stream, "endstream");
             if (filter == "FlateDecode") {
                 GZipInputStream gzip(&sub, GZipInputStream::ZLIBFORMAT);
-                if (handleSubStream(&gzip) != Eof) return Error;
+                if (handleSubStream(&gzip, type, offset, numberofobjects)
+                    != Eof) return Error;
             } else {
-                if (handleSubStream(&sub) != Eof) return Error;
+                if (handleSubStream(&sub, type, offset, numberofobjects)
+                    != Eof) return Error;
             }
             p += sub.getSize();
         } else {
             SubInputStream sub(stream, length);
             if (filter == "FlateDecode") {
                 GZipInputStream gzip(&sub, GZipInputStream::ZLIBFORMAT);
-                if (handleSubStream(&gzip) != Eof) return Error;
+                if (handleSubStream(&gzip, type, offset, numberofobjects)
+                    != Eof) return Error;
             } else {
-                if (handleSubStream(&sub) != Eof) return Error;
+                if (handleSubStream(&sub, type, offset, numberofobjects)
+                    != Eof) return Error;
             }
             p += sub.getSize();
         }
@@ -342,7 +390,7 @@ PdfParser::parseNull() {
 StreamStatus
 PdfParser::parseObjectStreamObject() {
 //    printf("parseObjectStreamObject %.*s\n", (5>end-pos)?end-pos:5, pos);
-    StreamStatus r = read(2,0);
+    StreamStatus r = read(2, 0);
     if (r == Error) return r;
 
     char ch = *pos;
@@ -370,6 +418,33 @@ PdfParser::parseObjectStreamObject() {
     if (r != Ok) return r;
     r = skipWhitespaceOrComment();
     return r;
+}
+StreamStatus
+PdfParser::parseObjectStream(StreamBase<char>* s, int32_t offset, int32_t n) {
+    stream = s;
+    end = pos = start = 0;
+    objdefstart = 0;
+
+    stream->skip(offset);
+        printf("size: %i %i\n", s->getSize(), s->getPosition());
+    StreamStatus r = Ok;
+    for (int32_t i=0; r == Ok && i<n; ++i) {
+        printf("object: %i\n", i);
+        r = parseObjectStreamObject();
+    }
+    while (r == Ok) {
+        printf("size: %i %i\n", s->getSize(), s->getPosition());
+        s->skip(1000);
+        r = s->getStatus();
+    }
+    if (r == Eof) {
+        printf("size: %i\n", s->getSize());
+    }
+    return r;
+}
+StreamStatus
+PdfParser::parseContentStream(StreamBase<char>* s) {
+    return Error;
 }
 StreamStatus
 PdfParser::parseObjectStreamObjectDef() {
@@ -412,7 +487,7 @@ PdfParser::parse(StreamBase<char>* stream) {
     r = skipWhitespaceOrComment();
     if (r != Ok) return r;
     while ((r = parseObjectStreamObjectDef()) == Ok) {};
-    printf("%i %i\n", r, streamcount);
+//    printf("%i %i\n", r, streamcount);
     return r;
 }
 #include <cstdio>
@@ -431,7 +506,9 @@ saveFile(const char* start, const char* end, const char* suf=0) {
     fclose(file);
 }
 StreamStatus
-PdfParser::handleSubStream(StreamBase<char>* s) {
+PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
+        int32_t offset, int32_t numberofobjects) {
+    static int count=0;
     const char* c;
     int32_t n = s->read(c, 1024, 0);
     while (n >= 0 && s->getStatus() == Ok) {
@@ -440,6 +517,30 @@ PdfParser::handleSubStream(StreamBase<char>* s) {
     if (n <= 0) {
         return Error;
     }
+    s->reset(0);
+
+    // try to parse as an object stream
+    PdfParser parser;
+    if (type == "ObjStm") {
+        if (parser.parseObjectStream(s, offset, numberofobjects) == Eof) {
+            printf("Found object stream %i of length %i.\n",
+                count++, s->getSize());
+            return Eof;
+        } else {
+            printf("%s\n", parser.getError().c_str());
+            printf("%.*s\n", 100, c+offset); 
+            return Error;
+        }
+    }
+
+    // try to parse as a content stream
+    if (parser.parseContentStream(s) == Eof) {
+        printf("Found content stream %i of length %i.\n",
+            count++, s->getSize());
+        return Eof;
+    }
+    s->reset(0);
+
     if (n > 10) {
         bool allascii = true;
         for (int i=0; i<10; ++i) {
@@ -449,6 +550,9 @@ PdfParser::handleSubStream(StreamBase<char>* s) {
             saveFile(c, c+n);
         }
     }
+    s->read(c, s->getSize()+1, 0);
+    printf("hi %i\n", s->getStatus()); 
+    printf("hi %i\n", s->getPosition()); 
     return s->getStatus();
 }
 
