@@ -71,11 +71,6 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     return nread;
 }
-/*int64_t
-SubInputStream::mark(int32_t readlimit) {
-    position = input->mark(readlimit) - offset;
-    return position;
-}*/
 int64_t
 SubInputStream::reset(int64_t newpos) {
 //    fprintf(stderr, "subreset pos: %lli newpos: %lli offset: %lli\n", position,
@@ -87,6 +82,7 @@ SubInputStream::reset(int64_t newpos) {
         error = input->getError();
     } else {
         position -= offset;
+        status = input->getStatus();
     }
     return position;
 }
