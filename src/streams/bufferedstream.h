@@ -22,6 +22,7 @@
 
 #include "streambase.h"
 #include "inputstreambuffer.h"
+#include <cassert>
 
 namespace jstreams {
 
@@ -67,6 +68,7 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
         space = buffer.makeSpace(missing);
         T* start = buffer.readPos + buffer.avail;
         nwritten = fillBuffer(start, space);
+        assert(StreamBase<T>::status != Eof);
         if (nwritten > 0) {
             buffer.avail += nwritten;
             missing = ntoread - buffer.avail;
@@ -87,7 +89,6 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
         // do we have enough space in the buffer?
         writeToBuffer(min);
         if (StreamBase<T>::status == Error) return -2;
-        if (StreamBase<T>::status == Eof) return -1;
     }
 
     int32_t nread = buffer.read(start, max);
@@ -104,6 +105,9 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     } else if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
         BufferedInputStream<T>::status = Eof;
+        if (BufferedInputStream<T>::size == -1) {
+            BufferedInputStream<T>::size = BufferedInputStream<T>::position;
+        }
         // save one call to read() by already returning -1 if no data is there
         if (nread == 0) nread = -1;
     }

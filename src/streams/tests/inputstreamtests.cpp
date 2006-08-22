@@ -36,11 +36,12 @@ inputStreamTest1(StreamBase<T>* s) {
             n += n2;
             n2 = s->read(ptr, 1, 0);
         }
+        size = s->getSize();
     } else {
         // read past the end
         n = s->read(ptr, size+1, size+1);
     }
-    VERIFY(size == -1 || n == -1 || size == n);
+    VERIFY(size == n);
     VERIFY(s->getPosition() == n);
     if (s->getStatus() == jstreams::Error) {
         fprintf(stderr, "error %s\n", s->getError());
