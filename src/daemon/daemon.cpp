@@ -110,6 +110,26 @@ initializeDir(const string& dir) {
     }
     return true;
 }
+/**
+* Check if log4cxx file exists, otherwise creates a default one
+**/
+void
+checkLogConf(const string& filename) {
+    std::fstream confFile; 
+    confFile.open(filename.c_str(), std::ios::in); 
+    if (!confFile.is_open()){
+        /*create the default configuration file*/ 
+        confFile.open(filename.c_str(), std::ios::out); 
+        confFile << "# Set root logger level to DEBUG and its only appender to A1.\n"; 
+        confFile << "log4j.rootLogger=DEBUG, A1\n\n"; 
+        confFile << "# A1 is set to be a ConsoleAppender.\n"; 
+        confFile << "log4j.appender.A1=org.apache.log4j.ConsoleAppender\n"; 
+        confFile << "# A1 uses PatternLayout.\n";
+        confFile << "log4j.appender.A1.layout=org.apache.log4j.PatternLayout\n";
+        confFile << "log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n\n";
+    }
+    confFile.close();
+}
 set<string>
 readdirstoindex(const string& file) {
     set<string> dirs;
@@ -170,6 +190,7 @@ main(int argc, char** argv) {
     string dbfile = daemondir+"/sqlite.db";
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
+    string logconffile = daemondir+"/log.conf";
     
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -177,15 +198,16 @@ main(int argc, char** argv) {
         exit(1);
     }
     
-    // init logging interface
-    STRIGI_LOG_INIT()
+    // init logging
+    checkLogConf(logconffile);
+    STRIGI_LOG_INIT(logconffile)
     
     if (!initializeDir(lucenedir)) {
-        fprintf(stderr, "Could not initialize the clucene directory.\n");
+        STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")
         exit(1);
     }
     if (!initializeDir(estraierdir)) {
-        fprintf(stderr, "Could not initialize the estraier directory.\n");
+        STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the estraier directory.")
         exit(1);
     }
 
@@ -193,8 +215,10 @@ main(int argc, char** argv) {
     struct flock lock;
     FILE* lockfile = aquireLock(lockfilename.c_str(), lock);
     if (lockfile == 0) {
-        printf("Daemon cannot run: the file %s is locked.\n",
-            lockfilename.c_str());
+        string msg = "Daemon cannot run: the file ";
+        msg += lockfilename;
+        msg += " is locked.";
+        STRIGI_LOG_FATAL ("strigi.daemon", msg)
         exit(1);
     } 
 
