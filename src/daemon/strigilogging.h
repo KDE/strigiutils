@@ -25,10 +25,29 @@
 #ifdef HAVE_LOG4CXX
 // log4cxx libraries
 #include <log4cxx/logger.h>
-#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
+
+#include <fstream>
+#include <stdlib.h>
+#include <string>
 
 #define STRIGI_LOG_INIT() { \
-    log4cxx::BasicConfigurator::configure();\
+    std::string logconffile = daemondir+"/log.conf"; \
+    std::fstream confFile; \
+    confFile.open(logconffile.c_str(), std::ios::in); \
+    if (!confFile.is_open()){ \
+        /*create the default configuration file*/ \
+        confFile.open(logconffile.c_str(), std::ios::out); \
+        confFile << "# Set root logger level to DEBUG and its only appender to A1.\n"; \
+        confFile << "log4j.rootLogger=DEBUG, A1\n\n"; \
+        confFile << "# A1 is set to be a ConsoleAppender.\n"; \
+        confFile << "log4j.appender.A1=org.apache.log4j.ConsoleAppender\n"; \
+        confFile << "# A1 uses PatternLayout.\n"; \
+        confFile << "log4j.appender.A1.layout=org.apache.log4j.PatternLayout\n"; \
+        confFile << "log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n\n"; \
+    } \
+    confFile.close(); \
+    log4cxx::PropertyConfigurator::configure(logconffile);\
 }
 
 #define STRIGI_LOG_DEBUG(loggerName, message) { \

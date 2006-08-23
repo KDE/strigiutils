@@ -160,9 +160,6 @@ releaseLock(FILE* f, struct flock& lock) {
 }
 int
 main(int argc, char** argv) {
-    // init logging interface
-    STRIGI_LOG_INIT()
-    
     // set up the directory paths
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.strigi";
@@ -173,12 +170,16 @@ main(int argc, char** argv) {
     string dbfile = daemondir+"/sqlite.db";
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
-
+    
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
         fprintf(stderr, "Could not initialize the daemon directory.\n");
         exit(1);
     }
+    
+    // init logging interface
+    STRIGI_LOG_INIT()
+    
     if (!initializeDir(lucenedir)) {
         fprintf(stderr, "Could not initialize the clucene directory.\n");
         exit(1);
