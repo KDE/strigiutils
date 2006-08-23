@@ -29,6 +29,9 @@
 #include "streamindexer.h"
 #include <cerrno>
 #include <sys/resource.h>
+
+#include "strigilogging.h"
+
 using namespace std;
 using namespace jstreams;
 
@@ -56,7 +59,8 @@ indexschedulerstart(void *d) {
     if (r != 0) {
         // fall back to renice if SCHED_BATCH is unknown
         r = setpriority(PRIO_PROCESS, 0, 20);
-        if (r==-1) printf("error setting priority: %s\n", strerror(errno));
+        if (r==-1)
+            STRIGI_LOG_ERROR ("strigi.IndexScheduler.indexschedulerstart", string("error setting priority: ") + strerror(errno))
         //nice(20);
     }
 #ifdef HAVE_LINUXIOPRIO
@@ -91,7 +95,7 @@ IndexScheduler::start() {
     // start the indexer thread
     int r = pthread_create(&thread, NULL, indexschedulerstart, this);
     if (r < 0) {
-        printf("cannot create thread\n");
+        STRIGI_LOG_ERROR ("strigi.IndexScheduler", "cannot create thread")
         return 1;
     }
     return 0;
@@ -163,18 +167,25 @@ IndexScheduler::index() {
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
         dbfiles = reader->getFiles(0);
-        printf("%i real files in the database\n", dbfiles.size()); 
+        
+        char buff [20];
+        snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database") 
         
         // first loop through all files
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
-        printf("going to index\n");
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "going to index")
         set<string>::const_iterator i;
         for (i = dirstoindex.begin(); i != dirstoindex.end(); ++i) {
             lister.listFiles(i->c_str());
         }
-        printf("%i files to remove\n", dbfiles.size()); 
-        printf("%i files to add or update\n", toindex.size());
+        
+        snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to remove")
+        
+        snprintf(buff, 20* sizeof (char), "%i", toindex.size());
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to add or update")
     }
 
     vector<string> todelete;
@@ -210,7 +221,7 @@ void IndexScheduler::processListenerEvents(vector<Event*>& events)
     
     vector<string> toDelete, toIndex;
     
-    printf ("processing listener's events\n");
+    STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
 
     for (vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
     {
@@ -228,6 +239,8 @@ void IndexScheduler::processListenerEvents(vector<Event*>& events)
                 toDelete.push_back (event->getPath());
                 break;
         }
+        
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "event infos: " + event->toString())
         
         delete event;
     }
