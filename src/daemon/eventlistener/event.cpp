@@ -38,6 +38,32 @@ Event::~Event()
 {
 }
 
+std::string Event::toString()
+{
+    std::string out = "type=";
+
+    switch (m_type)
+    {
+        case Event::CREATED:
+            out += "CREATED";
+            break;
+        case Event::UPDATED:
+            out += "UPDATED";
+            break;
+        case Event::DELETED:
+            out +=  "DELETED";
+            break;
+    }
+
+    out += "; path=";
+    out += m_path;
+
+    out += "; time=";
+    out += ctime (&m_time);
+
+    return out;
+}
+
 std::ostream &operator<< (std::ostream &stream, Event* event)
 {
     stream << "\ttype: ";

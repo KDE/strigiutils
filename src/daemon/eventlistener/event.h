@@ -38,6 +38,7 @@ class Event
         const std::string &getPath() { return m_path; }
         time_t getTime() { return m_time; }
 
+        std::string toString();
         friend std::ostream &operator<< (std::ostream &stream, Event* event);
 
     protected:
