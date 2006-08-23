@@ -3,10 +3,19 @@
 using namespace jstreams;
 extern int32_t streamcount;
 
+class SaveStreamHandler : public PdfParser::StreamHandler {
+private:
+    bool handle(jstreams::StreamBase<char>*) {
+        return true;
+    }
+};
+
 int
 main(int argc, char** argv) {
     streamcount = 0;
     PdfParser parser;
+    SaveStreamHandler saver;
+    parser.setStreamHandler(&saver);
     for (int i=1; i<argc; ++i) {
         // check if we can read the file
         FILE* f = fopen(argv[i], "rb");

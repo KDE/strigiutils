@@ -1,0 +1,12 @@
+
+include_directories(..)
+
+add_library(pdfstream pdfparser.cpp pdfinputstream.cpp)
+
+add_executable(pdf pdf.cpp pdfparser.cpp)
+target_link_libraries(pdf streams)
+
+add_executable(pdftest pdftest.cpp)
+
+target_link_libraries(pdftest streams ${MAGIC_LIBRARIES})
+

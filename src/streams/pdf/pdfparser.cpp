@@ -7,7 +7,7 @@ using namespace std;
 
 int32_t streamcount = 0;
 
-PdfParser::PdfParser() {
+PdfParser::PdfParser() :streamhandler(0), texthandler(0) {
 }
 
 StreamStatus
@@ -515,7 +515,7 @@ saveFile(const char* start, const char* end, const char* suf=0) {
     fclose(file);
 }
 void
-forwardStream(StreamBase<char>* s) {
+PdfParser::forwardStream(StreamBase<char>* s) {
     const char* c;
     int32_t n = s->read(c, 1024, 0);
     while (n >= 0 && s->getStatus() == Ok) {

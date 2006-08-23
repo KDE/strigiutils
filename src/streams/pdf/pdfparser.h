@@ -4,8 +4,18 @@
 #include "streambase.h"
 
 class PdfParser {
+public:
+    class StreamHandler {
+    public:
+        virtual ~StreamHandler() {}
+        virtual bool handle(jstreams::StreamBase<char>*) = 0;
+    };
+    class TextHandler {
+    public:
+        virtual ~TextHandler() {}
+        virtual bool handle(const std::string&) = 0;
+    };
 private:
-    // stream status
     const char* start;
     const char* end;
     const char* pos;
@@ -20,7 +30,12 @@ private:
     std::string lastString;
     void* lastObject;
 
+    // event handlers
+    StreamHandler* streamhandler;
+    TextHandler* texthandler;
+
     jstreams::StreamStatus read(int32_t min, int32_t max);
+    void forwardStream(jstreams::StreamBase<char>* s);
     jstreams::StreamStatus read2(int32_t min, int32_t max);
     jstreams::StreamStatus checkForData(int32_t m);
     bool isInString(char c, const char* s, int32_t n);
@@ -56,6 +71,8 @@ public:
     PdfParser();
     jstreams::StreamStatus parse(jstreams::StreamBase<char>* s);
     const std::string& getError() { return error; }
+    void setStreamHandler(StreamHandler* handler) { streamhandler = handler; }
+    void setTextHandler(TextHandler* handler) { texthandler = handler; }
 };
 
 #endif

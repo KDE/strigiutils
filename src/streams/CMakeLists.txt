@@ -1,4 +1,4 @@
-subdirs(tests)
+subdirs(tests pdf)
 
 include_directories( ${ZLIB_INCLUDE_DIR} ${BZIP2_INCLUDE_DIR}
 	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
