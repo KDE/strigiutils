@@ -17,40 +17,30 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef SUBSTREAMPROVIDER
-#define SUBSTREAMPROVIDER
+#ifndef FSFILEINPUTSTREAM_H
+#define FSFILEINPUTSTREAM_H
 
-#include <string>
-#include "streambase.h"
+#include "bufferedstream.h"
+
+class QFSFileEngine;
+class QString;
 
 namespace jstreams {
 
-struct EntryInfo {
-    std::string filename;
-    int32_t size;
-    uint mtime;
-    enum Type {Unknown=0, Dir=1, File=2};
-    Type type;
-};
+class FSFileInputStream : public BufferedInputStream<char> {
+private:
+    bool open;
+    QFSFileEngine *fse;
 
-class SubStreamProvider {
+    void readFromFile();
 protected:
-    StreamStatus status;
-    std::string error;
-    StreamBase<char> *input;
-    StreamBase<char> *entrystream;
-    EntryInfo entryinfo;
+    int32_t fillBuffer(char* start, int32_t space);
 public:
-    SubStreamProvider(StreamBase<char> *i) :status(Ok), input(i), entrystream(0)
-        {}
-    virtual ~SubStreamProvider() { if (entrystream) delete entrystream; }
-    StreamStatus getStatus() const { return status; }
-    virtual StreamBase<char>* nextEntry() = 0;
-    StreamBase<char>* currentEntry() { return entrystream; }
-    const EntryInfo &getEntryInfo() const {
-        return entryinfo;
-    }
-    const char* getError() const { return error.c_str(); }
+    static const int32_t defaultBufferSize;
+    FSFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
+    FSFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
+    ~FSFileInputStream();
+    StreamStatus reopen();
 };
 
 } // end namespace jstreams
