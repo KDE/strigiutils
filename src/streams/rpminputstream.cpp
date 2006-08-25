@@ -163,6 +163,10 @@ RpmInputStream::readHeader() {
         status = Error;
         return;
     }
+    int32_t len = filenamesize-1;
+    if (len > 2 && b[0] == '.' && b[1] == '/') {
+        b += 2;
+    }
     entryinfo.filename = std::string((const char*)b, filenamesize-1);
 }
 int32_t

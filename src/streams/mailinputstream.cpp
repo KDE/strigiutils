@@ -23,6 +23,7 @@
 #include "stringterminatedsubstream.h"
 #include "base64inputstream.h"
 #include <cstring>
+#include <sstream>
 using namespace jstreams;
 using namespace std;
 
@@ -99,6 +100,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
 MailInputStream::MailInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), substream(0) {
 //    printf("%p\n", input);
+    entrynumber = 0;
     linenum = 0;
     skipHeader();
     if (bufstart == 0) {
@@ -337,6 +339,16 @@ MailInputStream::handleBodyLine() {
         entrystream = substream;
     }
 }
+void
+MailInputStream::ensureFileName() {
+    entrynumber++;
+    if (entryinfo.filename.length() == 0) {
+        ostringstream o;
+        o << entrynumber;
+        entryinfo.filename = o.str();
+    }
+    entryinfo.type = EntryInfo::File;
+}
 StreamBase<char>*
 MailInputStream::nextEntry() {
     if (status != Ok) return 0;
@@ -346,6 +358,7 @@ MailInputStream::nextEntry() {
         // signal eof because we only return eof once
         status = Eof;
         entrystream = new SubInputStream(input);
+        ensureFileName();
         return entrystream;
     }
     // read anything that's left over in the previous stream
@@ -405,6 +418,7 @@ MailInputStream::nextEntry() {
     if (entrystream == 0) {
         status = Eof;
     }
+    ensureFileName();
     return entrystream;
 }
 void

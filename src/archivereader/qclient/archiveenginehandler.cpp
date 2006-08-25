@@ -6,6 +6,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDebug>
 using namespace jstreams;
+#include <iostream>
 using namespace std;
 #include <dirent.h>
 
@@ -71,6 +72,7 @@ public:
             return false;
         }
         stream = reader->openStream(url);
+//        printf("open %s\n", url.c_str());
         return stream;
     }
     bool close () { if (stream) { delete stream; stream=0;} return true;}
@@ -95,7 +97,6 @@ public:
         return l;
     }
     QString fileName ( FileName file) const {
-//        printf("getname %s\n", url.c_str());
         switch(file) {
         case PathName:
             return url.c_str();
@@ -111,14 +112,19 @@ public:
     qint64 read(char* data, qint64 maxlen) {
         int nread = -1;
         if (stream && stream->getStatus() == Ok) {
-            const char* c;
-            nread = stream->read(c, 1, maxlen);
-            if (nread > 0) {
-                memcpy(data, c, nread);
-            } else if (nread < 0) {
-                nread = -1;
+            if (maxlen > 0) {
+                const char* c;
+                nread = stream->read(c, maxlen, maxlen);
+                if (nread > 0) {
+                    memcpy(data, c, nread);
+                } else if (nread < 0) {
+                    nread = -1;
+                }
+            } else {
+                nread = 0;
             }
         }
+//        cout << "read " << url << " maxlen " << maxlen << " " << nread << endl;
         return nread;
     }
 };

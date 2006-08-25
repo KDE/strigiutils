@@ -35,6 +35,7 @@ class MailInputStream : public SubStreamProvider {
 private:
     // variables that record the current read state
     bool eol; // true if the buffer contains a line end
+    int32_t entrynumber;
     int64_t bufstartpos;
     int linenum;
     int maxlinesize;
@@ -44,7 +45,6 @@ private:
     const char* bufend;
 
     StringTerminatedSubStream* substream;
-//    SubInputStream* bodysubstream;
     std::string subject;
     std::string contenttype;
     std::string contenttransferencoding;
@@ -63,6 +63,7 @@ private:
     void rewindToLineStart();
     bool checkHeaderLine() const;
     void clearHeaders();
+    void ensureFileName();
     std::string getValue(const char* n, const std::string& headerline) const;
 public:
     MailInputStream(StreamBase<char>* input);
