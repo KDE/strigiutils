@@ -236,7 +236,7 @@ void InotifyListener::watch ()
         // we ignore every action on a file starting with '.'
         {
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", iter->second + " changed")
-            STRIGI_LOG_DEBUG ("strigi.InotifyListener", "catched inotify event: " + eventToString( this_event->mask))
+            STRIGI_LOG_DEBUG ("strigi.InotifyListener", "caught inotify event: " + eventToString( this_event->mask))
         
             if ((this_event->len > 0))
                     STRIGI_LOG_DEBUG ("strigi.InotifyListener", string("event regards ") + this_event->name)
@@ -245,7 +245,7 @@ void InotifyListener::watch ()
             string file = iter->second;
             
             if (file[file.length() - 1 ] != '/')
-                file += "/";
+                file += '/';
             
             file += this_event->name;
             
