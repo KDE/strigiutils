@@ -33,7 +33,6 @@ ArInputStream::checkHeader(const char* data, int32_t datasize) {
 }
 ArInputStream::ArInputStream(StreamBase<char>* input)
         : SubStreamProvider(input) {
-    entrystream = 0;
     // check header
     const char*b;
     if (input->read(b, 8, 8) != 8 || !checkHeader(b, 8)) {
@@ -41,9 +40,6 @@ ArInputStream::ArInputStream(StreamBase<char>* input)
     }
 }
 ArInputStream::~ArInputStream() {
-    if (entrystream) {
-        delete entrystream;
-    }
 }
 StreamBase<char>*
 ArInputStream::nextEntry() {

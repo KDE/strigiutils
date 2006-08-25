@@ -43,6 +43,7 @@ public:
     int stat(const std::string& url, jstreams::EntryInfo& e);
     void addStreamOpener(StreamOpener* opener);
     DirLister getDirEntries(const std::string& url);
+    bool isArchive(const std::string& url);
 };
 
 #endif

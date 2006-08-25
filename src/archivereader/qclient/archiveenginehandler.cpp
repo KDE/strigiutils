@@ -28,7 +28,11 @@ int
 QFileStreamOpener::stat(const string& url, EntryInfo& e) {
     QFSFileEngine f(url.c_str());
     QAbstractFileEngine::FileFlags flags = f.fileFlags(
+        QAbstractFileEngine::ExistsFlag|
         QAbstractFileEngine::FileType|QAbstractFileEngine::DirectoryType);
+    if (!(QAbstractFileEngine::ExistsFlag&flags)) {
+        return -1;
+    }
     e.type = EntryInfo::Unknown;
     if (flags & QAbstractFileEngine::FileType) {
         e.type = EntryInfo::File;
@@ -62,10 +66,14 @@ public:
     bool isSequential () const {
         return true;
     }
-    bool open(QIODevice::OpenMode /*mode*/) {
-        return false;
+    bool open(QIODevice::OpenMode mode) {
+        if (mode & QIODevice::WriteOnly && !(mode & QIODevice::ReadOnly)) {
+            return false;
+        }
+        stream = reader->openStream(url);
+        return stream;
     }
-    bool close () { return true; }
+    bool close () { if (stream) { delete stream; stream=0;} return true;}
     bool isRelativePath () const {
         return false;
     }
@@ -79,6 +87,11 @@ public:
     QStringList entryList(QDir::Filters filters,
         const QStringList & filterNames) const {
         QStringList l;
+        DirLister dl = reader->getDirEntries(url);
+        EntryInfo e;
+        while (dl.nextEntry(e)) {
+            l << e.filename.c_str();
+        }
         return l;
     }
     QString fileName ( FileName file) const {
@@ -91,11 +104,37 @@ public:
         case DefaultName:
         default:
             return url.c_str();
-    }
+        }
         return QString(entryinfo.filename.c_str());
+    }
+    FileFlags fileFlags(FileFlags type) const;
+    qint64 read(char* data, qint64 maxlen) {
+        int nread = -1;
+        if (stream && stream->getStatus() == Ok) {
+            const char* c;
+            nread = stream->read(c, 1, maxlen);
+            if (nread > 0) {
+                memcpy(data, c, nread);
+            } else if (nread < 0) {
+                nread = -1;
+            }
+        }
+        return nread;
     }
 };
 StreamFileEngine::~StreamFileEngine() {
+    close();
+}
+QAbstractFileEngine::FileFlags
+StreamFileEngine::fileFlags(FileFlags type) const {
+    FileFlags f = 0;
+    if (entryinfo.type & EntryInfo::Dir) {
+        f |= DirectoryType;
+    }
+    if (entryinfo.type & EntryInfo::File) {
+        f |= FileType;
+    }
+    return f;
 }
 ArchiveEngineHandler::ArchiveEngineHandler() {
     reader = new ArchiveReader();
@@ -110,7 +149,7 @@ ArchiveEngineHandler::~ArchiveEngineHandler() {
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &fileName) const {
     static int i=0;
-    printf("%i\n", i++);
+//    printf("%i\n", i++);
 //    return new StreamFileEngine(reader, (const char*)fileName.toUtf8());
 //    return new QFSFileEngine(fileName);
     // try to open the deepest regular file in the file path
@@ -151,5 +190,8 @@ ArchiveEngineHandler::create(const QString &fileName) const {
         return 0;
     }
     delete fse;
+    if (path == fileName && !reader->isArchive((const char*)path.toUtf8())) {
+        return 0;
+    }
     return new StreamFileEngine(reader, (const char*)fileName.toUtf8());
 }

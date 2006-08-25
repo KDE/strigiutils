@@ -52,6 +52,9 @@ public:
     ~ZipInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
+    static SubStreamProvider* factory(StreamBase<char>* input) {
+        return new ZipInputStream(input);
+    }
 };
 
 } // end namespace jstreams

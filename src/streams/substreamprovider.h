@@ -31,6 +31,7 @@ struct EntryInfo {
     uint mtime;
     enum Type {Unknown=0, Dir=1, File=2};
     Type type;
+    EntryInfo() :size(-1), mtime(0), type(Unknown) {}
 };
 
 class SubStreamProvider {

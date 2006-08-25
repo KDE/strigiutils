@@ -69,6 +69,9 @@ public:
     ~MailInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
+    static SubStreamProvider* factory(StreamBase<char>* input) {
+        return new MailInputStream(input);
+    }
     const std::string& getSubject() { return subject; }
     const std::string& getContentType() { return contenttype; }
 };
