@@ -154,50 +154,9 @@ ArchiveEngineHandler::~ArchiveEngineHandler() {
 
 QAbstractFileEngine *
 ArchiveEngineHandler::create(const QString &fileName) const {
-    static int i=0;
-//    printf("%i\n", i++);
-//    return new StreamFileEngine(reader, (const char*)fileName.toUtf8());
-//    return new QFSFileEngine(fileName);
-    // try to open the deepest regular file in the file path
-    QFSFileEngine* fse = new QFSFileEngine(fileName);
-    QAbstractFileEngine::FileFlags flags = fse->fileFlags(
-            QAbstractFileEngine::DirectoryType
-            | QAbstractFileEngine::FileType
-            | QAbstractFileEngine::ExistsFlag);
-    if (flags & QAbstractFileEngine::DirectoryType) {
-        return fse;
+    string name((const char*)fileName.toUtf8());
+    if (reader->canHandle(name)) {
+        return new StreamFileEngine(reader, name);
     }
-    if (!(flags & QAbstractFileEngine::ExistsFlag)) {
-        delete fse;
-        fse = 0;
-    } else if (!(flags & QAbstractFileEngine::FileType)) {
-        return fse;
-    }
-    
-    // use the full path
-    QString path = fileName;
-    while (fse == 0 && !path.isEmpty()) {
-        fse = new QFSFileEngine(path);
-        if (!fse->open(QIODevice::ReadOnly)) {
-            delete fse;
-            fse = 0;
-
-            // strip off the last part of the path
-            int pos = path.lastIndexOf('/');
-            if (pos == -1) {
-                path = "";
-            } else {
-                path = path.left(pos);
-            }
-        }
-    } while (fse == 0 && !path.isEmpty());
-    if (fse == 0) {
-        // no file could be opened
-        return 0;
-    }
-    delete fse;
-    if (path == fileName && !reader->isArchive((const char*)path.toUtf8())) {
-        return 0;
-    }
-    return new StreamFileEngine(reader, (const char*)fileName.toUtf8());
+    return 0;
 }

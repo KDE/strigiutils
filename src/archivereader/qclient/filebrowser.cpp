@@ -49,8 +49,9 @@ FileBrowser::~FileBrowser() {
 }
 void
 FileBrowser::clicked(const QModelIndex& index) {
+    int i;
     int cols = model->columnCount(index);
-    for (int i=0; i<cols; ++i) {
+    for (i=0; i<cols; ++i) {
         view->resizeColumnToContents(i);
     }
     QString s = model->filePath(index);
@@ -63,24 +64,39 @@ FileBrowser::clicked(const QModelIndex& index) {
         return;
     }
 
-    // show initial ascii text from file
+    // show initial utf8 text from file
     QFile f(s);
     f.open(QIODevice::ReadOnly);
     qint64 n = 1024;
     QByteArray ba = f.read(n);
-    QString content;
+    QByteArray content;
+    char nb = 0;
     while (ba.length()) {
-        for (int i=0; i<ba.length(); i++) {
+        i = 0;
+        while (i < ba.length()) {
             char c = ba[i];
-            if (!isgraph(c)&&!isspace(c)) {
+            if (nb) {
+                if ((0xC0 & c) != 0x80) {
+                    f.close();
+                    break;
+                }
+                nb--;
+            } else if ((0xE0 & c) == 0xC0) {
+                nb = 1;
+            } else if ((0xF0 & c) == 0xE0) {
+                nb = 2;
+            } else if ((0xF8 & c) == 0xF0) {
+                nb = 3;
+            } else if (c <= 8) {
                 f.close();
                 break;
             }
-            content += c;
+            ++i;
         }
+        content += ba.mid(0, i);
         ba = f.read(n);
     }
     f.close();
-    browser->setPlainText(content);
+    browser->setPlainText(QString::fromUtf8(content, content.length()));
 }
 

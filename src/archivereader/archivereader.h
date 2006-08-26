@@ -35,6 +35,9 @@ class ArchiveReader : public StreamOpener {
 private:
     class ArchiveReaderPrivate;
     ArchiveReaderPrivate *p;
+
+    int localStat(const std::string& url, jstreams::EntryInfo& e);
+    int32_t maxsize;
 public:
     ArchiveReader();
     ~ArchiveReader();
@@ -44,6 +47,7 @@ public:
     void addStreamOpener(StreamOpener* opener);
     DirLister getDirEntries(const std::string& url);
     bool isArchive(const std::string& url);
+    bool canHandle(const std::string& url);
 };
 
 #endif
