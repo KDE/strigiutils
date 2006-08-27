@@ -1,13 +1,8 @@
 - documentation
 - make sure the applet displays fine if kicker is on the top of the screen
 - monitor the free disk space and make sure the indexer does not fill up the drive. this might be done with Solid or a call to a monitor with dbus. best is probably to let the client tell the server how much space is left
-- enable reading from archives as normal files
 - add support for extended headers in tar files
   see e.g. http://www.ussg.iu.edu/hypermail/linux/kernel/0506.2/0417.html
-- add support for RPM files
-  http://www.linuxbase.org/spec/refspecs/LSB_1.3.0/gLSB/gLSB/swinstall.html
 - extract metadata from .sx*, od*, etc files, like author, etc (egon)
 - a general SAX XML parsing framework (egon)
-- kfile metadata extraction plugin, see strigiapplet/src/streamindexer (egon)
-- xattr metadata extraction plugin (egon)
 
