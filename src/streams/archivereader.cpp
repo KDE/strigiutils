@@ -392,11 +392,16 @@ ArchiveReader::stat(const std::string& url, jstreams::EntryInfo& e) {
     // check the cache (this assumes getDirEntries was already called)
     const ArchiveEntryCache::SubEntry *subentry = p->cache.findEntry(url);
     if (subentry) {
-//        printf("stat %s %i\n", url.c_str(), subentry->entry.type);
         e = subentry->entry;
         return 0;
     }
-//    printf("no stat %s\n", url.c_str());
+    // try reading the entries from the collection to which this file belongs
+    getDirEntries(url);
+    subentry = p->cache.findEntry(url);
+    if (subentry) {
+        e = subentry->entry;
+        return 0;
+    }
     return -1;
 }
 void
@@ -469,13 +474,8 @@ ArchiveReader::getDirEntries(const std::string& url) {
             = p->cache.findRootEntry(url);
         if (se != p->cache.cache.end() && !se->second.indexed) {
             subentry = 0;
-//            printf("dir %s\n", url.c_str());
         }
     }
-/*    if (rootsubentry){// && !rootsubentry->indexed) {
-        printf("index now\n");
-        subentry = 0;
-    }*/
     string name;
     if (subentry) {
         name = subentry->entry.filename;

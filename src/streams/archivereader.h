@@ -11,7 +11,6 @@ namespace jstreams {
     template <class T> class StreamBase;
     class SubStreamProvider;
     class EntryInfo;
-}
 
 class DirLister {
 private:
@@ -49,5 +48,7 @@ public:
     bool isArchive(const std::string& url);
     bool canHandle(const std::string& url);
 };
+
+} // end namespace jstreams
 
 #endif

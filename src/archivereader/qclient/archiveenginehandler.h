@@ -22,7 +22,9 @@
 
 #include <QtCore/QAbstractFileEngineHandler>
 
-class ArchiveReader;
+namespace jstreams {
+    class ArchiveReader;
+}
 class QFileStreamOpener;
 /**
  * @short Class to register the custom file engine ArchiveEngine.
@@ -32,7 +34,7 @@ class QFileStreamOpener;
 class ArchiveEngineHandler : public QAbstractFileEngineHandler {
 private:
     QFileStreamOpener* opener;
-    ArchiveReader* reader;
+    jstreams::ArchiveReader* reader;
 //    bool open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const { return false; }
 public:
     ArchiveEngineHandler();

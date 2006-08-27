@@ -55,6 +55,12 @@ main(int argc, char** argv) {
     reader.addStreamOpener(&opener);
 
     for (int i=1; i<argc; ++i) {
+        EntryInfo e;
+        if (reader.stat(argv[i], e) != 0) {
+            printf("could not read %s\n", argv[i]);
+            continue;
+        }
+        printf("file: %s\n", e.filename.c_str());
         DirLister dl = reader.getDirEntries(argv[i]);
         while (dl.nextEntry(e)) {
             printf("%s\n", e.filename.c_str());
