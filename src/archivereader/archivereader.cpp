@@ -442,7 +442,6 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
     do {
         ArchiveEntryCache::SubEntry se;
         se.entry = p->getEntryInfo();
-//        printf(">%s\n", se.entry.filename.c_str());
         fillEntry(se, p->currentEntry());
         if (se.entry.size < 0) {
             // read entire stream to determine it's size

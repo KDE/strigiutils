@@ -75,7 +75,13 @@ public:
 //        printf("open %s\n", url.c_str());
         return stream;
     }
-    bool close () { if (stream) { delete stream; stream=0;} return true;}
+    bool close () {
+        if (stream) {
+            reader->closeStream(stream);
+            stream=0;
+        }
+        return true;
+    }
     bool isRelativePath () const {
         return false;
     }
