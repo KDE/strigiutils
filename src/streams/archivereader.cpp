@@ -73,22 +73,18 @@ ArchiveEntryCache::findRootEntry(const string& url) const {
     do {
         map<string, RootSubEntry>::const_iterator i = cache.find(n);
         if (i != cache.end()) {
-//            printf("!%s %i\n", n.c_str(), i->second.entries.size());
             return i;
         }
-//        printf("^%s\n", n.c_str());
         p = n.rfind('/');
         if (p != string::npos) {
             n = n.substr(0, p);
         }
-//        printf("^ %s\n", n.c_str());
     } while (p != string::npos);
     return cache.end();
 }
 const ArchiveEntryCache::SubEntry*
 ArchiveEntryCache::findEntry(const string& url) const {
     map<string, RootSubEntry>::const_iterator ei = findRootEntry(url);
-//    printf("'%s' %p\n", url.c_str(), e);
     if (ei == cache.end()) return 0;
     if (ei->first == url) {
         return &ei->second;
@@ -97,10 +93,8 @@ ArchiveEntryCache::findEntry(const string& url) const {
 
     map<string, SubEntry>::const_iterator i;
 
-    size_t p = ei->first.length();//e->entry.filename.length();
+    size_t p = ei->first.length();
     do {
-//        printf("'%s' %s %i %i\n", url.c_str(), e->entry.filename.c_str(), p,
-//            url.length());
         size_t np = url.find('/', p+1);
         string name;
         if (np == string::npos) {
@@ -108,11 +102,6 @@ ArchiveEntryCache::findEntry(const string& url) const {
         } else {
             name = url.substr(p+1, np-p-1);
         }
-/*        printf("n %s\n", name.c_str());
-        for (i = e->entries.begin(); i != e->entries.end(); ++i) {
-            printf("- %s ", i->second.entry.filename.c_str());
-        }
-        printf("\n");*/
         i = e->entries.find(name);
         if (i == e->entries.end()) {
             e = 0;
@@ -153,7 +142,7 @@ public:
     jstreams::SubStreamProvider* getSubStreamProvider(
         jstreams::StreamBase<char>*, std::list<StreamPtr>& streams);
     static void free(std::list<StreamPtr>& l);
-    void fillEntry(ArchiveEntryCache::SubEntry&e, StreamBase<char>*s);
+    int fillEntry(ArchiveEntryCache::SubEntry&e, StreamBase<char>*s);
     ArchiveReaderPrivate();
     ~ArchiveReaderPrivate();
 };
@@ -182,7 +171,7 @@ ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
 }
 ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
     if (openstreams.size() > 0) {
-        printf("%i streams were not closed.", openstreams.size());
+        fprintf(stderr, "%i streams were not closed.\n", openstreams.size());
         openstreamsType::iterator i;
         for (i = openstreams.begin(); i != openstreams.end(); ++i) {
             free(i->second);
@@ -218,6 +207,7 @@ ArchiveReader::ArchiveReaderPrivate::getPositionedProvider(const string& url,
     StreamBase<char>* substream = stream;
     vector<size_t>::reverse_iterator i;
     list<StreamPtr> streams;
+    streams.push_back(stream);
     for (i = partpos.rbegin(); i != partpos.rend(); ++i) {
         const char* sn = url.c_str() + *i;
         size_t len = url.length();
@@ -245,8 +235,9 @@ ArchiveReader::ArchiveReaderPrivate::getPositionedProvider(const string& url,
                     return provider;
                 }
                 --i;
+            } else {
+                substream = provider->nextEntry();
             }
-            substream = provider->nextEntry();
         } while(substream && !nextstream);
     }
     if (substream) {
@@ -266,12 +257,16 @@ ArchiveReader::openStream(const string& url) {
     if (provider) {
         stream = provider->currentEntry();
     }
+    printf("%p\n", stream);
     return stream;
 }
 void
 ArchiveReader::closeStream(jstreams::StreamBase<char>* s) {
     ArchiveReaderPrivate::openstreamsType::iterator i = p->openstreams.find(s);
-    if (i == p->openstreams.end()) return;
+    if (i == p->openstreams.end()) {
+        delete s;
+        return;
+    }
     p->free(i->second);
     p->openstreams.erase(i);
 }
@@ -300,12 +295,10 @@ ArchiveReader::ArchiveReaderPrivate::getSubStreamProvider(
     if (s->getStatus() == Ok) {
         streams.push_back(s);
     } else {
-        //printf("no bz2\n", input);
         delete s;
         input->reset(0);
         s = new GZipInputStream(input);
         if (s->getStatus() != Ok) {
-            //printf("no gz\n", input);
             delete s;
             input->reset(0);
             s = input;
@@ -358,10 +351,8 @@ ArchiveReader::localStat(const std::string& url, jstreams::EntryInfo& e) {
             if (se != p->cache.cache.end()) {
                 if (se->second.entry.mtime == e.mtime) {
                     e.type = se->second.entry.type;
-                    //printf("found entry in cache: %i\n", se->entry);
                     return 0;
                 }
-//                printf("ERASE\n");
                 p->cache.cache.erase(se->second.entry.filename);
             }
 
@@ -376,7 +367,6 @@ ArchiveReader::localStat(const std::string& url, jstreams::EntryInfo& e) {
                 ArchiveEntryCache::RootSubEntry rse;
                 rse.indexed = false;
                 rse.entry = e;
-//                printf("add %s\n", url.c_str());
                 p->cache.cache[url] = rse;
             }
             delete s;
@@ -409,7 +399,6 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     // split path into components
     vector<string> names;
     string name = se.entry.filename;
-//    printf("%s -> %s\n", e.entry.filename.c_str(), name.c_str());
     size_t p = name.find('/');
     while (p != string::npos) {
         names.push_back(name.substr(0, p));
@@ -423,7 +412,6 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     map<string, ArchiveEntryCache::SubEntry>::iterator ii;
     ArchiveEntryCache::SubEntry* parent = &e;
     for (int i=0; i<names.size(); ++i) {
-//        printf(" -> %s\n", names[i].c_str());
         ii = parent->entries.find(names[i]);
         if (ii == parent->entries.end()) {
             ArchiveEntryCache::SubEntry newse;
@@ -437,17 +425,17 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     }
     *parent = se;
 }
-void
+int
 ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
        StreamBase<char>* s) {
-//    printf("fillentry\n");
+    int nentries = 0;
     list<StreamPtr> streams;
     SubStreamProvider* p = getSubStreamProvider(s, streams);
-    if (!p) return;
+    if (!p) return 0;
     do {
         ArchiveEntryCache::SubEntry se;
         se.entry = p->getEntryInfo();
-        fillEntry(se, p->currentEntry());
+        int nsubentries = fillEntry(se, p->currentEntry());
         if (se.entry.size < 0) {
             // read entire stream to determine it's size
             StreamBase<char> *es = p->currentEntry();
@@ -456,8 +444,11 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
             se.entry.size = es->getSize();
             if (se.entry.size < 0) se.entry.size = 0;
         }
-        e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
         addEntry(e, se);
+        if (nsubentries) {
+            nentries += nsubentries;
+            e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
+        }
     } while (p->nextEntry());
     free(streams);
 }
@@ -496,20 +487,16 @@ ArchiveReader::getDirEntries(const std::string& url) {
         se.entry = e;
         p->fillEntry(se, s);
         delete s;
-//        printf("name: %s %i\n", name.c_str(), se.entries.size());
         p->cache.cache[name] = se;
         subentry = p->cache.findEntry(url);
-//        printf("%p\n", subentry);
     }
 
     if (subentry) {
         map<string, ArchiveEntryCache::SubEntry>::const_iterator i;
         for (i = subentry->entries.begin(); i != subentry->entries.end(); ++i) {
             v.push_back(i->second.entry);
-//            printf("  %s\n", i->second.entry.filename.c_str());
         }
     }
-//    p->cache.print();
     DirLister dl(v);
     return dl;
 }

@@ -42,7 +42,6 @@ FileStreamOpener::stat(const string& url, EntryInfo& e) {
     } else {
         e.filename = url.substr(p+1);
     }
-    printf("name:'%s'\n", e.filename.c_str());
 
     return 0;
 }
@@ -65,20 +64,24 @@ main(int argc, char** argv) {
         while (dl.nextEntry(e)) {
             printf("%s\n", e.filename.c_str());
         }
-/*        if (reader.stat(argv[i], e) != -1) {
-            printf("name: %s\n", e.filename.c_str());
-            printf("size: %i\n", e.size);
-            printf("type: %i\n", e.type);
-            if (e.type == EntryInfo::Dir) {
-                printf("get dir\n");
-                reader.getDirEntries(argv[i]);
-            } else {
-                StreamBase<char>* s = reader.openStream(argv[i]);
-                reader.closeStream(s);
+        StreamBase<char>* s = 0;
+        if (e.type & EntryInfo::File) {
+            s = reader.openStream(argv[i]);
+        }
+        if (s) {
+            const char* c;
+            int64_t total = 0;
+            int32_t n = s->read(c, 1, 0);
+            while (n > 0) {
+                total += n;
+                n = s->read(c, 1, 0);
             }
-        } else {
-            fprintf(stderr, "Could not read '%s'\n", argv[i]);
-        }*/
+            printf("read %i bytes.\n", total);
+            if (s->getStatus() == Error) {
+                printf("Error: %s\n", s->getError());
+            }
+            reader.closeStream(s);
+        }
     }
     return 0;
 }
