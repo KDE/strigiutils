@@ -24,6 +24,7 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
+#include "filtermanager.h"
 
 #include "filelister.h"
 #include "streamindexer.h"
@@ -43,6 +44,7 @@ IndexScheduler::IndexScheduler() {
     sched = this;
     state = Idling;
     m_listenerEventQueue = NULL;
+    m_filterManager = NULL;
 }
 IndexScheduler::~IndexScheduler() {
 }
@@ -77,7 +79,17 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
     if (sched->state != Indexing) return false;
     // only read files that do not start with '.'
     if (strstr(path, "/.")) return true;
-
+    // check filtering rules given by user
+    if (sched->m_filterManager == NULL)
+    {
+        STRIGI_LOG_WARNING ("strigi.IndexScheduler.addFileCallback", "unable to use filters, m_filterManager == NULL!")
+    }
+    else if ((sched->m_filterManager)->findMatch (path))
+    {
+        STRIGI_LOG_WARNING ("strigi.IndexScheduler.indexFileCallback", "ignoring file " + string(path))
+        return true;
+    }
+    
     std::string filepath(path, len);
 
     map<string, time_t>::iterator i = sched->dbfiles.find(filepath);

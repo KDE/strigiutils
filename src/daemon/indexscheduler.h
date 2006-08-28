@@ -28,6 +28,7 @@
 
 class Event;
 class EventListenerQueue;
+class FilterManager;
 
 namespace jstreams {
     class IndexManager;
@@ -48,6 +49,7 @@ private:
     std::map<std::string, time_t> toindex;
 
     EventListenerQueue* m_listenerEventQueue;
+    FilterManager* m_filterManager;
     void processListenerEvents(std::vector<Event*>& events);
 
     void* run(void*);
@@ -63,6 +65,7 @@ public:
         indexmanager = m;
     }
     void setEventListenerQueue (EventListenerQueue* eventQueue) { m_listenerEventQueue = eventQueue; }
+    void setFilterManager (FilterManager* filterManager) { m_filterManager = filterManager;}
     int getQueueSize();
     int start();
     void stop();
