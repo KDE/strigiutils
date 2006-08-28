@@ -58,6 +58,7 @@ class InotifyListener : public EventListener
         
     private:
         std::string eventToString(int events);
+        bool isEventInteresting (struct inotify_event * event);
         void watch ();
         void dirRemoved (std::string dir, std::vector<Event*>& events);
         void rmWatch(int wd, std::string path);

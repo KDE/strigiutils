@@ -21,6 +21,7 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
+#include "../filtermanager.h"
 #include "filelister.h"
 #include "indexreader.h"
 #include "../strigilogging.h"
@@ -34,7 +35,7 @@
 #include "inotify.h"
 #include "inotify-syscalls.h"
 
-InotifyListener* manager;
+InotifyListener* iListener;
 
 using namespace std;
 using namespace jstreams;
@@ -71,7 +72,7 @@ void* InotifyListenerStart (void *inotifylistener)
 
 InotifyListener::InotifyListener()
 {
-    manager = this;
+    iListener = this;
     
     // listen only to interesting events
     m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
@@ -232,8 +233,7 @@ void InotifyListener::watch ()
             continue;
         }
         
-        if (!(((IN_ISDIR & this_event->mask) == 0) && (this_event->len > 0) && ((this_event->name)[0] == '.')))
-        // we ignore every action on a file starting with '.'
+        if (isEventInteresting (this_event))
         {
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", iter->second + " changed")
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", "caught inotify event: " + eventToString( this_event->mask))
@@ -379,6 +379,23 @@ void InotifyListener::addWatch (const string& path)
     }
 }
 
+bool InotifyListener::isEventInteresting (struct inotify_event * event)
+{
+    if (m_filterManager != NULL)
+    {
+        if ((event->len > 0) && m_filterManager->findMatch(event->name))
+            return false;
+    }
+    else
+        STRIGI_LOG_WARNING ("strigi.InotifyListener", "unable to use filters, m_filterManager == NULL!")
+    
+    // ignore files starting with '.'
+    if (((IN_ISDIR & event->mask) == 0) && (event->len > 0) && ((event->name)[0] == '.'))
+        return false;
+    
+    return true;
+}
+
 void InotifyListener::addWatches (const set<string> &watches)
 {
     set<string>::iterator iter;
@@ -505,8 +522,18 @@ bool InotifyListener::ignoreFileCallback(const char* path, uint dirlen, uint len
 bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
     if (strstr(path, "/.")) return true;
+    // check filtering rules given by user
+    if (iListener->m_filterManager == NULL)
+    {
+        STRIGI_LOG_WARNING ("strigi.InotifyListener.indexFileCallback", "unable to use filters, m_filterManager == NULL!")
+    }
+    else if ((iListener->m_filterManager)->findMatch (path))
+    {
+        STRIGI_LOG_WARNING ("strigi.InotifyListener.indexFileCallback", "ignoring file " + string(path))
+        return true;
+    }
     
-    (manager->m_toIndex).insert (string(path));
+    (iListener->m_toIndex).insert (string(path));
     
     return true;
 }
@@ -515,8 +542,8 @@ void InotifyListener::watchDirCallback(const char* path)
 {
     string dir (path);
     
-    manager->addWatch( dir);
-    (manager->m_toWatch).insert (dir);
+    iListener->addWatch( dir);
+    (iListener->m_toWatch).insert (dir);
 }
 
 string InotifyListener::eventToString(int events)
