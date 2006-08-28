@@ -39,6 +39,7 @@
 #include "inotifylistener.h"
 #endif
 #include "eventlistenerqueue.h"
+#include "filtermanager.h"
 #include "strigilogging.h"
 
 #include <fstream>
@@ -191,6 +192,7 @@ main(int argc, char** argv) {
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
     string logconffile = daemondir+"/log.conf";
+    string filterfile = daemondir+"/filter.conf";
     
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -201,6 +203,12 @@ main(int argc, char** argv) {
     // init logging
     checkLogConf(logconffile);
     STRIGI_LOG_INIT(logconffile)
+            
+    // init filter manager
+    FilterManager filterManager;
+    filterManager.setConfFile (filterfile);
+    scheduler.setFilterManager (&filterManager);
+    STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
     
     if (!initializeDir(lucenedir)) {
         STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")
@@ -215,10 +223,7 @@ main(int argc, char** argv) {
     struct flock lock;
     FILE* lockfile = aquireLock(lockfilename.c_str(), lock);
     if (lockfile == 0) {
-        string msg = "Daemon cannot run: the file ";
-        msg += lockfilename;
-        msg += " is locked.";
-        STRIGI_LOG_FATAL ("strigi.daemon", msg)
+        STRIGI_LOG_FATAL ("strigi.daemon", "Daemon cannot run: the file " + lockfilename + " is locked.")
         exit(1);
     } 
 
@@ -268,6 +273,7 @@ main(int argc, char** argv) {
     if (inotifyListener.init())
     {
         inotifyListener.setEventListenerQueue (&listenerEventQueue);
+        inotifyListener.setFilterManager (&filterManager);
         inotifyListener.setIndexReader (index->getIndexReader());
         inotifyListener.setIndexedDirectories(dirs);
         inotifyListener.start();
