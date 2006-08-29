@@ -22,18 +22,17 @@
 
 #include "clientinterface.h"
 
-/**
- * This class exposes the daemon functionality to the clients and should be
- * used by the client interfaces. The client interfaces should implement all
- * functions provided here. 
- **/
-
 namespace jstreams {
     class IndexManager;
 }
 class IndexScheduler;
 class EventListener;
 
+/**
+ * This class exposes the daemon functionality to the clients and should be
+ * used by the client interfaces. The client interfaces should implement all
+ * functions provided here. 
+ **/
 
 class Interface : public ClientInterface {
 private:
