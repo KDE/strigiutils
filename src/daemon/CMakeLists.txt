@@ -1,11 +1,23 @@
-subdirs(xsd eventlistener)
+set(DIRS xsd eventlistener)
 
-include_directories( ../streamindexer ../streams xsd )
+IF(ENABLE_DBUS)
+  set(DIRS ${DIRS} dbus)
+ENDIF(ENABLE_DBUS)
+
+subdirs(${DIRS})
+
+include_directories( ../streamindexer ../streams xsd dbus)
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)
   MESSAGE("-- inotify support enabled")
 ENDIF(ENABLE_INOTIFY)
+
+IF(ENABLE_DBUS)
+  add_definitions(-DHAVE_DBUS)
+  MESSAGE("-- dbus support enabled")
+  set(strigidaemon_LIBS ${strigidaemon_LIBS} dbusserver)
+ENDIF(ENABLE_DBUS)
 
 IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
@@ -32,11 +44,11 @@ endif (HyperEstraier_FOUND)
 include_directories( eventlistener )
 
 add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp filtermanager.cpp
-	strigilogging.h)
+	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp
+	filtermanager.cpp strigilogging.h)
 
 set(strigidaemon_LIBS streamindexer eventlistener daemonconfiguration
-	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
+	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS} dbusserver)
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 

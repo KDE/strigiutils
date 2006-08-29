@@ -28,6 +28,10 @@ OPTION(ENABLE_INOTIFY
   "enable inotify support"
   OFF)
 
+OPTION(ENABLE_DBUS
+  "enable dbus support (disables normal socket)"
+  OFF)
+
 OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
   OFF)
@@ -51,6 +55,9 @@ find_package(Qt4)
 if (NOT QT4_FOUND)
     MESSAGE(STATUS "Qt4 was not found. No GUI will be built.")
 endif (NOT QT4_FOUND)
+IF(ENABLE_DBUS)
+  find_package(DBus REQUIRED)
+ENDIF(ENABLE_DBUS)
 
 if (ENABLE_LOG4CXX)
     find_package (Log4cxx)

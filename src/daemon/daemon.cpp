@@ -18,7 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "socketserver.h"
 #include "interface.h"
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
@@ -41,6 +40,12 @@
 #include "eventlistenerqueue.h"
 #include "filtermanager.h"
 #include "strigilogging.h"
+
+#ifdef HAVE_DBUS
+#include "dbusserver.h"
+#else
+#include "socketserver.h"
+#endif
 
 #include <fstream>
 #include <sys/types.h>
@@ -279,15 +284,20 @@ main(int argc, char** argv) {
         inotifyListener.start();
     }
 #endif
-    
+ 
     // listen for requests
     Interface interface(*index, scheduler);
 #ifdef HAVE_INOTIFY
     interface.setEventListener (&inotifyListener);
 #endif
 
+#ifdef HAVE_DBUS
+    DBusServer server(&interface);
+#else
     SocketServer server(&interface);
     server.setSocketName(socketpath.c_str());
+#endif
+
     if (!server.start()) {
         scheduler.stop();
 #ifdef HAVE_INOTIFY
