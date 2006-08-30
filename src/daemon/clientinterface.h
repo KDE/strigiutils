@@ -53,7 +53,7 @@ public:
     virtual std::string startIndexing() = 0;
     virtual std::string stopIndexing() = 0;
     virtual std::set<std::string> getIndexedDirectories() = 0;
-    virtual std::string setIndexedDirectories(std::set<std::string>) = 0;
+    virtual std::string setIndexedDirectories(std::set<std::string> d) = 0;
     bool isActive() { return active; }
     static std::vector<std::string> getBackEnds();
 

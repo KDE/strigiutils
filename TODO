@@ -5,4 +5,4 @@
   see e.g. http://www.ussg.iu.edu/hypermail/linux/kernel/0506.2/0417.html
 - extract metadata from .sx*, od*, etc files, like author, etc (egon)
 - a general SAX XML parsing framework (egon)
-
+- <fosterfeld_> vandenoever: i would suggest to add IndexReader::query() version based on iterators
