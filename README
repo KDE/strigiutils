@@ -52,6 +52,8 @@ Some possible cmake options:
    enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
  -ENABLE_LOG4CXX:BOOL=ON
    enable log4cxx support, provides advanced logging features using log4cxx lib
+ -ENABLE_DBUS:BOOL=ON
+   use DBus for communication instead of the socket based communication
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 
