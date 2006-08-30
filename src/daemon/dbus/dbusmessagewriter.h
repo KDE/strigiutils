@@ -7,6 +7,9 @@
 #include <string>
 #include <set>
 #include <map>
+#include <vector>
+
+#include "../clientinterface.h"
 
 class DBusMessageWriter {
     DBusConnection* conn;
@@ -18,8 +21,13 @@ public:
     ~DBusMessageWriter();
     void setError(const std::string& error);
     DBusMessageWriter& operator<<(bool b);
+    DBusMessageWriter& operator<<(int32_t i);
+    DBusMessageWriter& operator<<(int64_t i);
+    DBusMessageWriter& operator<<(double d);
     DBusMessageWriter& operator<<(const std::string& s);
     DBusMessageWriter& operator<<(const std::set<std::string>& s);
+    DBusMessageWriter& operator<<(const std::vector<std::string>& s);
     DBusMessageWriter& operator<<(const std::map<std::string, std::string>& s);
+    DBusMessageWriter& operator<<(const ClientInterface::Hits& s);
 };
 #endif

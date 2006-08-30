@@ -48,7 +48,7 @@ add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
 	filtermanager.cpp strigilogging.h)
 
 set(strigidaemon_LIBS streamindexer eventlistener daemonconfiguration
-	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS} dbusserver)
+	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 

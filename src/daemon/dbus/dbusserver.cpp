@@ -1,65 +1,41 @@
 #include "dbusserver.h"
 #include "interface.h"
-#include "dbusmessagereader.h"
-#include "dbusmessagewriter.h"
+#include "dbusobjectcallhandler.h"
+#include "dbusclientinterface.h"
 using namespace std;
-
-class StrigiDBusServer {
+/*
+class StrigiDBusInterface : public DBusObjectInterface {
 private:
-    Interface* iface;
-    static DBusHandlerResult message_function(DBusConnection* connection,
-        DBusMessage* message, void* user_data);
-    DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
-    typedef void (StrigiDBusServer::*handlerFunction)
+    typedef void (StrigiDBusInterface::*handlerFunction)
         (DBusMessage* msg, DBusConnection* conn);
+
+    Interface* iface;
     map<string, handlerFunction> handlers;
+
+    DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
 
     void countHits(DBusMessage* msg, DBusConnection* conn);
     void getHits(DBusMessage* msg, DBusConnection* conn);
     void getStatus(DBusMessage* msg, DBusConnection* conn);
     void stopDaemon(DBusMessage* msg, DBusConnection* conn);
 public:
-    static const DBusObjectPathVTable vtable;
-    static const char* servicename;
-    static const char* interface;
-    static const char* objectpath;
-
-    StrigiDBusServer(Interface* interface);
-    ~StrigiDBusServer() {}
+    StrigiDBusInterface(const std::string& name, Interface* interface);
+    ~StrigiDBusInterface() {}
 };
 
-const char* StrigiDBusServer::servicename = "vandenoever.strigi";
-const char* StrigiDBusServer::interface = "vandenoever.strigi";
-const char* StrigiDBusServer::objectpath = "/search";
-
-const DBusObjectPathVTable StrigiDBusServer::vtable = {
-    NULL,
-    message_function,
-    NULL
-};
-
-StrigiDBusServer::StrigiDBusServer(Interface* i) :iface(i) {
-    handlers["countHits"] = &StrigiDBusServer::countHits;
-    handlers["getHits"] = &StrigiDBusServer::getHits;
-    handlers["stopDaemon"] = &StrigiDBusServer::stopDaemon;
-    handlers["getStatus"] = &StrigiDBusServer::getStatus;
+StrigiDBusInterface::StrigiDBusInterface(const std::string& name, Interface* i)
+        : DBusObjectInterface(name), iface(i) {
+    handlers["countHits"] = &StrigiDBusInterface::countHits;
+    handlers["getHits"] = &StrigiDBusInterface::getHits;
+    handlers["stopDaemon"] = &StrigiDBusInterface::stopDaemon;
+    handlers["getStatus"] = &StrigiDBusInterface::getStatus;
 }
 DBusHandlerResult
-StrigiDBusServer::message_function(DBusConnection* connection,
-    DBusMessage* msg, void* object) {
-
-    StrigiDBusServer* server = static_cast<StrigiDBusServer*>(object);
-    if (strcmp(dbus_message_get_interface(msg), interface) == 0) {
-        return server->handleCall(connection, msg);
-    }
-    printf("could not find interface %s\n", dbus_message_get_interface(msg));
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-DBusHandlerResult
-StrigiDBusServer::handleCall(DBusConnection* connection, DBusMessage* msg) {
+StrigiDBusInterface::handleCall(DBusConnection* connection, DBusMessage* msg) {
     map<string, handlerFunction>::const_iterator h;
+    const char* i = getInterfaceName().c_str();
     for (h = handlers.begin(); h != handlers.end(); ++h) {
-        if (dbus_message_is_method_call(msg, interface, h->first.c_str())) {
+        if (dbus_message_is_method_call(msg, i, h->first.c_str())) {
             (this->*h->second)(msg, connection);
             return DBUS_HANDLER_RESULT_HANDLED;
         }
@@ -70,10 +46,10 @@ StrigiDBusServer::handleCall(DBusConnection* connection, DBusMessage* msg) {
 // in: string
 // out: int
 void
-StrigiDBusServer::countHits(DBusMessage* msg, DBusConnection* conn) {
+StrigiDBusInterface::countHits(DBusMessage* msg, DBusConnection* conn) {
 }
 void
-StrigiDBusServer::stopDaemon(DBusMessage* msg, DBusConnection* conn) {
+StrigiDBusInterface::stopDaemon(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
@@ -83,7 +59,7 @@ StrigiDBusServer::stopDaemon(DBusMessage* msg, DBusConnection* conn) {
     }
 }
 void
-StrigiDBusServer::getHits(DBusMessage* msg, DBusConnection* conn) {
+StrigiDBusInterface::getHits(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
     string a1;
@@ -97,7 +73,7 @@ StrigiDBusServer::getHits(DBusMessage* msg, DBusConnection* conn) {
     }
 }
 void
-StrigiDBusServer::getStatus(DBusMessage* msg, DBusConnection* conn) {
+StrigiDBusInterface::getStatus(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
@@ -107,7 +83,7 @@ StrigiDBusServer::getStatus(DBusMessage* msg, DBusConnection* conn) {
         //writer.setError("wrong parameters");
     }
 }
-
+*/
 bool
 DBusServer::listen() {
     DBusConnection* conn;
@@ -132,7 +108,7 @@ DBusServer::listen() {
     }
 
     // request our name on the bus and check for errors
-    ret = dbus_bus_request_name(conn, StrigiDBusServer::servicename,
+    ret = dbus_bus_request_name(conn, "vandenoever.strigi",
         DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
     if (dbus_error_is_set(&err)) {
         fprintf(stderr, "Name Error (%s)\n", err.message);
@@ -144,11 +120,13 @@ DBusServer::listen() {
     }
 
     // register the introspection interface
-    StrigiDBusServer server(interface);
+    DBusObjectCallHandler callhandler("/search");
+    callhandler.registerOnConnection(conn);
 
-    // register the strigi object
-    dbus_connection_register_object_path (conn, StrigiDBusServer::objectpath,
-        &StrigiDBusServer::vtable, &server); 
+    DBusClientInterface searchinterface(interface);
+    callhandler.addInterface(&searchinterface);
+
+    printf("%s\n", callhandler.getIntrospectionXML().c_str());
  
     // loop, testing for new messages
     while (interface->isActive()) {

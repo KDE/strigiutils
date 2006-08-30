@@ -29,6 +29,21 @@ DBusMessageWriter::operator<<(bool b) {
     return *this;
 }
 DBusMessageWriter&
+DBusMessageWriter::operator<<(int32_t i) {
+    dbus_message_iter_append_basic(&it, DBUS_TYPE_INT32, &i);
+    return *this;
+}
+DBusMessageWriter&
+DBusMessageWriter::operator<<(int64_t i) {
+    dbus_message_iter_append_basic(&it, DBUS_TYPE_INT64, &i);
+    return *this;
+}
+DBusMessageWriter&
+DBusMessageWriter::operator<<(double d) {
+    dbus_message_iter_append_basic(&it, DBUS_TYPE_DOUBLE, &d);
+    return *this;
+}
+DBusMessageWriter&
 DBusMessageWriter::operator<<(const std::string& s) {
     const char* c = s.c_str();
     dbus_message_iter_append_basic(&it, DBUS_TYPE_STRING, &c);
@@ -62,4 +77,59 @@ DBusMessageWriter::operator<<(const std::map<std::string, std::string>& m) {
         dbus_message_iter_close_container(&sub, &ssub);
     }
     dbus_message_iter_close_container(&it, &sub);
+    return *this;
+}
+DBusMessageWriter&
+DBusMessageWriter::operator<<(const std::vector<std::string>& s) {
+    DBusMessageIter sub;
+    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
+        DBUS_TYPE_STRING_AS_STRING, &sub);
+    vector<string>::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        const char* c = i->c_str();
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+    }
+    dbus_message_iter_close_container(&it, &sub);
+    return *this;
+}
+/* yes this is ugly, i have to change the interface */
+DBusMessageWriter&
+DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
+    DBusMessageIter sub;
+    DBusMessageIter ssub;
+    DBusMessageIter sssub;
+    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
+        "sdsssxxa{ss}", &sub);
+    vector<jstreams::IndexedDocument>::const_iterator i;
+    for (i=s.hits.begin(); i!=s.hits.end(); ++i) {
+        const char* c = i->uri.c_str();
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        double d = i->score;
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_DOUBLE, &d);
+        c = i->fragment.c_str();
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        c = i->mimetype.c_str();
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        c = i->sha1.c_str();
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        int64_t n = i->size;
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT64, &n);
+        n = i->mtime;
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT64, &n);
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "{ss}", &ssub);
+        map<string, string>::const_iterator j;
+        for (j = i->properties.begin(); j != i->properties.end(); ++j) {
+            dbus_message_iter_open_container(&ssub, DBUS_TYPE_DICT_ENTRY, 0,
+                &sssub);
+            c = j->first.c_str();
+            dbus_message_iter_append_basic(&sssub, DBUS_TYPE_STRING, &c);
+            c = j->second.c_str();
+            dbus_message_iter_append_basic(&sssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_close_container(&ssub, &sssub);
+        }
+        dbus_message_iter_close_container(&sub, &ssub);
+    }
+    dbus_message_iter_close_container(&it, &sub);
+    printf("%i results\n", s.hits.size());
+    return *this;
 }
