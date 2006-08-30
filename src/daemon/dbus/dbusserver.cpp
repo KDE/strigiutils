@@ -126,15 +126,14 @@ DBusServer::listen() {
     DBusClientInterface searchinterface(interface);
     callhandler.addInterface(&searchinterface);
 
-    printf("%s\n", callhandler.getIntrospectionXML().c_str());
+//    printf("%s\n", callhandler.getIntrospectionXML().c_str());
  
     // loop, testing for new messages
     while (interface->isActive()) {
         // non blocking read of the next available message
-        dbus_connection_read_write_dispatch(conn, 10);
+        dbus_connection_read_write_dispatch(conn, -1);
         dbus_connection_flush(conn);
     }
-    printf("hey!\n");
 
     // close the connection
     dbus_connection_close(conn);
