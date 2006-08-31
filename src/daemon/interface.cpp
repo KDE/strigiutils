@@ -60,7 +60,7 @@ Interface::getHits(const string& query, int max, int off) {
 map<string, string>
 Interface::getStatus() {
     map<string,string> status;
-    status["Status"]=scheduler.getState();
+    status["Status"]=scheduler.getStateString();
     ostringstream out;
     out << scheduler.getQueueSize();
     status["Documents in queue"]= out.str();
