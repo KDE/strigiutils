@@ -45,7 +45,7 @@ private:
 
     void closedb();
 public:
-    XapianIndexManager(const char* path);
+    explicit XapianIndexManager(const char* path);
     ~XapianIndexManager();
 
     jstreams::IndexReader* getIndexReader();

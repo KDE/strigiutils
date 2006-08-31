@@ -20,7 +20,7 @@ private:
     std::map<std::string, DBusObjectInterface*> interfaces;
 public:
     static const DBusObjectPathVTable vtable;
-    DBusObjectCallHandler(const std::string& path);
+    explicit DBusObjectCallHandler(const std::string& path);
     ~DBusObjectCallHandler();
     void addInterface(DBusObjectInterface* interface);
     void registerOnConnection(DBusConnection* c);

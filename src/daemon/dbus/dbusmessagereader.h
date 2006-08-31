@@ -22,7 +22,7 @@ private:
         ok = false;
     }
 public:
-    DBusMessageReader(DBusMessage* msg);
+    explicit DBusMessageReader(DBusMessage* msg);
     ~DBusMessageReader() {
         close();
     }

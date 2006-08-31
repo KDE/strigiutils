@@ -48,7 +48,7 @@ protected:
         int32_t length);
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
-    SqliteIndexWriter(SqliteIndexManager*);
+    explicit SqliteIndexWriter(SqliteIndexManager*);
     ~SqliteIndexWriter();
 public:
     void commit();

@@ -44,7 +44,7 @@ private:
     std::map<pthread_t, sqlite3*> dbs;
 
 public:
-    SqliteIndexManager(const char* path);
+    explicit SqliteIndexManager(const char* path);
     ~SqliteIndexManager();
 
     sqlite3* ref();

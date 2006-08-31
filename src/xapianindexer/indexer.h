@@ -37,7 +37,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const std::string &filepath);
 public:
-    Indexer(const char *indexdir);
+    explicit Indexer(const char *indexdir);
     ~Indexer();
     void index(const char *dir);
 };

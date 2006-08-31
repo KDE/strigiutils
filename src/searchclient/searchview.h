@@ -37,7 +37,7 @@ private:
 private slots:
     void openItem(const QUrl& url);
 public:
-    SearchView(Qt4StrigiClient& k);
+    explicit SearchView(Qt4StrigiClient& k);
     void setHTML(const QString&html);
 public slots:
     void handleHits(const QString&, const ClientInterface::Hits&);

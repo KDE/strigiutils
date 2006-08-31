@@ -28,7 +28,8 @@ private:
     Interface* interface;
     void* run(void*);    
 public:
-    DBusServer(Interface* i) :StrigiThread("DBusServer"), interface(i) {}
+    explicit DBusServer(Interface* i) :StrigiThread("DBusServer"),
+        interface(i) {}
     ~DBusServer() {}
 /**
  * return true if the system stopped normally
