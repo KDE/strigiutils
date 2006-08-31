@@ -25,6 +25,7 @@ DBusMessageWriter::setError(const std::string &e) {
 }
 DBusMessageWriter&
 DBusMessageWriter::operator<<(bool b) {
+    printf("added bool\n");
     dbus_message_iter_append_basic(&it, DBUS_TYPE_BOOLEAN, &b);
     return *this;
 }

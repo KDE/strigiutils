@@ -33,10 +33,8 @@ DBusMessageReader::operator>>(std::string& s) {
 }
 DBusMessageReader&
 DBusMessageReader::operator>>(set<string>& s) {
-    if (!isOk()) return *this;
-
     s.clear();
-    // check that the arguments are ok
+    if (!isOk()) return *this;
     if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
         || DBUS_TYPE_STRING != dbus_message_iter_get_element_type(&it)) {
         close();
@@ -51,5 +49,23 @@ DBusMessageReader::operator>>(set<string>& s) {
         s.insert(value);
     } while(dbus_message_iter_next(&sub));
     
+    return *this;
+}
+DBusMessageReader&
+DBusMessageReader::operator>>(std::vector<char>& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
+        || DBUS_TYPE_BYTE != dbus_message_iter_get_element_type(&it)) {
+        close();
+        return *this;
+    }
+
+    DBusMessageIter sub;
+    dbus_message_iter_recurse(&it, &sub);
+    int length = dbus_message_iter_get_array_len(&sub);
+    char* array;
+    dbus_message_iter_get_fixed_array(&sub, &array, &length);
+//    s.assign(array, array+length);
+
     return *this;
 }

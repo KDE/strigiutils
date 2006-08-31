@@ -6,6 +6,7 @@
 
 #include <set>
 #include <string>
+#include <vector>
 
 class DBusMessageReader {
 private:
@@ -26,6 +27,7 @@ public:
         close();
     }
     DBusMessageReader& operator>>(std::set<std::string>& s);
+    DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::string& s);
     DBusMessageReader& operator>>(int32_t s);
     bool isOk() const { return ok; }
