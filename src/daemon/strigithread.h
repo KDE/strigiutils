@@ -2,28 +2,28 @@
 #define STRIGITHREAD_H
 
 #include <pthread.h>
+
 class StrigiThread {
 friend void* threadstarter(void *);
-protected:
+public:
     enum State {Idling, Working, Stopping};
+private:
     State state;
+protected:
     pthread_mutex_t lock;
-    static pthread_mutex_t initlock;
     pthread_t thread;
+
+    void setState(State s);
     virtual void* run(void*) = 0;
 public:
-    StrigiThread();
-    virtual ~StrigiThread() {}
+    const char* const name;
+
+    StrigiThread(const char* name);
+    virtual ~StrigiThread();
     int start();
     void stop();
     void terminate();
-};
-
-class Server;
-class ServerThread : public StrigiThread {
-public:
-    ServerThread(Server*);
-    void* run(void*);
+    State getState();
 };
 
 #endif

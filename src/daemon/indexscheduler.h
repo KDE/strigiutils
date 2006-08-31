@@ -61,9 +61,9 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) { m_listenerEventQueue = eventQueue; }
     void setFilterManager (FilterManager* filterManager) { m_filterManager = filterManager;}
     int getQueueSize();
-    void startIndexing() { state = Working; }
-    void stopIndexing() { state = Idling; }
-    std::string getState();
+    void startIndexing() { setState(Working); }
+    void stopIndexing() { setState(Idling); }
+    std::string getStateString();
     ~IndexScheduler();
     const std::set<std::string> &getIndexedDirectories() const {
         return dirstoindex;

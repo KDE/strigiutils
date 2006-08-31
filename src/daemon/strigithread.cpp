@@ -6,8 +6,6 @@
 #include <sys/resource.h>
 using namespace std;
 
-pthread_mutex_t StrigiThread::initlock = PTHREAD_MUTEX_INITIALIZER;
-
 void*
 threadstarter(void *d) {
     // give this thread job batch job priority
@@ -35,8 +33,25 @@ threadstarter(void *d) {
     pthread_exit(0);
 }
 
-StrigiThread::StrigiThread() {
-    state = Idling;
+StrigiThread::StrigiThread(const char* n) :state(Idling), name(n) {
+    pthread_mutex_init(&lock, NULL);
+}
+StrigiThread::~StrigiThread() {
+    pthread_mutex_destroy(&lock);
+}
+void
+StrigiThread::setState(State s) {
+    pthread_mutex_lock(&lock);
+    state = s;
+    pthread_mutex_unlock(&lock);
+}
+StrigiThread::State
+StrigiThread::getState() {
+    State s;
+    pthread_mutex_lock(&lock);
+    s = state;
+    pthread_mutex_unlock(&lock);
+    return s;
 }
 int
 StrigiThread::start() {
@@ -52,7 +67,7 @@ void
 StrigiThread::stop() {
     state = Stopping;
     if (thread) {
-        // wait for the indexer to finish
+        // wait for the thread to finish
         pthread_join(thread, 0);
     }
     thread = 0;

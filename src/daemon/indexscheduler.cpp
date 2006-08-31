@@ -38,7 +38,7 @@ using namespace jstreams;
 
 IndexScheduler* sched;
 
-IndexScheduler::IndexScheduler() {
+IndexScheduler::IndexScheduler() :StrigiThread("IndexScheduler") {
     sched = this;
     m_listenerEventQueue = NULL;
     m_filterManager = NULL;
@@ -48,7 +48,7 @@ IndexScheduler::~IndexScheduler() {
 bool
 IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
-    if (sched->state != Working) return false;
+    if (sched->getState() != Working) return false;
     // only read files that do not start with '.'
     if (strstr(path, "/.")) return true;
     // check filtering rules given by user
@@ -75,7 +75,8 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
     return true;
 }
 std::string
-IndexScheduler::getState() {
+IndexScheduler::getStateString() {
+    State state = getState();
     if (state == Idling) return "idling";
     if (state == Working) return "indexing";
     return "stopping";
@@ -94,25 +95,22 @@ shortsleep(long nanoseconds) {
 }
 void *
 IndexScheduler::run(void*) {
-    while (state != Stopping) {
+    while (getState() != Stopping) {
         shortsleep(100000000);
-        if (state == Working) {
+        if (getState() == Working) {
             index();
-            if (state == Working) {
-                state = Idling;
+            if (getState() == Working) {
+                setState(Idling);
             }
-        }
-        else if (state == Idling)
-        {
+        } else if (getState() == Idling) {
             if (m_listenerEventQueue == NULL)
                 return 0;
             
             vector <Event*> events = m_listenerEventQueue->getEvents();
-            if (events.size() > 0)
-            {
-                state = Working;
+            if (events.size() > 0) {
+                setState(Working);
                 processListenerEvents(events);
-                state = Idling;
+                setState(Idling);
             }
         }
     }
@@ -151,7 +149,7 @@ IndexScheduler::index() {
 
     vector<string> todelete;
     map<string,time_t>::iterator it = dbfiles.begin();
-    while (state == Working && it != dbfiles.end()) {
+    while (getState() == Working && it != dbfiles.end()) {
         todelete.push_back(it->first);
 //        writer->deleteEntry(it->first);
         dbfiles.erase(it++);
@@ -159,14 +157,14 @@ IndexScheduler::index() {
     writer->deleteEntries(todelete);
 
     it = toindex.begin();
-    while (state == Working && it != toindex.end()) {
+    while (getState() == Working && it != toindex.end()) {
         streamindexer->indexFile(it->first);
         if (writer->itemsInCache() > 10000) {
             writer->commit();
         }
         toindex.erase(it++);
     }
-    if (state == Working) {
+    if (getState() == Working) {
         writer->commit();
         writer->optimize();
     }

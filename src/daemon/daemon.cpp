@@ -64,7 +64,9 @@ void
 stopThreads() {
     vector<StrigiThread*>::const_iterator i;
     for (i=threads.begin(); i!=threads.end(); ++i) {
+        printf("stopping thread %s\n", (*i)->name);
         (*i)->stop();
+        printf("stopped another thread\n");
     }
 }
 

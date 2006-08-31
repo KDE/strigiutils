@@ -70,15 +70,14 @@ void* InotifyListenerStart (void *inotifylistener)
     pthread_exit(0);
 }
 
-InotifyListener::InotifyListener()
-{
+InotifyListener::InotifyListener() :EventListener("InotifyListener") {
     iListener = this;
     
     // listen only to interesting events
     m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
     
     m_bMonitor = true;
-    state = Idling;
+    setState(Idling);
     m_bInitialized = false;
     m_eventQueue = NULL;
     m_pIndexReader = NULL;
@@ -126,15 +125,15 @@ bool InotifyListener::init()
 
 void* InotifyListener::run(void*)
 {
-    while (state != Stopping)
+    while (getState() != Stopping)
     {
         watch();
         
-        if (state == Working)
-            state = Idling;
+        if (getState() == Working)
+            setState(Idling);
     }
     
-    printf("exit inotify: %i\n", state);
+    printf("exit inotify: %i\n", getState());
     return 0;
 }
 /*

@@ -29,7 +29,7 @@ class FilterManager;
 
 class EventListener : public StrigiThread {
 public:
-    EventListener() {
+    EventListener(const char* name) :StrigiThread(name) {
         m_eventQueue = 0;
         m_filterManager = 0;
     }

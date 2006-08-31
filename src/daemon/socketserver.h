@@ -39,7 +39,7 @@ private:
 
     void* run(void*);
 public:
-    SocketServer(Interface* i) :interface(i) {}
+    SocketServer(Interface* i) :StrigiThread("SocketServer"), interface(i) {}
     void setSocketName(const std::string& name) {
         socketname = name;
     }
