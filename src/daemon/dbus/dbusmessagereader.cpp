@@ -10,13 +10,47 @@ DBusMessageReader::DBusMessageReader(DBusMessage* m) :msg(m), ok(true) {
     }
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(int32_t s) {
+DBusMessageReader::operator>>(uint32_t& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&it)) {
+        close();
+        return *this;
+    }
+    dbus_message_iter_get_basic(&it, &s);
+    dbus_message_iter_next(&it);
+    return *this;
+}
+DBusMessageReader&
+DBusMessageReader::operator>>(int32_t& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&it)) {
         close();
         return *this;
     }
     dbus_message_iter_get_basic(&it, &s);
+    dbus_message_iter_next(&it);
+    return *this;
+}
+DBusMessageReader&
+DBusMessageReader::operator>>(uint64_t& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_UINT64 != dbus_message_iter_get_arg_type(&it)) {
+        close();
+        return *this;
+    }
+    dbus_message_iter_get_basic(&it, &s);
+    dbus_message_iter_next(&it);
+    return *this;
+}
+DBusMessageReader&
+DBusMessageReader::operator>>(int64_t& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_INT64 != dbus_message_iter_get_arg_type(&it)) {
+        close();
+        return *this;
+    }
+    dbus_message_iter_get_basic(&it, &s);
+    dbus_message_iter_next(&it);
     return *this;
 }
 DBusMessageReader&
@@ -29,6 +63,7 @@ DBusMessageReader::operator>>(std::string& s) {
     const char* c;
     dbus_message_iter_get_basic(&it, &c);
     s.assign(c);
+    dbus_message_iter_next(&it);
     return *this;
 }
 DBusMessageReader&
@@ -48,6 +83,7 @@ DBusMessageReader::operator>>(set<string>& s) {
         dbus_message_iter_get_basic(&sub, &value);
         s.insert(value);
     } while(dbus_message_iter_next(&sub));
+    dbus_message_iter_next(&it);
     
     return *this;
 }
@@ -65,7 +101,8 @@ DBusMessageReader::operator>>(std::vector<char>& s) {
     int length = dbus_message_iter_get_array_len(&sub);
     char* array;
     dbus_message_iter_get_fixed_array(&sub, &array, &length);
-//    s.assign(array, array+length);
+    s.assign(array, array+length);
+    dbus_message_iter_next(&it);
 
     return *this;
 }

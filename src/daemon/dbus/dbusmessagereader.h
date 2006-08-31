@@ -29,7 +29,10 @@ public:
     DBusMessageReader& operator>>(std::set<std::string>& s);
     DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::string& s);
-    DBusMessageReader& operator>>(int32_t s);
+    DBusMessageReader& operator>>(uint32_t& s);
+    DBusMessageReader& operator>>(int32_t& s);
+    DBusMessageReader& operator>>(uint64_t& s);
+    DBusMessageReader& operator>>(int64_t& s);
     bool isOk() const { return ok; }
 };
 

@@ -25,7 +25,6 @@ DBusMessageWriter::setError(const std::string &e) {
 }
 DBusMessageWriter&
 DBusMessageWriter::operator<<(bool b) {
-    printf("added bool\n");
     dbus_message_iter_append_basic(&it, DBUS_TYPE_BOOLEAN, &b);
     return *this;
 }
@@ -48,7 +47,6 @@ DBusMessageWriter&
 DBusMessageWriter::operator<<(const std::string& s) {
     const char* c = s.c_str();
     dbus_message_iter_append_basic(&it, DBUS_TYPE_STRING, &c);
-    printf("hi\n");
     return *this;
 }
 DBusMessageWriter&
@@ -99,38 +97,40 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
     DBusMessageIter sub;
     DBusMessageIter ssub;
     DBusMessageIter sssub;
+    DBusMessageIter ssssub;
     dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
-        "sdsssxxa{ss}", &sub);
+        "(sdsssxxa{ss})", &sub);
     vector<jstreams::IndexedDocument>::const_iterator i;
     for (i=s.hits.begin(); i!=s.hits.end(); ++i) {
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
         const char* c = i->uri.c_str();
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         double d = i->score;
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_DOUBLE, &d);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_DOUBLE, &d);
         c = i->fragment.c_str();
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         c = i->mimetype.c_str();
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         c = i->sha1.c_str();
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &c);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         int64_t n = i->size;
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT64, &n);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
         n = i->mtime;
-        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT64, &n);
-        dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "{ss}", &ssub);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
+        dbus_message_iter_open_container(&ssub, DBUS_TYPE_ARRAY, "{ss}",&sssub);
         map<string, string>::const_iterator j;
         for (j = i->properties.begin(); j != i->properties.end(); ++j) {
-            dbus_message_iter_open_container(&ssub, DBUS_TYPE_DICT_ENTRY, 0,
-                &sssub);
+            dbus_message_iter_open_container(&sssub, DBUS_TYPE_DICT_ENTRY, 0,
+                &ssssub);
             c = j->first.c_str();
-            dbus_message_iter_append_basic(&sssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_append_basic(&ssssub, DBUS_TYPE_STRING, &c);
             c = j->second.c_str();
-            dbus_message_iter_append_basic(&sssub, DBUS_TYPE_STRING, &c);
-            dbus_message_iter_close_container(&ssub, &sssub);
+            dbus_message_iter_append_basic(&ssssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_close_container(&sssub, &ssssub);
         }
+        dbus_message_iter_close_container(&ssub, &sssub);
         dbus_message_iter_close_container(&sub, &ssub);
     }
     dbus_message_iter_close_container(&it, &sub);
-    printf("%i results\n", s.hits.size());
     return *this;
 }

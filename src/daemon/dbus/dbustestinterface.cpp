@@ -7,6 +7,7 @@
 DBusTestInterface::DBusTestInterface(TestInterface* i)
         :DBusObjectInterface("vandenoever.dbustest"), impl(i) {
     handlers["upload"] = &DBusTestInterface::upload;
+    handlers["concat"] = &DBusTestInterface::concat;
     handlers["helloWorld"] = &DBusTestInterface::helloWorld;
     handlers["giveMap"] = &DBusTestInterface::giveMap;
 }
@@ -30,6 +31,11 @@ DBusTestInterface::getIntrospectionXML() {
     << "      <arg name='upload' type='ay' direction='in'/>\n"
     << "      <arg name='out' type='b' direction='out'/>\n"
     << "    </method>\n"
+    << "    <method name='concat'>\n"
+    << "      <arg name='a' type='s' direction='in'/>\n"
+    << "      <arg name='b' type='s' direction='in'/>\n"
+    << "      <arg name='out' type='s' direction='out'/>\n"
+    << "    </method>\n"
     << "    <method name='helloWorld'>\n"
     << "      <arg name='name' type='s' direction='in'/>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
@@ -48,6 +54,17 @@ DBusTestInterface::upload(DBusMessage* msg, DBusConnection* conn) {
     reader >> upload;
     if (reader.isOk()) {
         writer << impl->upload(upload);
+    }
+}
+void
+DBusTestInterface::concat(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string a;
+    std::string b;
+    reader >> a >> b;
+    if (reader.isOk()) {
+        writer << impl->concat(a,b);
     }
 }
 void

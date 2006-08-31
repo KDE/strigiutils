@@ -12,6 +12,7 @@ private:
     std::map<std::string, handlerFunction> handlers;
     DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
     void upload(DBusMessage* msg, DBusConnection* conn);
+    void concat(DBusMessage* msg, DBusConnection* conn);
     void helloWorld(DBusMessage* msg, DBusConnection* conn);
     void giveMap(DBusMessage* msg, DBusConnection* conn);
 public:
