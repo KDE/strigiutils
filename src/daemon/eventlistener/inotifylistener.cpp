@@ -78,7 +78,7 @@ InotifyListener::InotifyListener()
     m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
     
     m_bMonitor = true;
-    m_state = Idling;
+    state = Idling;
     m_bInitialized = false;
     m_eventQueue = NULL;
     m_pIndexReader = NULL;
@@ -105,7 +105,7 @@ bool InotifyListener::init()
     return true;
 }
 
-bool InotifyListener::start()
+/*bool InotifyListener::start()
 {
     if (!m_bInitialized)
     {
@@ -122,21 +122,22 @@ bool InotifyListener::start()
     }
     
     return true;
-}
+}*/
 
 void* InotifyListener::run(void*)
 {
-    while (m_state != Stopping)
+    while (state != Stopping)
     {
         watch();
         
-        if (m_state == Watching)
-            m_state = Idling;
+        if (state == Working)
+            state = Idling;
     }
     
+    printf("exit inotify: %i\n", state);
     return 0;
 }
-
+/*
 void InotifyListener::stop()
 {
     m_state = Stopping;
@@ -148,7 +149,7 @@ void InotifyListener::stop()
     }
     
     m_thread = 0;
-}
+}*/
 
 void InotifyListener::watch ()
 {
@@ -158,7 +159,7 @@ void InotifyListener::watch ()
     set <unsigned int> watchesToDel;
     
     struct timeval read_timeout;
-    read_timeout.tv_sec = 10;
+    read_timeout.tv_sec = 1;
     read_timeout.tv_usec = 0;
     
     static const int MAX_EVENTS = 4096;
@@ -168,7 +169,7 @@ void InotifyListener::watch ()
     event[0].cookie = 0;
     event[0].len = 0;
     
-    ssize_t bytes = 0;
+    size_t bytes = 0;
     fd_set read_fds;
     
     bytes = 0;
@@ -216,7 +217,7 @@ void InotifyListener::watch ()
     static char * this_event_char;
     this_event_char = (char *)&event[0];
     
-    static int remaining_bytes;
+    static uint remaining_bytes;
     remaining_bytes = bytes;
     
     do
@@ -450,7 +451,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs)
     vector<Event*> events;
     vector<string> old_watches;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
-    Event* event;
+    //Event* event;
     FileLister lister;
     
     for (map <unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)

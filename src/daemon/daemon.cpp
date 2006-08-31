@@ -67,6 +67,7 @@ InotifyListener inotifyListener;
 
 void
 quit_daemon(int) {
+    printf("quit_daemon\n");
     static int interruptcount = 0;
     switch (++interruptcount) {
     case 1:
@@ -76,6 +77,9 @@ quit_daemon(int) {
         scheduler.stop();
         break;
     case 2:
+#ifdef HAVE_INOTIFY
+//        inotifyListener.terminate();
+#endif
         scheduler.terminate();
         break;
     case 3:

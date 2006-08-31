@@ -22,35 +22,33 @@
 
 #include <set>
 #include <string>
-#include <pthread.h>
+#include "strigithread.h"
 
 class EventListenerQueue;
 class FilterManager;
 
-class EventListener
-{
-    public:
-        EventListener() { m_state = Idling; m_eventQueue = NULL; m_filterManager = NULL;}
+class EventListener : public StrigiThread {
+public:
+    EventListener() {
+        m_eventQueue = 0;
+        m_filterManager = 0;
+    }
 
-        ~EventListener() {};
+    virtual ~EventListener() {};
 
-        virtual void addWatch (const std::string& path) = 0;
-        virtual void addWatches (const std::set<std::string>& watches) = 0;
-        virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
-        void setEventListenerQueue (EventListenerQueue* eventQueue) { m_eventQueue = eventQueue; }
-        void setFilterManager (FilterManager* filterManager) { m_filterManager = filterManager; }
+    virtual void addWatch (const std::string& path) = 0;
+    virtual void addWatches (const std::set<std::string>& watches) = 0;
+    virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
+    void setEventListenerQueue (EventListenerQueue* eventQueue) {
+        m_eventQueue = eventQueue;
+    }
+    void setFilterManager (FilterManager* filterManager) {
+        m_filterManager = filterManager;
+    }
 
-        virtual bool start() = 0;
-        virtual void* run(void*) = 0;
-        virtual void stop() = 0;
-
-    protected:
-        enum State {Idling, Watching, Stopping};
-        State m_state;
-
-        EventListenerQueue* m_eventQueue;
-        FilterManager* m_filterManager;
-        pthread_t m_thread;
+protected:
+    EventListenerQueue* m_eventQueue;
+    FilterManager* m_filterManager;
 };
 
 #endif

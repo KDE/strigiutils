@@ -23,8 +23,8 @@
 #include <map>
 #include <string>
 #include <set>
-#include <pthread.h>
 #include <vector>
+#include "strigithread.h"
 
 class Event;
 class EventListenerQueue;
@@ -33,16 +33,10 @@ class FilterManager;
 namespace jstreams {
     class IndexManager;
 }
-class IndexScheduler {
-friend void* indexschedulerstart(void *);
+class IndexScheduler : public StrigiThread {
 friend bool addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
 private:
-    enum State {Idling, Indexing, Stopping};
-    State state;
-    pthread_mutex_t lock;
-    static pthread_mutex_t initlock;
-    pthread_t thread;
     std::set<std::string> dirstoindex;
     jstreams::IndexManager* indexmanager;
     std::map<std::string, time_t> dbfiles;
@@ -67,11 +61,8 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) { m_listenerEventQueue = eventQueue; }
     void setFilterManager (FilterManager* filterManager) { m_filterManager = filterManager;}
     int getQueueSize();
-    int start();
-    void stop();
-    void startIndexing() { state = Indexing; }
+    void startIndexing() { state = Working; }
     void stopIndexing() { state = Idling; }
-    void terminate();
     std::string getState();
     ~IndexScheduler();
     const std::set<std::string> &getIndexedDirectories() const {
