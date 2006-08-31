@@ -6,8 +6,8 @@
 #include "dbustestinterface.h"
 using namespace std;
 
-bool
-DBusServer::listen() {
+void*
+DBusServer::run(void*) {
     DBusConnection* conn;
     DBusError err;
     int ret;
@@ -63,5 +63,5 @@ DBusServer::listen() {
 
     // close the connection
     dbus_connection_close(conn);
-    return true;
+    return &thread;
 }

@@ -43,7 +43,7 @@ endif (HyperEstraier_FOUND)
 
 include_directories( eventlistener .)
 
-add_executable(strigidaemon daemon.cpp server.cpp socketserver.cpp interface.cpp
+add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp
 	filtermanager.cpp strigilogging.h strigithread.cpp)
 

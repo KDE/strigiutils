@@ -20,17 +20,20 @@
 #ifndef DBUSSERVER_H
 #define DBUSSERVER_H
 
-#include "../server.h"
+#include "../strigithread.h"
 
-class DBusServer : public Server {
-protected:
+class Interface;
+class DBusServer : public StrigiThread {
+private:
+    Interface* interface;
+    void* run(void*);    
+public:
+    DBusServer(Interface* i) :interface(i) {}
+    ~DBusServer() {}
 /**
  * return true if the system stopped normally
  **/
-    bool listen();
-public:
-    DBusServer(Interface* i) :Server(i) {}
-    ~DBusServer() {}
+    bool listen() { return run(0); }
 };
 
 #endif

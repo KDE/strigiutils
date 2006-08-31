@@ -27,8 +27,8 @@
 #include <assert.h>
 using namespace std;
 
-bool
-SocketServer::listen() {
+void*
+SocketServer::run(void*) {
     int sd, newSd;
     size_t len;
     socklen_t addlen;
@@ -82,7 +82,7 @@ SocketServer::listen() {
     if (close(sd) < 0) {
         perror("close socket");
     }
-    return true;
+    return &thread;
 }
 bool
 SocketServer::readRequest(int sd) {

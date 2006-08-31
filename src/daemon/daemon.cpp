@@ -43,9 +43,8 @@
 
 #ifdef HAVE_DBUS
 #include "dbusserver.h"
-#else
-#include "socketserver.h"
 #endif
+#include "socketserver.h"
 
 #include <fstream>
 #include <sys/types.h>
@@ -59,28 +58,29 @@
 using namespace jstreams;
 using namespace std;
 
-IndexScheduler scheduler;
+vector<StrigiThread*> threads;
 
-#ifdef HAVE_INOTIFY
-InotifyListener inotifyListener;
-#endif
+void
+stopThreads() {
+    vector<StrigiThread*>::const_iterator i;
+    for (i=threads.begin(); i!=threads.end(); ++i) {
+        (*i)->stop();
+    }
+}
 
 void
 quit_daemon(int) {
     printf("quit_daemon\n");
     static int interruptcount = 0;
+    vector<StrigiThread*>::const_iterator i;
     switch (++interruptcount) {
     case 1:
-#ifdef HAVE_INOTIFY
-        inotifyListener.stop();
-#endif
-        scheduler.stop();
+        stopThreads();
         break;
     case 2:
-#ifdef HAVE_INOTIFY
-//        inotifyListener.terminate();
-#endif
-        scheduler.terminate();
+        for (i=threads.begin(); i!=threads.end(); ++i) {
+            (*i)->terminate();
+        }
         break;
     case 3:
     default:
@@ -216,6 +216,7 @@ main(int argc, char** argv) {
     // init filter manager
     FilterManager filterManager;
     filterManager.setConfFile (filterfile);
+    IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
     
@@ -275,7 +276,10 @@ main(int argc, char** argv) {
     scheduler.setEventListenerQueue (&listenerEventQueue);
     
     // start the indexer thread
+    threads.push_back(&scheduler);
     scheduler.start();
+
+    Interface interface(*index, scheduler);
 
 #ifdef HAVE_INOTIFY
     // configure & start inotfy's watcher thread
@@ -287,26 +291,23 @@ main(int argc, char** argv) {
         inotifyListener.setIndexedDirectories(dirs);
         inotifyListener.start();
     }
-#endif
- 
     // listen for requests
-    Interface interface(*index, scheduler);
-#ifdef HAVE_INOTIFY
+    InotifyListener inotifyListener;
     interface.setEventListener (&inotifyListener);
+    threads.push_back(&inotifyListener);
 #endif
 
 #ifdef HAVE_DBUS
-    DBusServer server(&interface);
-#else
-    SocketServer server(&interface);
-    server.setSocketName(socketpath.c_str());
+    DBusServer dbusserver(&interface);
+    threads.push_back(&dbusserver);
+    dbusserver.start();
 #endif
 
-    if (!server.start()) {
-        scheduler.stop();
-#ifdef HAVE_INOTIFY
-        inotifyListener.stop();
-#endif
+    SocketServer server(&interface);
+    server.setSocketName(socketpath.c_str());
+
+    if (!server.listen()) {
+        stopThreads();
     }
     dirs = scheduler.getIndexedDirectories();
     savedirstoindex(dirsfile, dirs);

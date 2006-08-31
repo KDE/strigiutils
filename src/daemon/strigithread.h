@@ -19,5 +19,12 @@ public:
     void terminate();
 };
 
+class Server;
+class ServerThread : public StrigiThread {
+public:
+    ServerThread(Server*);
+    void* run(void*);
+};
+
 #endif
 

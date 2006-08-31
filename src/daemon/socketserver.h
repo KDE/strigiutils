@@ -20,12 +20,14 @@
 #ifndef SOCKETSERVER_H
 #define SOCKETSERVER_H
 
-#include "server.h"
 #include <string>
 #include <vector>
+#include "strigithread.h"
 
-class SocketServer : public Server {
+class Interface;
+class SocketServer : public StrigiThread {
 private:
+    Interface* interface;
     std::string socketname;
     std::string error;
     std::vector<std::string> request;
@@ -34,13 +36,14 @@ private:
     bool readRequest(int sd);
     bool sendResponse(int sd);
     void handleRequest();
-protected:
-    bool listen();
+
+    void* run(void*);
 public:
-    SocketServer(Interface* i) :Server(i) {}
+    SocketServer(Interface* i) :interface(i) {}
     void setSocketName(const std::string& name) {
         socketname = name;
     }
+    bool listen() { return run(0); }
 };
 
 #endif
