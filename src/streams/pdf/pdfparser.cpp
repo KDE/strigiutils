@@ -26,7 +26,7 @@ PdfParser::read(int32_t min, int32_t max) {
 }
 StreamStatus
 PdfParser::read2(int32_t min, int32_t max) {
-    printf("pos %i\n", stream->getPosition());
+    printf("pos %lli\n", stream->getPosition());
     int32_t n = stream->read(start, min, max);
     if (n < min) return stream->getStatus();
     pos = start;
@@ -150,7 +150,7 @@ PdfParser::parseNumberOrIndirectObject() {
     if (s != Ok) return s;
     // now we must check if this is an indirect object
     if (isdigit(*pos)) {
-        const char*ss= start;
+        //const char*ss= start;
         int64_t p = pos - start;
         s = parseNumber();
         if (s != Ok) return s;

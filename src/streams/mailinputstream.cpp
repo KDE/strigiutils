@@ -200,8 +200,8 @@ MailInputStream::getValue(const char* n, const string& headerline) const {
  **/
 void
 MailInputStream::rewindToLineStart() {
-    int64_t rp = bufstartpos + (linestart-bufstart);
-    int64_t np = input->reset(bufstartpos + (linestart-bufstart));
+    //int64_t rp = bufstartpos + (linestart-bufstart);
+    //int64_t np = input->reset(bufstartpos + (linestart-bufstart));
     //printf("rewind %lli %lli\n", rp, np);
 }
 void

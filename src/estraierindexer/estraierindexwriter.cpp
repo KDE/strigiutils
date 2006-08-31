@@ -65,7 +65,7 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
 
     est_doc_add_attr(doc, "@uri", idx->getName().c_str());
     char numbuf[64];
-    sprintf(numbuf, "%lli", idx->getMTime());
+    sprintf(numbuf, "%llu", (uint64_t)idx->getMTime());
     est_doc_add_attr(doc, "@mdate", numbuf);
     sprintf(numbuf, "%i", idx->getDepth());
     est_doc_add_attr(doc, "depth", numbuf);

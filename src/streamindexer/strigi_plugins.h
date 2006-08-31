@@ -54,7 +54,7 @@ std::vector<ThroughAnalyzerFactory*> strigi_through_analyzer_factories;
   // macro for registering a ThroughAnalyzer in a module
 #define STRIGI_THROUGH_PLUGINS_START \
 extern "C" { \
-    STRIGI_PLUGIN_API bool createThroughAnalyzer(int item, \
+    STRIGI_PLUGIN_API bool createThroughAnalyzer(uint item, \
             jstreams::StreamThroughAnalyzer** ret) { \
         if (strigi_through_analyzer_factories.size() == 0) {
 

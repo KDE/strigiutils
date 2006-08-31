@@ -405,7 +405,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     path = highlightTerms(path, query, fields);
 
     out << "<div class='path'>";
-    int p = path.find('/');
+    uint p = path.find('/');
     int pp = 0;
     string subpath;
     while (p != string::npos) {
@@ -459,7 +459,7 @@ StrigiHtmlGui::readTabQueries() const {
     do {
         getline(in, s);
         if (s.size()) {
-            int p = s.find('\t');
+            uint p = s.find('\t');
             if (p != string::npos) {
                 string name = s.substr(0, p);
                 string value = s.substr(p);

@@ -182,7 +182,7 @@ Query::highlight(const string& text) const {
         set<string>::const_iterator j;
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             string s = *j;
-            for (int k = 0; k<s.length(); ++k) {
+            for (uint k = 0; k<s.length(); ++k) {
                 s[k] = tolower(s[k]);
             }
             re.push_back(s);
@@ -191,24 +191,24 @@ Query::highlight(const string& text) const {
     string out;
     int pos = 0;
     int last1 = string::npos;
-    int last2 = string::npos;
-    int last3 = string::npos;
+    //int last2 = string::npos;
+    //int last3 = string::npos;
     int last4 = string::npos;
     vector<string>::const_iterator k;
-    while (pos >= 0 && out.length()+last1-last4 < maxlen) {
-        int rep = string::npos;
+    while (pos >= 0 && (int)(out.length()+last1-last4) < maxlen) {
+        uint rep = string::npos;
         int len;
         for (k = re.begin(); k != re.end(); ++k) {
-            int p = lt.find(*k, pos);
+            uint p = lt.find(*k, pos);
             if (p > 0 && (rep == string::npos || p < rep)) {
                 rep = p;
                 len = k->length();
             }
         }
         if (rep >= 0) {
-            int p1 = t.find(" ", rep-pre);
+            uint p1 = t.find(" ", rep-pre);
             if (p1 == string::npos) p1 = (rep-pre < 0) ?0 : rep-pre;
-            int p4 = t.find(" ", rep+len+post);
+            uint p4 = t.find(" ", rep+len+post);
             if (p4 == string::npos) p4 = t.length();
             out += t.substr(p1, rep-p1);
             out += "<b>";

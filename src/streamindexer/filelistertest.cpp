@@ -28,6 +28,7 @@
 bool
 addFileCallback(const char* path, uint dirlen, uint len, time_t mtime) {
     printf("%s\n", path);
+    return true;
 }
 
 int

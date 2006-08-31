@@ -96,7 +96,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     o.str("");
     {
         char tmp[100];
-        snprintf(tmp,100,"%d",idx->getMTime());
+        snprintf(tmp,100,"%llu",(uint64_t)idx->getMTime());
         o << tmp;
     }
     setField(idx, "mtime", o.str());

@@ -202,7 +202,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
     {   
         //tmp scope out tmp mem
         char tmp[100];
-        sprintf(tmp, "%d", input->getSize());
+        sprintf(tmp, "%lli", input->getSize());
         idx.setField("size", tmp);
     }
 

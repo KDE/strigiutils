@@ -45,7 +45,7 @@ testSE(StreamEngine*e, const QString& f) {
 StreamEngine*
 ArchiveDirEngine::openEntry(const QString &filename) {
     const FileEntry *fe;
-    int n=0;
+    //int n=0;
     do {
         fe = entry->getEntry(filename);
         if (fe) {

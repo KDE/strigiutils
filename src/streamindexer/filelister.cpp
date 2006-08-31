@@ -74,7 +74,7 @@ FileLister::resize(uint len) {
  **/
 bool
 FileLister::walk_directory(uint len) {
-    bool expandedPath = false;
+    //bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;

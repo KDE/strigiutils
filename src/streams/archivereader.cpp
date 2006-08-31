@@ -13,7 +13,7 @@ using namespace std;
 
 bool
 DirLister::nextEntry(jstreams::EntryInfo& e) {
-    if (pos < entries.size()) {
+    if (pos < (int)entries.size()) {
         e = entries[pos++];
     } else {
         pos = -1;
@@ -68,7 +68,7 @@ ArchiveEntryCache::SubEntry::getCount() const {
 map<string, ArchiveEntryCache::RootSubEntry>::const_iterator
 ArchiveEntryCache::findRootEntry(const string& url) const {
     string n = url;
-    const SubEntry* e;
+    //const SubEntry* e;
     size_t p = n.size();
     do {
         map<string, RootSubEntry>::const_iterator i = cache.find(n);
@@ -226,7 +226,7 @@ ArchiveReader::ArchiveReaderPrivate::getPositionedProvider(const string& url,
                            e.filename.length()) == 0) {
                 nextstream = true;
                 // skip the number of entries that are matched
-                int end = *i + e.filename.length();
+                uint end = *i + e.filename.length();
                 do {
                     ++i;
                 } while (i != partpos.rend() && *i < end);
@@ -411,7 +411,7 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     // find the right entry
     map<string, ArchiveEntryCache::SubEntry>::iterator ii;
     ArchiveEntryCache::SubEntry* parent = &e;
-    for (int i=0; i<names.size(); ++i) {
+    for (uint i=0; i<names.size(); ++i) {
         ii = parent->entries.find(names[i]);
         if (ii == parent->entries.end()) {
             ArchiveEntryCache::SubEntry newse;
@@ -451,6 +451,7 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
         }
     } while (p->nextEntry());
     free(streams);
+    return nentries;
 }
 DirLister
 ArchiveReader::getDirEntries(const std::string& url) {

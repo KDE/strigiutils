@@ -122,7 +122,7 @@ RpmInputStream::read4bytes(const unsigned char *b) {
 }
 void
 RpmInputStream::readHeader() {
-    const unsigned char *hb;
+    //const unsigned char *hb;
     const char *b;
     int32_t toread;
     int32_t nread;

@@ -80,7 +80,7 @@ extractText(const char* start, const char* end) {
     bool on1 = false;
     bool on2 = false;
     bool space = false;
-    bool escape = false;
+    //bool escape = false;
     while (p != end && isascii(*p)) {
         char c = *p;
         space = c == ' ';
@@ -101,7 +101,7 @@ extractText2(const char* start, const char* end) {
     printf("%i\n", count);
     const char* p=start;
     bool on = false;
-    bool space = false;
+    //bool space = false;
     bool escape = false;
     while (p != end && isascii(*p)) {
         char c = *p;

@@ -41,7 +41,7 @@ ArEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
     while (s) {
         std::string file = filename+'/';
         file += ar.getEntryInfo().filename;
-        int r = indexer->analyze(file, ar.getEntryInfo().mtime, s, depth);
+        indexer->analyze(file, ar.getEntryInfo().mtime, s, depth);
         s = ar.nextEntry();
     }
     if (ar.getStatus() == jstreams::Error) {

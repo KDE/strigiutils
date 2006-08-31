@@ -40,4 +40,5 @@ PdfInputStream::nextEntry() {
 }
 bool
 PdfInputStream::handle(jstreams::StreamBase<char>*) {
+    return false;
 }

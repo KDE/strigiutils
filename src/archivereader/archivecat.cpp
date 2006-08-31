@@ -76,7 +76,7 @@ main(int argc, char** argv) {
                 total += n;
                 n = s->read(c, 1, 0);
             }
-            printf("read %i bytes.\n", total);
+            printf("read %lli bytes.\n", total);
             if (s->getStatus() == Error) {
                 printf("Error: %s\n", s->getError());
             }
