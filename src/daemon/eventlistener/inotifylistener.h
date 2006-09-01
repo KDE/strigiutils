@@ -52,8 +52,6 @@ class InotifyListener : public EventListener
         static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static void watchDirCallback(const char* path);
        
-        friend void* InotifyListenerStart (void* inotifylistener);
-       
     private:
         std::string eventToString(int events);
         bool isEventInteresting (struct inotify_event * event);
