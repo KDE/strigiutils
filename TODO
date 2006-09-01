@@ -1,8 +1,12 @@
 - documentation
 - make sure the applet displays fine if kicker is on the top of the screen
+- add support for numeric < and > in the queries
 - monitor the free disk space and make sure the indexer does not fill up the drive. this might be done with Solid or a call to a monitor with dbus. best is probably to let the client tell the server how much space is left
 - add support for extended headers in tar files
   see e.g. http://www.ussg.iu.edu/hypermail/linux/kernel/0506.2/0417.html
 - extract metadata from .sx*, od*, etc files, like author, etc (egon)
 - a general SAX XML parsing framework (egon)
+- enable zipinputstream for reading streamed archives that have the size at the end of the content
+- use locate for search systemwide for filenames
+- if no configuration was present, index the home directory per default
 - <fosterfeld_> vandenoever: i would suggest to add IndexReader::query() version based on iterators

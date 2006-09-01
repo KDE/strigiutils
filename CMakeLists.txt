@@ -31,7 +31,7 @@ OPTION(ENABLE_INOTIFY
   ON)
 
 OPTION(ENABLE_DBUS
-  "enable dbus support (disables normal socket)"
+  "enable dbus support"
   ON)
 
 OPTION(ENABLE_LOG4CXX
@@ -60,6 +60,7 @@ if (NOT QT4_FOUND)
 endif (NOT QT4_FOUND)
 
 IF(ENABLE_DBUS)
+  include(UsePkgConfig)
   PKGCONFIG(dbus-1 DBUS_INCLUDE_DIR DBUS_LIBRARY_DIR DBUS_LDFLAGS DBUS_CFLAGS)
   if (NOT DBUS_INCLUDE_DIR)
     MESSAGE(FATAL_ERROR "Could not find DBus")
