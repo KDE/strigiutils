@@ -297,7 +297,8 @@ main(int argc, char** argv) {
     interface.setEventListener (&inotifyListener);
     threads.push_back(&inotifyListener);
 #endif
-
+    interface.setFilterManager (&filterManager);
+    
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     threads.push_back(&dbusserver);

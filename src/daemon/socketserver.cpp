@@ -210,6 +210,23 @@ SocketServer::handleRequest() {
         interface->setIndexedDirectories(dirs);
         return;
     }
+    if (request.size() == 1 && request[0] == "getFilteringRules") {
+        response.clear();
+        set<string> d = interface->getFilteringRules();
+        set<string>::const_iterator i;
+        for (i = d.begin(); i != d.end(); ++i) {
+            response.push_back(*i);
+        }
+        return;
+    }
+    if (request.size() >= 1 && request[0] == "setFilteringRules") {
+        set<string> rules;
+        for (uint i=1; i<request.size(); ++i) {
+            rules.insert(request[i]);
+        }
+        interface->setFilteringRules(rules);
+        return;
+    }
     printf("unknown request '%s' of size %i\n",
         request[0].c_str(), request.size());
     response.push_back("error");
