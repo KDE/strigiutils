@@ -134,3 +134,15 @@ bool FilterManager::findMatch (string& text)
     STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
     return false;
 }
+
+set<string> FilterManager::getFilteringRules()
+{
+    return m_rules;
+}
+
+void FilterManager::setFilteringRules(set<string>& rules)
+{
+    m_rules.clear();
+    for (set<string>::iterator iter = rules.begin(); iter != rules.end(); iter++)
+        m_rules.insert (*iter);
+}

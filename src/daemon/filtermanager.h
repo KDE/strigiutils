@@ -36,6 +36,9 @@ class FilterManager
         bool findMatch(std::string& text);
         bool findMatch(const char* text);
         
+        std::set<std::string> getFilteringRules();
+        void setFilteringRules(std::set<std::string>& rules);
+        
     private:
         void loadFilter();
         void saveFilter();
