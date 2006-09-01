@@ -284,17 +284,16 @@ main(int argc, char** argv) {
     Interface interface(*index, scheduler);
 
 #ifdef HAVE_INOTIFY
+    // listen for requests
+    InotifyListener inotifyListener;
     // configure & start inotfy's watcher thread
-    if (inotifyListener.init())
-    {
+    if (inotifyListener.init()) {
         inotifyListener.setEventListenerQueue (&listenerEventQueue);
         inotifyListener.setFilterManager (&filterManager);
         inotifyListener.setIndexReader (index->getIndexReader());
         inotifyListener.setIndexedDirectories(dirs);
         inotifyListener.start();
     }
-    // listen for requests
-    InotifyListener inotifyListener;
     interface.setEventListener (&inotifyListener);
     threads.push_back(&inotifyListener);
 #endif
