@@ -24,7 +24,7 @@ SET ( STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to s
 SET (CMAKE_INCLUDE_PATH "${STRIGI_EXTRA_INC_DIRECTORY};${CMAKE_INCLUDE_PATH}")
 SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
 
-set(CMAKE_CXX_FLAGS "-Wall -g3 -Werror")
+set(CMAKE_CXX_FLAGS "-Wall -g3 -Werror -ansi")
 
 OPTION(ENABLE_INOTIFY
   "enable inotify support"
@@ -32,7 +32,7 @@ OPTION(ENABLE_INOTIFY
 
 OPTION(ENABLE_DBUS
   "enable dbus support (disables normal socket)"
-  OFF)
+  ON)
 
 OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
@@ -48,7 +48,8 @@ find_package(Threads REQUIRED)
 find_package(CLucene REQUIRED)
 find_package(Iconv REQUIRED)
 find_package(Expat REQUIRED)
-find_package(XERCESC REQUIRED)
+# Xerces requirement switched off until the next release
+#find_package(XERCESC REQUIRED)
 find_package(Magic REQUIRED)
 find_package(XSD)
 find_package(HyperEstraier)
@@ -63,7 +64,6 @@ IF(ENABLE_DBUS)
   if (NOT DBUS_INCLUDE_DIR)
     MESSAGE(FATAL_ERROR "Could not find DBus")
   endif (NOT DBUS_INCLUDE_DIR)
-#  find_package(DBus REQUIRED)
 ENDIF(ENABLE_DBUS)
 
 if (ENABLE_LOG4CXX)
