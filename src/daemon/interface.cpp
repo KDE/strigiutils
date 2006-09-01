@@ -22,6 +22,7 @@
 #include "indexmanager.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
+#include "filtermanager.h"
 #include "query.h"
 #include <sstream>
 using namespace std;
@@ -32,11 +33,15 @@ Interface::Interface(IndexManager& m, IndexScheduler& s)
      scheduler(s)
 {
     eventListener = NULL;
+    filterManager = NULL;
 }
 
-void Interface::setEventListener (EventListener* eListener)
-{
+void Interface::setEventListener (EventListener* eListener) {
     eventListener = eListener;
+}
+
+void Interface::setFilterManager (FilterManager* fManager) {
+    filterManager = fManager;
 }
 
 int
@@ -103,4 +108,19 @@ Interface::setIndexedDirectories(set<string> dirs) {
 
     scheduler.setIndexedDirectories(dirs);
     return "";
+}
+set<string>
+Interface::getFilteringRules() {
+    if (filterManager != NULL)
+        return filterManager->getFilteringRules();
+    else
+    {
+        set<string> empty;
+        return empty;
+    }
+}
+void
+Interface::setFilteringRules(set<string>& rules) {
+    if (filterManager != NULL)
+        filterManager->setFilteringRules (rules);
 }

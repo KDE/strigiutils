@@ -282,3 +282,38 @@ SocketClient::setIndexedDirectories(set<string> dirs) {
     close(sd);
     return "";
 }
+set<string>
+SocketClient::getFilteringRules() {
+    set<string> r;
+    request.clear();
+    response.clear();
+    request.push_back("getFilteringRules");
+    int sd = open();
+    if (sd < 0) {
+        return r;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    vector<string>::const_iterator i;
+    for (i = response.begin(); i != response.end(); ++i) {
+        r.insert(*i);
+    }
+    return r;
+}
+void
+SocketClient::setFilteringRules(set<string>& rules) {
+    request.clear();
+    request.push_back("setFilteringRules");
+    set<string>::const_iterator i;
+    for (i = rules.begin(); i != rules.end(); ++i) {
+        request.push_back(*i);
+    }
+    int sd = open();
+    if (sd < 0) {
+        return ;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+}

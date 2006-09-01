@@ -43,6 +43,8 @@ public:
     std::string stopIndexing();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
+    std::set<std::string> getFilteringRules();
+    void setFilteringRules(std::set<std::string>&);
 };
 
 #endif
