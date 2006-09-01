@@ -43,6 +43,8 @@ public:
     int countDocuments();
     int32_t countWords();
     int64_t getIndexSize();
+    int64_t getDocumentId(const std::string& uri);
+    time_t getMTime(int64_t docid);
 };
 
 #endif

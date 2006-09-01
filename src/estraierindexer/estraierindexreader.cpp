@@ -214,3 +214,23 @@ EstraierIndexReader::getIndexSize() {
     manager->deref();
     return count;
 }
+int64_t
+EstraierIndexReader::getDocumentId(const std::string& uri) {
+    manager->ref();
+    int64_t id = est_db_uri_to_id(db, uri.c_str());
+    manager->deref();
+    return id;
+}
+time_t
+EstraierIndexReader::getMTime(int64_t docid) {
+    manager->ref();
+    time_t mtime = -1;
+    char *cstr = est_db_get_doc_attr(db, docid, "@mdate");
+    if (cstr) {
+        mtime = atoi(cstr);
+        free(cstr);
+    }
+    manager->deref();
+    return mtime;
+    
+}

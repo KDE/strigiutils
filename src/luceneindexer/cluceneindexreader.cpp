@@ -254,3 +254,45 @@ int64_t
 CLuceneIndexReader::getIndexSize() {
     return manager->getIndexSize();
 }
+int64_t
+CLuceneIndexReader::getDocumentId(const std::string& uri) {
+    lucene::index::IndexReader* reader = manager->refReader();
+    IndexSearcher searcher(reader);
+    TCHAR tstr[CL_MAX_DIR];
+    STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
+    Term* term = _CLNEW Term(_T("uri"), tstr);
+    TermQuery* termquery = _CLNEW TermQuery(term);
+    Hits *hits = searcher.search(termquery);
+    int s = hits->length();
+    int64_t id = -1;
+    if (s == 1) {
+        id = hits->id(0);
+    }
+    searcher.close();
+    _CLDELETE(hits);
+    _CLDELETE(termquery);
+    _CLDECDELETE(term);
+    manager->derefReader();
+    return id;
+}
+/**
+ * Retrieve the mtime of the document with id @docid. If this document
+ * is not in the index, the time 0 is returned.
+ **/
+time_t
+CLuceneIndexReader::getMTime(int64_t docid) {
+    if (docid < 0) return 0;
+    lucene::index::IndexReader* reader = manager->refReader();
+    time_t mtime = 0;
+    Document *d = reader->document(docid);
+    if (d) {
+        TCHAR tstr[CL_MAX_DIR];
+        char cstr[CL_MAX_DIR];
+        STRCPY_AtoT(tstr, "mtime", CL_MAX_DIR);
+        const TCHAR* v = d->get(tstr);
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        mtime = atoi(cstr);
+    }
+    manager->derefReader();
+    return mtime;
+}

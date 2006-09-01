@@ -34,6 +34,8 @@ public:
     virtual int32_t countDocuments() { return -1; }
     virtual int32_t countWords() { return -1; }
     virtual int64_t getIndexSize() { return -1; }
+    virtual int64_t getDocumentId(const std::string& uri) = 0;
+    virtual time_t getMTime(int64_t docid) = 0;
 };
 
 }
