@@ -213,15 +213,12 @@ CLuceneIndexReader::getFiles(char depth) {
     TermQuery* termquery = _CLNEW TermQuery(term);
     Hits *hits = searcher.search(termquery);
     int s = hits->length();
-    STRCPY_AtoT(tstr, "path", CL_MAX_DIR);
-    TCHAR tstr2[CL_MAX_DIR];
-    STRCPY_AtoT(tstr2, "mtime", CL_MAX_DIR);
     for (int i = 0; i < s; ++i) {
         Document *d = &hits->doc(i);
-        const TCHAR* v = d->get(tstr2);
+        const TCHAR* v = d->get(_T("mtime"));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         time_t mtime = atoi(cstr);
-        v = d->get(tstr);
+        v = d->get(_T("path"));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         files[cstr] = mtime;
     }
@@ -260,7 +257,7 @@ CLuceneIndexReader::getDocumentId(const std::string& uri) {
     IndexSearcher searcher(reader);
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
-    Term* term = _CLNEW Term(_T("uri"), tstr);
+    Term* term = _CLNEW Term(_T("path"), tstr);
     TermQuery* termquery = _CLNEW TermQuery(term);
     Hits *hits = searcher.search(termquery);
     int s = hits->length();
@@ -286,10 +283,8 @@ CLuceneIndexReader::getMTime(int64_t docid) {
     time_t mtime = 0;
     Document *d = reader->document(docid);
     if (d) {
-        TCHAR tstr[CL_MAX_DIR];
         char cstr[CL_MAX_DIR];
-        STRCPY_AtoT(tstr, "mtime", CL_MAX_DIR);
-        const TCHAR* v = d->get(tstr);
+        const TCHAR* v = d->get(_T("mtime"));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         mtime = atoi(cstr);
     }

@@ -204,24 +204,24 @@ main(int argc, char** argv) {
     string socketpath = daemondir+"/socket";
     string logconffile = daemondir+"/log.conf";
     string filterfile = daemondir+"/filter.conf";
-   
+
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
         fprintf(stderr, "Could not initialize the daemon directory.\n");
         exit(1);
     }
-   
+
     // init logging
     checkLogConf(logconffile);
     STRIGI_LOG_INIT(logconffile)
-           
+
     // init filter manager
     FilterManager filterManager;
     filterManager.setConfFile (filterfile);
     IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
-   
+
     if (!initializeDir(lucenedir)) {
         STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")
         exit(1);
@@ -240,7 +240,7 @@ main(int argc, char** argv) {
     }
 
     // set up signal handling
-    set_quit_on_signal(SIGINT);
+    //set_quit_on_signal(SIGINT);
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
 
@@ -276,7 +276,7 @@ main(int argc, char** argv) {
 
     EventListenerQueue listenerEventQueue;
     scheduler.setEventListenerQueue (&listenerEventQueue);
-   
+
     // start the indexer thread
     threads.push_back(&scheduler);
     scheduler.start();
@@ -298,7 +298,7 @@ main(int argc, char** argv) {
     threads.push_back(&inotifyListener);
 #endif
     interface.setFilterManager (&filterManager);
-   
+
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     threads.push_back(&dbusserver);
