@@ -15,6 +15,7 @@ my %outparams;
 my $classname;
 
 my %typemapping = (
+	"void" => "ignore",
 	"std::string" => "s",
 	"int" => "i",
 	"bool" => "b",
@@ -78,7 +79,7 @@ sub printFunctionDefinition {
         print FH ";\n";
     }
     print FH "    if (reader.isOk()) {\n        ";
-    if (length($outparams{$name}) > 0) {
+    if (length($outparams{$name}) > 0 && $outparams{$name} ne "void") {
         print FH "writer << ";
     }
     print FH "impl->$name(";
@@ -101,7 +102,7 @@ sub printIntrospectionXML {
         my $type = $typemapping{$a[$i-1]};
         print FH "    << \"      <arg name='$a[$i]' type='$type' direction='in'/>\\n\"\n";
     }
-    if (length($outparams{$name}) > 0) {
+    if (length($outparams{$name}) > 0 && $outparams{$name} ne "void") {
         my $type = $typemapping{$outparams{$name}};
         print FH "    << \"      <arg name='out' type='$type' direction='out'/>\\n\"\n";
     }

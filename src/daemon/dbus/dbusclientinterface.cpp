@@ -8,9 +8,11 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
         :DBusObjectInterface("vandenoever.strigi"), impl(i) {
     handlers["getStatus"] = &DBusClientInterface::getStatus;
     handlers["isActive"] = &DBusClientInterface::isActive;
+    handlers["getFilteringRules"] = &DBusClientInterface::getFilteringRules;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
     handlers["stopIndexing"] = &DBusClientInterface::stopIndexing;
+    handlers["setFilteringRules"] = &DBusClientInterface::setFilteringRules;
     handlers["getHits"] = &DBusClientInterface::getHits;
     handlers["startIndexing"] = &DBusClientInterface::startIndexing;
     handlers["countHits"] = &DBusClientInterface::countHits;
@@ -38,6 +40,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    <method name='isActive'>\n"
     << "      <arg name='out' type='b' direction='out'/>\n"
     << "    </method>\n"
+    << "    <method name='getFilteringRules'>\n"
+    << "      <arg name='out' type='as' direction='out'/>\n"
+    << "    </method>\n"
     << "    <method name='setIndexedDirectories'>\n"
     << "      <arg name='d' type='as' direction='in'/>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
@@ -47,6 +52,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "    <method name='stopIndexing'>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='setFilteringRules'>\n"
+    << "      <arg name='rules' type='as' direction='in'/>\n"
     << "    </method>\n"
     << "    <method name='getHits'>\n"
     << "      <arg name='query' type='s' direction='in'/>\n"
@@ -84,6 +92,14 @@ DBusClientInterface::isActive(DBusMessage* msg, DBusConnection* conn) {
     }
 }
 void
+DBusClientInterface::getFilteringRules(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    if (reader.isOk()) {
+        writer << impl->getFilteringRules();
+    }
+}
+void
 DBusClientInterface::setIndexedDirectories(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
@@ -107,6 +123,16 @@ DBusClientInterface::stopIndexing(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl->stopIndexing();
+    }
+}
+void
+DBusClientInterface::setFilteringRules(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::set<std::string> rules;
+    reader >> rules;
+    if (reader.isOk()) {
+        impl->setFilteringRules(rules);
     }
 }
 void
