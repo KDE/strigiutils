@@ -28,7 +28,7 @@ set(CMAKE_CXX_FLAGS "-Wall -g3 -Werror -ansi")
 
 OPTION(ENABLE_INOTIFY
   "enable inotify support"
-  OFF)
+  ON)
 
 OPTION(ENABLE_DBUS
   "enable dbus support (disables normal socket)"
