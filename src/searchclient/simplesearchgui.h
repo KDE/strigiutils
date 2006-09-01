@@ -20,7 +20,7 @@
 #ifndef SIMPLESEARCHGUI_H
 #define SIMPLESEARCHGUI_H
 
-#include <QtGui/QWidget>
+#include <QtGui/QMainWindow>
 
 class QLineEdit;
 class QListWidget;
@@ -29,9 +29,12 @@ class QStackedWidget;
 class QLabel;
 class QPushButton;
 class QComboBox;
+class QWidget;
+class QMenu;
+class QAction;
 class SearchTabs;
 
-class SimpleSearchGui : public QWidget {
+class SimpleSearchGui : public QMainWindow {
 Q_OBJECT
 private:
     bool starting;
@@ -48,10 +51,18 @@ private:
     QPushButton* toggleindexing;
     QPushButton* toggledaemon;
     QComboBox* backendsList;
-
+    QWidget* centralview;
+    QMenu *fileMenu;
+    QMenu *editMenu;
+    QAction *fileExitAct;
+    QAction *editPreferenceAct;
+    
+    
     void startDaemon();
     void setDirectories();
     void updateDirectories();
+    void createMenus();
+    void createActions();
 private slots:
     void updateStatus();
     void toggleDaemon();
@@ -59,8 +70,9 @@ private slots:
     void query(const QString&);
     void addDirectory();
     void removeDirectory();
+    void editPreferences();
 public:
-    SimpleSearchGui();
+    SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };
 
 #endif

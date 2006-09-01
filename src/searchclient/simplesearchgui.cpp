@@ -17,6 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "dlgpreferences.h"
 #include "simplesearchgui.h"
 #include "searchtabs.h"
 #include "socketclient.h"
@@ -29,6 +30,9 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QComboBox>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QAction>
 #include <QtCore/QString>
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
@@ -37,7 +41,9 @@
 #include <vector>
 using namespace std;
 
-SimpleSearchGui::SimpleSearchGui() {
+SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
+    : QMainWindow (parent, flags)
+{
     mainview = new QStackedWidget();
 
     QWidget* statuswidget = new QWidget();
@@ -91,8 +97,14 @@ SimpleSearchGui::SimpleSearchGui() {
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
-    setLayout(layout);
-
+    
+    centralview = new QWidget();
+    centralview->setLayout(layout);
+    setCentralWidget(centralview);
+    
+    createActions();
+    createMenus();
+    
     connect(queryfield, SIGNAL(textChanged(const QString&)),
         this, SLOT(query(const QString&)));
     connect(toggleindexing, SIGNAL(clicked()),
@@ -112,6 +124,25 @@ SimpleSearchGui::SimpleSearchGui() {
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
     timer->start(2000);
     updateStatus();
+}
+void
+SimpleSearchGui::createMenus() {
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(fileExitAct);
+    
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(editPreferenceAct);
+}
+void
+SimpleSearchGui::createActions() {
+    fileExitAct = new QAction(tr("&Exit"), this);
+    fileExitAct->setShortcut(tr("Ctrl+Q"));
+    fileExitAct->setStatusTip(tr("Quit the program"));
+    connect(fileExitAct, SIGNAL(triggered()), this, SLOT(close()));
+    
+    editPreferenceAct = new QAction(tr("Edit Preferences"), this);
+    editPreferenceAct->setStatusTip(tr("Edit program preferences"));
+    connect(editPreferenceAct, SIGNAL(triggered()), this, SLOT(editPreferences()));
 }
 void
 SimpleSearchGui::query(const QString& item) {
@@ -267,4 +298,18 @@ SimpleSearchGui::updateDirectories() {
         QString dir(QString::fromUtf8(i->c_str()));
         indexeddirs->addItem(dir);
     }
+}
+void
+SimpleSearchGui::editPreferences() {
+    SocketClient client;
+    client.setSocketName(socketfile.c_str());
+    set<string> rules = client.getFilteringRules();
+    
+    DlgPreferences* dlg = new DlgPreferences (running, &rules);
+    dlg->exec();
+    
+    delete dlg;
+    
+    //update filtering rules
+    client.setFilteringRules( rules);
 }
