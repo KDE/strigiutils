@@ -4,6 +4,8 @@
 #include <cstring>
 #include <errno.h>
 #include <sys/resource.h>
+#include <signal.h>
+
 using namespace std;
 
 void*
@@ -67,6 +69,7 @@ StrigiThread::start() {
 void
 StrigiThread::stop() {
     state = Stopping;
+    pthread_kill(thread, SIGINT);
     if (thread) {
         // wait for the thread to finish
         pthread_join(thread, 0);
