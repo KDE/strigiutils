@@ -46,9 +46,7 @@ class InotifyListener : public EventListener
         
         void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
         
-        bool start();
         void* run(void*);
-        void stop();
         
         static bool ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
