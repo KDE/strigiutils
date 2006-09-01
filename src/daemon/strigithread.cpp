@@ -30,10 +30,11 @@ threadstarter(void *d) {
 
     // start the actual work
     static_cast<StrigiThread*>(d)->run(0);
+    printf("end of %s\n", static_cast<StrigiThread*>(d)->name);
     pthread_exit(0);
 }
 
-StrigiThread::StrigiThread(const char* n) :state(Idling), name(n) {
+StrigiThread::StrigiThread(const char* n) :state(Idling),thread(0),  name(n) {
     pthread_mutex_init(&lock, NULL);
 }
 StrigiThread::~StrigiThread() {

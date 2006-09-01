@@ -426,8 +426,7 @@ void InotifyListener::clearWatches ()
 void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
 {
     // we've to de-index all files contained into the deleted/moved directory
-    if (m_pIndexReader != NULL)
-    {
+    if (m_pIndexReader) {
         // all indexed files
         map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
         
@@ -445,16 +444,20 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
         STRIGI_LOG_WARNING ("strigi.InotifyListener", "InotifyListener:: m_pIndexReader == NULL!")
 }
 
-void InotifyListener::setIndexedDirectories (const set<string> &dirs)
-{
+void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
+    if (!m_pIndexReader) {
+        return;
+    }
     vector<Event*> events;
     vector<string> old_watches;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
     //Event* event;
     FileLister lister;
-    
-    for (map <unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
+
+    map<unsigned int, string>::const_iterator iter;
+    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
         old_watches.push_back (iter->second);
+    }
     
     m_toWatch.clear();
     m_toIndex.clear();
