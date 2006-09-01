@@ -113,7 +113,7 @@ PdfParser::skipWhitespaceOrComment() {
         if ((s = parseComment()) != Ok) return s;
         no = pos - start;
     } while (o != no);
-    return Ok; 
+    return Ok;
 }
 StreamStatus
 PdfParser::parseBoolean() {
@@ -559,7 +559,7 @@ PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
             return Eof;
         } else {
 //            printf("%s\n", parser.getError().c_str());
-//            printf("%.*s\n", 100, c+offset); 
+//            printf("%.*s\n", 100, c+offset);
             return Error;
         }
     }

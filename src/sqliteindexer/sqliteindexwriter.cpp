@@ -84,7 +84,7 @@ SqliteIndexWriter::addText(const Indexable* idx, const char* text,
         m = content.find(id);
     }
     map<string, int>* words = &m->second;
- 
+
     const char* end = text + length;
     const char* p = text;
     while (p != end) {

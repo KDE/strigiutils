@@ -53,7 +53,7 @@ set(strigidaemon_LIBS streamindexer eventlistener
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 
-add_library(searchclient SHARED socketclient.cpp clientinterface.cpp 
+add_library(searchclient SHARED socketclient.cpp clientinterface.cpp
         asyncsocket.cpp asyncsocketclient.cpp)
 set_target_properties(searchclient PROPERTIES
     VERSION ${STRIGI_VERSION}

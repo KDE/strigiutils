@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * Copyright (C) 2003-2006 Matt J. Weinstein
-* 
-* Distributable under the terms of either the Apache License (Version 2.0) or 
+*
+* Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
 #ifndef lucene_util_dirent_H
@@ -15,7 +15,7 @@
 /**
  * dirent.c
  *
- * Derived from DIRLIB.C by Matt J. Weinstein 
+ * Derived from DIRLIB.C by Matt J. Weinstein
  * This note appears in the DIRLIB.H
  * DIRLIB.H by M. J. Weinstein   Released to public domain 1-Jan-89
  *
@@ -25,7 +25,7 @@
  * Peters <colin@fu.is.saga-u.ac.jp>
  *
  */
- 
+
 /** dirent structure - used by the dirent.h directory iteration functions */
 struct dirent
 {
@@ -54,7 +54,7 @@ struct DIR
      *   positive = 0 based index of next entry
      */
     int32_t            dd_stat;
-    
+   
     /** given path for dir with search pattern (struct is extended) */
     char            dd_name[MAX_PATH];
 
@@ -99,5 +99,5 @@ int32_t    closedir (DIR* dir);
 #  include <ndir.h>
 # endif
 
-#endif //HAVE_DIRENT_H 
+#endif //HAVE_DIRENT_H
 #endif

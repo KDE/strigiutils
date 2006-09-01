@@ -50,7 +50,7 @@ template <class T>
 StringReader<T>::StringReader(const T* value, int32_t length, bool copy)
         : markpt(0), dataowner(copy) {
     if (length < 0) {
-        length = 0; 
+        length = 0;
         while (value[length] != '\0') {
             length++;
         }

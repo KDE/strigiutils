@@ -79,7 +79,7 @@ public:
     //deletes each analyzer in the list.
     static void deleteThroughAnalyzers(std::multimap<void*,
         jstreams::StreamThroughAnalyzer*>& analyzers);
- 
+
     /* retrieves all the modules in this moduleloader add adds the end
      * analyzers for each module to the list
      */
@@ -95,6 +95,6 @@ public:
     //load a given module from the specified file path
     static Module* loadModule(const char* lib);
 public:
-    
+   
 };
 #endif //MODULELOADER_H

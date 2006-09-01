@@ -26,7 +26,7 @@ using namespace jstreams;
 
 PluginThroughAnalyzer::PluginThroughAnalyzer(ModuleLoader* ml) {
     moduleLoader = ml;
-    
+   
     /* For now we just load all the plugins in any order...
      * configuration required
      */

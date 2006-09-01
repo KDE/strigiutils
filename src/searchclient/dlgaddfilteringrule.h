@@ -36,14 +36,14 @@ class DlgAddFilteringRule : public QDialog
     public:
         DlgAddFilteringRule(QString* rule, QWidget *parent = 0);
         virtual ~DlgAddFilteringRule() {};
-        
+       
     private slots:
         void patternClicked ();
         void pathClicked ();
         void browseClicked ();
         void accept();
         void reject();
-        
+       
     private:
         QString* m_rule;
         QRadioButton *rbtnPattern;

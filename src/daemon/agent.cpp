@@ -25,7 +25,7 @@
  *
  * Author: Jos van den Oever
  * last modification: 2005-06-07
- **/ 
+ **/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -161,7 +161,7 @@ runDaemon() {
     /* Change the file mode mask */
     umask(0);
 
-    /* Open any logs here */        
+    /* Open any logs here */       
 
     /* Create a new SID for the child process */
     sid = setsid();

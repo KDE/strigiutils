@@ -48,7 +48,7 @@ Term*
 CLuceneIndexReader::createTerm(const string& name, const string& value) {
 #ifndef _CL_HAVE_WCSLEN
     return _CLNEW Term(name.c_str(), value.c_str());
-#else 
+#else
 #endif
     TCHAR* n = new TCHAR[name.length()+1];
     STRCPY_AtoT(n, name.c_str(), name.length()+1);

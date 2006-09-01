@@ -61,7 +61,7 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
         STRIGI_LOG_WARNING ("strigi.IndexScheduler.indexFileCallback", "ignoring file " + string(path))
         return true;
     }
-    
+   
     std::string filepath(path, len);
 
     map<string, time_t>::iterator i = sched->dbfiles.find(filepath);
@@ -105,7 +105,7 @@ IndexScheduler::run(void*) {
         } else if (getState() == Idling) {
             if (m_listenerEventQueue == NULL)
                 return 0;
-            
+           
             vector <Event*> events = m_listenerEventQueue->getEvents();
             if (events.size() > 0) {
                 setState(Working);
@@ -126,11 +126,11 @@ IndexScheduler::index() {
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
         dbfiles = reader->getFiles(0);
-        
+       
         char buff [20];
         snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database") 
-        
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database")
+       
         // first loop through all files
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
@@ -139,10 +139,10 @@ IndexScheduler::index() {
         for (i = dirstoindex.begin(); i != dirstoindex.end(); ++i) {
             lister.listFiles(i->c_str());
         }
-        
+       
         snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to remove")
-        
+       
         snprintf(buff, 20* sizeof (char), "%i", toindex.size());
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to add or update")
     }
@@ -177,9 +177,9 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     //IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
-    
+   
     vector<string> toDelete, toIndex;
-    
+   
     STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
 
     for (vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
@@ -198,9 +198,9 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
                 toDelete.push_back (event->getPath());
                 break;
         }
-        
+       
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "event infos: " + event->toString())
-        
+       
         delete event;
     }
     writer->deleteEntries(toDelete);
@@ -212,10 +212,10 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
             writer->commit();
         }
     }
-    
+   
     writer->commit();
     writer->optimize();
-    
+   
     delete streamindexer;
 }
 

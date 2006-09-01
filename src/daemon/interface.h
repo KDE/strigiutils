@@ -32,7 +32,7 @@ class FilterManager;
 /**
  * This class exposes the daemon functionality to the clients and should be
  * used by the client interfaces. The client interfaces should implement all
- * functions provided here. 
+ * functions provided here.
  **/
 
 class Interface : public ClientInterface {

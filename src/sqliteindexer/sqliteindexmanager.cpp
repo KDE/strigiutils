@@ -151,5 +151,5 @@ SqliteIndexManager::escapeSqlValue(const string& value) {
         v.replace(p, 1, "''");
         p = v.find('\'', p+2);
     }
-    return v; 
+    return v;
 }

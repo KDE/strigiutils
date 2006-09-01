@@ -128,7 +128,7 @@ EstraierIndexReader::query(const Query& query) {
 
     manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
-    
+   
     std::vector<IndexedDocument> results;
     for (int i=0; i<n; ++i) {
         int id = ids[i];
@@ -177,7 +177,7 @@ EstraierIndexReader::getFiles(char depth) {
 
     manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
-    
+   
     for (int i=0; i<n; ++i) {
         char* uri = est_db_get_doc_attr(db, ids[i], "@uri");
         char* mdate = est_db_get_doc_attr(db, ids[i], "@mdate");
@@ -232,5 +232,5 @@ EstraierIndexReader::getMTime(int64_t docid) {
     }
     manager->deref();
     return mtime;
-    
+   
 }

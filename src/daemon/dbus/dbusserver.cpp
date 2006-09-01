@@ -53,7 +53,7 @@ DBusServer::run(void*) {
     callhandler.addInterface(&testinterface);
 
 //    printf("%s\n", callhandler.getIntrospectionXML().c_str());
- 
+
     // loop, testing for new messages
     while (interface->isActive() && getState() != Stopping) {
         // non blocking read of the next available message

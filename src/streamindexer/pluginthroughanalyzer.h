@@ -26,10 +26,10 @@
 class ModuleLoader;
 class PluginThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
-    //a map of analyzers that this plugin has created, and their corresponding modules 
+    //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
     std::multimap<void*, jstreams::StreamThroughAnalyzer*> analyzers;
-    //std::list<ModuleLoader::ThroughPair> analyzers; 
+    //std::list<ModuleLoader::ThroughPair> analyzers;
     ModuleLoader* moduleLoader;
 public:
     PluginThroughAnalyzer(ModuleLoader* moduleLoader);

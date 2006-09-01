@@ -25,12 +25,12 @@
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation; either version 2
   of the License, or (at your option) any later version.
-  
+ 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+ 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -48,14 +48,14 @@
  * The specification to which this was written.  From Joe Buck.
  * The DOS format appears to have only 2 second resolution.  It is an
  * unsigned long, and ORs together
- * 
+ *
  * (year-1980)<<25
  * month<<21  (month is tm_mon + 1, 1=Jan through 12=Dec)
  * day<<16    (day is tm_mday, 1-31)
  * hour<<11   (hour is tm_hour, 0-23)
  * min<<5       (min is tm_min, 0-59)
  * sec>>1       (sec is tm_sec, 0-59, that's right, we throw away the LSB)
- * 
+ *
  * DOS uses local time, so the localtime() call is used to turn the time_t
  * into a struct tm.
  */

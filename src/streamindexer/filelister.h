@@ -55,11 +55,11 @@ public:
             uint dirlen, uint len, time_t mtime)) {
         m_callback = callback;
     }
-    
+   
     void setDirCallbackFunction(void (*callback)(const char* fullpath)) {
                                  m_dirCallback = callback;
     }
-    
+   
     /**
      * List all the files in directory dir that have been modified more
      * recently then oldestdate.

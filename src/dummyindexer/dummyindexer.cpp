@@ -39,7 +39,7 @@ main(int argc, char **argv) {
         }
         verbosity = atoi(argv[2]);
     }
-         
+        
     Indexer indexer(verbosity);
     indexer.index(argv[argc-1]);
     return 0;

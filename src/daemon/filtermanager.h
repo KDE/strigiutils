@@ -29,20 +29,20 @@ class FilterManager
     public:
         FilterManager();
         ~FilterManager();
-        
+       
         void setConfFile(std::string& confFile);
-        
-        /*! returns true if text matches a filtering rule, false otherwise*/ 
+       
+        /*! returns true if text matches a filtering rule, false otherwise*/
         bool findMatch(std::string& text);
         bool findMatch(const char* text);
-        
+       
         std::set<std::string> getFilteringRules();
         void setFilteringRules(std::set<std::string>& rules);
-        
+       
     private:
         void loadFilter();
         void saveFilter();
-        
+       
         std::string m_strConfFile;
         std::set<std::string> m_rules;
         pthread_mutex_t m_mutex;

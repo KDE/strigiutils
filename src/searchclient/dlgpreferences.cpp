@@ -39,7 +39,7 @@ DlgPreferences::DlgPreferences(bool running, set<string>* rules, QWidget *parent
       m_rules (rules)
 {
     setWindowTitle ("strigiclient - Edit preferences");
-    
+   
     QVBoxLayout* vboxLayout = new QVBoxLayout(this);
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(9);
@@ -75,9 +75,9 @@ DlgPreferences::DlgPreferences(bool running, set<string>* rules, QWidget *parent
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-    
+   
     setupFilteringPage();
-    
+   
     optionsList->sortItems();
     optionsList->resize(optionsList->minimumSizeHint());
     optionsList->setCurrentRow(0);
@@ -88,14 +88,14 @@ void DlgPreferences::currentOptionChanged ( QListWidgetItem * current, QListWidg
 {
     if ((current == 0) || (current == previous))
         return;
-    
+   
     showPage (current);
 }
 
 void DlgPreferences::showPage (int optionNum)
 {
     QListWidgetItem* option = optionsList->item(optionNum);
-    
+   
     showPage (option);
 }
 
@@ -108,14 +108,14 @@ void DlgPreferences::setupFilteringPage()
 {
     QListWidgetItem* item = new QListWidgetItem ("Filtering Rules");
     optionsList->addItem (item);
-    
+   
     QWidget* widget;
-    
+   
     if (m_bDaemonRunning)
         widget = new FilteringRulesPage(m_rules);
     else
         widget = new ErrorPage();
-    
+   
     stackedView->addWidget(widget);
     m_pages.insert (make_pair(item, widget));
 }

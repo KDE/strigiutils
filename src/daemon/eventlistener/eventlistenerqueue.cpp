@@ -34,19 +34,19 @@ EventListenerQueue::EventListenerQueue()
 EventListenerQueue::~EventListenerQueue()
 {
     pthread_mutex_destroy (&m_mutex);
-    
+   
     clear();
 }
 
 void EventListenerQueue::clear()
 {
-    map < string, Event*>:: iterator iter; 
-    
+    map < string, Event*>:: iterator iter;
+   
     for (iter = m_events.begin(); iter != m_events.end(); iter++)
     {
         delete iter->second;
     }
-    
+   
     m_events.clear();
 }
 
@@ -54,39 +54,39 @@ void EventListenerQueue::addEvents (vector<Event*> events)
 {
     vector<Event*>::iterator iter;
     map < string, Event*>::iterator mapIt;
-    
+   
     pthread_mutex_lock (&m_mutex);
-    
+   
     for (iter = events.begin(); iter != events.end(); iter++)
     {
         Event* event = *iter;
-        
+       
         mapIt = m_events.find(event->getPath());
-        
+       
         if (mapIt != m_events.end())
             delete mapIt->second;
-        
+       
         m_events[event->getPath()] = event;
     }
-    
+   
     pthread_mutex_unlock (&m_mutex);
 }
 
 vector <Event*> EventListenerQueue::getEvents()
 {
     vector <Event*> result;
-    
+   
     if (pthread_mutex_trylock (&m_mutex))
     {
         for (map<string, Event*>::iterator iter = m_events.begin(); iter != m_events.end(); iter++)
         {
             result.push_back (iter->second);
         }
-        
+       
         m_events.clear();
-        
+       
         pthread_mutex_unlock (&m_mutex);
     }
-    
+   
     return result;
 }

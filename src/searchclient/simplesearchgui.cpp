@@ -97,14 +97,14 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
-    
+   
     centralview = new QWidget();
     centralview->setLayout(layout);
     setCentralWidget(centralview);
-    
+   
     createActions();
     createMenus();
-    
+   
     connect(queryfield, SIGNAL(textChanged(const QString&)),
         this, SLOT(query(const QString&)));
     connect(toggleindexing, SIGNAL(clicked()),
@@ -129,7 +129,7 @@ void
 SimpleSearchGui::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(fileExitAct);
-    
+   
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(editPreferenceAct);
 }
@@ -139,7 +139,7 @@ SimpleSearchGui::createActions() {
     fileExitAct->setShortcut(tr("Ctrl+Q"));
     fileExitAct->setStatusTip(tr("Quit the program"));
     connect(fileExitAct, SIGNAL(triggered()), this, SLOT(close()));
-    
+   
     editPreferenceAct = new QAction(tr("Edit Preferences"), this);
     editPreferenceAct->setStatusTip(tr("Edit program preferences"));
     connect(editPreferenceAct, SIGNAL(triggered()), this, SLOT(editPreferences()));
@@ -194,7 +194,7 @@ SimpleSearchGui::updateStatus() {
         indexing = idxng;
         toggleindexing->setText((indexing)?"stop indexing":"start indexing");
     }
-    
+   
     map<string,string>::const_iterator i;
     QString text;
     for (i = s.begin(); i != s.end(); ++i) {
@@ -304,12 +304,12 @@ SimpleSearchGui::editPreferences() {
     SocketClient client;
     client.setSocketName(socketfile.c_str());
     set<string> rules = client.getFilteringRules();
-    
+   
     DlgPreferences* dlg = new DlgPreferences (running, &rules);
     dlg->exec();
-    
+   
     delete dlg;
-    
+   
     //update filtering rules
     client.setFilteringRules( rules);
 }

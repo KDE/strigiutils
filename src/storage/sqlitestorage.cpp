@@ -106,7 +106,7 @@ SqliteStorage::createPropertyTable(const char *propertyname, std::string &tablen
     s.str("");
     s << "create index " << tablename << "_value on " << tablename << "(value)";
     sql = s.str();
-    sqlite3_exec(db, sql.c_str(), 0, 0, 0);    
+    sqlite3_exec(db, sql.c_str(), 0, 0, 0);   
 }
 PropertyWriter *
 SqliteStorage::getPropertyWriter(const char *propertyname) {

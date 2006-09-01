@@ -26,7 +26,7 @@ class Interface;
 class DBusServer : public StrigiThread {
 private:
     Interface* interface;
-    void* run(void*);    
+    void* run(void*);   
 public:
     explicit DBusServer(Interface* i) :StrigiThread("DBusServer"),
         interface(i) {}

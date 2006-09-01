@@ -31,14 +31,14 @@ class EventListenerQueue
     public:
         EventListenerQueue();
         ~EventListenerQueue();
-        
+       
         void addEvents (std::vector<Event*> events);
         unsigned int size() { return m_events.size(); }
         std::vector <Event*> getEvents();
-        
+       
     protected:
         void clear();
-        
+       
         std::map <std::string, Event*> m_events;
         pthread_mutex_t m_mutex;
 };

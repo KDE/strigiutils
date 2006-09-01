@@ -325,7 +325,7 @@ ArchiveReader::ArchiveReaderPrivate::getSubStreamProvider(
             s->reset(0);
         }
     }
-    
+   
     return 0;
 }
 bool

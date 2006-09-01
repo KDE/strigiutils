@@ -27,9 +27,9 @@ class ModuleLoader;
 class PluginEndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
 private:
-    //a map of analyzers that this plugin has created, and their corresponding modules 
+    //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
-    std::multimap<void*, jstreams::StreamEndAnalyzer*> analyzers; 
+    std::multimap<void*, jstreams::StreamEndAnalyzer*> analyzers;
     ModuleLoader* moduleLoader;
 
     mutable jstreams::StreamEndAnalyzer* selectedEndAnalyzer;

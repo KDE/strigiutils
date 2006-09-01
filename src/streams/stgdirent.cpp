@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
-* Copyright (C) 2003-2006 Matt J. Weinstein 
-* 
-* Distributable under the terms of either the Apache License (Version 2.0) or 
+* Copyright (C) 2003-2006 Matt J. Weinstein
+*
+* Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
 #include "jstreamsconfig.h"
@@ -11,7 +11,7 @@
 #include "stgdirent.h"
 #include <sys/stat.h>
 
-DIR * 
+DIR *
 opendir (const char *szPath)
 {
     DIR *nd;
@@ -162,7 +162,7 @@ struct dirent * readdir (DIR * dirp)
         dirp->dd_dir.d_namlen = strlen (dirp->dd_dir.d_name);
 
         if ( dirp->dd_dir.d_name[0] == '.' &&
-            (dirp->dd_dir.d_name[1] == 0 || 
+            (dirp->dd_dir.d_name[1] == 0 ||
                 (dirp->dd_dir.d_name[1] == '.' && dirp->dd_dir.d_name[2] == 0)))
                 return readdir(dirp);
 

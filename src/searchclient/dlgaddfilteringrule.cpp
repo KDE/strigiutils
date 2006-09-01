@@ -35,7 +35,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
       m_rule (rule)
 {
     setWindowTitle ("strigiclient - Add new filtering rule");
-    
+   
     QVBoxLayout* vboxLayout = new QVBoxLayout(this);
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(9);
@@ -47,7 +47,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
     QVBoxLayout* vboxLayout1 = new QVBoxLayout();
     vboxLayout1->setSpacing(6);
     vboxLayout1->setMargin(0);
-    
+   
     rbtnPattern = new QRadioButton(this);
     rbtnPattern->setText(tr("Pattern"));
     rbtnPattern->setChecked(true);
@@ -62,7 +62,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
     QHBoxLayout* hboxLayout = new QHBoxLayout();
     hboxLayout->setSpacing(6);
     hboxLayout->setMargin(0);
-    
+   
     labelType = new QLabel(this);
     labelType->setText(tr("Pattern: "));
     hboxLayout->addWidget(labelType);
@@ -80,7 +80,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
     QHBoxLayout* hboxLayout1 = new QHBoxLayout();
     hboxLayout1->setSpacing(6);
     hboxLayout1->setMargin(0);
-    
+   
     QSpacerItem* spacerItem = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
     hboxLayout1->addItem(spacerItem);
 
@@ -93,10 +93,10 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
     hboxLayout1->addWidget(cancelButton);
 
     vboxLayout->addLayout(hboxLayout1);
-    
+   
     QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    
+   
     connect (rbtnPattern, SIGNAL (clicked()), this, SLOT (patternClicked()));
     connect (rbtnPath, SIGNAL (clicked()), this, SLOT (pathClicked()));
     connect (btnBrowse, SIGNAL (clicked()), this, SLOT (browseClicked()));
@@ -117,7 +117,7 @@ void DlgAddFilteringRule::patternClicked()
 void DlgAddFilteringRule::accept()
 {
     *m_rule = lineEdit->text();
-    
+   
     QDialog::accept();
 }
 
@@ -129,7 +129,7 @@ void DlgAddFilteringRule::reject()
 void DlgAddFilteringRule::browseClicked()
 {
     QString dir = QFileDialog::getExistingDirectory (this);
-    
+   
     if (!dir.isEmpty())
-        lineEdit->setText (dir); 
+        lineEdit->setText (dir);
 }

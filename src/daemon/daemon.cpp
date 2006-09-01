@@ -127,15 +127,15 @@ initializeDir(const string& dir) {
 **/
 void
 checkLogConf(const string& filename) {
-    std::fstream confFile; 
-    confFile.open(filename.c_str(), std::ios::in); 
+    std::fstream confFile;
+    confFile.open(filename.c_str(), std::ios::in);
     if (!confFile.is_open()){
-        /*create the default configuration file*/ 
-        confFile.open(filename.c_str(), std::ios::out); 
-        confFile << "# Set root logger level to DEBUG and its only appender to A1.\n"; 
-        confFile << "log4j.rootLogger=DEBUG, A1\n\n"; 
-        confFile << "# A1 is set to be a ConsoleAppender.\n"; 
-        confFile << "log4j.appender.A1=org.apache.log4j.ConsoleAppender\n"; 
+        /*create the default configuration file*/
+        confFile.open(filename.c_str(), std::ios::out);
+        confFile << "# Set root logger level to DEBUG and its only appender to A1.\n";
+        confFile << "log4j.rootLogger=DEBUG, A1\n\n";
+        confFile << "# A1 is set to be a ConsoleAppender.\n";
+        confFile << "log4j.appender.A1=org.apache.log4j.ConsoleAppender\n";
         confFile << "# A1 uses PatternLayout.\n";
         confFile << "log4j.appender.A1.layout=org.apache.log4j.PatternLayout\n";
         confFile << "log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n\n";
@@ -204,24 +204,24 @@ main(int argc, char** argv) {
     string socketpath = daemondir+"/socket";
     string logconffile = daemondir+"/log.conf";
     string filterfile = daemondir+"/filter.conf";
-    
+   
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
         fprintf(stderr, "Could not initialize the daemon directory.\n");
         exit(1);
     }
-    
+   
     // init logging
     checkLogConf(logconffile);
     STRIGI_LOG_INIT(logconffile)
-            
+           
     // init filter manager
     FilterManager filterManager;
     filterManager.setConfFile (filterfile);
     IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
-    
+   
     if (!initializeDir(lucenedir)) {
         STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")
         exit(1);
@@ -237,9 +237,9 @@ main(int argc, char** argv) {
     if (lockfile == 0) {
         STRIGI_LOG_FATAL ("strigi.daemon", "Daemon cannot run: the file " + lockfilename + " is locked.")
         exit(1);
-    } 
+    }
 
-    // set up signal handling 
+    // set up signal handling
     set_quit_on_signal(SIGINT);
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
@@ -276,7 +276,7 @@ main(int argc, char** argv) {
 
     EventListenerQueue listenerEventQueue;
     scheduler.setEventListenerQueue (&listenerEventQueue);
-    
+   
     // start the indexer thread
     threads.push_back(&scheduler);
     scheduler.start();
@@ -298,7 +298,7 @@ main(int argc, char** argv) {
     threads.push_back(&inotifyListener);
 #endif
     interface.setFilterManager (&filterManager);
-    
+   
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     threads.push_back(&dbusserver);

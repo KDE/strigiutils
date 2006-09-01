@@ -2,7 +2,7 @@ subdirs (throughplugins)
 
 include_directories( ../streams )
 
-set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp 
+set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp

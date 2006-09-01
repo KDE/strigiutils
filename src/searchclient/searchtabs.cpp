@@ -40,7 +40,7 @@ SearchTabs::SearchTabs() {
 }
 void
 SearchTabs::addTab(const QString& name, const QString& query) {
-    querynames[query+' '] = name;    
+    querynames[query+' '] = name;   
 }
 void
 SearchTabs::setQuery(const QString& query) {

@@ -42,7 +42,7 @@ using namespace std;
 using namespace jstreams;
 
 StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
-    
+   
     moduleLoader.loadPlugins("/usr/local/lib/strigi");
     moduleLoader.loadPlugins("/usr/lib/strigi");
     moduleLoader.loadPlugins("/lib/strigi");
@@ -95,7 +95,7 @@ StreamIndexer::addThroughAnalyzers() {
     tIter->push_back(ana);
     ana = new PluginThroughAnalyzer(&moduleLoader);
     tIter->push_back(ana);
-    
+   
 }
 void
 StreamIndexer::addEndAnalyzers() {
@@ -139,7 +139,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
     }
     //printf("depth #%i: %s\n", depth, path.c_str());
     Indexable idx(path, mtime, writer, depth);
-    
+   
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
@@ -199,7 +199,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
     }
 
     // store the size of the stream
-    {   
+    {  
         //tmp scope out tmp mem
         char tmp[100];
         sprintf(tmp, "%lli", input->getSize());

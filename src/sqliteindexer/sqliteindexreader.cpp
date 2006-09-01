@@ -89,7 +89,7 @@ createQuery(int n, bool filterpath) {
         q <<"files.path like ? ";
     }
     if (n > 0) q <<"group by fa.fileid order by p ";
-    q <<"limit 100"; 
+    q <<"limit 100";
     return q.str();
 }
 int

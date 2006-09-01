@@ -84,7 +84,7 @@ DBusMessageReader::operator>>(set<string>& s) {
         s.insert(value);
     } while(dbus_message_iter_next(&sub));
     dbus_message_iter_next(&it);
-    
+   
     return *this;
 }
 DBusMessageReader&

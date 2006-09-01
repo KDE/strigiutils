@@ -56,7 +56,7 @@ private:
     ArchiveReader* reader;
     StreamBase<char>* stream;
     EntryInfo entryinfo;
-    
+   
 public:
     StreamFileEngine(ArchiveReader* r, const string& u) :url(u) {
         reader = r;

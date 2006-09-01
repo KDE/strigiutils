@@ -41,11 +41,11 @@ public:
 
     static void charactersSAXFunc(void* ctx, const xmlChar * ch, int len);
     static void errorSAXFunc(void* ctx, const char * msg, ...);
-    static void startElementSAXFunc(void * ctx, const xmlChar * name, 
+    static void startElementSAXFunc(void * ctx, const xmlChar * name,
         const xmlChar ** atts);
     static void endElementSAXFunc(void * ctx, const xmlChar * name);
     static void startElementNsSAX2Func(void * ctx,
-        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI, 
+        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI,
         int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
         int nb_defaulted, const xmlChar ** attributes);
 
@@ -134,7 +134,7 @@ SaxEndAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
 }
 void
 SaxEndAnalyzer::Private::startElementNsSAX2Func(void * ctx,
-        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI, 
+        const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI,
         int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
         int nb_defaulted, const xmlChar ** attributes) {
     Private* p = (Private*)ctx;
@@ -143,7 +143,7 @@ SaxEndAnalyzer::Private::startElementNsSAX2Func(void * ctx,
     }
 }
 void
-SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const xmlChar* name, 
+SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const xmlChar* name,
         const xmlChar** atts) {
     Private* p = (Private*)ctx;
     if(name && p->rootelement.size() == 0) {

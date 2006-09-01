@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
- 
+
 #include "preffilterpage.h"
 
 #include "dlgaddfilteringrule.h"
@@ -65,20 +65,20 @@ FilteringRulesPage::FilteringRulesPage(set<string>* rules, QWidget* parent)
     vboxLayout->addWidget(btnDelRule);
 
     hboxLayout->addLayout(vboxLayout);
-    
-    
+   
+   
     ruleList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     for (set<string>::iterator iter = m_rules->begin(); iter != m_rules->end(); iter++)
         ruleList->addItem (iter->c_str());
-    
+   
     connect (ruleList, SIGNAL(itemSelectionChanged ()), this, SLOT (selectionChanged()));
     connect (ruleList, SIGNAL(itemDoubleClicked (QListWidgetItem*)), this, SLOT (doubleClick(QListWidgetItem*)));
     connect (btnAddRule, SIGNAL(clicked()), this, SLOT (addRule()));
     connect (btnEditRule, SIGNAL(clicked()), this, SLOT (editRule()));
     connect (btnDelRule, SIGNAL(clicked()), this, SLOT (delRule()));
 
-    
+   
 }
 
 FilteringRulesPage::~ FilteringRulesPage()
@@ -110,17 +110,17 @@ void FilteringRulesPage::doubleClick( QListWidgetItem* item)
 {
     if (item == 0)
         return;
-    
+   
     editRule (item);
 }
 
 void FilteringRulesPage::addRule()
 {
     QString rule;
-    
+   
     DlgAddFilteringRule dlg (&rule);
     dlg.exec();
-    
+   
     if (!rule.isEmpty())
         ruleList->addItem (rule);
 }
@@ -128,7 +128,7 @@ void FilteringRulesPage::addRule()
 void FilteringRulesPage::delRule()
 {
     QList<QListWidgetItem*> items = ruleList->selectedItems();
-    
+   
     if (items.size() == 0)
         return;
 
@@ -144,18 +144,18 @@ void FilteringRulesPage::editRule(QListWidgetItem* item)
     if (item == 0)
     {
         QList<QListWidgetItem*> items = ruleList->selectedItems();
-    
+   
         if (items.size() != 1)
             return;
-        
+       
         item = *(items.begin());
     }
-    
+   
     bool ok;
     QString text = QInputDialog::getText(this, tr("Edit filtering rule"),
                                          tr("Change filtering rule:"), QLineEdit::Normal,
                                          item->text(), &ok);
-    
+   
     if (ok && !text.isEmpty())
         item->setText(text);
 }

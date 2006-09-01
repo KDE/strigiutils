@@ -1,16 +1,16 @@
 
 CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
-	ZipInputStreamTest.cpp 
-	GZipInputStreamTest.cpp 
-	BZ2InputStreamTest.cpp 
-	TarInputStreamTest.cpp 
-	SubInputStreamTest.cpp 
-	InputStreamTest.cpp 
-	StringReaderTest.cpp 
-	InputStreamReaderTest.cpp 
-	MailInputStreamTest.cpp 
-	Base64InputStreamTest.cpp 
-	StringTerminatedSubStreamTest.cpp 
+	ZipInputStreamTest.cpp
+	GZipInputStreamTest.cpp
+	BZ2InputStreamTest.cpp
+	TarInputStreamTest.cpp
+	SubInputStreamTest.cpp
+	InputStreamTest.cpp
+	StringReaderTest.cpp
+	InputStreamReaderTest.cpp
+	MailInputStreamTest.cpp
+	Base64InputStreamTest.cpp
+	StringTerminatedSubStreamTest.cpp
 	DigestInputStreamTest.cpp
 )
 

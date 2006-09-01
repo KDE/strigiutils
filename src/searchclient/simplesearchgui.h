@@ -56,8 +56,8 @@ private:
     QMenu *editMenu;
     QAction *fileExitAct;
     QAction *editPreferenceAct;
-    
-    
+   
+   
     void startDaemon();
     void setDirectories();
     void updateDirectories();

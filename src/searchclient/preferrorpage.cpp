@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
- 
+
 #include "preferrorpage.h"
 
 #include <QLabel>
@@ -32,6 +32,6 @@ ErrorPage::ErrorPage( QWidget* parent)
 
     label = new QLabel(this);
     vboxLayout->addWidget(label);
-    
+   
     label->setText("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body><center><h1 style=\" color:#ff0000\">WARNING</h1><p>This feature requires a running daemon process</p></center></body></html>");
 }

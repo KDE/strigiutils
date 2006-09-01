@@ -79,7 +79,7 @@ void ModuleLoader::loadPlugins(const char* d) {
 
 ModuleLoader::Module* ModuleLoader::loadModule(const char* lib) {
     Module* mod = NULL;
-    
+   
 #ifdef HAVE_DLFCN_H
     void* handle = dlopen (lib, RTLD_NOW);
     if (handle) {
@@ -87,31 +87,31 @@ ModuleLoader::Module* ModuleLoader::loadModule(const char* lib) {
     } else {
         printf("%s\n", dlerror());
     }
-#else 
+#else
     HMODULE handle = LoadLibrary(lib);
     if (handle) {
         mod = new Module(handle);
     } else {
         LPVOID lpMsgBuf;
-        DWORD dw = GetLastError(); 
+        DWORD dw = GetLastError();
 
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPTSTR) &lpMsgBuf, 0, NULL );
 
-        wprintf(L"%s\n", lpMsgBuf); 
+        wprintf(L"%s\n", lpMsgBuf);
         LocalFree(lpMsgBuf);
     }
     #endif
-    
+   
     if ( mod == NULL ) {
         return NULL;
     }
-    
+   
     mod->lib = lib;
     if ( !mod->init() ) {
-        delete mod;    
+        delete mod;   
         return NULL;
     } else {
         return mod;

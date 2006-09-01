@@ -388,7 +388,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     }
     if (l != string::npos) {
         folder = doc.uri.substr(0, l);
-    } 
+    }
     out << "<div class='hit'>" << icon << "<h2><a href='" << link << "'>";
     out << name << "</a></h2>";
 /*    out << "<br/>score: ";

@@ -42,7 +42,7 @@ public:
     string errorstring;
 
     static void charactersSAXFunc(void* ctx, const char * ch, int len);
-    static void startElementSAXFunc(void * ctx, const char * name, 
+    static void startElementSAXFunc(void * ctx, const char * name,
         const char ** atts);
     static void endElementSAXFunc(void * ctx, const char * name);
 
@@ -112,7 +112,7 @@ SaxEndAnalyzer::Private::charactersSAXFunc(void* ctx, const char * ch,
     }
 }
 void
-SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const char* name, 
+SaxEndAnalyzer::Private::startElementSAXFunc(void* ctx, const char* name,
         const char** atts) {
     Private* p = (Private*)ctx;
     if (p->depth++ == 0 && strcasecmp((const char*)name, "html") == 0) {

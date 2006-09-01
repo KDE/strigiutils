@@ -47,9 +47,9 @@ void* InotifyListenerStart (void *inotifylistener)
     struct sched_param param;
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
-    
+   
     InotifyListener* listener = static_cast<InotifyListener*>(inotifylistener);
-    
+   
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
 #endif
@@ -72,10 +72,10 @@ void* InotifyListenerStart (void *inotifylistener)
 
 InotifyListener::InotifyListener() :EventListener("InotifyListener") {
     iListener = this;
-    
+   
     // listen only to interesting events
     m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
-    
+   
     m_bMonitor = true;
     setState(Idling);
     m_bInitialized = false;
@@ -96,11 +96,11 @@ bool InotifyListener::init()
         STRIGI_LOG_ERROR ("strigi.InotifyListener", "inotify_init() failed.  Are you running Linux 2.6.13 or later? If so, something mysterious has gone wrong.")
         return false;
     }
-    
+   
     m_bInitialized = true;
-    
+   
     STRIGI_LOG_DEBUG ("strigi.InotifyListener", "successfully initialized")
-    
+   
     return true;
 }
 
@@ -111,7 +111,7 @@ bool InotifyListener::init()
         if (!init())
             return false;
     }
-    
+   
     // start the inotify thread
     int ret = pthread_create(&m_thread, NULL, InotifyListenerStart, this);
     if (ret < 0)
@@ -119,7 +119,7 @@ bool InotifyListener::init()
         STRIGI_LOG_ERROR ("strigi.InotifyListener", "cannot create thread")
         return false;
     }
-    
+   
     return true;
 }*/
 
@@ -128,11 +128,11 @@ void* InotifyListener::run(void*)
     while (getState() != Stopping)
     {
         watch();
-        
+       
         if (getState() == Working)
             setState(Idling);
     }
-    
+   
     printf("exit inotify: %i\n", getState());
     return 0;
 }
@@ -140,47 +140,47 @@ void* InotifyListener::run(void*)
 void InotifyListener::stop()
 {
     m_state = Stopping;
-    
+   
     if (m_thread)
     {
         // wait for the indexer to finish
         pthread_join(m_thread, 0);
     }
-    
+   
     m_thread = 0;
 }*/
 
 void InotifyListener::watch ()
 {
     // some code taken from inotify-tools (http://inotify-tools.sourceforge.net/)
-    
+   
     vector <Event*> events;
     set <unsigned int> watchesToDel;
-    
+   
     struct timeval read_timeout;
     read_timeout.tv_sec = 1;
     read_timeout.tv_usec = 0;
-    
+   
     static const int MAX_EVENTS = 4096;
     struct inotify_event event[MAX_EVENTS];
     event[0].wd = 0;
     event[0].mask = 0;
     event[0].cookie = 0;
     event[0].len = 0;
-    
+   
     size_t bytes = 0;
     fd_set read_fds;
-    
+   
     bytes = 0;
-    
+   
     while ( bytes < sizeof(struct inotify_event) )
     {
-    
+   
         FD_ZERO(&read_fds);
         FD_SET(m_iInotifyFD, &read_fds);
-        
+       
         int rc = select(m_iInotifyFD + 1, &read_fds, NULL, NULL, &read_timeout);
-        
+       
         if ( rc < 0 )
         {
             STRIGI_LOG_ERROR ("strigi.InotifyListener", "Select on inotify failed")
@@ -191,64 +191,64 @@ void InotifyListener::watch ()
              // cerr << "Inotify: Select timeout\n";
             return;
         }
-    
+   
         int thisBytes = read(m_iInotifyFD, &event + bytes, sizeof(struct inotify_event)*MAX_EVENTS - bytes);
-        
+       
         if ( thisBytes < 0 )
         {
             STRIGI_LOG_ERROR ("strigi.InotifyListener", "Read from inotify failed")
             return;
         }
-        
+       
         if ( thisBytes == 0 )
         {
             STRIGI_LOG_WARNING ("strigi.InotifyListener", "Inotify reported end-of-file.  Possibly too many events occurred at once.")
             return;
         }
-        
+       
         bytes += thisBytes;
     }
-    
+   
     map < unsigned int, string>::iterator iter;
-    
+   
     static struct inotify_event * this_event;
-    
+   
     static char * this_event_char;
     this_event_char = (char *)&event[0];
-    
+   
     static uint remaining_bytes;
     remaining_bytes = bytes;
-    
+   
     do
     {
         string message;
-        
+       
         this_event = (struct inotify_event *)this_event_char;
-        
+       
         iter = m_watches.find (this_event->wd);
-    
+   
         if (iter == m_watches.end())
         {
             STRIGI_LOG_WARNING ("strigi.InotifyListener", "inotify: returned an unknown watch descriptor")
             continue;
         }
-        
+       
         if (isEventInteresting (this_event))
         {
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", iter->second + " changed")
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", "caught inotify event: " + eventToString( this_event->mask))
-        
+       
             if ((this_event->len > 0))
                     STRIGI_LOG_DEBUG ("strigi.InotifyListener", string("event regards ") + this_event->name)
-            
+           
             //TODO: fix path creation
             string file = iter->second;
-            
+           
             if (file[file.length() - 1 ] != '/')
                 file += '/';
-            
+           
             file += this_event->name;
-            
+           
             if ( (IN_MODIFY & this_event->mask) != 0 )
             {
                 Event* event = new Event (Event::UPDATED, file, time (NULL));
@@ -258,7 +258,7 @@ void InotifyListener::watch ()
             {
                 if ( (IN_DELETE_SELF & this_event->mask) != 0 )
                     watchesToDel.insert (iter->first);
-                
+               
                 if ((IN_ISDIR & this_event->mask) != 0)
                     dirRemoved (file, events);
                 else
@@ -277,22 +277,22 @@ void InotifyListener::watch ()
                 if ( (IN_ISDIR & this_event->mask) != 0 )
                 {
                     // a new directory has been created / moved into a watched place
-                    
+                   
                     m_toIndex.clear();
-                    
+                   
                     FileLister lister;
-    
+   
                     lister.setCallbackFunction(&indexFileCallback);
                     lister.setDirCallbackFunction(&watchDirCallback);
-    
+   
                     lister.listFiles(file.c_str());
-                    
+                   
                     for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
                     {
                         Event* event = new Event (Event::CREATED, *i, time (NULL));
                         events.push_back (event);
                     }
-                    
+                   
                     m_toIndex.clear();
                 }
                 else
@@ -302,7 +302,7 @@ void InotifyListener::watch ()
                 }
             }
             else
-                STRIGI_LOG_DEBUG ("strigi.InotifyListener", "inotify's unknown event") 
+                STRIGI_LOG_DEBUG ("strigi.InotifyListener", "inotify's unknown event")
         }
 
         this_event_char += sizeof(struct inotify_event) + this_event->len;
@@ -314,19 +314,19 @@ void InotifyListener::watch ()
     if (remaining_bytes != 0 ) {
         string message;
         char buff [20];
-        
-        snprintf(buff, 20 * sizeof (char), "%f", (((float)remaining_bytes)/((float)sizeof(struct inotify_event)))); 
+       
+        snprintf(buff, 20 * sizeof (char), "%f", (((float)remaining_bytes)/((float)sizeof(struct inotify_event))));
         message = buff;
         message += "event(s) may have been lost!";
         STRIGI_LOG_ERROR ("strigi.InotifyListener", message)
     }
-    
+   
     if (events.size() > 0)
     {
         if (m_eventQueue == NULL)
         {
             STRIGI_LOG_WARNING ("strigi.InotifyListener", "m_eventQueue == NULL!")
-            
+           
             for (unsigned int i = 0 ; i < events.size(); i++)
                 delete events[i];
             events.clear();
@@ -334,14 +334,14 @@ void InotifyListener::watch ()
         else
             m_eventQueue->addEvents (events);
     }
-    
+   
     // remove deleted watches
     for (set<unsigned int>::iterator i = watchesToDel.begin(); i != watchesToDel.end(); i++)
     {
         map < unsigned int, string>::iterator iter = m_watches.find(*i);
         m_watches.erase (iter);
     }
-    
+   
     fflush( NULL );
 }
 
@@ -349,16 +349,16 @@ void InotifyListener::addWatch (const string& path)
 {
     if (!m_bInitialized)
         return;
-    
+   
     for (map<unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
     {
         if ((iter->second).compare (path) == 0) // dir is already watched
             return;
     }
-    
+   
     static int wd;
     wd = inotify_add_watch (m_iInotifyFD, path.c_str(), m_iEvents);
-    
+   
     if (wd < 0)
     {
         if ( wd == -1 )
@@ -367,7 +367,7 @@ void InotifyListener::addWatch (const string& path)
         {
             char buff [20];
             snprintf(buff, 20* sizeof (char), "%i", wd);
-            
+           
             STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + ": returned wd was " + buff + " (expected -1 or >0 )")
         }
     }
@@ -388,18 +388,18 @@ bool InotifyListener::isEventInteresting (struct inotify_event * event)
     }
     else
         STRIGI_LOG_WARNING ("strigi.InotifyListener", "unable to use filters, m_filterManager == NULL!")
-    
+   
     // ignore files starting with '.'
     if (((IN_ISDIR & event->mask) == 0) && (event->len > 0) && ((event->name)[0] == '.'))
         return false;
-    
+   
     return true;
 }
 
 void InotifyListener::addWatches (const set<string> &watches)
 {
     set<string>::iterator iter;
-    
+   
     for (iter = watches.begin(); iter != watches.end(); iter++)
         addWatch (*iter);
 }
@@ -419,7 +419,7 @@ void InotifyListener::clearWatches ()
 {
     for (map<unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
         rmWatch (iter->first, iter->second);
-    
+   
     m_watches.clear();
 }
 
@@ -429,7 +429,7 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
     if (m_pIndexReader) {
         // all indexed files
         map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
-        
+       
         for (map<string, time_t>::iterator it = indexedFiles.begin(); it != indexedFiles.end(); it++)
         {
             string::size_type pos = (it->first).find (dir);
@@ -458,56 +458,56 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
         old_watches.push_back (iter->second);
     }
-    
+   
     m_toWatch.clear();
     m_toIndex.clear();
-    
+   
     lister.setCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
-    
+   
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
         lister.listFiles(iter->c_str());
-    
+   
     for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
     {
         Event* event;
-        
+       
         map<string,time_t>::iterator iter = indexedFiles.find(*i);
-        
-        if ( iter == indexedFiles.end()) 
+       
+        if ( iter == indexedFiles.end())
             event = new Event (Event::CREATED, *i, time (NULL));
         else
             event = new Event (Event::UPDATED, *i, time (NULL));
-        
+       
         events.push_back (event);
     }
-    
+   
     m_toIndex.clear();
-    
+   
     for (vector<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
     {
         set<string>::iterator dirIt = m_toWatch.begin();
-        
+       
         while (dirIt != m_toWatch.end())
         {
             if (dirIt->compare (*iter) == 0)
                 break;
-            
+           
             dirIt++;
         }
-        
+       
         if (dirIt == m_toWatch.end())
             dirRemoved (*iter, events);
     }
-    
+   
     m_toWatch.clear();
-    
+   
     if (events.size() > 0)
     {
         if (m_eventQueue == NULL)
         {
             STRIGI_LOG_WARNING ("strigi.InotifyListener", "InotifyListener: m_eventQueue == NULL!\n")
-            
+           
             for (unsigned int i = 0 ; i < events.size(); i++)
                 delete events[i];
             events.clear();
@@ -535,16 +535,16 @@ bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len,
         STRIGI_LOG_WARNING ("strigi.InotifyListener.indexFileCallback", "ignoring file " + string(path))
         return true;
     }
-    
+   
     (iListener->m_toIndex).insert (string(path));
-    
+   
     return true;
 }
 
 void InotifyListener::watchDirCallback(const char* path)
 {
     string dir (path);
-    
+   
     iListener->addWatch( dir);
     (iListener->m_toWatch).insert (dir);
 }
@@ -589,8 +589,8 @@ string InotifyListener::eventToString(int events)
         message += " ISDIR";
     else if ( (IN_ONESHOT & events) != 0 )
         message += " ONESHOT";
-    else 
+    else
         message = "UNKNOWN";
-    
+   
     return message;
 }
