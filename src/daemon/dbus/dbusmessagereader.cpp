@@ -10,7 +10,7 @@ DBusMessageReader::DBusMessageReader(DBusMessage* m) :msg(m), ok(true) {
     }
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(uint32_t& s) {
+DBusMessageReader::operator>>(dbus_uint32_t& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&it)) {
         close();
@@ -32,7 +32,7 @@ DBusMessageReader::operator>>(int32_t& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(uint64_t& s) {
+DBusMessageReader::operator>>(dbus_uint64_t& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_UINT64 != dbus_message_iter_get_arg_type(&it)) {
         close();

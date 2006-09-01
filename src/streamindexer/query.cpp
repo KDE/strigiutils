@@ -124,7 +124,7 @@ Query::parseTerm(const char* s, Term& parsedterm) {
         if (*p == '\0') return p;
     }
     const char* prefix = 0;
-    const char* prefend;
+    const char* prefend = 0;
     const char* term = p;
     // skip until end of string or closing quote or colon or whitespace
     while (*p != '\0' && ((quote == 0 && !isspace(*p))

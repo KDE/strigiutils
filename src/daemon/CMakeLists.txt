@@ -1,4 +1,5 @@
-set(DIRS xsd eventlistener)
+# xsd has been removed until the next release
+set(DIRS eventlistener)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
@@ -43,11 +44,12 @@ endif (HyperEstraier_FOUND)
 
 include_directories( eventlistener .)
 
+# daemonconfiguration has been removed until the next release
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp daemonconfiguration.cpp
+	indexscheduler.cpp clientinterface.cpp
 	filtermanager.cpp strigilogging.h strigithread.cpp)
 
-set(strigidaemon_LIBS streamindexer eventlistener daemonconfiguration
+set(strigidaemon_LIBS streamindexer eventlistener
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 

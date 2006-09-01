@@ -60,7 +60,7 @@ highlightText(const QString& text, const QString query) {
     int laste = -1;
     while (pos >= 0 && out.length()+laste-lasts < maxlen) {
         int rep = -1;
-        int len;
+        int len = 0;
         for (uint i=0; i<res.size(); ++i) {
             int p = t.indexOf(res[i], pos);
             if (p > 0 && (rep == -1 || p < rep)) {
