@@ -27,6 +27,7 @@ namespace jstreams {
 }
 class IndexScheduler;
 class EventListener;
+class FilterManager;
 
 /**
  * This class exposes the daemon functionality to the clients and should be
@@ -39,6 +40,7 @@ private:
     jstreams::IndexManager& manager;
     IndexScheduler& scheduler;
     EventListener* eventListener;
+    FilterManager* filterManager;
 
 public:
     Interface(jstreams::IndexManager& m, IndexScheduler& s);
@@ -50,7 +52,10 @@ public:
     std::string stopIndexing();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
+    std::set<std::string> getFilteringRules();
+    void setFilteringRules(std::set<std::string>&);
     void setEventListener (EventListener* eListener);
+    void setFilterManager (FilterManager* fManager);
 };
 
 #endif
