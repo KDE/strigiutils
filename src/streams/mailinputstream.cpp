@@ -75,7 +75,8 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
                 // if at least 5 header lines were read and an empty line is
                 // encountered, the mail header is valid
                 return true;
-            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)) {
+            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)
+			    && c != '#') {
                 // an invalid character in the key
                 return false;
             }
@@ -200,6 +201,7 @@ MailInputStream::getValue(const char* n, const string& headerline) const {
  **/
 void
 MailInputStream::rewindToLineStart() {
+    input->reset(input->getPosition()-(bufend-linestart));
     //int64_t rp = bufstartpos + (linestart-bufstart);
     //int64_t np = input->reset(bufstartpos + (linestart-bufstart));
     //printf("rewind %lli %lli\n", rp, np);
@@ -232,7 +234,9 @@ MailInputStream::skipHeader() {
     readLine();
     while (bufstart) {
         readLine();
+	//printf("%i: %.*s\n", lineend-linestart, lineend-linestart, linestart);
         if (linestart == lineend) {
+	    //printf("ok %lli\n", input->getPosition());
             break;
         }
         handleHeaderLine();
@@ -371,6 +375,7 @@ MailInputStream::nextEntry() {
             status = Error;
         } else {
             if (substream->getSize()<0) {
+		printf("%s %i\n", boundary.c_str(), substream->getStatus());
                 printf("NONDEJU size should be determined %lli\n",
                     substream->getSize());
                 status = Eof;

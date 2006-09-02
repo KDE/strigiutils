@@ -55,9 +55,9 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
                 size = position;
             }
         } else {
-            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i size %lli\n", nread, min, max, size);
-            fprintf(stderr, "pos %lli parentpos %lli\n", position, input->getPosition());
-            fprintf(stderr, "status: %i error: %s\n", input->getStatus(), input->getError());
+//            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i size %lli\n", nread, min, max, size);
+//            fprintf(stderr, "pos %lli parentpos %lli\n", position, input->getPosition());
+//            fprintf(stderr, "status: %i error: %s\n", input->getStatus(), input->getError());
             // we expected data but didn't get enough so that's an error
             status = Error;
             error = "Premature end of stream\n";
