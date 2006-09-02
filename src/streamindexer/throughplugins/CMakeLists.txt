@@ -1,13 +1,14 @@
 include_directories( .. )
 
-if (HAVE_ATTR_XATTR_H)
+if (XATTR_FOUND)
+  include_directies(${XATTR_INCLUDE_DIR})
   add_library(xattr MODULE xattrthroughanalyzer.cpp)
   set_target_properties(xattr PROPERTIES
     PREFIX strigita_
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
   install(TARGETS xattr LIBRARY DESTINATION lib/strigi)
-endif (HAVE_ATTR_XATTR_H)
+endif (XATTR_FOUND)
 
 if (Magic_FOUND)
   include_directories(MAGIC_INCLUDE_DIR)
