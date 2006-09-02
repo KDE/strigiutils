@@ -44,7 +44,8 @@ InotifyListener::InotifyListener() :EventListener("InotifyListener") {
     iListener = this;
 
     // listen only to interesting events
-    m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
+    m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO
+        | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
 
     m_bMonitor = true;
     setState(Idling);
@@ -74,25 +75,6 @@ bool InotifyListener::init()
     return true;
 }
 
-/*bool InotifyListener::start()
-{
-    if (!m_bInitialized)
-    {
-        if (!init())
-            return false;
-    }
-
-    // start the inotify thread
-    int ret = pthread_create(&m_thread, NULL, InotifyListenerStart, this);
-    if (ret < 0)
-    {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener", "cannot create thread")
-        return false;
-    }
-
-    return true;
-}*/
-
 void* InotifyListener::run(void*)
 {
     while (getState() != Stopping)
@@ -106,19 +88,6 @@ void* InotifyListener::run(void*)
     printf("exit inotify: %i\n", getState());
     return 0;
 }
-/*
-void InotifyListener::stop()
-{
-    m_state = Stopping;
-
-    if (m_thread)
-    {
-        // wait for the indexer to finish
-        pthread_join(m_thread, 0);
-    }
-
-    m_thread = 0;
-}*/
 
 void InotifyListener::watch ()
 {
@@ -295,7 +264,8 @@ void InotifyListener::watch ()
     {
         if (m_eventQueue == NULL)
         {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener", "m_eventQueue == NULL!")
+            STRIGI_LOG_WARNING ("strigi.InotifyListener",
+                "m_eventQueue == NULL!")
 
             for (unsigned int i = 0 ; i < events.size(); i++)
                 delete events[i];
@@ -306,7 +276,8 @@ void InotifyListener::watch ()
     }
 
     // remove deleted watches
-    for (set<unsigned int>::iterator i = watchesToDel.begin(); i != watchesToDel.end(); i++)
+    set<unsigned int>::iterator i;
+    for (i = watchesToDel.begin(); i != watchesToDel.end(); i++)
     {
         map < unsigned int, string>::iterator iter = m_watches.find(*i);
         m_watches.erase (iter);
@@ -320,7 +291,8 @@ void InotifyListener::addWatch (const string& path)
     if (!m_bInitialized)
         return;
 
-    for (map<unsigned int, string>::iterator iter = m_watches.begin(); iter != m_watches.end(); iter++)
+    map<unsigned int, string>::iterator iter;
+    for (iter = m_watches.begin(); iter != m_watches.end(); iter++)
     {
         if ((iter->second).compare (path) == 0) // dir is already watched
             return;
@@ -424,9 +396,9 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     //Event* event;
     FileLister lister;
 
-    map<unsigned int, string>::const_iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
-        old_watches.push_back (iter->second);
+    map<unsigned int, string>::const_iterator mi;
+    for (mi = m_watches.begin(); mi != m_watches.end(); mi++) {
+        old_watches.push_back (mi->second);
     }
 
     m_toWatch.clear();
@@ -435,26 +407,28 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     lister.setCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
 
-    for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
+    set<string>::const_iterator iter;
+    for (iter = dirs.begin(); iter != dirs.end(); iter++)
         lister.listFiles(iter->c_str());
 
-    for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
+    for (iter = m_toIndex.begin(); iter != m_toIndex.end(); iter++)
     {
         Event* event;
 
-        map<string,time_t>::iterator iter = indexedFiles.find(*i);
+        map<string, time_t>::iterator i = indexedFiles.find(*iter);
 
-        if ( iter == indexedFiles.end())
-            event = new Event (Event::CREATED, *i, time (NULL));
+        if (i == indexedFiles.end())
+            event = new Event (Event::CREATED, *iter, time (NULL));
         else
-            event = new Event (Event::UPDATED, *i, time (NULL));
+            event = new Event (Event::UPDATED, *iter, time (NULL));
 
         events.push_back (event);
     }
 
     m_toIndex.clear();
 
-    for (vector<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
+    vector<string>::iterator i;
+    for (i = old_watches.begin(); i != old_watches.end(); i++)
     {
         set<string>::iterator dirIt = m_toWatch.begin();
 

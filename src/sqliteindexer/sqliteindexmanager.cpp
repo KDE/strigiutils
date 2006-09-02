@@ -33,7 +33,6 @@ createSqliteIndexManager(const char* path) {
 SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     dblock = lock;
     this->dbfile = dbfile;
-
 }
 SqliteIndexManager::~SqliteIndexManager() {
     std::map<pthread_t, SqliteIndexReader*>::iterator r;
@@ -87,6 +86,7 @@ SqliteIndexManager::opendb(const char* path) {
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
         printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
+        exit(1);
     }
 
     // create temporary tables

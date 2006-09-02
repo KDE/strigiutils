@@ -8,6 +8,10 @@ if (HyperEstraier_FOUND)
   set(DIRS ${DIRS} estraierindexer)
 endif (HyperEstraier_FOUND)
 
+if (SQLite_FOUND)
+  set(DIRS ${DIRS} sqliteindexer)
+endif (SQLite_FOUND)
+
 set(DIRS ${DIRS} daemon htmlgui searchclient)
 
 if (QT4_FOUND)

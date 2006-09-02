@@ -41,6 +41,7 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     prepareStmt(db, updatefilestmt, sql, strlen(sql));
     sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
     prepareStmt(db, insertfilestmt, sql, strlen(sql));
+    printf("opened db %p %p\n", db, insertfilestmt);
     manager->deref();
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
@@ -122,6 +123,7 @@ SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
     int r = sqlite3_step(insertvaluestmt);
     if (r != SQLITE_DONE) {
         printf("could not write into database: %i %s\n", r, sqlite3_errmsg(db));
+        exit(1);
     }
     r = sqlite3_reset(insertvaluestmt);
     if (r != SQLITE_OK) {
@@ -147,9 +149,12 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
     sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
+    printf("'%s', %i, %i %p %p\n", name, idx->getMTime(), idx->getDepth(), db, insertfilestmt);
     int r = sqlite3_step(insertfilestmt);
     if (r != SQLITE_DONE) {
+        if (r == SQLITE_ERROR) printf("error!\n");
         printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
+        exit(1);
     }
     id = sqlite3_last_insert_rowid(db);
     sqlite3_reset(insertfilestmt);
@@ -250,6 +255,7 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
             printf("could not delete file %s: %s\n", i->c_str(),
                 sqlite3_errmsg(db));
         }
+        printf("removed entry '%s'\n", f.c_str());
         sqlite3_reset(delstmt);
     }
     sqlite3_finalize(delstmt);

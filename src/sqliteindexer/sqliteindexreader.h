@@ -37,6 +37,8 @@ public:
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int32_t countDocuments();
+    int64_t getDocumentId(const std::string& uri);
+    time_t getMTime(int64_t docid);
 };
 
 #endif
