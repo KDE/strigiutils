@@ -1,3 +1,5 @@
+subdirs(tests)
+
 include_directories( ../streamindexer ../streams
 	${CLUCENE_LIBRARY_DIR} ${CLUCENE_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
 
