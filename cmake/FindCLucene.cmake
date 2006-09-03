@@ -41,7 +41,7 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   # check if version 0.9.15 is patched
   IF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
     FILE(READ ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h CLCONTENT)
-    STRING(REGEX MATCH "Apache" CLMATCH ${CLCONTENT})
+    STRING(REGEX MATCH "virtual int64_t mark" CLMATCH ${CLCONTENT})
     IF (CLMATCH)
       MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See README)")
     ENDIF (CLMATCH)
