@@ -1,7 +1,7 @@
 include_directories( .. )
 
 if (XATTR_FOUND)
-  include_directies(${XATTR_INCLUDE_DIR})
+  include_directories(${XATTR_INCLUDE_DIR})
   add_library(xattr MODULE xattrthroughanalyzer.cpp)
   set_target_properties(xattr PROPERTIES
     PREFIX strigita_
