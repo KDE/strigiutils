@@ -32,9 +32,22 @@ using lucene::index::Term;
 using lucene::search::TermQuery;
 using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
+using lucene::search::RangeQuery;
 using lucene::search::QueryFilter;
+using lucene::search::HitCollector;
+using lucene::util::BitSet;
 using lucene::document::DocumentFieldEnumeration;
 using namespace jstreams;
+
+class HitCounter : public HitCollector {
+private:
+    int32_t count;
+    void collect (const int32_t doc, const float_t score) { count++; }
+public:
+    HitCounter() :count(0) {}
+    int32_t getCount() const { return count; }
+};
+
 
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
@@ -54,6 +67,7 @@ CLuceneIndexReader::createTerm(const string& name, const string& value) {
     STRCPY_AtoT(n, name.c_str(), name.length()+1);
     TCHAR* v = new TCHAR[value.length()+1];
     STRCPY_AtoT(v, value.c_str(), value.length()+1);
+    printf("'%s' '%s'\n", name.c_str(), value.c_str());
     Term* t = _CLNEW Term(n, v);
     delete [] n;
     delete [] v;
@@ -68,13 +82,21 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
     for (i = includes.begin(); i != includes.end(); ++i) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
-            Term* t = createTerm(mapId(i->first), *j);
             lucene::search::Query* tq;
-            bool wildcard = strpbrk(j->c_str(), "*?");
-            if (wildcard) {
-                tq = _CLNEW WildcardQuery(t);
+            Term* t;
+            if (j->length() > 0 && (*j)[0] == '<') {
+                t = createTerm(mapId(i->first), j->substr(1));
+                tq = _CLNEW RangeQuery(0, t, false);
+            } else if (j->length() > 0 && (*j)[0] == '>') {
+                t = createTerm(mapId(i->first), j->substr(1));
+                tq = _CLNEW RangeQuery(t, 0, false);
             } else {
-                tq = _CLNEW TermQuery(t);
+                t = createTerm(mapId(i->first), *j);
+                if (strpbrk(j->c_str(), "*?")) {
+                    tq = _CLNEW WildcardQuery(t);
+                } else {
+                    tq = _CLNEW TermQuery(t);
+                }
             }
             _CLDECDELETE(t);
             bq.add(tq, true, true, false);
@@ -148,9 +170,28 @@ CLuceneIndexReader::countHits(const Query& q) {
         hits = searcher.search(&bq);
         s = hits->length();
     } catch (CLuceneError& err) {
+/*        HitCounter counter;
+        QueryFilter* filter = _CLNEW QueryFilter(&bq);
+        try {
+        BitSet* bits = filter->bits(reader);
+        int32_t n = bits->size();
+        for (int32_t i=0; i<n; ++i) {
+            if (bits->get(i)) s++;
+        }
+        } catch (CLuceneError& err2) {
+            printf("ccould not query: %s\n", err.what());
+        }
+        try {
+            searcher._search(0, filter, &counter);
+        } catch (CLuceneError& err2) {
+            printf("ccould not query: %s\n", err.what());
+        }
+        s = counter.getCount();
+        
+        printf("counted %i hits\n", count);
         // try to do a constant score query
         //QueryFilter* filter = _CLNEW QueryFilter(&bq);
-        //ConstantScoreQuery csq(filter);
+        ConstantScoreQuery csq(filter);*/
         printf("could not query: %s\n", err.what());
     }
     if (hits) {
