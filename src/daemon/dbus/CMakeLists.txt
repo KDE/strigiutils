@@ -14,4 +14,4 @@ add_library(dbusserver dbusserver.cpp dbusmessagereader.cpp
 	dbusmessagewriter.cpp dbusobjectcallhandler.cpp dbusclientinterface.cpp
 	dbustestinterface.cpp testinterface.cpp)
 set(CMAKE_CXX_FLAGS ${DBUS_CFLAGS})
-target_link_libraries(dbusserver dbus-1)
+target_link_libraries(dbusserver ${DBUS_LDFLAGS})
