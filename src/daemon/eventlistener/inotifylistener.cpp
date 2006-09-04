@@ -226,9 +226,9 @@ void InotifyListener::watch ()
 
                     lister.listFiles(file.c_str());
 
-                    for (set<string>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
+                    for (map<string,time_t>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
                     {
-                        Event* event = new Event (Event::CREATED, *i, time (NULL));
+                        Event* event = new Event (Event::CREATED, i->first, i->second);
                         events.push_back (event);
                     }
 
@@ -367,6 +367,8 @@ void InotifyListener::clearWatches ()
 
 void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
 {
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener", dir + " is no longer watched, removing all indexed files contained") 
+    
     // we've to de-index all files contained into the deleted/moved directory
     if (m_pIndexReader) {
         // all indexed files
@@ -393,7 +395,6 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     vector<Event*> events;
     vector<string> old_watches;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
-    //Event* event;
     FileLister lister;
 
     map<unsigned int, string>::const_iterator mi;
@@ -407,41 +408,37 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     lister.setCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
 
-    set<string>::const_iterator iter;
-    for (iter = dirs.begin(); iter != dirs.end(); iter++)
+     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
         lister.listFiles(iter->c_str());
 
-    for (iter = m_toIndex.begin(); iter != m_toIndex.end(); iter++)
+     for (map<string,time_t>::iterator iter = m_toIndex.begin(); iter != m_toIndex.end(); iter++)
     {
-        Event* event;
+        Event* event = NULL;
 
-        map<string, time_t>::iterator i = indexedFiles.find(*iter);
+        map<string, time_t>::iterator i = indexedFiles.find(iter->first);
 
         if (i == indexedFiles.end())
-            event = new Event (Event::CREATED, *iter, time (NULL));
+            event = new Event (Event::CREATED, iter->first, iter->second);
         else
-            event = new Event (Event::UPDATED, *iter, time (NULL));
+        {
+            // check last index time
+            if (iter->second > i->second)
+                event = new Event (Event::UPDATED, iter->first, iter->second);
+        }
 
-        events.push_back (event);
+        if (event != NULL)
+            events.push_back (event);
     }
 
     m_toIndex.clear();
 
-    vector<string>::iterator i;
-    for (i = old_watches.begin(); i != old_watches.end(); i++)
+    // remove dirs that are no more watched
+    for (vector<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
     {
-        set<string>::iterator dirIt = m_toWatch.begin();
+        set<string>::iterator rmIter = m_toWatch.find (*iter);
 
-        while (dirIt != m_toWatch.end())
-        {
-            if (dirIt->compare (*iter) == 0)
-                break;
-
-            dirIt++;
-        }
-
-        if (dirIt == m_toWatch.end())
-            dirRemoved (*iter, events);
+        if (rmIter == m_toWatch.end())
+            dirRemoved (*rmIter, events); //remove also all indexed files contained in dir
     }
 
     m_toWatch.clear();
@@ -476,11 +473,11 @@ bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len,
     }
     else if ((iListener->m_filterManager)->findMatch (path))
     {
-        STRIGI_LOG_WARNING ("strigi.InotifyListener.indexFileCallback", "ignoring file " + string(path))
+        STRIGI_LOG_INFO ("strigi.InotifyListener.indexFileCallback", "ignoring file " + string(path))
         return true;
     }
 
-    (iListener->m_toIndex).insert (string(path));
+    (iListener->m_toIndex).insert (make_pair(string(path), mtime));
 
     return true;
 }

@@ -65,7 +65,7 @@ class InotifyListener : public EventListener
         std::map<unsigned int, std::string> m_watches;
         bool m_bMonitor;
         bool m_bInitialized;
-        std::set<std::string> m_toIndex;
+        std::map<std::string, time_t> m_toIndex;
         std::set<std::string> m_toWatch;
         jstreams::IndexReader* m_pIndexReader;
 };
