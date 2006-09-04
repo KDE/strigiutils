@@ -12,7 +12,11 @@ public:
         return 0;
     }
     int add() {
-        Indexable i("", 0, writer, 0);
+        {
+            Indexable i("", 0, writer, 0);
+        }
+        writer->commit();
+
         return 0;
     }
 };
@@ -27,6 +31,7 @@ IndexWriterTests::~IndexWriterTests() {
 int
 IndexWriterTests::testAll() {
     int n = 0;
+    n += tester->add();
     n += tester->optimize();
     return n;
 }

@@ -1,3 +1,5 @@
+subdirs(tests)
+
 include_directories( ../streamindexer ../streams ${EST_INCLUDE_DIR})
 
 add_library(estraierindex estraierindexwriter.cpp estraierindexmanager.cpp
