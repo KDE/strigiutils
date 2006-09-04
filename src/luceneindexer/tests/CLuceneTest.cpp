@@ -1,6 +1,6 @@
 #include "jstreamsconfig.h"
 #include "cluceneindexmanager.h"
-#include "indexmanagertests.h"
+//#include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
 #include <sys/stat.h>
@@ -15,8 +15,8 @@ CLuceneTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     jstreams::IndexManager* manager = createCLuceneIndexManager(path);
 
-    IndexManagerTests tests(manager);
-    errors += tests.testAllInThreads(20);
+//    IndexManagerTests tests(manager);
+//    errors += tests.testAllInThreads(20);
 
     jstreams::IndexWriter* writer = manager->getIndexWriter();
     IndexWriterTests wtests(writer);
