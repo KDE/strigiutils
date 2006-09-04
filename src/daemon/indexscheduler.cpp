@@ -114,6 +114,8 @@ IndexScheduler::run(void*) {
             }
         }
     }
+    
+    STRIGI_LOG_DEBUG ("strigi.IndexScheduler.run", string("exit state: ") + getStringState());
     return 0;
 }
 void
@@ -174,7 +176,7 @@ IndexScheduler::index() {
 
 void
 IndexScheduler::processListenerEvents(vector<Event*>& events) {
-    //IndexReader* reader = indexmanager->getIndexReader();
+    IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
    
@@ -185,21 +187,30 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     for (vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
     {
         Event* event = *iter;
+        
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "event infos: " + event->toString())
+        
         switch (event->getType())
         {
             case Event::CREATED:
                 toIndex.push_back (event->getPath());
                 break;
             case Event::UPDATED:
-                toIndex.push_back (event->getPath());
-                toDelete.push_back (event->getPath());
+            {
+                time_t indexTime = reader->getMTime(reader->getDocumentId(event->getPath()));
+                if (indexTime < event->getTime())
+                {
+                    toIndex.push_back (event->getPath());
+                    toDelete.push_back (event->getPath());
+                }
+                else
+                    STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "ignoring last event")
                 break;
+            }
             case Event::DELETED:
                 toDelete.push_back (event->getPath());
                 break;
         }
-       
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "event infos: " + event->toString())
        
         delete event;
     }
