@@ -84,8 +84,8 @@ void* InotifyListener::run(void*)
         if (getState() == Working)
             setState(Idling);
     }
-
-    printf("exit inotify: %i\n", getState());
+    
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.run", string("exit state: ") + getStringState());
     return 0;
 }
 

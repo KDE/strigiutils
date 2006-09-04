@@ -2,6 +2,7 @@
 #define STRIGITHREAD_H
 
 #include <pthread.h>
+#include <string>
 
 class StrigiThread {
 friend void* threadstarter(void *);
@@ -12,7 +13,6 @@ private:
 protected:
     pthread_mutex_t lock;
     pthread_t thread;
-
     void setState(State s);
     virtual void* run(void*) = 0;
 public:
@@ -24,6 +24,7 @@ public:
     void stop();
     void terminate();
     State getState();
+    std::string getStringState();
 };
 
 #endif

@@ -4,8 +4,6 @@
 #include <cstring>
 #include <errno.h>
 #include <sys/resource.h>
-#include <signal.h>
-
 using namespace std;
 
 void*
@@ -14,6 +12,7 @@ threadstarter(void *d) {
     struct sched_param param;
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
+    StrigiThread* thread = static_cast<StrigiThread*>(d);
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
 #endif
@@ -22,7 +21,7 @@ threadstarter(void *d) {
         // fall back to renice if SCHED_BATCH is unknown
         r = setpriority(PRIO_PROCESS, 0, 20);
         if (r==-1)
-            STRIGI_LOG_ERROR ("strigi.IndexScheduler.indexschedulerstart",
+            STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name + ".threadstartert",
                 string("error setting priority: ") + strerror(errno))
         //nice(20);
     }
@@ -31,8 +30,8 @@ threadstarter(void *d) {
 #endif
 
     // start the actual work
-    static_cast<StrigiThread*>(d)->run(0);
-    printf("end of %s\n", static_cast<StrigiThread*>(d)->name);
+    thread->run(0);
+    STRIGI_LOG_DEBUG(string("strigi.daemon.") + thread->name + ".threadstartert", "end of thread");
     pthread_exit(0);
 }
 
@@ -56,12 +55,32 @@ StrigiThread::getState() {
     pthread_mutex_unlock(&lock);
     return s;
 }
+std::string
+StrigiThread::getStringState() {
+    std::string s;
+    pthread_mutex_lock(&lock);
+    switch (state)
+    {
+        case Idling:
+            s = "idling";
+            break;
+        case Working:
+            s = "working";
+            break;
+        case Stopping:
+            s = "stopping";
+            break; 
+    }
+    pthread_mutex_unlock(&lock);
+    
+    return s;
+}
 int
 StrigiThread::start() {
     // start the indexer thread
     int r = pthread_create(&thread, NULL, threadstarter, this);
     if (r < 0) {
-        STRIGI_LOG_ERROR ("strigi.IndexScheduler", "cannot create thread")
+        STRIGI_LOG_ERROR ("strigi.daemon." + string(name), "cannot create thread")
         return 1;
     }
     return 0;
@@ -69,7 +88,6 @@ StrigiThread::start() {
 void
 StrigiThread::stop() {
     state = Stopping;
-    pthread_kill(thread, SIGINT);
     if (thread) {
         // wait for the thread to finish
         pthread_join(thread, 0);
