@@ -58,7 +58,7 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
     }
     else if ((sched->m_filterManager)->findMatch (path))
     {
-        STRIGI_LOG_WARNING ("strigi.IndexScheduler.indexFileCallback", "ignoring file " + string(path))
+        STRIGI_LOG_INFO ("strigi.IndexScheduler.indexFileCallback", "ignoring file " + string(path))
         return true;
     }
    
