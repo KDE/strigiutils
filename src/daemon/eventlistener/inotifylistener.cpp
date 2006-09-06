@@ -393,7 +393,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
         return;
     }
     vector<Event*> events;
-    vector<string> old_watches;
+    vector<string> old_watches, toRemove;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
     FileLister lister;
 
@@ -435,12 +435,39 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     // remove dirs that are no more watched
     for (vector<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
     {
-        set<string>::iterator rmIter = m_toWatch.find (*iter);
-
-        if (rmIter == m_toWatch.end())
-            dirRemoved (*rmIter, events); //remove also all indexed files contained in dir
+        if (m_toWatch.find (*iter) == m_toWatch.end())
+        {
+            // watch has been deleted
+            
+            bool subdir = false;
+            vector<string>::iterator it = toRemove.begin();
+            
+            while (it != toRemove.end())
+            {
+                if (iter->find(*it)) // iter = /foo/ it = /foo/bar/
+                    toRemove.erase (it); // we keep only the parent dir
+                else if (it->find (*iter)) // iter = /foo/bar/ = /foo/
+                {
+                    subdir = true;
+                    break;
+                }
+                else
+                    it++;
+            }
+            
+            if (!subdir)
+                toRemove.push_back(*iter);
+        }
     }
-
+    
+    // remove all indexed files contined into dir
+    for (vector<string>::iterator iter = toRemove.begin(); iter != toRemove.end(); iter++)
+        dirRemoved (*iter, events); //remove also all indexed files contained in dir
+    
+    toRemove.clear();
+    
+    // add inotify watches
+    addWatches (m_toWatch);
     m_toWatch.clear();
 
     if (events.size() > 0)
