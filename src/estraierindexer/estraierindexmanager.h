@@ -52,6 +52,8 @@ public:
     jstreams::IndexWriter* getIndexWriter();
     void ref();
     void deref();
+
+    void deleteIndex();
 };
 
 jstreams::IndexManager*

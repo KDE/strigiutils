@@ -60,7 +60,7 @@ private:
 
     void openReader();
     void closeReader();
-    void openWriter();
+    void openWriter(bool truncate=false);
     void closeWriter();
 public:
     CLuceneIndexManager(const std::string& path);
@@ -76,6 +76,7 @@ public:
     int32_t docCount();
     int64_t getIndexSize();
     int getVersion() const { return version; }
+    void deleteIndex();
 };
 
 jstreams::IndexManager*

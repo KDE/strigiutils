@@ -54,6 +54,7 @@ public:
     virtual ~IndexWriter() {}
     virtual void commit() { return; }
     virtual void deleteEntries(const std::vector<std::string>& entries) = 0;
+    virtual void deleteAllEntries() = 0;
     virtual int itemsInCache() { return 0; }
     virtual void optimize() {}
 };

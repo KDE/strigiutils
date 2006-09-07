@@ -12,8 +12,9 @@ public:
         return 0;
     }
     int add() {
+        std::string s("a"); // we must pass a string, not a const char*
         {
-            Indexable i("", 0, writer, 0);
+            Indexable i(s, 0, writer, 0);
         }
         writer->commit();
 

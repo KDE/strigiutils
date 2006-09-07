@@ -36,5 +36,5 @@ Indexable::getFileName() const {
     if (p != string::npos) {
         return name.substr(p+1);
     }
-    return "";
+    return name;
 }

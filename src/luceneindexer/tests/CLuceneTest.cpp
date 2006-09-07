@@ -16,6 +16,7 @@ CLuceneTest(int argc, char**argv) {
     jstreams::IndexManager* manager = createCLuceneIndexManager(path);
 
     IndexManagerTests tests(manager);
+    errors += tests.testAll();
     errors += tests.testAllInThreads(20);
 
     jstreams::IndexWriter* writer = manager->getIndexWriter();

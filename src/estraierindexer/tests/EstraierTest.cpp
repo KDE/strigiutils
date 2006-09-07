@@ -1,5 +1,6 @@
 #include "jstreamsconfig.h"
 #include "estraierindexmanager.h"
+#include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
 #include <sys/stat.h>
@@ -14,9 +15,13 @@ EstraierTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     EstraierIndexManager* manager = new EstraierIndexManager(path);
 
-    jstreams::IndexWriter* writer = manager->getIndexWriter();
-    IndexWriterTests tests(writer);
+    IndexManagerTests tests(manager);
     errors += tests.testAll();
+    errors += tests.testAllInThreads(20);
+
+    jstreams::IndexWriter* writer = manager->getIndexWriter();
+    IndexWriterTests wtests(writer);
+    errors += wtests.testAll();
 
     jstreams::IndexReader* reader = manager->getIndexReader();
     IndexReaderTests rtests(reader);

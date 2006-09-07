@@ -170,3 +170,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     _CLDECDELETE(term);
     manager->derefReader();
 }
+void
+CLuceneIndexWriter::deleteAllEntries() {
+    manager->deleteIndex();
+}

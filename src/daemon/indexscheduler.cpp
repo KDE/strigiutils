@@ -124,7 +124,6 @@ IndexScheduler::index() {
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
 
-
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
         dbfiles = reader->getFiles(0);
@@ -132,7 +131,7 @@ IndexScheduler::index() {
         char buff [20];
         snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database")
-       
+
         // first loop through all files
         FileLister lister;
         lister.setCallbackFunction(&addFileCallback);
@@ -254,5 +253,8 @@ IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {
             }
             dirstoindex.insert(dir);
         }
+    }
+    if (dirstoindex.size() == 0) {
+        indexmanager->getIndexWriter()->deleteAllEntries();
     }
 }

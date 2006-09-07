@@ -276,3 +276,8 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     }
     manager->deref();
 }
+void
+SqliteIndexWriter::deleteAllEntries() {
+    manager->ref();
+    manager->deref();
+}

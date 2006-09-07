@@ -38,6 +38,7 @@ public:
     ~CLuceneIndexWriter();
     void commit() {};
     void deleteEntries(const std::vector<std::string>& entries);
+    void deleteAllEntries();
     void deleteEntry(const std::string& entry);
 };
 

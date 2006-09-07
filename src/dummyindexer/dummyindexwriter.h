@@ -52,6 +52,7 @@ public:
     ~DummyIndexWriter() {}
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}
+    void deleteAllEntries() {}
 };
 
 #endif

@@ -72,7 +72,10 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
 
     manager->ref();
     int ok = est_db_put_doc(db, doc, 0);
-    if (!ok) printf("could not write document\n");
+    if (!ok) {
+        fprintf(stderr, "error writing document: %s\n",
+            est_err_msg(est_db_error(db)));
+    }
     // deallocate the estraier document
     est_doc_delete(doc);
     manager->deref();
@@ -116,4 +119,8 @@ EstraierIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     }
     free(all);
     manager->deref();
+}
+void
+EstraierIndexWriter::deleteAllEntries() {
+    manager->deleteIndex();
 }

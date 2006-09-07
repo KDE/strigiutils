@@ -271,8 +271,8 @@ main(int argc, char** argv) {
 
 
     set<string> dirs = readdirstoindex(dirsfile);
-    scheduler.setIndexedDirectories(dirs);
     scheduler.setIndexManager(index);
+    scheduler.setIndexedDirectories(dirs);
 
     EventListenerQueue listenerEventQueue;
     scheduler.setEventListenerQueue (&listenerEventQueue);

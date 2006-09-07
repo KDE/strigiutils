@@ -17,10 +17,14 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "jstreamsconfig.h"
 #include "estraierindexmanager.h"
 #include "estraierindexreader.h"
 #include "estraierindexwriter.h"
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include "stgdirent.h" //our dirent compatibility header... uses native if available
 using namespace std;
 using namespace jstreams;
 
@@ -34,7 +38,8 @@ createEstraierIndexManager(const char* path) {
 EstraierIndexManager::EstraierIndexManager(const char* dbd)
         : dblock(lock), dbdir(dbd) {
     int errorcode;
-    db = est_db_open(dbdir.c_str(), ESTDBWRITER|ESTDBCREAT|ESTDBPERFNG,
+    db = est_db_open(dbdir.c_str(),
+        ESTDBCREAT|ESTDBWRITER|ESTDBREADER|ESTDBNOLCK|ESTDBPERFNG,
         &errorcode);
     if (db == 0) printf("could not open db %s: %s\n", dbdir.c_str(),
         est_err_msg(errorcode));
@@ -70,39 +75,6 @@ EstraierIndexManager::getIndexWriter() {
     }
     return w;
 }
-/*ESTDB*
-EstraierIndexManager::getWriteDB() {
-    pthread_mutex_lock(&dblock);
-    // check if a writable db is already opened
-    if (db) {
-        if (writing) return db;
-        closedb();
-    }
-    writing = true;
-    int errorcode;
-    db = est_db_open(dbdir.c_str(), ESTDBWRITER|ESTDBCREAT, &errorcode);
-    if (db == 0) printf("could not open db: error %i\n", errorcode);
-    return db;
-}
-void
-EstraierIndexManager::returnWriteDB() {
-    pthread_mutex_unlock(&dblock);
-}
-ESTDB*
-EstraierIndexManager::getReadDB() {
-    pthread_mutex_lock(&dblock);
-    // check if a readable db is already opened
-    if (db) {
-        if (!writing) return db;
-        closedb();
-    }
-    writing = false;
-    return db;
-}
-void
-EstraierIndexManager::returnReadDB() {
-    pthread_mutex_unlock(&dblock);
-}*/
 void
 EstraierIndexManager::ref() {
     pthread_mutex_lock(&dblock);
@@ -118,4 +90,58 @@ EstraierIndexManager::closedb() {
     int ok = est_db_close(db, &errorcode);
     if (!ok) printf("could not close db: error %i\n", errorcode);
     db = 0;
+}
+void
+removefiles(const string& d, bool rmd = false) {
+    // remove all entries from the subdir 
+    DIR* dir = opendir(d.c_str());
+    if (dir == 0) {
+        fprintf(stderr, "could not open index directory.\n");
+        return;
+    }
+    // delete all the index files
+    struct dirent* e = readdir(dir);
+    while (e != 0) {
+        // skip the directories '.' and '..'
+        char c1 = e->d_name[0];
+        if (c1 == '.') {
+            char c2 = e->d_name[1];
+            if (c2 == '.' || c2 == '\0') {
+                e = readdir(dir);
+                continue;
+            }
+        }
+        string filename = d+'/'+e->d_name;
+        struct stat s;
+        // use lstat, we don't want to follow into symlinked directories
+        int r = lstat(filename.c_str(), &s);
+        if (r == 0) {
+            if (S_ISDIR(s.st_mode)) {
+                removefiles(filename, true);
+            } else {
+                printf("unlink %s\n", filename.c_str());
+                unlink(filename.c_str());
+            }
+        } else {
+            fprintf(stderr, "could not open file %s\n", filename.c_str());
+        }
+        e = readdir(dir);
+    }
+    closedir(dir);
+    if (rmd) {
+        rmdir(d.c_str());
+    }
+}
+void
+EstraierIndexManager::deleteIndex() {
+    ref();
+    closedb();
+
+    removefiles(dbdir);
+    // open the index again
+    int errorcode;
+    db = est_db_open(dbdir.c_str(), ESTDBCREAT|ESTDBWRITER|ESTDBREADER|ESTDBNOLCK|ESTDBPERFNG, &errorcode);
+    if (db == 0) printf("could not reopen db %s: %s\n", dbdir.c_str(),
+        est_err_msg(errorcode));
+    deref();
 }

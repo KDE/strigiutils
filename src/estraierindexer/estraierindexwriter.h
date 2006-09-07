@@ -43,6 +43,7 @@ protected:
 public:
     void commit();
     void deleteEntries(const std::vector<std::string>& entries);
+    void deleteAllEntries();
     int itemsInCache() { return 0; };
 };
 
