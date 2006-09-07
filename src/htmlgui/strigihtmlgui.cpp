@@ -414,7 +414,8 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         out << "<a href='" << link << "'>" << subpath << "</a>"
             // the images are meant to allow line break between characters
             //"<img class='softbreak' src=''/><span style=''>/</span>"
-            "<img class='softbreak' src=''/>";
+            << h->getPathCharacterSeparator();
+            //"<img class='softbreak' src=''/>";
         pp = p+1;
         p = path.find('/', pp);
     }
@@ -469,4 +470,9 @@ StrigiHtmlGui::readTabQueries() const {
     } while (!in.eof() && in.good());
     in.close();
     return tabs;
+}
+void
+StrigiHtmlGui::printSearchResults(std::ostream& out,
+        const ClientInterface::Hits& hits, const std::string& query) const {
+    p->printSearchResults(out, hits, query); 
 }

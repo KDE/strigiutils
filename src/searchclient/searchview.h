@@ -25,6 +25,8 @@
 
 class QTextBrowser;
 class QUrl;
+class SearchViewHtmlHelper;
+class StrigiHtmlGui;
 
 class SearchView : public QWidget {
 Q_OBJECT
@@ -32,12 +34,14 @@ private:
     QTextBrowser* view;
     QString query;
     Qt4StrigiClient& strigi;
+    SearchViewHtmlHelper* htmlguihelper;
+    StrigiHtmlGui* htmlgui;
 
-    QString iconHTML(const QString& mimetype);
 private slots:
     void openItem(const QUrl& url);
 public:
     explicit SearchView(Qt4StrigiClient& k);
+    ~SearchView();
     void setHTML(const QString&html);
 public slots:
     void handleHits(const QString&, const ClientInterface::Hits&);

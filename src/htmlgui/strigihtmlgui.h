@@ -20,10 +20,12 @@
 #ifndef STRIGIHTMLGUI_H
 #define STRIGIHTMLGUI_H
 
+#include "clientinterface.h"
 #include <ostream>
 #include <map>
 #include <string>
 #include <vector>
+
 
 class HtmlHelper {
 public:
@@ -52,6 +54,7 @@ public:
     virtual std::string mimetypeDescription(const std::string& mimetype) const {
         return mimetype;
     }
+    virtual std::string getPathCharacterSeparator() { return ""; }
 };
 
 class StrigiHtmlGui {
@@ -84,6 +87,8 @@ public:
     ~StrigiHtmlGui();
     void printPage(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
+    void printSearchResults(std::ostream& out,
+        const ClientInterface::Hits&, const std::string& query) const;
 };
 
 #endif

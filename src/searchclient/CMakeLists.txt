@@ -1,4 +1,4 @@
-include_directories( ../daemon ../streamindexer )
+include_directories( ../daemon ../streamindexer ../htmlgui )
 
 if (QT4_FOUND)
   include(${QT_USE_FILE})
@@ -13,7 +13,8 @@ if (QT4_FOUND)
 
   add_executable(strigiclient ${strigiclient_SRCS} ${strigiclient_MOC_SRCS})
 
-  target_link_libraries(strigiclient searchclient ${QT_QTCORE_LIBRARY}
+  target_link_libraries(strigiclient searchclient
+strigihtmlgui ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY})
 
   install(TARGETS strigiclient RUNTIME DESTINATION bin)
