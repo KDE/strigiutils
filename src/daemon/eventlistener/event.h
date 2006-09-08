@@ -29,6 +29,7 @@ class Event
     public:
         enum Type{ CREATED = 0x01, UPDATED = 0x02, DELETED = 0x04};
 
+        Event(Type type, const std::string& path);
         Event(Type type, const std::string& path, time_t t);
         Event(Event* event);
         ~Event();

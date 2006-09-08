@@ -19,6 +19,13 @@
  */
 #include "event.h"
 
+Event::Event(Type type, const std::string& path)
+    : m_type (type),
+      m_path (path)
+{
+    time(&m_time);
+}
+
 Event::Event(Type type, const std::string& path, time_t t)
     : m_type (type),
       m_path (path),
