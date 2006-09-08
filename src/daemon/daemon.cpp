@@ -291,7 +291,7 @@ main(int argc, char** argv) {
         inotifyListener.setEventListenerQueue (&listenerEventQueue);
         inotifyListener.setFilterManager (&filterManager);
         inotifyListener.setIndexReader (index->getIndexReader());
-        inotifyListener.setIndexedDirectories(dirs);
+        inotifyListener.bootstrap(dirs);
         inotifyListener.start();
     }
     interface.setEventListener (&inotifyListener);

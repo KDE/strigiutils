@@ -43,7 +43,8 @@ class InotifyListener : public EventListener
         void addWatch (const std::string& path);
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
-       
+        void bootstrap (const std::set<std::string>& dirs);
+        
         void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
        
         void* run(void*);
@@ -57,6 +58,7 @@ class InotifyListener : public EventListener
         bool isEventInteresting (struct inotify_event * event);
         void watch ();
         void dirRemoved (std::string dir, std::vector<Event*>& events);
+        void dirsRemoved (std::set<std::string> dirs, std::vector<Event*>& events);
         void rmWatch(int wd, std::string path);
         void clearWatches();
        
