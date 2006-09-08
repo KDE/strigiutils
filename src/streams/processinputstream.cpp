@@ -135,7 +135,6 @@ ProcessInputStream::runCmdWithInput() {
         dup2(pin[0], 0);
         dup2(pout[1], 1);
         // close p[0], because this process will not read from it
-        //close(0);
         close(pin[1]);
         close(pout[0]);
         close(2);
