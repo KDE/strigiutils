@@ -46,6 +46,8 @@ public:
     int64_t reset(int64_t pos);
 };
 
+typedef StringReader<char> StringInputStream;
+
 template <class T>
 StringReader<T>::StringReader(const T* value, int32_t length, bool copy)
         : markpt(0), dataowner(copy) {
