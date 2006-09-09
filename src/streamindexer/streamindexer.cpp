@@ -32,6 +32,7 @@
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
+#include "helperendanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
 #include "pluginendanalyzer.h"
@@ -127,6 +128,8 @@ StreamIndexer::addEndAnalyzers() {
     //ana = new SaxEndAnalyzer();
     //eIter->push_back(ana);
     // add a text analyzer to the end of the queue
+    ana = new HelperEndAnalyzer();
+    eIter->push_back(ana);
     ana = new TextEndAnalyzer();
     eIter->push_back(ana);
 }
