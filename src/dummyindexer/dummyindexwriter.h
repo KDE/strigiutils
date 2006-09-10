@@ -35,7 +35,8 @@ protected:
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length) {
         if (verbosity > 2) {
-            printf("%s: addText '%s'\n", idx->getName().c_str(), text);
+            printf("%s: addText '%.*s'\n", idx->getName().c_str(), length,
+                text);
         }
     }
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
