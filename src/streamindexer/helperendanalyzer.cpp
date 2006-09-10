@@ -134,17 +134,25 @@ HelperEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
                 TextEndAnalyzer t;
                 state = t.analyze(filename, &pis, depth, indexer, i);
             } else {
-                string temppath = writeToTempFile(in);
+                string filepath;
+                bool fileisondisk = checkForFile(depth, filename);
+                if (fileisondisk) {
+                    filepath = filename;
+                } else {
+                    filepath = writeToTempFile(in);
+                }
                 vector<string> args = h->arguments;
                 for (uint j=0; j<args.size(); ++j) {
                     if (args[j] == "%s") {
-                        args[j] = temppath;
+                        args[j] = filepath;
                     }
                 }
                 ProcessInputStream pis(args);
                 TextEndAnalyzer t;
                 state = t.analyze(filename, &pis, depth, indexer, i);
-                unlink(temppath.c_str());
+                if (!fileisondisk) {
+                    unlink(filepath.c_str());
+                }
             }
         }
     }
@@ -179,4 +187,11 @@ HelperEndAnalyzer::writeToTempFile(jstreams::InputStream *in) const {
     } 
     close(fd);
     return filepath;
+}
+bool
+HelperEndAnalyzer::checkForFile(int depth, const std::string& filename) {
+    if (depth > 0) return false;
+    struct stat s;
+    if (stat(filename.c_str(), &s)) return false;
+    return true;
 }

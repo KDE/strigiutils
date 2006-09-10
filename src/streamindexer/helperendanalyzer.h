@@ -42,6 +42,7 @@ private:
     static const HelperProgramConfig helperconfig;
 
     std::string writeToTempFile(jstreams::InputStream *in) const;
+    bool checkForFile(int depth, const std::string& filename);
 public:
     HelperEndAnalyzer() {}
     bool checkHeader(const char* header, int32_t headersize) const;
