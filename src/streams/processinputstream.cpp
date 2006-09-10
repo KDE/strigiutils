@@ -114,9 +114,7 @@ ProcessInputStream::runCmd() {
         close(p[0]);
         close(2);
         char *const *unconstargs = (char *const *) (args);
-        const char *const nullenv[1] = { 0 };
-        char *const *unconstenv = (char *const *) (nullenv);
-        execve(args[0], unconstargs, unconstenv);
+        execve(args[0], unconstargs, environ);
         fprintf(stderr, "%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
@@ -139,9 +137,7 @@ ProcessInputStream::runCmdWithInput() {
         close(pout[0]);
         close(2);
         char *const *unconstargs = (char *const *) (args);
-        const char *const nullenv[1] = { 0 };
-        char *const *unconstenv = (char *const *) (nullenv);
-        execve(args[0], unconstargs, unconstenv);
+        execve(args[0], unconstargs, environ);
         fprintf(stderr, "%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
