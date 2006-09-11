@@ -184,8 +184,9 @@ SimpleSearchGui::updateStatus() {
         }
     }
     toggleindexing->setEnabled(running);
+    adddir->setEnabled(running);
+    removedir->setEnabled(running);
     queryfield->setEnabled(running);
-    queryfield->setEnabled(!starting);
     toggledaemon->setText((running)?"stop daemon":"start daemon");
     if (backendsList) {
         backendsList->setEnabled(!running);
