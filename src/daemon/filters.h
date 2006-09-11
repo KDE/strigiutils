@@ -26,40 +26,40 @@
 class Filter
 {
     public:
-        Filter (std::string rule) { m_rule = rule;}
+        Filter(const std::string& rule) :m_rule(rule) {}
         virtual ~Filter() {}
         
-        virtual bool match (std::string text) = 0;
-        std::string rule() { return m_rule; }
+        virtual bool match(const std::string& text) = 0;
+        const std::string& rule() const { return m_rule; }
         virtual int rtti() const;
         
         enum {RTTI = 0};
         
     protected:
-        std::string m_rule;
+        const std::string m_rule;
 };
 
 class PatternFilter : public Filter
 {
     public:
-        PatternFilter (std::string rule) : Filter (rule) {}
+        PatternFilter(const std::string& rule) : Filter (rule) {}
         ~PatternFilter() {}
         
         enum {RTTI = 1};
         
-        bool match (std::string text);
+        bool match(const std::string& text);
         int rtti() const;
 };
 
 class PathFilter : public Filter
 {
     public:
-        PathFilter (std::string rule) : Filter (rule) {}
+        PathFilter(const std::string& rule) : Filter (rule) {}
         ~PathFilter() {}
         
         enum {RTTI = 2};
         
-        bool match (std::string text);
+        bool match (const std::string& text);
         int rtti() const;
 };
 

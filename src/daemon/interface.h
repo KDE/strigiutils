@@ -52,10 +52,10 @@ public:
     std::string stopIndexing();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
-    std::multimap<int,std::string> getFilteringRules();
-    void setFilteringRules(std::multimap<int,std::string>&);
-    void setEventListener (EventListener* eListener);
-    void setFilterManager (FilterManager* fManager);
+    std::multimap<int, std::string> getFilteringRules();
+    void setFilteringRules(const std::multimap<int, std::string>&);
+    void setEventListener(EventListener* eListener);
+    void setFilterManager(FilterManager* fManager);
 };
 
 #endif

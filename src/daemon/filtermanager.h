@@ -40,7 +40,7 @@ class FilterManager
         bool findMatch(const char* text);
        
         std::multimap<int,std::string> getFilteringRules();
-        void setFilteringRules(std::multimap<int,std::string>& rules);
+        void setFilteringRules(const std::multimap<int,std::string>& rules);
        
     private:
         void clearRules();

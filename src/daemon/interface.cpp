@@ -120,7 +120,7 @@ Interface::getFilteringRules() {
     }
 }
 void
-Interface::setFilteringRules(multimap<int,string>& rules) {
+Interface::setFilteringRules(const multimap<int,string>& rules) {
     if (filterManager != NULL)
         filterManager->setFilteringRules (rules);
 }

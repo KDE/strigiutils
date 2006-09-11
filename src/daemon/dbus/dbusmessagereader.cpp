@@ -106,3 +106,7 @@ DBusMessageReader::operator>>(std::vector<char>& s) {
 
     return *this;
 }
+DBusMessageReader&
+DBusMessageReader::operator>>(const std::multimap<int, std::string>&) {
+    return *this;
+}

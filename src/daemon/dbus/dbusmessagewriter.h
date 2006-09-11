@@ -29,5 +29,6 @@ public:
     DBusMessageWriter& operator<<(const std::vector<std::string>& s);
     DBusMessageWriter& operator<<(const std::map<std::string, std::string>& s);
     DBusMessageWriter& operator<<(const ClientInterface::Hits& s);
+    DBusMessageWriter& operator<<(const std::multimap<int, std::string>&);
 };
 #endif

@@ -190,11 +190,12 @@ multimap<int,string> FilterManager::getFilteringRules()
     return rules;
 }
 
-void FilterManager::setFilteringRules(multimap<int, string>& rules)
+void FilterManager::setFilteringRules(const multimap<int, string>& rules)
 {
     clearRules();
-    
-    for (map<int,string>::iterator iter = rules.begin(); iter != rules.end(); iter++)
+
+    map<int,string>::const_iterator iter;
+    for (iter = rules.begin(); iter != rules.end(); iter++)
     {
         switch (iter->first)
         {

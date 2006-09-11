@@ -55,8 +55,9 @@ public:
     virtual std::string stopIndexing() = 0;
     virtual std::set<std::string> getIndexedDirectories() = 0;
     virtual std::string setIndexedDirectories(std::set<std::string> d) = 0;
-    virtual std::multimap<int,std::string> getFilteringRules() = 0;
-    virtual void setFilteringRules(std::multimap<int,std::string>& rules) = 0;
+    virtual std::multimap<int, std::string> getFilteringRules() = 0;
+    virtual void setFilteringRules(const std::multimap<int, std::string>& rules)
+        = 0;
     bool isActive() { return active; }
     static std::vector<std::string> getBackEnds();
 

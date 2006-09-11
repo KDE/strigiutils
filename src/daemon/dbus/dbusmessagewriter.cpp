@@ -134,3 +134,7 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
     dbus_message_iter_close_container(&it, &sub);
     return *this;
 }
+DBusMessageWriter&
+DBusMessageWriter::operator<<(const std::multimap<int, std::string>&) {
+    return *this;
+}

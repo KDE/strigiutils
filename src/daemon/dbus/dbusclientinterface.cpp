@@ -5,7 +5,7 @@
 #include "../clientinterface.h"
 #include <sstream>
 DBusClientInterface::DBusClientInterface(ClientInterface* i)
-        :DBusObjectInterface("vandenoever.strigi"), impl(i) {
+        :DBusObjectInterface("ClientInterface"), impl(i) {
     handlers["getStatus"] = &DBusClientInterface::getStatus;
     handlers["isActive"] = &DBusClientInterface::isActive;
     handlers["getFilteringRules"] = &DBusClientInterface::getFilteringRules;
@@ -41,7 +41,7 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='out' type='b' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getFilteringRules'>\n"
-    << "      <arg name='out' type='as' direction='out'/>\n"
+    << "      <arg name='out' type='a{ias}' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='setIndexedDirectories'>\n"
     << "      <arg name='d' type='as' direction='in'/>\n"
@@ -54,7 +54,7 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='out' type='s' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='setFilteringRules'>\n"
-    << "      <arg name='rules' type='as' direction='in'/>\n"
+    << "      <arg name='rules' type='a{ias}' direction='in'/>\n"
     << "    </method>\n"
     << "    <method name='getHits'>\n"
     << "      <arg name='query' type='s' direction='in'/>\n"
@@ -129,7 +129,7 @@ void
 DBusClientInterface::setFilteringRules(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::set<std::string> rules;
+    std::multimap<int, std::string> rules;
     reader >> rules;
     if (reader.isOk()) {
         impl->setFilteringRules(rules);

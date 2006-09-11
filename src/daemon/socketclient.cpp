@@ -316,11 +316,11 @@ SocketClient::getFilteringRules() {
     return r;
 }
 void
-SocketClient::setFilteringRules(multimap<int,string>& rules) {
+SocketClient::setFilteringRules(const multimap<int,string>& rules) {
     request.clear();
     request.push_back("setFilteringRules");
     
-    multimap<int,string>::iterator lb, ub, i;
+    multimap<int,string>::const_iterator lb, ub, i;
     char buffer[500];
         
     lb = rules.lower_bound(PathFilter::RTTI);

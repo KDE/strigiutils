@@ -44,7 +44,7 @@ public:
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
     std::multimap<int,std::string> getFilteringRules();
-    void setFilteringRules(std::multimap<int,std::string>&);
+    void setFilteringRules(const std::multimap<int,std::string>&);
 };
 
 #endif

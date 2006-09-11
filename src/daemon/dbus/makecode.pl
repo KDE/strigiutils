@@ -23,15 +23,40 @@ my %typemapping = (
 	"std::set<std::string>" => "as",
 	"Hits" => "a(sdsssxxa{ss})",
 	"std::map<std::string, std::string>" => "a{ss}",
-	"std::vector<char>" => "ay"
+	"std::vector<char>" => "ay",
+	"std::multimap<int, std::string>" => "a{ias}"
 );
 
+sub splitArguments {
+    my $s = shift;
+    my @args = ();
+    my $i = 0;
+    my $b = 0;
+    while ($i < length($s)) {
+        my $c = substr($s, $i, 1);
+        if ($c eq ',' && $b eq 0) {
+            my $a = substr($s, 0, $i);
+            push(@args, $a);
+            $s = substr($s, $i+1);
+            $i = -1;
+        } elsif ($c eq '<') {
+            $b++;
+        } elsif ($c eq '>') {
+            $b--;
+        }
+        $i++;
+    }
+    if (length($s)) {
+        push(@args, $s);
+    }
+    return @args;
+}
 sub parseFunction {
     my $out = shift;
     my $name = shift;
     my $in = shift;
     die "Type $out cannot be mapped." unless $typemapping{$out};
-    my @args = split ',', $in;
+    my @args = splitArguments($in);
     my @a;
     foreach (@args) {
         if (m/^\s*(.*)$/) {

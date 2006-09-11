@@ -29,7 +29,7 @@ int Filter::rtti() const { return RTTI; }
 int PatternFilter::rtti() const { return RTTI; }
 int PathFilter::rtti() const { return RTTI; }
 
-bool PatternFilter::match (string text)
+bool PatternFilter::match(const string& text)
 {
     int ret = fnmatch (m_rule.c_str(), text.c_str(), 0);
        
@@ -44,7 +44,7 @@ bool PatternFilter::match (string text)
     return false;
 }
 
-bool PathFilter::match (string text)
+bool PathFilter::match (const string& text)
 {
     // create the real pattern, whe have to add a * for globbing
     string realPattern = m_rule;
