@@ -66,13 +66,13 @@ HelperProgramConfig::HelperProgramConfig() {
         helpers.push_back(h);
     }
     // this  does not work atm because it requires help programs itself
-    exepath = getPath("wvText", paths);
+    exepath = getPath("wvWare", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = wordmagic;
         h->magicsize = 16;
         h->arguments.push_back(exepath);
-        h->arguments.push_back("-X");
+//        h->arguments.push_back("-X");
         h->arguments.push_back("%s");
         h->readfromstdin = false;
         helpers.push_back(h);

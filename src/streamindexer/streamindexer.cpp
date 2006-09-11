@@ -125,11 +125,11 @@ StreamIndexer::addEndAnalyzers() {
 /*    ana = new PdfEndAnalyzer();
     eIter->push_back(ana);*/
     // add a sax analyzer before the text analyzer
-    //ana = new SaxEndAnalyzer();
-    //eIter->push_back(ana);
-    // add a text analyzer to the end of the queue
+    ana = new SaxEndAnalyzer();
+    eIter->push_back(ana);
     ana = new HelperEndAnalyzer();
     eIter->push_back(ana);
+    // add a text analyzer to the end of the queue
     ana = new TextEndAnalyzer();
     eIter->push_back(ana);
 }
