@@ -57,23 +57,20 @@ StrigiThread::getState() {
 }
 std::string
 StrigiThread::getStringState() {
-    std::string s;
-    pthread_mutex_lock(&lock);
-    switch (state)
-    {
-        case Idling:
-            s = "idling";
-            break;
-        case Working:
-            s = "working";
-            break;
-        case Stopping:
-            s = "stopping";
-            break; 
+    State s = getState();
+    std::string str;
+    switch (state) {
+    case Idling:
+        str = "idling";
+        break;
+    case Working:
+        str = "working";
+        break;
+    case Stopping:
+        str = "stopping";
+        break; 
     }
-    pthread_mutex_unlock(&lock);
-    
-    return s;
+    return str;
 }
 int
 StrigiThread::start() {
