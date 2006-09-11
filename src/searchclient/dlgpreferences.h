@@ -23,7 +23,6 @@
 
 #include <QDialog>
 #include <map>
-#include <set>
 #include <string>
 
 class QListWidget;
@@ -36,7 +35,7 @@ class DlgPreferences : public QDialog
     Q_OBJECT
 
     public:
-        DlgPreferences(bool running, std::set<std::string>* rules, QWidget *parent = 0);
+        DlgPreferences(bool running, std::multimap<int,std::string>* rules, QWidget *parent = 0);
         virtual ~DlgPreferences() {};
        
     private slots:
@@ -54,7 +53,7 @@ class DlgPreferences : public QDialog
         QPushButton *okButton;
         QPushButton *cancelButton;
         bool m_bDaemonRunning;
-        std::set<std::string>* m_rules;
+        std::multimap<int,std::string>* m_rules;
         std::map<QListWidgetItem*, QWidget*> m_pages;
 };
 

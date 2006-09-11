@@ -33,7 +33,7 @@
 
 using namespace std;
 
-DlgPreferences::DlgPreferences(bool running, set<string>* rules, QWidget *parent)
+DlgPreferences::DlgPreferences(bool running, multimap<int,string>* rules, QWidget *parent)
     : QDialog(parent, Qt::Dialog),
       m_bDaemonRunning (running),
       m_rules (rules)

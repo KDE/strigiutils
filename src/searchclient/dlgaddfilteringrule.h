@@ -25,6 +25,7 @@
 
 class QLabel;
 class QLineEdit;
+class QListWidgetItem;
 class QPushButton;
 class QRadioButton;
 class QToolButton;
@@ -34,7 +35,8 @@ class DlgAddFilteringRule : public QDialog
     Q_OBJECT
 
     public:
-        DlgAddFilteringRule(QString* rule, QWidget *parent = 0);
+        DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent = 0);
+        DlgAddFilteringRule(QString* rule, int* type, QWidget *parent = 0);
         virtual ~DlgAddFilteringRule() {};
        
     private slots:
@@ -45,11 +47,16 @@ class DlgAddFilteringRule : public QDialog
         void reject();
        
     private:
+        void setupUi();
+        
         QString* m_rule;
+        int*     m_type;
         QRadioButton *rbtnPattern;
         QRadioButton *rbtnPath;
+        QLabel *label;
         QLabel *labelType;
         QLineEdit *lineEdit;
+        QListWidgetItem* m_item;
         QToolButton *btnBrowse;
         QPushButton *okButton;
         QPushButton *cancelButton;

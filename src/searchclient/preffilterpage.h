@@ -22,7 +22,7 @@
 #define PREFFILTERPAGE_H
 
 #include <QWidget>
-#include <set>
+#include <map>
 #include <string>
 
 class QLabel;
@@ -36,7 +36,7 @@ class FilteringRulesPage : public QWidget
     Q_OBJECT
    
     public:
-        FilteringRulesPage(std::set<std::string>* rules, QWidget* parent = 0);
+        FilteringRulesPage(std::multimap<int,std::string>* rules, QWidget* parent = 0);
         ~FilteringRulesPage();
 
     private slots:
@@ -52,7 +52,7 @@ class FilteringRulesPage : public QWidget
         QPushButton *btnAddRule;
         QPushButton *btnEditRule;
         QPushButton *btnDelRule;
-        std::set<std::string>* m_rules;
+        std::multimap<int,std::string>* m_rules;
 };
 
 #endif

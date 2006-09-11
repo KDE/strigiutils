@@ -22,16 +22,17 @@
 
 #include "dlgaddfilteringrule.h"
 #include <QHBoxLayout>
-#include <QInputDialog>
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QVBoxLayout>
 
+#include "../daemon/filters.h"
+
 using namespace std;
 
-FilteringRulesPage::FilteringRulesPage(set<string>* rules, QWidget* parent)
+FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* parent)
     : QWidget (parent),
       m_rules (rules)
 {
@@ -69,8 +70,20 @@ FilteringRulesPage::FilteringRulesPage(set<string>* rules, QWidget* parent)
    
     ruleList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    for (set<string>::iterator iter = m_rules->begin(); iter != m_rules->end(); iter++)
-        ruleList->addItem (iter->c_str());
+    for (multimap<int,string>::iterator iter = m_rules->begin(); iter != m_rules->end(); iter++)
+    {
+        QListWidgetItem* item = new QListWidgetItem((iter->second).c_str(), ruleList, iter->first);
+        
+        switch (iter->first)
+        {
+            case PathFilter::RTTI:
+                item->setToolTip("Path filtering rule");
+                break;
+            case PatternFilter::RTTI:
+                item->setToolTip("Pattern filtering rule");
+                break;
+        }
+    }
    
     connect (ruleList, SIGNAL(itemSelectionChanged ()), this, SLOT (selectionChanged()));
     connect (ruleList, SIGNAL(itemDoubleClicked (QListWidgetItem*)), this, SLOT (doubleClick(QListWidgetItem*)));
@@ -85,10 +98,11 @@ FilteringRulesPage::~ FilteringRulesPage()
 {
     //update filtering rules
     m_rules->clear();
+
     for (int i = 0 ; i < ruleList->count(); i++)
     {
         QListWidgetItem * item = ruleList->item(i);
-        m_rules->insert((item->text()).toStdString());
+        m_rules->insert(make_pair(item->type(),(item->text()).toStdString()));
     }
 }
 
@@ -117,12 +131,25 @@ void FilteringRulesPage::doubleClick( QListWidgetItem* item)
 void FilteringRulesPage::addRule()
 {
     QString rule;
-   
-    DlgAddFilteringRule dlg (&rule);
+    int type;
+    
+    DlgAddFilteringRule dlg (&rule, &type);
     dlg.exec();
    
     if (!rule.isEmpty())
-        ruleList->addItem (rule);
+    {
+        QListWidgetItem* item = new QListWidgetItem (rule, ruleList, type);
+        
+        switch (type)
+        {
+            case PathFilter::RTTI:
+                item->setToolTip("Path filtering rule");
+                break;
+            case PatternFilter::RTTI:
+                item->setToolTip("Pattern filtering rule");
+                break;
+        }
+    }
 }
 
 void FilteringRulesPage::delRule()
@@ -151,11 +178,6 @@ void FilteringRulesPage::editRule(QListWidgetItem* item)
         item = *(items.begin());
     }
    
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("Edit filtering rule"),
-                                         tr("Change filtering rule:"), QLineEdit::Normal,
-                                         item->text(), &ok);
-   
-    if (ok && !text.isEmpty())
-        item->setText(text);
+    DlgAddFilteringRule dlg (item);
+    dlg.exec();
 }

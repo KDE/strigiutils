@@ -20,19 +20,57 @@
 
 #include "dlgaddfilteringrule.h"
 
+#include "../daemon/filters.h"
+
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QListWidgetItem>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpacerItem>
 #include <QToolButton>
 #include <QVBoxLayout>
 
-DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
+DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, int* type, QWidget *parent)
     : QDialog(parent, Qt::Dialog),
-      m_rule (rule)
+      m_rule (rule),
+      m_type (type),
+      m_item (NULL)
+{
+    setupUi();
+}
+
+DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
+    : QDialog(parent, Qt::Dialog),
+      m_rule (NULL),
+      m_type (NULL),
+      m_item (item)
+{
+    setupUi();
+    
+    switch (m_item->type())
+    {
+        case PathFilter::RTTI:
+            pathClicked();
+            break;
+        case PatternFilter::RTTI:
+            patternClicked();
+            btnBrowse->hide();
+            break;
+    }
+    
+    lineEdit->setText(item->text());
+    rbtnPath->hide();
+    rbtnPattern->hide();
+    
+    setWindowTitle ("strigiclient - Edit filtering rule");
+    label->setText(tr("Edit a filtering rule of type:"));
+}
+
+void DlgAddFilteringRule::setupUi ()
 {
     setWindowTitle ("strigiclient - Add new filtering rule");
    
@@ -40,7 +78,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, QWidget *parent)
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(9);
 
-    QLabel* label = new QLabel(this);
+    label = new QLabel(this);
     label->setText(tr("Add a new filtering rule of type:"));
     vboxLayout->addWidget(label);
 
@@ -116,8 +154,29 @@ void DlgAddFilteringRule::patternClicked()
 
 void DlgAddFilteringRule::accept()
 {
-    *m_rule = lineEdit->text();
-   
+    if ((lineEdit->text()).isEmpty())
+    {
+        QMessageBox::critical ( 0, QString("error"), QString("you haven't specified a filtering rule!"));
+        
+        return;
+    }
+    
+    if (m_item != NULL)
+        m_item->setText (lineEdit->text());
+    else if ((m_type != NULL) && (m_rule != NULL))
+    {
+        if (rbtnPath->isChecked())
+            *m_type = PathFilter::RTTI;
+        else if (rbtnPattern->isChecked())
+            *m_type = PatternFilter::RTTI;
+        else
+            *m_type = Filter::RTTI;
+    
+        *m_rule = lineEdit->text();
+    }
+    else
+        printf ("DlgAddFilteringRule::accept() : NULL values!\n");
+    
     QDialog::accept();
 }
 

@@ -38,6 +38,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QProcess>
 #include <string>
+#include <map>
 #include <vector>
 using namespace std;
 
@@ -303,13 +304,13 @@ void
 SimpleSearchGui::editPreferences() {
     SocketClient client;
     client.setSocketName(socketfile.c_str());
-    set<string> rules = client.getFilteringRules();
+    multimap<int,string> rules = client.getFilteringRules();
    
     DlgPreferences* dlg = new DlgPreferences (running, &rules);
     dlg->exec();
    
     delete dlg;
-   
+    
     //update filtering rules
     client.setFilteringRules( rules);
 }
