@@ -63,6 +63,7 @@ private:
     HtmlHelper* helper;
     Private* p;
 
+    void printHtmlHeader(std::ostream& out);
     void printHeader(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
     void printMenu(std::ostream& out, const std::string& path,
@@ -88,7 +89,7 @@ public:
     void printPage(std::ostream& out, const std::string& path,
         const std::map<std::string, std::string> &params);
     void printSearchResults(std::ostream& out,
-        const ClientInterface::Hits&, const std::string& query) const;
+        const ClientInterface::Hits&, const std::string& query);
 };
 
 #endif

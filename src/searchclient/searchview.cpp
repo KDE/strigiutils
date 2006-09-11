@@ -26,6 +26,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDateTime>
 #include <QtCore/QUrl>
+#include <QtCore/QVariant>
 
 using namespace std;
 
@@ -43,7 +44,7 @@ public:
     std::string encodeString(const std::string& url);
     std::string escapeString(const std::string& url);
     std::string formatDate(time_t date);
-    std::string getCssUrl() { return ""; }
+    std::string getCssUrl() { return ":/strigi/result.css"; }
     std::string highlight(const std::string& text,
         const std::vector<std::string>& queryterms);
     std::string mimetypeDescription(const std::string& mimetype) const {
@@ -164,11 +165,15 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     view->clear();
     setEnabled(true);
     if (q != query) return;
-
+    QUrl cssurl(":/strigi/result.css");
+    QVariant css = "h2{background:blue;}";
+//    view->document()->addResource(QTextDocument::StyleSheetResource,
+//        cssurl, css);
     if (hits.hits.size() > 0) {
         ostringstream str;
         htmlgui->printSearchResults(str, hits, (const char*)q.toUtf8());
         QString html(str.str().c_str());
+        qDebug() << html;
         view->setHtml(html);
     } else {
         view->append("no results");

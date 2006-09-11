@@ -51,8 +51,7 @@ StrigiHtmlGui::~StrigiHtmlGui() {
     delete p;
 }
 void
-StrigiHtmlGui::printHeader(ostream& out, const string& path,
-        const map<string, string> &params) {
+StrigiHtmlGui::printHtmlHeader(ostream& out) {
     out << "<?xml version='1.0' encoding='utf-8'?>\n"
         "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' "
         "'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n"
@@ -63,8 +62,13 @@ StrigiHtmlGui::printHeader(ostream& out, const string& path,
         << helper->getCssUrl()
         << "'/>"
         "<title>Strigi Desktop Search</title>"
-        "</head><body>"
-        "<div class='header'>";
+        "</head><body>";
+}
+void
+StrigiHtmlGui::printHeader(ostream& out, const string& path,
+        const map<string, string> &params) {
+    printHtmlHeader(out);
+    out << "<div class='header'>";
     printMenu(out, path, params);
     out << "<div class='title'>Strigi Desktop Search</div>";
     out << "</div><div class='box'>";
@@ -473,6 +477,8 @@ StrigiHtmlGui::readTabQueries() const {
 }
 void
 StrigiHtmlGui::printSearchResults(std::ostream& out,
-        const ClientInterface::Hits& hits, const std::string& query) const {
-    p->printSearchResults(out, hits, query); 
+        const ClientInterface::Hits& hits, const std::string& query) {
+    printHtmlHeader(out);
+    p->printSearchResults(out, hits, query);
+    out << "</body></html>";
 }
