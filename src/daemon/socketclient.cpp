@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "socketclient.h"
+#include "filters.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -282,9 +283,9 @@ SocketClient::setIndexedDirectories(set<string> dirs) {
     close(sd);
     return "";
 }
-set<string>
+multimap<int,string>
 SocketClient::getFilteringRules() {
-    set<string> r;
+    multimap<int,string> r;
     request.clear();
     response.clear();
     request.push_back("getFilteringRules");
@@ -295,20 +296,57 @@ SocketClient::getFilteringRules() {
     sendRequest(sd);
     readResponse(sd);
     close(sd);
-    vector<string>::const_iterator i;
-    for (i = response.begin(); i != response.end(); ++i) {
-        r.insert(*i);
+    
+    // response structure:
+    // LINE 0: FILTER_RTTI-TOT_RULES_NUMBER
+    // ... rules ...
+    // LINE $RULES_NUMBER: FILTER_RTTI-TOT_RULES_NUMBER
+    // ... rules ...
+    int filterRTTI = 0;
+    unsigned int filterNum = 0;
+    int unsigned i = 0;
+    
+    while ((i < response.size()) && (sscanf(response[i].c_str(), "%i-%u", &filterRTTI, &filterNum) != 0))
+    {
+        i++;
+        for (unsigned int ub = i + filterNum; (i < ub) && (i < response.size()); i++)
+            r.insert (make_pair(filterRTTI, response[i]));
     }
+    
     return r;
 }
 void
-SocketClient::setFilteringRules(set<string>& rules) {
+SocketClient::setFilteringRules(multimap<int,string>& rules) {
     request.clear();
     request.push_back("setFilteringRules");
-    set<string>::const_iterator i;
-    for (i = rules.begin(); i != rules.end(); ++i) {
-        request.push_back(*i);
+    
+    multimap<int,string>::iterator lb, ub, i;
+    char buffer[500];
+        
+    lb = rules.lower_bound(PathFilter::RTTI);
+    ub = rules.upper_bound(PathFilter::RTTI);
+        
+    // request structure:
+    // LINE 0: FILTER_RTTI-TOT_RULES_NUMBER
+    // ... rules ...
+    // LINE $RULES_NUMBER: FILTER_RTTI-TOT_RULES_NUMBER
+    // ... rules ...
+        
+    snprintf (buffer, 500*sizeof(char), "%i-%u",PathFilter::RTTI, rules.count(PathFilter::RTTI));
+    request.push_back(string(buffer));
+    for (i = lb; i != ub; ++i) {
+        request.push_back(i->second);
     }
+        
+    lb = rules.lower_bound(PatternFilter::RTTI);
+    ub = rules.upper_bound(PatternFilter::RTTI);
+        
+    snprintf (buffer, 500*sizeof(char), "%i-%u",PatternFilter::RTTI, rules.count(PatternFilter::RTTI));
+    request.push_back(string(buffer));
+    for (i = lb; i != ub; ++i) {
+        request.push_back(i->second);
+    }
+    
     int sd = open();
     if (sd < 0) {
         return ;

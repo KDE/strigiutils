@@ -46,7 +46,7 @@ include_directories( eventlistener .)
 
 # daemonconfiguration has been removed until the next release
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp
+	indexscheduler.cpp clientinterface.cpp filters.cpp
 	filtermanager.cpp strigilogging.h strigithread.cpp)
 
 set(strigidaemon_LIBS streamindexer eventlistener

@@ -109,18 +109,18 @@ Interface::setIndexedDirectories(set<string> dirs) {
     scheduler.setIndexedDirectories(dirs);
     return "";
 }
-set<string>
+multimap<int,string>
 Interface::getFilteringRules() {
     if (filterManager != NULL)
         return filterManager->getFilteringRules();
     else
     {
-        set<string> empty;
+        multimap<int,string> empty;
         return empty;
     }
 }
 void
-Interface::setFilteringRules(set<string>& rules) {
+Interface::setFilteringRules(multimap<int,string>& rules) {
     if (filterManager != NULL)
         filterManager->setFilteringRules (rules);
 }

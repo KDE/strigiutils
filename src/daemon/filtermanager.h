@@ -20,9 +20,12 @@
 #ifndef FILTERMANAGER_H
 #define FILTERMANAGER_H
 
-#include <set>
+#include <map>
 #include <string>
 #include <pthread.h>
+#include <vector>
+
+class Filter;
 
 class FilterManager
 {
@@ -30,21 +33,22 @@ class FilterManager
         FilterManager();
         ~FilterManager();
        
-        void setConfFile(std::string& confFile);
+        void setConfFile(std::string& patternRules, std::string& pathRules);
        
         /*! returns true if text matches a filtering rule, false otherwise*/
         bool findMatch(std::string& text);
         bool findMatch(const char* text);
        
-        std::set<std::string> getFilteringRules();
-        void setFilteringRules(std::set<std::string>& rules);
+        std::multimap<int,std::string> getFilteringRules();
+        void setFilteringRules(std::multimap<int,std::string>& rules);
        
     private:
-        void loadFilter();
+        void clearRules();
+        void loadFilter(std::string& file, unsigned int filterRTTI);
         void saveFilter();
        
-        std::string m_strConfFile;
-        std::set<std::string> m_rules;
+        std::string m_patternFile, m_pathFile;
+        std::vector<Filter*> m_rules;
         pthread_mutex_t m_mutex;
 };
 

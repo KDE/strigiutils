@@ -203,7 +203,8 @@ main(int argc, char** argv) {
     string dirsfile = daemondir+"/dirstoindex";
     string socketpath = daemondir+"/socket";
     string logconffile = daemondir+"/log.conf";
-    string filterfile = daemondir+"/filter.conf";
+    string pathfilterfile = daemondir+"/pathfilter.conf";
+    string patternfilterfile = daemondir+"/patternfilter.conf";
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -217,7 +218,7 @@ main(int argc, char** argv) {
 
     // init filter manager
     FilterManager filterManager;
-    filterManager.setConfFile (filterfile);
+    filterManager.setConfFile (patternfilterfile, pathfilterfile);
     IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
