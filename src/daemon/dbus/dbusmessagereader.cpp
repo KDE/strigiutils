@@ -107,6 +107,25 @@ DBusMessageReader::operator>>(std::vector<char>& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(const std::multimap<int, std::string>&) {
+DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
+        || DBUS_TYPE_STRUCT != dbus_message_iter_get_element_type(&it)) {
+        close();
+        return *this;
+    }
+    DBusMessageIter sub;
+    DBusMessageIter ssub;
+    dbus_message_iter_recurse(&it, &sub);
+    int32_t n;
+    const char* value;
+    do {
+        // this probably doesnt work without opening each struct for reading
+        dbus_message_iter_recurse(&sub, &ssub);
+        dbus_message_iter_get_basic(&sub, &n);
+        dbus_message_iter_get_basic(&sub, &value);
+        m.insert(make_pair(n,value));
+    } while(dbus_message_iter_next(&sub));
+    dbus_message_iter_next(&it);
     return *this;
 }
