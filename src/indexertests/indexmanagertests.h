@@ -13,7 +13,9 @@ public:
     IndexManagerTests(jstreams::IndexManager* w);
     ~IndexManagerTests();
     int testAllInThreads(int n);
-    int testAll(bool threaded=false);
+    int testAll();
+    int runUnthreadedTests();
+    int runThreadedTests();
 };
 
 #endif

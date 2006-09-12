@@ -2,7 +2,9 @@
 #include "indexreader.h"
 #include "indexwriter.h"
 #include "indexmanager.h"
+#include "query.h"
 #include <sstream>
+#include <iostream>
 using namespace std;
 using namespace jstreams;
 
@@ -22,7 +24,8 @@ public:
     ~IndexManagerTester() {
         pthread_mutex_destroy(&lock);
     }
-    int testAll(bool threaded = false);
+    int runUnthreadedTests();
+    int runThreadedTests();
     void cleanErrors() {
         pthread_mutex_lock(&lock);
         errors = 0;
@@ -41,23 +44,30 @@ public:
         pthread_mutex_unlock(&lock);
     }
     int addAndCount();
+    int testNumberQuery();
 };
 int
-IndexManagerTester::testAll(bool threaded) {
+IndexManagerTester::runUnthreadedTests() {
     int n = 0;
 
     // tests that only need return 0 when not threaded
-    int nt = 0;
-    nt += addAndCount();
-    if (!threaded) {
-        n += nt;
-    }
+    n += addAndCount();
+    n += testNumberQuery();
 
     addErrors(n);
     return n;
 }
 int
+IndexManagerTester::runThreadedTests() {
+    int n = 0;
+    // tests that only need return 0 when not threaded
+    addAndCount();
+    addErrors(n);
+    return n;
+}
+int
 IndexManagerTester::addAndCount() {
+    writer->deleteAllEntries();
     int m = 20;
     ostringstream str;
     for (int i=0; i<m; ++i) {
@@ -68,14 +78,34 @@ IndexManagerTester::addAndCount() {
     }
     writer->commit();
     int n = reader->countDocuments();
-    printf("%i %i\n", n, m);
     return n != m;
+}
+int
+IndexManagerTester::testNumberQuery() {
+    writer->deleteAllEntries();
+    // add numbers to the database
+    int m = 2000;
+    ostringstream str;
+    string size("size");
+    for (int i=1; i<=m; ++i) {
+        str << i;
+        string s(str.str());
+        {
+             Indexable idx(s, 0, writer, 0);
+             idx.setField(size, s);
+        }
+        str.str("");
+    }
+    writer->commit();
+    Query q("size:>0", -1, 0);
+    int count = reader->countHits(q);
+    return count != m;
 }
 /* below here the threading plumbing is done */
 void*
 threadstarter(void *d) {
     IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
-    tester->testAll(true);
+//    tester->runThreadedTests();
     pthread_exit(0);
 }
 IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m)
@@ -100,7 +130,18 @@ IndexManagerTests::testAllInThreads(int n) {
 }
 
 int
-IndexManagerTests::testAll(bool threaded) {
+IndexManagerTests::testAll() {
     tester->cleanErrors();
-    return tester->testAll(threaded);
+    int n = 0;
+    n += tester->runUnthreadedTests();
+    n += tester->runThreadedTests();
+    return n;
+}
+int
+IndexManagerTests::runUnthreadedTests() {
+    return tester->runUnthreadedTests();
+}
+int
+IndexManagerTests::runThreadedTests() {
+    return tester->runThreadedTests();
 }
