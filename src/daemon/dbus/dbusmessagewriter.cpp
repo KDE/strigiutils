@@ -137,14 +137,13 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
 /** map multimap<int,string> to 'a(is)' **/
 DBusMessageWriter&
 DBusMessageWriter::operator<<(const std::multimap<int, std::string>& m) {
-    DBusMessageIter sub;
-    DBusMessageIter ssub;
-    multimap<int,string>::const_iterator i;
+    DBusMessageIter sub, ssub;
     dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY, "(is)", &sub);
-    for (i=m.begin(); i!= m.end(); ++i) {
+    multimap<int,string>::const_iterator i;
+    for (i = m.begin(); i != m.end(); ++i) {
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
         int32_t n = i->first;
         const char* s = i->second.c_str();
-        dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT32, &n);
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &s);
         dbus_message_iter_close_container(&sub, &ssub);

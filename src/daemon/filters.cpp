@@ -25,10 +25,6 @@
 
 using namespace std;
 
-int Filter::rtti() const { return RTTI; }
-int PatternFilter::rtti() const { return RTTI; }
-int PathFilter::rtti() const { return RTTI; }
-
 bool PatternFilter::match(const string& text)
 {
     int ret = fnmatch (m_rule.c_str(), text.c_str(), 0);

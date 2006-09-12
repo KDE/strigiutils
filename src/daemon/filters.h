@@ -31,9 +31,7 @@ class Filter
         
         virtual bool match(const std::string& text) = 0;
         const std::string& rule() const { return m_rule; }
-        virtual int rtti() const;
-        
-        enum {RTTI = 0};
+        virtual int rtti() const = 0;
         
     protected:
         const std::string m_rule;
@@ -48,7 +46,7 @@ class PatternFilter : public Filter
         enum {RTTI = 1};
         
         bool match(const std::string& text);
-        int rtti() const;
+        int rtti() const { return RTTI; }
 };
 
 class PathFilter : public Filter
@@ -60,7 +58,7 @@ class PathFilter : public Filter
         enum {RTTI = 2};
         
         bool match (const std::string& text);
-        int rtti() const;
+        int rtti() const { return RTTI; }
 };
 
 #endif
