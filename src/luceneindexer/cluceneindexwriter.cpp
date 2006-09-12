@@ -56,17 +56,26 @@ CLuceneIndexWriter::addText(const Indexable* idx, const char* text,
     doc->content.append(text, length);
 }
 void
-CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
-        const string& value) {
+setField(const jstreams::Indexable* idx, const TCHAR* fn,
+        const std::string& value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
 #if defined(_UCS2)
-    TCHAR fn[CL_MAX_DIR];
     TCHAR fv[CL_MAX_DIR];
-    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
     STRCPY_AtoT(fv, value.c_str(), CL_MAX_DIR);
     doc->doc.add( *Field::Keyword(fn, fv) );
 #else
-    doc->doc.add(*Field::Keyword(fieldname.c_str(), value.c_str()));
+    doc->doc.add( *Field::Keyword(fn, value.c_str()) );
+#endif
+}
+void
+CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
+        const string& value) {
+#if defined(_UCS2)
+    TCHAR fn[CL_MAX_DIR];
+    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
+    ::setField(idx, fn, value);
+#else
+    ::setField(idx, fn, value);
 #endif
 }
 void
@@ -80,26 +89,26 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    setField(idx, "path", idx->getName());
+    ::setField(idx, _T("path"), idx->getName());
     string field = idx->getEncoding();
-    if (field.length()) setField(idx, "encoding", field);
+    if (field.length()) ::setField(idx, _T("encoding"), field);
     field = idx->getMimeType();
-    if (field.length()) setField(idx, "mimetype", field);
+    if (field.length()) ::setField(idx, _T("mimetype"), field);
     field = idx->getFileName();
-    if (field.length()) setField(idx, "filename", field);
+    if (field.length()) ::setField(idx, _T("filename"), field);
     field = idx->getExtension();
-    if (field.length()) setField(idx, "ext", field);
+    if (field.length()) ::setField(idx, _T("ext"), field);
 //    printf("%i %s\n", idx->getDepth(), idx->getName().c_str());
     ostringstream o;
     o << (int)idx->getDepth();
-    setField(idx, "depth", o.str());
+    ::setField(idx, _T("depth"), o.str());
     o.str("");
     {
         char tmp[100];
         snprintf(tmp,100,"%llu",(uint64_t)idx->getMTime());
         o << tmp;
     }
-    setField(idx, "mtime", o.str());
+    ::setField(idx, _T("mtime"), o.str());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
