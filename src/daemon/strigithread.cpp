@@ -59,7 +59,7 @@ std::string
 StrigiThread::getStringState() {
     State s = getState();
     std::string str;
-    switch (state) {
+    switch (s) {
     case Idling:
         str = "idling";
         break;
