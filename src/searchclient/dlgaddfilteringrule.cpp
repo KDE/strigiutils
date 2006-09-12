@@ -34,8 +34,8 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, int* type, QWidget *parent)
-    : QDialog(parent, Qt::Dialog),
+DlgAddFilteringRule::DlgAddFilteringRule(QString* rule, int* type,
+        QWidget* parent) : QDialog(parent, Qt::Dialog),
       m_rule (rule),
       m_type (type),
       m_item (NULL)
@@ -156,21 +156,20 @@ void DlgAddFilteringRule::accept()
 {
     if ((lineEdit->text()).isEmpty())
     {
-        QMessageBox::critical ( 0, QString("error"), QString("you haven't specified a filtering rule!"));
-        
+        QMessageBox::critical ( 0, QString("error"),
+            QString("you haven't specified a filtering rule!"));
+
         return;
     }
     
-    if (m_item != NULL)
+    if (m_item != NULL) {
         m_item->setText (lineEdit->text());
-    else if ((m_type != NULL) && (m_rule != NULL))
-    {
-        if (rbtnPath->isChecked())
+    } else if ((m_type != NULL) && (m_rule != NULL)) {
+        if (rbtnPath->isChecked()) {
             *m_type = PathFilter::RTTI;
-        else if (rbtnPattern->isChecked())
+        } else if (rbtnPattern->isChecked()) {
             *m_type = PatternFilter::RTTI;
-        else
-            *m_type = Filter::RTTI;
+        }
     
         *m_rule = lineEdit->text();
     }

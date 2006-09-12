@@ -88,7 +88,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     tabs->addTab("msg", "mimetype:message/*");
     tabs->addTab("mail", "mimetype:text/x-mail");
     tabs->addTab("audio", "mimetype:audio/*");
-    tabs->addTab("other", "-kde -mimetype:mesage/* -mimetype:text/x-mail -mimetype:audio/*");
+    tabs->addTab("other",
+        "-kde -mimetype:mesage/* -mimetype:text/x-mail -mimetype:audio/*");
     tabs->addTab("all", "");
     mainview->addWidget(tabs);
     mainview->addWidget(statuswidget);
