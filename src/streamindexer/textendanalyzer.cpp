@@ -61,10 +61,9 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     if (nread > 0) {
         i->addText(b, nread);
     }
-    if (nread != Eof) {
+    if (in->getStatus() != Eof) {
         error = in->getError();
-        // TODO investigate
-        //return -1;
+        return -1;
     }
 //    InputStreamReader reader(in);
 //    i->addStream("content", &reader);

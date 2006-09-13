@@ -195,7 +195,7 @@ SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     }
     i->setMimeType("text/xml");
     i->setField("root", p->rootelement);
-    if (nread != Eof) {
+    if (in->getStatus() != Eof) {
         error = in->getError();
         return -1;
     }

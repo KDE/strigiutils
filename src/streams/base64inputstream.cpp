@@ -134,7 +134,7 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
         }
     }
     if (nwritten == 0 && input == 0 && bytestodo == 0) {
-        printf("EOF\n");
+//        printf("EOF\n");
         nwritten = -1;
     }
     return nwritten;
