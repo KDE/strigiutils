@@ -67,11 +67,11 @@
     std::cerr << loggerName << ": " << message << std::endl; \
 }
 
-#define STRIGI_LOG_DEBUG(loggerName, message) { STRIGI_LOG (loggerName, message) }
-#define STRIGI_LOG_INFO(loggerName, message)  { STRIGI_LOG (loggerName, message) }
-#define STRIGI_LOG_WARNING(loggerName, message)  { STRIGI_LOG (loggerName, message) }
-#define STRIGI_LOG_ERROR(loggerName, message)  { STRIGI_LOG (loggerName, message) }
-#define STRIGI_LOG_FATAL(loggerName, message)  { STRIGI_LOG (loggerName, message) }
+#define STRIGI_LOG_DEBUG(loggerName, msg) { }
+#define STRIGI_LOG_INFO(loggerName, msg)  { }
+#define STRIGI_LOG_WARNING(loggerName, msg) { STRIGI_LOG (loggerName, msg) }
+#define STRIGI_LOG_ERROR(loggerName, msg) { STRIGI_LOG (loggerName, msg) }
+#define STRIGI_LOG_FATAL(loggerName, msg) { STRIGI_LOG (loggerName, msg) }
 #endif
 
 #endif
