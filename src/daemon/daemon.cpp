@@ -146,7 +146,17 @@ set<string>
 readdirstoindex(const string& file) {
     set<string> dirs;
     ifstream f(file.c_str());
+    // if no file was available, use the HOME directory
     string s;
+    if (!f.good()) {
+        s = getenv("HOME"); 
+        dirs.insert(s);
+        dirs.insert(s+"/.kde");
+        dirs.insert(s+"/.gnome2");
+        dirs.insert(s+"/.evolution");
+        dirs.insert(s+"/.mozilla");
+        return dirs;
+    }
     do {
         getline(f, s);
         if (s.size()) {
