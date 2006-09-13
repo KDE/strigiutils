@@ -29,8 +29,8 @@ struct EstraierData {
     int nwords;
 };
 
-EstraierIndexWriter::EstraierIndexWriter(EstraierIndexManager *m, ESTDB* d)
-        : manager(m), db(d) {
+EstraierIndexWriter::EstraierIndexWriter(EstraierIndexManager *m)
+        : manager(m) {
 }
 EstraierIndexWriter::~EstraierIndexWriter() {
     // make sure the cache is empty
@@ -46,8 +46,14 @@ EstraierIndexWriter::addText(const Indexable* idx, const char* text,
 void
 EstraierIndexWriter::setField(const Indexable* idx, const string& name,
         const string& value) {
-    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
-    est_doc_add_attr(doc, name.c_str(), value.c_str());
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());
+    if (name == "size") {
+        est_doc_add_attr(doc, "@size", value.c_str());
+    } else if (name == "title") {
+        est_doc_add_attr(doc, "@title", value.c_str());
+    } else {
+        est_doc_add_attr(doc, name.c_str(), value.c_str());
+    }
 }
 void
 EstraierIndexWriter::startIndexable(Indexable* idx) {
@@ -70,19 +76,19 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
     sprintf(numbuf, "%i", idx->getDepth());
     est_doc_add_attr(doc, "depth", numbuf);
 
-    manager->ref();
+    ESTDB* db = manager->ref();
     int ok = est_db_put_doc(db, doc, 0);
     if (!ok) {
         fprintf(stderr, "error writing document: %s\n",
             est_err_msg(est_db_error(db)));
     }
+    manager->deref();
     // deallocate the estraier document
     est_doc_delete(doc);
-    manager->deref();
 }
 void
 EstraierIndexWriter::commit() {
-    manager->ref();
+    ESTDB* db = manager->ref();
     //est_db_optimize(db, 0);
     est_db_sync(db);
     manager->deref();
@@ -92,13 +98,13 @@ EstraierIndexWriter::commit() {
  **/
 void
 EstraierIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
-    manager->ref();
 
     // retrieve the ids of all documents
     int n;
     int* all;
     ESTCOND* c = est_cond_new();
     est_cond_add_attr(c, "@id NUMGE 0");
+    ESTDB* db = manager->ref();
     all = est_db_search(db, c, &n, NULL);
     est_cond_delete(c);
 

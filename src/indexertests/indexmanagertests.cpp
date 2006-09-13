@@ -62,6 +62,7 @@ IndexManagerTester::runThreadedTests() {
     int n = 0;
     // tests that only need return 0 when not threaded
     addAndCount();
+    testNumberQuery();
     addErrors(n);
     return n;
 }
@@ -71,7 +72,7 @@ IndexManagerTester::addAndCount() {
     int m = 20;
     ostringstream str;
     for (int i=0; i<m; ++i) {
-        str << i;
+        str << "/" << i;
         string s(str.str());
         { Indexable idx(s, 0, writer, 0); }
         str.str("");
@@ -84,21 +85,23 @@ int
 IndexManagerTester::testNumberQuery() {
     writer->deleteAllEntries();
     // add numbers to the database
-    int m = 2000;
+    int m = 200;
     ostringstream str;
     string size("size");
     for (int i=1; i<=m; ++i) {
         str << i;
-        string s(str.str());
+        string value(str.str());
+        string name("/"+value);
         {
-             Indexable idx(s, 0, writer, 0);
-             idx.setField(size, s);
+             Indexable idx(name, 0, writer, 0);
+             idx.setField(size, value);
         }
         str.str("");
     }
     writer->commit();
     Query q("size:>0", -1, 0);
     int count = reader->countHits(q);
+    printf("count: %i\n", count);
     return count != m;
 }
 /* below here the threading plumbing is done */

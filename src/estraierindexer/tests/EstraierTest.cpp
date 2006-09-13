@@ -33,7 +33,7 @@ EstraierTest(int argc, char**argv) {
     // clean up data
     std::string cmd = "rm -r ";
     cmd += path;
-    system(cmd.c_str());
+//    system(cmd.c_str());
 
     return errors;
 }

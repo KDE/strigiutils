@@ -30,8 +30,7 @@ class EstraierIndexReader : public jstreams::IndexReader {
 friend class EstraierIndexManager;
 private:
     EstraierIndexManager* manager;
-    ESTDB* db;
-    EstraierIndexReader(EstraierIndexManager* m, ESTDB* d);
+    EstraierIndexReader(EstraierIndexManager* m);
     ~EstraierIndexReader();
     std::string getFragment(ESTDOC* doc, const jstreams::Query& query);
     static ESTCOND* createCondition(const jstreams::Query&);

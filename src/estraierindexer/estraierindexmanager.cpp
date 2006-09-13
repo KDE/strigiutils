@@ -60,7 +60,7 @@ EstraierIndexManager::getIndexReader() {
     pthread_t self = pthread_self();
     EstraierIndexReader* r = readers[self];
     if (r == 0) {
-        r = new EstraierIndexReader(this, db);
+        r = new EstraierIndexReader(this);
         readers[self] = r;
     }
     return r;
@@ -70,14 +70,15 @@ EstraierIndexManager::getIndexWriter() {
     pthread_t self = pthread_self();
     EstraierIndexWriter* w = writers[self];
     if (w == 0) {
-        w = new EstraierIndexWriter(this, db);
+        w = new EstraierIndexWriter(this);
         writers[self] = w;
     }
     return w;
 }
-void
+ESTDB*
 EstraierIndexManager::ref() {
     pthread_mutex_lock(&dblock);
+    return db;
 }
 void
 EstraierIndexManager::deref() {
@@ -119,7 +120,7 @@ removefiles(const string& d, bool rmd = false) {
             if (S_ISDIR(s.st_mode)) {
                 removefiles(filename, true);
             } else {
-                printf("unlink %s\n", filename.c_str());
+//                printf("unlink %s\n", filename.c_str());
                 unlink(filename.c_str());
             }
         } else {

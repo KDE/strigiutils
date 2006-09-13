@@ -29,7 +29,6 @@ friend class EstraierIndexManager;
 private:
     EstraierIndexManager* manager;
     const std::string indexpath;
-    ESTDB* db;
 
 protected:
     void startIndexable(jstreams::Indexable*);
@@ -38,7 +37,7 @@ protected:
         int32_t length);
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
-    EstraierIndexWriter(EstraierIndexManager*, ESTDB*);
+    EstraierIndexWriter(EstraierIndexManager*);
     ~EstraierIndexWriter();
 public:
     void commit();

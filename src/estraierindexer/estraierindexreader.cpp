@@ -27,14 +27,16 @@
 using namespace std;
 using namespace jstreams;
 
-EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m, ESTDB* d)
-    : manager(m), db(d) {
+EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m)
+    : manager(m) {
 }
 EstraierIndexReader::~EstraierIndexReader() {
 }
 ESTCOND*
 EstraierIndexReader::createCondition(const jstreams::Query& query) {
     // build the phrase string
+
+    // write the part of the query that matches the document context
     string phrase;
     set<string> terms;
     const map<string, set<string> >& includes = query.getIncludes();
@@ -47,29 +49,39 @@ EstraierIndexReader::createCondition(const jstreams::Query& query) {
         }
         phrase += *j;
     }
-    if (phrase.length() == 0) {
-        phrase = "*";
-    }
     terms.clear();
+
+    // add the part of the query that excludes terms
     const map<string, set<string> >& excludes = query.getExcludes();
     i = excludes.find("");
     if (i != excludes.end()) terms = i->second;
     for (j = terms.begin(); j != terms.end(); ++j) {
-        phrase += " ANDNOT " + *j;
+        if (phrase.length() > 0) {
+            phrase += " ANDNOT ";
+        }
+        phrase += *j;
     }
     ESTCOND* cond = est_cond_new();
     printf("%s", phrase.c_str());
-    est_cond_set_phrase(cond, phrase.c_str());
-    est_cond_set_options(cond, ESTCONDSCFB);
+    if (phrase.length() > 0) {
+        est_cond_set_phrase(cond, phrase.c_str());
+    }
 
     // add the attributes
     for (i = includes.begin(); i != includes.end(); ++i) {
         if (i->first.length() == 0) continue;
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
-            string att = id + " STRINC " + *j;
-            printf(" && %s", att.c_str());
-            est_cond_add_attr(cond, att.c_str());
+            ostringstream att;
+            if (j->length() > 0 && (*j)[0] == '<') {
+                att << id << " NUMLT " << j->substr(1);
+            } else if (j->length() > 0 && (*j)[0] == '>') {
+                att << id << " NUMGT " << j->substr(1);
+            } else {
+                att << id << " STRINC " << *j;
+            }
+            printf(" && %s", att.str().c_str());
+            est_cond_add_attr(cond, att.str().c_str());
         }
     }
     for (i = excludes.begin(); i != excludes.end(); ++i) {
@@ -112,8 +124,12 @@ EstraierIndexReader::countHits(const jstreams::Query& query) {
     int n;
     int* ids;
 
-    manager->ref();
+    ESTDB* db = manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
+    int r = est_db_error(db);
+    if (r != ESTENOERR && r != ESTENOITEM) {
+        fprintf(stderr, "%s\n", est_err_msg(r));
+    }
     manager->deref();
     est_cond_delete(cond);
     free(ids);
@@ -126,7 +142,7 @@ EstraierIndexReader::query(const Query& query) {
     int n;
     int* ids;
 
-    manager->ref();
+    ESTDB* db = manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
    
     std::vector<IndexedDocument> results;
@@ -175,7 +191,7 @@ EstraierIndexReader::getFiles(char depth) {
     int n;
     int* ids;
 
-    manager->ref();
+    ESTDB* db = manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
    
     for (int i=0; i<n; ++i) {
@@ -185,6 +201,7 @@ EstraierIndexReader::getFiles(char depth) {
         assert(uri);
         files[uri] = md;
         free(uri);
+        free(mdate);
     }
     manager->deref();
 
@@ -195,35 +212,35 @@ EstraierIndexReader::getFiles(char depth) {
 }
 int32_t
 EstraierIndexReader::countDocuments() {
-    manager->ref();
+    ESTDB* db = manager->ref();
     int count = est_db_doc_num(db);
     manager->deref();
     return count;
 }
 int32_t
 EstraierIndexReader::countWords() {
-    manager->ref();
+    ESTDB* db = manager->ref();
     int count = est_db_word_num(db);
     manager->deref();
     return count;
 }
 int64_t
 EstraierIndexReader::getIndexSize() {
-    manager->ref();
+    ESTDB* db = manager->ref();
     int count = (int)est_db_size(db);
     manager->deref();
     return count;
 }
 int64_t
 EstraierIndexReader::getDocumentId(const std::string& uri) {
-    manager->ref();
+    ESTDB* db = manager->ref();
     int64_t id = est_db_uri_to_id(db, uri.c_str());
     manager->deref();
     return id;
 }
 time_t
 EstraierIndexReader::getMTime(int64_t docid) {
-    manager->ref();
+    ESTDB* db = manager->ref();
     time_t mtime = -1;
     char *cstr = est_db_get_doc_attr(db, docid, "@mdate");
     if (cstr) {

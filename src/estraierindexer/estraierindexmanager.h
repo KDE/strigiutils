@@ -50,7 +50,7 @@ public:
 
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
-    void ref();
+    ESTDB* ref();
     void deref();
 
     void deleteIndex();
