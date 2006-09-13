@@ -72,7 +72,7 @@ HelperProgramConfig::HelperProgramConfig() {
         h->magic = wordmagic;
         h->magicsize = 16;
         h->arguments.push_back(exepath);
-//        h->arguments.push_back("-X");
+        h->arguments.push_back("--nographics");
         h->arguments.push_back("%s");
         h->readfromstdin = false;
         helpers.push_back(h);
