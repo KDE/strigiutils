@@ -179,7 +179,6 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 char
 SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
-
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {

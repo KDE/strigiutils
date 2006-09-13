@@ -97,7 +97,10 @@ SaxEndAnalyzer::Private::charactersSAXFunc(void* ctx, const char * ch,
     // skip whitespace
     const char* end = ch+len;
     while (ch < end && isspace(*ch)) ch++;
-    if (ch == end) return;
+    if (ch == end) {
+        p->idx->addText(" ", 1);
+        return;
+    }
     len = end-ch;
     if (p->fieldtype != NONE) {
         if (p->fieldtype == TEXT) {
@@ -139,17 +142,14 @@ SaxEndAnalyzer::SaxEndAnalyzer() {
 SaxEndAnalyzer::~SaxEndAnalyzer() {
     delete p;
 }
-
 bool
 SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     p->init(0, header, headersize);
     return !p->error;
 }
-
 char
 SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
-
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {
@@ -170,7 +170,7 @@ SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         i->setMimeType("text/xml");
     }
 //    i->setField("root", p->rootelement);
-    if (nread != Eof) {
+    if (in->getStatus() != Eof) {
         error = in->getError();
         return -1;
     }
