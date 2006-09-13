@@ -54,6 +54,7 @@ public:
 string
 SearchViewHtmlHelper::mapMimetypeIcon(const string& url,
             const string& mimetype) {
+    // use gnome icons because they map easily
     QString gnome = "/opt/gnome/share/icons/gnome/48x48/mimetypes/gnome-mime-";
     QString icon(mimetype.c_str());
     icon.replace("/", "-");
@@ -84,7 +85,7 @@ string
 SearchViewHtmlHelper::highlight(const std::string& text,
         const std::vector<std::string>& terms) {
     int pre = 5, post = 5;
-    uint maxlen = 200;
+    int maxlen = 200;
     QString t = QString::fromUtf8(text.c_str(), text.length());
     vector<QRegExp> res;
     QString out;
@@ -173,7 +174,6 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
         ostringstream str;
         htmlgui->printSearchResults(str, hits, (const char*)q.toUtf8());
         QString html(str.str().c_str());
-        qDebug() << html;
         view->setHtml(html);
     } else {
         view->append("no results");
