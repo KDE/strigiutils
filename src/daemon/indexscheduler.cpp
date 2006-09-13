@@ -50,15 +50,14 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
     if (sched->getState() != Working) return false;
     // only read files that do not start with '.'
-    if (strstr(path, "/.")) return true;
+    if (path[dirlen] == '.') return true;
     // check filtering rules given by user
-    if (sched->m_filterManager == NULL)
-    {
-        STRIGI_LOG_WARNING ("strigi.IndexScheduler.addFileCallback", "unable to use filters, m_filterManager == NULL!")
-    }
-    else if ((sched->m_filterManager)->findMatch (path))
-    {
-        STRIGI_LOG_INFO ("strigi.IndexScheduler.indexFileCallback", "ignoring file " + string(path))
+    if (sched->m_filterManager == NULL) {
+        STRIGI_LOG_WARNING ("strigi.IndexScheduler.addFileCallback",
+            "unable to use filters, m_filterManager == NULL!")
+    } else if ((sched->m_filterManager)->findMatch(path)) {
+        STRIGI_LOG_INFO ("strigi.IndexScheduler.indexFileCallback",
+            "ignoring file " + string(path))
         return true;
     }
    
@@ -183,7 +182,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
    
     STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
 
-    for (vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
+    for(vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
     {
         Event* event = *iter;
         
@@ -243,7 +242,8 @@ IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {
                 j = dirstoindex.begin();
             } else if (i->length() >= j->length()
                 && i->substr(0, j->length()) == *j) {
-                ok = false;
+// for now, allow subdirs, because they might not be included otherwise
+//                ok = false;
             }
         }
         if (ok) {
