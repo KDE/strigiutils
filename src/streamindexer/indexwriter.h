@@ -86,9 +86,9 @@ public:
     }
     const std::string& getName() const { return name; }
     time_t getMTime() const { return mtime; }
-    void setId(int64_t i) { id = i; }
-    int64_t getId() const { return id; }
     char getDepth() const { return depth; }
+    int64_t getId() const { return id; }
+    void setId(int64_t i) { id = i; }
     void setEncoding(const char* enc) { encoding = enc; }
     const std::string& getEncoding() const { return encoding; }
     void* getWriterData() const { return writerData; }
