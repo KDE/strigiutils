@@ -71,15 +71,12 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         nread -= tl;
         // we rewind, but the pointer 'start' will stay valid nontheless
         input->reset(pos + nread);
-        printf("ehh %i %i\n", status, max);
     } else if (max != 0 && nread > max) {
-        printf("max\n");
         // we are near the end of the stream but cannot pass all data
         // at once because the amount read is larger than the amount to pass
         input->reset(pos + max);
         nread = max;
     } else {
-        printf("huh????\n");
         // we are at the end of the stream, so no need to rewind
         // signal the end of stream at the next call
         status = Eof;
