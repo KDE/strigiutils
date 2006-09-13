@@ -67,7 +67,7 @@ CLuceneIndexReader::createTerm(const string& name, const string& value) {
     STRCPY_AtoT(n, name.c_str(), name.length()+1);
     TCHAR* v = new TCHAR[value.length()+1];
     STRCPY_AtoT(v, value.c_str(), value.length()+1);
-    printf("'%s' '%s'\n", name.c_str(), value.c_str());
+    //printf("'%s' '%s'\n", name.c_str(), value.c_str());
     Term* t = _CLNEW Term(n, v);
     delete [] n;
     delete [] v;

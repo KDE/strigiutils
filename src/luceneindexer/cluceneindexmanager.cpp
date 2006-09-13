@@ -126,7 +126,6 @@ void
 CLuceneIndexManager::openWriter(bool truncate) {
     version++;
     try {
-        printf("writer at %s\n", dbdir.c_str());
         if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
             if (IndexReader::isLocked(dbdir.c_str())) {
                 IndexReader::unlock(dbdir.c_str());
