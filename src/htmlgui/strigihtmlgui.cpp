@@ -378,9 +378,11 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         depth = atoi(t->second.c_str());
     }
     link = h->mapLinkUrl(doc.uri, depth);
-    icon = "<div class='iconbox'><img class='icon' src='";
-    icon += h->mapMimetypeIcon(doc.uri, doc.mimetype);
-    icon += "'/></div>\n";
+    icon = h->mapMimetypeIcon(doc.uri, doc.mimetype);
+    if (icon.length()) {
+        icon = "<div class='iconbox'><img class='icon' src='"+icon;
+        icon += "'/></div>\n";
+    }
     t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
