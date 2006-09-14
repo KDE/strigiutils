@@ -290,7 +290,7 @@ main(int argc, char** argv) {
 
     // start the indexer thread
     threads.push_back(&scheduler);
-    scheduler.start();
+    scheduler.start(20);
 
     Interface interface(*index, scheduler);
 

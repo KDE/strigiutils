@@ -13,13 +13,14 @@ threadstarter(void *d) {
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
     StrigiThread* thread = static_cast<StrigiThread*>(d);
+    if (thread->getPriority() > 0) {
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
 #endif
     int r = sched_setscheduler(0, SCHED_BATCH, &param);
     if (r != 0) {
         // fall back to renice if SCHED_BATCH is unknown
-        r = setpriority(PRIO_PROCESS, 0, 20);
+        r = setpriority(PRIO_PROCESS, 0, thread->getPriority());
         if (r==-1)
             STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name + ".threadstartert",
                 string("error setting priority: ") + strerror(errno))
@@ -28,6 +29,7 @@ threadstarter(void *d) {
 #ifdef HAVE_LINUXIOPRIO
     sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
 #endif
+    }
 
     // start the actual work
     thread->run(0);
@@ -36,6 +38,7 @@ threadstarter(void *d) {
 }
 
 StrigiThread::StrigiThread(const char* n) :state(Idling),thread(0),  name(n) {
+    priority = 0;
     pthread_mutex_init(&lock, NULL);
 }
 StrigiThread::~StrigiThread() {
@@ -73,7 +76,8 @@ StrigiThread::getStringState() {
     return str;
 }
 int
-StrigiThread::start() {
+StrigiThread::start(int prio) {
+    priority = prio;
     // start the indexer thread
     int r = pthread_create(&thread, NULL, threadstarter, this);
     if (r < 0) {

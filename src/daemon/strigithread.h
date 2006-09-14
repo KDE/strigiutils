@@ -11,6 +11,7 @@ public:
 private:
     State state;
 protected:
+    int priority;
     pthread_mutex_t lock;
     pthread_t thread;
     void setState(State s);
@@ -20,11 +21,12 @@ public:
 
     StrigiThread(const char* name);
     virtual ~StrigiThread();
-    int start();
+    int start(int priority=0);
     void stop();
     void terminate();
     State getState();
     std::string getStringState();
+    int getPriority() const { return priority; }
 };
 
 #endif
