@@ -56,6 +56,9 @@ Some possible cmake options:
    use DBus for communication instead of the socket based communication
 
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
+If the cmake call still cannot find Qt4, you can call cmake like this:
+  QTDIR=/usr/lib/qt4 PATH=$QTDIR/bin:$PATH cmake ..
+
 
 Strigi can currently use 2 different backends with 2 more in the works. Install at least CLucene or Hyper Estraier.
 
