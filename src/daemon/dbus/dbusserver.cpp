@@ -46,18 +46,20 @@ DBusServer::run(void*) {
     callhandler.registerOnConnection(conn);
 
     DBusClientInterface searchinterface(interface);
-    callhandler.addInterface(&searchinterface);
+    if (interface) {
+        callhandler.addInterface(&searchinterface);
+    }
 
     TestInterface test;
     DBusTestInterface testinterface(&test);
     callhandler.addInterface(&testinterface);
 
-//    printf("%s\n", callhandler.getIntrospectionXML().c_str());
+    //printf("%s\n", callhandler.getIntrospectionXML().c_str());
 
     // loop, testing for new messages
-    while (interface->isActive() && getState() != Stopping) {
+    while ((!interface || interface->isActive()) && getState() != Stopping) {
         // non blocking read of the next available message
-        dbus_connection_read_write_dispatch(conn, -1);
+        dbus_connection_read_write_dispatch(conn, 100);
         dbus_connection_flush(conn);
     }
 
