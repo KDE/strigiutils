@@ -77,6 +77,7 @@ bool InotifyListener::init()
 
 void* InotifyListener::run(void*)
 {
+    bootstrap(dirs);
     while (getState() != Stopping)
     {
         watch();

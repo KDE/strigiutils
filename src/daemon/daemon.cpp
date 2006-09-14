@@ -302,7 +302,7 @@ main(int argc, char** argv) {
         inotifyListener.setEventListenerQueue (&listenerEventQueue);
         inotifyListener.setFilterManager (&filterManager);
         inotifyListener.setIndexReader (index->getIndexReader());
-        inotifyListener.bootstrap(dirs);
+        inotifyListener.setIndexedDirectories(dirs);
         inotifyListener.start();
     }
     interface.setEventListener (&inotifyListener);
