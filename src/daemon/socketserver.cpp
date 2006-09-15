@@ -29,6 +29,14 @@
 #include <assert.h>
 using namespace std;
 
+#if defined(__APPLE__)
+#define SOCKET_NOSIGNAL SO_NOSIGPIPE
+#elif defined( unix )
+#define SOCKET_NOSIGNAL MSG_NOSIGNAL
+#else
+#define SOCKET_NOSIGNAL 0
+#endif
+
 void*
 SocketServer::run(void*) {
     int sd, newSd;
@@ -125,7 +133,7 @@ SocketServer::sendResponse(int sd) {
         int p = 0;
         int len = line.length();
         do {
-            r = send(sd, line.c_str()+p, len-p, MSG_NOSIGNAL);
+            r = send(sd, line.c_str()+p, len-p, SOCKET_NOSIGNAL);
             if (r < 0) {
                 printf("error writing response\n");
                 return false;
@@ -133,7 +141,7 @@ SocketServer::sendResponse(int sd) {
             p += r;
         } while (p < len);
     }
-    r = send(sd, "\n", 1, MSG_NOSIGNAL);
+    r = send(sd, "\n", 1, SOCKET_NOSIGNAL);
     return r > 0;
 }
 void
