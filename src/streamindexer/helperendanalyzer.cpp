@@ -24,6 +24,7 @@
 #include "textendanalyzer.h"
 #include <fcntl.h>
 #include <errno.h>
+#include <sys/stat.h>
 using namespace jstreams;
 using namespace std;
 

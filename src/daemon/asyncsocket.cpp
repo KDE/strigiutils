@@ -23,6 +23,14 @@
 #include <sys/un.h>
 #include <errno.h>
 
+#if defined(__APPLE__)
+#define SOCKET_NOSIGNAL SO_NOSIGPIPE
+#elif defined( unix )
+#define SOCKET_NOSIGNAL MSG_NOSIGNAL
+#else
+#define SOCKET_NOSIGNAL 0
+#endif
+
 AsyncSocket::AsyncSocket() {
     status = Idle;
 }
@@ -95,7 +103,7 @@ AsyncSocket::statusChanged() {
 void
 AsyncSocket::write() {
     ssize_t r = send(socket, request.c_str()+writepos,
-        request.length()-writepos, MSG_NOSIGNAL);
+        request.length()-writepos, SOCKET_NOSIGNAL);
     if (r != -1) {
         writepos += r;
         if (writepos == request.length()) {
@@ -116,7 +124,7 @@ void
 AsyncSocket::read() {
     char c;
     while (true) {
-        int r = recv(socket, &c, 1, MSG_DONTWAIT|MSG_NOSIGNAL);
+        int r = recv(socket, &c, 1, MSG_DONTWAIT|SOCKET_NOSIGNAL);
         switch (r) {
         case 0:
             close();

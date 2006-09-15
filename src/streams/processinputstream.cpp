@@ -22,6 +22,12 @@
 using namespace jstreams;
 using namespace std;
 
+// define 'environ' for Mac OS X
+#if defined(__APPLE__)
+# include <crt_externs.h>
+# define environ (*_NSGetEnviron())
+#endif
+
 ProcessInputStream::ProcessInputStream(const vector<string>& a,
         StreamBase<char>* input) {
     this->input = input;
