@@ -19,7 +19,6 @@ Requirements:
 - ZLib >= 1.2.3 (http://www.zlib.net)
 - BZip2 >= 1.0.3 (http://www.bzip.org)
 - OpenSSL (http://http://www.openssl.org)
-- Xerces-C >= 2.6.0 (http://xml.apache.org/xerces-c/)
 
 Optional:
 - Qt4 >= 4.1.2
@@ -27,6 +26,7 @@ Optional:
 - magic-dev   
 - linux kernel >= 2.6.13 (for inotify support)
 - log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
+- Xerces-C >= 2.6.0 (http://xml.apache.org/xerces-c/)
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------
