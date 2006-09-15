@@ -1,13 +1,9 @@
 # xsd has been removed until the next release
-set(DIRS)
+set(DIRS eventlistener)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
 ENDIF(ENABLE_DBUS)
-
-IF(ENABLE_INOTIFY)
-  set(DIRS ${DIRS} eventlistener)
-ENDIF(ENABLE_INOTIFY)
 
 subdirs(${DIRS})
 
