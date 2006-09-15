@@ -18,29 +18,35 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexer.h"
+#include "filelister.h"
 #include "filereader.h"
+#include "filtermanager.h"
+
 using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-        m_manager(indexdir), m_indexer(m_manager.getIndexWriter()) {
+Indexer::Indexer(const char *indexdir, FilterManager* filtermanager) :m_indexdir(indexdir),
+        m_manager(indexdir), m_indexer(m_manager.getIndexWriter())
+{
+    m_lister = new FileLister (filtermanager);
 }
 Indexer::~Indexer() {
+    delete m_lister;
 }
 void
 Indexer::index(const char *dir) {
     workingIndexer = this;
-    m_lister.setCallbackFunction(&Indexer::addFileCallback);
+    m_lister->setCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
     if (exceptions) {
         try {
-            m_lister.listFiles(dir);
+            m_lister->listFiles(dir);
         } catch(...) {
             printf("Unknown error");
         }
     } else {
-        m_lister.listFiles(dir);
+        m_lister->listFiles(dir);
     }
 }
 bool

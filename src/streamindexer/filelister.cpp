@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "filelister.h"
+#include "filtermanager.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -35,11 +36,12 @@
 
 using namespace std;
 
-FileLister::FileLister() {
+FileLister::FileLister(FilterManager* filtermanager) {
     m_callback = 0;
     m_dirCallback = 0;
     path = 0;
     length = 0;
+    m_filterManager = filtermanager;
 }
 FileLister::~FileLister() {
     if (length) {
@@ -78,7 +80,12 @@ FileLister::walk_directory(uint len) {
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
-
+    
+    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path)))
+        return true; 
+    else if (m_filterManager == NULL)
+        printf ("m_filtermanager is NULL!!\n");
+    
 #ifndef _WIN32
     // call dir function callback, actually there's only inotify dir callback
     if (m_dirCallback != 0)

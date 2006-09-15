@@ -20,7 +20,7 @@
 
 #include "dlgaddfilteringrule.h"
 
-#include "../daemon/filters.h"
+#include "filters.h"
 
 #include <QFileDialog>
 #include <QHBoxLayout>

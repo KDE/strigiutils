@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "filelister.h"
+#include "filtermanager.h"
 #include <stdio.h>
 
 /**
@@ -36,7 +37,8 @@ main(int argc, char** argv) {
     if (argc != 2) {
         return -1;
     }
-    FileLister lister;
+    FilterManager filtermanager;
+    FileLister lister (&filtermanager);
     lister.setCallbackFunction(&addFileCallback);
     lister.listFiles(argv[1]);
     return 0;

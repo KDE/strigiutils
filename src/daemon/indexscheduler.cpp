@@ -132,7 +132,7 @@ IndexScheduler::index() {
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database")
 
         // first loop through all files
-        FileLister lister;
+        FileLister lister (m_filterManager);
         lister.setCallbackFunction(&addFileCallback);
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "going to index")
         set<string>::const_iterator i;

@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
+#include "filtermanager.h"
 
 void
 printUsage(char** argv) {
@@ -39,8 +40,10 @@ main(int argc, char **argv) {
         }
         verbosity = atoi(argv[2]);
     }
-        
-    Indexer indexer(verbosity);
+    
+    FilterManager filtermanager;
+    
+    Indexer indexer(verbosity, &filtermanager);
     indexer.index(argv[argc-1]);
     return 0;
 }

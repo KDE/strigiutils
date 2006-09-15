@@ -19,7 +19,7 @@
  */
 
 #include "filters.h"
-#include "strigilogging.h"
+#include "../daemon/strigilogging.h"
 
 #include <fnmatch.h>
 
@@ -30,10 +30,10 @@ bool PatternFilter::match(const string& text)
     int ret = fnmatch (m_rule.c_str(), text.c_str(), 0);
        
     if ((ret != FNM_NOMATCH) && (ret != 0))
-        STRIGI_LOG_WARNING ("strigi.filtermanager", "error while applying pattern " + m_rule + "over text " + text)
+        STRIGI_LOG_WARNING ("strigi.filtermanager.PatternFilter", "error while applying pattern " + m_rule + "over text " + text)
     else if ( ret == 0)
     {
-        STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " matched pattern " + m_rule)
+        STRIGI_LOG_DEBUG ("strigi.filtermanager.PatternFilter", text + " matched pattern " + m_rule)
         return true;
     }
     
@@ -44,16 +44,21 @@ bool PathFilter::match (const string& text)
 {
     // create the real pattern, whe have to add a * for globbing
     string realPattern = m_rule;
+    
+    // remove the trailing / (unix) or \ (win) 
+    if ((realPattern[realPattern.size() - 1] == '/') || (realPattern[realPattern.size()-1] == '\\'))
+        realPattern.resize(realPattern.size() - 1);
+    
     realPattern+="*";
     
     int ret = fnmatch (realPattern.c_str(), text.c_str(), 0);
        
     if ((ret != FNM_NOMATCH) && (ret != 0))
-        STRIGI_LOG_WARNING ("strigi.filtermanager", "error while applying pattern " + m_rule + "over text " + text)
-                else if ( ret == 0)
+        STRIGI_LOG_WARNING ("strigi.filtermanager.PathFilter", "error while applying pattern " + m_rule + "over text " + text)
+    else if ( ret == 0)
     {
-        STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " matched pattern " + m_rule)
-                return true;
+        STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", text + " matched pattern " + m_rule)
+        return true;
     }
     
     return false;

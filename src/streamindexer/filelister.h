@@ -34,6 +34,8 @@
 
 #include <sys/types.h>
 
+class FilterManager;
+
 class FileLister {
 private:
     char* path;
@@ -45,8 +47,10 @@ private:
 
     char* resize(uint len);
     bool walk_directory(uint len);
+    
+    FilterManager* m_filterManager;
 public:
-    FileLister();
+    FileLister(FilterManager* filtermanager);
     ~FileLister();
     /**
      * Specify the callback function that reports the files found.

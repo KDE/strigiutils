@@ -19,24 +19,37 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
+#include "filelister.h"
 #include "filereader.h"
+#include "filtermanager.h"
+
 using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
+Indexer::Indexer(int verbosity, FilterManager* filtermanager)
+    :writer(verbosity), m_indexer(&writer)
+{
+    m_lister = new FileLister (filtermanager);
+}
+
+Indexer::~Indexer( )
+{
+    delete m_lister;
+}
 void
 Indexer::index(const char *dir) {
     workingIndexer = this;
-    m_lister.setCallbackFunction(&Indexer::addFileCallback);
+    m_lister->setCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
     if (exceptions) {
         try {
-            m_lister.listFiles(dir);
+            m_lister->listFiles(dir);
         } catch(...) {
             printf("Unknown error");
         }
     } else {
-        m_lister.listFiles(dir);
+        m_lister->listFiles(dir);
     }
 }
 bool

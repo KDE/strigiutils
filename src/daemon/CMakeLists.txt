@@ -42,14 +42,13 @@ if (HyperEstraier_FOUND)
     include_directories( ../estraierindexer )
 endif (HyperEstraier_FOUND)
 
-include_directories( eventlistener .)
+include_directories( eventlistener ../filters .)
 
 # daemonconfiguration has been removed until the next release
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp filters.cpp
-	filtermanager.cpp strigilogging.h strigithread.cpp)
+	indexscheduler.cpp clientinterface.cpp strigilogging.h strigithread.cpp)
 
-set(strigidaemon_LIBS streamindexer eventlistener
+set(strigidaemon_LIBS streamindexer eventlistener filters
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS})
 

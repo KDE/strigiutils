@@ -229,9 +229,10 @@ main(int argc, char** argv) {
     // init filter manager
     FilterManager filterManager;
     filterManager.setConfFile (patternfilterfile, pathfilterfile);
+    STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
+    
     IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
-    STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
 
     if (!initializeDir(lucenedir)) {
         STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")

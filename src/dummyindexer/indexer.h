@@ -21,13 +21,15 @@
 #define INDEXER_H
 
 #include <string>
-#include "filelister.h"
 #include "streamindexer.h"
 #include "dummyindexwriter.h"
 
+class FileLister;
+class FilterManager;
+
 class Indexer {
 private:
-    FileLister m_lister;
+    FileLister* m_lister;
     DummyIndexWriter writer;
     jstreams::StreamIndexer m_indexer;
 
@@ -36,7 +38,8 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(int verbosity) :writer(verbosity), m_indexer(&writer) {}
+    Indexer(int verbosity, FilterManager* filtermanager);
+    ~Indexer();
     void index(const char *dir);
 };
 

@@ -21,7 +21,7 @@
 #include "filtermanager.h"
 
 #include "filters.h"
-#include "strigilogging.h"
+#include "../daemon/strigilogging.h"
 
 #include <fstream>
 
@@ -71,7 +71,7 @@ void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
     // clear old rules
     // TODO: restore when weì'll have a single configuration file
     //clearRules();
-   
+    
     if (confFile.is_open())
     {
         pthread_mutex_lock (&m_mutex);
@@ -113,6 +113,9 @@ void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
 
 void FilterManager::saveFilter()
 {
+    if (m_patternFile.empty() || m_pathFile.empty())
+        return;
+    
     fstream pathFile;
     fstream patternFile;
     pathFile.open(m_pathFile.c_str(), ios::out | ios::trunc);
@@ -173,6 +176,7 @@ bool FilterManager::findMatch (string& text)
     }
    
     pthread_mutex_unlock (&m_mutex);
+
     STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
     return false;
 }

@@ -1,6 +1,6 @@
 subdirs (throughplugins)
 
-include_directories( ../streams )
+include_directories( ../streams ../filters)
 
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
@@ -27,7 +27,7 @@ set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(streamindexer streams ${streamindex_LIBS})
+target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
 
 install(TARGETS streamindexer
 	LIBRARY DESTINATION lib)
@@ -39,4 +39,4 @@ install(FILES indexeddocument.h indexwriter.h strigi_plugins.h
 # test executable
 add_executable(filelister filelistertest.cpp)
 
-target_link_libraries(filelister streamindexer)
+target_link_libraries(filelister streamindexer filters)

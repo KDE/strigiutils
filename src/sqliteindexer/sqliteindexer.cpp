@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexer.h"
+#include "filtermanager.h"
 
 int
 main(int argc, char **argv) {
@@ -27,7 +28,9 @@ main(int argc, char **argv) {
     }
     std::string file = argv[1];
     file += "/sqlite.db";
-        Indexer indexer(file.c_str());
+    
+    FilterManager filtermanager;
+    Indexer indexer(file.c_str(), &filtermanager);
     indexer.index(argv[2]);
     return 0;
 }

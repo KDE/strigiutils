@@ -21,7 +21,7 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "../filtermanager.h"
+#include "filtermanager.h"
 #include "filelister.h"
 #include "indexreader.h"
 #include "../strigilogging.h"
@@ -219,7 +219,7 @@ void InotifyListener::watch ()
 
                     m_toIndex.clear();
 
-                    FileLister lister;
+                    FileLister lister (m_filterManager);
 
                     lister.setCallbackFunction(&indexFileCallback);
                     lister.setDirCallbackFunction(&watchDirCallback);
@@ -419,7 +419,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     vector<Event*> events;
     set<string> old_watches, toRemove;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
-    FileLister lister;
+    FileLister lister (m_filterManager);
 
     map<unsigned int, string>::const_iterator mi;
     for (mi = m_watches.begin(); mi != m_watches.end(); mi++) {
@@ -520,7 +520,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     vector<Event*> events;
     set<string> old_watches, toRemove;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
-    FileLister lister;
+    FileLister lister (m_filterManager);
 
     for (map<unsigned int, string>::const_iterator iter = m_watches.begin(); iter != m_watches.end(); iter++) {
         old_watches.insert (iter->second);

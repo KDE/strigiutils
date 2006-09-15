@@ -21,13 +21,15 @@
 #define INDEXER_H
 
 #include <string>
-#include "filelister.h"
 #include "sqliteindexmanager.h"
 #include "streamindexer.h"
 
+class FileLister;
+class FilterManager;
+
 class Indexer {
 private:
-    FileLister m_lister;
+    FileLister* m_lister;
     const std::string m_indexdir;
     SqliteIndexManager m_manager;
     jstreams::StreamIndexer m_indexer;
@@ -37,7 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const std::string &filepath);
 public:
-    explicit Indexer(const char *indexdir);
+    explicit Indexer(const char *indexdir, FilterManager* filtermanager);
     ~Indexer();
     void index(const char *dir);
 };

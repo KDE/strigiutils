@@ -28,7 +28,7 @@
 #include <QSpacerItem>
 #include <QVBoxLayout>
 
-#include "../daemon/filters.h"
+#include "filters.h"
 
 using namespace std;
 

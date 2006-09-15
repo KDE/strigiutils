@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
+#include "filtermanager.h"
 
 int
 main(int argc, char **argv) {
@@ -26,7 +27,9 @@ main(int argc, char **argv) {
         printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
         return -1;
     }
-        Indexer indexer(argv[1]);
+    
+    FilterManager filtermanager;
+    Indexer indexer(argv[1], &filtermanager);
     indexer.index(argv[2]);
     return 0;
 }

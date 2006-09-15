@@ -20,14 +20,16 @@
 #ifndef INDEXER_H
 #define INDEXER_H
 
-#include "filelister.h"
 #include "cluceneindexmanager.h"
 #include "cluceneindexwriter.h"
 #include "streamindexer.h"
 
+class FileLister;
+class FilterManager;
+
 class Indexer {
 private:
-    FileLister m_lister;
+    FileLister* m_lister;
     const std::string m_indexdir;
         CLuceneIndexManager m_manager;
         CLuceneIndexWriter m_writer;
@@ -38,7 +40,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(const char *indexdir);
+    Indexer(const char *indexdir, FilterManager* filtermanager);
     ~Indexer();
     void index(const char *dir);
 };
