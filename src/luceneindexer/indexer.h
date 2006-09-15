@@ -31,8 +31,8 @@ class Indexer {
 private:
     FileLister* m_lister;
     const std::string m_indexdir;
-        CLuceneIndexManager m_manager;
-        CLuceneIndexWriter m_writer;
+    CLuceneIndexManager m_manager;
+    CLuceneIndexWriter m_writer;
     jstreams::StreamIndexer m_indexer;
 
     static bool addFileCallback(const char* path, uint dirlen, uint len,

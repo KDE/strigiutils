@@ -13,7 +13,7 @@ threadstarter(void *d) {
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
     StrigiThread* thread = static_cast<StrigiThread*>(d);
-#ifndef (__APPLE__)
+#ifndef __APPLE__
     if (thread->getPriority() > 0) {
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3

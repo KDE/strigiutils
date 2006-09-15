@@ -19,6 +19,7 @@
  */
 #include "indexer.h"
 #include "filereader.h"
+#include "filelister.h"
 using namespace std;
 
 Indexer *Indexer::workingIndexer;
@@ -31,16 +32,16 @@ Indexer::~Indexer() {
 void
 Indexer::index(const char *dir) {
     workingIndexer = this;
-    m_lister.setCallbackFunction(&Indexer::addFileCallback);
+    m_lister->setCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
     if (exceptions) {
         try {
-            m_lister.listFiles(dir);
+            m_lister->listFiles(dir);
         } catch(...) {
             printf("Unknown error");
         }
     } else {
-        m_lister.listFiles(dir);
+        m_lister->listFiles(dir);
     }
 }
 bool

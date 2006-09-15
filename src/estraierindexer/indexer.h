@@ -21,13 +21,15 @@
 #define INDEXER_H
 
 #include <string>
-#include "filelister.h"
 #include "estraierindexmanager.h"
 #include "streamindexer.h"
 
+class FileLister;
+class FilterManager;
+
 class Indexer {
 private:
-    FileLister m_lister;
+    FileLister* m_lister;
     const std::string m_indexdir;
     EstraierIndexManager m_manager;
     jstreams::StreamIndexer m_indexer;

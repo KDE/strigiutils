@@ -149,7 +149,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
     sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
-    printf("'%s', %i, %i %p %p\n", name, idx->getMTime(), idx->getDepth(), db, insertfilestmt);
+//    printf("'%s', %i, %i %p %p\n", name, idx->getMTime(), idx->getDepth(), db, insertfilestmt);
     int r = sqlite3_step(insertfilestmt);
     if (r != SQLITE_DONE) {
         if (r == SQLITE_ERROR) printf("error!\n");
