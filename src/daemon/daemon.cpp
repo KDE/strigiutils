@@ -304,7 +304,7 @@ main(int argc, char** argv) {
         inotifyListener.setFilterManager (&filterManager);
         inotifyListener.setIndexReader (index->getIndexReader());
         // do not start scanning until execution is in the thread!
-        inotifyListener.setIndexedDirectories(dirs);
+        // inotifyListener.setIndexedDirectories(dirs);
         inotifyListener.start();
     }
     interface.setEventListener (&inotifyListener);
