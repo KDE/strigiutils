@@ -18,6 +18,8 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+add_definitions (-fPIC)
+
 #add extra search paths for libraries and includes
 SET ( STRIGI_EXTRA_INC_DIRECTORY "" CACHE STRING "Extra include directories to search in")
 SET ( STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to search in" )
