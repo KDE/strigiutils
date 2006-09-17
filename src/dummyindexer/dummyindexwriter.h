@@ -26,12 +26,23 @@ class DummyIndexWriter : public jstreams::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startIndexable(jstreams::Indexable*i) {
+    void startIndexable(jstreams::Indexable* idx) {
         if (verbosity >= 1) {
-            printf("%s\n", i->getName().c_str());
+            printf("%s\n", idx->getName().c_str());
+        }
+        if (verbosity == -1) { // sha1 mode
+            std::string* s = new std::string();
+            idx->setWriterData(s);
         }
     }
-    void finishIndexable(const jstreams::Indexable*) {}
+    void finishIndexable(const jstreams::Indexable* idx) {
+        if (verbosity == -1) { // sha1 mode
+            const std::string* s = static_cast<const std::string*>(
+                idx->getWriterData());
+            printf("%s\t%s\n", idx->getName().c_str(), s->c_str());
+            delete s;
+        }
+    }
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length) {
         if (verbosity > 2) {
@@ -44,6 +55,9 @@ protected:
         if (verbosity > 1) {
             printf("%s: setField '%s': '%s'\n", idx->getName().c_str(),
                 fieldname.c_str(), value.c_str());
+        } else if (verbosity == -1 && fieldname == "sha1") {
+            std::string* s = static_cast<std::string*>(idx->getWriterData());
+            *s = value;
         }
     }
 public:
