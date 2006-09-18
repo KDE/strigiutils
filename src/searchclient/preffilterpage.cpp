@@ -77,10 +77,12 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
         switch (iter->first)
         {
             case PathFilter::RTTI:
-                item->setToolTip("Path filtering rule");
+                item->setToolTip(tr("Path filtering rule"));
+                item->setWhatsThis(tr("<b>Explanation:</b> all the contents of the specified path wont be indexed"));
                 break;
             case PatternFilter::RTTI:
-                item->setToolTip("Pattern filtering rule");
+                item->setToolTip(tr("Pattern filtering rule"));
+                item->setWhatsThis(tr("<b>Explanation:</b> all files and directories matching the pattern wont be indexed"));
                 break;
         }
     }

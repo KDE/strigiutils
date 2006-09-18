@@ -115,6 +115,10 @@ void DlgAddFilteringRule::setupUi ()
 
     vboxLayout->addLayout(hboxLayout);
 
+    labelExplanation = new QLabel(this);
+    labelExplanation->setText(tr("<b>Explanation:</b> all files and directories matching the pattern above wont be indexed"));
+    vboxLayout->addWidget(labelExplanation);
+    
     QHBoxLayout* hboxLayout1 = new QHBoxLayout();
     hboxLayout1->setSpacing(6);
     hboxLayout1->setMargin(0);
@@ -144,12 +148,14 @@ void DlgAddFilteringRule::pathClicked()
 {
     labelType->setText(tr("Path: "));
     btnBrowse->setEnabled(true);
+    labelExplanation->setText(tr("<b>Path filtering rule:</b> all the contents of the above path wont be indexed"));
 }
 
 void DlgAddFilteringRule::patternClicked()
 {
     labelType->setText(tr("Pattern: "));
     btnBrowse->setEnabled(false);
+    labelExplanation->setText(tr("<b>Pattern filtering rule:</b> all files and directories matching the pattern above wont be indexed"));
 }
 
 void DlgAddFilteringRule::accept()

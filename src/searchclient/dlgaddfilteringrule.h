@@ -55,6 +55,7 @@ class DlgAddFilteringRule : public QDialog
         QRadioButton *rbtnPath;
         QLabel *label;
         QLabel *labelType;
+        QLabel *labelExplanation;
         QLineEdit *lineEdit;
         QListWidgetItem* m_item;
         QToolButton *btnBrowse;

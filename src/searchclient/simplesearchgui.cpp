@@ -135,8 +135,8 @@ SimpleSearchGui::createMenus() {
     fileMenu->addAction(fileExitAct);
    
     editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(editListIndexedFilesAct);
     editMenu->addAction(editPreferenceAct);
+    editMenu->addAction(editListIndexedFilesAct);
 }
 void
 SimpleSearchGui::createActions() {
