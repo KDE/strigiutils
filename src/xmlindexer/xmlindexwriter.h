@@ -17,12 +17,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DUMMYINDEXWRITER_H
-#define DUMMYINDEXWRITER_H
+#ifndef XMLINDEXWRITER_H
+#define XMLINDEXWRITER_H
 
 #include "indexwriter.h"
 
-class DummyIndexWriter : public jstreams::IndexWriter {
+class XmlIndexWriter : public jstreams::IndexWriter {
 private:
     int verbosity;
 protected:
@@ -61,10 +61,10 @@ protected:
         }
     }
 public:
-    DummyIndexWriter(int v = 0) {
+    XmlIndexWriter(int v = 0) {
         verbosity = v;
     }
-    ~DummyIndexWriter() {}
+    ~XmlIndexWriter() {}
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}
     void deleteAllEntries() {}

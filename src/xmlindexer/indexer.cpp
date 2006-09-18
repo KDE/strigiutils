@@ -39,6 +39,7 @@ Indexer::~Indexer( )
 }
 void
 Indexer::index(const char *dir) {
+    printf("<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n");
     workingIndexer = this;
     m_lister->setCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
@@ -51,6 +52,7 @@ Indexer::index(const char *dir) {
     } else {
         m_lister->listFiles(dir);
     }
+    printf("</metadata>\n");
 }
 bool
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,
