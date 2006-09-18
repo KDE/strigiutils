@@ -23,7 +23,7 @@
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [-v verbosity] [dir-to-index]\n", argv[0]);
+    fprintf(stderr, "Usage: %s [dir-to-index]\n", argv[0]);
 }
 
 int
@@ -32,18 +32,10 @@ main(int argc, char **argv) {
         printUsage(argv);
         return -1;
     }
-    int verbosity = 0;
-    if (argc == 4) {
-        if (strcmp("-v", argv[1])) {
-            printUsage(argv);
-            return -1;
-        }
-        verbosity = atoi(argv[2]);
-    }
     
     FilterManager filtermanager;
     
-    Indexer indexer(verbosity, &filtermanager);
+    Indexer indexer(&filtermanager);
     indexer.index(argv[argc-1]);
     return 0;
 }

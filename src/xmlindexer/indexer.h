@@ -38,7 +38,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(int verbosity, FilterManager* filtermanager);
+    Indexer(FilterManager* filtermanager);
     ~Indexer();
     void index(const char *dir);
 };

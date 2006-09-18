@@ -27,8 +27,8 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(int verbosity, FilterManager* filtermanager)
-    :writer(verbosity), m_indexer(&writer)
+Indexer::Indexer(FilterManager* filtermanager)
+    :m_indexer(&writer)
 {
     m_lister = new FileLister (filtermanager);
 }
