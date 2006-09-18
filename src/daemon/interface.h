@@ -56,6 +56,7 @@ public:
     void setFilteringRules(const std::multimap<int, std::string>&);
     void setEventListener(EventListener* eListener);
     void setFilterManager(FilterManager* fManager);
+    std::set<std::string> getIndexedFiles();
 };
 
 #endif

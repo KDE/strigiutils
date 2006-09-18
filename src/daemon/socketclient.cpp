@@ -363,3 +363,23 @@ SocketClient::setFilteringRules(const multimap<int,string>& rules) {
     readResponse(sd);
     close(sd);
 }
+set<string>
+SocketClient::getIndexedFiles() {
+    set<string> r;
+    request.clear();
+    response.clear();
+    request.push_back("getIndexedFiles");
+    int sd = open();
+    if (sd < 0) {
+        return r;
+    }
+    sendRequest(sd);
+    readResponse(sd);
+    close(sd);
+    vector<string>::const_iterator i;
+    for (i = response.begin(); i != response.end(); ++i) {
+        r.insert(*i);
+    }
+    return r;
+}
+

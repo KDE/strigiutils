@@ -273,6 +273,15 @@ SocketServer::handleRequest() {
         interface->setFilteringRules(rules);
         return;
     }
+    if (request.size() == 1 && request[0] == "getIndexedFiles") {
+        response.clear();
+        set<string> d = interface->getIndexedFiles();
+        set<string>::const_iterator i;
+        for (i = d.begin(); i != d.end(); ++i) {
+            response.push_back(*i);
+        }
+        return;
+    }
     printf("unknown request '%s' of size %i\n",
         request[0].c_str(), request.size());
     response.push_back("error");

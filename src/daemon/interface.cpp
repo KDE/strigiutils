@@ -124,3 +124,14 @@ Interface::setFilteringRules(const multimap<int,string>& rules) {
     if (filterManager != NULL)
         filterManager->setFilteringRules (rules);
 }
+set<string>
+Interface::getIndexedFiles()
+{
+    map <string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);
+    set <string> r;
+    
+    for (map<string, time_t>::iterator iter = indexedfiles.begin(); iter != indexedfiles.end(); iter++)
+        r.insert (iter->first);
+    
+    return r;
+}
