@@ -37,6 +37,7 @@ private:
     bool eol; // true if the buffer contains a line end
     int32_t entrynumber;
     int64_t bufstartpos;
+    int64_t bufendpos;
     int linenum;
     int maxlinesize;
     const char* linestart;

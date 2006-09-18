@@ -50,7 +50,7 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     r = BZ2_bzDecompressInit(bzstream, 1, 0);
     if (r != BZ_OK) {
         error = "Error initializing BZ2InputStream.";
-        printf("Error initializing BZ2InputStream.\n");
+        fprintf(stderr, "Error initializing BZ2InputStream.\n");
         dealloc();
         status = Error;
         return;

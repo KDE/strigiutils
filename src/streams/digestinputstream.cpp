@@ -58,9 +58,9 @@ DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
         }
 #ifndef NDEBUG
         if (size != position || size != totalread) {
-            printf("size: %lli position: %lli totalread: %lli\n",
+            fprintf(stderr, "size: %lli position: %lli totalread: %lli\n",
                 size, position, totalread);
-            printf("%i %s\n", input->getStatus(), input->getError());
+            fprintf(stderr, "%i %s\n", input->getStatus(), input->getError());
         }
         assert(size == position);
         assert(totalread == size);

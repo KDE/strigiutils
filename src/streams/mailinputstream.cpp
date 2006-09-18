@@ -105,7 +105,7 @@ MailInputStream::MailInputStream(StreamBase<char>* input)
     linenum = 0;
     skipHeader();
     if (bufstart == 0) {
-        printf("no valid header\n");
+        fprintf(stderr, "no valid header\n");
         return;
     }
 
@@ -164,8 +164,8 @@ MailInputStream::readLine() {
         }
         if (lineend == bufend) {
             string str(linestart, 10);
-            printf("line %i is too long '%s' %i %i\n", linenum, str.c_str(),
-                lineend-linestart, maxlinesize);
+            fprintf(stderr, "line %i is too long '%s' %i %i\n", linenum,
+                str.c_str(), lineend-linestart, maxlinesize);
             eol = false;
         }
     }
@@ -201,7 +201,12 @@ MailInputStream::getValue(const char* n, const string& headerline) const {
  **/
 void
 MailInputStream::rewindToLineStart() {
-    input->reset(input->getPosition()-(bufend-linestart));
+/*    int d = bufend-linestart;
+    printf("bsp: %lli position: %lli diff: %i newpos: %lli\n", bufstartpos, bufendpos, d,
+        bufendpos-d);
+    printf("'%.*s'\n", (d>10)?10:d, linestart);*/
+
+    input->reset(bufendpos-(bufend-linestart));
     //int64_t rp = bufstartpos + (linestart-bufstart);
     //int64_t np = input->reset(bufstartpos + (linestart-bufstart));
     //printf("rewind %lli %lli\n", rp, np);
@@ -213,6 +218,7 @@ MailInputStream::fillBuffer() {
     if (nread > 0) {
 //        printf("buf: '%.*s'\n", 10, bufstart);
         bufend = bufstart + nread;
+        bufendpos = input->getPosition();
         linestart = bufstart;
     } else {
         bufstart = 0;
@@ -375,8 +381,9 @@ MailInputStream::nextEntry() {
             status = Error;
         } else {
             if (substream->getSize()<0) {
-		printf("%s %i\n", boundary.c_str(), substream->getStatus());
-                printf("NONDEJU size should be determined %lli\n",
+		fprintf(stderr, "%s %i\n", boundary.c_str(),
+                    substream->getStatus());
+                fprintf(stderr, "NONDEJU size should be determined %lli\n",
                     substream->getSize());
                 status = Eof;
         // make sure valgrind is called
@@ -391,7 +398,7 @@ MailInputStream::nextEntry() {
             int64_t np = input->reset(end);
             if (np != end) {
                 status = Error;
-                printf("error: could not reset position\n");
+                fprintf(stderr, "error: could not reset position\n");
             } else {
                 int32_t nr = input->read(dummy, 1, 0);
                 //printf("ohoh: %lli %lli '%.*s'\n",end,np, (nr>10)?10:nr,dummy);

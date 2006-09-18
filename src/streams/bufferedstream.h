@@ -116,6 +116,7 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
 template <class T>
 int64_t
 BufferedInputStream<T>::reset(int64_t newpos) {
+    assert(newpos >= 0);
     if (StreamBase<T>::status == Error) return -2;
     // check to see if we have this position
     int64_t d = BufferedInputStream<T>::position - newpos;

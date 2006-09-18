@@ -32,7 +32,7 @@ Base64InputStreamTest(int, char**) {
     while (nread > 0) {
         //printf("%i\n", nread);
         for (int i=0; i<nread; ++i) {
-            printf("%c", start[i]);
+            fprintf(stderr, "%c", start[i]);
         }
         nread = b64.read(start, 1, 0);
     }

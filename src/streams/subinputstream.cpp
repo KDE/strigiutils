@@ -73,11 +73,12 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
 }
 int64_t
 SubInputStream::reset(int64_t newpos) {
+    assert(newpos >= 0);
 //    fprintf(stderr, "subreset pos: %lli newpos: %lli offset: %lli\n", position,
 //        newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
-        printf("###########\n");
+        fprintf(stderr, "########### position %lli newpos %lli\n", position, newpos);
         status = Error;
         error = input->getError();
     } else {

@@ -110,7 +110,7 @@ ZipInputStream::readHeader() {
             error += " premature end of file.";
         }
         status = Error;
-        printf("%s\n", error.c_str());
+        fprintf(stderr, "%s\n", error.c_str());
         return;
     }
     hb = (const unsigned char*)b;
@@ -126,7 +126,8 @@ ZipInputStream::readHeader() {
     if (hb[2] != 0x03 || hb[3] != 0x04) {
         // this may be the regular end of the file
         if (hb[2] != 0x01 || hb[3] != 0x02) {
-            printf("This is new: %x %x %x %x\n", hb[0], hb[1], hb[2], hb[3]);
+            fprintf(stderr, "This is new: %x %x %x %x\n",
+                hb[0], hb[1], hb[2], hb[3]);
         }
         status = Eof;
         return;

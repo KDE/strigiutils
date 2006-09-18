@@ -36,14 +36,14 @@ SubStreamProviderProvider::getSubStreamProvider(StreamBase<char>* input) {
     if (headersize <= 0) {
         return 0;
     }
-    printf("%x%x%x%x\n", header[0], header[1], header[2], header[3]);
+    fprintf(stderr, "%x%x%x%x\n", header[0], header[1], header[2], header[3]);
     if (MailInputStream::checkHeader(header, headersize)) {
         return new MailInputStream(input);
     }
     if (ZipInputStream::checkHeader(header, headersize)) {
-        printf("zip!\n");
+        fprintf(stderr, "zip!\n");
         return new ZipInputStream(input);
     }
-    printf("no match %i\n", headersize);
+    fprintf(stderr, "no match %i\n", headersize);
     return 0;
 }
