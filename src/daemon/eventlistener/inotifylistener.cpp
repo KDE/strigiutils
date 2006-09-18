@@ -40,7 +40,9 @@ InotifyListener* iListener;
 using namespace std;
 using namespace jstreams;
 
-InotifyListener::InotifyListener() :EventListener("InotifyListener") {
+InotifyListener::InotifyListener(set<string>& indexedDirs)
+    :EventListener("InotifyListener")
+{
     iListener = this;
 
     // listen only to interesting events
@@ -52,6 +54,7 @@ InotifyListener::InotifyListener() :EventListener("InotifyListener") {
     m_bInitialized = false;
     m_eventQueue = NULL;
     m_pIndexReader = NULL;
+    m_indexedDirs = indexedDirs;
 }
 
 InotifyListener::~InotifyListener()
@@ -77,6 +80,10 @@ bool InotifyListener::init()
 
 void* InotifyListener::run(void*)
 {
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.run", "started bootstrap procedure");
+    bootstrap (m_indexedDirs);
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.run", "finished bootstrap procedure");
+    
     while (getState() != Stopping)
     {
         watch();
@@ -471,8 +478,8 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
                 if (iter->find(*it)) // iter = /foo/ it = /foo/bar/
                 {
                     set<string>::iterator rmit = it;
-                    toRemove.erase (rmit); // we keep only the parent dir
                     it++;
+                    toRemove.erase (rmit); // we keep only the parent dir
                 }
                 else if (it->find (*iter)) // iter = /foo/bar/ = /foo/
                 {
@@ -518,13 +525,9 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         return;
     }
     vector<Event*> events;
-    set<string> old_watches, toRemove;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
+    
     FileLister lister (m_filterManager);
-
-    for (map<unsigned int, string>::const_iterator iter = m_watches.begin(); iter != m_watches.end(); iter++) {
-        old_watches.insert (iter->second);
-    }
 
     m_toWatch.clear();
     m_toIndex.clear();
@@ -549,8 +552,8 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
             
             // no more useful, speedup into dirsRemoved 
             map<string,time_t>::iterator itrm = mi;
-            indexedFiles.erase(itrm);
             mi++;
+            indexedFiles.erase(itrm);
         }
         else if (mi->second < it->second)
         {
@@ -571,43 +574,6 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         events.push_back (new Event (Event::CREATED, mi->first));
 
     m_toIndex.clear();
-
-    // remove dirs that are no more watched
-    for (set<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
-    {
-        if (m_toWatch.find (*iter) == m_toWatch.end())
-        {
-            // watch has been deleted
-            
-            bool subdir = false;
-            set<string>::iterator it = toRemove.begin();
-            
-            while (it != toRemove.end())
-            {
-                if (iter->find(*it)) // iter = /foo/ it = /foo/bar/
-                {
-                    set<string>::iterator rmit = it;
-                    toRemove.erase (rmit); // we keep only the parent dir
-                    it++;
-                }
-                else if (it->find (*iter)) // iter = /foo/bar/ = /foo/
-                {
-                    subdir = true;
-                    break;
-                }
-                else
-                    it++;
-            }
-            
-            if (!subdir)
-                toRemove.insert(*iter);
-        }
-    }
-    
-    // remove all indexed files contined into dir
-    dirsRemoved (toRemove, events); //remove also all indexed files contained in dir
-    
-    toRemove.clear();
     
     // add inotify watches
     addWatches (m_toWatch);

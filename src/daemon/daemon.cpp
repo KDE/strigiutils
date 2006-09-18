@@ -297,7 +297,7 @@ main(int argc, char** argv) {
 
 #ifdef HAVE_INOTIFY
     // listen for requests
-    InotifyListener inotifyListener;
+    InotifyListener inotifyListener (dirs);
     // configure & start inotfy's watcher thread
     if (inotifyListener.init()) {
         inotifyListener.setEventListenerQueue (&listenerEventQueue);

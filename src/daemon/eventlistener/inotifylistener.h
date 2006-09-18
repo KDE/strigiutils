@@ -34,7 +34,7 @@ class Event;
 class InotifyListener : public EventListener
 {
     public:
-        InotifyListener();
+        InotifyListener(std::set<std::string>& indexedDirs);
 
         ~InotifyListener();
    
@@ -43,7 +43,6 @@ class InotifyListener : public EventListener
         void addWatch (const std::string& path);
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
-        void bootstrap (const std::set<std::string>& dirs);
         
         void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
        
@@ -54,6 +53,7 @@ class InotifyListener : public EventListener
         static void watchDirCallback(const char* path);
        
     private:
+        void bootstrap (const std::set<std::string>& dirs);
         std::string eventToString(int events);
         bool isEventInteresting (struct inotify_event * event);
         void watch ();
@@ -69,6 +69,7 @@ class InotifyListener : public EventListener
         bool m_bInitialized;
         std::map<std::string, time_t> m_toIndex;
         std::set<std::string> m_toWatch;
+        std::set<std::string> m_indexedDirs;
         jstreams::IndexReader* m_pIndexReader;
 };
 
