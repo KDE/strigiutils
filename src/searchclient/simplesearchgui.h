@@ -56,7 +56,7 @@ private:
     QMenu *editMenu;
     QAction *fileExitAct;
     QAction *editPreferenceAct;
-   
+    QAction *editListIndexedFilesAct;
    
     void startDaemon();
     void setDirectories();
@@ -71,6 +71,7 @@ private slots:
     void addDirectory();
     void removeDirectory();
     void editPreferences();
+    void editListIndexedFiles();
 public:
     SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };

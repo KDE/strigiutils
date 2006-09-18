@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "dlgpreferences.h"
+#include "dlglistindexedfiles.h"
 #include "simplesearchgui.h"
 #include "searchtabs.h"
 #include "socketclient.h"
@@ -134,6 +135,7 @@ SimpleSearchGui::createMenus() {
     fileMenu->addAction(fileExitAct);
    
     editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(editListIndexedFilesAct);
     editMenu->addAction(editPreferenceAct);
 }
 void
@@ -146,6 +148,10 @@ SimpleSearchGui::createActions() {
     editPreferenceAct = new QAction(tr("Edit Preferences"), this);
     editPreferenceAct->setStatusTip(tr("Edit program preferences"));
     connect(editPreferenceAct, SIGNAL(triggered()), this, SLOT(editPreferences()));
+    
+    editListIndexedFilesAct = new QAction(tr("List indexed files"), this);
+    editListIndexedFilesAct->setStatusTip(tr("Show files indexed by strigi"));
+    connect(editListIndexedFilesAct, SIGNAL(triggered()), this, SLOT(editListIndexedFiles()));
 }
 void
 SimpleSearchGui::query(const QString& item) {
@@ -170,6 +176,7 @@ SimpleSearchGui::updateStatus() {
     map<string,string> s = client.getStatus();
     if (s.size() == 0) {
         running = false;
+        editListIndexedFilesAct->setEnabled(false);
         /*if (!attemptedstart) {
             s["Status"] = "Starting daemon";
             startDaemon();
@@ -181,6 +188,7 @@ SimpleSearchGui::updateStatus() {
         attemptedstart = true;
         starting = false;
         running = true;
+        editListIndexedFilesAct->setEnabled(true);
         if (indexeddirs->count() == 0) {
             updateDirectories();
         }
@@ -317,3 +325,13 @@ SimpleSearchGui::editPreferences() {
     //update filtering rules
     client.setFilteringRules( rules);
 }
+void
+SimpleSearchGui::editListIndexedFiles() {
+    SocketClient client;
+    client.setSocketName(socketfile.c_str());
+    set<string> files = client.getIndexedFiles();
+   
+    DlgListIndexedFiles dlg (files);
+    dlg.exec();
+}
+
