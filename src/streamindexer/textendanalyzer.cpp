@@ -30,7 +30,7 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     const char* p = header-1;
     // check if the text is valid UTF-8
     char nb = 0;
-    while (++p < end) {
+    while (p < end) {
         char c = *p;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
@@ -46,6 +46,7 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         } else if (c <= 8) {
             return false;
         }
+        p++;
     }
     return true;
 }
