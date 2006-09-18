@@ -177,7 +177,7 @@ bool FilterManager::findMatch (string& text)
    
     pthread_mutex_unlock (&m_mutex);
 
-    STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
+    //STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
     return false;
 }
 
