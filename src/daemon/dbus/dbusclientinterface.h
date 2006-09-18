@@ -13,6 +13,7 @@ private:
     DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
     void getStatus(DBusMessage* msg, DBusConnection* conn);
     void isActive(DBusMessage* msg, DBusConnection* conn);
+    void getIndexedFiles(DBusMessage* msg, DBusConnection* conn);
     void getFilteringRules(DBusMessage* msg, DBusConnection* conn);
     void setIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
     void getIndexedDirectories(DBusMessage* msg, DBusConnection* conn);

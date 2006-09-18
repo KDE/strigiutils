@@ -8,6 +8,7 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
         :DBusObjectInterface("vandenoever.strigi"), impl(i) {
     handlers["getStatus"] = &DBusClientInterface::getStatus;
     handlers["isActive"] = &DBusClientInterface::isActive;
+    handlers["getIndexedFiles"] = &DBusClientInterface::getIndexedFiles;
     handlers["getFilteringRules"] = &DBusClientInterface::getFilteringRules;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
@@ -39,6 +40,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "    <method name='isActive'>\n"
     << "      <arg name='out' type='b' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='getIndexedFiles'>\n"
+    << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getFilteringRules'>\n"
     << "      <arg name='out' type='a(is)' direction='out'/>\n"
@@ -89,6 +93,14 @@ DBusClientInterface::isActive(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl->isActive();
+    }
+}
+void
+DBusClientInterface::getIndexedFiles(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    if (reader.isOk()) {
+        writer << impl->getIndexedFiles();
     }
 }
 void

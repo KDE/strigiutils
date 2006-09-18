@@ -68,7 +68,7 @@ void ModuleLoader::loadPlugins(const char* d) {
                 Module* mod = loadModule(plugin.c_str());
                 if ( mod ){
                     modules.push_back(mod);
-                    printf("loaded %s\n", plugin.c_str());
+                    fprintf(stderr, "loaded %s\n", plugin.c_str());
                 }
             }
         }
@@ -85,7 +85,7 @@ ModuleLoader::Module* ModuleLoader::loadModule(const char* lib) {
     if (handle) {
         mod = new Module(handle);
     } else {
-        printf("%s\n", dlerror());
+        fprintf(stderr, "%s\n", dlerror());
     }
 #else
     HMODULE handle = LoadLibrary(lib);
@@ -133,7 +133,8 @@ ModuleLoader::getThroughAnalyzers(
                 ++i;
             }
             if (analyzers.size() == 0) {
-                printf("Warning: doesn't contain any through analyzers\n");
+                fprintf(stderr,
+                    "Warning: doesn't contain any through analyzers\n");
             }
         }
         mod_itr++;
@@ -154,7 +155,7 @@ ModuleLoader::getEndAnalyzers(multimap<void*, StreamEndAnalyzer*>& analyzers){
                 ++i;
             }
             if (analyzers.size() == 0) {
-                printf("Warning: doesn't contain any end analyzers\n");
+                fprintf(stderr, "Warning: doesn't contain any end analyzers\n");
             }
         }
         mod_itr++;
@@ -210,11 +211,12 @@ ModuleLoader::Module::init(){
 #endif
 
     if ( !createThroughFunc && !createEndFunc ){
-        printf("%s not a valid strigi plugin\n", lib.c_str());
+        fprintf(stderr, "%s not a valid strigi plugin\n", lib.c_str());
         return false;
     }
     if ( !deleteFunc ){
-        printf("Warning: %s does not have a deleteAnalyzer function. Memory leaks will occur\n", lib.c_str());
+        fprintf(stderr, "Warning: %s does not have a deleteAnalyzer function. "
+            "Memory leaks will occur\n", lib.c_str());
     }
     return true;
 }

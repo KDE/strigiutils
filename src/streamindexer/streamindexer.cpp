@@ -138,7 +138,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
         InputStream *input, uint depth) {
     static int count = 1;
     if (++count % 1000 == 0) {
-        printf("file #%i: %s\n", count, path.c_str());
+        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
     }
     //printf("depth #%i: %s\n", depth, path.c_str());
     Indexable idx(path, mtime, writer, depth);
@@ -164,7 +164,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
     const char* header;
     headersize = input->read(header, headersize, 0);
     if (input->reset(0) != 0) {
-        printf("resetting is impossible!! pos: %lli status: %i\n",
+        fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
             input->getPosition(), input->getStatus());
     }
     if (headersize < 0) finished = true;
@@ -176,8 +176,8 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
-                    printf("could not reset stream of %s from pos %lli to 0 "
-                        "after reading with %s: %s\n", path.c_str(),
+                    fprintf(stderr, "could not reset stream of %s from pos "
+                        "%lli to 0 after reading with %s: %s\n", path.c_str(),
                         input->getPosition(), sea->getName(),
                         sea->getError().c_str());
                     removeIndexable(depth);
@@ -196,7 +196,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
         nskipped = input->skip(1000000);
     } while (input->getStatus() == Ok);
     if (input->getStatus() == Error) {
-        printf("Error: %s\n", input->getError());
+        fprintf(stderr, "Error: %s\n", input->getError());
         removeIndexable(depth);
         return -2;
     }
