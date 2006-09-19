@@ -78,11 +78,11 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
         {
             case PathFilter::RTTI:
                 item->setToolTip(tr("Path filtering rule"));
-                item->setWhatsThis(tr("<b>Explanation:</b> all the contents of the specified path wont be indexed"));
+                item->setWhatsThis("<p align=\"center\"><b>Path filtering rule</b></p><br><p><b>Explanation:</b> all the contents of the specified path wont be indexed</p><br><p><b><i>Example:</i></b> path filter <i>/home/foo/bar/</i> will prevent directory <i>/home/foo/bar/</i> and all its contents from being indexed</p>");
                 break;
             case PatternFilter::RTTI:
                 item->setToolTip(tr("Pattern filtering rule"));
-                item->setWhatsThis(tr("<b>Explanation:</b> all files and directories matching the pattern wont be indexed"));
+                item->setWhatsThis(tr("<p align=\"center\"><b>Pattern filtering rule</b></p><br><p><b>Explanation:</b> all files and directories matching the pattern wont be indexed</p><br><p><b><i>Example:</i></b> pattern <i>*log</i> will prevent <i>foo.log</i> and <i>prolog.pdf</i> from being indexed, but also directory <i>/home/foo/log/</i> and all its contents</p>"));
                 break;
         }
     }

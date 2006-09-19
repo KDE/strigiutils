@@ -116,7 +116,7 @@ void DlgAddFilteringRule::setupUi ()
     vboxLayout->addLayout(hboxLayout);
 
     labelExplanation = new QLabel(this);
-    labelExplanation->setText(tr("<b>Explanation:</b> all files and directories matching the pattern above wont be indexed"));
+    labelExplanation->setText(tr("<p><b>Pattern filtering rule:</b> all files and directories matching the pattern above wont be indexed</p><br><p><b><i>Example:</i></b> pattern <i>*log</i> will prevent <i>foo.log</i> and <i>prolog.pdf</i> from being indexed, but also directory <i>/home/foo/log/</i> and all its contents</p>"));
     vboxLayout->addWidget(labelExplanation);
     
     QHBoxLayout* hboxLayout1 = new QHBoxLayout();
@@ -148,14 +148,14 @@ void DlgAddFilteringRule::pathClicked()
 {
     labelType->setText(tr("Path: "));
     btnBrowse->setEnabled(true);
-    labelExplanation->setText(tr("<b>Path filtering rule:</b> all the contents of the above path wont be indexed"));
+    labelExplanation->setText(tr("<p><b>Path filtering rule:</b> all the contents of the above path wont be indexed</p><br><p><b><i>Example:</i></b> path filter <i>/home/foo/bar/</i> will prevent directory <i>/home/foo/bar/</i> and all its contents from being indexed</p>"));
 }
 
 void DlgAddFilteringRule::patternClicked()
 {
     labelType->setText(tr("Pattern: "));
     btnBrowse->setEnabled(false);
-    labelExplanation->setText(tr("<b>Pattern filtering rule:</b> all files and directories matching the pattern above wont be indexed"));
+    labelExplanation->setText(tr("<p><b>Pattern filtering rule:</b> all files and directories matching the pattern above wont be indexed</p><br><p><b><i>Example:</i></b> pattern <i>*log</i> will prevent <i>foo.log</i> and <i>prolog.pdf</i> from being indexed, but also directory <i>/home/foo/log/</i> and all its contents</p>"));
 }
 
 void DlgAddFilteringRule::accept()
