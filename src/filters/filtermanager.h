@@ -49,6 +49,7 @@ class FilterManager
        
         std::string m_patternFile, m_pathFile;
         std::vector<Filter*> m_rules;
+        std::string m_strigidir;
         pthread_mutex_t m_mutex;
 };
 

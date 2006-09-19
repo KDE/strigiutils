@@ -23,6 +23,7 @@
 #include "filters.h"
 #include "../daemon/strigilogging.h"
 
+#include <fnmatch.h>
 #include <fstream>
 
 using namespace std;
@@ -30,6 +31,10 @@ using namespace std;
 FilterManager::FilterManager()
 {
     pthread_mutex_init(&m_mutex, NULL);
+    
+    // won't index strigi configuration directory 
+    m_strigidir = getenv("HOME");
+    m_strigidir += "/.strigi*";
 }
 
 FilterManager::~ FilterManager()
@@ -164,7 +169,18 @@ bool FilterManager::findMatch(const char* text)
 bool FilterManager::findMatch (string& text)
 {
     pthread_mutex_lock (&m_mutex);
-   
+    
+    // check if text is related with strigi configuration directory
+    int ret = fnmatch (m_strigidir.c_str(), text.c_str(), 0);
+       
+    if ((ret != FNM_NOMATCH) && (ret != 0))
+        STRIGI_LOG_WARNING ("strigi.filtermanager.PathFilter", "error while applying pattern " + m_strigidir + "over text " + text)
+    else if ( ret == 0)
+    {
+        STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", "Ignoring strigi configuration directory: " + m_strigidir)
+        return true;
+    }
+    
     for (vector<Filter*>::iterator iter = m_rules.begin(); iter != m_rules.end(); iter++)
     {
         Filter* filter = *iter;
