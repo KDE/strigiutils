@@ -175,7 +175,14 @@ void InotifyListener::watch ()
 
         if (iter == m_watches.end())
         {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener", "returned an unknown watch descriptor")
+            char buff [20];
+            snprintf(buff, 20 * sizeof (char), "%i",this_event->wd);
+            
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", "returned an unknown watch descriptor: " + string (buff))
+            
+            // jump to next event
+            this_event_char += sizeof(struct inotify_event) + this_event->len;
+            remaining_bytes -= sizeof(struct inotify_event) + this_event->len;
             continue;
         }
 
@@ -311,7 +318,7 @@ void InotifyListener::addWatch (const string& path)
     if (wd < 0)
     {
         if ( wd == -1 )
-            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + "because of: " + strerror(-wd))
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + " because of: " + strerror(-wd))
         else
         {
             char buff [20];
@@ -361,7 +368,11 @@ void InotifyListener::rmWatch(int wd, string path)
                 STRIGI_LOG_ERROR ("strigi.InotifyListener", string("error: ") + strerror(errno))
     }
     else
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener", "Removed watch for " + path)
+    {
+        char buff [20];
+        snprintf(buff, 20 * sizeof (char), "%i",wd);
+        STRIGI_LOG_DEBUG ("strigi.InotifyListener", string("Removed watch ") + buff + ": " + path)
+    }
 }
 
 void InotifyListener::clearWatches ()
@@ -423,85 +434,76 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     if (!m_pIndexReader) {
         return;
     }
-    vector<Event*> events;
-    set<string> old_watches, toRemove;
-    map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
-    FileLister lister (m_filterManager);
 
-    map<unsigned int, string>::const_iterator mi;
-    for (mi = m_watches.begin(); mi != m_watches.end(); mi++) {
-        old_watches.insert (mi->second);
+    vector<Event*> events;
+    set<string> newIndexedDirs, nomoreIndexedDirs;
+    
+    // search for new dirs to index
+    for (set<string>::iterator iter = dirs.begin(); iter != dirs.end(); iter++)
+    {
+        set<string>::iterator it = m_indexedDirs.find(*iter);
+        if (it == m_indexedDirs.end())
+            newIndexedDirs.insert (*iter);
     }
+    
+    // search for dirs no more indexed
+    for (set<string>::iterator iter = m_indexedDirs.begin(); iter != m_indexedDirs.end(); iter++)
+    {
+        set<string>::iterator it = dirs.find(*iter);
+        if (it == dirs.end())
+            nomoreIndexedDirs.insert (*iter);
+    }
+    
+    char buff [20];
+    snprintf(buff, 20 * sizeof (char), "%i",nomoreIndexedDirs.size());
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.setIndexedDirectories", string(buff) + " dirs are no more indexed");
+    
+    snprintf(buff, 20 * sizeof (char), "%i",newIndexedDirs.size());
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.setIndexedDirectories", string(buff) + " new dirs are to indexed");
+    
+    // TODO: add thread mutex
+    
+    // remove watches over no more indexed dirs
+    for (set<string>::iterator it = nomoreIndexedDirs.begin(); it != nomoreIndexedDirs.end(); it++)
+    {
+        map<unsigned int, string>::iterator mi = m_watches.begin();
+        while ( mi != m_watches.end())
+        {
+            if ((mi->second).find(*it) == 0)
+            {
+                // directory name begins with it
+                rmWatch( mi->first, mi->second);
+                map<unsigned int, string>::iterator rmIt = mi;
+                mi++;
+                m_watches.erase (rmIt);
+            }
+            else
+                mi++;
+        }
+    }
+    
+    // remove old indexed files from db
+    dirsRemoved (nomoreIndexedDirs, events);
+    
+    FileLister lister (m_filterManager);
 
     m_toWatch.clear();
     m_toIndex.clear();
 
     lister.setCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
-
-    for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
+    
+    // walk over the newly added dirs
+    for (set<string>::const_iterator iter = newIndexedDirs.begin(); iter != newIndexedDirs.end(); iter++)
         lister.listFiles(iter->c_str());
 
     for (map<string,time_t>::iterator iter = m_toIndex.begin(); iter != m_toIndex.end(); iter++)
     {
-        Event* event = NULL;
-        
-        map<string, time_t>::iterator i = indexedFiles.find(iter->first);
-
-        if (i == indexedFiles.end())
-            event = new Event (Event::CREATED, iter->first);
-        else
-        {
-            // check last index time
-            if (iter->second > i->second)
-                event = new Event (Event::UPDATED, iter->first);
-        }
-
-        if (event != NULL)
-            events.push_back (event);
+        Event* event = new Event (Event::CREATED, iter->first);
+        events.push_back (event);
     }
 
     m_toIndex.clear();
-
-    // remove dirs that are no more watched
-    for (set<string>::iterator iter = old_watches.begin(); iter != old_watches.end(); iter++)
-    {
-        if (m_toWatch.find (*iter) == m_toWatch.end())
-        {
-            // watch has been deleted
-            
-            bool subdir = false;
-            set<string>::iterator it = toRemove.begin();
-            
-            while (it != toRemove.end())
-            {
-                if (iter->find(*it)) // iter = /foo/ it = /foo/bar/
-                {
-                    set<string>::iterator rmit = it;
-                    it++;
-                    toRemove.erase (rmit); // we keep only the parent dir
-                }
-                else if (it->find (*iter)) // iter = /foo/bar/ = /foo/
-                {
-                    subdir = true;
-                    break;
-                }
-                else
-                    it++;
-            }
-            
-            if (!subdir)
-                toRemove.insert(*iter);
-        }
-    }
-    
-    // remove all indexed files contined into dir
-    dirsRemoved (toRemove, events); //remove also all indexed files contained in dir
-    
-    toRemove.clear();
-    
-    // add inotify watches
-    addWatches (m_toWatch);
     m_toWatch.clear();
 
     if (events.size() > 0)
@@ -517,6 +519,8 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
         else
             m_eventQueue->addEvents (events);
     }
+    
+    m_indexedDirs = dirs;
 }
 
 void InotifyListener::bootstrap (const set<string> &dirs) {
@@ -574,9 +578,6 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         events.push_back (new Event (Event::CREATED, mi->first));
 
     m_toIndex.clear();
-    
-    // add inotify watches
-    addWatches (m_toWatch);
     m_toWatch.clear();
 
     if (events.size() > 0)
