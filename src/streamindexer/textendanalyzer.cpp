@@ -27,7 +27,7 @@ using namespace jstreams;
 bool
 TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     const char* end = header + headersize;
-    const char* p = header-1;
+    const char* p = header;
     // check if the text is valid UTF-8
     char nb = 0;
     while (p < end) {
