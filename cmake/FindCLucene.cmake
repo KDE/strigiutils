@@ -38,19 +38,6 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
       NAMES CLucene.h
       PATHS ${TRIAL_INCLUDE_PATHS})
 
-  # check if version 0.9.15 is patched
-  IF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
-    FILE(READ ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h CLCONTENT)
-    STRING(REGEX MATCH "virtual int64_t mark" CLMATCH ${CLCONTENT})
-    IF (CLMATCH)
-      MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See README)")
-    ENDIF (CLMATCH)
-  ELSE (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
-      MESSAGE(FATAL_ERROR " CLucene 0.9.15 was not patched. Please read replace the files\n     streambase.h, bufferedstream.h, and inputstreambuffer.h\n in CLucene with those from Strigi. (See README)")
-  ENDIF (EXISTS ${CLUCENE_INCLUDE_DIR}/CLucene/util/streambase.h)
-
-  # end check
-
   IF (CLUCENE_INCLUDE_DIR)
     MESSAGE(STATUS "Found CLucene include dir: ${CLUCENE_INCLUDE_DIR}")
   ENDIF (CLUCENE_INCLUDE_DIR)
@@ -65,9 +52,9 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
       IF (CLMATCH)
         STRING(REGEX REPLACE "_CL_VERSION +\"(.*)\"" "\\1" CLVERSION ${CLMATCH})
       ENDIF (CLMATCH)
-      IF (CLVERSION STRLESS "0.9.15")
-        MESSAGE(FATAL_ERROR "CLucene version is less than 0.9.15")
-      ENDIF (CLVERSION STRLESS "0.9.15")
+      IF (CLVERSION STRLESS "0.9.16")
+        MESSAGE(FATAL_ERROR "CLucene version is less than 0.9.16")
+      ENDIF (CLVERSION STRLESS "0.9.16")
     ENDIF (CLUCENE_LIBRARY_DIR)
   ELSE(NOT MSVC)
     #msvc doesnt use a config file
@@ -83,7 +70,7 @@ IF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
 ELSE(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
   SET(CLucene_FOUND 0)
   IF(CLucene_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could not find CLucene. Please download CLucene from http://clucene.sf.net")
+    MESSAGE(FATAL_ERROR "Could not find CLucene. Please install CLucene >= 0.9.16 (http://clucene.sf.net)")
   ENDIF(CLucene_FIND_REQUIRED)
 ENDIF(CLUCENE_INCLUDE_DIR AND CLUCENE_LIBRARY AND CLUCENE_LIBRARY_DIR)
 
