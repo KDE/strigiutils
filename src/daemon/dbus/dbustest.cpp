@@ -69,8 +69,8 @@ serverthread(void*) {
         if (retval == -1 || FD_ISSET(quitpipe[0], &rfds)) break;
 
         // non blocking read of the next available message
-//        dbus_connection_read_write_dispatch(conn, 0);
-        dbus_connection_read_write(conn, 0);
+        dbus_connection_read_write_dispatch(conn, 0);
+//        dbus_connection_read_write(conn, 0);
         msg = dbus_connection_pop_message(conn);
         dbus_connection_flush(conn);
         dbus_message_unref(msg);

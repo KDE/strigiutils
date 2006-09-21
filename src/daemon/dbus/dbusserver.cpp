@@ -64,6 +64,7 @@ DBusServer::run(void*) {
     }
 
     // close the connection
-    dbus_connection_close(conn);
+    dbus_connection_unref(conn);
+    dbus_shutdown();
     return &thread;
 }
