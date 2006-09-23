@@ -123,6 +123,15 @@ CHECK_TYPE_SIZE(intptr_t INTPTR_T)
 CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h.cmake
   ${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h)
 
+CONFIGURE_FILE(
+  "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+
+
 # packaging target
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Strigi Desktop Search")
 set(CPACK_SOURCE_GENERATOR "TGZ")
