@@ -101,7 +101,8 @@ IndexScheduler::run(void*) {
             if (getState() == Working) {
                 setState(Idling);
             }
-        } else if (getState() == Idling) {
+        }
+        else if (getState() == Idling) {
             if (m_listenerEventQueue == NULL)
                 return 0;
            
@@ -178,7 +179,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     IndexWriter* writer = indexmanager->getIndexWriter();
     StreamIndexer* streamindexer = new StreamIndexer(writer);
    
-    vector<string> toDelete, toIndex;
+    vector<string> toDelete;
    
     STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
 
@@ -191,14 +192,14 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
         switch (event->getType())
         {
             case Event::CREATED:
-                toIndex.push_back (event->getPath());
+                toindex.insert (make_pair (event->getPath(), event->getTime()));
                 break;
             case Event::UPDATED:
             {
                 time_t indexTime = reader->getMTime(reader->getDocumentId(event->getPath()));
                 if (indexTime < event->getTime())
                 {
-                    toIndex.push_back (event->getPath());
+                    toindex.insert (make_pair (event->getPath(), event->getTime()));
                     toDelete.push_back (event->getPath());
                 }
                 else
@@ -214,12 +215,14 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     }
     writer->deleteEntries(toDelete);
 
-    for (unsigned int i = 0; i < toIndex.size(); i++)
+    map<string, time_t>::iterator it = toindex.begin();
+    while (it != toindex.end())
     {
-        streamindexer->indexFile(toIndex[i]);
+        streamindexer->indexFile(it->first);
         if (writer->itemsInCache() > 10000) {
             writer->commit();
         }
+        toindex.erase(it++);
     }
    
     writer->commit();
