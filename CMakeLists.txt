@@ -30,7 +30,7 @@ set(CMAKE_CXX_FLAGS "-Wall -g3 -O0 -ansi")
 
 OPTION(ENABLE_INOTIFY
   "enable inotify support"
-  ON)
+  OFF)
 
 OPTION(ENABLE_DBUS
   "enable dbus support"
