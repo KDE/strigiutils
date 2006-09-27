@@ -43,7 +43,7 @@ private:
     time_t m_oldestdate;
     bool (*m_callback)(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
-    void (*m_dirCallback)(const char* fullpath);
+    void (*m_dirCallback)(const char* fullpath,  uint len);
 
     char* resize(uint len);
     bool walk_directory(uint len);
@@ -60,7 +60,7 @@ public:
         m_callback = callback;
     }
    
-    void setDirCallbackFunction(void (*callback)(const char* fullpath)) {
+    void setDirCallbackFunction(void (*callback)(const char* fullpath , uint len)) {
                                  m_dirCallback = callback;
     }
    

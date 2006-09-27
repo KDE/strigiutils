@@ -81,7 +81,7 @@ FileLister::walk_directory(uint len) {
     struct dirent *subdir;
     struct stat dirstat;
     
-    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path)))
+    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path, len)))
         return true; 
     else if (m_filterManager == NULL)
         printf ("m_filtermanager is NULL!!\n");
@@ -89,7 +89,7 @@ FileLister::walk_directory(uint len) {
 #ifndef _WIN32
     // call dir function callback, actually there's only inotify dir callback
     if (m_dirCallback != 0)
-        m_dirCallback (path);
+        m_dirCallback (path, len);
 #endif
 
 #ifdef _WIN32
@@ -127,9 +127,9 @@ FileLister::walk_directory(uint len) {
         strcpy(path+len, subdir->d_name);
         if (lstat(path, &dirstat) == 0) {
             bool c = true;
-            if ( S_ISREG(dirstat.st_mode)
-                    && dirstat.st_mtime >= m_oldestdate) {
-                c = m_callback(path, len, l, dirstat.st_mtime);
+            if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
+                if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))
+                    c = m_callback(path, len, l, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR) {
                 strcpy(path+l, "/");
                 c = walk_directory(l+1);
