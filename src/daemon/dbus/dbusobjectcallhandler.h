@@ -13,7 +13,6 @@ class DBusObjectCallHandler {
 private:
     static DBusHandlerResult message_function(DBusConnection* connection,
         DBusMessage* message, void* user_data);
-    DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
     DBusObjectInterface* introspection;
 
     const std::string objectpath;
@@ -25,6 +24,8 @@ public:
     void addInterface(DBusObjectInterface* interface);
     void registerOnConnection(DBusConnection* c);
     std::string getIntrospectionXML();
+    const char* getObjectPath() const { return objectpath.c_str(); }
+    DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
 };
 
 #endif

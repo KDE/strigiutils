@@ -25,6 +25,7 @@
 class Interface;
 class DBusServer : public StrigiThread {
 private:
+    int quitpipe[2];
     Interface* interface;
     void* run(void*);   
 public:

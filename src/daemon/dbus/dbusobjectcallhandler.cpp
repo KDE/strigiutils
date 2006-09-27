@@ -4,6 +4,17 @@
 #include <sstream>
 using namespace std;
 
+class DBusInterface : public DBusObjectInterface {
+private:
+    DBusObjectCallHandler* object;
+public:
+    DBusInterface(DBusObjectCallHandler* o)
+        : DBusObjectInterface("org.freedesktop.DBus"),
+          object(o) {}
+    ~DBusInterface() {}
+};
+
+
 class IntrospectionInterface : public DBusObjectInterface {
 private:
     DBusObjectCallHandler* object;
