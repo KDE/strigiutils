@@ -37,7 +37,7 @@ class FilterManager
        
         /*! returns true if text matches a filtering rule, false otherwise*/
         bool findMatch(std::string& text);
-        bool findMatch(const char* text);
+        bool findMatch(const char* text, uint len);
        
         std::multimap<int,std::string> getFilteringRules();
         void setFilteringRules(const std::multimap<int,std::string>& rules);

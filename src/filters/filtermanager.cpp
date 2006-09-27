@@ -160,9 +160,9 @@ void FilterManager::saveFilter()
     pthread_mutex_unlock (&m_mutex);
 }
 
-bool FilterManager::findMatch(const char* text)
+bool FilterManager::findMatch(const char* text, uint len)
 {
-    string t (text);
+    string t (text, len);
     return findMatch (t);
 }
 
