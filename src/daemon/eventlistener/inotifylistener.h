@@ -50,7 +50,7 @@ class InotifyListener : public EventListener
        
         static bool ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
         static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
-        static void watchDirCallback(const char* path);
+        static void watchDirCallback(const char* path, uint len);
        
     private:
         void bootstrap (const std::set<std::string>& dirs);

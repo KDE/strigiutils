@@ -178,7 +178,7 @@ void InotifyListener::watch ()
             char buff [20];
             snprintf(buff, 20 * sizeof (char), "%i",this_event->wd);
             
-            STRIGI_LOG_WARNING ("strigi.InotifyListener", "returned an unknown watch descriptor: " + string (buff))
+            STRIGI_LOG_WARNING ("strigi.InotifyListener", string("returned an unknown watch descriptor: ") + buff)
             
             // jump to next event
             this_event_char += sizeof(struct inotify_event) + this_event->len;
@@ -189,19 +189,19 @@ void InotifyListener::watch ()
         if (isEventInteresting (this_event))
         {
             STRIGI_LOG_DEBUG ("strigi.InotifyListener", iter->second + " changed")
-            STRIGI_LOG_DEBUG ("strigi.InotifyListener", "caught inotify event: " + eventToString( this_event->mask))
+                    STRIGI_LOG_DEBUG ("strigi.InotifyListener", string("caught inotify event: ") + eventToString( this_event->mask))
 
             if ((this_event->len > 0))
-                    STRIGI_LOG_DEBUG ("strigi.InotifyListener", string("event regards ") + this_event->name)
-
-            //TODO: fix path creation
-            string file = iter->second;
-
-            if (file[file.length() - 1 ] != '/')
+                    STRIGI_LOG_DEBUG ("strigi.InotifyListener", "event regards " + string(this_event->name, this_event->len))
+            
+            string file (iter->second);
+            
+            //TODO: fix path creation, check running OS
+            if (file[file.length() - 1] != '/')
                 file += '/';
 
-            file += this_event->name;
-
+            file += string(this_event->name, this_event->len);
+            
             if ( (IN_MODIFY & this_event->mask) != 0 )
             {
                 Event* event = new Event (Event::UPDATED, file);
@@ -343,7 +343,7 @@ bool InotifyListener::isEventInteresting (struct inotify_event * event)
     
     if (m_filterManager != NULL)
     {
-        if ((event->len > 0) && m_filterManager->findMatch(event->name))
+        if ((event->len > 0) && m_filterManager->findMatch(event->name, event->len))
             return false;
     }
     else
@@ -603,27 +603,19 @@ bool InotifyListener::ignoreFileCallback(const char* path, uint dirlen, uint len
 bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
     if (strstr(path, "/.")) return true;
-    // check filtering rules given by user
-    if (iListener->m_filterManager == NULL)
-    {
-        STRIGI_LOG_WARNING ("strigi.InotifyListener.indexFileCallback", "unable to use filters, m_filterManager == NULL!")
-    }
-    else if ((iListener->m_filterManager)->findMatch (path))
-    {
-        STRIGI_LOG_INFO ("strigi.InotifyListener.indexFileCallback", "ignoring file " + string(path))
-        return true;
-    }
+    
+    std::string file (path,len);
 
-    (iListener->m_toIndex).insert (make_pair(string(path), mtime));
+    (iListener->m_toIndex).insert (make_pair(file, mtime));
 
     return true;
 }
 
-void InotifyListener::watchDirCallback(const char* path)
+void InotifyListener::watchDirCallback(const char* path, uint len)
 {
-    string dir (path);
-
-    iListener->addWatch( dir);
+    std::string dir (path, len);
+    
+    iListener->addWatch (dir);
     (iListener->m_toWatch).insert (dir);
 }
 
