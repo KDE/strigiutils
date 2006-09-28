@@ -29,11 +29,10 @@ set_target_properties(streamindexer PROPERTIES
 
 target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
 
-install(TARGETS streamindexer
-	LIBRARY DESTINATION lib)
+install(TARGETS streamindexer LIBRARY DESTINATION ${LIB_INSTALL_DIR})
 install(FILES indexeddocument.h indexwriter.h strigi_plugins.h
 	streamthroughanalyzer.h streamendanalyzer.h
-	DESTINATION include)
+	DESTINATION ${INCLUDE_INSTALL_DIR})
 
 
 # test executable
