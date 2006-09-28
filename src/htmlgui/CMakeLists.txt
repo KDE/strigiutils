@@ -7,7 +7,6 @@ set_target_properties(strigihtmlgui PROPERTIES
 
 target_link_libraries(strigihtmlgui searchclient streamindexer)
 
-install(TARGETS strigihtmlgui
-	LIBRARY DESTINATION lib)
+install(TARGETS strigihtmlgui DESTINATION ${LIB_INSTALL_DIR})
 install(FILES strigihtmlgui.h
 	DESTINATION include)
