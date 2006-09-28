@@ -6,7 +6,7 @@ set(STRIGI_VERSION_PATCH 8)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2 FATAL_ERROR)
 
 # include specific modules
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # include general modules
 include(UsePkgConfig)
