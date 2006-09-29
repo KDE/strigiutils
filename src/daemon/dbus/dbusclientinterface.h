@@ -11,6 +11,7 @@ private:
     ClientInterface* impl;
     std::map<std::string, handlerFunction> handlers;
     DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
+    void indexFile(DBusMessage* msg, DBusConnection* conn);
     void getStatus(DBusMessage* msg, DBusConnection* conn);
     void isActive(DBusMessage* msg, DBusConnection* conn);
     void getIndexedFiles(DBusMessage* msg, DBusConnection* conn);

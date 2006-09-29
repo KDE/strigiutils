@@ -382,4 +382,17 @@ SocketClient::getIndexedFiles() {
     }
     return r;
 }
+void
+SocketClient::indexFile(const std::string &path, time_t mtime,
+        const std::vector<char>& content) {
+    printf("so you want me to send a file to strigi?\n");
+    request.clear();
+    response.clear();
+    request.push_back("indexFile");
+    request.push_back(path);
+    ostringstream out;
+    out << mtime;
+    request.push_back(out.str());
+    request.push_back(&content[0]);
+}
 

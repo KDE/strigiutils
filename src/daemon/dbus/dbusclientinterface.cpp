@@ -6,6 +6,7 @@
 #include <sstream>
 DBusClientInterface::DBusClientInterface(ClientInterface* i)
         :DBusObjectInterface("vandenoever.strigi"), impl(i) {
+    handlers["indexFile"] = &DBusClientInterface::indexFile;
     handlers["getStatus"] = &DBusClientInterface::getStatus;
     handlers["isActive"] = &DBusClientInterface::isActive;
     handlers["getIndexedFiles"] = &DBusClientInterface::getIndexedFiles;
@@ -35,6 +36,11 @@ std::string
 DBusClientInterface::getIntrospectionXML() {
     std::ostringstream xml;
     xml << "  <interface name='"+getInterfaceName()+"'>\n"
+    << "    <method name='indexFile'>\n"
+    << "      <arg name='path' type='s' direction='in'/>\n"
+    << "      <arg name='mtime' type='u' direction='in'/>\n"
+    << "      <arg name='content' type='ay' direction='in'/>\n"
+    << "    </method>\n"
     << "    <method name='getStatus'>\n"
     << "      <arg name='out' type='a{ss}' direction='out'/>\n"
     << "    </method>\n"
@@ -78,6 +84,18 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "  </interface>\n";
     return xml.str();
+}
+void
+DBusClientInterface::indexFile(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string path;
+    time_t mtime;
+    std::vector<char> content;
+    reader >> path >> mtime >> content;
+    if (reader.isOk()) {
+        impl->indexFile(path,mtime,content);
+    }
 }
 void
 DBusClientInterface::getStatus(DBusMessage* msg, DBusConnection* conn) {

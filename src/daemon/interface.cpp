@@ -23,6 +23,8 @@
 #include "indexscheduler.h"
 #include "eventlistener.h"
 #include "filtermanager.h"
+#include "streamindexer.h"
+#include "stringreader.h"
 #include "query.h"
 #include <sstream>
 using namespace std;
@@ -125,8 +127,7 @@ Interface::setFilteringRules(const multimap<int,string>& rules) {
         filterManager->setFilteringRules (rules);
 }
 set<string>
-Interface::getIndexedFiles()
-{
+Interface::getIndexedFiles() {
     map <string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);
     set <string> r;
     
@@ -134,4 +135,13 @@ Interface::getIndexedFiles()
         r.insert (iter->first);
     
     return r;
+}
+void
+Interface::indexFile(const std::string &path, time_t mtime,
+        const std::vector<char>& content) {
+    // TODO if the file is already there, remove it first
+    IndexWriter* writer = manager.getIndexWriter();
+    StreamIndexer* streamindexer = new StreamIndexer(writer);
+    StringReader<char> sr(&content[0], content.size(), false);
+    char r = streamindexer->analyze(path, mtime, &sr, 0);
 }
