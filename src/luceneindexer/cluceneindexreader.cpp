@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "query.h"
+#include "textutils.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include <CLucene/search/QueryFilter.h>
@@ -126,12 +127,7 @@ CLuceneIndexReader::convertValue(const TCHAR* v) {
     STRCPY_TtoA(after, v, CL_MAX_DIR);
     after[CL_MAX_DIR-1] = '\0';
     // remove newlines
-    char *p = after;
-    while (true) {
-        if (*p == '\0') break;
-        if (*p == '\n' || *p == '\r') *p = ' ';
-        p++;
-    }
+    jstreams::convertNewLines(after);
     return after;
 }
 void

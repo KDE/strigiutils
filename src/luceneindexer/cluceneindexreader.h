@@ -53,7 +53,6 @@ private:
         const std::string& value);
     static void createBooleanQuery(const jstreams::Query& query,
         lucene::search::BooleanQuery& bq);
-    static std::string convertValue(const TCHAR* value);
     static void addField(lucene::document::Field* field,
         jstreams::IndexedDocument&);
 public:
@@ -65,6 +64,7 @@ public:
     int64_t getIndexSize();
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
+    static std::string convertValue(const TCHAR* value);
 };
 
 #endif
