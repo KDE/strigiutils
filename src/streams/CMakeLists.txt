@@ -9,7 +9,8 @@ add_library(streams SHARED compat.cpp stgdirent.cpp bz2inputstream.cpp
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp
 	dostime.cpp substreamproviderprovider.cpp arinputstream.cpp
-	rpminputstream.cpp archivereader.cpp processinputstream.cpp)
+	rpminputstream.cpp archivereader.cpp processinputstream.cpp
+	textutils.cpp)
 set_target_properties(streams PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
@@ -20,7 +21,7 @@ install(TARGETS streams
 	LIBRARY DESTINATION lib)
 install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	bufferedstream.h streambase.h inputstreambuffer.h inputstream.h
-	archivereader.h jstreamsconfig.h
+	archivereader.h jstreamsconfig.h inputstreamreader.h stringreader.h
 	DESTINATION include)
 
 add_executable(testpt testpt.cpp processinputstream.cpp)
