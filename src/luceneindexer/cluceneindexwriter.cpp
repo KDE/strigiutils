@@ -173,6 +173,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
                 reader->deleteDocument(i);
             }
         }
+        _CLDELETE(bits);
     }
     _CLDELETE(filter);
     _CLDELETE(query);

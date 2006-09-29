@@ -229,9 +229,10 @@ CLuceneIndexReader::query(const Query& q) {
             addField(f, doc);
         }
         results.push_back(doc);
+        _CLDELETE(e);
     }
     if (hits) {
-        delete hits;
+        _CLDELETE(hits);
     }
     searcher.close();
     manager->derefReader();
