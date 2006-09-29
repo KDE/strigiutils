@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include "textutils.h"
 
 namespace jstreams {
 
@@ -79,11 +80,7 @@ public:
     void addText(const char* text, int32_t length) {
         writer->addText(this, text, length);
     }
-    void setField(const std::string& fieldname, const std::string& value) {
-        if (strchr(fieldname.c_str(), '/') == 0) {
-            writer->setField(this, fieldname, value);
-        }
-    }
+    void setField(const std::string& fieldname, const std::string& value);
     const std::string& getName() const { return name; }
     time_t getMTime() const { return mtime; }
     char getDepth() const { return depth; }

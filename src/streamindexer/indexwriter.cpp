@@ -38,3 +38,18 @@ Indexable::getFileName() const {
     }
     return name;
 }
+void
+Indexable::setField(const std::string& fieldname, const std::string& value) {
+    // make sure only utf8 is stored
+    if (!checkUtf8(fieldname)) {
+        printf("'%s' is not a UTF8 string\n", fieldname.c_str());
+        return;
+    }
+    if (!checkUtf8(value)) {
+        printf("'%s' is not a UTF8 string\n", value.c_str());
+        return;
+    }
+    if (strchr(fieldname.c_str(), '/') == 0) {
+        writer->setField(this, fieldname, value);
+    }
+}
