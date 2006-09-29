@@ -64,40 +64,7 @@ DBusServer::run(void*) {
         dbus_connection_read_write_dispatch(conn, -1);
         dbus_connection_flush(conn);
     }
-/*    int fd;
-    dbus_connection_get_unix_fd(conn, &fd);
-    bool run;
-    do {
-        printf("wait for call\n");
-        // block until there's activit on the port
-        fd_set rfds;
-        struct timeval tv;
-        FD_ZERO(&rfds);
-        FD_SET(fd, &rfds);
-        FD_SET(quitpipe[0], &rfds);
-        printf("server\n");
-        tv.tv_sec = 50000;
-        tv.tv_usec = 0;
-        int retval = select(fd+1, &rfds, 0, 0, &tv);
-        if (retval == -1 || FD_ISSET(quitpipe[0], &rfds)) break;
 
-        // non blocking read of the next available message
-//        dbus_connection_read_write_dispatch(conn, 0);
-        dbus_connection_read_write(conn, 1000);
-        msg = dbus_connection_pop_message(conn);
-        if (msg) {
- 
-            printf("before handling call %s %s %s\n", dbus_message_get_path(msg), dbus_message_get_interface(msg), dbus_message_get_member(msg));
-            callhandler.handleCall(conn, msg);
-            printf("after handling call\n");
-
-            dbus_connection_flush(conn);
-            dbus_message_unref(msg);
-            printf("finished with call\n");
-        }
-
-    } while ((!interface || interface->isActive()) && getState() != Stopping);
-*/
     // close the connection
     dbus_connection_unref(conn);
     dbus_shutdown();

@@ -86,6 +86,7 @@ quit_daemon(int) {
         break;
     case 3:
     default:
+        STRIGI_LOG_FATAL ("strigi.daemon", "calling exit(1)")
         exit(1);
     }
 }

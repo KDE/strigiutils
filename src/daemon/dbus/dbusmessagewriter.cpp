@@ -1,6 +1,7 @@
 #include "dbusmessagewriter.h"
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
+#include "textutils.h"
 using namespace std;
 
 DBusMessageWriter::DBusMessageWriter(DBusConnection* c, DBusMessage* msg)
@@ -107,7 +108,15 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         double d = i->score;
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_DOUBLE, &d);
-        c = i->fragment.c_str();
+        // quick bug fix on what is probably a clucene bug
+        // the fragments as stored are sometimes not properly recoded back
+        // from usc2 to utf8 which causes dbus to close the connection,
+        // whereupon the strigidaemon quits
+        if (jstreams::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
+            c = i->fragment.c_str();
+        } else {
+            c = "";
+        }
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         c = i->mimetype.c_str();
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
