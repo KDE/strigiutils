@@ -24,10 +24,38 @@ namespace jstreams {
 class IndexReader;
 class IndexWriter;
 class QueryBitsetCache;
+
+/**
+ * Abstract interface that manages access to the IndexReader and IndexWriter
+ * instances provided by a particular index backend.
+ *
+ * The IndexManager handles all access to a particular index through the
+ * IndexReader and IndexWriter objects contained within it.
+ * The functions of IndexManager are threadsafe, but the functions provided
+ * by the IndexReader and IndexWriter need not be. IndexReader and IndexWriter
+ * objects may not be accessed from different threads. When access to an
+ * index from a particular thread is required, the functions getIndexReader()
+ * and getIndexWriter() provide instances of the respective classes that may
+ * be used in the active thread.
+ **/
 class IndexManager {
 public:
     virtual ~IndexManager() {}
+    /**
+     * Provide access to an IndexReader object that may be used in the active
+     * thread.
+     *
+     * @return a pointer to an IndexReader that reads from the index that is
+     *         managed by this instance of IndexManager
+     **/
     virtual IndexReader* getIndexReader() = 0;
+    /**
+     * Provide access to an IndexWriter object that may be used in the active
+     * thread.
+     *
+     * @return a pointer to an IndexWriter that reads from the index that is
+     *         managed by this instance of IndexManager
+     **/
     virtual IndexWriter* getIndexWriter() = 0;
 //    virtual QueryBitsetCache* getBitSets() = 0;
 };

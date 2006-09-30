@@ -1,9 +1,13 @@
-/** @mainpage ArchiveReader
-*
-* ArchiveReader is currently a demonstration of using QAbstractFileEngine for
-* reading archive files.
-**/
+/** @mainpage Strigi
+
+Strigi is a Desktop Search Engine. It is very modular and uses the efficient JStreams classes to read files that are embedded at arbitrary depth in other documents.
+
+@section Writing analyzers
+
+
+
+*/
 // DOXYGEN_VERSION=4.0
-// DOXYGEN_NAME=archivereader
+// DOXYGEN_NAME=strigi
 // DOXYGEN_ENABLE=YES
 // DOXYGEN_SET_RECURSIVE = YES

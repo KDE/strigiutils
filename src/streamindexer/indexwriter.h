@@ -41,6 +41,13 @@ for all streams {
 - delete the indexwriter
 */
 class Indexable;
+/**
+ * Abstract class that provides write access to a Strigi index.
+ *
+ * Instances of the class should be obtained by calling the function
+ * IndexManager::getIndexWriter() and should not be used from threads other
+ * than the thread that called IndexManager::getIndexWriter().
+ **/
 class IndexWriter {
 friend class Indexable;
 protected:
@@ -53,13 +60,38 @@ protected:
     virtual void finishIndexable(const Indexable*) = 0;
 public:
     virtual ~IndexWriter() {}
+    /**
+     * Flush the accumulated changes to disk.
+     **/
     virtual void commit() { return; }
+    /**
+     * Delete the entries with the given paths from the index.
+     *
+     * @param entries the paths of the files that should be deleted
+     **/
     virtual void deleteEntries(const std::vector<std::string>& entries) = 0;
+    /**
+     * Delete all indexed documents from the index.
+     **/
     virtual void deleteAllEntries() = 0;
+    /**
+     * Return the number of objects that are currently in the cache.
+     **/
     virtual int itemsInCache() { return 0; }
+    /**
+     * Optimize the index. This can be computationally intensive and can
+     * will often cause the index to temporarily use the double amount of
+     * diskspace.
+     **/
     virtual void optimize() {}
 };
-
+/**
+ * Indexed representation of a file.
+ *
+ * This object allows StreamEndAnalyzer and StreamThroughAnalyer instances to
+ * write data associated with a document to the index. The data is
+ * automatically written do the index when ~Indexable() is called.
+ **/
 class Indexable {
 friend class IndexWriter;
 private:
@@ -72,14 +104,39 @@ private:
     IndexWriter* writer;
     char depth;
 public:
-    Indexable(const std::string& n, time_t mt, IndexWriter* w, char d)
-            :mtime(mt), name(n), writer(w), depth(d) {
-        w->startIndexable(this);
+    /**
+     * Create a new Indexable object that will be written to the index.
+     *
+     * @param path the path of the file
+     * @param mt the modification time of the file
+     * @param writer the writer with which the indexable will be written upon
+     *        destruction
+     * @param d the depth at which a document is embedded in other documents.
+     *        a depth of 0 means a document is not embedded in another document.
+     **/        
+    Indexable(const std::string& path, time_t mt, IndexWriter* writer, char d)
+            :mtime(mt), name(path), writer(writer), depth(d) {
+        writer->startIndexable(this);
     }
+    /**
+     * Write the indexable to the index and release the allocated resources.
+     **/
     ~Indexable() { writer->finishIndexable(this); }
+    /**
+     * Associate a fragment of text with the object.
+     *
+     * @param a pointer to a fragment of utf8 encoded text
+     * @param the length of the fragment
+     **/
     void addText(const char* text, int32_t length) {
         writer->addText(this, text, length);
     }
+    /**
+     * Add a name, value pair to the index.
+     *
+     * @param fieldname utf8 representation of the fieldname, the fieldname
+     *        
+     **/
     void setField(const std::string& fieldname, const std::string& value);
     const std::string& getName() const { return name; }
     time_t getMTime() const { return mtime; }

@@ -20,6 +20,7 @@
 #include "interface.h"
 #include "indexreader.h"
 #include "indexmanager.h"
+#include "indexwriter.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
 #include "filtermanager.h"
@@ -141,7 +142,10 @@ Interface::indexFile(const std::string &path, time_t mtime,
         const std::vector<char>& content) {
     // TODO if the file is already there, remove it first
     IndexWriter* writer = manager.getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(writer);
+    vector<string> paths;
+    paths.push_back(path);
+    writer->deleteEntries(paths);
+    StreamIndexer streamindexer(writer);
     StringReader<char> sr(&content[0], content.size(), false);
-    char r = streamindexer->analyze(path, mtime, &sr, 0);
+    char r = streamindexer.analyze(path, mtime, &sr, 0);
 }
