@@ -15,7 +15,7 @@ if (QT4_FOUND)
 
   target_link_libraries(strigiclient searchclient filters strigihtmlgui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
-  install(TARGETS strigiclient RUNTIME DESTINATION ${INSTALL_BIN_DIR})
+  install(TARGETS strigiclient RUNTIME DESTINATION bin)
 endif (QT4_FOUND)
 
 

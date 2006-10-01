@@ -7,7 +7,7 @@ if (XATTR_FOUND)
     PREFIX strigita_
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
-  install(TARGETS xattr LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
+  install(TARGETS xattr LIBRARY DESTINATION lib/strigi)
 endif (XATTR_FOUND)
 
 if (Magic_FOUND)
@@ -18,6 +18,6 @@ if (Magic_FOUND)
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
   target_link_libraries(magic ${MAGIC_LIBRARIES})
-  install(TARGETS magic LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
+  install(TARGETS magic LIBRARY DESTINATION lib/strigi)
 endif (Magic_FOUND)
 
