@@ -27,6 +27,13 @@
 
 class Filter;
 
+/**
+* @class FilterManager
+* @brief Class used for managing filters
+*
+* Manage all filtering rules, taking care of load, save, check operations
+* @sa Filter
+*/
 class FilterManager
 {
     public:
@@ -35,10 +42,22 @@ class FilterManager
        
         void setConfFile(std::string& patternRules, std::string& pathRules);
        
-        /*! returns true if text matches a filtering rule, false otherwise*/
+        /** 
+        * check if text matches a filtering rules
+        * @return true if text matches a filtering rule, false otherwise
+        */
         bool findMatch(std::string& text);
+        
+        /** 
+         * convenience method, same as above
+         * @param text message 
+         * @param len length of message
+         */
         bool findMatch(const char* text, uint len);
        
+        /** 
+         * @return a multimap with filtering RTTI as key, and m_rule as value 
+         */
         std::multimap<int,std::string> getFilteringRules();
         void setFilteringRules(const std::multimap<int,std::string>& rules);
        
