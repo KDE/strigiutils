@@ -9,7 +9,6 @@
 
 #include <linux/types.h>
 
-
 /*
  * struct inotify_event - structure read from the inotify device for each event
  *
@@ -18,10 +17,10 @@
  */
 struct inotify_event {
 	__s32		wd;		/* watch descriptor */
-        __u32		mask;		/* watch mask */
-        __u32		cookie;		/* cookie to synchronize two events */
-        __u32		len;		/* length (including nulls) of name */
-        char		name[0];	/* stub for possible name */
+	__u32		mask;		/* watch mask */
+	__u32		cookie;		/* cookie to synchronize two events */
+	__u32		len;		/* length (including nulls) of name */
+	char		name[0];	/* stub for possible name */
 };
 
 #include "inotify-masks.h"
@@ -35,9 +34,9 @@ struct inotify_event {
 #ifdef CONFIG_INOTIFY
 
 extern void inotify_inode_queue_event(struct inode *, __u32, __u32,
-                                      const char *);
+				      const char *);
 extern void inotify_dentry_parent_queue_event(struct dentry *, __u32, __u32,
-                                              const char *);
+					      const char *);
 extern void inotify_unmount_inodes(struct list_head *);
 extern void inotify_inode_is_dead(struct inode *);
 extern u32 inotify_get_cookie(void);
@@ -45,14 +44,14 @@ extern u32 inotify_get_cookie(void);
 #else
 
 static inline void inotify_inode_queue_event(struct inode *inode,
-                                             __u32 mask, __u32 cookie,
-                                             const char *filename)
+					     __u32 mask, __u32 cookie,
+					     const char *filename)
 {
 }
 
 static inline void inotify_dentry_parent_queue_event(struct dentry *dentry,
-        __u32 mask, __u32 cookie,
-        const char *filename)
+						     __u32 mask, __u32 cookie,
+						     const char *filename)
 {
 }
 
@@ -66,7 +65,7 @@ static inline void inotify_inode_is_dead(struct inode *inode)
 
 static inline u32 inotify_get_cookie(void)
 {
-    return 0;
+	return 0;
 }
 
 #endif	/* CONFIG_INOTIFY */
