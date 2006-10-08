@@ -71,8 +71,6 @@ void* PollingListener::run(void*)
             sleep (m_pause);
             pool();
         }
-        else
-            printf ("m_watches vuoto\n");
 
         if (getState() == Working)
             setState(Idling);
@@ -171,7 +169,7 @@ void PollingListener::pool ()
     
     if (events.size() > 0)
         m_eventQueue->addEvents (events);
-printf ("exiting\n");
+
     m_toIndex.clear();
 }
 
