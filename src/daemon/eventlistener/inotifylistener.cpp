@@ -383,9 +383,10 @@ void InotifyListener::addWatches (const set<string> &watches)
         // probably we reached the max_user_watches limit
         for ( ; iter != watches.end(); iter++)
             toPool.insert (*iter);
-        
-        m_pollingListener->addWatches( toPool);
     }
+    
+    if (!toPool.empty())
+        m_pollingListener->addWatches( toPool);
 }
 
 void InotifyListener::rmWatch(int wd, string path)
