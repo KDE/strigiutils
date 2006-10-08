@@ -18,7 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "inotifylistener.h"
-
+#include "pollinglistener.h"
+        
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "filtermanager.h"
@@ -52,9 +53,8 @@ InotifyListener::InotifyListener(set<string>& indexedDirs)
     m_bMonitor = true;
     setState(Idling);
     m_bInitialized = false;
-    m_eventQueue = NULL;
-    m_pIndexReader = NULL;
     m_indexedDirs = indexedDirs;
+    m_pollingListener = new PollingListener();
 }
 
 InotifyListener::~InotifyListener()
@@ -98,6 +98,12 @@ void* InotifyListener::run(void*)
 
 void InotifyListener::watch ()
 {
+    if (m_eventQueue == NULL)
+    {
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.watch", "m_eventQueue == NULL!")
+        return;
+    }
+
     // some code taken from inotify-tools (http://inotify-tools.sourceforge.net/)
 
     vector <Event*> events;
@@ -245,7 +251,11 @@ void InotifyListener::watch ()
                         Event* event = new Event (Event::CREATED, i->first);
                         events.push_back (event);
                     }
-
+                    
+                    // add new watches
+                    addWatches (m_toWatch);
+                    
+                    m_toWatch.clear();
                     m_toIndex.clear();
                 }
                 else
@@ -275,19 +285,7 @@ void InotifyListener::watch ()
     }
 
     if (events.size() > 0)
-    {
-        if (m_eventQueue == NULL)
-        {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener",
-                "m_eventQueue == NULL!")
-
-            for (unsigned int i = 0 ; i < events.size(); i++)
-                delete events[i];
-            events.clear();
-        }
-        else
-            m_eventQueue->addEvents (events);
-    }
+        m_eventQueue->addEvents (events);
 
     // remove deleted watches
     set<unsigned int>::iterator i;
@@ -298,41 +296,6 @@ void InotifyListener::watch ()
     }
 
     fflush( NULL );
-}
-
-void InotifyListener::addWatch (const string& path)
-{
-    if (!m_bInitialized)
-        return;
-
-    map<unsigned int, string>::iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++)
-    {
-        if ((iter->second).compare (path) == 0) // dir is already watched
-            return;
-    }
-
-    static int wd;
-    wd = inotify_add_watch (m_iInotifyFD, path.c_str(), m_iEvents);
-
-    if (wd < 0)
-    {
-        if ( wd == -1 )
-            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + " because of: " + strerror(-wd))
-        else
-        {
-            char buff [20];
-            snprintf(buff, 20* sizeof (char), "%i", wd);
-
-            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + ": returned wd was " + buff + " (expected -1 or >0 )")
-        }
-    }
-    else
-    {
-        m_watches.insert(make_pair(wd, path));
-
-        STRIGI_LOG_INFO ("strigi.InotifyListener", "added watch for " + path)
-    }
 }
 
 bool InotifyListener::isEventInteresting (struct inotify_event * event)
@@ -352,12 +315,77 @@ bool InotifyListener::isEventInteresting (struct inotify_event * event)
     return true;
 }
 
+bool InotifyListener::addWatch (const string& path)
+{
+    if (!m_bInitialized)
+        return false;
+
+    map<unsigned int, string>::iterator iter;
+    for (iter = m_watches.begin(); iter != m_watches.end(); iter++)
+    {
+        if ((iter->second).compare (path) == 0) // dir is already watched
+            return true;
+    }
+
+    static int wd;
+    wd = inotify_add_watch (m_iInotifyFD, path.c_str(), m_iEvents);
+
+    if (wd < 0)
+    {
+        if ((wd == -1) && ( errno == ENOSPC))
+        {
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch, maximum watch number reached")
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "You've to increase the value stored into /proc/sys/fs/inotify/max_user_watches")
+        }
+        else if ( wd == -1 )
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + " because of: " + strerror(-wd))
+        else
+        {
+            char buff [20];
+            snprintf(buff, 20* sizeof (char), "%i", wd);
+
+            STRIGI_LOG_ERROR ("strigi.InotifyListener", "Failed to watch " + path + ": returned wd was " + buff + " (expected -1 or >0 )")
+        }
+        
+        return false;
+    }
+    else
+    {
+        m_watches.insert(make_pair(wd, path));
+
+        STRIGI_LOG_INFO ("strigi.InotifyListener", "added watch for " + path)
+        
+        return true;
+    }
+}
+
 void InotifyListener::addWatches (const set<string> &watches)
 {
     set<string>::iterator iter;
-
+    set<string> toPool;
+    
     for (iter = watches.begin(); iter != watches.end(); iter++)
-        addWatch (*iter);
+    {
+        if (!addWatch (*iter))
+        {
+            
+            if (errno == ENOSPC)
+                 // user can't add no more watches, it's useless to go on
+                break;
+            
+            // adding watch failed for other reason, keep trying with others
+            toPool.insert(*iter);
+        }
+    }
+    
+    if (iter != watches.end())
+    {
+        // probably we reached the max_user_watches limit
+        for ( ; iter != watches.end(); iter++)
+            toPool.insert (*iter);
+        
+        m_pollingListener->addWatches( toPool);
+    }
 }
 
 void InotifyListener::rmWatch(int wd, string path)
@@ -432,8 +460,15 @@ void InotifyListener::dirsRemoved (set<string> dirs, vector<Event*>& events)
 
 void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     if (!m_pIndexReader) {
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.setIndexedDirectories", "m_pIndexReader == NULL!")
         return;
     }
+    if (m_eventQueue == NULL)
+    {
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.setIndexedDirectories", "m_eventQueue == NULL!")
+        return;
+    }
+
 
     vector<Event*> events;
     set<string> newIndexedDirs, nomoreIndexedDirs;
@@ -503,31 +538,29 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
         events.push_back (event);
     }
 
+    // add new watches
+    addWatches (m_toWatch);
+    
     m_toIndex.clear();
     m_toWatch.clear();
 
     if (events.size() > 0)
-    {
-        if (m_eventQueue == NULL)
-        {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener.setIndexedDirectories", "m_eventQueue == NULL!\n")
-
-                    for (unsigned int i = 0 ; i < events.size(); i++)
-                    delete events[i];
-            events.clear();
-        }
-        else
-            m_eventQueue->addEvents (events);
-    }
+        m_eventQueue->addEvents (events);
     
     m_indexedDirs = dirs;
 }
 
 void InotifyListener::bootstrap (const set<string> &dirs) {
     if (!m_pIndexReader) {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.bootstrap", "m_eventQueue == NULL!\n")
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.bootstrap", "m_pIndexReader == NULL!")
         return;
     }
+    if (m_eventQueue == NULL)
+    {
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.bootstrap", "m_eventQueue == NULL!")
+        return;
+    }
+    
     vector<Event*> events;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
     
@@ -563,6 +596,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         {
             // file has been updated since last run
             events.push_back (new Event (Event::UPDATED, mi->first));
+            m_toIndex.erase (it);
             mi++;
         }
         else
@@ -577,22 +611,14 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     for (mi = m_toIndex.begin(); mi != m_toIndex.end(); mi++)
         events.push_back (new Event (Event::CREATED, mi->first));
 
+    // add new watches
+    addWatches (m_toWatch);
+    
     m_toIndex.clear();
     m_toWatch.clear();
 
     if (events.size() > 0)
-    {
-        if (m_eventQueue == NULL)
-        {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener.bootstrap", "m_eventQueue == NULL!\n")
-
-            for (unsigned int i = 0 ; i < events.size(); i++)
-                delete events[i];
-            events.clear();
-        }
-        else
-            m_eventQueue->addEvents (events);
-    }
+        m_eventQueue->addEvents (events);
 }
 
 bool InotifyListener::ignoreFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
@@ -604,7 +630,7 @@ bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len,
 {
     if (strstr(path, "/.")) return true;
     
-    std::string file (path,len);
+    string file (path,len);
 
     (iListener->m_toIndex).insert (make_pair(file, mtime));
 
@@ -613,9 +639,8 @@ bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len,
 
 void InotifyListener::watchDirCallback(const char* path, uint len)
 {
-    std::string dir (path, len);
-    
-    iListener->addWatch (dir);
+    string dir (path, len);
+
     (iListener->m_toWatch).insert (dir);
 }
 

@@ -36,6 +36,8 @@
 
 #ifdef HAVE_INOTIFY
 #include "inotifylistener.h"
+#else
+#include "pollinglistener.h"
 #endif
 #include "eventlistenerqueue.h"
 #include "filtermanager.h"
@@ -296,21 +298,27 @@ main(int argc, char** argv) {
 
     Interface interface(*index, scheduler);
 
+    EventListener* listener;
+    
 #ifdef HAVE_INOTIFY
     // listen for requests
-    InotifyListener inotifyListener (dirs);
+    listener = new InotifyListener (dirs);
+#else
+    listener = new PollingListener(dirs);
+#endif
+    
     // configure & start inotfy's watcher thread
-    if (inotifyListener.init()) {
-        inotifyListener.setEventListenerQueue (&listenerEventQueue);
-        inotifyListener.setFilterManager (&filterManager);
-        inotifyListener.setIndexReader (index->getIndexReader());
+    if (listener->init()) {
+        listener->setEventListenerQueue (&listenerEventQueue);
+        listener->setFilterManager (&filterManager);
+        listener->setIndexReader (index->getIndexReader());
         // do not start scanning until execution is in the thread!
         // inotifyListener.setIndexedDirectories(dirs);
-        inotifyListener.start(20);
+        listener->start(20);
     }
-    interface.setEventListener (&inotifyListener);
-    threads.push_back(&inotifyListener);
-#endif
+    interface.setEventListener (listener);
+    threads.push_back(listener);
+
     interface.setFilterManager (&filterManager);
 
 #ifdef HAVE_DBUS
@@ -331,6 +339,9 @@ main(int argc, char** argv) {
     // close the indexmanager
     delete index;
 
+    //delete listener
+    delete listener;
+    
     // release lock
     releaseLock(lockfile, lock);
 }
