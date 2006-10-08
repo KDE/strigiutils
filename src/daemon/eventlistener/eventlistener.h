@@ -27,16 +27,23 @@
 class EventListenerQueue;
 class FilterManager;
 
+namespace jstreams
+{
+    class IndexReader;
+}
+
 class EventListener : public StrigiThread {
 public:
     EventListener(const char* name) :StrigiThread(name) {
-        m_eventQueue = 0;
-        m_filterManager = 0;
+        m_eventQueue = NULL;
+        m_filterManager = NULL;
+        m_pIndexReader = NULL;
     }
 
     virtual ~EventListener() {};
 
-    virtual void addWatch (const std::string& path) = 0;
+    virtual bool init() = 0;
+    virtual bool addWatch (const std::string& path) = 0;
     virtual void addWatches (const std::set<std::string>& watches) = 0;
     virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
@@ -45,10 +52,14 @@ public:
     void setFilterManager (FilterManager* filterManager) {
         m_filterManager = filterManager;
     }
+    void setIndexReader (jstreams::IndexReader* ireader) {
+        m_pIndexReader = ireader;
+    }
 
 protected:
     EventListenerQueue* m_eventQueue;
     FilterManager* m_filterManager;
+    jstreams::IndexReader* m_pIndexReader;
 };
 
 #endif

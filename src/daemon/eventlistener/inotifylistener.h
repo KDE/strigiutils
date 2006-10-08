@@ -24,12 +24,8 @@
 #include <map>
 #include <vector>
 
-namespace jstreams
-{
-    class IndexReader;
-}
-
 class Event;
+class PollingListener;
 
 class InotifyListener : public EventListener
 {
@@ -40,11 +36,9 @@ class InotifyListener : public EventListener
    
         bool init();
        
-        void addWatch (const std::string& path);
+        bool addWatch (const std::string& path);
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
-        
-        void setIndexReader (jstreams::IndexReader* ireader) { m_pIndexReader = ireader;}
        
         void* run(void*);
        
@@ -62,6 +56,7 @@ class InotifyListener : public EventListener
         void rmWatch(int wd, std::string path);
         void clearWatches();
        
+        PollingListener* m_pollingListener;
         int m_iInotifyFD;
         int m_iEvents;
         std::map<unsigned int, std::string> m_watches;
@@ -70,7 +65,6 @@ class InotifyListener : public EventListener
         std::map<std::string, time_t> m_toIndex;
         std::set<std::string> m_toWatch;
         std::set<std::string> m_indexedDirs;
-        jstreams::IndexReader* m_pIndexReader;
 };
 
 #endif
