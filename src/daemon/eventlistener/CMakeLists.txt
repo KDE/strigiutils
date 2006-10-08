@@ -5,4 +5,4 @@ ENDIF(ENABLE_INOTIFY)
 
 INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../streamindexer/ .. )
 
-ADD_LIBRARY(eventlistener eventlistener.cpp event.cpp  eventlistenerqueue.cpp  ${inotify_SRC})
+ADD_LIBRARY(eventlistener eventlistener.cpp event.cpp  eventlistenerqueue.cpp  pollinglistener.cpp ${inotify_SRC})
