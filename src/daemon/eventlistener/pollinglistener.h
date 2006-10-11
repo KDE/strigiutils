@@ -27,6 +27,15 @@
 
 class Event;
 
+/**
+* @class PollingListener
+* @brief A simple class that polls periodically the filesystem looking for changes
+*
+* It's used when InotifyListener reaches max user watches limit, all remaining dirs to watch are checked by PollingListener.
+* Update interval is configurable by the user.
+* @sa Filter
+*/
+
 class PollingListener : public EventListener
 {
     public:
@@ -41,6 +50,9 @@ class PollingListener : public EventListener
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
         
+         /** 
+        * configure the polling interval, the time elapsed between each polling operation (expressed in seconds) 
+        */
         void setPauseValue (unsigned int pause) {m_pause = pause;}
         
         void* run(void*);
@@ -52,7 +64,7 @@ class PollingListener : public EventListener
        
         std::set<std::string> m_watches;
         std::map<std::string, time_t> m_toIndex;
-        unsigned int m_pause;
+        unsigned int m_pause; //! pause time between each polling operation
         pthread_mutex_t m_mutex;
 };
 
