@@ -66,22 +66,24 @@ void
 stopThreads() {
     vector<StrigiThread*>::const_iterator i;
     for (i=threads.begin(); i!=threads.end(); ++i) {
-        printf("stopping thread %s\n", (*i)->name);
+        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread") + (*i)->name);
         (*i)->stop();
-        printf("stopped another thread\n");
+        STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread");
     }
 }
 
 void
 quit_daemon(int) {
-    printf("quit_daemon\n");
+    STRIGI_LOG_INFO("strigi.daemon", "quit_daemon");
     static int interruptcount = 0;
     vector<StrigiThread*>::const_iterator i;
     switch (++interruptcount) {
     case 1:
+        STRIGI_LOG_INFO ("strigi.daemon", "stopping threads");
         stopThreads();
         break;
     case 2:
+        STRIGI_LOG_INFO ("strigi.daemon", "terminating threads");
         for (i=threads.begin(); i!=threads.end(); ++i) {
             (*i)->terminate();
         }
@@ -255,7 +257,7 @@ main(int argc, char** argv) {
     }
 
     // set up signal handling
-    //set_quit_on_signal(SIGINT);
+    set_quit_on_signal(SIGINT);
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
 
