@@ -24,7 +24,7 @@ threadstarter(void *d) {
             r = setpriority(PRIO_PROCESS, 0, thread->getPriority());
             if (r==-1)
                 STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name
-                    + ".threadstartert",
+                    + ".threadstarter",
                     string("error setting priority: ") + strerror(errno))
             //nice(20);
         }
@@ -36,7 +36,7 @@ threadstarter(void *d) {
 
     // start the actual work
     thread->run(0);
-    STRIGI_LOG_DEBUG(string("strigi.daemon.") + thread->name + ".threadstartert", "end of thread");
+    STRIGI_LOG_DEBUG(string("strigi.daemon.") + thread->name + ".threadstarter", "end of thread");
     pthread_exit(0);
 }
 
