@@ -41,7 +41,7 @@ private:
     char* path;
     uint length;
     time_t m_oldestdate;
-    bool (*m_callback)(const char* fullpath, uint dirlen, uint len,
+    bool (*m_fileCallback)(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
     void (*m_dirCallback)(const char* fullpath,  uint len);
 
@@ -55,9 +55,9 @@ public:
     /**
      * Specify the callback function that reports the files found.
          **/
-    void setCallbackFunction(bool (*callback)(const char* fullpath,
+    void setFileCallbackFunction(bool (*callback)(const char* fullpath,
             uint dirlen, uint len, time_t mtime)) {
-        m_callback = callback;
+        m_fileCallback = callback;
     }
    
     void setDirCallbackFunction(void (*callback)(const char* fullpath , uint len)) {

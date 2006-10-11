@@ -125,7 +125,7 @@ IndexScheduler::index() {
 
         // first loop through all files
         FileLister lister (m_filterManager);
-        lister.setCallbackFunction(&addFileCallback);
+        lister.setFileCallbackFunction(&addFileCallback);
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "going to index")
         set<string>::const_iterator i;
         for (i = dirstoindex.begin(); i != dirstoindex.end(); ++i) {

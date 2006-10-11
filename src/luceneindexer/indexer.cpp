@@ -42,7 +42,7 @@ Indexer::~Indexer() {
 void
 Indexer::index(const char *dir) {
     workingIndexer = this;
-    m_lister->setCallbackFunction(&Indexer::addFileCallback);
+    m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
     if (exceptions) {
         try {

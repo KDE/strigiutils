@@ -37,7 +37,7 @@
 using namespace std;
 
 FileLister::FileLister(FilterManager* filtermanager) {
-    m_callback = 0;
+    m_fileCallback = 0;
     m_dirCallback = 0;
     path = 0;
     length = 0;
@@ -51,7 +51,7 @@ FileLister::~FileLister() {
 #include <stdio.h>
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
-    if (m_callback == 0) return;
+    if (m_fileCallback == 0) return;
     m_oldestdate = oldestdate;
     int len = strlen(dir);
     resize(len+2);
@@ -129,7 +129,7 @@ FileLister::walk_directory(uint len) {
             bool c = true;
             if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))
-                    c = m_callback(path, len, l, dirstat.st_mtime);
+                    c = m_fileCallback(path, len, l, dirstat.st_mtime);
             } else if ( dirstat.st_mode & S_IFDIR) {
                 strcpy(path+l, "/");
                 c = walk_directory(l+1);

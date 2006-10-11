@@ -64,7 +64,7 @@ main(int argc, char** argv) {
     filtermanager.setFilteringRules( rules);
     
     FileLister lister (&filtermanager);
-    lister.setCallbackFunction(&fileCallback);
+    lister.setFileCallbackFunction(&fileCallback);
     lister.setDirCallbackFunction(&dirCallback);
     
     lister.listFiles(argv[1]);

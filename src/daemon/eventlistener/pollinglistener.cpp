@@ -41,7 +41,7 @@ PollingListener::PollingListener()
     pListener = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
-    m_pause = 60; //60 seconds of pause between each polling
+    m_pause = 4; //60 seconds of pause between each polling
 }
 
 PollingListener::PollingListener(set<string>& dirs)
@@ -50,13 +50,14 @@ PollingListener::PollingListener(set<string>& dirs)
     pListener = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
-    m_pause = 60; //60 seconds of pause between each polling
+    m_pause = 4; //60 seconds of pause between each polling
     
     addWatches( dirs);
 }
 
 PollingListener::~PollingListener()
 {
+    m_watches.clear();
     pthread_mutex_destroy (&m_mutex);
 }
 
@@ -98,7 +99,7 @@ void PollingListener::pool ()
     set<string> watches;
     
     FileLister lister (m_filterManager);
-    lister.setCallbackFunction(&fileCallback);
+    lister.setFileCallbackFunction(&fileCallback);
     
     m_toIndex.clear();
     

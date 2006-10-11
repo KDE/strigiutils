@@ -59,6 +59,7 @@ InotifyListener::InotifyListener(set<string>& indexedDirs)
 
 InotifyListener::~InotifyListener()
 {
+    delete m_pollingListener;
     clearWatches();
 }
 
@@ -241,7 +242,7 @@ void InotifyListener::watch ()
 
                     FileLister lister (m_filterManager);
 
-                    lister.setCallbackFunction(&indexFileCallback);
+                    lister.setFileCallbackFunction(&indexFileCallback);
                     lister.setDirCallbackFunction(&watchDirCallback);
 
                     lister.listFiles(file.c_str());
@@ -526,7 +527,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     m_toWatch.clear();
     m_toIndex.clear();
 
-    lister.setCallbackFunction(&indexFileCallback);
+    lister.setFileCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
     
     // walk over the newly added dirs
@@ -570,7 +571,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     m_toWatch.clear();
     m_toIndex.clear();
 
-    lister.setCallbackFunction(&indexFileCallback);
+    lister.setFileCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);
 
     // walk through user selected dirs
