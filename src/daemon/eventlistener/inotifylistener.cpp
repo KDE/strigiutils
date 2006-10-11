@@ -54,13 +54,18 @@ InotifyListener::InotifyListener(set<string>& indexedDirs)
     setState(Idling);
     m_bInitialized = false;
     m_indexedDirs = indexedDirs;
-    m_pollingListener = new PollingListener();
+    m_pollingListener = NULL;
 }
 
 InotifyListener::~InotifyListener()
 {
-    delete m_pollingListener;
     clearWatches();
+    if (m_pollingListener != NULL)
+    {
+        m_pollingListener->stop();
+        delete m_pollingListener;
+        m_pollingListener = NULL;
+    }
 }
 
 bool InotifyListener::init()
@@ -387,7 +392,19 @@ void InotifyListener::addWatches (const set<string> &watches)
     }
     
     if (!toPool.empty())
+    {
+        if (m_pollingListener == NULL)
+        {
+            m_pollingListener = new PollingListener();
+            m_pollingListener->setEventListenerQueue( m_eventQueue);
+            m_pollingListener->setIndexReader( m_pIndexReader);
+            m_pollingListener->setFilterManager( m_filterManager);
+            //TODO: start with a low priority?
+            m_pollingListener->start( );
+        }
+        
         m_pollingListener->addWatches( toPool);
+    }
 }
 
 void InotifyListener::rmWatch(int wd, string path)
