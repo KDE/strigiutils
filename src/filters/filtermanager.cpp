@@ -93,11 +93,11 @@ void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
                 {
                     case PathFilter::RTTI:
                         m_rules.push_back (new PathFilter (string(buffer)));
-                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added path filter: |" + string(buffer) + "|")
+                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added path filter: |" + string(buffer) + '|')
                         break;
                     case PatternFilter::RTTI:
                         m_rules.push_back (new PatternFilter (string(buffer)));
-                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added pattern filter: |" + string(buffer) + "|")
+                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added pattern filter: |" + string(buffer) + '|')
                         break;
                     default:
                         STRIGI_LOG_ERROR ("strigi.filtermanager.loadFilter", "unknown rule RTTI")

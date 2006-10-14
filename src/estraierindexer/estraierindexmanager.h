@@ -45,7 +45,7 @@ private:
 
     void closedb();
 public:
-    EstraierIndexManager(const char* path);
+    explicit EstraierIndexManager(const char* path);
     ~EstraierIndexManager();
 
     jstreams::IndexReader* getIndexReader();

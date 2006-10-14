@@ -54,7 +54,7 @@ private:
     void addEndAnalyzers();
     void removeIndexable(uint depth);
 public:
-    StreamIndexer(IndexWriter *w);
+    explicit StreamIndexer(IndexWriter *w);
     ~StreamIndexer();
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);

@@ -35,7 +35,7 @@ class DlgAddFilteringRule : public QDialog
     Q_OBJECT
 
     public:
-        DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent = 0);
+        explicit DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent=0);
         DlgAddFilteringRule(QString* rule, int* type, QWidget *parent = 0);
         virtual ~DlgAddFilteringRule() {};
        

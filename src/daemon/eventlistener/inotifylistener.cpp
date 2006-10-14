@@ -620,7 +620,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         }
         else
         {
-            // file has NOT been changed since last run, we keep our indexed informations
+            // file has NOT been changed since last run, we keep our indexed information
             m_toIndex.erase (it);
             mi++;
         }

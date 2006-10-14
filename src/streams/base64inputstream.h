@@ -39,7 +39,7 @@ private:
 
     bool moreData();
 public:
-    Base64InputStream(StreamBase<char>* i);
+    explicit Base64InputStream(StreamBase<char>* i);
     int32_t fillBuffer(char* start, int32_t space);
 };
 }

@@ -31,7 +31,7 @@ private:
 
     void readHeader();
 public:
-    ArInputStream(StreamBase<char>* input);
+    explicit ArInputStream(StreamBase<char>* input);
     ~ArInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);

@@ -37,7 +37,7 @@ protected:
         int32_t length);
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
         const std::string& value);
-    EstraierIndexWriter(EstraierIndexManager*);
+    explicit EstraierIndexWriter(EstraierIndexManager*);
     ~EstraierIndexWriter();
 public:
     void commit();

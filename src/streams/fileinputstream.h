@@ -31,7 +31,8 @@ private:
 
 public:
     static const int32_t defaultBufferSize;
-    FileInputStream(const char *filepath, int32_t buffersize=defaultBufferSize);
+    explicit FileInputStream(const char *filepath,
+        int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
     int32_t fillBuffer(char* start, int32_t space);
 };

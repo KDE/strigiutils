@@ -34,7 +34,7 @@ private:
 
     mutable jstreams::StreamEndAnalyzer* selectedEndAnalyzer;
 public:
-    PluginEndAnalyzer(ModuleLoader* moduleLoader);
+    explicit PluginEndAnalyzer(ModuleLoader* moduleLoader);
     ~PluginEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(std::string filename, jstreams::InputStream *in, int depth,

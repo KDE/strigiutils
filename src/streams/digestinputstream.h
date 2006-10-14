@@ -34,7 +34,7 @@ private:
 
     void finishDigest();
 public:
-    DigestInputStream(StreamBase<char> *input);
+    explicit DigestInputStream(StreamBase<char> *input);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     int64_t reset(int64_t);

@@ -463,10 +463,11 @@ StrigiHtmlGui::readTabQueries() const {
     ifstream in;
     in.open(path.c_str());
     string s;
+    int i=1;
     do {
         getline(in, s);
         if (s.size()) {
-            uint p = s.find('\t');
+            size_t p = s.find('\t');
             if (p != string::npos) {
                 string name = s.substr(0, p);
                 string value = s.substr(p);

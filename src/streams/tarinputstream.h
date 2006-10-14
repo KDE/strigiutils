@@ -49,7 +49,7 @@ private:
     int32_t readOctalField(const char *b, int32_t offset);
     void readLongLink(const char *b);
 public:
-    TarInputStream(StreamBase<char> *input);
+    explicit TarInputStream(StreamBase<char> *input);
     ~TarInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);

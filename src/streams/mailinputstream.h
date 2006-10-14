@@ -67,7 +67,7 @@ private:
     void ensureFileName();
     std::string getValue(const char* n, const std::string& headerline) const;
 public:
-    MailInputStream(StreamBase<char>* input);
+    explicit MailInputStream(StreamBase<char>* input);
     ~MailInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);

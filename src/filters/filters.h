@@ -30,7 +30,7 @@
 class Filter
 {
     public:
-        Filter(const std::string& rule) :m_rule(rule) {}
+        explicit Filter(const std::string& rule) :m_rule(rule) {}
         virtual ~Filter() {}
         
         /**
@@ -77,7 +77,7 @@ class PatternFilter : public Filter
 class PathFilter : public Filter
 {
     public:
-        PathFilter(const std::string& rule) : Filter (rule) {}
+        explicit PathFilter(const std::string& rule) : Filter (rule) {}
         ~PathFilter() {}
         
         enum {RTTI = 2};

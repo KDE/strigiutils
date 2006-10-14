@@ -42,7 +42,7 @@ private:
     void readFromStream();
     int32_t decode(wchar_t* start, int32_t space);
 public:
-    InputStreamReader(StreamBase<char> *i, const char *enc=0);
+    explicit InputStreamReader(StreamBase<char> *i, const char *enc=0);
     ~InputStreamReader();
     int32_t fillBuffer(wchar_t* start, int32_t space);
 };

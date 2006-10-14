@@ -159,7 +159,7 @@ void PollingListener::pool ()
         }
         else
         {
-            // file has NOT been changed since last polling, we keep our indexed informations
+            // file has NOT been changed since last polling, we keep our indexed information
             m_toIndex.erase (it);
             mi++;
         }

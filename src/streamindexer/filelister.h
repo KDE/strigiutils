@@ -50,7 +50,7 @@ private:
     
     FilterManager* m_filterManager;
 public:
-    FileLister(FilterManager* filtermanager);
+    explicit FileLister(FilterManager* filtermanager);
     ~FileLister();
     /**
      * Specify the callback function that reports the files found.

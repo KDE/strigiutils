@@ -28,20 +28,20 @@
 class QListWidget;
 class QPushButton;
 
-class DlgListIndexedFiles : public QDialog
-{
-    Q_OBJECT
+class DlgListIndexedFiles : public QDialog {
+Q_OBJECT
     
-    public:
-        DlgListIndexedFiles (std::set<std::string>& files, QWidget* parent = 0);
-        ~DlgListIndexedFiles () {};
+public:
+    explicit DlgListIndexedFiles (std::set<std::string>& files,
+        QWidget* parent = 0);
+    ~DlgListIndexedFiles () {};
     
-    private slots:
-        void accept();
-    
-    private:
-        QListWidget *listFiles;
-        QPushButton *okButton;
+private slots:
+    void accept();
+   
+private:
+    QListWidget *listFiles;
+    QPushButton *okButton;
 };
 
 #endif

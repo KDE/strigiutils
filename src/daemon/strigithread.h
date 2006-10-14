@@ -38,7 +38,7 @@ protected:
 public:
     const char* const name;
 
-    StrigiThread(const char* name);
+    explicit StrigiThread(const char* name);
     virtual ~StrigiThread();
     int start(int priority=0);
     void stop();

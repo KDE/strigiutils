@@ -63,7 +63,7 @@ private:
     void openWriter(bool truncate=false);
     void closeWriter();
 public:
-    CLuceneIndexManager(const std::string& path);
+    explicit CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
 
     lucene::index::IndexWriter* refWriter();

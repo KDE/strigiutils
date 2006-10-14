@@ -43,7 +43,7 @@ private:
     void createPropertyTable(const char *propertyname, std::string &tablename, PropertyWriter::PropertyType type, bool onetoone);
     char getPropertyTablename(const char *propertyname, std::string &tablename, PropertyWriter::PropertyType &type, bool &onetoone);
 public:
-    SqliteStorage(const char *filename);
+    explicit SqliteStorage(const char *filename);
     ~SqliteStorage();
     void defineProperty(const char *propertyname, PropertyWriter::PropertyType type, bool onetoone);
     PropertyWriter *getPropertyWriter(const char *propertyname);

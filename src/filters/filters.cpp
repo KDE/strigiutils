@@ -49,7 +49,7 @@ bool PathFilter::match (const string& text)
     if ((realPattern[realPattern.size() - 1] == '/') || (realPattern[realPattern.size()-1] == '\\'))
         realPattern.resize(realPattern.size() - 1);
     
-    realPattern+="*";
+    realPattern+='*';
     
     int ret = fnmatch (realPattern.c_str(), text.c_str(), 0);
        

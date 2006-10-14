@@ -47,7 +47,7 @@ private:
     static int32_t read4bytes(const unsigned char *b);
     int32_t readHexField(const char *b);
 public:
-    RpmInputStream(StreamBase<char>* input);
+    explicit RpmInputStream(StreamBase<char>* input);
     ~RpmInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);

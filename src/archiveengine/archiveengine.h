@@ -36,7 +36,7 @@ public:
     qint64 size;
     QAbstractFileEngine::FileFlags fileFlags;
 
-    FileEntry(const QString &n):name(n){}
+    explicit FileEntry(const QString &n):name(n){}
     ~FileEntry();
     FileEntry* add(const QString &name);
     FileEntry* getEntry(const QString &name);

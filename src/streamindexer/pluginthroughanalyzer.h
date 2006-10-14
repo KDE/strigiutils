@@ -32,7 +32,7 @@ private:
     //std::list<ModuleLoader::ThroughPair> analyzers;
     ModuleLoader* moduleLoader;
 public:
-    PluginThroughAnalyzer(ModuleLoader* moduleLoader);
+    explicit PluginThroughAnalyzer(ModuleLoader* moduleLoader);
     ~PluginThroughAnalyzer();
     void setIndexable(jstreams::Indexable* i);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);

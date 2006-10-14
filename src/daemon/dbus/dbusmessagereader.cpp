@@ -150,7 +150,7 @@ DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
     int32_t n;
     const char* value;
     do {
-        // this probably doesnt work without opening each struct for reading
+        // this probably does not work without opening each struct for reading
         dbus_message_iter_recurse(&sub, &ssub);
         dbus_message_iter_get_basic(&sub, &n);
         dbus_message_iter_get_basic(&sub, &value);

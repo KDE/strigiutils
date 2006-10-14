@@ -48,7 +48,7 @@ private:
     static int32_t read2bytes(const unsigned char *b);
     static int32_t read4bytes(const unsigned char *b);
 public:
-    ZipInputStream(StreamBase<char>* input);
+    explicit ZipInputStream(StreamBase<char>* input);
     ~ZipInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);

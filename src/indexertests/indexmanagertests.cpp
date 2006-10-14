@@ -91,7 +91,7 @@ IndexManagerTester::testNumberQuery() {
     for (int i=1; i<=m; ++i) {
         str << i;
         string value(str.str());
-        string name("/"+value);
+        string name('/'+value);
         {
              Indexable idx(name, 0, writer, 0);
              idx.setField(size, value);
