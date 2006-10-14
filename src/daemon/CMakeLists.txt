@@ -1,5 +1,4 @@
-# xsd has been removed until the next release
-set(DIRS eventlistener)
+set(DIRS eventlistener xsd)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
