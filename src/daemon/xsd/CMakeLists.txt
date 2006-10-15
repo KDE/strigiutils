@@ -25,6 +25,7 @@ foreach (XSDFILE ${XSDFILES})
   
   # create a library from the xml io files
   add_library(${XSDNAME} ${XSDNAME}.cpp)
+  target_link_libraries(${XSDNAME} xmlstream)
   
   # generate a test executable
   add_executable(${XSDNAME}test ${XSDNAME}test.cpp)

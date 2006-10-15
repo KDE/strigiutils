@@ -1,5 +1,5 @@
-/* This file is generated from strigidaemon.xsd */
-#include "strigidaemon.h"
+/* This file is generated from strigidaemonconfiguration.xsd */
+#include "strigidaemonconfiguration.h"
 #include <iostream>
 #include "xmlstream.h"
 XMLStream&
@@ -105,7 +105,7 @@ operator<<(std::ostream& out, const Repository& e) {
 }
 XMLStream& operator>>(XMLStream&, Repository&);
 XMLStream&
-operator>>(XMLStream& in, Strigidaemon& e) {
+operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
 	while (n && in.getTagName() == "repository") {
@@ -119,21 +119,21 @@ operator>>(XMLStream& in, Strigidaemon& e) {
 	}
 	return in;
 }
-Strigidaemon::Strigidaemon(const std::string& xml) {
+StrigiDaemonConfiguration::StrigiDaemonConfiguration(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const Strigidaemon& e) {
-	out << "<strigidaemon";
+operator<<(std::ostream& out, const StrigiDaemonConfiguration& e) {
+	out << "<strigiDaemonConfiguration";
 	out << ">\n";
 	std::list<Repository>::const_iterator repository_it;
 	for (repository_it = e.e_repository.begin(); repository_it != e.e_repository.end(); repository_it++) {
 		out << *repository_it;
 	}
-	out << "</strigidaemon>\n";
+	out << "</strigiDaemonConfiguration>\n";
 
 	return out;
 }

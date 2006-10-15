@@ -1,8 +1,8 @@
-/* This file is generated from strigidaemon.xsd */
+/* This file is generated from strigidaemonconfiguration.xsd */
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "strigidaemon.h"
+#include "strigidaemonconfiguration.h"
 std::string
 read(const std::string& file) {
 	std::stringbuf buf;
@@ -53,9 +53,9 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	Strigidaemon strigidaemon(xml);
+	StrigiDaemonConfiguration strigidaemonconfiguration(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << strigidaemon;
+	f << strigidaemonconfiguration;
 	f.close();
 	filename.str("");
 

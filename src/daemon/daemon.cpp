@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "interface.h"
+#include "xsd/strigidaemonconfiguration.h"
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
 #endif
@@ -48,6 +49,7 @@
 #endif
 #include "socketserver.h"
 
+#include <sstream>
 #include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -146,6 +148,23 @@ checkLogConf(const string& filename) {
         confFile << "log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n\n";
     }
     confFile.close();
+}
+StrigiDaemonConfiguration
+readStrigiConfiguration(const string& file) {
+    std::stringbuf xml;
+    std::ifstream f(file.c_str(), std::ios::binary);
+    f.get(xml, '\0');
+    f.close();
+    StrigiDaemonConfiguration config(xml.str());
+    return config;
+}
+void
+writeStrigiConfiguration(const string& file,
+        const StrigiDaemonConfiguration& config) {
+    ofstream f;
+    f.open(file.c_str(), std::ios::binary);
+    f << config;
+    f.close();
 }
 set<string>
 readdirstoindex(const string& file) {

@@ -1,6 +1,6 @@
-/* This file is generated from strigidaemon.xsd */
-#ifndef STRIGIDAEMON_H
-#define STRIGIDAEMON_H
+/* This file is generated from strigidaemonconfiguration.xsd */
+#ifndef STRIGIDAEMONCONFIGURATION_H
+#define STRIGIDAEMONCONFIGURATION_H
 #include <string>
 #include <list>
 class Paths {
@@ -29,10 +29,10 @@ public:
 	Patternfilter e_patternfilter;
 };
 std::ostream& operator<<(std::ostream&, const Repository&);
-class Strigidaemon {
+class StrigiDaemonConfiguration {
 public:
-	Strigidaemon(const std::string& xml = "");
+	StrigiDaemonConfiguration(const std::string& xml = "");
 	std::list<Repository> e_repository;
 };
-std::ostream& operator<<(std::ostream&, const Strigidaemon&);
+std::ostream& operator<<(std::ostream&, const StrigiDaemonConfiguration&);
 #endif
