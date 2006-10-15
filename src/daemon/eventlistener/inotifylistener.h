@@ -30,7 +30,7 @@ class PollingListener;
 class InotifyListener : public EventListener
 {
     public:
-        InotifyListener(std::set<std::string>& indexedDirs);
+        explicit InotifyListener(std::set<std::string>& indexedDirs);
 
         ~InotifyListener();
    

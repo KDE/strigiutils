@@ -34,7 +34,7 @@ namespace jstreams
 
 class EventListener : public StrigiThread {
 public:
-    EventListener(const char* name) :StrigiThread(name) {
+    explicit EventListener(const char* name) :StrigiThread(name) {
         m_eventQueue = NULL;
         m_filterManager = NULL;
         m_pIndexReader = NULL;

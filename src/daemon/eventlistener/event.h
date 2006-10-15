@@ -31,7 +31,7 @@ class Event
 
         Event(Type type, const std::string& path);
         Event(Type type, const std::string& path, time_t t);
-        Event(Event* event);
+        explicit Event(Event* event);
         ~Event();
 
         Type getType() { return m_type; }
