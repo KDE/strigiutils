@@ -93,12 +93,16 @@ BZ2InputStream::readFromStream() {
     const char* inStart;
     int32_t nread;
     nread = input->read(inStart, 1, 0);
-    if (status == Error) {
-        error = "Error reading bz2: ";
-        error += input->getError();
+    if (nread <= -1) {
+        status = Error;
+        error = input->getError();
+    } else if (nread < 1) {
+        status = Error;
+        error = "unexpected end of stream";
+    } else {
+        bzstream->next_in = (char*)inStart;
+        bzstream->avail_in = nread;
     }
-    bzstream->next_in = (char*)inStart;
-    bzstream->avail_in = nread;
 }
 int32_t
 BZ2InputStream::fillBuffer(char* start, int32_t space) {
