@@ -3,128 +3,137 @@
 #include <iostream>
 #include "xmlstream.h"
 XMLStream&
-operator>>(XMLStream& in, DaemonConfiguration& e) {
+operator>>(XMLStream& in, Paths& e) {
+	in.setFromAttribute(e.a_path,"path");
 	return in;
 }
-DaemonConfiguration::DaemonConfiguration(const std::string& xml) {
+Paths::Paths(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const DaemonConfiguration& e) {
-	out << "<daemonConfiguration";
+operator<<(std::ostream& out, const Paths& e) {
+	out << " <paths";
+	out << " path='" << e.a_path << "'";
 	out << ">\n";
-	out << "</daemonConfiguration>\n";
+	out << " </paths>\n";
 
 	return out;
 }
 XMLStream&
-operator>>(XMLStream& in, DaemonConfigurationType& e) {
+operator>>(XMLStream& in, Pathfilter& e) {
+	in.setFromAttribute(e.a_path,"path");
 	return in;
 }
-DaemonConfigurationType::DaemonConfigurationType(const std::string& xml) {
+Pathfilter::Pathfilter(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const DaemonConfigurationType& e) {
-	out << "<daemonConfigurationType";
+operator<<(std::ostream& out, const Pathfilter& e) {
+	out << " <pathfilter";
+	out << " path='" << e.a_path << "'";
 	out << ">\n";
-	out << "</daemonConfigurationType>\n";
+	out << " </pathfilter>\n";
 
 	return out;
 }
 XMLStream&
-operator>>(XMLStream& in, RepositoryType& e) {
+operator>>(XMLStream& in, Patternfilter& e) {
+	in.setFromAttribute(e.a_pattern,"pattern");
 	return in;
 }
-RepositoryType::RepositoryType(const std::string& xml) {
+Patternfilter::Patternfilter(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const RepositoryType& e) {
-	out << "<repositoryType";
+operator<<(std::ostream& out, const Patternfilter& e) {
+	out << " <patternfilter";
+	out << " pattern='" << e.a_pattern << "'";
 	out << ">\n";
-	out << "</repositoryType>\n";
+	out << " </patternfilter>\n";
 
 	return out;
 }
+XMLStream& operator>>(XMLStream&, Paths&);
+XMLStream& operator>>(XMLStream&, Pathfilter&);
+XMLStream& operator>>(XMLStream&, Patternfilter&);
 XMLStream&
-operator>>(XMLStream& in, RepositoryTypeType& e) {
+operator>>(XMLStream& in, Repository& e) {
+	const SimpleNode* n = in.firstChild();
+	bool hasChildren = n;
+	if (n && in.getTagName() == "paths") {
+		in >> e.e_paths;
+		n = in.nextSibling();
+	}
+	if (n && in.getTagName() == "pathfilter") {
+		in >> e.e_pathfilter;
+		n = in.nextSibling();
+	}
+	if (n && in.getTagName() == "patternfilter") {
+		in >> e.e_patternfilter;
+		n = in.nextSibling();
+	}
+	if (hasChildren) {
+		in.parentNode();
+	}
 	return in;
 }
-RepositoryTypeType::RepositoryTypeType(const std::string& xml) {
+Repository::Repository(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const RepositoryTypeType& e) {
-	out << "<repositoryTypeType";
+operator<<(std::ostream& out, const Repository& e) {
+	out << " <repository";
 	out << ">\n";
-	out << "</repositoryTypeType>\n";
+	out << e.e_paths;
+	out << e.e_pathfilter;
+	out << e.e_patternfilter;
+	out << " </repository>\n";
 
 	return out;
 }
+XMLStream& operator>>(XMLStream&, Repository&);
 XMLStream&
-operator>>(XMLStream& in, FileSourceType& e) {
+operator>>(XMLStream& in, Strigidaemon& e) {
+	const SimpleNode* n = in.firstChild();
+	bool hasChildren = n;
+	while (n && in.getTagName() == "repository") {
+		Repository v;
+		in >> v;
+		e.e_repository.push_back(v);
+		n = in.nextSibling();
+	}
+	if (hasChildren) {
+		in.parentNode();
+	}
 	return in;
 }
-FileSourceType::FileSourceType(const std::string& xml) {
+Strigidaemon::Strigidaemon(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const FileSourceType& e) {
-	out << "<fileSourceType";
+operator<<(std::ostream& out, const Strigidaemon& e) {
+	out << "<strigidaemon";
 	out << ">\n";
-	out << "</fileSourceType>\n";
-
-	return out;
-}
-XMLStream&
-operator>>(XMLStream& in, FileSystemSourceType& e) {
-	return in;
-}
-FileSystemSourceType::FileSystemSourceType(const std::string& xml) {
-	if (xml.length()) {
-		XMLStream stream(xml);
-		stream >> *this;
+	std::list<Repository>::const_iterator repository_it;
+	for (repository_it = e.e_repository.begin(); repository_it != e.e_repository.end(); repository_it++) {
+		out << *repository_it;
 	}
-}
-std::ostream&
-operator<<(std::ostream& out, const FileSystemSourceType& e) {
-	out << "<fileSystemSourceType";
-	out << ">\n";
-	out << "</fileSystemSourceType>\n";
-
-	return out;
-}
-XMLStream&
-operator>>(XMLStream& in, HttpSourceType& e) {
-	return in;
-}
-HttpSourceType::HttpSourceType(const std::string& xml) {
-	if (xml.length()) {
-		XMLStream stream(xml);
-		stream >> *this;
-	}
-}
-std::ostream&
-operator<<(std::ostream& out, const HttpSourceType& e) {
-	out << "<httpSourceType";
-	out << ">\n";
-	out << "</httpSourceType>\n";
+	out << "</strigidaemon>\n";
 
 	return out;
 }

@@ -21,57 +21,41 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	DaemonConfiguration daemonconfiguration(xml);
+	Paths paths(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << daemonconfiguration;
+	f << paths;
 	f.close();
 	filename.str("");
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	DaemonConfigurationType daemonconfigurationtype(xml);
+	Pathfilter pathfilter(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << daemonconfigurationtype;
+	f << pathfilter;
 	f.close();
 	filename.str("");
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	RepositoryType repositorytype(xml);
+	Patternfilter patternfilter(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << repositorytype;
+	f << patternfilter;
 	f.close();
 	filename.str("");
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	RepositoryTypeType repositorytypetype(xml);
+	Repository repository(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << repositorytypetype;
+	f << repository;
 	f.close();
 	filename.str("");
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	FileSourceType filesourcetype(xml);
+	Strigidaemon strigidaemon(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << filesourcetype;
-	f.close();
-	filename.str("");
-
-	filename << n++ << ".xml";
-	xml = read(filename.str());
-	FileSystemSourceType filesystemsourcetype(xml);
-	f.open(filename.str().c_str(), std::ios::binary);
-	f << filesystemsourcetype;
-	f.close();
-	filename.str("");
-
-	filename << n++ << ".xml";
-	xml = read(filename.str());
-	HttpSourceType httpsourcetype(xml);
-	f.open(filename.str().c_str(), std::ios::binary);
-	f << httpsourcetype;
+	f << strigidaemon;
 	f.close();
 	filename.str("");
 

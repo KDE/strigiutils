@@ -3,62 +3,33 @@
  targetNamespace="http://www.vandenoever.info/strigi"
  xmlns:tns="http://www.vandenoever.info/strigi">
 
- <element name="daemonConfiguration" type="tns:daemonConfigurationType"/>
-
- <complexType name="daemonConfigurationType">
+ <element name="strigidaemon">
+  <complexType>
    <sequence>
-   <!-- a repository contains one index -->
-   <element name="repository" type="tns:repositoryType"
-       minOccurs="0" maxOccurs="unbounded">
-   </element>
-  </sequence>
- </complexType>
-
- <complexType name="repositoryType">
-  <sequence>
-   <element name="fileSystemSource" type="tns:fileSystemSourceType"
-       minOccurs="0" maxOccurs="unbounded"/>
-   <element name="httpSource" type="tns:httpSourceType"
-       minOccurs="0" maxOccurs="unbounded"/>
-  </sequence>
-  <attribute name="repositoryLocation" type="anyURI" use='required'/>
-  <attribute name="repositoryType" type="tns:repositoryTypeType"
-    use='required'/>
- </complexType>
-
- <simpleType name="repositoryTypeType">
-  <restriction base='string'>
-   <enumeration value='CLucene'/>
-   <enumeration value='HyperEstraier'/>
-   <enumeration value='Xapian'/>
-   <enumeration value='Sqlite'/>
-  </restriction>
- </simpleType>
-
- <complexType name="fileSourceType">
-  <attribute name="baseURI" type="anyURI" use='required'/>
-  <!-- time between updates for this directory, <= 0 means never -->
-  <attribute name="autoUpdateFrequence" type="int"/>
- </complexType>
-
- <complexType name="fileSystemSourceType">
-  <complexContent>
-   <extension base="tns:fileSourceType">
-    <sequence>
-     <element name="fileEventListener" minOccurs="0" maxOccurs="1">
-      <complexType>
-      </complexType>
-     </element>
-    </sequence>
-   </extension>
-  </complexContent>
- </complexType>
-
- <complexType name="httpSourceType">
-  <complexContent>
-   <extension base="tns:fileSourceType">
-   </extension>
-  </complexContent>
- </complexType>
+    <element name="repository" minOccurs="0" maxOccurs="unbounded">
+     <complexType>
+      <sequence>
+       <element name="paths">
+        <complexType>
+         <attribute name="path" type="string"/>
+        </complexType>
+       </element>
+       <element name="pathfilter">
+        <complexType>
+         <attribute name="path" type="string"/>
+        </complexType>
+       </element>
+       <element name="patternfilter">
+        <complexType>
+         <attribute name="pattern" type="string"/>
+        </complexType>
+       </element>
+      </sequence>
+     </complexType>
+     <attribute name="type" type="string"/>
+    </element>
+   </sequence>
+  </complexType>
+ </element>
 
 </schema>

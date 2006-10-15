@@ -3,39 +3,36 @@
 #define STRIGIDAEMON_H
 #include <string>
 #include <list>
-class DaemonConfiguration {
+class Paths {
 public:
-	DaemonConfiguration(const std::string& xml = "");
+	Paths(const std::string& xml = "");
+	std::string a_path;
 };
-std::ostream& operator<<(std::ostream&, const DaemonConfiguration&);
-class DaemonConfigurationType {
+std::ostream& operator<<(std::ostream&, const Paths&);
+class Pathfilter {
 public:
-	DaemonConfigurationType(const std::string& xml = "");
+	Pathfilter(const std::string& xml = "");
+	std::string a_path;
 };
-std::ostream& operator<<(std::ostream&, const DaemonConfigurationType&);
-class RepositoryType {
+std::ostream& operator<<(std::ostream&, const Pathfilter&);
+class Patternfilter {
 public:
-	RepositoryType(const std::string& xml = "");
+	Patternfilter(const std::string& xml = "");
+	std::string a_pattern;
 };
-std::ostream& operator<<(std::ostream&, const RepositoryType&);
-class RepositoryTypeType {
+std::ostream& operator<<(std::ostream&, const Patternfilter&);
+class Repository {
 public:
-	RepositoryTypeType(const std::string& xml = "");
+	Repository(const std::string& xml = "");
+	Paths e_paths;
+	Pathfilter e_pathfilter;
+	Patternfilter e_patternfilter;
 };
-std::ostream& operator<<(std::ostream&, const RepositoryTypeType&);
-class FileSourceType {
+std::ostream& operator<<(std::ostream&, const Repository&);
+class Strigidaemon {
 public:
-	FileSourceType(const std::string& xml = "");
+	Strigidaemon(const std::string& xml = "");
+	std::list<Repository> e_repository;
 };
-std::ostream& operator<<(std::ostream&, const FileSourceType&);
-class FileSystemSourceType {
-public:
-	FileSystemSourceType(const std::string& xml = "");
-};
-std::ostream& operator<<(std::ostream&, const FileSystemSourceType&);
-class HttpSourceType {
-public:
-	HttpSourceType(const std::string& xml = "");
-};
-std::ostream& operator<<(std::ostream&, const HttpSourceType&);
+std::ostream& operator<<(std::ostream&, const Strigidaemon&);
 #endif
