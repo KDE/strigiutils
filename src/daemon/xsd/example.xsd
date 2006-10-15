@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+ targetNamespace="http://example.org"
+ xmlns:tns="http://example.org">
+
+ <element name="daemonConfiguration">
+  <complexType>
+   <sequence>
+    <element name="generalInfo" minOccurs="1" maxOccurs="1">
+     <complexType>
+      <attribute name="name" type="string"/>
+     </complexType>
+    </element>
+    <element name="repository" minOccurs="0" maxOccurs="unbounded">
+     <complexType>
+      <attribute name="repositoryType" type="string"/>
+     </complexType>
+    </element>
+    <element name="info" type="string" minOccurs="1" maxOccurs="1"/>
+   </sequence>
+   <attribute name="repositoryLocation" type="string"/>
+   <attribute name="repositoryType" type="string"/>
+  </complexType>
+ </element>
+
+</schema>

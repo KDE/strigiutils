@@ -221,6 +221,7 @@ public class xsdparser {
 					if (name != null && name.length() > 0) {
 						SequencePart part = new SequencePart();
 						part.name = name.toLowerCase();
+						part.tagname = name;
 						part.seqtype = (min == 1 && max == 1) ? SequencePart.Type.SINGLE
 								: SequencePart.Type.LIST;
 						if (type != null) {
@@ -229,6 +230,7 @@ public class xsdparser {
 							c.sequence.add(part);
 						} else {
 							Class nc = parseElement(ne);
+							nc.depth = c.depth + 1;
 							if (nc != null) {
 								part.type = nc.classname;
 								part.element = nc;
@@ -288,17 +290,29 @@ public class xsdparser {
 			w.println("\tin.setFromAttribute(e.a_" + name + ",\"" + name
 					+ "\");");
 		}
+		if (c.sequence.size() > 0) {
+			w.println("\tconst SimpleNode* n = in.firstChild();");
+			w.println("\tbool hasChildren = n;");
+		}
 		for (SequencePart part : c.sequence) {
 			if (part.seqtype == SequencePart.Type.SINGLE) {
-				w.println("\tin >> e.e_" + part.name + ";");
+				w.println("\tif (n && in.getTagName() == \"" + part.tagname
+						+ "\") {");
+				w.println("\t\tin >> e.e_" + part.name + ";");
 			} else {
-				w.println("\twhile (in.getTagName() == \"" + part.name
+				w.println("\twhile (n && in.getTagName() == \"" + part.tagname
 						+ "\") {");
 				w.println("\t\t" + part.type + " v;");
 				w.println("\t\tin >> v;");
 				w.println("\t\te.e_" + part.name + ".push_back(v);");
-				w.println("\t}");
 			}
+			w.println("\t\tn = in.nextSibling();");
+			w.println("\t}");
+		}
+		if (c.sequence.size() > 0) {
+			w.println("\tif (hasChildren) {");
+			w.println("\t\tin.parentNode();");
+			w.println("\t}");
 		}
 		w.println("\treturn in;\n}");
 		w.println(c.classname + "::" + c.classname
@@ -315,14 +329,17 @@ public class xsdparser {
 		w.println("\t\tstream >> *this;");
 		w.println("\t}");
 		w.println("}");
-		w.println("std::ostream&\noperator<<(std::ostream& out,const "
+		w.println("std::ostream&\noperator<<(std::ostream& out, const "
 				+ c.classname + "& e) {");
-		w.println("\tout << \"<" + c.elementname + "\";");
+		char tabarray[] = new char[c.depth];
+		java.util.Arrays.fill(tabarray, ' ');
+		String tabs = new String(tabarray);
+		w.println("\tout << \""+tabs+"<" + c.elementname + "\";");
 		for (String name : c.atts.keySet()) {
 			w.println("\tout << \" " + name + "='\" << e.a_" + name
 					+ " << \"'\";");
 		}
-		w.println("\tout << \">\";");
+		w.println("\tout << \">\\n\";");
 		for (SequencePart part : c.sequence) {
 			if (part.seqtype == SequencePart.Type.SINGLE) {
 				w.println("\tout << e.e_" + part.name + ";");
@@ -335,12 +352,14 @@ public class xsdparser {
 				w.println("\t\tout << *" + part.name + "_it;\n\t}");
 			}
 		}
-		w.println("\tout << \"</" + c.elementname + ">\";\n");
+		w.println("\tout << \"" + tabs + "</" + c.elementname + ">\\n\";\n");
 		w.println("\treturn out;\n}");
 	}
 }
 
 class Class {
+	int depth = 0;
+
 	String elementname;
 
 	String classname;
@@ -364,6 +383,7 @@ class Class {
 
 class SequencePart {
 	String name;
+	String tagname;
 
 	enum Type {
 		SINGLE, LIST, SET

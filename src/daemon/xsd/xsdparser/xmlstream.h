@@ -34,7 +34,29 @@ public:
     void setFromAttribute(int&, const char*);
     void setFromAttribute(std::string&, const char*);
     const std::string& getTagName() const;
-    const SimpleNode& activeNode() const;
+    /**
+     * The node at which the XMLStream is currently positioned.
+     **/
+    const SimpleNode& currentNode() const;
+    /**
+     * Moves the XMLStream to the first visible child of the current node, and
+     * returns the new node. If the current node has no visible children,
+     * returns null, and retains the current node.
+     **/
+    const SimpleNode* firstChild() const;
+    /**
+     * Moves the XMLStream to the next sibling of the current node, and
+     * returns the new node. If the current node has no visible next sibling,
+     * returns null, and retains the current node.
+     **/
+    const SimpleNode* nextSibling() const;
+    /**
+     * Moves to and returns the closest visible ancestor node of the current
+     * node. If the search for parentNode attempts to step upward from the
+     * XMLStream's root node, or if it fails to find a visible ancestor node,
+     * this method retains the current position and returns null.
+     **/
+    const SimpleNode* parentNode() const;
 };
 
 XMLStream& operator>>(XMLStream& in, bool& e);

@@ -13,10 +13,10 @@ DaemonConfiguration::DaemonConfiguration(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const DaemonConfiguration& e) {
+operator<<(std::ostream& out, const DaemonConfiguration& e) {
 	out << "<daemonConfiguration";
-	out << ">";
-	out << "</daemonConfiguration>";
+	out << ">\n";
+	out << "</daemonConfiguration>\n";
 
 	return out;
 }
@@ -31,10 +31,10 @@ DaemonConfigurationType::DaemonConfigurationType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const DaemonConfigurationType& e) {
+operator<<(std::ostream& out, const DaemonConfigurationType& e) {
 	out << "<daemonConfigurationType";
-	out << ">";
-	out << "</daemonConfigurationType>";
+	out << ">\n";
+	out << "</daemonConfigurationType>\n";
 
 	return out;
 }
@@ -49,10 +49,10 @@ RepositoryType::RepositoryType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const RepositoryType& e) {
+operator<<(std::ostream& out, const RepositoryType& e) {
 	out << "<repositoryType";
-	out << ">";
-	out << "</repositoryType>";
+	out << ">\n";
+	out << "</repositoryType>\n";
 
 	return out;
 }
@@ -67,10 +67,10 @@ RepositoryTypeType::RepositoryTypeType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const RepositoryTypeType& e) {
+operator<<(std::ostream& out, const RepositoryTypeType& e) {
 	out << "<repositoryTypeType";
-	out << ">";
-	out << "</repositoryTypeType>";
+	out << ">\n";
+	out << "</repositoryTypeType>\n";
 
 	return out;
 }
@@ -85,10 +85,10 @@ FileSourceType::FileSourceType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const FileSourceType& e) {
+operator<<(std::ostream& out, const FileSourceType& e) {
 	out << "<fileSourceType";
-	out << ">";
-	out << "</fileSourceType>";
+	out << ">\n";
+	out << "</fileSourceType>\n";
 
 	return out;
 }
@@ -103,10 +103,10 @@ FileSystemSourceType::FileSystemSourceType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const FileSystemSourceType& e) {
+operator<<(std::ostream& out, const FileSystemSourceType& e) {
 	out << "<fileSystemSourceType";
-	out << ">";
-	out << "</fileSystemSourceType>";
+	out << ">\n";
+	out << "</fileSystemSourceType>\n";
 
 	return out;
 }
@@ -121,10 +121,10 @@ HttpSourceType::HttpSourceType(const std::string& xml) {
 	}
 }
 std::ostream&
-operator<<(std::ostream& out,const HttpSourceType& e) {
+operator<<(std::ostream& out, const HttpSourceType& e) {
 	out << "<httpSourceType";
-	out << ">";
-	out << "</httpSourceType>";
+	out << ">\n";
+	out << "</httpSourceType>\n";
 
 	return out;
 }

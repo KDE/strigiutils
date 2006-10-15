@@ -28,8 +28,10 @@ using namespace std;
 class SimpleNode {
 friend class SimpleNodeParser;
 private:
-    SimpleNode() {};
+    SimpleNode() :parent(0), next(0) {};
 public:
+    const SimpleNode* parent;
+    const SimpleNode* next;
     string tagname;
     map<string, string> atts;
     list<SimpleNode> nodes;
@@ -37,6 +39,7 @@ public:
 
     SimpleNode(const string& xml);
 };
+
 class SimpleNodeParser {
     int depth;
     stack<SimpleNode*> nodes;
@@ -81,17 +84,28 @@ SimpleNodeParser::startElementSAXFunc(void* ctx, const char* name,
         const char** atts) {
     SimpleNodeParser* p = static_cast<SimpleNodeParser*>(ctx);
     SimpleNode* node = p->nodes.top();
+    //printf("%s %i\n", name, node->nodes.size());
 
     // if this is not the root node, add it to the stack and to the parent node
     if (p->depth > 0) {
+
         SimpleNode emptynode;
+        SimpleNode* prev = 0;
+        if (!node->nodes.empty()) {
+            prev = &node->nodes.back();
+        }
         node->nodes.push_back(emptynode);
-        node = &*(node->nodes.rbegin());
+        SimpleNode* cnode = &*(node->nodes.rbegin());
+        cnode->parent = node;
+        if (prev) {
+            prev->next = cnode;
+        }
+
+        node = cnode;
         p->nodes.push(node);
     }
 
     node->tagname = name;
-    printf("%s\n", name);
     while (*atts) {
         node->atts[*atts] = *(atts+1);
         atts += 2;
@@ -104,7 +118,7 @@ SimpleNodeParser::endElementSAXFunc(void* ctx, const char* name) {
     p->nodes.pop();
     p->depth--;
 }
-SimpleNode::SimpleNode(const string& xml) {
+SimpleNode::SimpleNode(const string& xml) :parent(0), next(0) {
     SimpleNodeParser parser;
     parser.parse(xml, *this);
 }
@@ -153,24 +167,48 @@ XMLStream::setFromAttribute(string& v, const char* name) {
 }
 const string&
 XMLStream::getTagName() const {
-    return activeNode().tagname;
+    return p->activeNode->tagname;
 }
 XMLStream&
 operator>>(XMLStream& in, bool& e) {
-    e = in.activeNode().text == "true" || in.activeNode().text == "1";
+    e = in.currentNode().text == "true" || in.currentNode().text == "1";
     return in;
 }
 XMLStream&
 operator>>(XMLStream& in, int& e) {
-    e = atoi(in.activeNode().text.c_str());
+    e = atoi(in.currentNode().text.c_str());
     return in;
 }
 XMLStream&
 operator>>(XMLStream& in, string& e) {
-    e = in.activeNode().text;
+    e = in.currentNode().text;
     return in;
 }
 const SimpleNode&
-XMLStream::activeNode() const {
+XMLStream::currentNode() const {
     return *p->activeNode;
+}
+const SimpleNode*
+XMLStream::firstChild() const {
+    const SimpleNode* n = 0;
+    if (!p->activeNode->nodes.empty()) {
+        n = p->activeNode = &*p->activeNode->nodes.begin();
+    }
+    return n;
+}
+const SimpleNode*
+XMLStream::nextSibling() const {
+    const SimpleNode* n = p->activeNode->next;
+    if (n) {
+        p->activeNode = n;
+    }
+    return n;
+}
+const SimpleNode*
+XMLStream::parentNode() const {
+    const SimpleNode* n = p->activeNode->parent;
+    if (n) {
+        p->activeNode = n;
+    }
+    return n;
 }
