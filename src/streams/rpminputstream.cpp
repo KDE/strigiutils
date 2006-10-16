@@ -130,7 +130,7 @@ RpmInputStream::readHeader() {
     // read the first 110 characters
     toread = 110;
     nread = uncompressionStream->read(b, toread, toread);
-    if (nread != toread || memcmp(b, "070701", 6) != 0) {
+    if (nread != toread) {
         status = uncompressionStream->getStatus();
         if (status == Eof) {
             return;
@@ -143,6 +143,13 @@ RpmInputStream::readHeader() {
         }
         return;
     }
+    // check header
+    if (memcmp(b, "070701", 6) != 0) {
+        status = Error;
+        error = "RPM Entry signature is unknown: ";
+        error.append(b, 6);
+        return;
+    }
     entryinfo.size = readHexField(b+54);
     entryinfo.mtime = readHexField(b+46);
     int32_t filenamesize = readHexField(b+94);
@@ -150,9 +157,9 @@ RpmInputStream::readHeader() {
         error = "Error parsing entry field.";
         return;
     }
-    char namepadding = (filenamesize+2)%4;
-    if (namepadding) namepadding = 4-namepadding;
-    padding = entryinfo.size%4;
+    char namepadding = (filenamesize+2) % 4;
+    if (namepadding) namepadding = 4 - namepadding;
+    padding = entryinfo.size % 4;
     if (padding) padding = 4-padding;
 
     // read filename
