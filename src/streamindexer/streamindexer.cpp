@@ -33,6 +33,7 @@
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
 #include "helperendanalyzer.h"
+#include "id3v2throughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
 #include "pluginendanalyzer.h"
@@ -96,7 +97,8 @@ StreamIndexer::addThroughAnalyzers() {
     tIter->push_back(ana);
     ana = new PluginThroughAnalyzer(&moduleLoader);
     tIter->push_back(ana);
-   
+    ana = new ID3V2ThroughAnalyzer();
+    tIter->push_back(ana);
 }
 void
 StreamIndexer::addEndAnalyzers() {
