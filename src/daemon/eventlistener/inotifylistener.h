@@ -38,8 +38,10 @@ class InotifyListener : public EventListener
         
         /*!
         * @class ReindexDirsThread
+        * @brief Simple thread called when user changes indexed dirs
+        * 
         * It's a separate thread that takes care of updating inotify watches and indexed files according to the new directories specified by the user
-        */
+.        */
         class ReindexDirsThread : public StrigiThread
         {
             friend class InotifyListener;
@@ -88,16 +90,16 @@ class InotifyListener : public EventListener
                 
                 FilterManager* m_pFilterManager;
                 jstreams::IndexReader* m_pIndexReader;
-                std::map<std::string, time_t> m_toIndex;
-                std::set<std::string> m_toWatch;
+                std::map<std::string, time_t> m_toIndex; //!< new files to index
+                std::set<std::string> m_toWatch; //!< new directories to watch
                 std::vector<Event*> m_events;
-                std::set<std::string> m_newDirs;
-                std::set<std::string> m_oldDirs;
-                std::set<std::string> m_nextJobDirs;
-                std::set<std::string> m_nomoreIndexedDirs;
-                bool m_bfinished;
-                pthread_mutex_t m_nextJobLock;
-                pthread_mutex_t m_resourcesLock;
+                std::set<std::string> m_newDirs; //!< new indexed dirs specified by the user
+                std::set<std::string> m_oldDirs; //!< old indexed dirs
+                std::set<std::string> m_nextJobDirs; //!< new dirs to index, user changed indexed dirs more than one time
+                std::set<std::string> m_nomoreIndexedDirs; //!< dirs no more indexed
+                bool m_bfinished; //!< true if thread has nothing left to do
+                pthread_mutex_t m_nextJobLock;//!< mutex lock over m_nextJobDirs
+                pthread_mutex_t m_resourcesLock; //!< mutex lock over all variables (excluding m_nextJobDirs)
                 static ReindexDirsThread* workingReindex; //!<pointer to current ReindexDirsThread instance, used with FileLister's callbacks
         };
     

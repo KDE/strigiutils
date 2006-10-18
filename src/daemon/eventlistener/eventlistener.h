@@ -32,6 +32,11 @@ namespace jstreams
     class IndexReader;
 }
 
+/*!
+* @class EventListener
+* @brief parent of all listener class
+*/
+
 class EventListener : public StrigiThread {
 public:
     explicit EventListener(const char* name) :StrigiThread(name) {

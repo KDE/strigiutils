@@ -24,12 +24,27 @@
 #include <time.h>
 #include <ostream>
 
+/*!
+* @class Event
+* @brief Class describing a simple file read/write/delete event
+*/
 class Event
 {
     public:
         enum Type{ CREATED = 0x01, UPDATED = 0x02, DELETED = 0x04};
 
+        /*!
+        * @param type event type
+        * @param path complete path to created/updated/deleted file
+        * Creates a new event. m_time is automatically set to current time
+        */
         Event(Type type, const std::string& path);
+        
+        /*!
+        * @param type event type
+        * @param path complete path to created/updated/deleted file
+        * @param t event creation time
+        */
         Event(Type type, const std::string& path, time_t t);
         explicit Event(Event* event);
         ~Event();
@@ -39,13 +54,16 @@ class Event
         const std::string &getPath() { return m_path; }
         time_t getTime() { return m_time; }
 
+        /*!
+        * @return a string containing event's resume
+        */
         std::string toString();
         friend std::ostream &operator<< (std::ostream &stream, Event* event);
 
     protected:
-        Type m_type;
-        const std::string m_path;
-        time_t m_time;
+        Type m_type; //!< event type
+        const std::string m_path; //!< complete path to created/modified/deleted file
+        time_t m_time; //!< event creation time
 };
 
 #endif
