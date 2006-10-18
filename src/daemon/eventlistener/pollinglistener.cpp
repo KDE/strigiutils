@@ -33,12 +33,12 @@
 using namespace std;
 using namespace jstreams;
 
-PollingListener* pListener;
+PollingListener* PollingListener::workingPoller;
 
 PollingListener::PollingListener()
     :EventListener("PollingListener")
 {
-    pListener = this;
+    workingPoller = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
     m_pause = 60; //60 seconds of pause between each polling
@@ -47,7 +47,7 @@ PollingListener::PollingListener()
 PollingListener::PollingListener(set<string>& dirs)
     :EventListener("PollingListener")
 {
-    pListener = this;
+    workingPoller = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
     m_pause = 60; //60 seconds of pause between each polling
@@ -85,12 +85,12 @@ void* PollingListener::run(void*)
 void PollingListener::pool ()
 {
     if (!m_pIndexReader) {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_eventQueue == NULL!")
+        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_pEventQueue == NULL!")
         return;
     }
-    if (m_eventQueue == NULL)
+    if (m_pEventQueue == NULL)
     {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_eventQueue == NULL!")
+        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_pEventQueue == NULL!")
         return;
     }
     
@@ -98,7 +98,7 @@ void PollingListener::pool ()
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
     set<string> watches;
     
-    FileLister lister (m_filterManager);
+    FileLister lister (m_pFilterManager);
     lister.setFileCallbackFunction(&fileCallback);
     
     m_toIndex.clear();
@@ -170,7 +170,7 @@ void PollingListener::pool ()
         events.push_back (new Event (Event::CREATED, mi->first));
     
     if (events.size() > 0)
-        m_eventQueue->addEvents (events);
+        m_pEventQueue->addEvents (events);
 
     m_toIndex.clear();
 }
@@ -249,7 +249,7 @@ bool PollingListener::fileCallback(const char* path, uint dirlen, uint len, time
     
     string file (path,len);
 
-    (pListener->m_toIndex).insert (make_pair(file, mtime));
+    (workingPoller->m_toIndex).insert (make_pair(file, mtime));
 
     return true;
 }

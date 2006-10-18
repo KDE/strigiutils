@@ -66,6 +66,7 @@ class PollingListener : public EventListener
         std::map<std::string, time_t> m_toIndex;
         unsigned int m_pause; //! pause time between each polling operation
         pthread_mutex_t m_mutex;
+        static PollingListener* workingPoller;
 };
 
 #endif
