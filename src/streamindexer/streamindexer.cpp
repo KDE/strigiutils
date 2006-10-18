@@ -194,6 +194,7 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
     }
     // make sure the entire stream as read
     bool ready;
+    tIter = through.begin() + depth;
     do {
         ready = true;
         std::vector<StreamThroughAnalyzer*>::iterator ts;
