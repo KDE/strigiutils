@@ -33,6 +33,7 @@ public:
     ~MimeTypeThroughAnalyzer();
     void setIndexable(jstreams::Indexable* i) { idx = i; }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    bool isReadyWithStream();
 };
 
 #endif

@@ -41,6 +41,10 @@ public:
      * caller.
      **/
     virtual jstreams::InputStream *connectInputStream(jstreams::InputStream *in) = 0;
+    /**
+     *
+     **/
+    virtual bool isReadyWithStream() = 0;
 };
 }
 

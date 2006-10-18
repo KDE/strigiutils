@@ -36,6 +36,7 @@ public:
     ~PluginThroughAnalyzer();
     void setIndexable(jstreams::Indexable* i);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    bool isReadyWithStream();
     static void loadPlugins(const char* dir);
 };
 

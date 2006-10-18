@@ -57,7 +57,10 @@ MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
     }
     return in;
 }
-
+bool
+MimeTypeThroughAnalyzer::isReadyWithStream() {
+    return true;
+}
 
 //define all the available analyzers in this plugin
 STRIGI_THROUGH_PLUGINS_START

@@ -51,6 +51,7 @@ public:
         idx = i;
     }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    bool isReadyWithStream() { return true; }
 };
 
 //REGISTER_THROUGHANALYZER(XattrAnalyzer)

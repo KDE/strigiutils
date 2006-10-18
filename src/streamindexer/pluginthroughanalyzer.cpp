@@ -51,3 +51,12 @@ PluginThroughAnalyzer::setIndexable(Indexable* idx) {
         a->setIndexable(idx);
     }
 }
+bool
+PluginThroughAnalyzer::isReadyWithStream() {
+    bool ready = true;
+    multimap<void*, StreamThroughAnalyzer*>::const_iterator i;
+    for (i = analyzers.begin(); ready && i != analyzers.end(); ++i) {
+        ready = i->second->isReadyWithStream();
+    }
+    return ready;
+}

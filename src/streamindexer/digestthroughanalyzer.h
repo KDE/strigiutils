@@ -35,6 +35,7 @@ public:
     ~DigestThroughAnalyzer();
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    bool isReadyWithStream() { return false; }
 };
 
 #endif

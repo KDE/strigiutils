@@ -32,6 +32,7 @@ public:
     ~ID3V2ThroughAnalyzer();
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    bool isReadyWithStream();
 };
 
 #endif

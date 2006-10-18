@@ -87,4 +87,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
     }
     return in;
 }
-
+bool
+ID3V2ThroughAnalyzer::isReadyWithStream() {
+    return true;
+}

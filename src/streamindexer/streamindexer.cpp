@@ -193,10 +193,17 @@ StreamIndexer::analyze(const std::string &path, time_t mtime,
         es++;
     }
     // make sure the entire stream as read
-    int64_t nskipped;
+    bool ready;
     do {
-        nskipped = input->skip(1000000);
-    } while (input->getStatus() == Ok);
+        ready = true;
+        std::vector<StreamThroughAnalyzer*>::iterator ts;
+        for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
+            ready = (*ts)->isReadyWithStream();
+        }
+        if (!ready) {
+            input->skip(1000000);
+        }
+    } while (!ready && input->getStatus() == Ok);
     if (input->getStatus() == Error) {
         fprintf(stderr, "Error: %s\n", input->getError());
         removeIndexable(depth);
