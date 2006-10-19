@@ -28,8 +28,12 @@ AsyncSocketClient::statusChanged() {
     }
     if (method == "countHits") {
         handleCountHitsResponse();
-    } else if (method == "query") {
+    }
+    else if (method == "query") {
         handleQueryResponse();
+    }
+    else if (method == "getIndexedDirectories") {
+        handleGetIndexedDirectoriesResponse();
     }
     method.clear();
     return true;
@@ -38,17 +42,24 @@ vector<string>
 AsyncSocketClient::splitResponse() const {
     vector<string> response;
     const char* p = socket.getResponse().c_str();
-    const char* l = p;
-    while (true) {
-        while (*p != '\n' && *p != '\0') {p++;}
-        if (p-l > 0) {
-            string line(l, p-l);
-            response.push_back(line);
-            l = p+1;
+    string line;
+    
+    while (true)
+    {
+        if ((*p != '\n') && (*p != '\0'))
+            line += *p;
+        else if (line.length() > 0)
+        {
+            response.push_back (line);
+            line.clear();
         }
-        if (*p == '\0') break;
+        
         p++;
+        
+        if (*p == '\0')
+            break;
     }
+    
     return response;
 }
 bool
@@ -101,4 +112,20 @@ AsyncSocketClient::handleQueryResponse() {
         }
         hits.hits.push_back(h);
     }
+}
+bool
+AsyncSocketClient::getIndexedDirectories() {
+    method = "getIndexedDirectories";
+    string message;
+    message = method + "\n\n";
+    return socket.sendRequest(message);
+}
+void
+AsyncSocketClient::handleGetIndexedDirectoriesResponse() {
+    indexedDirs.clear();
+    if (socket.getStatus() == AsyncSocket::Error) {
+        return;
+    }
+    
+    indexedDirs = splitResponse();
 }

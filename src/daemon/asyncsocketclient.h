@@ -27,11 +27,13 @@ class AsyncSocketClient {
 private:
     AsyncSocket socket;
     std::string method;
+    std::vector<std::string> indexedDirs;
     int hitcount;
     ClientInterface::Hits hits;
 
     void handleQueryResponse();
     void handleCountHitsResponse();
+    void handleGetIndexedDirectoriesResponse();
     std::vector<std::string> splitResponse() const;
 public:
     void setSocketPath(const std::string& path) {
@@ -42,6 +44,10 @@ public:
     bool query(const std::string& query, int max, int off);
     const ClientInterface::Hits& getHits() const {
         return hits;
+    }
+    bool getIndexedDirectories();
+    std::vector<std::string> getIndexedDirectoriesResponse() const {
+        return indexedDirs;
     }
     bool statusChanged();
 };
