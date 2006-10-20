@@ -42,6 +42,8 @@ private:
     int32_t entryCompressedSize;
     int32_t compressionMethod;
     char padding;
+    class RpmHeaderInfo;
+    RpmHeaderInfo *headerinfo;
 
     void readHeader();
     static int32_t read4bytes(const unsigned char *b);

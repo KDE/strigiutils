@@ -25,11 +25,18 @@
 
 #include "dostime.h"
 
-using namespace jstreams;
+#include <list>
 
+using namespace jstreams;
+using namespace std;
+
+class RpmInputStream::RpmHeaderInfo {
+};
 /**
  * RPM files as specified here:
  * http://www.freestandards.org/spec/refspecs/LSB_1.3.0/gLSB/gLSB/swinstall.html
+ * and here:
+ * http://www.rpm.org/max-rpm-snapshot/s1-rpm-file-format-rpm-file-format.html
  **/
 bool
 RpmInputStream::checkHeader(const char* data, int32_t datasize) {
@@ -40,7 +47,7 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
     return ok;
 }
 RpmInputStream::RpmInputStream(StreamBase<char>* input)
-        : SubStreamProvider(input) {
+        : SubStreamProvider(input), headerinfo(0) {
     uncompressionStream = 0;
 
     // skip the header
@@ -52,7 +59,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     }
 
     // read signature
-   const char headmagic[] = {0x8e,0xad,0xe8,0x01};
+    const char headmagic[] = {0x8e,0xad,0xe8,0x01};
     if (input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
         error = "error in signature\n";
         status = Error;
@@ -64,7 +71,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     if (sz%8) {
         sz+=8-sz%8;
     }
-    input->skip(sz);
+    input->read(b, sz, sz);
 
     // read header
     if (input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
@@ -74,7 +81,37 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     }
     nindex = read4bytes((const unsigned char*)(b+8));
     hsize = read4bytes((const unsigned char*)(b+12));
-    input->skip(nindex*16+hsize);
+    int32_t size = nindex*16+hsize;
+    if (input->read(b, size, size) != size) {
+        error = "could not read header\n";
+        status = Error;
+        return;
+    }
+    for (int32_t i=0; i<nindex; ++i) {
+        const unsigned char* e = (const unsigned char*)b+i*16;
+        int32_t tag = read4bytes(e);
+        int32_t type = read4bytes(e+4);
+        int32_t offset = read4bytes(e+8);
+        if (offset < 0 || offset >= hsize) {
+            // error: invalid offset
+        }
+        int32_t count = read4bytes(e+12);
+        int32_t end = hsize;
+        if (i < nindex-1) {
+            end = read4bytes(e+8+16);
+        }
+        if (end < offset) end = offset;
+        if (end > hsize) end = hsize;
+// TODO actually put the data into the objects so the analyzers can use them
+/*        if (type == 6) {
+            string s(b+nindex*16+offset, end-offset);
+            printf("%s\n", s.c_str());
+        } else if (type == 8 || type == 9) {
+            list<string> v;
+            // TODO handle string arrays
+        }
+        printf("%i\t%i\t%i\t%i\n", tag, type, offset, count);*/
+    }
 
     int64_t pos = input->getPosition();
     if (input->read(b, 16, 16) != 16) {
@@ -96,6 +133,9 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
 RpmInputStream::~RpmInputStream() {
     if (uncompressionStream) {
         delete uncompressionStream;
+    }
+    if (headerinfo) {
+        delete headerinfo;
     }
 }
 StreamBase<char>*
