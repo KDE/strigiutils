@@ -22,6 +22,7 @@
 #include "filelister.h"
 #include "filereader.h"
 #include "filtermanager.h"
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -39,6 +40,15 @@ Indexer::~Indexer( )
 }
 void
 Indexer::index(const char *dir) {
+    // check if the path is a file
+    struct stat s;
+    if (stat(dir, &s) == -1) return;
+
+    if (S_ISREG(s.st_mode)) {
+        doFile(dir);
+        return;
+    }
+
     workingIndexer = this;
     m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
