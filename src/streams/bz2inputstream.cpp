@@ -140,6 +140,9 @@ BZ2InputStream::fillBuffer(char* start, int32_t space) {
         status = Error;
         return -1;
     case BZ_STREAM_END:
+        if (bzstream->avail_in) {
+            input->reset(input->getPosition()-bzstream->avail_in);
+        }
         // we are finished decompressing,
         // (but this stream is not yet finished)
         dealloc();

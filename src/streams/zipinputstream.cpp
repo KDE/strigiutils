@@ -56,6 +56,8 @@ ZipInputStream::nextEntry() {
     if (status) return 0;
     // clean up the last stream(s)
     if (entrystream) {
+	// if this entry is a compressed entry of know size, we can skip to
+	// the end by skipping in the compressed stream, without decompressing
         if (compressedEntryStream) {
             compressedEntryStream->skip(compressedEntryStream->getSize());
             delete compressedEntryStream;
@@ -63,7 +65,33 @@ ZipInputStream::nextEntry() {
             delete uncompressionStream;
             uncompressionStream = 0;
         } else {
-            entrystream->skip(entrystream->getSize());
+            int32_t size = entrystream->getSize();
+            if (size < 1) {
+                size = 1024;
+            }
+            while (entrystream->getStatus() == Ok) {
+                entrystream->skip(size);
+            }
+            if (entryinfo.size < 0) {
+                // skip the data descriptor that occurs after the data
+                const char* c;
+                int32_t n = input->read(c, 4, 4);
+                if (n == 4) {
+                    n = read4bytes((const unsigned char*)c);
+                    if (n == 0x08074b50) { // sometimes this signature appears
+                        n = input->read(c, 12, 12);
+                        n -= 8;
+                    } else {
+                        n = input->read(c, 8, 8);
+                        n -= 4;
+                    }
+                }
+                if (n != 4) {
+                    status = Error;
+                    error = "No valid data descriptor after entry data.";
+                    return 0;
+                }
+            }
         }
         delete entrystream;
         entrystream = 0;
@@ -71,14 +99,19 @@ ZipInputStream::nextEntry() {
     readHeader();
     if (status) return 0;
     if (compressionMethod == 8) {
-        compressedEntryStream = new SubInputStream(input, entryCompressedSize);
-        if (uncompressionStream) {
-            delete uncompressionStream;
-        }
-        uncompressionStream = new GZipInputStream(compressedEntryStream,
+        if (entryinfo.size >= 0) {
+            compressedEntryStream = new SubInputStream(input, entryCompressedSize);
+            if (uncompressionStream) {
+                delete uncompressionStream;
+            }
+            uncompressionStream = new GZipInputStream(compressedEntryStream,
                 GZipInputStream::ZIPFORMAT);
-        entrystream
-            = new SubInputStream(uncompressionStream, entryinfo.size);
+            entrystream
+                = new SubInputStream(uncompressionStream, entryinfo.size);
+        } else {
+            entrystream = new GZipInputStream(input,
+                GZipInputStream::ZIPFORMAT);
+        }
     } else {
         entrystream = new SubInputStream(input, entryinfo.size);
     }
@@ -143,13 +176,17 @@ ZipInputStream::readHeader() {
     int32_t generalBitFlags = read2bytes(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
         // ohoh, the file size and compressed file size are unknown at this
-        // point in theory this is a solvable problem, but it's not easy:
-        // one would need to keep a running crc32 and file size and match it
-        // to the data read so far
-        status = Error;
-        error = "This particular zip file format is not supported for reading "
-            "as a stream.";
-        return;
+        // point
+	// if the file is compressed with method 8 we rely on the decompression
+	// stream to signal the end of the stream properly
+        if (compressionMethod != 8) {
+        	status = Error;
+        	error = "This particular zip file format is not supported for "
+			"reading as a stream.";
+	        return;
+        }
+        entryinfo.size = -1;
+        entryCompressedSize = -1;
     }
     unsigned long dost = read4bytes(hb+10);
     entryinfo.mtime = dos2unixtime(dost);
