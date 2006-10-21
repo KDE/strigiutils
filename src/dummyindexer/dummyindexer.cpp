@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "filtermanager.h"
+#include "dummyindexwriter.h"
 
 void
 printUsage(char** argv) {
@@ -42,8 +43,8 @@ main(int argc, char **argv) {
     }
     
     FilterManager filtermanager;
-    
-    Indexer indexer(verbosity, &filtermanager);
+    DummyIndexWriter writer(verbosity);    
+    Indexer indexer(&filtermanager, &writer);
     indexer.index(argv[argc-1]);
     return 0;
 }

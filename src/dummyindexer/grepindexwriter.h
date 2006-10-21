@@ -17,31 +17,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "jstreamsconfig.h"
-#include "indexer.h"
-#include "filtermanager.h"
-#include "dummyindexwriter.h"
+#ifndef GREPINDEXWRITER_H
+#define GREPINDEXWRITER_H
 
-void
-printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [dir-or-file-to-find]\n", argv[0]);
-}
+#include "indexwriter.h"
+#include <regex.h>
 
-int
-main(int argc, char **argv) {
-    const char* path = ".";
-    if (argc > 2) {
-        printUsage(argv);
-        return -1;
-    }
-    if (argc == 2) {
-        path = argv[1];
-    }
-    
-    FilterManager filtermanager;
-   
-    DummyIndexWriter writer(1); 
-    Indexer indexer(&filtermanager, &writer);
-    indexer.index(path);
-    return 0;
-}
+class GrepIndexWriter : public jstreams::IndexWriter {
+private:
+    regex_t regex;
+protected:
+    void startIndexable(jstreams::Indexable* idx);
+    void finishIndexable(const jstreams::Indexable* idx);
+    void addText(const jstreams::Indexable* idx, const char* text,
+        int32_t length);
+    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
+            const std::string& value);
+public:
+    GrepIndexWriter(const char* re);
+    ~GrepIndexWriter();
+    void commit() {}
+    void deleteEntries(const std::vector<std::string>& entries) {}
+    void deleteAllEntries() {}
+};
+
+#endif

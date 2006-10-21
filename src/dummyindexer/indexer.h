@@ -22,7 +22,6 @@
 
 #include <string>
 #include "streamindexer.h"
-#include "dummyindexwriter.h"
 
 class FileLister;
 class FilterManager;
@@ -30,7 +29,6 @@ class FilterManager;
 class Indexer {
 private:
     FileLister* m_lister;
-    DummyIndexWriter writer;
     jstreams::StreamIndexer m_indexer;
 
     static bool addFileCallback(const char* fullpath, uint dirlen,
@@ -38,7 +36,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(int verbosity, FilterManager* filtermanager);
+    Indexer(FilterManager* filtermanager, jstreams::IndexWriter* writer);
     ~Indexer();
     void index(const char *dir);
 };

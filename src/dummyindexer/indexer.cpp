@@ -28,14 +28,11 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(int verbosity, FilterManager* filtermanager)
-    :writer(verbosity), m_indexer(&writer)
-{
+Indexer::Indexer(FilterManager* filtermanager, jstreams::IndexWriter* w)
+        : m_indexer(w) {
     m_lister = new FileLister (filtermanager);
 }
-
-Indexer::~Indexer( )
-{
+Indexer::~Indexer() {
     delete m_lister;
 }
 void
