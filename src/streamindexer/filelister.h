@@ -33,6 +33,7 @@
 **/
 
 #include <sys/types.h>
+#include <string>
 
 class FilterManager;
 
@@ -72,5 +73,12 @@ public:
      **/
     void listFiles(const char *dir, time_t oldestdate = 0);
 };
+
+/*!
+* @param path string containing path to check
+* Appends the terminating char to path.
+* Under Windows that char is '\', '/' under *nix
+*/
+std::string fixPath (std::string path);
 
 #endif

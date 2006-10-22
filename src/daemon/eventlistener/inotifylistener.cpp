@@ -42,29 +42,6 @@ InotifyListener::ReindexDirsThread* InotifyListener::ReindexDirsThread::workingR
 using namespace std;
 using namespace jstreams;
 
-/*!
-* @param path string containing path to check
-* Appends the terminating char to path.
-* Under Windows that char is '\', '/' under *nix
-*/
-string fixPath (string path)
-{
-    string temp (path);
-    
-    char separator;
-    
-#ifdef HAVE_WINDOWS_H
-    separator = '\\';
-#else
-    separator = '/';
-#endif
-
-    if (temp[temp.length() - 1 ] != separator)
-        temp += separator;
-    
-    return temp;
-}
-
 InotifyListener::InotifyListener(set<string>& indexedDirs)
     :EventListener("InotifyListener")
 {

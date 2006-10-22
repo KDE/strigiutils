@@ -23,7 +23,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
-#include <string.h>
 #include "stgdirent.h" //dirent replacement (includes native if available)
 
 #ifdef HAVE_DIRECT_H
@@ -35,6 +34,24 @@
 #endif
 
 using namespace std;
+
+string fixPath (string path)
+{
+    string temp (path);
+    
+    char separator;
+    
+#ifdef HAVE_WINDOWS_H
+    separator = '\\';
+#else
+    separator = '/';
+#endif
+
+    if (temp[temp.length() - 1 ] != separator)
+        temp += separator;
+    
+    return temp;
+}
 
 FileLister::FileLister(FilterManager* filtermanager) {
     m_fileCallback = 0;
