@@ -43,7 +43,6 @@ endif (HyperEstraier_FOUND)
 
 include_directories( eventlistener ../filters .)
 
-# daemonconfiguration has been removed until the next release
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp clientinterface.cpp strigilogging.h strigithread.cpp)
 

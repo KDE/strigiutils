@@ -25,10 +25,11 @@
         </complexType>
        </element>
       </sequence>
+      <attribute name="type" type="string"/>
      </complexType>
-     <attribute name="type" type="string"/>
     </element>
    </sequence>
+   <attribute name="useDBus" type="boolean"/>
   </complexType>
  </element>
 

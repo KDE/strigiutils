@@ -235,6 +235,7 @@ main(int argc, char** argv) {
     string xapiandir = daemondir+"/xapian";
     string dbfile = daemondir+"/sqlite.db";
     string dirsfile = daemondir+"/dirstoindex";
+    string conffile = daemondir+"/daemon.conf";
     string socketpath = daemondir+"/socket";
     string logconffile = daemondir+"/log.conf";
     string pathfilterfile = daemondir+"/pathfilter.conf";
@@ -305,7 +306,7 @@ main(int argc, char** argv) {
     string indexdir = daemondir + '/' + f->first;
     IndexManager* index = f->second(indexdir.c_str());
 
-
+    StrigiDaemonConfiguration config(readStrigiConfiguration(conffile));
     set<string> dirs = readdirstoindex(dirsfile);
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
@@ -344,8 +345,10 @@ main(int argc, char** argv) {
 
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
-    threads.push_back(&dbusserver);
-    dbusserver.start();
+    if (config.a_useDBus) {
+        threads.push_back(&dbusserver);
+        dbusserver.start();
+    }
 #endif
 
     SocketServer server(&interface);
@@ -362,6 +365,8 @@ main(int argc, char** argv) {
 
     //delete listener
     delete listener;
+
+    writeStrigiConfiguration(conffile, config);
     
     // release lock
     releaseLock(lockfile, lock);

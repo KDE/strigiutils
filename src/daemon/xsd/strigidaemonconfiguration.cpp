@@ -67,6 +67,7 @@ XMLStream& operator>>(XMLStream&, Pathfilter&);
 XMLStream& operator>>(XMLStream&, Patternfilter&);
 XMLStream&
 operator>>(XMLStream& in, Repository& e) {
+	in.setFromAttribute(e.a_type,"type");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
 	if (n && in.getTagName() == "paths") {
@@ -95,6 +96,7 @@ Repository::Repository(const std::string& xml) {
 std::ostream&
 operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
+	out << " type='" << e.a_type << "'";
 	out << ">\n";
 	out << e.e_paths;
 	out << e.e_pathfilter;
@@ -106,6 +108,7 @@ operator<<(std::ostream& out, const Repository& e) {
 XMLStream& operator>>(XMLStream&, Repository&);
 XMLStream&
 operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
+	in.setFromAttribute(e.a_useDBus,"useDBus");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
 	while (n && in.getTagName() == "repository") {
@@ -120,6 +123,7 @@ operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 	return in;
 }
 StrigiDaemonConfiguration::StrigiDaemonConfiguration(const std::string& xml) {
+	a_useDBus = false;
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
@@ -128,6 +132,7 @@ StrigiDaemonConfiguration::StrigiDaemonConfiguration(const std::string& xml) {
 std::ostream&
 operator<<(std::ostream& out, const StrigiDaemonConfiguration& e) {
 	out << "<strigiDaemonConfiguration";
+	out << " useDBus='" << e.a_useDBus << "'";
 	out << ">\n";
 	std::list<Repository>::const_iterator repository_it;
 	for (repository_it = e.e_repository.begin(); repository_it != e.e_repository.end(); repository_it++) {
