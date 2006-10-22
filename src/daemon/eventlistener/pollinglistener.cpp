@@ -190,25 +190,22 @@ bool PollingListener::addWatch (const string& path)
 
 void PollingListener::rmWatch (const string& path)
 {
+    pthread_mutex_lock (&m_mutex);
+    
     set<string>::iterator iter = m_watches.find (path);
     
     if (iter != m_watches.end())
-    {
-        pthread_mutex_lock (&m_mutex);
         m_watches.erase (iter);
-        pthread_mutex_unlock (&m_mutex);
-    }
+    
+    pthread_mutex_unlock (&m_mutex);
 }
 
 void PollingListener::addWatches (const set<string> &watches)
 {
     for (set<string>::iterator iter = watches.begin(); iter != watches.end(); iter++)
     {
-        //TODO: fix path creation (check win/*nix platform)
-        string temp = *iter;
+        string temp = fixPath (*iter);
         bool match = false;
-        if (temp[temp.length() - 1] != '/')
-                temp += '/';
         
         // try to reduce watches number
         for (set<string>::iterator it = m_watches.begin(); it != m_watches.end(); it++)
@@ -239,7 +236,10 @@ void PollingListener::addWatches (const set<string> &watches)
 
 void PollingListener::setIndexedDirectories (const set<string>& dirs)
 {
+    pthread_mutex_lock (&m_mutex);
     m_watches.clear();
+    pthread_mutex_unlock (&m_mutex);
+    
     addWatches (dirs);
 }
 
