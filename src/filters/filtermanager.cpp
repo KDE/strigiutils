@@ -178,6 +178,7 @@ bool FilterManager::findMatch (string& text)
     else if ( ret == 0)
     {
         STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", "Ignoring strigi configuration directory: " + m_strigidir)
+        pthread_mutex_unlock (&m_mutex);
         return true;
     }
     
