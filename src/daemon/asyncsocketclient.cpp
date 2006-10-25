@@ -35,6 +35,9 @@ AsyncSocketClient::statusChanged() {
     else if (method == "getIndexedDirectories") {
         handleGetIndexedDirectoriesResponse();
     }
+    else if (method == "getStatus") {
+        handleGetDaemonStatusResponse();
+    }
     method.clear();
     return true;
 }
@@ -129,3 +132,29 @@ AsyncSocketClient::handleGetIndexedDirectoriesResponse() {
     
     indexedDirs = splitResponse();
 }
+bool
+AsyncSocketClient::getDaemonStatus() {
+    method = "getStatus";
+    string message;
+    message = method + "\n\n";
+    return socket.sendRequest(message);
+}
+void
+AsyncSocketClient::handleGetDaemonStatusResponse() {
+    daemonStatus.clear();
+    if (socket.getStatus() == AsyncSocket::Error) {
+        return;
+    }
+    vector<string> response = splitResponse();
+    for (uint i=0; i<response.size(); ++i) {
+        string s = response[i];
+        uint p = s.find(":");
+        if (p == string::npos) {
+            daemonStatus.clear();
+            daemonStatus["error"] = "Communication error.";
+            return;
+        }
+        daemonStatus[s.substr(0,p)] = s.substr(p+1);
+    }
+}
+

@@ -28,12 +28,15 @@ private:
     AsyncSocket socket;
     std::string method;
     std::vector<std::string> indexedDirs;
+    std::map<std::string, std::string> daemonStatus;
     int hitcount;
     ClientInterface::Hits hits;
 
     void handleQueryResponse();
     void handleCountHitsResponse();
     void handleGetIndexedDirectoriesResponse();
+    void handleGetDaemonStatusResponse();
+    
     std::vector<std::string> splitResponse() const;
 public:
     void setSocketPath(const std::string& path) {
@@ -48,6 +51,10 @@ public:
     bool getIndexedDirectories();
     std::vector<std::string> getIndexedDirectoriesResponse() const {
         return indexedDirs;
+    }
+    bool getDaemonStatus();
+    std::map<std::string, std::string> getDaemonStatusResponse() const {
+        return daemonStatus;
     }
     bool statusChanged();
 };
