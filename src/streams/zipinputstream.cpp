@@ -30,12 +30,7 @@ bool
 ZipInputStream::checkHeader(const char* data, int32_t datasize) {
     static const char magic[] = {0x50, 0x4b, 0x03, 0x04};
     if (datasize < 4) return false;
-    bool ok = memcmp(data, magic, 4) == 0;
-    if (ok && datasize >= 8) {
-        int32_t generalBitFlags = read2bytes((const unsigned char*)data+6);
-        // this type of zip is not easily readable as stream
-        ok = !(generalBitFlags & 8);
-    }
+    bool ok = memcmp(data, magic, 4) == 0 && datasize > 8;
     return ok;
 }
 ZipInputStream::ZipInputStream(StreamBase<char>* input)
