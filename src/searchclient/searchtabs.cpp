@@ -24,7 +24,9 @@
 #include <QtCore/QDebug>
 #include <QtCore/QVariant>
 
-SearchTabs::SearchTabs() {
+SearchTabs::SearchTabs(Qt4StrigiClient* s)
+    : strigi (s)
+{
     tabs = new QTabBar();
     tabs->setDrawBase(false);
     view = new SearchView(strigi);
@@ -34,7 +36,7 @@ SearchTabs::SearchTabs() {
     layout->addWidget(view);
     setLayout(layout);
 
-    connect(&strigi, SIGNAL(gotHitsCount(const QString&, int)),
+    connect(strigi, SIGNAL(gotHitsCount(const QString&, int)),
         this, SLOT(handleHitsCount(const QString&, int)));
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
@@ -54,7 +56,7 @@ SearchTabs::setQuery(const QString& query) {
     while (i.hasNext()) {
         i.next();
         QString tabquery = i.key() + query;
-        strigi.countHits(tabquery);
+        strigi->countHits(tabquery);
     }
 }
 void

@@ -84,7 +84,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     statuslayout->addLayout(hlayout);
     statuswidget->setLayout(statuslayout);
 
-    tabs = new SearchTabs();
+    tabs = new SearchTabs(&strigi);
     tabs->addTab("kde", "kde");
     tabs->addTab("msg", "mimetype:message/*");
     tabs->addTab("irc", "path:*konversation*log");

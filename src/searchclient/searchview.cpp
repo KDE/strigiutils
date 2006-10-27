@@ -17,6 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "qt4strigiclient.h"
 #include "searchview.h"
 #include "strigihtmlgui.h"
 #include <QtGui/QVBoxLayout>
@@ -138,7 +139,7 @@ SearchViewHtmlHelper::highlight(const std::string& text,
     }
     return (const char*)out.toUtf8();
 }
-SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
+SearchView::SearchView(Qt4StrigiClient* k) :strigi(k) {
     view = new QTextBrowser();
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -147,7 +148,7 @@ SearchView::SearchView(Qt4StrigiClient& k) :strigi(k) {
     htmlguihelper = new SearchViewHtmlHelper();
     htmlgui = new StrigiHtmlGui(htmlguihelper);
 
-    connect(&strigi,
+    connect(strigi,
         SIGNAL(gotHits(const QString&, const ClientInterface::Hits&)),
         this, SLOT(handleHits(const QString&, const ClientInterface::Hits&)));
     connect(view, SIGNAL(anchorClicked(const QUrl&)),
@@ -186,7 +187,7 @@ SearchView::setHTML(const QString& html) {
 void
 SearchView::setQuery(const QString& q) {
     query = q;
-    strigi.query(query);
+    strigi->query(query);
 }
 void
 SearchView::openItem(const QUrl& url) {

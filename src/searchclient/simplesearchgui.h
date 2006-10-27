@@ -22,6 +22,8 @@
 
 #include <QtGui/QMainWindow>
 
+#include "qt4strigiclient.h"
+
 class QLineEdit;
 class QListWidget;
 class QListWidgetItem;
@@ -57,6 +59,7 @@ private:
     QAction *fileExitAct;
     QAction *editPreferenceAct;
     QAction *editListIndexedFilesAct;
+    Qt4StrigiClient strigi;
    
     void startDaemon();
     void setDirectories();

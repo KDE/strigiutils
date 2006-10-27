@@ -23,6 +23,7 @@
 #include <QtGui/QWidget>
 #include "qt4strigiclient.h"
 
+class Qt4StrigiClient;
 class QTextBrowser;
 class QUrl;
 class SearchViewHtmlHelper;
@@ -33,14 +34,14 @@ Q_OBJECT
 private:
     QTextBrowser* view;
     QString query;
-    Qt4StrigiClient& strigi;
+    Qt4StrigiClient* strigi;
     SearchViewHtmlHelper* htmlguihelper;
     StrigiHtmlGui* htmlgui;
 
 private slots:
     void openItem(const QUrl& url);
 public:
-    explicit SearchView(Qt4StrigiClient& k);
+    explicit SearchView(Qt4StrigiClient* k);
     ~SearchView();
     void setHTML(const QString&html);
 public slots:

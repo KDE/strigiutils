@@ -22,8 +22,8 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QMap>
-#include "qt4strigiclient.h"
 
+class Qt4StrigiClient;
 class QTabBar;
 class SearchView;
 class SearchTabs : public QWidget {
@@ -34,12 +34,12 @@ private:
     QMap<QString, int> tabqueries;
     QMap<QString, QString> querynames;
     QString query;
-    Qt4StrigiClient strigi;
+    Qt4StrigiClient* strigi;
 private slots:
     void handleHitsCount(const QString& query, int);
     void tabChanged(int);
 public:
-    SearchTabs();
+    SearchTabs(Qt4StrigiClient* s);
     void addTab(const QString& name, const QString& query);
 public slots:
     void setQuery(const QString& slot);
