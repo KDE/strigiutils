@@ -1,5 +1,7 @@
 #include "textutils.h"
 
+
+// http://www.w3.org/TR/REC-xml/#charsets
 bool
 jstreams::checkUtf8(const char* p, int32_t length) {
     const char* end = p + length;
@@ -18,7 +20,7 @@ jstreams::checkUtf8(const char* p, int32_t length) {
             nb = 2;
         } else if ((0xF8 & c) == 0xF0) {
             nb = 3;
-        } else if (c <= 8) {
+        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
             return false;
         }
         p++;
