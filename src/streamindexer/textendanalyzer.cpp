@@ -22,11 +22,13 @@
 #include "streamindexer.h"
 #include "inputstreamreader.h"
 #include "indexwriter.h"
+#include "textutils.h"
 using namespace jstreams;
 
 bool
 TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    const char* end = header + headersize;
+    return checkUtf8(header, headersize);
+/*    const char* end = header + headersize;
     const char* p = header;
     // check if the text is valid UTF-8
     char nb = 0;
@@ -48,7 +50,7 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         }
         p++;
     }
-    return true;
+    return true;*/
 }
 
 char
@@ -59,7 +61,7 @@ TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     const char* b;
     // store and index the first 20k of a text file
     int32_t nread = in->read(b, 20*1024, 0);
-    if (nread > 0) {
+    if (nread > 0 && checkUtf8(b, nread)) {
         i->addText(b, nread);
     }
     if (in->getStatus() == Error) {
