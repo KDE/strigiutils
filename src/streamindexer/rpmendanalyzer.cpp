@@ -34,7 +34,7 @@ RpmEndAnalyzer::analyze(std::string filename, InputStream *in,
     RpmInputStream rpm(in);
     InputStream *s = rpm.nextEntry();
     if (rpm.getStatus()) {
-        printf("error: %s\n", rpm.getError());
+        fprintf(stderr, "error: %s\n", rpm.getError());
 //        exit(1);
     }
     while (s) {

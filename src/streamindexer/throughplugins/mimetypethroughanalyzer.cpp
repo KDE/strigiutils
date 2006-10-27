@@ -28,7 +28,7 @@ using namespace std;
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
     if ( magic_load(magic, 0) == -1 ) { // "magic"
-        printf("magic_load: %s\n",magic_error(magic));
+        fprintf(stderr, "magic_load: %s\n",magic_error(magic));
     }
 }
 MimeTypeThroughAnalyzer::~MimeTypeThroughAnalyzer() {

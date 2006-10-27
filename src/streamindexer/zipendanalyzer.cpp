@@ -34,7 +34,7 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
     if (zip.getStatus()) {
-        printf("error: %s\n", zip.getError());
+        fprintf(stderr, "error: %s\n", zip.getError());
 //        exit(1);
     }
     while (s) {

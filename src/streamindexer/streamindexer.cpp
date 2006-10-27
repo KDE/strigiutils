@@ -139,9 +139,9 @@ char
 StreamIndexer::analyze(const std::string &path, time_t mtime,
         InputStream *input, uint depth) {
     static int count = 1;
-    if (++count % 1000 == 0) {
-        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
-    }
+//    if (++count % 1000 == 0) {
+//        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
+//    }
     //printf("depth #%i: %s\n", depth, path.c_str());
     Indexable idx(path, mtime, writer, depth);
    

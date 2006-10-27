@@ -22,7 +22,6 @@
 
 #include <string>
 #include <vector>
-#include "textutils.h"
 
 namespace jstreams {
 
@@ -62,9 +61,6 @@ public:
     virtual ~IndexWriter() {}
     /**
      * Flush the accumulated changes to disk.
-     **/
-    virtual void commit() { return; }
-    /**
      * Delete the entries with the given paths from the index.
      *
      * @param entries the paths of the files that should be deleted
