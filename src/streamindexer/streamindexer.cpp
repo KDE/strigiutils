@@ -38,6 +38,7 @@
 #include "pluginthroughanalyzer.h"
 #include "pluginendanalyzer.h"
 #include "indexwriter.h"
+#include "textutils.h"
 #include <sys/stat.h>
 
 using namespace std;
@@ -81,6 +82,9 @@ StreamIndexer::indexFile(const char *filepath) {
 }
 char
 StreamIndexer::indexFile(const std::string& filepath) {
+    if (!checkUtf8(filepath.c_str())) {
+        return 1;
+    }
     struct stat s;
     stat(filepath.c_str(), &s);
     FileInputStream file(filepath.c_str());
