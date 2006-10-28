@@ -9,17 +9,17 @@
     <element name="repository" minOccurs="0" maxOccurs="unbounded">
      <complexType>
       <sequence>
-       <element name="paths">
+       <element name="path"  minOccurs="0" maxOccurs="unbounded">
         <complexType>
          <attribute name="path" type="string"/>
         </complexType>
        </element>
-       <element name="pathfilter">
+       <element name="pathfilter"  minOccurs="0" maxOccurs="unbounded">
         <complexType>
          <attribute name="path" type="string"/>
         </complexType>
        </element>
-       <element name="patternfilter">
+       <element name="patternfilter" minOccurs="0" maxOccurs="unbounded">
         <complexType>
          <attribute name="pattern" type="string"/>
         </complexType>

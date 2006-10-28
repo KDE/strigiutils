@@ -156,6 +156,19 @@ readStrigiConfiguration(const string& file) {
     f.get(xml, '\0');
     f.close();
     StrigiDaemonConfiguration config(xml.str());
+    if (xml.str().length() == 0) { // no config file: set default config
+        config.a_useDBus = true;
+        Repository r;
+        string s;
+        s = getenv("HOME"); 
+        Path p;
+        p.a_path = s;                 r.e_path.push_back(p);
+        p.a_path = s + "/.kde";       r.e_path.push_back(p);
+        p.a_path = s + "/.gnome2";    r.e_path.push_back(p);
+        p.a_path = s + "/.evolution"; r.e_path.push_back(p);
+        p.a_path = s + "/.mozilla";   r.e_path.push_back(p);
+        config.e_repository.push_back(r);
+    }
     return config;
 }
 void
@@ -166,7 +179,7 @@ writeStrigiConfiguration(const string& file,
     f << config;
     f.close();
 }
-set<string>
+/*set<string>
 readdirstoindex(const string& file) {
     set<string> dirs;
     ifstream f(file.c_str());
@@ -198,7 +211,7 @@ savedirstoindex(const string& file, const set<string> &dirs) {
         f << *i << endl;
     }
     f.close();
-}
+}*/
 FILE*
 aquireLock(const char* lockfile, struct flock& lock) {
     FILE* f = fopen(lockfile, "w");
@@ -307,7 +320,14 @@ main(int argc, char** argv) {
     IndexManager* index = f->second(indexdir.c_str());
 
     StrigiDaemonConfiguration config(readStrigiConfiguration(conffile));
-    set<string> dirs = readdirstoindex(dirsfile);
+    set<string> dirs;
+    list<Repository>::const_iterator i;
+    for (i = config.e_repository.begin(); i != config.e_repository.end(); ++i) {
+        list<Path>::const_iterator j;
+        for (j = i->e_path.begin(); j != i->e_path.end(); ++j) {
+            dirs.insert(j->a_path);
+        }
+    }
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 
@@ -358,7 +378,6 @@ main(int argc, char** argv) {
         stopThreads();
     }
     dirs = scheduler.getIndexedDirectories();
-    savedirstoindex(dirsfile, dirs);
 
     // close the indexmanager
     delete index;

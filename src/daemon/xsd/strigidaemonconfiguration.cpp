@@ -3,22 +3,22 @@
 #include <iostream>
 #include "xmlstream.h"
 XMLStream&
-operator>>(XMLStream& in, Paths& e) {
+operator>>(XMLStream& in, Path& e) {
 	in.setFromAttribute(e.a_path,"path");
 	return in;
 }
-Paths::Paths(const std::string& xml) {
+Path::Path(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const Paths& e) {
-	out << " <paths";
+operator<<(std::ostream& out, const Path& e) {
+	out << " <path";
 	out << " path='" << e.a_path << "'";
 	out << ">\n";
-	out << " </paths>\n";
+	out << " </path>\n";
 
 	return out;
 }
@@ -62,7 +62,7 @@ operator<<(std::ostream& out, const Patternfilter& e) {
 
 	return out;
 }
-XMLStream& operator>>(XMLStream&, Paths&);
+XMLStream& operator>>(XMLStream&, Path&);
 XMLStream& operator>>(XMLStream&, Pathfilter&);
 XMLStream& operator>>(XMLStream&, Patternfilter&);
 XMLStream&
@@ -70,16 +70,22 @@ operator>>(XMLStream& in, Repository& e) {
 	in.setFromAttribute(e.a_type,"type");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
-	if (n && in.getTagName() == "paths") {
-		in >> e.e_paths;
+	while (n && in.getTagName() == "path") {
+		Path v;
+		in >> v;
+		e.e_path.push_back(v);
 		n = in.nextSibling();
 	}
-	if (n && in.getTagName() == "pathfilter") {
-		in >> e.e_pathfilter;
+	while (n && in.getTagName() == "pathfilter") {
+		Pathfilter v;
+		in >> v;
+		e.e_pathfilter.push_back(v);
 		n = in.nextSibling();
 	}
-	if (n && in.getTagName() == "patternfilter") {
-		in >> e.e_patternfilter;
+	while (n && in.getTagName() == "patternfilter") {
+		Patternfilter v;
+		in >> v;
+		e.e_patternfilter.push_back(v);
 		n = in.nextSibling();
 	}
 	if (hasChildren) {
@@ -98,9 +104,18 @@ operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
 	out << " type='" << e.a_type << "'";
 	out << ">\n";
-	out << e.e_paths;
-	out << e.e_pathfilter;
-	out << e.e_patternfilter;
+	std::list<Path>::const_iterator path_it;
+	for (path_it = e.e_path.begin(); path_it != e.e_path.end(); path_it++) {
+		out << *path_it;
+	}
+	std::list<Pathfilter>::const_iterator pathfilter_it;
+	for (pathfilter_it = e.e_pathfilter.begin(); pathfilter_it != e.e_pathfilter.end(); pathfilter_it++) {
+		out << *pathfilter_it;
+	}
+	std::list<Patternfilter>::const_iterator patternfilter_it;
+	for (patternfilter_it = e.e_patternfilter.begin(); patternfilter_it != e.e_patternfilter.end(); patternfilter_it++) {
+		out << *patternfilter_it;
+	}
 	out << " </repository>\n";
 
 	return out;

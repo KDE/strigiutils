@@ -21,9 +21,9 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	Paths paths(xml);
+	Path path(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << paths;
+	f << path;
 	f.close();
 	filename.str("");
 

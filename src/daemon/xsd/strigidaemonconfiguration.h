@@ -3,12 +3,12 @@
 #define STRIGIDAEMONCONFIGURATION_H
 #include <string>
 #include <list>
-class Paths {
+class Path {
 public:
-	Paths(const std::string& xml = "");
+	Path(const std::string& xml = "");
 	std::string a_path;
 };
-std::ostream& operator<<(std::ostream&, const Paths&);
+std::ostream& operator<<(std::ostream&, const Path&);
 class Pathfilter {
 public:
 	Pathfilter(const std::string& xml = "");
@@ -25,9 +25,9 @@ class Repository {
 public:
 	Repository(const std::string& xml = "");
 	std::string a_type;
-	Paths e_paths;
-	Pathfilter e_pathfilter;
-	Patternfilter e_patternfilter;
+	std::list<Path> e_path;
+	std::list<Pathfilter> e_pathfilter;
+	std::list<Patternfilter> e_patternfilter;
 };
 std::ostream& operator<<(std::ostream&, const Repository&);
 class StrigiDaemonConfiguration {
