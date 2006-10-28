@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "archivereader.h"
 #include "fileinputstream.h"
 #include "substreamprovider.h"
@@ -24,7 +25,7 @@ FileStreamOpener::openStream(const string& url) {
 int
 FileStreamOpener::stat(const string& url, EntryInfo& e) {
     struct stat s;
-    if (lstat(url.c_str(), &s) == -1) {
+    if (::stat(url.c_str(), &s) == -1) {
         return -1;
     }
     if (S_ISREG(s.st_mode)) {

@@ -20,7 +20,6 @@
  */
 #ifndef MODULELOADER_H
 #define MODULELOADER_H
-#include "jstreamsconfig.h"
 
 #include <string>
 #include <list>

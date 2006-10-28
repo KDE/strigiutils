@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "archivereader.h"
 #include "substreamprovider.h"
 #include "tarinputstream.h"
@@ -25,11 +26,15 @@ public:
     class SubEntry {
     public:
         jstreams::EntryInfo entry;
-        std::map<std::string, SubEntry> entries;
-//        int64_t offset;
-
+		//can't define staticly constructed object while object is being defined
+        std::map<std::string, SubEntry>* entries; 
         int32_t getCount() const;
-        virtual ~SubEntry() {};
+		SubEntry(){
+			entries = new std::map<std::string, SubEntry>;
+		}
+        virtual ~SubEntry() {
+			delete entries;
+		};
     };
     class RootSubEntry : public SubEntry {
     public:
@@ -44,13 +49,14 @@ public:
         const;
     void print() const;
 };
+
 void
 ArchiveEntryCache::print() const {
     std::map<std::string, RootSubEntry>::const_iterator j;
     for (j=cache.begin(); j!=cache.end(); ++j) {
         printf("x %s\n", j->first.c_str());
         std::map<std::string, SubEntry>::const_iterator i;
-        for (i = j->second.entries.begin(); i != j->second.entries.end(); ++i) {
+        for (i = j->second.entries->begin(); i != j->second.entries->end(); ++i) {
             printf("- %s ", i->second.entry.filename.c_str());
         }
         printf("\n");
@@ -60,7 +66,7 @@ int32_t
 ArchiveEntryCache::SubEntry::getCount() const {
     int32_t count = 1;
     map<string, SubEntry>::const_iterator i;
-    for (i = entries.begin(); i != entries.end(); ++i) {
+    for (i = entries->begin(); i != entries->end(); ++i) {
         count += i->second.getCount();
     }
     return count;
@@ -102,8 +108,8 @@ ArchiveEntryCache::findEntry(const string& url) const {
         } else {
             name = url.substr(p+1, np-p-1);
         }
-        i = e->entries.find(name);
-        if (i == e->entries.end()) {
+        i = e->entries->find(name);
+        if (i == e->entries->end()) {
             e = 0;
         } else {
             e = &i->second;
@@ -163,11 +169,14 @@ ArchiveReader::addStreamOpener(StreamOpener* opener) {
     p->openers.push_back(opener);
 }
 ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
-    subs[MailInputStream::checkHeader] = MailInputStream::factory;
-    subs[RpmInputStream::checkHeader ] = RpmInputStream::factory;
-    subs[ArInputStream::checkHeader]   = ArInputStream::factory;
-    subs[ZipInputStream::checkHeader]  = ZipInputStream::factory;
-    subs[TarInputStream::checkHeader]  = TarInputStream::factory;
+	typedef std::pair<bool (*)(const char*, int32_t),
+        jstreams::SubStreamProvider* (*)(jstreams::StreamBase<char>*)> SubsPair;
+
+	subs.insert(SubsPair(MailInputStream::checkHeader,MailInputStream::factory) );
+	subs.insert(SubsPair(RpmInputStream::checkHeader,RpmInputStream::factory) );
+	subs.insert(SubsPair(ArInputStream::checkHeader,ArInputStream::factory) );
+	subs.insert(SubsPair(ZipInputStream::checkHeader,ZipInputStream::factory) );
+	subs.insert(SubsPair(TarInputStream::checkHeader,TarInputStream::factory) );
 }
 ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
     if (openstreams.size() > 0) {
@@ -332,7 +341,7 @@ bool
 ArchiveReader::isArchive(const std::string& url) {
     EntryInfo e;
     if (localStat(url, e) != 0) {
-        return -1;
+        return false;
     }
     return e.type & EntryInfo::File && e.type & EntryInfo::Dir;
 }
@@ -367,7 +376,7 @@ ArchiveReader::localStat(const std::string& url, jstreams::EntryInfo& e) {
                 ArchiveEntryCache::RootSubEntry rse;
                 rse.indexed = false;
                 rse.entry = e;
-                p->cache.cache[url] = rse;
+				p->cache.cache[url] = rse;
             }
             delete s;
             return 0;
@@ -412,14 +421,14 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     map<string, ArchiveEntryCache::SubEntry>::iterator ii;
     ArchiveEntryCache::SubEntry* parent = &e;
     for (uint i=0; i<names.size(); ++i) {
-        ii = parent->entries.find(names[i]);
-        if (ii == parent->entries.end()) {
+        ii = parent->entries->find(names[i]);
+        if (ii == parent->entries->end()) {
             ArchiveEntryCache::SubEntry newse;
             newse.entry.filename = names[i];
             newse.entry.type = EntryInfo::Dir;
             newse.entry.size = 0;
-            parent->entries[names[i]] = newse;
-            ii = parent->entries.find(names[i]);
+            (*parent->entries)[names[i]] = newse;
+            ii = parent->entries->find(names[i]);
         }
         parent = &ii->second;
     }
@@ -494,7 +503,7 @@ ArchiveReader::getDirEntries(const std::string& url) {
 
     if (subentry) {
         map<string, ArchiveEntryCache::SubEntry>::const_iterator i;
-        for (i = subentry->entries.begin(); i != subentry->entries.end(); ++i) {
+        for (i = subentry->entries->begin(); i != subentry->entries->end(); ++i) {
             v.push_back(i->second.entry);
         }
     }

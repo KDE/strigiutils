@@ -18,10 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "jstreamsconfig.h"
 #include "filters.h"
 #include "../daemon/strigilogging.h"
 
-#include <fnmatch.h>
+#include "strigi_fnmatch.h"
 
 using namespace std;
 

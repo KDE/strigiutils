@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "indexreadertests.h"
 #include "indexreader.h"
 using namespace jstreams;

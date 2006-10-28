@@ -103,14 +103,11 @@ FileLister::walk_directory(uint len) {
     else if (m_filterManager == NULL)
         printf ("m_filtermanager is NULL!!\n");
     
-#ifndef _WIN32
+#ifndef WIN32
     // call dir function callback, actually there's only inotify dir callback
     if (m_dirCallback != 0)
         m_dirCallback (path, len);
-#endif
-
-#ifdef _WIN32
-    // remove the trailing '/' on windows machines before the call to opendir(),
+#else// remove the trailing '/' on windows machines before the call to opendir(),
     // but do not strip off the trailing slash from windows c:/
     if ( len > 3) {
         path[len-1] = '\0';
@@ -122,7 +119,7 @@ FileLister::walk_directory(uint len) {
     if (dir == 0) {
         return true;
     }
-#ifdef _WIN32
+#ifdef WIN32
     path[len-1] = '/';
 #endif
 
@@ -142,7 +139,7 @@ FileLister::walk_directory(uint len) {
         uint l = len+strlen(subdir->d_name);
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
-        if (lstat(path, &dirstat) == 0) {
+        if (stat(path, &dirstat) == 0) {
             bool c = true;
             if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))

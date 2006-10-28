@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "fileinputstream.h"
 #include "stringreader.h"
 #include "gzipinputstream.h"
@@ -206,7 +207,7 @@ getStream(const char*start, const char* end) {
     //printf("%.*s\n", s-d, d);
 
     // do we have a type?
-    bool havetype = type.search(d, s-d);
+    bool havetype = type.search(d, s-d)!=NULL;
 
     // is the FlatDecode filter applied ?
     v = filter.search(d, s-d);

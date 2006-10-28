@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "jstreamsconfig.h"
 #include "id3v2throughanalyzer.h"
 #include "indexwriter.h"
 using namespace std;

@@ -1,8 +1,10 @@
+#include "jstreamsconfig.h"
 #include "indexmanagertests.h"
 #include "indexreader.h"
 #include "indexwriter.h"
 #include "indexmanager.h"
 #include "query.h"
+#include "strigi_thread.h"
 #include <sstream>
 #include <iostream>
 using namespace std;
@@ -10,7 +12,7 @@ using namespace jstreams;
 
 class IndexManagerTester {
 private:
-    pthread_mutex_t lock;
+    STRIGI_MUTEX_DEFINE(lock);
     int errors;
     IndexManager* manager;
     IndexWriter* writer;
@@ -19,29 +21,29 @@ public:
     IndexManagerTester(IndexManager* m) :errors(0), manager(m) {
         writer = manager->getIndexWriter();
         reader = manager->getIndexReader();
-        pthread_mutex_init(&lock, 0);
+        STRIGI_MUTEX_INIT(&lock);
     }
     ~IndexManagerTester() {
-        pthread_mutex_destroy(&lock);
+        STRIGI_MUTEX_DESTROY(&lock);
     }
     int runUnthreadedTests();
     int runThreadedTests();
     void cleanErrors() {
-        pthread_mutex_lock(&lock);
+        STRIGI_MUTEX_LOCK(&lock);
         errors = 0;
-        pthread_mutex_unlock(&lock);
+        STRIGI_MUTEX_UNLOCK(&lock);
     }
     int getErrors() {
         int n;
-        pthread_mutex_lock(&lock);
+        STRIGI_MUTEX_LOCK(&lock);
         n = errors;
-        pthread_mutex_unlock(&lock);
+        STRIGI_MUTEX_UNLOCK(&lock);
         return errors;
     }
     void addErrors(int n) {
-        pthread_mutex_lock(&lock);
+        STRIGI_MUTEX_LOCK(&lock);
         errors += n;
-        pthread_mutex_unlock(&lock);
+        STRIGI_MUTEX_UNLOCK(&lock);
     }
     int addAndCount();
     int testNumberQuery();
@@ -109,7 +111,7 @@ void*
 threadstarter(void *d) {
     IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
 //    tester->runThreadedTests();
-    pthread_exit(0);
+    STRIGI_THREAD_EXIT(0);
 }
 IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m)
     :tester (new IndexManagerTester(m)) {
@@ -120,12 +122,12 @@ IndexManagerTests::~IndexManagerTests() {
 int
 IndexManagerTests::testAllInThreads(int n) {
     tester->cleanErrors();
-    pthread_t* thread = new pthread_t[n];
+    STRIGI_THREAD_TYPE* thread = new STRIGI_THREAD_TYPE[n];
     for (int i=0; i<n; ++i) {
-        pthread_create(thread+i, NULL, threadstarter, this);
+        STRIGI_THREAD_CREATE(thread+i, threadstarter, this);
     }
     for (int i=0; i<n; ++i) {
-        pthread_join(thread[i], 0);
+        STRIGI_THREAD_JOIN(thread[i], 0);
     }
 
     delete [] thread;

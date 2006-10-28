@@ -28,6 +28,18 @@
 using namespace jstreams;
 using namespace std;
 
+
+#ifdef WIN32
+    #include <fcntl.h>
+    #define _S_IREAD 256
+    #define _S_IWRITE 128
+    int mkstemp(char *tmpl)
+    {
+       mktemp(tmpl);
+       return open(tmpl,O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
+    }
+#endif
+
 class HelperProgramConfig::HelperRecord {
 public:
     const char* magic;

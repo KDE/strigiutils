@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "pdfparser.h"
 #include "stringterminatedsubstream.h"
 #include "gzipinputstream.h"

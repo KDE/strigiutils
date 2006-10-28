@@ -1,6 +1,6 @@
 subdirs (throughplugins)
 
-include_directories( ../streams ../filters)
+include_directories( ./ ../streams ../filters ${BZIP2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
 
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
@@ -22,14 +22,20 @@ if (Expat_FOUND)
 #  endif (Libxml2_FOUND)
 endif(Expat_FOUND)
 
-add_library(streamindexer SHARED ${streamindexer_SRCS})
+IF(WIN32)
+	#not enough api exposed to make this a dll
+	add_library(streamindexer ${streamindexer_SRCS})
+install(TARGETS streamindexer ARCHIVE DESTINATION lib)
+ELSE(WIN32)
+	add_library(streamindexer SHARED ${streamindexer_SRCS})
+	install(TARGETS streamindexer LIBRARY DESTINATION lib)
+ENDIF(WIN32)
 set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
 target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
 
-install(TARGETS streamindexer LIBRARY DESTINATION lib)
 install(FILES indexeddocument.h indexwriter.h strigi_plugins.h
 	streamthroughanalyzer.h streamendanalyzer.h
 	DESTINATION include)

@@ -78,7 +78,7 @@ CLuceneIndexManager::getBitSets() {
 }*/
 IndexWriter*
 CLuceneIndexManager::refWriter() {
-    STRIGI_LOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_LOCK(&dblock->lock);
     if (indexwriter == 0) {
         closeReader();
         openWriter();
@@ -87,11 +87,11 @@ CLuceneIndexManager::refWriter() {
 }
 void
 CLuceneIndexManager::derefWriter() {
-    STRIGI_UNLOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_UNLOCK(&dblock->lock);
 }
 IndexReader*
 CLuceneIndexManager::refReader() {
-    STRIGI_LOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_LOCK(&dblock->lock);
     if (indexreader == 0) {
         closeWriter();
         openReader();
@@ -100,7 +100,7 @@ CLuceneIndexManager::refReader() {
 }
 void
 CLuceneIndexManager::derefReader() {
-    STRIGI_UNLOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_UNLOCK(&dblock->lock);
 }
 void
 CLuceneIndexManager::openReader() {
@@ -150,7 +150,7 @@ CLuceneIndexManager::closeWriter() {
 int
 CLuceneIndexManager::docCount() {
     int count;
-    STRIGI_LOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_LOCK(&dblock->lock);
     if (indexwriter) {
         count = indexwriter->docCount();
     } else {
@@ -159,7 +159,7 @@ CLuceneIndexManager::docCount() {
         }
         count = indexreader->numDocs();
     }
-    STRIGI_UNLOCK_MUTEX(dblock->lock);
+    STRIGI_MUTEX_UNLOCK(&dblock->lock);
     return count;
 }
 int64_t

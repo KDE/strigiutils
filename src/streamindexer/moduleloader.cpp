@@ -54,7 +54,7 @@ void ModuleLoader::loadPlugins(const char* d) {
         //printf("%s\n", ent->d_name);
         size_t len = strlen(ent->d_name);
         if (strncmp(ent->d_name, "strigita_", 9) == 0
-#ifdef _WIN32
+#ifdef WIN32
                 && strcmp(ent->d_name+len-4, ".dll") == 0) {
 #else
                 && strcmp(ent->d_name+len-3, ".so") == 0) {

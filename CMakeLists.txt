@@ -18,15 +18,19 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-add_definitions (-fPIC)
-
 #add extra search paths for libraries and includes
 SET ( STRIGI_EXTRA_INC_DIRECTORY "" CACHE STRING "Extra include directories to search in")
 SET ( STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to search in" )
 SET (CMAKE_INCLUDE_PATH "${STRIGI_EXTRA_INC_DIRECTORY};${CMAKE_INCLUDE_PATH}")
 SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
 
-set(CMAKE_CXX_FLAGS "-Wall -g3 -O0 -ansi")
+
+IF(NOT MSVC)
+    add_definitions (-fPIC)
+    set(CMAKE_CXX_FLAGS "-Wall -g3 -O0 -ansi")
+ELSE(NOT MSVC)
+
+ENDIF(NOT MSVC)
 
 OPTION(ENABLE_INOTIFY
   "enable inotify support"
@@ -114,6 +118,7 @@ CHECK_TYPE_SIZE("long long" SIZEOF_LONGLONG)
 CHECK_TYPE_SIZE(int32_t INT32_T)
 CHECK_TYPE_SIZE(long SIZEOF_LONG)
 CHECK_TYPE_SIZE(int SIZEOF_INT)
+CHECK_TYPE_SIZE(ssize_t SIZEOF_SSIZE_T)
 
 CHECK_TYPE_SIZE(uint UINT)
 #CHECK_SYMBOL_EXISTS(socklen_t sys/socket.h socket.h SOCKLEN_T)

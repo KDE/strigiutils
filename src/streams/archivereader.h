@@ -10,7 +10,7 @@
 namespace jstreams {
     template <class T> class StreamBase;
     class SubStreamProvider;
-    class EntryInfo;
+    struct EntryInfo;
 
 class DirLister {
 private:

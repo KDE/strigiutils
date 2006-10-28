@@ -18,22 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "jstreamsconfig.h"
 #include "filtermanager.h"
 
 #include "filters.h"
 #include "../daemon/strigilogging.h"
 
-#include <fnmatch.h>
+#include "strigi_fnmatch.h"
 #include <fstream>
 
 using namespace std;
 
 FilterManager::FilterManager()
 {
-    pthread_mutex_init(&m_mutex, NULL);
+    STRIGI_MUTEX_INIT(&m_mutex);
     
     // won't index strigi configuration directory 
+#ifdef WIN32
+	m_strigidir.append( getenv("HOMEDRIVE") );
+	m_strigidir.append( getenv("HOMEPATH") );
+#else
     m_strigidir = getenv("HOME");
+#endif
     m_strigidir += "/.strigi*";
 }
 
@@ -41,7 +47,7 @@ FilterManager::~ FilterManager()
 {
     saveFilter();
     clearRules();
-    pthread_mutex_destroy (&m_mutex);
+    STRIGI_MUTEX_DESTROY (&m_mutex);
 }
 
 void FilterManager::clearRules()
@@ -79,7 +85,7 @@ void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
     
     if (confFile.is_open())
     {
-        pthread_mutex_lock (&m_mutex);
+        STRIGI_MUTEX_LOCK (&m_mutex);
        
         // read filter rules
         while (!confFile.eof())
@@ -106,7 +112,7 @@ void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
             }
         }
        
-        pthread_mutex_unlock (&m_mutex);
+        STRIGI_MUTEX_UNLOCK (&m_mutex);
        
         confFile.close();
     }
@@ -126,7 +132,7 @@ void FilterManager::saveFilter()
     pathFile.open(m_pathFile.c_str(), ios::out | ios::trunc);
     patternFile.open(m_patternFile.c_str(), ios::out | ios::trunc);
    
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK(&m_mutex);
    
     // TODO: fix when we'll use a single conf file
     if (pathFile.is_open() && patternFile.is_open())
@@ -157,7 +163,7 @@ void FilterManager::saveFilter()
     else
         STRIGI_LOG_ERROR ("strigi.filtermanager.saveFilter", "unable to save filtering rules");
    
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK(&m_mutex);
 }
 
 bool FilterManager::findMatch(const char* text, uint len)
@@ -168,7 +174,7 @@ bool FilterManager::findMatch(const char* text, uint len)
 
 bool FilterManager::findMatch (string& text)
 {
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
     
     // check if text is related with strigi configuration directory
     int ret = fnmatch (m_strigidir.c_str(), text.c_str(), 0);
@@ -178,7 +184,7 @@ bool FilterManager::findMatch (string& text)
     else if ( ret == 0)
     {
         STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", "Ignoring strigi configuration directory: " + m_strigidir)
-        pthread_mutex_unlock (&m_mutex);
+        STRIGI_MUTEX_UNLOCK (&m_mutex);
         return true;
     }
     
@@ -187,12 +193,12 @@ bool FilterManager::findMatch (string& text)
         Filter* filter = *iter;
         if (filter->match (text))
         {
-            pthread_mutex_unlock (&m_mutex);
+            STRIGI_MUTEX_UNLOCK (&m_mutex);
             return true;
         }
     }
    
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
 
     //STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
     return false;
@@ -215,7 +221,7 @@ void FilterManager::setFilteringRules(const multimap<int, string>& rules)
 {
     clearRules();
 
-    map<int,string>::const_iterator iter;
+    multimap<int,string>::const_iterator iter;
     for (iter = rules.begin(); iter != rules.end(); iter++)
     {
         switch (iter->first)

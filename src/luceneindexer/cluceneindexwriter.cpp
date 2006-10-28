@@ -75,7 +75,7 @@ CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
     STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
     ::setField(idx, fn, value);
 #else
-    ::setField(idx, fn, value);
+    ::setField(idx, fieldname.c_str(), value);
 #endif
 }
 void

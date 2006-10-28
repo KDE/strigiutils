@@ -109,7 +109,7 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             Term* t = createTerm(mapId(i->first), *j);
             lucene::search::Query* tq;
-            bool wildcard = strpbrk(j->c_str(), "*?");
+            bool wildcard = strpbrk(j->c_str(), "*?")!=NULL;
             if (wildcard) {
                 tq = _CLNEW WildcardQuery(t);
             } else {

@@ -28,7 +28,6 @@
 #endif
 #ifdef HAVE_DLFCN_H
  #include <dlfcn.h>
-#else
 #endif
 
 using namespace std;

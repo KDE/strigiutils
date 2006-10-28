@@ -1,3 +1,4 @@
+#include "jstreamsconfig.h"
 #include "indexwritertests.h"
 #include "indexwriter.h"
 using namespace jstreams;

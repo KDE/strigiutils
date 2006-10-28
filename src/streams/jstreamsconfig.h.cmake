@@ -48,6 +48,7 @@
 //////////////////////////////
 #cmakedefine HAVE_INT64_T
 #cmakedefine HAVE_INT32_T
+#cmakedefine HAVE_SSIZE_T
 #cmakedefine HAVE_UINT
 #cmakedefine HAVE_SYS_SOCKET_H
 #cmakedefine HAVE_SOCKET_H
@@ -110,16 +111,37 @@ bool isblank(char c);
 //windows stuff
 //////////////////////////////
 #if defined(HAVE_WINDOWS_H) && !defined(__CYGWIN__)
+
+ //need this for ChangeNotify and TryEnterCriticalSection
+ //this wont compile for win98 though, but who cares?, not me :)
+ #define _WIN32_WINNT 0x400
+
  #include <windows.h>
+ #include <io.h>
  #ifndef snprintf
  	#define snprintf _snprintf
  #endif
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER == 1200)
-	#pragma warning(disable: 4503) //decorated name length exceeded
-	#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
+#ifndef HAVE_SSIZE_T
+    typedef size_t ssize_t;
+#endif
+
+#ifndef S_ISREG
+    #define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
+#endif
+#ifndef S_ISDIR
+    #define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
 #endif
 
 
+#ifdef _MSC_VER
+	#define sleep(x) Sleep(x*1000)
+
+	#if (_MSC_VER == 1200)
+		#pragma warning(disable: 4503) //decorated name length exceeded
+		#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
+	#endif
 #endif
+
+#endif //JSTREAMSCONFIG_H
