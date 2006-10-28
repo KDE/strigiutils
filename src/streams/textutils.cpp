@@ -26,7 +26,8 @@ jstreams::checkUtf8(const char* p, int32_t length) {
         }
         p++;
     }
-    return true;
+    // the string is only valid utf8 if it contains only complete characters
+    return nb == 0;
 }
 
 bool
