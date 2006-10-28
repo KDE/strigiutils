@@ -1,6 +1,6 @@
 #if defined(HAVE_FNMATCH_H)
 
-#elif !defined(STRIGI_FNMATCH_H_
+#elif !defined(STRIGI_FNMATCH_H_)
 #define STRIGI_FNMATCH_H
 
 

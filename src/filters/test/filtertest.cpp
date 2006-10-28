@@ -19,6 +19,7 @@
  */
 
 #include "filters.h"
+#include "jstreamsconfig.h"
 #include "filtermanager.h"
 
 #include <iostream>

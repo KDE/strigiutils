@@ -123,9 +123,10 @@ bool isblank(char c);
  #endif
 #endif
 
-#ifndef HAVE_SSIZE_T
-    typedef size_t ssize_t;
-#endif
+// this should have been handled by  HAVE_SSIZE_T above
+//#ifndef HAVE_SSIZE_T
+//    typedef size_t ssize_t;
+//#endif
 
 #ifndef S_ISREG
     #define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
