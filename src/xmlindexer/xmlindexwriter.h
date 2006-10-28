@@ -71,8 +71,8 @@ private:
         }
     }
     void escape(std::string& value) {
-        int namp, nlt, ngt;
-        namp = nlt = ngt = 0;
+        int namp, nlt, ngt, napos;
+        namp = nlt = ngt = napos = 0;
         const char* p = value.c_str();
         const char* end = p + value.size();
         char nb = 0;
@@ -99,16 +99,18 @@ private:
                 nlt++;
             } else if (c == '>') {
                 ngt++;
+            } else if (c == '\'') {
+                napos++;
             }
             p++;
         }
         // if no character has to be escaped, just return
-        if (!(namp||nlt||ngt)) return;
+        if (!(namp||nlt||ngt|napos)) return;
 
         std::string ov(value);
         p = ov.c_str();
         end = p + ov.size();
-        int newsize = value.size()+4*namp+3*(nlt+ngt);
+        int newsize = value.size()+4*namp+3*(nlt+ngt)+5*napos;
         value.clear();
         value.reserve(newsize);
         while (p < end) {
@@ -134,6 +136,8 @@ private:
                 value += "&lt;";
             } else if (c == '>') {
                 value += "&gt;";
+            } else if (c == '\'') {
+                value += "&apos;";
             } else {
                 value += c;
             }
@@ -147,16 +151,20 @@ protected:
     }
     void finishIndexable(const jstreams::Indexable* idx) {
         Data* d = static_cast<Data*>(idx->getWriterData());
-        fprintf(fd, " <file uri='%s' mtime='%i'>\n",
-            idx->getName().c_str(), (int)idx->getMTime());
+        std::string v = idx->getName();
+        escape(v);
+        fprintf(fd, " <file uri='%s' mtime='%i'>\n", v.c_str(),
+            (int)idx->getMTime());
 
         if (idx->getMimeType().size()) {
-            fprintf(fd, " <value name='mimetype'>%s</value>\n",
-                idx->getMimeType().c_str());
+            v = idx->getMimeType();
+            escape(v);
+            fprintf(fd, " <value name='mimetype'>%s</value>\n", v.c_str());
         }
         if (idx->getEncoding().size()) {
-            fprintf(fd, " <value name='encoding'>%s</value>\n",
-                idx->getEncoding().c_str());
+            v = idx->getEncoding();
+            escape(v);
+            fprintf(fd, " <value name='encoding'>%s</value>\n", v.c_str());
         }
 
         std::multimap<std::string, std::string>::iterator i, end;
