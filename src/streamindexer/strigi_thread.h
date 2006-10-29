@@ -21,6 +21,8 @@
 #ifndef STRIGI_THREAD_H
 #define STRIGI_THREAD_H
 
+#include "strigi_thread_config.h"
+
 #if defined(CMAKE_HAVE_PTHREAD_CREATE)
     #include <pthread.h>
     #define STRIGI_MUTEX_DEFINE(x) pthread_mutex_t x;
