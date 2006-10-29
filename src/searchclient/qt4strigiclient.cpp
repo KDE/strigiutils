@@ -25,6 +25,8 @@ Qt4StrigiClient::Qt4StrigiClient() {
     QString socketpath = QDir::homePath()+"/.strigi/socket";
     socket.setSocketPath((const char*)socketpath.toUtf8());
     mode = Idle;
+    getIndexedDirsQueue = 0;
+    getDaemonStatusQueue = 0;
     poller.setSingleShot(false);
     poller.setInterval(1);
     connect(&poller, SIGNAL(timeout()), this, SLOT(poll()));
@@ -41,13 +43,35 @@ Qt4StrigiClient::poll() {
             int count = socket.getHitCount();
             QString query = countQueue.dequeue();
             emit gotHitsCount(query, count);
+        } else if (mode == GetIndexedDirs) {
+            std::vector<std::string> dirs = socket.getIndexedDirectoriesResponse();
+            indexedDirs.clear();
+            if (getIndexedDirsQueue != 0)
+                getIndexedDirsQueue--;
+            for (unsigned int i = 0; i < dirs.size(); i++)
+                indexedDirs << dirs[i].c_str();
+            emit gotIndexedDirs( indexedDirs);
+        } else if (mode == GetDaemonStatus) {
+            daemonStatus.clear();
+            std::map<std::string, std::string> status = socket.getDaemonStatusResponse();
+            for (std::map<std::string, std::string>::iterator i = status.begin(); i != status.end(); i++)
+                daemonStatus[i->first.c_str()] = i->second.c_str();
+            if (getDaemonStatusQueue != 0)
+                getDaemonStatusQueue--;
+            
+            emit gotDaemonStatus ( daemonStatus);
         }
+
+        
         mode = Idle;
-        if (countQueue.size()) {
+        if (countQueue.size())
             startCountHits();
-        } else if (queryQueue.size()) {
+        else if (queryQueue.size())
             startQuery();
-        }
+        else if (getIndexedDirsQueue > 0)
+            startGetIndexedDirs();
+        else if (getDaemonStatusQueue > 0)
+            startGetDaemonStatus();
     }
 }
 void
@@ -66,6 +90,21 @@ Qt4StrigiClient::query(const QString& query) {
         }
     }
 }
+void
+Qt4StrigiClient::getIndexedDirs() {
+    getIndexedDirsQueue++;
+    if (mode == Idle) {
+        startGetIndexedDirs();
+    }
+}
+void
+Qt4StrigiClient::getDaemonStatus() {
+    getDaemonStatusQueue++;
+    if (mode == Idle) {
+        startGetDaemonStatus();
+    }
+}
+
 void
 Qt4StrigiClient::startCountHits() {
     bool ok = socket.countHits((const char*)countQueue.head().toUtf8());
@@ -86,5 +125,33 @@ Qt4StrigiClient::startQuery() {
     } else {
         // fail in silence
         queryQueue.dequeue();
+    }
+}
+void
+Qt4StrigiClient::startGetIndexedDirs() {
+    bool ok = socket.getIndexedDirectories();
+    if (ok) {
+        mode = GetIndexedDirs;
+        poller.start(1);
+    } else {
+        // fail in silence
+        if (getIndexedDirsQueue != 0)
+            getIndexedDirsQueue--;
+    }
+}
+void
+Qt4StrigiClient::startGetDaemonStatus() {
+    bool ok = socket.getDaemonStatus();
+
+    if (ok) {
+        mode = GetDaemonStatus;
+        poller.start(1);
+    } else {
+        // fail in silence
+        if (getDaemonStatusQueue != 0)
+            getDaemonStatusQueue--;
+        
+        mode = Idle;
+        emit socketError(GetDaemonStatus);
     }
 }

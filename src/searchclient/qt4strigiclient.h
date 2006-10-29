@@ -20,6 +20,8 @@
 #ifndef QT4STRIGICLIENT_H
 #define QT4STRIGICLIENT_H
 
+#include <QList>
+#include <QMap>
 #include <QObject>
 #include <QQueue>
 #include <QTimer>
@@ -27,18 +29,25 @@
 
 class Qt4StrigiClient : public QObject {
 Q_OBJECT
+public:
+    enum Mode { Idle, CountHits, Query, GetIndexedDirs, GetDaemonStatus};
 private:
-    enum Mode { Idle, CountHits, Query };
     Mode mode;
     AsyncSocketClient socket;
     QTimer poller;
     QQueue<QString> countQueue;
     QQueue<QString> queryQueue;
+    unsigned int getIndexedDirsQueue;
+    unsigned int getDaemonStatusQueue;
 
     ClientInterface::Hits hits;
-
+    QList<QString> indexedDirs;
+    QMap<QString, QString> daemonStatus;
+    
     void startCountHits();
     void startQuery();
+    void startGetIndexedDirs();
+    void startGetDaemonStatus();
 public:
     Qt4StrigiClient();
 private slots:
@@ -46,9 +55,14 @@ private slots:
 public slots:
     void countHits(const QString&);
     void query(const QString&);
+    void getIndexedDirs();
+    void getDaemonStatus();
 signals:
     void gotHitsCount(const QString& query, int count);
     void gotHits(const QString&, const ClientInterface::Hits&);
+    void gotIndexedDirs (const QList<QString>&);
+    void gotDaemonStatus (const QMap<QString,QString>&);
+    void socketError(Qt4StrigiClient::Mode);
 };
 
 #endif
