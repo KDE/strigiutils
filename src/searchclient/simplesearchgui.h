@@ -67,7 +67,7 @@ private:
     void createMenus();
     void createActions();
 private slots:
-    void updateStatus();
+    void updateStatus( const QMap< QString, QString >& );
     void toggleDaemon();
     void toggleIndexing();
     void query(const QString&);
@@ -75,6 +75,8 @@ private slots:
     void removeDirectory();
     void editPreferences();
     void editListIndexedFiles();
+    void socketError(Qt4StrigiClient::Mode);
+
 public:
     SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };
