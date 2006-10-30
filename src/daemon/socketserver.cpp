@@ -128,10 +128,15 @@ SocketServer::sendResponse(int sd) {
     ssize_t r;
     for (uint i=0; i<response.size(); ++i) {
         string line = response[i];
-        assert(line.find('\n') == string::npos);
+        size_t p = line.find('\n');
+        while (p != string::npos) {
+            // TODO: give out warning: this line should not contain '\n'
+            line[p] = ' ';
+            p = line.find('\n', p);
+        }
         line += '\n';
-        int p = 0;
-        int len = line.length();
+        p = 0;
+        size_t len = line.length();
         do {
             r = send(sd, line.c_str()+p, len-p, SOCKET_NOSIGNAL);
             if (r < 0) {
