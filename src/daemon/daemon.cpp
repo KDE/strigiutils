@@ -167,6 +167,7 @@ readStrigiConfiguration(const string& file) {
         p.a_path = s + "/.gnome2";    r.e_path.push_back(p);
         p.a_path = s + "/.evolution"; r.e_path.push_back(p);
         p.a_path = s + "/.mozilla";   r.e_path.push_back(p);
+        p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         config.e_repository.push_back(r);
     }
     return config;
@@ -378,6 +379,22 @@ main(int argc, char** argv) {
         stopThreads();
     }
     dirs = scheduler.getIndexedDirectories();
+    set<string>::iterator j;
+    for (j = dirs.begin(); j != dirs.end(); ++j) {
+        bool found = false;
+        for (i = config.e_repository.begin();
+                !found && i != config.e_repository.end(); ++i) {
+            list<Path>::const_iterator k;
+            for (k = i->e_path.begin(); !found && k != i->e_path.end(); ++k) {
+                found = k->a_path == *j;
+            }
+        }
+        if (!found) {
+            Path p;
+            p.a_path = *j;
+            config.e_repository.begin()->e_path.push_back(p);
+        }
+    }
 
     // close the indexmanager
     delete index;
