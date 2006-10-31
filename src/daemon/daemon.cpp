@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "interface.h"
-#include "xsd/strigidaemonconfiguration.h"
+#include "xsd/daemonconfigurator.h"
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
 #endif
@@ -148,37 +148,6 @@ checkLogConf(const string& filename) {
         confFile << "log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n\n";
     }
     confFile.close();
-}
-StrigiDaemonConfiguration
-readStrigiConfiguration(const string& file) {
-    std::stringbuf xml;
-    std::ifstream f(file.c_str(), std::ios::binary);
-    f.get(xml, '\0');
-    f.close();
-    StrigiDaemonConfiguration config(xml.str());
-    if (xml.str().length() == 0) { // no config file: set default config
-        config.a_useDBus = true;
-        Repository r;
-        string s;
-        s = getenv("HOME"); 
-        Path p;
-        p.a_path = s;                 r.e_path.push_back(p);
-        p.a_path = s + "/.kde";       r.e_path.push_back(p);
-        p.a_path = s + "/.gnome2";    r.e_path.push_back(p);
-        p.a_path = s + "/.evolution"; r.e_path.push_back(p);
-        p.a_path = s + "/.mozilla";   r.e_path.push_back(p);
-        p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
-        config.e_repository.push_back(r);
-    }
-    return config;
-}
-void
-writeStrigiConfiguration(const string& file,
-        const StrigiDaemonConfiguration& config) {
-    ofstream f;
-    f.open(file.c_str(), std::ios::binary);
-    f << config;
-    f.close();
 }
 /*set<string>
 readdirstoindex(const string& file) {
@@ -320,15 +289,9 @@ main(int argc, char** argv) {
     string indexdir = daemondir + '/' + f->first;
     IndexManager* index = f->second(indexdir.c_str());
 
-    StrigiDaemonConfiguration config(readStrigiConfiguration(conffile));
-    set<string> dirs;
-    list<Repository>::const_iterator i;
-    for (i = config.e_repository.begin(); i != config.e_repository.end(); ++i) {
-        list<Path>::const_iterator j;
-        for (j = i->e_path.begin(); j != i->e_path.end(); ++j) {
-            dirs.insert(j->a_path);
-        }
-    }
+    DaemonConfigurator config (conffile);
+    set<string> dirs = config.getIndexedDirs();
+    
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 
@@ -366,7 +329,7 @@ main(int argc, char** argv) {
 
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
-    if (config.a_useDBus) {
+    if (config.useDBus()) {
         threads.push_back(&dbusserver);
         dbusserver.start();
     }
@@ -379,22 +342,8 @@ main(int argc, char** argv) {
         stopThreads();
     }
     dirs = scheduler.getIndexedDirectories();
-    set<string>::iterator j;
-    for (j = dirs.begin(); j != dirs.end(); ++j) {
-        bool found = false;
-        for (i = config.e_repository.begin();
-                !found && i != config.e_repository.end(); ++i) {
-            list<Path>::const_iterator k;
-            for (k = i->e_path.begin(); !found && k != i->e_path.end(); ++k) {
-                found = k->a_path == *j;
-            }
-        }
-        if (!found) {
-            Path p;
-            p.a_path = *j;
-            config.e_repository.begin()->e_path.push_back(p);
-        }
-    }
+    
+    //TODO: save dirs
 
     // close the indexmanager
     delete index;
@@ -402,7 +351,7 @@ main(int argc, char** argv) {
     //delete listener
     delete listener;
 
-    writeStrigiConfiguration(conffile, config);
+    config.save();
     
     // release lock
     releaseLock(lockfile, lock);

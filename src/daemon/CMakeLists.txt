@@ -48,7 +48,7 @@ add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
 
 set(strigidaemon_LIBS streamindexer eventlistener filters
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
-target_link_libraries(strigidaemon ${strigidaemon_LIBS} strigidaemonconfiguration)
+target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
 add_library(searchclient SHARED socketclient.cpp clientinterface.cpp
         asyncsocket.cpp asyncsocketclient.cpp)
