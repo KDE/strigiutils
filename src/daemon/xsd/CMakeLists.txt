@@ -32,3 +32,7 @@ foreach (XSDFILE ${XSDFILES})
   target_link_libraries(${XSDNAME}test ${XSDNAME} xmlstream)
 
 endforeach (XSDFILE ${XSDFILES})
+
+# create a library from the xml io files
+add_library(daemonconfigurator daemonconfigurator.cpp)
+target_link_libraries( daemonconfigurator ${XSDNAME})
