@@ -105,13 +105,13 @@ public class xsdparser {
 		header.println("/* This file is generated from " + xsdfile + " */");
 		header.println("#ifndef " + base.toUpperCase() + "_H");
 		header.println("#define " + base.toUpperCase() + "_H");
+                header.println("#include \"xsdparser/xmlstream.h\"");
 		header.println("#include <string>");
 		header.println("#include <list>");
 		PrintWriter impl = new PrintWriter(new FileWriter(base + ".cpp"));
 		impl.println("/* This file is generated from " + xsdfile + " */");
 		impl.println("#include \"" + base + ".h\"");
 		impl.println("#include <iostream>");
-		impl.println("#include \"xmlstream.h\"");
 		for (Class c : classes) {
 			writeHeader(c, header);
 			writeImplementation(c, impl);
@@ -260,6 +260,14 @@ public class xsdparser {
 		h.println("class " + c.classname + " {");
 		h.println("public:");
 		h.println("\t" + c.classname + "(const std::string& xml = \"\");");
+                h.println("\tfriend std::ostream& operator<<(std::ostream&, const "
+				+ c.classname + "&);");
+                if (c.classname.equals("StrigiDaemonConfiguration"))
+                {
+                    h.println("\tfriend XMLStream& operator>>(XMLStream& in, "
+				+ c.classname + "&);");
+                    h.println("protected:");
+                }
 		for (Entry<String, String> e : c.atts.entrySet()) {
 			h.println("\t" + e.getValue() + " a_" + e.getKey() + ";");
 		}
@@ -272,9 +280,8 @@ public class xsdparser {
 								+ part.name + ";");
 			}
 		}
-		h.println("};");
-		h.println("std::ostream& operator<<(std::ostream&, const "
-				+ c.classname + "&);");
+                
+		h.println("};");		
 	}
 
 	void writeImplementation(Class c, PrintWriter w) throws IOException {

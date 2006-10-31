@@ -1,7 +1,6 @@
 /* This file is generated from example.xsd */
 #include "example.h"
 #include <iostream>
-#include "xmlstream.h"
 XMLStream&
 operator>>(XMLStream& in, GeneralInfo& e) {
 	in.setFromAttribute(e.a_name,"name");

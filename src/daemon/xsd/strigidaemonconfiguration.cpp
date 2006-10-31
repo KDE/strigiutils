@@ -1,7 +1,6 @@
 /* This file is generated from strigidaemonconfiguration.xsd */
 #include "strigidaemonconfiguration.h"
 #include <iostream>
-#include "xmlstream.h"
 XMLStream&
 operator>>(XMLStream& in, Path& e) {
 	in.setFromAttribute(e.a_path,"path");
@@ -67,6 +66,7 @@ XMLStream& operator>>(XMLStream&, Pathfilter&);
 XMLStream& operator>>(XMLStream&, Patternfilter&);
 XMLStream&
 operator>>(XMLStream& in, Repository& e) {
+	in.setFromAttribute(e.a_name,"name");
 	in.setFromAttribute(e.a_type,"type");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
@@ -102,6 +102,7 @@ Repository::Repository(const std::string& xml) {
 std::ostream&
 operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
+	out << " name='" << e.a_name << "'";
 	out << " type='" << e.a_type << "'";
 	out << ">\n";
 	std::list<Path>::const_iterator path_it;
