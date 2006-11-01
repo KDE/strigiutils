@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
- targetNamespace="http://www.vandenoever.info/strigi"
- xmlns:tns="http://www.vandenoever.info/strigi">
+targetNamespace="http://www.vandenoever.info/strigi"
+xmlns:tns="http://www.vandenoever.info/strigi">
 
- <element name="strigiDaemonConfiguration">
+<element name="strigiDaemonConfiguration">
   <complexType>
-   <sequence>
-    <element name="repository" minOccurs="0" maxOccurs="unbounded">
-     <complexType>
-      <sequence>
-       <element name="path"  minOccurs="0" maxOccurs="unbounded">
+    <sequence>
+      <element name="repository" minOccurs="0" maxOccurs="unbounded">
         <complexType>
-         <attribute name="path" type="string"/>
+          <sequence>
+            <element name="path"  minOccurs="0" maxOccurs="unbounded">
+              <complexType>
+                <attribute name="path" type="string"/>
+              </complexType>
+            </element>
+          </sequence>
+          <attribute name="type" type="string"/>
+          <attribute name="name" type="string"/>
         </complexType>
-       </element>
-       <element name="pathfilter"  minOccurs="0" maxOccurs="unbounded">
+      </element>
+    </sequence>
+    <sequence>
+      <element name="filteringrules" minOccurs="0" maxOccurs="1">
         <complexType>
-         <attribute name="path" type="string"/>
+          <sequence>
+            <element name="pathfilter"  minOccurs="0" maxOccurs="unbounded">
+              <complexType>
+                <attribute name="path" type="string"/>
+              </complexType>
+            </element>
+            <element name="patternfilter" minOccurs="0" maxOccurs="unbounded">
+              <complexType>
+                <attribute name="pattern" type="string"/>
+              </complexType>
+            </element>
+          </sequence>
         </complexType>
-       </element>
-       <element name="patternfilter" minOccurs="0" maxOccurs="unbounded">
-        <complexType>
-         <attribute name="pattern" type="string"/>
-        </complexType>
-       </element>
-      </sequence>
-      <attribute name="type" type="string"/>
-      <attribute name="name" type="string"/>
-     </complexType>
-    </element>
-   </sequence>
-   <attribute name="useDBus" type="boolean"/>
+      </element>
+    </sequence>
+    <attribute name="useDBus" type="boolean"/>
   </complexType>
- </element>
-
+</element>
 </schema>

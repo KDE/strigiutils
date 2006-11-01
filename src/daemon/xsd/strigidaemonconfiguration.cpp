@@ -21,6 +21,44 @@ operator<<(std::ostream& out, const Path& e) {
 
 	return out;
 }
+XMLStream& operator>>(XMLStream&, Path&);
+XMLStream&
+operator>>(XMLStream& in, Repository& e) {
+	in.setFromAttribute(e.a_name,"name");
+	in.setFromAttribute(e.a_type,"type");
+	const SimpleNode* n = in.firstChild();
+	bool hasChildren = n;
+	while (n && in.getTagName() == "path") {
+		Path v;
+		in >> v;
+		e.e_path.push_back(v);
+		n = in.nextSibling();
+	}
+	if (hasChildren) {
+		in.parentNode();
+	}
+	return in;
+}
+Repository::Repository(const std::string& xml) {
+	if (xml.length()) {
+		XMLStream stream(xml);
+		stream >> *this;
+	}
+}
+std::ostream&
+operator<<(std::ostream& out, const Repository& e) {
+	out << " <repository";
+	out << " name='" << e.a_name << "'";
+	out << " type='" << e.a_type << "'";
+	out << ">\n";
+	std::list<Path>::const_iterator path_it;
+	for (path_it = e.e_path.begin(); path_it != e.e_path.end(); path_it++) {
+		out << *path_it;
+	}
+	out << " </repository>\n";
+
+	return out;
+}
 XMLStream&
 operator>>(XMLStream& in, Pathfilter& e) {
 	in.setFromAttribute(e.a_path,"path");
@@ -61,21 +99,12 @@ operator<<(std::ostream& out, const Patternfilter& e) {
 
 	return out;
 }
-XMLStream& operator>>(XMLStream&, Path&);
 XMLStream& operator>>(XMLStream&, Pathfilter&);
 XMLStream& operator>>(XMLStream&, Patternfilter&);
 XMLStream&
-operator>>(XMLStream& in, Repository& e) {
-	in.setFromAttribute(e.a_name,"name");
-	in.setFromAttribute(e.a_type,"type");
+operator>>(XMLStream& in, Filteringrules& e) {
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
-	while (n && in.getTagName() == "path") {
-		Path v;
-		in >> v;
-		e.e_path.push_back(v);
-		n = in.nextSibling();
-	}
 	while (n && in.getTagName() == "pathfilter") {
 		Pathfilter v;
 		in >> v;
@@ -93,22 +122,16 @@ operator>>(XMLStream& in, Repository& e) {
 	}
 	return in;
 }
-Repository::Repository(const std::string& xml) {
+Filteringrules::Filteringrules(const std::string& xml) {
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
 	}
 }
 std::ostream&
-operator<<(std::ostream& out, const Repository& e) {
-	out << " <repository";
-	out << " name='" << e.a_name << "'";
-	out << " type='" << e.a_type << "'";
+operator<<(std::ostream& out, const Filteringrules& e) {
+	out << " <filteringrules";
 	out << ">\n";
-	std::list<Path>::const_iterator path_it;
-	for (path_it = e.e_path.begin(); path_it != e.e_path.end(); path_it++) {
-		out << *path_it;
-	}
 	std::list<Pathfilter>::const_iterator pathfilter_it;
 	for (pathfilter_it = e.e_pathfilter.begin(); pathfilter_it != e.e_pathfilter.end(); pathfilter_it++) {
 		out << *pathfilter_it;
@@ -117,11 +140,12 @@ operator<<(std::ostream& out, const Repository& e) {
 	for (patternfilter_it = e.e_patternfilter.begin(); patternfilter_it != e.e_patternfilter.end(); patternfilter_it++) {
 		out << *patternfilter_it;
 	}
-	out << " </repository>\n";
+	out << " </filteringrules>\n";
 
 	return out;
 }
 XMLStream& operator>>(XMLStream&, Repository&);
+XMLStream& operator>>(XMLStream&, Filteringrules&);
 XMLStream&
 operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 	in.setFromAttribute(e.a_useDBus,"useDBus");
@@ -131,6 +155,12 @@ operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 		Repository v;
 		in >> v;
 		e.e_repository.push_back(v);
+		n = in.nextSibling();
+	}
+	while (n && in.getTagName() == "filteringrules") {
+		Filteringrules v;
+		in >> v;
+		e.e_filteringrules.push_back(v);
 		n = in.nextSibling();
 	}
 	if (hasChildren) {
@@ -153,6 +183,10 @@ operator<<(std::ostream& out, const StrigiDaemonConfiguration& e) {
 	std::list<Repository>::const_iterator repository_it;
 	for (repository_it = e.e_repository.begin(); repository_it != e.e_repository.end(); repository_it++) {
 		out << *repository_it;
+	}
+	std::list<Filteringrules>::const_iterator filteringrules_it;
+	for (filteringrules_it = e.e_filteringrules.begin(); filteringrules_it != e.e_filteringrules.end(); filteringrules_it++) {
+		out << *filteringrules_it;
 	}
 	out << "</strigiDaemonConfiguration>\n";
 

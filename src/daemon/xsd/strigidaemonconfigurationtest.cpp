@@ -29,6 +29,14 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
+	Repository repository(xml);
+	f.open(filename.str().c_str(), std::ios::binary);
+	f << repository;
+	f.close();
+	filename.str("");
+
+	filename << n++ << ".xml";
+	xml = read(filename.str());
 	Pathfilter pathfilter(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
 	f << pathfilter;
@@ -45,9 +53,9 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	Repository repository(xml);
+	Filteringrules filteringrules(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << repository;
+	f << filteringrules;
 	f.close();
 	filename.str("");
 

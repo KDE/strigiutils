@@ -10,6 +10,14 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const Path&);
 	std::string a_path;
 };
+class Repository {
+public:
+	Repository(const std::string& xml = "");
+	friend std::ostream& operator<<(std::ostream&, const Repository&);
+	std::string a_name;
+	std::string a_type;
+	std::list<Path> e_path;
+};
 class Pathfilter {
 public:
 	Pathfilter(const std::string& xml = "");
@@ -22,13 +30,10 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const Patternfilter&);
 	std::string a_pattern;
 };
-class Repository {
+class Filteringrules {
 public:
-	Repository(const std::string& xml = "");
-	friend std::ostream& operator<<(std::ostream&, const Repository&);
-	std::string a_name;
-	std::string a_type;
-	std::list<Path> e_path;
+	Filteringrules(const std::string& xml = "");
+	friend std::ostream& operator<<(std::ostream&, const Filteringrules&);
 	std::list<Pathfilter> e_pathfilter;
 	std::list<Patternfilter> e_patternfilter;
 };
@@ -40,5 +45,6 @@ public:
 protected:
 	bool a_useDBus;
 	std::list<Repository> e_repository;
+	std::list<Filteringrules> e_filteringrules;
 };
 #endif
