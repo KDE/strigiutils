@@ -234,9 +234,12 @@ main(int argc, char** argv) {
     checkLogConf(logconffile);
     STRIGI_LOG_INIT(logconffile)
 
+    // init daemon configurator
+    DaemonConfigurator config (conffile);
+
     // init filter manager
     FilterManager filterManager;
-    filterManager.setConfFile (patternfilterfile, pathfilterfile);
+    config.loadFilteringRules (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
     
     IndexScheduler scheduler;
@@ -289,9 +292,7 @@ main(int argc, char** argv) {
     string indexdir = daemondir + '/' + f->first;
     IndexManager* index = f->second(indexdir.c_str());
 
-    DaemonConfigurator config (conffile);
-    set<string> dirs = config.getIndexedDirs();
-    
+    set<string> dirs = config.getIndexedDirectories();
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 
@@ -341,9 +342,10 @@ main(int argc, char** argv) {
     if (!server.listen()) {
         stopThreads();
     }
-    dirs = scheduler.getIndexedDirectories();
     
-    //TODO: save dirs
+    //save indexed dirs
+    dirs = scheduler.getIndexedDirectories();
+    config.setIndexedDirectories (dirs);
 
     // close the indexmanager
     delete index;
@@ -351,6 +353,8 @@ main(int argc, char** argv) {
     //delete listener
     delete listener;
 
+    //save filtering rules
+    config.saveFilteringRules (&filterManager);
     config.save();
     
     // release lock
