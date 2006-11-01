@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "interface.h"
 #include "indexreader.h"
-#include "indexmanager.h"
+#include "combinedindexmanager.h"
 #include "indexwriter.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
@@ -32,22 +32,19 @@
 using namespace std;
 using namespace jstreams;
 
-Interface::Interface(IndexManager& m, IndexScheduler& s)
-    :manager(m),
-     scheduler(s)
-{
+Interface::Interface(CombinedIndexManager& m, IndexScheduler& s)
+        :manager(m), scheduler(s) {
     eventListener = NULL;
     filterManager = NULL;
 }
-
-void Interface::setEventListener (EventListener* eListener) {
+void
+Interface::setEventListener (EventListener* eListener) {
     eventListener = eListener;
 }
-
-void Interface::setFilterManager (FilterManager* fManager) {
+void
+Interface::setFilterManager (FilterManager* fManager) {
     filterManager = fManager;
 }
-
 int
 Interface::countHits(const string& query) {
     Query q(query, -1, 0);
@@ -65,6 +62,10 @@ Interface::getHits(const string& query, int max, int off) {
         i->fragment = q.highlight(i->fragment);
     }
     return hits;
+}
+std::vector<std::string>
+Interface::getBackEnds() {
+    return manager.getBackEnds();
 }
 map<string, string>
 Interface::getStatus() {

@@ -126,17 +126,21 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         doc->doc.add(*Field::Text("content", doc->content.c_str()) );
 #endif
         lucene::index::IndexWriter* writer = manager->refWriter();
-        try {
-            writer->addDocument(&doc->doc);
-        } catch (CLuceneError& err) {
-            fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+        if (writer) {
+            try {
+                writer->addDocument(&doc->doc);
+            } catch (CLuceneError& err) {
+                fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+            }
         }
     } else {
         lucene::index::IndexWriter* writer = manager->refWriter();
-        try {
-            writer->addDocument(&doc->doc);
-        } catch (CLuceneError& err)  {
-            fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+        if (writer) {
+            try {
+                writer->addDocument(&doc->doc);
+            } catch (CLuceneError& err)  {
+                fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+            }
         }
     }
     manager->derefWriter();

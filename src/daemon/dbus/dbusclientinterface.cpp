@@ -12,6 +12,7 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
     handlers["getIndexedFiles"] = &DBusClientInterface::getIndexedFiles;
     handlers["getFilteringRules"] = &DBusClientInterface::getFilteringRules;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
+    handlers["getBackEnds"] = &DBusClientInterface::getBackEnds;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
     handlers["stopIndexing"] = &DBusClientInterface::stopIndexing;
     handlers["setFilteringRules"] = &DBusClientInterface::setFilteringRules;
@@ -56,6 +57,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    <method name='setIndexedDirectories'>\n"
     << "      <arg name='d' type='as' direction='in'/>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='getBackEnds'>\n"
+    << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getIndexedDirectories'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
@@ -137,6 +141,14 @@ DBusClientInterface::setIndexedDirectories(DBusMessage* msg, DBusConnection* con
     reader >> d;
     if (reader.isOk()) {
         writer << impl->setIndexedDirectories(d);
+    }
+}
+void
+DBusClientInterface::getBackEnds(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    if (reader.isOk()) {
+        writer << impl->getBackEnds();
     }
 }
 void

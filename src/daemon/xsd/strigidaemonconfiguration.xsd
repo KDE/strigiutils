@@ -17,6 +17,8 @@ xmlns:tns="http://www.vandenoever.info/strigi">
           </sequence>
           <attribute name="type" type="string"/>
           <attribute name="name" type="string"/>
+          <attribute name="indexdir" type="string"/>
+          <attribute name="writeable" type="boolean"/>
         </complexType>
       </element>
     </sequence>

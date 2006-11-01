@@ -216,6 +216,11 @@ SocketClient::getStatus() {
     }
     return status;
 }
+vector<string>
+SocketClient::getBackEnds() {
+    vector<string> v;
+    return v;
+}
 string
 SocketClient::stopDaemon() {
     request.clear();

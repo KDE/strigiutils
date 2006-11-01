@@ -6,7 +6,7 @@ ENDIF(ENABLE_DBUS)
 
 subdirs(${DIRS})
 
-include_directories( ../streamindexer ../streams xsd dbus)
+include_directories( ../streamindexer ../combinedindexer ../streams xsd dbus)
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)
@@ -30,28 +30,17 @@ IF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
     MESSAGE("-- log4cxx WONT be enabled")
 ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
 
-if (CLucene_FOUND)
-    add_definitions(-DHAVE_CLUCENE)
-    set(strigidaemon_LIBS ${strigidaemon_LIBS} cluceneindex)
-    include_directories( ../luceneindexer )
-endif (CLucene_FOUND)
-if (HyperEstraier_FOUND)
-    add_definitions(-DHAVE_ESTRAIER)
-    set(strigidaemon_LIBS ${strigidaemon_LIBS} estraierindex)
-    include_directories( ../estraierindexer )
-endif (HyperEstraier_FOUND)
-
 include_directories( eventlistener ../filters .)
 
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp clientinterface.cpp strigilogging.h strigithread.cpp)
+	indexscheduler.cpp strigilogging.h strigithread.cpp)
 
-set(strigidaemon_LIBS streamindexer eventlistener filters
+set(strigidaemon_LIBS streamindexer eventlistener filters combinedindex
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
-add_library(searchclient SHARED socketclient.cpp clientinterface.cpp
-        asyncsocket.cpp asyncsocketclient.cpp)
+add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
+	asyncsocketclient.cpp)
 set_target_properties(searchclient PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})

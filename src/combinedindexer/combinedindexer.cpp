@@ -18,22 +18,18 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "clientinterface.h"
+#include "indexer.h"
+#include "filtermanager.h"
 
-std::vector<std::string>
-ClientInterface::getBackEnds() {
-    std::vector<std::string> backends;
-#ifdef HAVE_ESTRAIER
-    backends.push_back("estraier");
-#endif
-#ifdef HAVE_CLUCENE
-    backends.push_back("clucene");
-#endif
-#ifdef HAVE_XAPIAN
-    backends.push_back("xapian");
-#endif
-#ifdef HAVE_SQLITE
-    backends.push_back("sqlite");
-#endif
-    return backends;
+int
+main(int argc, char **argv) {
+    if (argc != 3) {
+        printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
+        return -1;
+    }
+    
+    FilterManager filtermanager;
+    Indexer indexer(argv[1], &filtermanager);
+    indexer.index(argv[2]);
+    return 0;
 }

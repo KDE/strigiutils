@@ -22,9 +22,7 @@
 
 #include "clientinterface.h"
 
-namespace jstreams {
-    class IndexManager;
-}
+class CombinedIndexManager;
 class IndexScheduler;
 class EventListener;
 class FilterManager;
@@ -37,13 +35,13 @@ class FilterManager;
 
 class Interface : public ClientInterface {
 private:
-    jstreams::IndexManager& manager;
+    CombinedIndexManager& manager;
     IndexScheduler& scheduler;
     EventListener* eventListener;
     FilterManager* filterManager;
 
 public:
-    Interface(jstreams::IndexManager& m, IndexScheduler& s);
+    Interface(CombinedIndexManager& m, IndexScheduler& s);
     int countHits(const std::string& query);
     Hits getHits(const std::string& query, int max, int offset);
     std::map<std::string, std::string> getStatus();
@@ -59,6 +57,7 @@ public:
     std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, time_t mtime,
         const std::vector<char>&);
+    std::vector<std::string> getBackEnds();
 };
 
 #endif

@@ -48,6 +48,7 @@ public:
     std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, time_t mtime,
         const std::vector<char>&);
+    std::vector<std::string> getBackEnds();
 };
 
 #endif

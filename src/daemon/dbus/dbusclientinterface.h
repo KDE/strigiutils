@@ -17,6 +17,7 @@ private:
     void getIndexedFiles(DBusMessage* msg, DBusConnection* conn);
     void getFilteringRules(DBusMessage* msg, DBusConnection* conn);
     void setIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
+    void getBackEnds(DBusMessage* msg, DBusConnection* conn);
     void getIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
     void stopIndexing(DBusMessage* msg, DBusConnection* conn);
     void setFilteringRules(DBusMessage* msg, DBusConnection* conn);

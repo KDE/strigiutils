@@ -65,8 +65,9 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         a_useDBus = true;
         Repository r;
         r.a_name = string ("localhost");
-        string s;
-        s = getenv("HOME"); 
+        string s = getenv("HOME"); 
+        r.a_indexdir = s + "/.strigi/clucene";
+        r.a_type = "clucene";
         Path p;
         p.a_path = s;                 r.e_path.push_back(p);
         p.a_path = s + "/.kde";       r.e_path.push_back(p);
@@ -136,6 +137,14 @@ void DaemonConfigurator::save()
     f.open(m_confFile.c_str(), std::ios::binary);
     f << *this;
     f.close();
+}
+string
+DaemonConfigurator::getWriteableIndexType() const {
+    return (e_repository.size()) ?e_repository.begin()->a_type : "";
+}
+string
+DaemonConfigurator::getWriteableIndexDir() const {
+    return (e_repository.size()) ?e_repository.begin()->a_indexdir : "";
 }
 
 void DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)

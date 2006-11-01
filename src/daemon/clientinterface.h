@@ -60,7 +60,7 @@ public:
         = 0;
     virtual std::set<std::string> getIndexedFiles() = 0;
     bool isActive() { return active; }
-    static std::vector<std::string> getBackEnds();
+    virtual std::vector<std::string> getBackEnds() = 0;
     virtual void indexFile(const std::string& path, time_t mtime, const std::vector<char>& content) = 0;
 };
 

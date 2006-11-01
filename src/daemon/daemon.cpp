@@ -20,18 +20,7 @@
 #include "jstreamsconfig.h"
 #include "interface.h"
 #include "xsd/daemonconfigurator.h"
-#ifdef HAVE_CLUCENE
-#include "cluceneindexmanager.h"
-#endif
-#ifdef HAVE_XAPIAN
-#include "xapianindexmanager.h"
-#endif
-#ifdef HAVE_ESTRAIER
-#include "estraierindexmanager.h"
-#endif
-#ifdef HAVE_SQLITE
-#include "sqliteindexmanager.h"
-#endif
+#include "combinedindexmanager.h"
 
 #include "indexscheduler.h"
 
@@ -149,39 +138,6 @@ checkLogConf(const string& filename) {
     }
     confFile.close();
 }
-/*set<string>
-readdirstoindex(const string& file) {
-    set<string> dirs;
-    ifstream f(file.c_str());
-    // if no file was available, use the HOME directory
-    string s;
-    if (!f.good()) {
-        s = getenv("HOME"); 
-        dirs.insert(s);
-        dirs.insert(s+"/.kde");
-        dirs.insert(s+"/.gnome2");
-        dirs.insert(s+"/.evolution");
-        dirs.insert(s+"/.mozilla");
-        return dirs;
-    }
-    do {
-        getline(f, s);
-        if (s.size()) {
-            dirs.insert(s);
-        }
-    } while (!f.eof() && f.good());
-    f.close();
-    return dirs;
-}
-void
-savedirstoindex(const string& file, const set<string> &dirs) {
-    ofstream f(file.c_str());
-    set<string>::const_iterator i;
-    for (i=dirs.begin(); i!=dirs.end(); ++i) {
-        f << *i << endl;
-    }
-    f.close();
-}*/
 FILE*
 aquireLock(const char* lockfile, struct flock& lock) {
     FILE* f = fopen(lockfile, "w");
@@ -267,32 +223,11 @@ main(int argc, char** argv) {
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
 
-
-    // determine the right index manager
-    map<string, IndexManager*(*)(const char*)> factories;
-#ifdef HAVE_ESTRAIER
-    factories["estraier"] = createEstraierIndexManager;
-#endif
-#ifdef HAVE_CLUCENE
-    factories["clucene"] = createCLuceneIndexManager;
-#endif
-#ifdef HAVE_XAPIAN
-    factories["xapian"] = createXapianIndexManager;
-#endif
-#ifdef HAVE_SQLITE
-    factories["sqlite"] = createSqliteIndexManager;
-#endif
-    const char *backend = "estraier";
-    if (argc > 1) backend = argv[1];
-    map<string, IndexManager*(*)(const char*)>::const_iterator f
-        = factories.find(backend);
-    if (f == factories.end()) {
-        f = factories.begin();
-    }
-    string indexdir = daemondir + '/' + f->first;
-    IndexManager* index = f->second(indexdir.c_str());
-
     set<string> dirs = config.getIndexedDirectories();
+
+    CombinedIndexManager* index = new CombinedIndexManager(
+        config.getWriteableIndexType(), config.getWriteableIndexDir());
+    
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 

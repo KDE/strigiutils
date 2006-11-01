@@ -463,7 +463,6 @@ StrigiHtmlGui::readTabQueries() const {
     ifstream in;
     in.open(path.c_str());
     string s;
-    int i=1;
     do {
         getline(in, s);
         if (s.size()) {

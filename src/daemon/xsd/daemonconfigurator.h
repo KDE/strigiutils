@@ -39,6 +39,8 @@ class DaemonConfigurator : public StrigiDaemonConfiguration
         void saveFilteringRules (FilterManager* filterManager);
         
         void save();
+    std::string getWriteableIndexType() const;
+    std::string getWriteableIndexDir() const;
         
     private:
         std::string m_confFile;
