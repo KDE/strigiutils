@@ -22,6 +22,7 @@
 #include "textutils.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
+#include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
 #include <sstream>
 
@@ -49,6 +50,20 @@ public:
     int32_t getCount() const { return count; }
 };
 
+class CLuceneIndexReader::Private {
+public:
+    static lucene::index::Term* createTerm(const std::string& name,
+        const std::string& value);
+    static void createBooleanQuery(const jstreams::Query& query,
+        lucene::search::BooleanQuery& bq);
+    static void addField(lucene::document::Field* field,
+        jstreams::IndexedDocument&);
+    static std::string convertValue(const TCHAR* value);
+};
+
+CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m)
+        :manager(m), countversion(-1) {
+}
 
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
@@ -59,7 +74,7 @@ CLuceneIndexReader::mapId(const std::string& id) {
     return id.c_str();
 }
 Term*
-CLuceneIndexReader::createTerm(const string& name, const string& value) {
+CLuceneIndexReader::Private::createTerm(const string& name, const string& value) {
 #ifndef _CL_HAVE_WCSLEN
     return _CLNEW Term(name.c_str(), value.c_str());
 #else
@@ -75,7 +90,7 @@ CLuceneIndexReader::createTerm(const string& name, const string& value) {
     return t;
 }
 void
-CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
+CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery& bq) {
     // add the attributes
     const map<string, set<string> >& includes = query.getIncludes();
     map<string, set<string> >::const_iterator i;
@@ -121,7 +136,7 @@ CLuceneIndexReader::createBooleanQuery(const Query& query, BooleanQuery& bq) {
     }
 }
 std::string
-CLuceneIndexReader::convertValue(const TCHAR* v) {
+CLuceneIndexReader::Private::convertValue(const TCHAR* v) {
     if (v == 0) return "";
     char after[CL_MAX_DIR];
     STRCPY_TtoA(after, v, CL_MAX_DIR);
@@ -131,7 +146,7 @@ CLuceneIndexReader::convertValue(const TCHAR* v) {
     return after;
 }
 void
-CLuceneIndexReader::addField(lucene::document::Field* field,
+CLuceneIndexReader::Private::addField(lucene::document::Field* field,
         IndexedDocument& doc) {
     const TCHAR* value = field->stringValue();
     if (value == 0) return;
@@ -156,7 +171,7 @@ CLuceneIndexReader::addField(lucene::document::Field* field,
 int32_t
 CLuceneIndexReader::countHits(const Query& q) {
     BooleanQuery bq;
-    createBooleanQuery(q, bq);
+    Private::createBooleanQuery(q, bq);
     lucene::index::IndexReader* reader = manager->refReader();
     if (reader == 0) {
         manager->derefReader();
@@ -204,7 +219,7 @@ CLuceneIndexReader::countHits(const Query& q) {
 std::vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {
     BooleanQuery bq;
-    createBooleanQuery(q, bq);
+    Private::createBooleanQuery(q, bq);
     std::vector<IndexedDocument> results;
     lucene::index::IndexReader* reader = manager->refReader();
     if (reader == 0) {
@@ -234,7 +249,7 @@ CLuceneIndexReader::query(const Query& q) {
         DocumentFieldEnumeration* e = d->fields();
         while (e->hasMoreElements()) {
             Field* f = e->nextElement();
-            addField(f, doc);
+            Private::addField(f, doc);
         }
         results.push_back(doc);
         _CLDELETE(e);

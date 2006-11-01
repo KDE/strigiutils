@@ -21,40 +21,21 @@
 #define CLUCENEINDEXREADER_H
 
 #include "indexreader.h"
-#include <CLucene.h>
 #include <map>
-
-namespace lucene {
-    namespace index {
-        class Term;
-    }
-    namespace search {
-        class BooleanQuery;
-    }
-    namespace document {
-        class Document;
-        class Field;
-    }
-}
 
 class CLuceneIndexManager;
 class CLuceneIndexReader : public jstreams::IndexReader {
 friend class CLuceneIndexManager;
 private:
     CLuceneIndexManager* manager;
+    class Private;
     int countversion;
     int32_t count;
 
-    CLuceneIndexReader(CLuceneIndexManager* m) :manager(m), countversion(-1) {}
+    CLuceneIndexReader(CLuceneIndexManager* m);
     ~CLuceneIndexReader();
 
     static const char* mapId(const std::string& id);
-    static lucene::index::Term* createTerm(const std::string& name,
-        const std::string& value);
-    static void createBooleanQuery(const jstreams::Query& query,
-        lucene::search::BooleanQuery& bq);
-    static void addField(lucene::document::Field* field,
-        jstreams::IndexedDocument&);
 public:
     int32_t countHits(const jstreams::Query&);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
@@ -64,7 +45,6 @@ public:
     int64_t getIndexSize();
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
-    static std::string convertValue(const TCHAR* value);
 };
 
 #endif

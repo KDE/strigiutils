@@ -23,19 +23,23 @@
 #include "indexmanager.h"
 #include <map>
 #include <vector>
+#include <string>
 
 class CombinedIndexReader;
-class CombinedIndexWriter;
 class CombinedIndexManager : public jstreams::IndexManager {
+friend class CombinedIndexReader;
 private:
-    jstreams::IndexManager* writermanager;
-    std::vector<jstreams::IndexManager*> readmanagers;
+    class Private;
+    Private* const p;
 public:
     CombinedIndexManager(const std::string& type, const std::string& dir);
     ~CombinedIndexManager();
 
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
+
+    void addReadonlyIndex(const std::string& indexdir, const std::string& type);
+    void removeReadonlyIndex(const std::string& indexdir);
 
     static std::map<std::string, jstreams::IndexManager*(*)(const char*)>
         getFactories();

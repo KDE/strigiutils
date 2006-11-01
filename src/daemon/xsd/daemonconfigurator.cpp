@@ -56,7 +56,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         XMLStream stream(xml.str());
         stream >> *this;
     }
-    
+    printf("hi\n");
     FindRepository findRepository ("localhost");
     list<Repository>::iterator match = find_if (e_repository.begin(), e_repository.end(), findRepository);
     

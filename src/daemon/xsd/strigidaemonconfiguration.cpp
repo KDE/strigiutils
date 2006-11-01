@@ -25,6 +25,7 @@ XMLStream& operator>>(XMLStream&, Path&);
 XMLStream&
 operator>>(XMLStream& in, Repository& e) {
 	in.setFromAttribute(e.a_indexdir,"indexdir");
+	in.setFromAttribute(e.a_urlbase,"urlbase");
 	in.setFromAttribute(e.a_type,"type");
 	in.setFromAttribute(e.a_writeable,"writeable");
 	in.setFromAttribute(e.a_name,"name");
@@ -52,6 +53,7 @@ std::ostream&
 operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
 	out << " indexdir='" << e.a_indexdir << "'";
+	out << " urlbase='" << e.a_urlbase << "'";
 	out << " type='" << e.a_type << "'";
 	out << " writeable='" << e.a_writeable << "'";
 	out << " name='" << e.a_name << "'";

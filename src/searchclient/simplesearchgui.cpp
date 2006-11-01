@@ -66,7 +66,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     hlayout->addWidget(toggledaemon);
     hlayout->addWidget(toggleindexing);
     statuslayout->addLayout(hlayout);
-    vector<string> backends = ClientInterface::getBackEnds();
+/*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
         for (uint i = 0; i< backends.size(); ++i) {
@@ -74,9 +74,9 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
             backendsList->insertItem(i, backend);
         }
         statuslayout->addWidget(backendsList);
-    } else {
+    } else {*/
         backendsList = 0;
-    }
+//    }
     statuslayout->addWidget(indexeddirs);
     hlayout = new QHBoxLayout;
     hlayout->addWidget(adddir);

@@ -19,6 +19,7 @@ xmlns:tns="http://www.vandenoever.info/strigi">
           <attribute name="name" type="string"/>
           <attribute name="indexdir" type="string"/>
           <attribute name="writeable" type="boolean"/>
+          <attribute name="urlbase" type="string"/>
         </complexType>
       </element>
     </sequence>
