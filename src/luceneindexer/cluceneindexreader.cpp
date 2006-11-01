@@ -158,6 +158,10 @@ CLuceneIndexReader::countHits(const Query& q) {
     BooleanQuery bq;
     createBooleanQuery(q, bq);
     lucene::index::IndexReader* reader = manager->refReader();
+    if (reader == 0) {
+        manager->derefReader();
+        return 0;
+    }
     IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
     Hits* hits = 0;
@@ -201,9 +205,13 @@ std::vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {
     BooleanQuery bq;
     createBooleanQuery(q, bq);
-    lucene::index::IndexReader* reader = manager->refReader();
-    IndexSearcher searcher(reader);
     std::vector<IndexedDocument> results;
+    lucene::index::IndexReader* reader = manager->refReader();
+    if (reader == 0) {
+        manager->derefReader();
+        return results;
+    }
+    IndexSearcher searcher(reader);
     TCHAR tf[CL_MAX_DIR];
     Hits* hits = 0;
     int s = 0;
@@ -242,6 +250,10 @@ std::map<std::string, time_t>
 CLuceneIndexReader::getFiles(char depth) {
     std::map<std::string, time_t> files;
     lucene::index::IndexReader* reader = manager->refReader();
+    if (reader == 0) {
+        manager->derefReader();
+        return files;
+    }
     IndexSearcher searcher(reader);
     TCHAR tstr[CL_MAX_DIR];
     char cstr[CL_MAX_DIR];
@@ -276,12 +288,14 @@ CLuceneIndexReader::countWords() {
     if (manager->getVersion() == countversion) {
         return count;
     }
-    lucene::index::IndexReader* reader = manager->refReader();
     count = 0;
     countversion = manager->getVersion();
-    lucene::index::TermEnum *terms = reader->terms();
-    while (terms->next()) count++;
-    _CLDELETE(terms);
+    lucene::index::IndexReader* reader = manager->refReader();
+    if (reader) {
+        lucene::index::TermEnum *terms = reader->terms();
+        while (terms->next()) count++;
+        _CLDELETE(terms);
+    }
     manager->derefReader();
     return count;
 }

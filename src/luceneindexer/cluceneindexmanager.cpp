@@ -149,7 +149,7 @@ CLuceneIndexManager::closeWriter() {
 }
 int
 CLuceneIndexManager::docCount() {
-    int count;
+    int count = 0;
     STRIGI_MUTEX_LOCK(&dblock->lock);
     if (indexwriter) {
         count = indexwriter->docCount();
@@ -157,7 +157,9 @@ CLuceneIndexManager::docCount() {
         if (indexreader == 0) {
             openReader();
         }
-        count = indexreader->numDocs();
+        if (indexreader) {
+            count = indexreader->numDocs();
+        }
     }
     STRIGI_MUTEX_UNLOCK(&dblock->lock);
     return count;
