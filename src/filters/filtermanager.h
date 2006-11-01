@@ -34,13 +34,12 @@ class Filter;
 * Manage all filtering rules, taking care of load, save, check operations
 * @sa Filter
 */
+
 class FilterManager
 {
     public:
         FilterManager();
         ~FilterManager();
-       
-        void setConfFile(std::string& patternRules, std::string& pathRules);
        
         /** 
         * check if text matches a filtering rules
@@ -63,13 +62,10 @@ class FilterManager
        
     private:
         void clearRules();
-        void loadFilter(std::string& file, unsigned int filterRTTI);
-        void saveFilter();
-       
-        std::string m_patternFile, m_pathFile;
+        
         std::vector<Filter*> m_rules;
         std::string m_strigidir;
-        STRIGI_MUTEX_DEFINE(m_mutex);
+        STRIGI_MUTEX_DEFINE(m_rulesMutex);
 };
 
 #endif

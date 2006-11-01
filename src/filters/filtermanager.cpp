@@ -31,7 +31,7 @@ using namespace std;
 
 FilterManager::FilterManager()
 {
-    STRIGI_MUTEX_INIT(&m_mutex);
+    STRIGI_MUTEX_INIT(&m_rulesMutex);
     
     // won't index strigi configuration directory 
 #ifdef WIN32
@@ -45,125 +45,20 @@ FilterManager::FilterManager()
 
 FilterManager::~ FilterManager()
 {
-    saveFilter();
     clearRules();
-    STRIGI_MUTEX_DESTROY (&m_mutex);
+    STRIGI_MUTEX_DESTROY (&m_rulesMutex);
 }
 
 void FilterManager::clearRules()
 {
+    STRIGI_MUTEX_LOCK (&m_rulesMutex);
+    
     for (unsigned int i = 0; i < m_rules.size(); i++)
         delete m_rules[i];
     
     m_rules.clear();
-}
-
-void FilterManager::setConfFile (string& patternRules, string& pathRules)
-{
-    m_patternFile = patternRules;
-    m_pathFile = pathRules;
-   
-    // clear old rules
-    // TODO: remove when weì'll have a single configuration file
-    clearRules();
     
-    loadFilter(patternRules, PatternFilter::RTTI);
-    loadFilter(pathRules, PathFilter::RTTI);
-}
-
-void FilterManager::loadFilter(string& file, unsigned int filterRTTI)
-{
-    fstream confFile;
-    string rule;
-    char buffer [500];
-   
-    confFile.open(file.c_str(), ios::in);
-   
-    // clear old rules
-    // TODO: restore when weì'll have a single configuration file
-    //clearRules();
-    
-    if (confFile.is_open())
-    {
-        STRIGI_MUTEX_LOCK (&m_mutex);
-       
-        // read filter rules
-        while (!confFile.eof())
-        {
-            confFile.getline(buffer, 500);
-            rule = buffer;
-            
-            if (rule.size() > 0)
-            {
-                switch (filterRTTI)
-                {
-                    case PathFilter::RTTI:
-                        m_rules.push_back (new PathFilter (string(buffer)));
-                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added path filter: |" + string(buffer) + '|')
-                        break;
-                    case PatternFilter::RTTI:
-                        m_rules.push_back (new PatternFilter (string(buffer)));
-                        STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added pattern filter: |" + string(buffer) + '|')
-                        break;
-                    default:
-                        STRIGI_LOG_ERROR ("strigi.filtermanager.loadFilter", "unknown rule RTTI")
-                        break;
-                }
-            }
-        }
-       
-        STRIGI_MUTEX_UNLOCK (&m_mutex);
-       
-        confFile.close();
-    }
-   
-    snprintf (buffer, 500*sizeof (char), "%i", m_rules.size());
-   
-    STRIGI_LOG_INFO ("strigi.filtermanager", "added " + string(buffer) + " filtering rules")
-}
-
-void FilterManager::saveFilter()
-{
-    if (m_patternFile.empty() || m_pathFile.empty())
-        return;
-    
-    fstream pathFile;
-    fstream patternFile;
-    pathFile.open(m_pathFile.c_str(), ios::out | ios::trunc);
-    patternFile.open(m_patternFile.c_str(), ios::out | ios::trunc);
-   
-    STRIGI_MUTEX_LOCK(&m_mutex);
-   
-    // TODO: fix when we'll use a single conf file
-    if (pathFile.is_open() && patternFile.is_open())
-    {
-        for (vector<Filter*>::iterator iter = m_rules.begin(); iter != m_rules.end(); iter++)
-        {
-            Filter* filter = *iter;
-
-            switch (filter->rtti())
-            {
-                case PathFilter::RTTI:
-                    pathFile << filter->rule() << endl;
-                    break;
-                case PatternFilter::RTTI:
-                    patternFile << filter->rule() << endl;
-                    break;
-                default:
-                    STRIGI_LOG_ERROR ("strigi.filtermanager.saveFilter", "unknown rule RTTI")
-                    break;
-            }
-        }
-       
-        patternFile.close();
-        pathFile.close();
-       
-        STRIGI_LOG_DEBUG ("strigi.filtermanager", "successfully saved filtering rules")
-    }
-    else
-        STRIGI_LOG_ERROR ("strigi.filtermanager.saveFilter", "unable to save filtering rules");
-   
-    STRIGI_MUTEX_UNLOCK(&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
 }
 
 bool FilterManager::findMatch(const char* text, uint len)
@@ -174,7 +69,7 @@ bool FilterManager::findMatch(const char* text, uint len)
 
 bool FilterManager::findMatch (string& text)
 {
-    STRIGI_MUTEX_LOCK (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_rulesMutex);
     
     // check if text is related with strigi configuration directory
     int ret = fnmatch (m_strigidir.c_str(), text.c_str(), 0);
@@ -184,7 +79,7 @@ bool FilterManager::findMatch (string& text)
     else if ( ret == 0)
     {
         STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", "Ignoring strigi configuration directory: " + m_strigidir)
-        STRIGI_MUTEX_UNLOCK (&m_mutex);
+        STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
         return true;
     }
     
@@ -193,12 +88,12 @@ bool FilterManager::findMatch (string& text)
         Filter* filter = *iter;
         if (filter->match (text))
         {
-            STRIGI_MUTEX_UNLOCK (&m_mutex);
+            STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
             return true;
         }
     }
    
-    STRIGI_MUTEX_UNLOCK (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
 
     //STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
     return false;
@@ -206,6 +101,8 @@ bool FilterManager::findMatch (string& text)
 
 multimap<int,string> FilterManager::getFilteringRules()
 {
+    STRIGI_MUTEX_LOCK (&m_rulesMutex);
+    
     multimap<int,string> rules;
     
     for (vector<Filter*>::iterator iter = m_rules.begin(); iter != m_rules.end(); iter++)
@@ -214,6 +111,8 @@ multimap<int,string> FilterManager::getFilteringRules()
         rules.insert(make_pair (int(filter->rtti()),filter->rule()));
     }
 
+    STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
+    
     return rules;
 }
 
@@ -221,6 +120,8 @@ void FilterManager::setFilteringRules(const multimap<int, string>& rules)
 {
     clearRules();
 
+    STRIGI_MUTEX_LOCK (&m_rulesMutex);
+    
     multimap<int,string>::const_iterator iter;
     for (iter = rules.begin(); iter != rules.end(); iter++)
     {
@@ -236,4 +137,6 @@ void FilterManager::setFilteringRules(const multimap<int, string>& rules)
                 STRIGI_LOG_ERROR ("strigi.filtermanager.setFilteringRules", "unknown rule RTTI")
         }
     }
+    
+    STRIGI_MUTEX_UNLOCK (&m_rulesMutex);
 }
