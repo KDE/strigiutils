@@ -19,6 +19,8 @@
  */
 
 #include "daemonconfigurator.h"
+#include "../../filters/filtermanager.h"
+#include "../../filters/filters.h"
 #include "../strigilogging.h"
 
 #include <algorithm>
@@ -60,12 +62,6 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     
     if (match == e_repository.end()) // entry for localhost repository doesn't exists
     {
-        if (xml.str().length() == 0)
-            printf ("xml\n");
-        
-        if (match == e_repository.end())
-            printf ("repo\n");
-        
         a_useDBus = true;
         Repository r;
         r.a_name = string ("localhost");
@@ -84,7 +80,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     }
 }
 
-void DaemonConfigurator::setIndexedDirs (set<string>& dirs, const string& repositoryName)
+void DaemonConfigurator::setIndexedDirectories (set<string>& dirs, const string& repositoryName)
 {
     FindRepository findRepository (repositoryName);
     
@@ -107,10 +103,14 @@ void DaemonConfigurator::setIndexedDirs (set<string>& dirs, const string& reposi
     r->e_path.clear();
     
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
-        r->e_path.push_back(*iter);
+    {
+        Path p;
+        p.a_path = *iter;
+        r->e_path.push_back(p);
+    }
 }
 
-set<string> DaemonConfigurator::getIndexedDirs (const string& repositoryName)
+set<string> DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 {
     set<string> dirs;
     
@@ -136,5 +136,63 @@ void DaemonConfigurator::save()
     f.open(m_confFile.c_str(), std::ios::binary);
     f << *this;
     f.close();
+}
+
+void DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
+{
+    std::multimap<int,string> rules;
+    
+    list<Filteringrules>::const_iterator i;
+    for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
+        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin(); j != i->e_pathfilter.end(); ++j) {
+            rules.insert (make_pair((int)PathFilter::RTTI, j->a_path));
+            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added path filter: |" + j->a_path + '|')
+        }
+        
+        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin(); j != i->e_patternfilter.end(); ++j) {
+            rules.insert (make_pair((int)PatternFilter::RTTI, j->a_pattern));
+            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added pattern filter: |" + j->a_pattern + '|')
+        }
+    }
+    
+    filterManager->setFilteringRules (rules);
+}
+
+void DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
+{
+    std::multimap<int,string>  rules = filterManager->getFilteringRules();
+    
+    // remove old filtering rules
+    e_filteringrules.clear();
+        
+    Filteringrules f;
+    
+    for (std::multimap<int,string>::iterator iter = rules.begin(); iter != rules.end(); iter++)
+    {
+        switch (iter->first)
+        {
+            case PathFilter::RTTI:
+            {
+                Pathfilter p;
+                p.a_path = iter->second;
+                f.e_pathfilter.push_back (p);
+                break;
+            }
+            case PatternFilter::RTTI:
+            {
+                Patternfilter p;
+                p.a_pattern = iter->second;
+                f.e_patternfilter.push_back (p);
+                break;
+            }
+            default:
+                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules", "unknown rule RTTI")
+                break;
+        }
+    }
+    
+    e_filteringrules.push_back (f);
+    
+    STRIGI_LOG_DEBUG ("strigi.filtermanager", "successfully saved filtering rules")
 }
 

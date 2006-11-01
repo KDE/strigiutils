@@ -25,14 +25,18 @@
 
 #include <set>
 
+class FilterManager;
+
 class DaemonConfigurator : public StrigiDaemonConfiguration
 {
     public:
         DaemonConfigurator (const std::string& confFile);
     
-        void setIndexedDirs (std::set<std::string>& dirs, const std::string& repositoryName = "localhost");
-        std::set<std::string> getIndexedDirs (const std::string& repositoryName = "localhost");
+        void setIndexedDirectories (std::set<std::string>& dirs, const std::string& repositoryName = "localhost");
+        std::set<std::string> getIndexedDirectories (const std::string& repositoryName = "localhost");
         bool useDBus() { return a_useDBus; }
+        void loadFilteringRules (FilterManager* filterManager);
+        void saveFilteringRules (FilterManager* filterManager);
         
         void save();
         
