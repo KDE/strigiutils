@@ -56,7 +56,6 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         XMLStream stream(xml.str());
         stream >> *this;
     }
-
     FindRepository findRepository ("localhost");
     list<Repository>::iterator match = find_if (e_repository.begin(),
                                                 e_repository.end(),
@@ -69,6 +68,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         r.a_name = string ("localhost");
         string s = getenv("HOME"); 
         r.a_indexdir = s + "/.strigi/clucene";
+        r.a_writeable = true;
         r.a_type = "clucene";
         Path p;
         p.a_path = s;                 r.e_path.push_back(p);
@@ -145,7 +145,7 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 void DaemonConfigurator::save()
 {
     ofstream f;
-    f.open(m_confFile.c_str(), std::ios::binary);
+    f.open(m_confFile.c_str(), ios::binary);
     f << *this;
     f.close();
 }
@@ -160,7 +160,7 @@ DaemonConfigurator::getWriteableIndexDir() const {
 void
 DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
 {
-    std::multimap<int,string> rules;
+    multimap<int,string> rules;
     
     list<Filteringrules>::const_iterator i;
     for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
@@ -186,7 +186,7 @@ DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
 void
 DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
 {
-    std::multimap<int,string>  rules = filterManager->getFilteringRules();
+    multimap<int,string>  rules = filterManager->getFilteringRules();
     
     // remove old filtering rules
     e_filteringrules.clear();
@@ -225,6 +225,17 @@ DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
                       "successfully saved filtering rules")
 }
 
+list<Repository>
+DaemonConfigurator::getReadOnlyRepositories() const {
+    list<Repository> ro;
+    list<Repository>::const_iterator i;
+    for (i = e_repository.begin(); i != e_repository.end(); ++i) {
+        if (!i->a_writeable) {
+            ro.push_back(*i);
+        }
+    }
+    return ro;
+}
 void
 DaemonConfigurator::setPollingInterval (unsigned int value,
                                         const string& repositoryName)

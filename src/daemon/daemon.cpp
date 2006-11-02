@@ -227,6 +227,11 @@ main(int argc, char** argv) {
 
     CombinedIndexManager* index = new CombinedIndexManager(
         config.getWriteableIndexType(), config.getWriteableIndexDir());
+    list<Repository> rors = config.getReadOnlyRepositories();
+    list<Repository>::const_iterator i;
+    for (i = rors.begin(); i != rors.end(); ++i) {
+        index->addReadonlyIndex(i->a_indexdir, i->a_type);
+    }
     
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
