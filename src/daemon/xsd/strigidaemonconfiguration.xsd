@@ -8,6 +8,7 @@ xmlns:tns="http://www.vandenoever.info/strigi">
     <sequence>
       <element name="repository" minOccurs="0" maxOccurs="unbounded">
         <complexType>
+          <attribute name="pollingInterval" type="int"/>
           <sequence>
             <element name="path"  minOccurs="0" maxOccurs="unbounded">
               <complexType>
