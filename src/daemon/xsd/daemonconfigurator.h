@@ -37,10 +37,12 @@ class DaemonConfigurator : public StrigiDaemonConfiguration
         bool useDBus() { return a_useDBus; }
         void loadFilteringRules (FilterManager* filterManager);
         void saveFilteringRules (FilterManager* filterManager);
+        void setPollingInterval (unsigned int value, const std::string& repositoryName = "localhost");
+        unsigned int getPollingInterval(const std::string& repositoryName = "localhost");
         
         void save();
-    std::string getWriteableIndexType() const;
-    std::string getWriteableIndexDir() const;
+        std::string getWriteableIndexType() const;
+        std::string getWriteableIndexDir() const;
         
     private:
         std::string m_confFile;

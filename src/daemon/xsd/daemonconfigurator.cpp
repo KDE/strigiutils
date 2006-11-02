@@ -43,7 +43,7 @@ class FindRepository
             return false;
         }
 };
-#include <iostream>
+
 DaemonConfigurator::DaemonConfigurator (const string& confFile)
     : m_confFile (confFile)
 {
@@ -56,9 +56,11 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         XMLStream stream(xml.str());
         stream >> *this;
     }
-    printf("hi\n");
+
     FindRepository findRepository ("localhost");
-    list<Repository>::iterator match = find_if (e_repository.begin(), e_repository.end(), findRepository);
+    list<Repository>::iterator match = find_if (e_repository.begin(),
+                                                e_repository.end(),
+                                                findRepository);
     
     if (match == e_repository.end()) // entry for localhost repository doesn't exists
     {
@@ -77,15 +79,19 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
         
-        STRIGI_LOG_WARNING ("DaemonConfigurator", "created default config for indexed dirs")
+        STRIGI_LOG_WARNING ("DaemonConfigurator",
+                            "created default config for indexed dirs")
     }
 }
-
-void DaemonConfigurator::setIndexedDirectories (set<string>& dirs, const string& repositoryName)
+void
+DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
+                                            const string& repositoryName)
 {
     FindRepository findRepository (repositoryName);
     
-    list<Repository>::iterator match = find_if (e_repository.begin(), e_repository.end(), findRepository);
+    list<Repository>::iterator match = find_if (e_repository.begin(),
+                                                e_repository.end(),
+                                                findRepository);
     
     Repository* r;
     
@@ -110,27 +116,32 @@ void DaemonConfigurator::setIndexedDirectories (set<string>& dirs, const string&
         r->e_path.push_back(p);
     }
 }
-
-set<string> DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
+set<string>
+DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 {
     set<string> dirs;
     
     FindRepository findRepository (repositoryName);
     
-    list<Repository>::iterator match = find_if (e_repository.begin(), e_repository.end(), findRepository);
+    list<Repository>::iterator match = find_if (e_repository.begin(),
+                                                e_repository.end(),
+                                                findRepository);
     
     if (match == e_repository.end())
     {
-        STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs", "cannot find repository name: |" + repositoryName + "|")
+        STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs",
+                        "cannot find repository name: |" + repositoryName + "|")
         return dirs;
     }
     
-    for (list<Path>::const_iterator iter = match->e_path.begin(); iter != match->e_path.end(); iter++)
+    for (list<Path>::const_iterator iter = match->e_path.begin();
+         iter != match->e_path.end(); iter++)
+    {
         dirs.insert (iter->a_path);
+    }
     
     return dirs;
 }
-
 void DaemonConfigurator::save()
 {
     ofstream f;
@@ -146,28 +157,34 @@ string
 DaemonConfigurator::getWriteableIndexDir() const {
     return (e_repository.size()) ?e_repository.begin()->a_indexdir : "";
 }
-
-void DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
+void
+DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
 {
     std::multimap<int,string> rules;
     
     list<Filteringrules>::const_iterator i;
     for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
-        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin(); j != i->e_pathfilter.end(); ++j) {
+        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
+             j != i->e_pathfilter.end(); ++j)
+        {
             rules.insert (make_pair((int)PathFilter::RTTI, j->a_path));
-            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added path filter: |" + j->a_path + '|')
+            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter",
+                              "added path filter: |" + j->a_path + '|')
         }
         
-        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin(); j != i->e_patternfilter.end(); ++j) {
+        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
+                j != i->e_patternfilter.end(); ++j)
+        {
             rules.insert (make_pair((int)PatternFilter::RTTI, j->a_pattern));
-            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter", "added pattern filter: |" + j->a_pattern + '|')
+            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter",
+                              "added pattern filter: |" + j->a_pattern + '|')
         }
     }
     
     filterManager->setFilteringRules (rules);
 }
-
-void DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
+void
+DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
 {
     std::multimap<int,string>  rules = filterManager->getFilteringRules();
     
@@ -176,7 +193,8 @@ void DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
         
     Filteringrules f;
     
-    for (std::multimap<int,string>::iterator iter = rules.begin(); iter != rules.end(); iter++)
+    for (std::multimap<int,string>::iterator iter = rules.begin();
+         iter != rules.end(); iter++)
     {
         switch (iter->first)
         {
@@ -195,13 +213,70 @@ void DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
                 break;
             }
             default:
-                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules", "unknown rule RTTI")
+                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules",
+                                  "unknown rule RTTI")
                 break;
         }
     }
     
     e_filteringrules.push_back (f);
     
-    STRIGI_LOG_DEBUG ("strigi.filtermanager", "successfully saved filtering rules")
+    STRIGI_LOG_DEBUG ("strigi.filtermanager",
+                      "successfully saved filtering rules")
 }
 
+void
+DaemonConfigurator::setPollingInterval (unsigned int value,
+                                        const string& repositoryName)
+{
+    FindRepository findRepository (repositoryName);
+    
+    list<Repository>::iterator match = find_if (e_repository.begin(),
+                                                e_repository.end(),
+                                                findRepository);
+    
+    Repository* r;
+    
+    if (match != e_repository.end())
+        r = &(*match);
+    else
+    {
+        // create a new repository
+        Repository repo;
+        repo.a_name = repositoryName;
+        repo.a_pollingInterval = 3; // default 3 minutes
+        e_repository.push_back(repo);
+        r = &repo;
+    }
+    
+    r->a_pollingInterval = value;
+}
+
+unsigned int
+DaemonConfigurator::getPollingInterval(const string& repositoryName)
+{
+    FindRepository findRepository (repositoryName);
+    
+    list<Repository>::iterator match = find_if (e_repository.begin(),
+                                                e_repository.end(),
+                                                findRepository);
+    
+    Repository* r;
+    
+    if (match != e_repository.end())
+        r = &(*match);
+    else
+    {
+        // create a new repository
+        Repository repo;
+        repo.a_name = repositoryName;
+        e_repository.push_back(repo);
+        r = &repo;
+    }
+    
+    // minimum polling interval is 60 seconds
+    if (r->a_pollingInterval < 180)
+        return 180;
+    else
+        return r->a_pollingInterval;
+}
