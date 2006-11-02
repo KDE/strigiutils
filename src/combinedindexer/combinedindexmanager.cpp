@@ -160,6 +160,7 @@ CombinedIndexReader::countHits(const Query& query) {
 }
 vector<IndexedDocument>
 CombinedIndexReader::query(const Query& q) {
+    /** TODO merge the result documents by score **/
     vector<IndexedDocument> v = m->p->writermanager->getIndexReader()
         ->query(q);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);

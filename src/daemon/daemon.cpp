@@ -57,7 +57,8 @@ void
 stopThreads() {
     vector<StrigiThread*>::const_iterator i;
     for (i=threads.begin(); i!=threads.end(); ++i) {
-        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread") + (*i)->name);
+        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread")
+            + (*i)->name);
         (*i)->stop();
         STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread");
     }
@@ -87,13 +88,18 @@ quit_daemon(int) {
 }
 
 struct sigaction quitaction;
-
 void
 set_quit_on_signal(int signum) {
     quitaction.sa_handler = quit_daemon;
     sigaction(signum, &quitaction, 0);
 }
-
+struct sigaction dummyaction;
+void nothing(int) {}
+void
+set_wakeup_on_signal(int signum) {
+    dummyaction.sa_handler = nothing;
+    sigaction(signum, &dummyaction, 0);
+}
 /**
  * Initialize a directory for storing the index data and the socket.
  * Make sure it is well protected from peeping eyes.
@@ -222,6 +228,7 @@ main(int argc, char** argv) {
     set_quit_on_signal(SIGINT);
     set_quit_on_signal(SIGQUIT);
     set_quit_on_signal(SIGTERM);
+    set_wakeup_on_signal(SIGALRM);
 
     set<string> dirs = config.getIndexedDirectories();
 

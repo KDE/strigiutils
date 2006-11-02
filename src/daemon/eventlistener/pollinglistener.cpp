@@ -72,26 +72,31 @@ void* PollingListener::run(void*)
         if (!m_watches.empty())
         {
             sleep (m_pause);
-            pool();
+            if (getState() != Stopping) {
+                pool();
+            }
         }
 
         if (getState() == Working)
             setState(Idling);
     }
     
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.run", string("exit state: ") + getStringState());
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.run",
+        string("exit state: ") + getStringState());
     return 0;
 }
 
 void PollingListener::pool ()
 {
     if (!m_pIndexReader) {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_pEventQueue == NULL!")
+        STRIGI_LOG_ERROR ("strigi.PollingListener.pool",
+            "m_pEventQueue == NULL!")
         return;
     }
     if (m_pEventQueue == NULL)
     {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool", "m_pEventQueue == NULL!")
+        STRIGI_LOG_ERROR ("strigi.PollingListener.pool",
+            "m_pEventQueue == NULL!")
         return;
     }
     

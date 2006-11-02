@@ -22,6 +22,7 @@
 #include <string>
 #include <cstring>
 #include <errno.h>
+#include <signal.h>
 #include <sys/resource.h>
 using namespace std;
 
@@ -112,6 +113,8 @@ void
 StrigiThread::stop() {
     state = Stopping;
     if (thread) {
+        // signal the thread to wake up
+        pthread_kill(thread, SIGALRM);
         // wait for the thread to finish
         pthread_join(thread, 0);
     }
