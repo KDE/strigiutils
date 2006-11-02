@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpacerItem>
+#include <QSizePolicy>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -117,6 +118,8 @@ void DlgAddFilteringRule::setupUi ()
 
     labelExplanation = new QLabel(this);
     labelExplanation->setText(tr("<p><b>Pattern filtering rule:</b> all files and directories matching the pattern above wont be indexed</p><br><p><b><i>Example:</i></b> pattern <i>*log</i> will prevent <i>foo.log</i> and <i>prolog.pdf</i> from being indexed, but also directory <i>/home/foo/log/</i> and all its contents</p>"));
+    labelExplanation->setScaledContents (true);
+    labelExplanation->setWordWrap (true);
     vboxLayout->addWidget(labelExplanation);
     
     QHBoxLayout* hboxLayout1 = new QHBoxLayout();
