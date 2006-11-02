@@ -35,7 +35,7 @@ public:
     std::string sha1;
     int64_t size;
     time_t mtime;
-    std::map<std::string, std::string> properties;
+    std::multimap<std::string, std::string> properties;
 };
 
 }

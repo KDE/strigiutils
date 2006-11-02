@@ -74,7 +74,7 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='query' type='s' direction='in'/>\n"
     << "      <arg name='max' type='i' direction='in'/>\n"
     << "      <arg name='offset' type='i' direction='in'/>\n"
-    << "      <arg name='out' type='a(sdsssxxa{ss})' direction='out'/>\n"
+    << "      <arg name='out' type='a(sdsssxxa(ss))' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='startIndexing'>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"

@@ -169,7 +169,7 @@ EstraierIndexReader::query(const Query& query) {
                 istringstream iss(value);
                 iss >> doc.size;
             } else {
-                doc.properties[name] = value;
+                doc.properties.insert(make_pair(name,value));
             }
         }
         cblistclose(atts);

@@ -179,7 +179,7 @@ SocketClient::getHits(const string &query, int max, int off) {
                 break;
             }
             string n(s, v-s);
-            h.properties[n] = v+1;
+            h.properties.insert(make_pair(n,v+1));
             ++i;
         }
         hits.hits.push_back(h);

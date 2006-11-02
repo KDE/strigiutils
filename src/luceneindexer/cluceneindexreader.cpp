@@ -165,7 +165,7 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
         string size = convertValue(value);
         doc.size = atoi(size.c_str());
     } else {
-        doc.properties[name] = convertValue(value);
+        doc.properties.insert(make_pair(name,convertValue(value)));
     }
 }
 int32_t

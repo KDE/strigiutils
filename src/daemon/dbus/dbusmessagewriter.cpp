@@ -145,10 +145,10 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
         n = i->mtime;
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
-        dbus_message_iter_open_container(&ssub, DBUS_TYPE_ARRAY, "{ss}",&sssub);
-        map<string, string>::const_iterator j;
+        dbus_message_iter_open_container(&ssub, DBUS_TYPE_ARRAY, "(ss)",&sssub);
+        multimap<string, string>::const_iterator j;
         for (j = i->properties.begin(); j != i->properties.end(); ++j) {
-            dbus_message_iter_open_container(&sssub, DBUS_TYPE_DICT_ENTRY, 0,
+            dbus_message_iter_open_container(&sssub, DBUS_TYPE_STRUCT, 0,
                 &ssssub);
             c = j->first.c_str();
             dbus_message_iter_append_basic(&ssssub, DBUS_TYPE_STRING, &c);
