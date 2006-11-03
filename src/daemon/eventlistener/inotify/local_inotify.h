@@ -23,7 +23,7 @@ struct inotify_event {
 	char		name[0];	/* stub for possible name */
 };
 
-#include "inotify-masks.h"
+#include "local_inotify-masks.h"
 
 #ifdef __KERNEL__
 

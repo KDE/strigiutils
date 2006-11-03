@@ -33,8 +33,8 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "inotify.h"
-#include "inotify-syscalls.h"
+#include "local_inotify.h"
+#include "local_inotify-syscalls.h"
 
 InotifyListener* InotifyListener::workingInotifyListener;
 InotifyListener::ReindexDirsThread* InotifyListener::ReindexDirsThread::workingReindex;
