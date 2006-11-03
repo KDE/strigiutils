@@ -53,10 +53,6 @@ class PollingListener : public EventListener
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
         
-        /*! 
-        * configure the polling interval, the time elapsed between each polling operation (expressed in seconds) 
-        */
-        void setPauseValue (unsigned int pause) {m_pause = pause;}
         
         void* run(void*);
 
@@ -65,9 +61,9 @@ class PollingListener : public EventListener
         void pool ();
         void clearWatches();
        
+        bool m_firstTime;
         std::set<std::string> m_watches;
         std::map<std::string, time_t> m_toIndex;
-        unsigned int m_pause; //!< pause time between each polling operation
         pthread_mutex_t m_mutex;
         static PollingListener* workingPoller; //!<pointer to current PollingListener instance, used with FileLister's callbacks
 };

@@ -43,6 +43,7 @@ public:
         m_pEventQueue = NULL;
         m_pFilterManager = NULL;
         m_pIndexReader = NULL;
+        m_pollingInterval = 180;
     }
 
     virtual ~EventListener() {};
@@ -60,11 +61,22 @@ public:
     void setIndexReader (jstreams::IndexReader* ireader) {
         m_pIndexReader = ireader;
     }
+    unsigned int getPollingInterval() {
+        return m_pollingInterval;
+    }
+    /*! 
+    * configure the polling interval. The time elapsed between each polling
+    * operation (expressed in seconds) 
+    */
+    void setPollingInterval(unsigned int value) {
+        m_pollingInterval = value;
+    }
 
 protected:
     EventListenerQueue* m_pEventQueue;
     FilterManager* m_pFilterManager;
     jstreams::IndexReader* m_pIndexReader;
+    unsigned int m_pollingInterval;//!< pause time between each polling operation
 };
 
 #endif

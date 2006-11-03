@@ -42,7 +42,7 @@ PollingListener::PollingListener()
     workingPoller = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
-    m_pause = 60; //60 seconds of pause between each polling
+    m_firstTime = true;
 }
 
 PollingListener::PollingListener(set<string>& dirs)
@@ -51,7 +51,7 @@ PollingListener::PollingListener(set<string>& dirs)
     workingPoller = this;
     setState(Idling);
     pthread_mutex_init (&m_mutex, 0);
-    m_pause = 60; //60 seconds of pause between each polling
+    m_firstTime = true;
     
     addWatches( dirs);
 }
@@ -71,10 +71,12 @@ void* PollingListener::run(void*)
         // wait m_pause seconds before polling again
         if (!m_watches.empty())
         {
-            sleep (m_pause);
+            if (!m_firstTime)
+                sleep (m_pollingInterval);
             if (getState() != Stopping) {
                 pool();
             }
+            m_firstTime = false;
         }
 
         if (getState() == Working)
