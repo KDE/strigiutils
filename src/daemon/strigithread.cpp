@@ -24,7 +24,58 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/resource.h>
+#include <vector>
 using namespace std;
+
+vector<StrigiThread*> threads;
+
+void
+StrigiThread::stopThreads() {
+    vector<StrigiThread*>::const_iterator i;
+    for (i=threads.begin(); i!=threads.end(); ++i) {
+        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread")
+            + (*i)->name);
+        (*i)->stop();
+        STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread");
+    }
+}
+
+void
+quit_daemon(int) {
+    STRIGI_LOG_INFO("strigi.daemon", "quit_daemon");
+    static int interruptcount = 0;
+    vector<StrigiThread*>::const_iterator i;
+    switch (++interruptcount) {
+    case 1:
+        STRIGI_LOG_INFO ("strigi.daemon", "stopping threads");
+        StrigiThread::stopThreads();
+        break;
+    case 2:
+        STRIGI_LOG_INFO ("strigi.daemon", "terminating threads");
+        for (i=threads.begin(); i!=threads.end(); ++i) {
+            (*i)->terminate();
+        }
+        break;
+    case 3:
+    default:
+        STRIGI_LOG_FATAL ("strigi.daemon", "calling exit(1)")
+        exit(1);
+    }
+}
+
+struct sigaction quitaction;
+void
+set_quit_on_signal(int signum) {
+    quitaction.sa_handler = quit_daemon;
+    sigaction(signum, &quitaction, 0);
+}
+struct sigaction dummyaction;
+void nothing(int) {}
+void
+set_wakeup_on_signal(int signum) {
+    dummyaction.sa_handler = nothing;
+    sigaction(signum, &dummyaction, 0);
+}
 
 void*
 threadstarter(void *d) {
@@ -100,6 +151,13 @@ StrigiThread::getStringState() {
 }
 int
 StrigiThread::start(int prio) {
+    // set up signal handling
+    set_quit_on_signal(SIGINT);
+    set_quit_on_signal(SIGQUIT);
+    set_quit_on_signal(SIGTERM);
+    set_wakeup_on_signal(SIGALRM);
+    threads.push_back(this);
+
     priority = prio;
     // start the indexer thread
     int r = pthread_create(&thread, NULL, threadstarter, this);

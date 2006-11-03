@@ -51,55 +51,6 @@
 using namespace jstreams;
 using namespace std;
 
-vector<StrigiThread*> threads;
-
-void
-stopThreads() {
-    vector<StrigiThread*>::const_iterator i;
-    for (i=threads.begin(); i!=threads.end(); ++i) {
-        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread")
-            + (*i)->name);
-        (*i)->stop();
-        STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread");
-    }
-}
-
-void
-quit_daemon(int) {
-    STRIGI_LOG_INFO("strigi.daemon", "quit_daemon");
-    static int interruptcount = 0;
-    vector<StrigiThread*>::const_iterator i;
-    switch (++interruptcount) {
-    case 1:
-        STRIGI_LOG_INFO ("strigi.daemon", "stopping threads");
-        stopThreads();
-        break;
-    case 2:
-        STRIGI_LOG_INFO ("strigi.daemon", "terminating threads");
-        for (i=threads.begin(); i!=threads.end(); ++i) {
-            (*i)->terminate();
-        }
-        break;
-    case 3:
-    default:
-        STRIGI_LOG_FATAL ("strigi.daemon", "calling exit(1)")
-        exit(1);
-    }
-}
-
-struct sigaction quitaction;
-void
-set_quit_on_signal(int signum) {
-    quitaction.sa_handler = quit_daemon;
-    sigaction(signum, &quitaction, 0);
-}
-struct sigaction dummyaction;
-void nothing(int) {}
-void
-set_wakeup_on_signal(int signum) {
-    dummyaction.sa_handler = nothing;
-    sigaction(signum, &dummyaction, 0);
-}
 /**
  * Initialize a directory for storing the index data and the socket.
  * Make sure it is well protected from peeping eyes.
@@ -224,12 +175,6 @@ main(int argc, char** argv) {
         exit(1);
     }
 
-    // set up signal handling
-    set_quit_on_signal(SIGINT);
-    set_quit_on_signal(SIGQUIT);
-    set_quit_on_signal(SIGTERM);
-    set_wakeup_on_signal(SIGALRM);
-
     set<string> dirs = config.getIndexedDirectories();
 
     CombinedIndexManager* index = new CombinedIndexManager(
@@ -247,7 +192,7 @@ main(int argc, char** argv) {
     scheduler.setEventListenerQueue (&listenerEventQueue);
 
     // start the indexer thread
-    threads.push_back(&scheduler);
+//    threads.push_back(&scheduler);
     scheduler.start(20);
 
     Interface interface(*index, scheduler);
@@ -271,14 +216,14 @@ main(int argc, char** argv) {
         listener->start(20);
     }
     interface.setEventListener (listener);
-    threads.push_back(listener);
+//    threads.push_back(listener);
 
     interface.setFilterManager (&filterManager);
 
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     if (config.useDBus()) {
-        threads.push_back(&dbusserver);
+//        threads.push_back(&dbusserver);
         dbusserver.start();
     }
 #endif
@@ -287,9 +232,9 @@ main(int argc, char** argv) {
     server.setSocketName(socketpath.c_str());
 
     if (!server.listen()) {
-        stopThreads();
+        StrigiThread::stopThreads();
     }
-    
+ 
     //save indexed dirs
     dirs = scheduler.getIndexedDirectories();
     config.setIndexedDirectories (dirs);
@@ -303,7 +248,7 @@ main(int argc, char** argv) {
     //save filtering rules
     config.saveFilteringRules (&filterManager);
     config.save();
-    
+
     // release lock
     releaseLock(lockfile, lock);
 }

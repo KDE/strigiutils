@@ -46,6 +46,7 @@ public:
     State getState();
     std::string getStringState();
     int getPriority() const { return priority; }
+    static void stopThreads();
 };
 
 #endif

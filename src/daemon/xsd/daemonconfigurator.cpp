@@ -63,7 +63,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     
     if (match == e_repository.end()) // entry for localhost repository doesn't exists
     {
-        a_useDBus = true;
+        a_useDBus = false;
         Repository r;
         r.a_name = string ("localhost");
         string s = getenv("HOME"); 

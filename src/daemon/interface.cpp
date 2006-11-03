@@ -29,6 +29,7 @@
 #include "stringreader.h"
 #include "query.h"
 #include <sstream>
+#include <vector>
 using namespace std;
 using namespace jstreams;
 
