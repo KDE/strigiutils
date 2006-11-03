@@ -159,11 +159,13 @@ main(int argc, char** argv) {
     scheduler.setFilterManager (&filterManager);
 
     if (!initializeDir(lucenedir)) {
-        STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the clucene directory.")
+        STRIGI_LOG_FATAL ("strigi.daemon",
+                          "Could not initialize the clucene directory.")
         exit(1);
     }
     if (!initializeDir(estraierdir)) {
-        STRIGI_LOG_FATAL ("strigi.daemon", "Could not initialize the estraier directory.")
+        STRIGI_LOG_FATAL ("strigi.daemon",
+                          "Could not initialize the estraier directory.")
         exit(1);
     }
 
@@ -171,7 +173,9 @@ main(int argc, char** argv) {
     struct flock lock;
     FILE* lockfile = aquireLock(lockfilename.c_str(), lock);
     if (lockfile == 0) {
-        STRIGI_LOG_FATAL ("strigi.daemon", "Daemon cannot run: the file " + lockfilename + " is locked.")
+        STRIGI_LOG_FATAL ("strigi.daemon",
+                          "Daemon cannot run: the file " +
+                           lockfilename + " is locked.")
         exit(1);
     }
 
@@ -211,6 +215,7 @@ main(int argc, char** argv) {
         listener->setEventListenerQueue (&listenerEventQueue);
         listener->setFilterManager (&filterManager);
         listener->setIndexReader (index->getIndexReader());
+        listener->setPollingInterval (config.getPollingInterval());
         // do not start scanning until execution is in the thread!
         // inotifyListener.setIndexedDirectories(dirs);
         listener->start(20);
@@ -239,15 +244,20 @@ main(int argc, char** argv) {
     dirs = scheduler.getIndexedDirectories();
     config.setIndexedDirectories (dirs);
 
+    //save the pollingtime
+    config.setPollingInterval (listener->getPollingInterval());
+    
+    //save filtering rules
+    config.saveFilteringRules (&filterManager);
+    
+    //save the updated xml configuration file
+    config.save();
+    
     // close the indexmanager
     delete index;
 
     //delete listener
     delete listener;
-
-    //save filtering rules
-    config.saveFilteringRules (&filterManager);
-    config.save();
 
     // release lock
     releaseLock(lockfile, lock);
