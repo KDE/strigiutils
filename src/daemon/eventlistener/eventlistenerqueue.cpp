@@ -20,6 +20,7 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
+#include "../../streamindexer/strigi_thread.h"
 
 #include <algorithm>
 #include <iostream>
@@ -28,12 +29,12 @@ using namespace std;
 
 EventListenerQueue::EventListenerQueue()
 {
-    pthread_mutex_init (&m_mutex, 0);
+    STRIGI_MUTEX_INIT (&m_mutex);
 }
 
 EventListenerQueue::~EventListenerQueue()
 {
-    pthread_mutex_destroy (&m_mutex);
+    STRIGI_MUTEX_DESTROY (&m_mutex);
    
     clear();
 }
@@ -55,7 +56,7 @@ void EventListenerQueue::addEvents (vector<Event*> events)
     vector<Event*>::iterator iter;
     map < string, Event*>::iterator mapIt;
    
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
    
     for (iter = events.begin(); iter != events.end(); iter++)
     {
@@ -69,14 +70,14 @@ void EventListenerQueue::addEvents (vector<Event*> events)
         m_events[event->getPath()] = event;
     }
    
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
 }
 
 vector <Event*> EventListenerQueue::getEvents()
 {
     vector <Event*> result;
    
-    if (pthread_mutex_trylock (&m_mutex))
+    if (STRIGI_MUTEX_TRY_LOCK (&m_mutex))
     {
         for (map<string, Event*>::iterator iter = m_events.begin(); iter != m_events.end(); iter++)
         {
@@ -85,7 +86,7 @@ vector <Event*> EventListenerQueue::getEvents()
        
         m_events.clear();
        
-        pthread_mutex_unlock (&m_mutex);
+        STRIGI_MUTEX_UNLOCK (&m_mutex);
     }
    
     return result;

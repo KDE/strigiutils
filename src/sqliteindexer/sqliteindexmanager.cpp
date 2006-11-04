@@ -20,6 +20,7 @@
 #include "sqliteindexmanager.h"
 #include "sqliteindexreader.h"
 #include "sqliteindexwriter.h"
+#include "strigi_thread.h"
 using namespace std;
 using namespace jstreams;
 
@@ -105,7 +106,7 @@ SqliteIndexManager::opendb(const char* path) {
 }
 sqlite3*
 SqliteIndexManager::ref() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_MUTEX_LOCK(&dblock);
     pthread_t self = pthread_self();
     sqlite3* db = dbs[self];
     if (db == 0) {
@@ -116,7 +117,7 @@ SqliteIndexManager::ref() {
 }
 void
 SqliteIndexManager::deref() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_MUTEX_UNLOCK(&dblock);
 }
 IndexReader*
 SqliteIndexManager::getIndexReader() {

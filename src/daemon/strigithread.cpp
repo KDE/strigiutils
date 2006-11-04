@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigithread.h"
+#include "../streamindexer/strigi_thread.h"
 #include "strigilogging.h"
 #include <string>
 #include <cstring>
@@ -108,28 +109,28 @@ threadstarter(void *d) {
     // start the actual work
     thread->run(0);
     STRIGI_LOG_DEBUG(string("strigi.daemon.") + thread->name + ".threadstarter", "end of thread");
-    pthread_exit(0);
+    STRIGI_THREAD_EXIT(0);
 }
 
 StrigiThread::StrigiThread(const char* n) :state(Idling),thread(0),  name(n) {
     priority = 0;
-    pthread_mutex_init(&lock, NULL);
+    STRIGI_MUTEX_INIT(&lock);
 }
 StrigiThread::~StrigiThread() {
-    pthread_mutex_destroy(&lock);
+    STRIGI_MUTEX_DESTROY(&lock);
 }
 void
 StrigiThread::setState(State s) {
-    pthread_mutex_lock(&lock);
+    STRIGI_MUTEX_LOCK(&lock);
     state = s;
-    pthread_mutex_unlock(&lock);
+    STRIGI_MUTEX_UNLOCK(&lock);
 }
 StrigiThread::State
 StrigiThread::getState() {
     State s;
-    pthread_mutex_lock(&lock);
+    STRIGI_MUTEX_LOCK(&lock);
     s = state;
-    pthread_mutex_unlock(&lock);
+    STRIGI_MUTEX_UNLOCK(&lock);
     return s;
 }
 std::string
@@ -160,7 +161,7 @@ StrigiThread::start(int prio) {
 
     priority = prio;
     // start the indexer thread
-    int r = pthread_create(&thread, NULL, threadstarter, this);
+    int r = STRIGI_THREAD_CREATE(&thread, threadstarter, this);
     if (r < 0) {
         STRIGI_LOG_ERROR ("strigi.daemon." + string(name), "cannot create thread")
         return 1;
@@ -174,7 +175,7 @@ StrigiThread::stop() {
         // signal the thread to wake up
         pthread_kill(thread, SIGALRM);
         // wait for the thread to finish
-        pthread_join(thread, 0);
+        STRIGI_THREAD_JOIN(thread, 0);
     }
     thread = 0;
 }

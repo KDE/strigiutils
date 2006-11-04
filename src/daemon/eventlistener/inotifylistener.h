@@ -21,6 +21,7 @@
 #define INOTIFYLISTENER_H
 
 #include "eventlistener.h"
+#include "strigi_thread.h"
 #include <map>
 #include <vector>
 
@@ -53,8 +54,8 @@ class InotifyListener : public EventListener
                     m_newDirs = newdirs;
                     m_oldDirs = olddirs;
                     m_bfinished = false;
-                    pthread_mutex_init(&m_nextJobLock, NULL);
-                    pthread_mutex_init(&m_resourcesLock, NULL);
+                    STRIGI_MUTEX_INIT (&m_nextJobLock);
+                    STRIGI_MUTEX_INIT (&m_resourcesLock);
                 }
         
                 ~ReindexDirsThread();

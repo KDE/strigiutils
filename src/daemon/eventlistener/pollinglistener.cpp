@@ -30,6 +30,7 @@
 #include "filelister.h"
 #include "indexreader.h"
 #include "../strigilogging.h"
+#include "strigi_thread.h"
 
 using namespace std;
 using namespace jstreams;
@@ -41,7 +42,7 @@ PollingListener::PollingListener()
 {
     workingPoller = this;
     setState(Idling);
-    pthread_mutex_init (&m_mutex, 0);
+    STRIGI_MUTEX_INIT (&m_mutex);
     m_firstTime = true;
 }
 
@@ -50,7 +51,7 @@ PollingListener::PollingListener(set<string>& dirs)
 {
     workingPoller = this;
     setState(Idling);
-    pthread_mutex_init (&m_mutex, 0);
+    STRIGI_MUTEX_INIT (&m_mutex);
     m_firstTime = true;
     
     addWatches( dirs);
@@ -59,7 +60,7 @@ PollingListener::PollingListener(set<string>& dirs)
 PollingListener::~PollingListener()
 {
     m_watches.clear();
-    pthread_mutex_destroy (&m_mutex);
+    STRIGI_MUTEX_DESTROY (&m_mutex);
 }
 
 void* PollingListener::run(void*)
@@ -112,9 +113,9 @@ void PollingListener::pool ()
     m_toIndex.clear();
     
     // get a shadow copy of m_watches
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
     watches = m_watches;
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
     
     STRIGI_LOG_DEBUG ("strigi.PollingListener.pool", "going across filesystem")
     
@@ -185,11 +186,11 @@ void PollingListener::pool ()
 
 bool PollingListener::addWatch (const string& path)
 {
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
     
     m_watches.insert (path);
     
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
     
     STRIGI_LOG_DEBUG ("strigi.PollingListener.addWatch", "successfully added polling watch for " + path)
     
@@ -198,14 +199,14 @@ bool PollingListener::addWatch (const string& path)
 
 void PollingListener::rmWatch (const string& path)
 {
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
     
     set<string>::iterator iter = m_watches.find (path);
     
     if (iter != m_watches.end())
         m_watches.erase (iter);
     
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
 }
 
 void PollingListener::addWatches (const set<string> &watches)
@@ -229,9 +230,9 @@ void PollingListener::addWatches (const set<string> &watches)
             {
                 // *it starts with temp, it means *it is a subdir of temp
                 // we have to replace *it with temp, begin deleting it
-                pthread_mutex_lock (&m_mutex);
+                STRIGI_MUTEX_LOCK (&m_mutex);
                 m_watches.erase(it);
-                pthread_mutex_unlock (&m_mutex);
+                STRIGI_MUTEX_UNLOCK (&m_mutex);
                 break;
             }
         }
@@ -244,9 +245,9 @@ void PollingListener::addWatches (const set<string> &watches)
 
 void PollingListener::setIndexedDirectories (const set<string>& dirs)
 {
-    pthread_mutex_lock (&m_mutex);
+    STRIGI_MUTEX_LOCK (&m_mutex);
     m_watches.clear();
-    pthread_mutex_unlock (&m_mutex);
+    STRIGI_MUTEX_UNLOCK (&m_mutex);
     
     addWatches (dirs);
 }

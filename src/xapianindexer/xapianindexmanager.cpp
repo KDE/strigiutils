@@ -69,7 +69,7 @@ XapianIndexManager::getIndexWriter() {
 }
 /*ESTDB*
 XapianIndexManager::getWriteDB() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_MUTEX_LOCK(&dblock);
     // check if a writable db is already opened
     if (db) {
         if (writing) return db;
@@ -83,11 +83,11 @@ XapianIndexManager::getWriteDB() {
 }
 void
 XapianIndexManager::returnWriteDB() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_MUTEX_UNLOCK(&dblock);
 }
 ESTDB*
 XapianIndexManager::getReadDB() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_MUTEX_LOCK(&dblock);
     // check if a readable db is already opened
     if (db) {
         if (!writing) return db;
@@ -98,15 +98,15 @@ XapianIndexManager::getReadDB() {
 }
 void
 XapianIndexManager::returnReadDB() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_MUTEX_UNLOCK(&dblock);
 }*/
 void
 XapianIndexManager::ref() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_MUTEX_LOCK(&dblock);
 }
 void
 XapianIndexManager::deref() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_MUTEX_UNLOCK(&dblock);
 }
 void
 XapianIndexManager::closedb() {

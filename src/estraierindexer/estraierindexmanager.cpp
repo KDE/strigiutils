@@ -77,12 +77,12 @@ EstraierIndexManager::getIndexWriter() {
 }
 ESTDB*
 EstraierIndexManager::ref() {
-    pthread_mutex_lock(&dblock);
+    STRIGI_MUTEX_LOCK(&dblock);
     return db;
 }
 void
 EstraierIndexManager::deref() {
-    pthread_mutex_unlock(&dblock);
+    STRIGI_MUTEX_UNLOCK(&dblock);
 }
 void
 EstraierIndexManager::closedb() {

@@ -65,7 +65,7 @@ FileLister::~FileLister() {
         free(path);
     }
 }
-#include <stdio.h>
+
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_fileCallback == 0) return;

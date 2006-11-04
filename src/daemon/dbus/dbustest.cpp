@@ -94,9 +94,9 @@ serverthread(void*) {
         dbus_connection_flush(conn);
         dbus_message_unref(msg);
 
-        pthread_mutex_lock(&lock);
+        STRIGI_MUTEX_LOCK(&lock);
         run = keeprunning;
-        pthread_mutex_unlock(&lock);
+        STRIGI_MUTEX_UNLOCK(&lock);
     } while (run);
 
     dbus_connection_unref(conn);
@@ -107,21 +107,21 @@ serverthread(void*) {
 }
 void
 startserver() {
-    pthread_mutex_init(&lock, NULL);
-    pthread_create(&thread, 0, serverthread, 0);
+    STRIGI_MUTEX_INIT(&lock, NULL);
+    STRIGI_THREAD_CREATE(&thread, serverthread, 0);
     keeprunning = true;
 }
 void
 stopserver() {
-    pthread_mutex_lock(&lock);
+    STRIGI_MUTEX_LOCK(&lock);
     keeprunning = false;
-    pthread_mutex_unlock(&lock);
+    STRIGI_MUTEX_UNLOCK(&lock);
     close(quitpipe[1]);
 
     printf("before join\n");
-    pthread_join(thread, 0);
+    STRIGI_THREAD_JOIN(thread, 0);
     printf("after join\n");
-    pthread_mutex_destroy(&lock);
+    STRIGI_MUTEX_DESTROY(&lock);
     printf("end of stopserver\n");
 }
 
