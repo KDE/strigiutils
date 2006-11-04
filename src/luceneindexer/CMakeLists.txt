@@ -11,3 +11,5 @@ target_link_libraries(cluceneindex streamindexer ${CLUCENE_LIBRARY})
 add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
 target_link_libraries(luceneindexer cluceneindex filters)
 
+install(TARGETS luceneindexer RUNTIME DESTINATION bin)
+

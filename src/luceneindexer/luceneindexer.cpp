@@ -21,9 +21,22 @@
 #include "indexer.h"
 #include "filtermanager.h"
 
+void
+printUsage(char** argv) {
+    fprintf(stderr, "Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
+}
+bool
+containsHelp(int argc, char **argv) {
+    for (int i=1; i<argc; ++i) {
+         if (strcmp(argv[i], "--help") == 0
+             || strcmp(argv[i], "-h")) return true;
+    }
+    return false;
+}
+
 int
 main(int argc, char **argv) {
-    if (argc != 3) {
+    if (containsHelp(argc, argv) || argc != 3) {
         printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
         return -1;
     }
