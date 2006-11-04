@@ -19,11 +19,11 @@
  */
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/select.h>
+#include "strigi_thread.h"
 
 bool keeprunning;
 pthread_t thread;
@@ -107,7 +107,7 @@ serverthread(void*) {
 }
 void
 startserver() {
-    STRIGI_MUTEX_INIT(&lock, NULL);
+    STRIGI_MUTEX_INIT(&lock);
     STRIGI_THREAD_CREATE(&thread, serverthread, 0);
     keeprunning = true;
 }
