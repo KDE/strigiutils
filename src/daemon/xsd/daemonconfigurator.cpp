@@ -63,7 +63,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     
     if (match == e_repository.end()) // entry for localhost repository doesn't exists
     {
-        a_useDBus = false;
+        a_useDBus = true;
         Repository r;
         r.a_name = string ("localhost");
         string s = getenv("HOME"); 
@@ -286,7 +286,7 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
     }
     
     // minimum polling interval is 60 seconds
-    if (r->a_pollingInterval < 180)
+    if (r->a_pollingInterval > 0 && r->a_pollingInterval < 180)
         return 180;
     else
         return r->a_pollingInterval;

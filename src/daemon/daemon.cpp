@@ -26,9 +26,8 @@
 
 #if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
-#elif defined(HAVE_POLLING)
-#include "pollinglistener.h"
 #else
+#include "pollinglistener.h"
 #include "eventlistener.h"
 #endif
 #include "eventlistenerqueue.h"
@@ -207,13 +206,17 @@ main(int argc, char** argv) {
     
 #if defined (HAVE_INOTIFY)
     // listen for requests
-    listener = new InotifyListener (dirs);
-#elif defined (HAVE_POLLING)
-    listener = new PollingListener(dirs);
+    listener = new InotifyListener(dirs);
+#else
+    if (config.getPollingInterval() > 0) {
+        listener = new PollingListener(dirs);
+    } else {
+        listener = 0;
+    }
 #endif
-    
+
     // configure & start inotfy's watcher thread
-    if ((listener != NULL) && (listener->init())) {
+    if (listener  && listener->init()) {
         listener->setEventListenerQueue (&listenerEventQueue);
         listener->setFilterManager (&filterManager);
         listener->setIndexReader (index->getIndexReader());
@@ -238,17 +241,18 @@ main(int argc, char** argv) {
     SocketServer server(&interface);
     server.setSocketName(socketpath.c_str());
 
-    if (!server.listen()) {
-        StrigiThread::stopThreads();
-    }
- 
+    server.listen();
+    StrigiThread::stopThreads();
+   
     //save indexed dirs
     dirs = scheduler.getIndexedDirectories();
     config.setIndexedDirectories (dirs);
-
+  
     //save the pollingtime
-    config.setPollingInterval (listener->getPollingInterval());
-    
+    if (listener) {
+        config.setPollingInterval (listener->getPollingInterval());
+    }
+ 
     //save filtering rules
     config.saveFilteringRules (&filterManager);
     

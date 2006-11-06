@@ -74,11 +74,7 @@ SocketServer::run(void*) {
         addlen = sizeof(work);
         newSd = accept(sd, (struct sockaddr*)&(work), &addlen);
         if (newSd < 0) {
-            if (getState() != Stopping) {
-                perror("cannot accept connection ");
-                return false;
-            }
-            return &thread;
+            break;
         }
 
         if (!readRequest(newSd)) {
