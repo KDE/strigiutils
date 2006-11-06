@@ -26,6 +26,7 @@
 #include <dirent.h>
 #include <sstream>
 #include <fstream>
+#include <sys/stat.h>
 using namespace std;
 using namespace jstreams;
 
@@ -94,12 +95,37 @@ StrigiHtmlGui::printConfig(ostream& out, const string& path,
         const map<string, string> &params) {
     printIndexedDirs(out, path, params);
 }
+bool
+exists(const char* file) {
+    struct stat s;
+    if (stat(file, &s)) {
+        return false;
+    }
+    return S_ISREG(s.st_mode);
+}
 void
 startDaemon() {
-    if (fork()) {
-        char * const args[] = {"strigidaemon", "clucene", 0};
-        execvp("/home/oever/testinstall/bin/strigidaemon", args);
+    char* const daemon = "strigidaemon";
+    // find the executable
+    // get the PATH environment
+    const char* path = getenv("PATH");
+    const char* end = strchr(path, ':');
+    string p;
+    while (end) {
+        p.assign(path, end);
+        p.append("/");
+        p.append(daemon);
+        path = end+1;
+        end = strchr(path, ':');
+        if (exists(p.c_str())) {
+            if (fork()) {
+                char * const args[] = {daemon, "clucene", 0};
+                execvp(p.c_str(), args);
+            }
+            break;
+        }
     }
+    
 }
 void
 StrigiHtmlGui::printStatus(ostream& out, const string& path,
