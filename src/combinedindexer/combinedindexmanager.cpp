@@ -101,6 +101,9 @@ CombinedIndexManager::Private::Private(CombinedIndexManager* m) :reader(m) {
     writermanager = 0;
 }
 CombinedIndexManager::Private::~Private() {
+    if (writermanager) {
+        delete writermanager;
+    }
 }
 CombinedIndexManager::CombinedIndexManager(const string& type,
         const string& indexdir) :p(new CombinedIndexManager::Private(this)) {
