@@ -50,11 +50,14 @@ Some possible cmake options:
    include a custom library directory
  -DENABLE_INOTIFY:BOOL=ON
    enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
+ -DENABLE_POLLING:BOOL=ON
+   enable polling support, when enabled strigidaemon polls periodically the watched dir searching for updates
  -DENABLE_LOG4CXX:BOOL=ON
    enable log4cxx support, provides advanced logging features using log4cxx lib
  -DENABLE_DBUS:BOOL=ON
    use DBus for communication instead of the socket based communication
 
+You can't enable inotify and polling at the same time, you've to choose one of them.
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
 If the cmake call still cannot find Qt4, you can call cmake like this:
   QTDIR=/usr/lib/qt4 PATH=$QTDIR/bin:$PATH cmake ..

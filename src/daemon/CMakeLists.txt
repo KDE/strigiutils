@@ -13,6 +13,11 @@ IF(ENABLE_INOTIFY)
   MESSAGE("-- inotify support enabled")
 ENDIF(ENABLE_INOTIFY)
 
+IF(ENABLE_POLLING)
+  add_definitions(-DHAVE_POLLING)
+  MESSAGE("-- polling support enabled")
+ENDIF(ENABLE_POLLING)
+
 IF(ENABLE_DBUS)
   add_definitions(-DHAVE_DBUS)
   MESSAGE("-- dbus support enabled")

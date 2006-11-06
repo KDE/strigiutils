@@ -24,10 +24,12 @@
 
 #include "indexscheduler.h"
 
-#ifdef HAVE_INOTIFY
+#if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
-#else
+#elif defined(HAVE_POLLING)
 #include "pollinglistener.h"
+#else
+#include "eventlistener.h"
 #endif
 #include "eventlistenerqueue.h"
 #include "filtermanager.h"
@@ -201,17 +203,17 @@ main(int argc, char** argv) {
 
     Interface interface(*index, scheduler);
 
-    EventListener* listener;
+    EventListener* listener = NULL;
     
-#ifdef HAVE_INOTIFY
+#if defined (HAVE_INOTIFY)
     // listen for requests
     listener = new InotifyListener (dirs);
-#else
+#elif defined (HAVE_POLLING)
     listener = new PollingListener(dirs);
 #endif
     
     // configure & start inotfy's watcher thread
-    if (listener->init()) {
+    if ((listener != NULL) && (listener->init())) {
         listener->setEventListenerQueue (&listenerEventQueue);
         listener->setFilterManager (&filterManager);
         listener->setIndexReader (index->getIndexReader());
