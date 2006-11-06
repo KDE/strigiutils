@@ -28,6 +28,7 @@ private:
     int quitpipe[2];
     Interface* interface;
     void* run(void*);   
+    void stopThread();
 public:
     explicit DBusServer(Interface* i) :StrigiThread("DBusServer"),
         interface(i) {}

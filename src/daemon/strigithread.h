@@ -35,6 +35,7 @@ protected:
     pthread_t thread;
     void setState(State s);
     virtual void* run(void*) = 0;
+    virtual void stopThread() {}
 public:
     const char* const name;
 

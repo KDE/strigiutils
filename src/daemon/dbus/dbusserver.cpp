@@ -78,8 +78,27 @@ DBusServer::run(void*) {
 
     printf("%s\n", callhandler.getIntrospectionXML().c_str());
 
+    int fd;
+    if (!dbus_connection_get_unix_fd(conn, &fd)) {
+        printf("could not get connection fd\n");
+    }
+    printf("fd %i\n", fd);
+
     // loop, testing for new messages
+    fd_set rfds;
+    int retval;
+    struct timeval tv;
     while ((!interface || interface->isActive()) && getState() != Stopping) {
+        FD_ZERO(&rfds);
+        FD_SET(fd, &rfds);
+        FD_SET(*quitpipe, &rfds);
+
+        tv.tv_sec = 10000;
+        tv.tv_usec = 0;
+        retval = select(1, &rfds, NULL, NULL, &tv);
+        if (retval == -1 || FD_ISSET(fd, &rfds)) { // quit
+            break;
+        }
         // blocking read of the next available message
         dbus_connection_read_write_dispatch(conn, -1);
         dbus_connection_flush(conn);
@@ -87,6 +106,11 @@ DBusServer::run(void*) {
 
     // close the connection
     dbus_connection_unref(conn);
+    dbus_connection_unref(conn);
     dbus_shutdown();
     return &thread;
+}
+void
+DBusServer::stopThread() {
+    close(quitpipe[1]);
 }

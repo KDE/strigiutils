@@ -42,7 +42,7 @@ StrigiThread::stopThreads() {
 }
 
 void
-quit_daemon(int) {
+quit_daemon(int signum) {
     STRIGI_LOG_INFO("strigi.daemon", "quit_daemon");
     static int interruptcount = 0;
     vector<StrigiThread*>::const_iterator i;
@@ -171,6 +171,7 @@ StrigiThread::start(int prio) {
 void
 StrigiThread::stop() {
     state = Stopping;
+    stopThread();
     if (thread) {
         // signal the thread to wake up
         pthread_kill(thread, SIGALRM);
