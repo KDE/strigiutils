@@ -23,6 +23,6 @@ REMOVE (TestsToRun testrunner.cpp)
 
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  ADD_TEST(${TName} testrunner ${TName} ${CMAKE_SOURCE_DIR}/testdata)
+  ADD_TEST(${TName} testrunner ${TName} ${CMAKE_SOURCE_DIR}/testdata/data)
 ENDFOREACH (test)
 
