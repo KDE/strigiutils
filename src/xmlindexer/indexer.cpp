@@ -22,13 +22,14 @@
 #include "filelister.h"
 #include "filereader.h"
 #include "filtermanager.h"
+#include <iostream>
 
 using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(FilterManager* filtermanager)
-    :m_indexer(&writer)
+Indexer::Indexer(FilterManager* filtermanager, FILE* file)
+    :f(file), writer(f), m_indexer(&writer)
 {
     m_lister = new FileLister (filtermanager);
 }
@@ -39,7 +40,7 @@ Indexer::~Indexer( )
 }
 void
 Indexer::index(const char *dir) {
-    printf("<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n");
+    fprintf(f, "<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n");
     workingIndexer = this;
     m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
@@ -52,7 +53,7 @@ Indexer::index(const char *dir) {
     } else {
         m_lister->listFiles(dir);
     }
-    printf("</metadata>\n");
+    fprintf(f, "</metadata>\n");
 }
 bool
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,

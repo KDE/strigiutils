@@ -29,6 +29,7 @@ class FilterManager;
 
 class Indexer {
 private:
+    FILE* f;
     FileLister* m_lister;
     XmlIndexWriter writer;
     jstreams::StreamIndexer m_indexer;
@@ -38,7 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    explicit Indexer(FilterManager* filtermanager);
+    Indexer(FilterManager* filtermanager, FILE* f);
     ~Indexer();
     void index(const char *dir);
 };

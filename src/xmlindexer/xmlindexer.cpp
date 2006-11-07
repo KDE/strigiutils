@@ -42,8 +42,8 @@ main(int argc, char **argv) {
     }
     
     FilterManager filtermanager;
-    
-    Indexer indexer(&filtermanager);
+
+    Indexer indexer(&filtermanager, stdout);
     indexer.index(argv[argc-1]);
     return 0;
 }

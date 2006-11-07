@@ -193,8 +193,8 @@ protected:
         d->values.insert(make_pair(fieldname, value));
     }
 public:
-    XmlIndexWriter() {
-        fd = stdout;
+    XmlIndexWriter(FILE* f) {
+        fd = f;
     }
     ~XmlIndexWriter() {}
     void commit() {}
