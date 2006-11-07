@@ -11,3 +11,4 @@
 - if no configuration was present, index the home directory per default
 - <fosterfeld_> vandenoever: i would suggest to add IndexReader::query() version based on iterators
 - add the option to not refresh status automatically
+- get out a list of field names
