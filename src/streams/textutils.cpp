@@ -21,7 +21,10 @@ jstreams::checkUtf8(const char* p, int32_t length) {
             nb = 2;
         } else if ((0xF8 & c) == 0xF0) {
             nb = 3;
-        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
+        // NOTE: we allow 0xC even though it is NOT UTF8 text, this is
+        // because pdftotext outputs it
+        // If we are rid of pdfto text, we may remove 0xC here
+        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD || c == 0xC)){
             return false;
         }
         p++;

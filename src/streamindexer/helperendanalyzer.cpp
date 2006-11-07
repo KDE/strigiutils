@@ -140,7 +140,7 @@ HelperEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         HelperProgramConfig::HelperRecord* h
             = helperconfig.findHelper(b, nread);
         if (h) {
-//            printf("calling %s on %s\n", h->arguments[0].c_str(),
+//            fprintf(stderr, "calling %s on %s\n", h->arguments[0].c_str(),
 //                filename.c_str());
             if (h->readfromstdin) {
                 ProcessInputStream pis(h->arguments, in);
