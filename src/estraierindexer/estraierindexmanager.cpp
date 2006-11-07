@@ -21,6 +21,7 @@
 #include "estraierindexmanager.h"
 #include "estraierindexreader.h"
 #include "estraierindexwriter.h"
+#include "strigi_thread.h"
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
