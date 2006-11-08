@@ -21,6 +21,7 @@
 #define XMLINDEXWRITER_H
 
 #include "indexwriter.h"
+#include <iostream>
 #include <map>
 
 class XmlIndexWriter : public jstreams::IndexWriter {
@@ -30,7 +31,7 @@ private:
          std::string text;
     };
 
-    FILE* fd;
+    std::ostream& out;
 
     void printText(const std::string& text) {
         const char* p = text.c_str();
@@ -53,19 +54,20 @@ private:
             } else if (c <= 8) {
                 return;
             } else if (c == '&') {
-                fprintf(fd, "&amp;");
+                out << "&amp;";
             } else if (c == '<') {
-                fprintf(fd, "&lt;");
+                out << "&lt;";
             } else if (c == '>') {
-                fprintf(fd, "&gt;");
+                out << "&gt;";
             } else if (isspace(c)) {
                 if (!lastwhite) {
-                    fwrite(&c, 1, 1, fd);
+                    //fwrite(&c, 1, 1, fd);
+                    out.put(c);
                 }
                 lastwhite = true;
             } else {
                 lastwhite = false;
-                fwrite(&c, 1, 1, fd);
+                out.put(c);//fwrite(&c, 1, 1, fd);
             }
             p++;
         }
@@ -153,33 +155,33 @@ protected:
         Data* d = static_cast<Data*>(idx->getWriterData());
         std::string v = idx->getName();
         escape(v);
-        fprintf(fd, " <file uri='%s' mtime='%i'>\n", v.c_str(),
-            (int)idx->getMTime());
+        out << " <file uri='" << v << "' mtime='" << (int)idx->getMTime()
+            << "'>\n";
 
         if (idx->getMimeType().size()) {
             v = idx->getMimeType();
             escape(v);
-            fprintf(fd, " <value name='mimetype'>%s</value>\n", v.c_str());
+            out << " <value name='mimetype'>" << v << "</value>\n";
         }
         if (idx->getEncoding().size()) {
             v = idx->getEncoding();
             escape(v);
-            fprintf(fd, " <value name='encoding'>%s</value>\n", v.c_str());
+            out << " <value name='encoding'>" << v << "</value>\n";
         }
 
         std::multimap<std::string, std::string>::iterator i, end;
         end = d->values.end();
         for (i=d->values.begin(); i!=end; ++i) {
             escape(i->second);
-            fprintf(fd, "  <value name='%s'>%s</value>\n", i->first.c_str(),
-                i->second.c_str());
+            out << "  <value name='" << i->first << "'>" << i->second
+                << "</value>\n";
         }
         if (d->text.size()) {
-            fprintf(fd, "  <text>");
+            out << "  <text>";
             printText(d->text);
-            fprintf(fd, "</text>\n");
+            out << "</text>\n";
         }
-        fprintf(fd, " </file>\n");
+        out << " </file>\n";
         delete d;
     }
     void addText(const jstreams::Indexable* idx, const char* text,
@@ -193,8 +195,7 @@ protected:
         d->values.insert(make_pair(fieldname, value));
     }
 public:
-    XmlIndexWriter(FILE* f) {
-        fd = f;
+    XmlIndexWriter(std::ostream& o) :out(o) {
     }
     ~XmlIndexWriter() {}
     void commit() {}

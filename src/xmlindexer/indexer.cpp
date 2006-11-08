@@ -28,8 +28,8 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(FilterManager* filtermanager, FILE* file)
-    :f(file), writer(f), m_indexer(&writer)
+Indexer::Indexer(FilterManager* filtermanager, ostream& o)
+    :out(o), writer(out), m_indexer(&writer)
 {
     m_lister = new FileLister (filtermanager);
 }
@@ -40,7 +40,7 @@ Indexer::~Indexer( )
 }
 void
 Indexer::index(const char *dir) {
-    fprintf(f, "<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n");
+    out << "<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n";
     workingIndexer = this;
     m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
@@ -53,7 +53,7 @@ Indexer::index(const char *dir) {
     } else {
         m_lister->listFiles(dir);
     }
-    fprintf(f, "</metadata>\n");
+    out << "</metadata>\n";
 }
 bool
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,

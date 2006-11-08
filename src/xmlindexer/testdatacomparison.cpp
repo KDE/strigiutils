@@ -18,9 +18,18 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
+#include "fileinputstream.h"
+#include "bz2inputstream.h"
 #include "indexer.h"
 #include "filtermanager.h"
-#include <iostream>
+
+#include <cstdio>
+#include <cstring>
+#include <unistd.h>
+
+#include <sstream>
+using namespace jstreams;
+using namespace std;
 
 void
 printUsage(char** argv) {
@@ -34,17 +43,32 @@ containsHelp(int argc, char **argv) {
     }
     return false;
 }
-
 int
-main(int argc, char **argv) {
-    if (containsHelp(argc, argv) || (argc != 2 && argc != 4)) {
+main(int argc, char** argv) {
+    if (containsHelp(argc, argv) || (argc != 3)) {
         printUsage(argv);
         return -1;
     }
-    
-    FilterManager filtermanager;
 
-    Indexer indexer(&filtermanager, std::cout);
+    FilterManager filtermanager;
+//
+    ostringstream s;
+    Indexer indexer(&filtermanager, s);
     indexer.index(argv[argc-1]);
+    fprintf(stderr, "%i\n", s.str().length());
+    int32_t n = 2*s.str().length();
+
+    // load the file to compare with 
+    FileInputStream f(argv[2]);
+    BZ2InputStream bz2(&f);
+    const char* c;
+    n = bz2.read(c, n, n);
+    if (n != s.str().length()) {
+        printf("output length differs %i instead of %i\n", n, s.str().length());
+        return -1;
+    }
+
+//    return strncmp(s.str().c_str(), c);
+
     return 0;
 }
