@@ -32,7 +32,6 @@ DBusServer::run(void*) {
     DBusError err;
     int ret;
 
-    printf("Listening for method calls\n");
     pipe(quitpipe);
 
     // initialise the error
@@ -70,37 +69,38 @@ DBusServer::run(void*) {
     if (interface) {
         callhandler.addInterface(&searchinterface);
     }
-    printf("%s\n", searchinterface.getIntrospectionXML().c_str());
+//    printf("%s\n", searchinterface.getIntrospectionXML().c_str());
 
     TestInterface test;
     DBusTestInterface testinterface(&test);
     callhandler.addInterface(&testinterface);
 
-    printf("%s\n", callhandler.getIntrospectionXML().c_str());
+//    printf("%s\n", callhandler.getIntrospectionXML().c_str());
 
     int fd;
     if (!dbus_connection_get_unix_fd(conn, &fd)) {
         printf("could not get connection fd\n");
     }
-    printf("fd %i\n", fd);
 
     // loop, testing for new messages
     fd_set rfds;
     int retval;
     struct timeval tv;
+    int max = ((fd>*quitpipe) ?fd :*quitpipe)+1;
     while ((!interface || interface->isActive()) && getState() != Stopping) {
         FD_ZERO(&rfds);
         FD_SET(fd, &rfds);
         FD_SET(*quitpipe, &rfds);
 
-        tv.tv_sec = 10000;
+        tv.tv_sec = 1000;
         tv.tv_usec = 0;
-        retval = select(1, &rfds, NULL, NULL, &tv);
-        if (retval == -1 || FD_ISSET(fd, &rfds)) { // quit
+        retval = select(max, &rfds, NULL, NULL, &tv);
+        if (retval == -1 || FD_ISSET(*quitpipe, &rfds)) { // quit
             break;
         }
         // blocking read of the next available message
-        dbus_connection_read_write_dispatch(conn, -1);
+        dbus_connection_read_write(conn, 0);
+        while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS);
         dbus_connection_flush(conn);
     }
 
@@ -112,5 +112,8 @@ DBusServer::run(void*) {
 }
 void
 DBusServer::stopThread() {
+    // close the pipe to wake up the dbus thread so it can stop
+    // alternatively we can write into it so we can reuse it
+    // since we only use it for quitting atm, closing the pipe is fine
     close(quitpipe[1]);
 }

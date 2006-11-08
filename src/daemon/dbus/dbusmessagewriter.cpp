@@ -119,7 +119,7 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
     DBusMessageIter sssub;
     DBusMessageIter ssssub;
     dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
-        "(sdsssxxa{ss})", &sub);
+        "(sdsssxxa(ss))", &sub);
     vector<jstreams::IndexedDocument>::const_iterator i;
     for (i=s.hits.begin(); i!=s.hits.end(); ++i) {
         dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
