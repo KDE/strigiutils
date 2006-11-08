@@ -21,6 +21,7 @@
 #include "indexer.h"
 #include "filtermanager.h"
 #include <iostream>
+using namespace std;
 
 void
 printUsage(char** argv) {
@@ -43,8 +44,11 @@ main(int argc, char **argv) {
     }
     
     FilterManager filtermanager;
+    multimap<int, string> filters;
+    filters.insert(make_pair(1, "*/.*"));
+    filtermanager.setFilteringRules(filters);
 
-    Indexer indexer(&filtermanager, std::cout);
+    Indexer indexer(&filtermanager, cout);
     indexer.index(argv[argc-1]);
     return 0;
 }

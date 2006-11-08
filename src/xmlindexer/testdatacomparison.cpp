@@ -33,7 +33,7 @@ using namespace std;
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [dir-to-index]\n", argv[0]);
+    fprintf(stderr, "Usage: %s workingdir dir-to-index referenceoutputfile\n", argv[0]);
 }
 bool
 containsHelp(int argc, char **argv) {
@@ -45,30 +45,55 @@ containsHelp(int argc, char **argv) {
 }
 int
 main(int argc, char** argv) {
-    if (containsHelp(argc, argv) || (argc != 3)) {
+    if (containsHelp(argc, argv) || (argc != 4)) {
         printUsage(argv);
         return -1;
     }
 
     FilterManager filtermanager;
-//
+    multimap<int, string> filters;
+    filters.insert(make_pair(1, "*/.*"));
+    filtermanager.setFilteringRules(filters);
+
     ostringstream s;
     Indexer indexer(&filtermanager, s);
-    indexer.index(argv[argc-1]);
-    fprintf(stderr, "%i\n", s.str().length());
-    int32_t n = 2*s.str().length();
+    chdir(argv[1]);
+    indexer.index(argv[2]);
+    string str = s.str();
+    int32_t n = 2*str.length();
 
     // load the file to compare with 
-    FileInputStream f(argv[2]);
+    FileInputStream f(argv[3]);
     BZ2InputStream bz2(&f);
     const char* c;
     n = bz2.read(c, n, n);
-    if (n != s.str().length()) {
-        printf("output length differs %i instead of %i\n", n, s.str().length());
+    if (n < 0) {
+        fprintf(stderr, "Error: %s\n", bz2.getError());
         return -1;
     }
+    if (n != (int32_t)s.str().length()) {
+        printf("output length differs %i instead of %i\n", n, s.str().length());
+    }
 
-//    return strncmp(s.str().c_str(), c);
+    const char* p1 = c;
+    const char* p2 = str.c_str();
+    int32_t n1 = n;
+    int32_t n2 = str.length();
+    while (n1-- && n2-- && *p1 == *p2) {
+        p1++;
+        p2++;
+    }
+    if (*p1 || *p2) {
+         printf("difference at position %i\n", p1-c);
+
+         int32_t m = (80 > str.length())?str.length():80;
+         printf("%i %.*s\n", m, m, str.c_str());
+
+         m = (80 > n)?n:80;
+         printf("%i %.*s\n", m, m, c);
+
+         return -1;
+    }
 
     return 0;
 }

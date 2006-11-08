@@ -9,5 +9,5 @@ install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 add_executable(testdatacomparison testdatacomparison.cpp indexer.cpp)
 target_link_libraries(testdatacomparison streamindexer filters)
 
-ADD_TEST(XmlIndexer testdatacomparison ${CMAKE_SOURCE_DIR}/testdata/data
+ADD_TEST(XmlIndexer testdatacomparison ${CMAKE_SOURCE_DIR}/testdata data
 	${CMAKE_SOURCE_DIR}/testdata/xmlindexeroutput.bz2)
