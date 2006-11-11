@@ -105,8 +105,10 @@ DBusServer::run(void*) {
     }
 
     // close the connection
-    dbus_connection_unref(conn);
-    dbus_shutdown();
+    // these lines are commented out because they crash with dbus 0.61
+    // dbus_connection_unref(conn);
+    // dbus_connection_unref(conn);
+    // dbus_shutdown();
     return &thread;
 }
 void
