@@ -94,7 +94,7 @@ DBusClientInterface::indexFile(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
     std::string path;
-    time_t mtime;
+    uint64_t mtime;
     std::vector<char> content;
     reader >> path >> mtime >> content;
     if (reader.isOk()) {

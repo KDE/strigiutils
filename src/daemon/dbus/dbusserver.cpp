@@ -42,11 +42,11 @@ DBusServer::run(void*) {
     if (dbus_error_is_set(&err)) {
         fprintf(stderr, "Connection Error (%s)\n", err.message);
         dbus_error_free(&err);
-     //   return false;
+        return false;
     }
     if (NULL == conn) {
         fprintf(stderr, "Connection Null\n");
-    //    return false;
+        return false;
     }
 
     // request our name on the bus and check for errors
@@ -58,7 +58,7 @@ DBusServer::run(void*) {
     }
     if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
         fprintf(stderr, "Not Primary Owner (%d)\n", ret);
-   //     return false;
+        return false;
     }
 
     // register the introspection interface
