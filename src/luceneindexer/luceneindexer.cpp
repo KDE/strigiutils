@@ -20,13 +20,9 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "filtermanager.h"
+#include <sys/types.h>
+#include <dirent.h>
 
-void
-printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [indexdir] [dir-to-index]\n"
-        "WARNING: files from the indexdir may be deleted!\n",
-        argv[0]);
-}
 bool
 containsHelp(int argc, char **argv) {
     for (int i=1; i<argc; ++i) {
@@ -35,13 +31,27 @@ containsHelp(int argc, char **argv) {
     }
     return false;
 }
-
+void
+checkIndexdirIsEmpty(const char* dir) {
+    DIR* d = opendir(dir);
+    struct dirent* de = readdir(d);
+    while (de) {
+        if (strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
+            fprintf(stderr, "Directory %s is not empty.\n", dir);
+            exit(1);
+        }
+        de = readdir(d);
+    }
+    closedir(d);
+}
 int
 main(int argc, char **argv) {
     if (containsHelp(argc, argv) || argc != 3) {
-        printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
+        fprintf(stderr, "Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
         return -1;
     }
+
+    checkIndexdirIsEmpty(argv[1]);
     
     FilterManager filtermanager;
     Indexer indexer(argv[1], &filtermanager);
