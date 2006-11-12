@@ -1,5 +1,13 @@
 Strigi
 
+Overview
+
+Strigi is a fast and light desktop search engine. It can handle a large range of file formats such as emails, office documents, media files, and file archives. It can index files that are embedded in other files. This means email attachments and files in zip files are searchable as if they were normal files on your harddisk.
+
+Strigi is normally run as a background daemon that can be accessesed by many other programs at once. In addition to the daemon, Strigi comes with powerful replacements for the popular unix commands 'find' and 'grep'. These are called 'deepfind' and 'deepgrep' and can search inside files just like the strigi daemon can.
+
+History
+
 For my personal use I've written the jstreams classes that allow one to easily read nested files. These have proven very fast and have been included in the clucene c++ search engine. These classes would also be a cool extension to the kio plugins for allowing the user to browse e.g. files in a zip file that is stored in an email attachment. Another use would be to write a crawler that can gather information from all files in the filesystem even if they are hidden in emails or archives. I intended to add this feature to Kat, but because of the slowdown in the Kat project the latest Kat development version is not complete and does not build.
 
 So I developed a small daemon that can index information using the new crawler. Now i've reached a point that the crawler is very stable and fast. How fast exactly depends on you system. It comes complete with a simple gui to controll the daemon and to search. I've named the thing Strigi, because I hope it grows into a Kat.
@@ -13,7 +21,7 @@ Here are the main features of Strigi:
 - simple interface for implementing plugins for extracting information. we'll try to reuse the kat plugins, although native plugins will have a large speed advantage
 - calculation of sha1 for every file crawled (allows fast finding of duplicates)
 
-Requirements:
+Requirements
 - CLucene >= 0.9.15 (http://clucene.sf.net)
 - CMake >= 2.4.2 (http://www.cmake.org)
 - ZLib >= 1.2.3 (http://www.zlib.net)
@@ -21,12 +29,11 @@ Requirements:
 - OpenSSL (http://http://www.openssl.org)
 
 Optional:
-- Qt4 >= 4.1.2
+- Qt4 >= 4.1.2 (for a graphical interface)
 - libxml2
 - magic-dev   
 - linux kernel >= 2.6.13 (for inotify support)
 - log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
-- Xerces-C >= 2.6.0 (http://xml.apache.org/xerces-c/)
 
 How to obtain and build Strigi from SVN?
 -----------------------------------------------

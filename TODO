@@ -12,3 +12,9 @@
 - <fosterfeld_> vandenoever: i would suggest to add IndexReader::query() version based on iterators
 - add the option to not refresh status automatically
 - get out a list of field names
+
+quick way to parse desktop files according to dfaure:
+[17:57] <dfaure> vandenoever: if you want to populate strigi with the list of installed apps, I suggest KService::allServices()
+[17:57] <dfaure> this will get the list of services (parts and app) out of ksycoca quite fast
+[17:57] <dfaure> much faster than parsing .desktop files.
+
