@@ -90,15 +90,18 @@ threadstarter(void *d) {
 #ifndef SCHED_BATCH
 #define SCHED_BATCH 3
 #endif
-        int r = sched_setscheduler(0, SCHED_BATCH, &param);
+        // renice the thread
+        int r  = setpriority(PRIO_PROCESS, 0, thread->getPriority());
         if (r != 0) {
-            // fall back to renice if SCHED_BATCH is unknown
-            r = setpriority(PRIO_PROCESS, 0, thread->getPriority());
-            if (r==-1)
-                STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name
-                    + ".threadstarter",
-                    string("error setting priority: ") + strerror(errno))
-            //nice(20);
+            STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name
+                + ".threadstarter",
+                string("error setting priority: ") + strerror(errno))
+        }
+        r = sched_setscheduler(0, SCHED_BATCH, &param);
+        if (r != 0) {
+            STRIGI_LOG_INFO (string("strigi.daemon.") + thread->name
+                + ".threadstarter",
+                string("error setting to batch: ") + strerror(errno))
         }
 #ifdef HAVE_LINUXIOPRIO
     sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
