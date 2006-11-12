@@ -29,7 +29,7 @@ Requirements
 - OpenSSL (http://http://www.openssl.org)
 
 Optional:
-- Qt4 >= 4.1.2 (for a graphical interface)
+- Qt4 >= 4.2 (for a graphical interface)
 - libxml2
 - magic-dev   
 - linux kernel >= 2.6.13 (for inotify support)
