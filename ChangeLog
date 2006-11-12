@@ -1,0 +1,14 @@
+0.3.9
+ - Added deepfind and deepgrep, programs that are enhanced versions of find
+   and grep.
+ - Added a new way of storing the configuration in an xml file.
+ - Added a way to search in multiple indexes.
+ - Added xmlindexer, a program that outputs the file parsing results as xml.
+   This is convenient for debugging and can also used by other programs that
+   do not want to write their own indexer. It makes the superior Strigi
+   indexer available to other software in a convenient way.
+ - More versatile filters that determine which files to index. (Flavio
+   Castelli)
+ - Add possibility to index files from the client by feeding the file into the
+   daemon. This opens the way to indexing email from remote servers and web
+   pages.
