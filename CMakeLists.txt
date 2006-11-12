@@ -33,11 +33,7 @@ ELSE(NOT MSVC)
 ENDIF(NOT MSVC)
 
 OPTION(ENABLE_INOTIFY
-  "enable inotify support"
-  OFF)
-
-OPTION(ENABLE_POLLING
-  "enable polling support"
+  "enable inotify support (unstable)"
   OFF)
 
 OPTION(ENABLE_DBUS
@@ -81,11 +77,6 @@ ENDIF(ENABLE_DBUS)
 if (ENABLE_LOG4CXX)
     find_package (Log4cxx)
 endif (ENABLE_LOG4CXX)
-
-# check if both inotify and polling are enabled, this can't be done
-if (ENABLE_INOTIFY AND ENABLE_POLLING)
-    MESSAGE(FATAL_ERROR "ERROR: You can't enable polling and inotify at the same time, you've to choose one of them")
-endif (ENABLE_INOTIFY AND ENABLE_POLLING)
 
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)
