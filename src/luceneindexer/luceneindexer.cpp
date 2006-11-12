@@ -23,7 +23,9 @@
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
+    fprintf(stderr, "Usage: %s [indexdir] [dir-to-index]\n"
+        "WARNING: files from the indexdir may be deleted!\n",
+        argv[0]);
 }
 bool
 containsHelp(int argc, char **argv) {
