@@ -65,7 +65,7 @@ class FilterManager
         
         std::vector<Filter*> m_rules;
         std::string m_strigidir;
-        STRIGI_MUTEX_DEFINE(m_rulesMutex);
+        StrigiMutex m_rulesMutex;
 };
 
 #endif

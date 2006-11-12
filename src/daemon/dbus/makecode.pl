@@ -25,7 +25,7 @@ my %typemapping = (
 	"std::map<std::string, std::string>" => "a{ss}",
 	"std::vector<char>" => "ay",
 	"std::multimap<int, std::string>" => "a(is)",
-	"time_t" => "u"
+#	"time_t" => "u"
 );
 
 sub splitArguments {
