@@ -200,6 +200,7 @@ SimpleSearchGui::updateStatus(const QMap< QString, QString >& s) {
     removedir->setEnabled(running);
     queryfield->setEnabled(running);
     toggledaemon->setText((running)?"stop daemon":"start daemon");
+    toggledaemon->setEnabled(true);
     if (backendsList) {
         backendsList->setEnabled(!running);
     }
@@ -236,6 +237,7 @@ SimpleSearchGui::socketError(Qt4StrigiClient::Mode mode)
 }
 void
 SimpleSearchGui::startDaemon() {
+    toggledaemon->setEnabled(false);
     starting = true;
     // try to start the daemon
     QFileInfo exe = QCoreApplication::applicationDirPath()
@@ -245,15 +247,15 @@ SimpleSearchGui::startDaemon() {
         args += backendsList->currentText();
     }
     if (exe.exists()) {
-    // start not installed version
-    QProcess::startDetached(exe.absoluteFilePath(), args);
+        // start not installed version
+        QProcess::startDetached(exe.absoluteFilePath(), args);
     } else {
         exe = QCoreApplication::applicationDirPath()+"/strigidaemon";
         if (exe.exists()) {
             QProcess::startDetached(exe.absoluteFilePath(), args);
         } else {
-        // start installed version
-        QProcess::startDetached("strigidaemon");
+            // start installed version
+            QProcess::startDetached("strigidaemon");
         }
     }
 }
