@@ -79,7 +79,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
 
-        // add pattern to ignore hidden directories
+        // add pattern to ignore hidden directories 
         Filteringrules rules;
         Patternfilter filter;
         filter.a_pattern="*/.*";
