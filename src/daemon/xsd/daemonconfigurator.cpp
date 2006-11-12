@@ -61,8 +61,8 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
                                                 e_repository.end(),
                                                 findRepository);
     
-    if (match == e_repository.end()) // entry for localhost repository doesn't exists
-    {
+    // entry for localhost repository doesn't exists
+    if (match == e_repository.end()) {
         a_useDBus = true;
         Repository r;
         r.a_name = string ("localhost");
@@ -78,10 +78,21 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         p.a_path = s + "/.mozilla";   r.e_path.push_back(p);
         p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
-        
+
+        // add pattern to ignore hidden directories
+        Filteringrules rules;
+        Patternfilter filter;
+        filter.a_pattern="*/.*";
+        rules.e_patternfilter.push_back(filter);
+        e_filteringrules.push_back(rules);
+
         STRIGI_LOG_WARNING ("DaemonConfigurator",
                             "created default config for indexed dirs")
     }
+
+//pattern='*/.*'>
+// </patternfilter>
+// */.*
 }
 void
 DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
