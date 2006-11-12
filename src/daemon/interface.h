@@ -55,7 +55,7 @@ public:
     void setEventListener(EventListener* eListener);
     void setFilterManager(FilterManager* fManager);
     std::set<std::string> getIndexedFiles();
-    void indexFile(const std::string &path, time_t mtime,
+    void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);
     std::vector<std::string> getBackEnds();
 };

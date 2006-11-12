@@ -132,8 +132,8 @@ Interface::setFilteringRules(const multimap<int,string>& rules) {
 }
 set<string>
 Interface::getIndexedFiles() {
-    map <string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);
-    set <string> r;
+    map<string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);
+    set<string> r;
     
     for (map<string, time_t>::iterator iter = indexedfiles.begin(); iter != indexedfiles.end(); iter++)
         r.insert (iter->first);
@@ -141,7 +141,7 @@ Interface::getIndexedFiles() {
     return r;
 }
 void
-Interface::indexFile(const std::string &path, time_t mtime,
+Interface::indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>& content) {
     // TODO if the file is already there, remove it first
     IndexWriter* writer = manager.getIndexWriter();

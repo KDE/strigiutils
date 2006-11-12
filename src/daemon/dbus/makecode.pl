@@ -21,11 +21,11 @@ my %typemapping = (
 	"bool" => "b",
 	"std::vector<std::string>" => "as",
 	"std::set<std::string>" => "as",
-	"Hits" => "a(sdsssxxa(ss))",
+	"Hits" => "a(sdsssxta(ss))",
 	"std::map<std::string, std::string>" => "a{ss}",
 	"std::vector<char>" => "ay",
 	"std::multimap<int, std::string>" => "a(is)",
-#	"time_t" => "u"
+	"uint64_t" => "t"
 );
 
 sub splitArguments {

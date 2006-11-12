@@ -29,16 +29,6 @@ class ClientInterface {
 protected:
     bool active;
 public:
-/*    class Hit {
-    public:
-        std::string uri;
-        double score;
-        std::string fragment;
-        std::string mimetype;
-        int64_t size;
-        time_t mtime;
-        std::map<std::string, std::string> properties;
-    };*/
     class Hits {
     public:
         std::vector<jstreams::IndexedDocument> hits;
@@ -61,7 +51,7 @@ public:
     virtual std::set<std::string> getIndexedFiles() = 0;
     bool isActive() { return active; }
     virtual std::vector<std::string> getBackEnds() = 0;
-    virtual void indexFile(const std::string& path, time_t mtime, const std::vector<char>& content) = 0;
+    virtual void indexFile(const std::string& path, uint64_t mtime, const std::vector<char>& content) = 0;
 };
 
 #endif

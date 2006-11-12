@@ -34,7 +34,7 @@ public:
     std::string mimetype;
     std::string sha1;
     int64_t size;
-    time_t mtime;
+    uint64_t mtime;
     std::multimap<std::string, std::string> properties;
 };
 
