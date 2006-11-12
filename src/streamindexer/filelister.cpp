@@ -139,7 +139,8 @@ FileLister::walk_directory(uint len) {
         uint l = len+strlen(subdir->d_name);
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
-        if (stat(path, &dirstat) == 0) {
+        // check if the file is a normal file (use lstat, NOT stat)
+        if (lstat(path, &dirstat) == 0) {
             bool c = true;
             if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))
