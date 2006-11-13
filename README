@@ -35,6 +35,10 @@ Optional:
 - linux kernel >= 2.6.13 (for inotify support)
 - log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
 
+Upgrading:
+If you are upgrading from a version prior of 0.3.9 you can convert your old configuration files using a simple command-line program called strigiconfupdater. Just type 'strigiconfupdater' to see the help message explaining how it works.
+
+
 How to obtain and build Strigi from SVN?
 -----------------------------------------------
 
@@ -57,8 +61,6 @@ Some possible cmake options:
    include a custom library directory
  -DENABLE_INOTIFY:BOOL=ON
    enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
- -DENABLE_POLLING:BOOL=ON
-   enable polling support, when enabled strigidaemon polls periodically the watched dir searching for updates
  -DENABLE_LOG4CXX:BOOL=ON
    enable log4cxx support, provides advanced logging features using log4cxx lib
  -DENABLE_DBUS:BOOL=ON
