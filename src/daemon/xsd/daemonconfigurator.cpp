@@ -19,8 +19,10 @@
  */
 
 #include "daemonconfigurator.h"
-#include "../../filters/filtermanager.h"
-#include "../../filters/filters.h"
+// #include "../../filters/filtermanager.h"
+// #include "../../filters/filters.h"
+#include "filtermanager.h"
+#include "filters.h"
 #include "../strigilogging.h"
 
 #include <algorithm>
@@ -96,7 +98,8 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
 }
 void
 DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
-                                            const string& repositoryName)
+                                            const string& repositoryName,
+                                            bool  merge)
 {
     FindRepository findRepository (repositoryName);
     
@@ -118,7 +121,8 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
     }
     
     // clear old path
-    r->e_path.clear();
+    if (!merge)
+        r->e_path.clear();
     
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
     {
@@ -153,10 +157,13 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
     
     return dirs;
 }
-void DaemonConfigurator::save()
+void DaemonConfigurator::save(const char* file)
 {
     ofstream f;
-    f.open(m_confFile.c_str(), ios::binary);
+    if (file == NULL)
+        f.open(m_confFile.c_str(), ios::binary);
+    else
+        f.open(file, ios::binary);
     f << *this;
     f.close();
 }
@@ -179,7 +186,7 @@ DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
              j != i->e_pathfilter.end(); ++j)
         {
             rules.insert (make_pair((int)PathFilter::RTTI, j->a_path));
-            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter",
+            STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator.loadFilteringRules",
                               "added path filter: |" + j->a_path + '|')
         }
         
@@ -187,12 +194,50 @@ DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
                 j != i->e_patternfilter.end(); ++j)
         {
             rules.insert (make_pair((int)PatternFilter::RTTI, j->a_pattern));
-            STRIGI_LOG_DEBUG ("strigi.filtermanager.loadFilter",
+            STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator.loadFilteringRules",
                               "added pattern filter: |" + j->a_pattern + '|')
         }
     }
     
     filterManager->setFilteringRules (rules);
+}
+void
+DaemonConfigurator::saveFilteringRules(set<string>& rules,
+                                       unsigned int filterRTTI,
+                                       bool merge)
+{
+    // remove old filtering rules
+    if (!merge)
+        e_filteringrules.clear();
+        
+    Filteringrules f;
+    
+    for (set<string>::iterator iter = rules.begin();iter != rules.end(); iter++)
+    {
+        switch (filterRTTI)
+        {
+            case PathFilter::RTTI:
+            {
+                Pathfilter p;
+                p.a_path = *iter;
+                f.e_pathfilter.push_back (p);
+                break;
+            }
+            case PatternFilter::RTTI:
+            {
+                Patternfilter p;
+                p.a_pattern = *iter;
+                f.e_patternfilter.push_back (p);
+                break;
+            }
+            default:
+                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules",
+                                  "unknown rule RTTI")
+                break;
+        }
+    }
+    
+    e_filteringrules.push_back (f);
 }
 void
 DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
@@ -204,7 +249,7 @@ DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
         
     Filteringrules f;
     
-    for (std::multimap<int,string>::iterator iter = rules.begin();
+    for (multimap<int,string>::iterator iter = rules.begin();
          iter != rules.end(); iter++)
     {
         switch (iter->first)
@@ -232,10 +277,31 @@ DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
     
     e_filteringrules.push_back (f);
     
-    STRIGI_LOG_DEBUG ("strigi.filtermanager",
+    STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator",
                       "successfully saved filtering rules")
 }
-
+set<string>
+DaemonConfigurator::readFilteringRules()
+{
+    set<string> rules;
+    
+    list<Filteringrules>::const_iterator i;
+    for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
+        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
+             j != i->e_pathfilter.end(); ++j)
+        {
+            rules.insert (j->a_path);
+        }
+        
+        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
+                j != i->e_patternfilter.end(); ++j)
+        {
+            rules.insert (j->a_pattern);
+        }
+    }
+    
+    return rules;
+}
 list<Repository>
 DaemonConfigurator::getReadOnlyRepositories() const {
     list<Repository> ro;

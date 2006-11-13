@@ -33,22 +33,31 @@ class DaemonConfigurator : public StrigiDaemonConfiguration
         DaemonConfigurator (const std::string& confFile);
     
         void setIndexedDirectories(std::set<std::string>& dirs,
-            const std::string& repositoryName = "localhost");
+            const std::string& repositoryName = "localhost",
+            bool  merge = false);
         std::set<std::string> getIndexedDirectories(
             const std::string& repositoryName = "localhost");
         bool useDBus() { return a_useDBus; }
         void loadFilteringRules (FilterManager* filterManager);
         void saveFilteringRules (FilterManager* filterManager);
-        void setPollingInterval (unsigned int value, const std::string& repositoryName = "localhost");
-        unsigned int getPollingInterval(const std::string& repositoryName = "localhost");
+        void saveFilteringRules(std::set<std::string>& rules,
+                                unsigned int filterRTTI,
+                                bool  merge = false);
+        std::set<std::string> readFilteringRules();
+        void setPollingInterval (unsigned int value,
+                               const std::string& repositoryName = "localhost");
+        unsigned int getPollingInterval(
+                               const std::string& repositoryName = "localhost");
         
-        void save();
+        void save(const char* file = NULL);
         std::string getWriteableIndexType() const;
         std::string getWriteableIndexDir() const;
-    std::list<Repository> getReadOnlyRepositories() const;
+        std::list<Repository> getReadOnlyRepositories() const;
         
     private:
         std::string m_confFile;
 };
+
+// std::ostream& operator<<(std::ostream&, const DaemonConfigurator&);
 
 #endif
