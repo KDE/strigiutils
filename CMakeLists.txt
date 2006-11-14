@@ -98,12 +98,13 @@ CHECK_INCLUDE_FILE_CXX(direct.h HAVE_DIRECT_H)
 #test for ansi scope (needed for msvc6)
 INCLUDE(TestForANSIForScope)
 
-#test for some functions that are missing on windows
+#test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(strcasestr HAVE_STRCASESTR)
 CHECK_FUNCTION_EXISTS(strncasecmp HAVE_STRNCASECMP)
 CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)
 CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)
+CHECK_FUNCTION_EXISTS(strlwr HAVE_STRLWR)
 
 #test for missing types
 INCLUDE(CheckTypeSize)

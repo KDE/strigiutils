@@ -25,6 +25,7 @@
 #cmakedefine HAVE_STRCASESTR
 #cmakedefine HAVE_ISBLANK
 #cmakedefine HAVE_FCHDIR
+#cmakedefine HAVE_STRLWR
 
 #cmakedefine HAVE_UNISTD_H
 #cmakedefine HAVE_SYS_NDIR_H

@@ -47,10 +47,23 @@ int strncasecmp(const char* sa, const char* sb, int l){
 
 #ifndef HAVE_STRCASESTR
 const char * strcasestr(const char *big, const char *little){
-    char* tmp1=strdup(big);
-    char* tmp2=strdup(little);
+    char* tmp1 = strdup(big);
+    char* tmp2 = strdup(little);
+#ifdef HAVE_STRLWR /* for windows */
     strlwr(tmp1);
     strlwr(tmp2);
+#else /* for solaris */
+    char* t = tmp1;
+    while (*t) {
+        tolower(*t);
+        ++t;
+    }
+    t = tmp2;
+    while (*t) {
+        tolower(*t);
+        ++t;
+    }
+#endif
 
     const char * ret = strstr(tmp1,tmp2);
 
