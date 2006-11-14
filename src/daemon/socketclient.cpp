@@ -75,6 +75,7 @@ SocketClient::readResponse(int sd) {
     string line;
     char c;
     while (true) {
+        // read characters one by one
         int r = recv(sd, &c, 1, 0);
         if (r < 0) {
             error = "Error reading from socket: ";
