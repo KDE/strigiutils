@@ -59,19 +59,33 @@
 #ifndef HAVE_INT64_T
  #if defined(HAVE___INT64)
   typedef __int64 int64_t; 
-  typedef unsigned __int64 uint64_t;
- #elif 0${SIZEOF_LONGLONG}==8
+ #elif ${SIZEOF_LONG}==8
+  typedef long int64_t
+ #elif ${SIZEOF_LONGLONG}==8
   typedef long long int64_t; 
-  typedef unsigned long long uint64_t;
+ #endif
+#endif
+#ifndef HAVE_UINT64_T
+ #if defined(HAVE___UINT64)
+  typedef __uint64 uint64_t; 
+ #elif ${SIZEOF_LONG}==8
+  typedef unsigned long uint64_t
+ #elif ${SIZEOF_LONGLONG}==8
+  typedef unsigned long long uint64_t; 
  #endif
 #endif
 
 #ifndef HAVE_INT32_T
- #if 0${SIZEOF_INT}==4 //is int 4bits?
+ #if ${SIZEOF_INT}==4 //is int 4bits?
   typedef int int32_t;
-  typedef unsigned int uint32_t;
- #elif 0${SIZEOF_LONG}==4 //is long 4bits?
+ #elif ${SIZEOF_LONG}==4 //is long 4bits?
   typedef long int32_t;
+ #endif
+#endif
+#ifndef HAVE_UINT32_T
+ #if ${SIZEOF_INT}==4 //is int 4bits?
+  typedef unsigned int uint32_t;
+ #elif ${SIZEOF_LONG}==4 //is long 4bits?
   typedef unsigned long uint32_t;
  #endif
 #endif
