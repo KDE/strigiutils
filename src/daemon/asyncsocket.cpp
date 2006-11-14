@@ -23,9 +23,12 @@
 #include <sys/un.h>
 #include <errno.h>
 
+/* workaround for systems without MSG_NOSIGNAL
+   on these systems the sending party will receive a SIGPIPE when the receiving
+   party closes the connection */
 #if defined(__APPLE__)
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
-#elif defined( unix )
+#elif defined( MSG_NOSIGNAL )
 #define SOCKET_NOSIGNAL MSG_NOSIGNAL
 #else
 #define SOCKET_NOSIGNAL 0
