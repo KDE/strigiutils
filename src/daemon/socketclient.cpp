@@ -29,7 +29,7 @@ using namespace std;
 
 #if defined(__APPLE__)
 #define SOCKET_NOSIGNAL SO_NOSIGPIPE
-#elif defined( unix )
+#elif defined( MSG_NOSIGNAL )
 #define SOCKET_NOSIGNAL MSG_NOSIGNAL
 #else
 #define SOCKET_NOSIGNAL 0
