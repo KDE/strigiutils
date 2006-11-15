@@ -1,4 +1,4 @@
-include_directories( ../daemon ../streamindexer ../htmlgui ../filters)
+include_directories(../daemon ../streamindexer ../htmlgui ../filters ../streams)
 
 if (QT4_FOUND)
   include(${QT_USE_FILE})

@@ -22,6 +22,7 @@
 
 #include <map>
 #include <string>
+#include "jstreamsconfig.h"
 
 namespace jstreams {
 

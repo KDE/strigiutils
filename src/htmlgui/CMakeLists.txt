@@ -1,4 +1,4 @@
-include_directories( ../daemon ../streamindexer )
+include_directories( ../daemon ../streamindexer ../streams )
 
 add_library(strigihtmlgui SHARED strigihtmlgui.cpp)
 set_target_properties(strigihtmlgui PROPERTIES

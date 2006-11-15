@@ -140,7 +140,7 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
 }
 char
-StreamIndexer::analyze(const std::string &path, time_t mtime,
+StreamIndexer::analyze(const std::string& path, time_t mtime,
         InputStream *input, uint depth) {
     static int count = 1;
 //    if (++count % 1000 == 0) {
