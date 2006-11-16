@@ -24,6 +24,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include "jstreamsconfig.h"
 
 #ifdef HAVE_DLFCN_H
  typedef void* StgModuleType;

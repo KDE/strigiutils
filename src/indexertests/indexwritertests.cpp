@@ -1,13 +1,15 @@
 #include "jstreamsconfig.h"
 #include "indexwritertests.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace jstreams;
 
 class IndexWriterTester {
 private:
     IndexWriter* writer;
+    StreamIndexer si;
 public:
-    IndexWriterTester(IndexWriter* w) :writer(w) {}
+    IndexWriterTester(IndexWriter* w) :writer(w), si(w) {
+    }
     int optimize() {
         writer->optimize();
         return 0;
@@ -15,7 +17,7 @@ public:
     int add() {
         std::string s("a"); // we must pass a string, not a const char*
         {
-            Indexable i(s, 0, writer, 0);
+            Indexable i(s, 0, *writer, si);
         }
         writer->commit();
 

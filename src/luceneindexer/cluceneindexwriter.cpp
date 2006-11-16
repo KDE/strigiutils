@@ -24,6 +24,7 @@
 #include <CLucene/search/QueryFilter.h>
 #include "stringreader.h"
 #include "inputstreamreader.h"
+#include "indexable.h"
 #include <sstream>
 #include <assert.h>
 
@@ -89,7 +90,7 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    ::setField(idx, _T("path"), idx->getName());
+    ::setField(idx, _T("path"), idx->getPath());
     string field = idx->getEncoding();
     if (field.length()) ::setField(idx, _T("encoding"), field);
     field = idx->getMimeType();
@@ -130,7 +131,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
             try {
                 writer->addDocument(&doc->doc);
             } catch (CLuceneError& err) {
-                fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+                fprintf(stderr, "%s: %s\n", idx->getPath().c_str(), err.what());
             }
         }
     } else {
@@ -139,7 +140,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
             try {
                 writer->addDocument(&doc->doc);
             } catch (CLuceneError& err)  {
-                fprintf(stderr, "%s: %s\n", idx->getName().c_str(), err.what());
+                fprintf(stderr, "%s: %s\n", idx->getPath().c_str(), err.what());
             }
         }
     }

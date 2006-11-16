@@ -130,7 +130,7 @@ SaxEndAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     va_start(args, msg);
     e += string(" ")+va_arg(args,char*);
     va_end(args);
-    printf("%s", e.c_str());
+    fprintf(stderr, "%s", e.c_str());
 }
 void
 SaxEndAnalyzer::Private::startElementNsSAX2Func(void * ctx,

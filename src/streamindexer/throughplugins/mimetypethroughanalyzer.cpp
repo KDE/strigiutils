@@ -22,7 +22,7 @@
 #include "strigi_plugins.h"
 
 #include "mimetypethroughanalyzer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace std;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {

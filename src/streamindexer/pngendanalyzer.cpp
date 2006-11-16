@@ -19,8 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "pngendanalyzer.h"
-#include "streamindexer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include <sstream>
 using namespace std;
 using namespace jstreams;
@@ -31,8 +30,7 @@ PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize >= 24 &&  memcmp(header, pngmagic, 8) == 0;
 }
 char
-PngEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* i) {
+PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     const char* h;
     int32_t n = in->read(h, 24, 24);
     if (n < 24) return -1;
@@ -45,10 +43,10 @@ PngEndAnalyzer::analyze(std::string filename, InputStream *in,
          + ((unsigned char)h[21]<<16) + ((unsigned char)h[20]<<24);
     ostringstream v;
     v << x;
-    i->setField("width", v.str());
+    idx.setField("width", v.str());
     v.str("");
     v << y;
-    i->setField("height", v.str());
+    idx.setField("height", v.str());
     return 0;
 }
 

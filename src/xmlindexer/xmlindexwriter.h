@@ -20,7 +20,7 @@
 #ifndef XMLINDEXWRITER_H
 #define XMLINDEXWRITER_H
 
-#include "indexwriter.h"
+#include "indexable.h"
 #include <iostream>
 #include <map>
 
@@ -153,7 +153,7 @@ protected:
     }
     void finishIndexable(const jstreams::Indexable* idx) {
         Data* d = static_cast<Data*>(idx->getWriterData());
-        std::string v = idx->getName();
+        std::string v = idx->getPath();
         escape(v);
         out << " <file uri='" << v << "' mtime='" << (int)idx->getMTime()
             << "'>\n";

@@ -20,7 +20,7 @@
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
 #include <jstreamsconfig.h>
 #include <strigi_plugins.h>
-#include <indexwriter.h>
+#include <indexable.h>
 #include <sys/types.h>
 #include <attr/xattr.h>
 #include <errno.h>
@@ -66,7 +66,7 @@ XattrAnalyzer::connectInputStream(jstreams::InputStream *in) {
             namesize *= 2;
             namebuffer = (char*)realloc(namebuffer, namesize);
         }
-        s = llistxattr(idx->getName().c_str(), namebuffer, namesize);
+        s = llistxattr(idx->getPath().c_str(), namebuffer, namesize);
     } while (s == -1 && errno == ERANGE && namesize < maxnamesize);
     if (s == -1) return in;
 
@@ -97,7 +97,7 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
             valsize *= 2;
             valbuffer = (char*)realloc(valbuffer, valsize);
         }
-        s = lgetxattr(idx->getName().c_str(), name, valbuffer, valsize-1);
+        s = lgetxattr(idx->getPath().c_str(), name, valbuffer, valsize-1);
     } while (s == -1 && errno == ERANGE && valsize < maxvalsize);
     if (s == -1) return 0;
     valbuffer[s] = '\0';

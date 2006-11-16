@@ -21,7 +21,7 @@
 #include "digestthroughanalyzer.h"
 #include "digestinputstream.h"
 #include "inputstream.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace std;
 using namespace jstreams;
 

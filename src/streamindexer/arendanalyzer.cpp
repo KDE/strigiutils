@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "arendanalyzer.h"
 #include "arinputstream.h"
-#include "streamindexer.h"
+#include "indexable.h"
 #include "subinputstream.h"
 using namespace jstreams;
 
@@ -29,19 +29,16 @@ ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ArInputStream::checkHeader(header, headersize);
 }
 char
-ArEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
-    return staticAnalyze(filename, in, depth, indexer, idx);
+ArEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+    return staticAnalyze(idx, in);
 }
 char
-ArEndAnalyzer::staticAnalyze(std::string filename, jstreams::InputStream *in,
-        int depth, jstreams::StreamIndexer *indexer, jstreams::Indexable*) {
+ArEndAnalyzer::staticAnalyze(jstreams::Indexable& idx,
+        jstreams::InputStream* in) {
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {
-        std::string file = filename+'/';
-        file += ar.getEntryInfo().filename;
-        indexer->analyze(file, ar.getEntryInfo().mtime, s, depth);
+        idx.indexChild(ar.getEntryInfo().filename, ar.getEntryInfo().mtime, *s);
         s = ar.nextEntry();
     }
     if (ar.getStatus() == jstreams::Error) {

@@ -19,9 +19,8 @@
  */
 #include "jstreamsconfig.h"
 #include "saxendanalyzer.h"
-#include "streamindexer.h"
 #include "inputstreamreader.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include <expat.h>
 using namespace jstreams;
 using namespace std;
@@ -148,12 +147,11 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return !p->error;
 }
 char
-SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
-        int depth, StreamIndexer *indexer, Indexable* i) {
+SaxEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {
-        p->init(i, b, nread);
+        p->init(&idx, b, nread);
         nread = in->read(b, 1, 0);
     }
     while (nread > 0 && !p->stop) {
@@ -165,9 +163,9 @@ SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
         i->setField("encoding", (const char*)p->ctxt->encoding);
     }*/
     if (p->html) {
-        i->setMimeType("text/html");
+        idx.setMimeType("text/html");
     } else if (p->wellformed) {
-        i->setMimeType("text/xml");
+        idx.setMimeType("text/xml");
     }
 //    i->setField("root", p->rootelement);
     if (in->getStatus() != Eof) {

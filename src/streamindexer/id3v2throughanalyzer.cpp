@@ -20,7 +20,7 @@
 
 #include "jstreamsconfig.h"
 #include "id3v2throughanalyzer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace std;
 
 ID3V2ThroughAnalyzer::ID3V2ThroughAnalyzer() :indexable(0) {
@@ -71,7 +71,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
         while (indexable && p < buf && *p) {
             size = readSize(p+4, async);
             if (size < 0) {
-                printf("size < 0: %i\n", size);
+                fprintf(stderr, "size < 0: %i\n", size);
                 return in;
             }
             if (p[10] == 0 || p[10] == 1) { // text is ISO-8859-1 or utf8

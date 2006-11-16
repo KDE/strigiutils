@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include "textutils.h"
 using namespace jstreams;
 using namespace std;
@@ -30,14 +30,6 @@ Indexable::getExtension() const {
         return name.substr(p1+1);
     }
     return "";
-}
-string
-Indexable::getFileName() const {
-    uint p = name.rfind('/');
-    if (p != string::npos) {
-        return name.substr(p+1);
-    }
-    return name;
 }
 void
 Indexable::setField(const std::string& fieldname, const std::string& value) {
@@ -51,6 +43,6 @@ Indexable::setField(const std::string& fieldname, const std::string& value) {
         return;
     }
     if (strchr(fieldname.c_str(), '/') == 0) {
-        writer->setField(this, fieldname, value);
+        writer.setField(this, fieldname, value);
     }
 }

@@ -17,36 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "indexerconfiguration.h"
 #include "jstreamsconfig.h"
-#include "rpmendanalyzer.h"
-#include "rpminputstream.h"
-#include "subinputstream.h"
-#include "indexable.h"
+using namespace std;
 using namespace jstreams;
 
-bool
-RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    return RpmInputStream::checkHeader(header, headersize);
+IndexerConfiguration::IndexerConfiguration() {
 }
-char
-RpmEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
-    RpmInputStream rpm(in);
-    InputStream *s = rpm.nextEntry();
-    if (rpm.getStatus()) {
-        fprintf(stderr, "error: %s\n", rpm.getError());
-//        exit(1);
-    }
-    while (s) {
-        idx.indexChild(rpm.getEntryInfo().filename, rpm.getEntryInfo().mtime,
-            *s);
-        s = rpm.nextEntry();
-    }
-    if (rpm.getStatus() == jstreams::Error) {
-        error = rpm.getError();
-        return -1;
-    } else {
-        error.resize(0);
-    }
-    return 0;
+/**
+ * Placeholder implementation that agrees to everything and only makes a
+ * difference for text, because it should be tokenized.
+ **/
+IndexerConfiguration::FieldType
+IndexerConfiguration::getIndexType(const std::string& fieldname) const {
+    return (fieldname == "text") ? Tokenized|Stored|Indexed
+                                : Stored|Indexed;
 }
-

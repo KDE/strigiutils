@@ -56,12 +56,11 @@ bool PluginEndAnalyzer::checkHeader(const char* header,
     }
     return false;
 }
-char PluginEndAnalyzer::analyze(string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, Indexable* idx) {
-
+char
+PluginEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
     if ( selectedEndAnalyzer ){
-        char ret = selectedEndAnalyzer->analyze(filename,in,depth,indexer, idx);
-        selectedEndAnalyzer = NULL;
+        char ret = selectedEndAnalyzer->analyze(idx, in);
+        selectedEndAnalyzer = 0;
         return ret;
     } else {
         return -1;

@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "grepindexwriter.h"
+#include "indexable.h"
 using namespace std;
 
 GrepIndexWriter::GrepIndexWriter(const char* re) {
@@ -48,7 +49,7 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
         if (*p == '\n' || *p == '\r') {
             s.assign(start, p-start);
             if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
-                printf("%s:%s\n", idx->getName().c_str(), s.c_str());
+                printf("%s:%s\n", idx->getPath().c_str(), s.c_str());
             }
             start = p+1;
         }
@@ -56,14 +57,14 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
     }
     s.assign(start, p-start);
     if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
-        printf("%s:%s\n", idx->getName().c_str(), s.c_str());
+        printf("%s:%s\n", idx->getPath().c_str(), s.c_str());
     }
 }
 void
 GrepIndexWriter::setField(const jstreams::Indexable* idx,
         const std::string &fieldname, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
-        printf("%s:%s:%s\n", idx->getName().c_str(), fieldname.c_str(),
+        printf("%s:%s:%s\n", idx->getPath().c_str(), fieldname.c_str(),
             value.c_str());
     }
 }

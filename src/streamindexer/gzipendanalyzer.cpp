@@ -23,8 +23,7 @@
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
-#include "streamindexer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace jstreams;
 using namespace std;
 
@@ -34,8 +33,7 @@ GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         && (unsigned char)header[1] == 0x8b;
 }
 char
-GZipEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
+GZipEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     GZipInputStream stream(in);
     // since this is gzip file, its likely that it contains a tar file
     const char* start;
@@ -46,22 +44,13 @@ GZipEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     }
     stream.reset(0);
     if (TarInputStream::checkHeader(start, nread)) {
-        return TarEndAnalyzer::staticAnalyze(filename, &stream, depth, indexer,
-            idx);
+        return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
-        std::string file;
-        uint p1 = filename.rfind("/");
-        if (p1 != string::npos) {
-            int len = filename.length();
-            if (len > 3 && filename.substr(len-3) == ".gz") {
-                file = filename + filename.substr(p1,len-p1-3);
-            } else {
-                file = filename + filename.substr(p1);
-            }
-        } else {
-            // last resort
-            file = filename+"/gunzipped";
+        std::string file = idx.getFileName();
+        int len = file.length();
+        if (len > 3 && file.substr(len-3) == ".gz") {
+            file = file.substr(0, len-3);
         }
-        return indexer->analyze(file, idx->getMTime(), &stream, depth);
+        return idx.indexChild(file, idx.getMTime(), stream);
     }
 }

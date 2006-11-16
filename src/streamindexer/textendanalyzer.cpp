@@ -21,7 +21,7 @@
 #include "textendanalyzer.h"
 #include "streamindexer.h"
 #include "inputstreamreader.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include "textutils.h"
 using namespace jstreams;
 
@@ -54,15 +54,14 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-TextEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
-        int depth, StreamIndexer *indexer, Indexable* i) {
+TextEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     // pass a piece of text to the indexer. it's up to the indexer to break
     // it down into words
     const char* b;
     // store and index the first 20k of a text file
     int32_t nread = in->read(b, 20*1024, 0);
     if (nread > 0 && checkUtf8(b, nread)) {
-        i->addText(b, nread);
+        idx.addText(b, nread);
     }
     if (in->getStatus() == Error) {
         error = in->getError();

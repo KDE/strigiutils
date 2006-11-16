@@ -17,36 +17,25 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "jstreamsconfig.h"
-#include "rpmendanalyzer.h"
-#include "rpminputstream.h"
-#include "subinputstream.h"
-#include "indexable.h"
-using namespace jstreams;
 
-bool
-RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    return RpmInputStream::checkHeader(header, headersize);
-}
-char
-RpmEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
-    RpmInputStream rpm(in);
-    InputStream *s = rpm.nextEntry();
-    if (rpm.getStatus()) {
-        fprintf(stderr, "error: %s\n", rpm.getError());
-//        exit(1);
-    }
-    while (s) {
-        idx.indexChild(rpm.getEntryInfo().filename, rpm.getEntryInfo().mtime,
-            *s);
-        s = rpm.nextEntry();
-    }
-    if (rpm.getStatus() == jstreams::Error) {
-        error = rpm.getError();
-        return -1;
-    } else {
-        error.resize(0);
-    }
-    return 0;
+#include <string>
+
+namespace jstreams {
+class IndexerConfiguration {
+public:
+enum FieldType {
+    None      = 0x0001, Binary = 0x0002, Compressed = 0x0004,
+    Indexed   = 0x0010, Lazy   = 0x0020, Stored     = 0x0040,
+    Tokenized = 0x0100
+};
+public:
+    IndexerConfiguration();
+    FieldType getIndexType(const std::string& fieldname) const;    
+};
+
+IndexerConfiguration::FieldType
+operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
+    return static_cast<IndexerConfiguration::FieldType>(a|b);
 }
 
+}

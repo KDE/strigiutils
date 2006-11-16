@@ -1,7 +1,7 @@
 #include "jstreamsconfig.h"
 #include "indexmanagertests.h"
 #include "indexreader.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include "indexmanager.h"
 #include "query.h"
 #include "strigi_thread.h"
@@ -17,9 +17,10 @@ private:
     IndexManager* manager;
     IndexWriter* writer;
     IndexReader* reader;
+    StreamIndexer si;
 public:
-    IndexManagerTester(IndexManager* m) :errors(0), manager(m) {
-        writer = manager->getIndexWriter();
+    IndexManagerTester(IndexManager* m) :errors(0), manager(m),
+            writer(manager->getIndexWriter()), si(writer) {
         reader = manager->getIndexReader();
         STRIGI_MUTEX_INIT(&lock);
     }
@@ -76,7 +77,7 @@ IndexManagerTester::addAndCount() {
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        { Indexable idx(s, 0, writer, 0); }
+        { Indexable idx(s, 0, *writer, si); }
         str.str("");
     }
     writer->commit();
@@ -95,7 +96,7 @@ IndexManagerTester::testNumberQuery() {
         string value(str.str());
         string name('/'+value);
         {
-             Indexable idx(name, 0, writer, 0);
+             Indexable idx(name, 0, *writer, si);
              idx.setField(size, value);
         }
         str.str("");

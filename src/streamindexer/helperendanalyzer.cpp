@@ -19,9 +19,9 @@
  */
 #include "jstreamsconfig.h"
 #include "helperendanalyzer.h"
-#include "streamindexer.h"
 #include "processinputstream.h"
 #include "textendanalyzer.h"
+#include "indexable.h"
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -130,8 +130,7 @@ HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return helperconfig.findHelper(header, headersize) != 0;
 }
 char
-HelperEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
-        int depth, StreamIndexer *indexer, Indexable* i) {
+HelperEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
     char state = -1;
     const char* b;
     int32_t nread = in->read(b, 1024, 0);
@@ -145,12 +144,12 @@ HelperEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
             if (h->readfromstdin) {
                 ProcessInputStream pis(h->arguments, in);
                 TextEndAnalyzer t;
-                state = t.analyze(filename, &pis, depth, indexer, i);
+                state = t.analyze(idx, &pis);
             } else {
                 string filepath;
-                bool fileisondisk = checkForFile(depth, filename);
+                bool fileisondisk = checkForFile(idx);
                 if (fileisondisk) {
-                    filepath = filename;
+                    filepath = idx.getPath();
                 } else {
                     filepath = writeToTempFile(in);
                 }
@@ -162,7 +161,7 @@ HelperEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
                 }
                 ProcessInputStream pis(args);
                 TextEndAnalyzer t;
-                state = t.analyze(filename, &pis, depth, indexer, i);
+                state = t.analyze(idx, &pis);
                 if (!fileisondisk) {
                     unlink(filepath.c_str());
                 }
@@ -202,9 +201,9 @@ HelperEndAnalyzer::writeToTempFile(jstreams::InputStream *in) const {
     return filepath;
 }
 bool
-HelperEndAnalyzer::checkForFile(int depth, const std::string& filename) {
-    if (depth > 0) return false;
+HelperEndAnalyzer::checkForFile(const Indexable& idx) const {
+    if (idx.getDepth() > 0) return false;
     struct stat s;
-    if (stat(filename.c_str(), &s)) return false;
+    if (stat(idx.getPath().c_str(), &s)) return false;
     return true;
 }

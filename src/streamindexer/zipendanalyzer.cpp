@@ -20,8 +20,8 @@
 #include "jstreamsconfig.h"
 #include "zipendanalyzer.h"
 #include "zipinputstream.h"
-#include "streamindexer.h"
 #include "subinputstream.h"
+#include "indexable.h"
 using namespace jstreams;
 
 bool
@@ -29,8 +29,7 @@ ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ZipInputStream::checkHeader(header, headersize);
 }
 char
-ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable*) {
+ZipEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
     if (zip.getStatus()) {
@@ -38,9 +37,8 @@ ZipEndAnalyzer::analyze(std::string filename, InputStream *in,
 //        exit(1);
     }
     while (s) {
-        std::string file = filename+'/';
-        file += zip.getEntryInfo().filename;
-        indexer->analyze(file, zip.getEntryInfo().mtime, s, depth);
+        idx.indexChild(zip.getEntryInfo().filename, zip.getEntryInfo().mtime,
+            *s);
         s = zip.nextEntry();
     }
     if (zip.getStatus() == jstreams::Error) {

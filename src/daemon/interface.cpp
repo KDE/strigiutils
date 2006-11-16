@@ -26,6 +26,7 @@
 #include "eventlistener.h"
 #include "filtermanager.h"
 #include "streamindexer.h"
+#include "indexable.h"
 #include "stringreader.h"
 #include "query.h"
 #include <sstream>
@@ -140,6 +141,7 @@ Interface::getIndexedFiles() {
     
     return r;
 }
+#include "indexwriter.h"
 void
 Interface::indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>& content) {
@@ -150,5 +152,6 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     writer->deleteEntries(paths);
     StreamIndexer streamindexer(writer);
     StringReader<char> sr(&content[0], content.size(), false);
-    char r = streamindexer.analyze(path, mtime, &sr, 0);
+    Indexable idx(path, mtime, *writer, streamindexer);
+    char r = idx.index(sr);
 }

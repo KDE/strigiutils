@@ -20,8 +20,7 @@
 #include "jstreamsconfig.h"
 #include "mailendanalyzer.h"
 #include "mailinputstream.h"
-#include "streamindexer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include "textendanalyzer.h"
 using namespace jstreams;
 
@@ -30,8 +29,7 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return MailInputStream::checkHeader(header, headersize);
 }
 char
-MailEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
+MailEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
     if (mail.getStatus() == jstreams::Error) {
@@ -42,24 +40,24 @@ MailEndAnalyzer::analyze(std::string filename, InputStream *in,
         error = "mail contains no body";
         return -1;
     }
-    idx->setField("title", mail.getSubject());
-    idx->setField("contenttype", mail.getContentType());
+    idx.setField("title", mail.getSubject());
+    idx.setField("contenttype", mail.getContentType());
     TextEndAnalyzer tea;
-    if (tea.analyze(filename, s, depth, indexer, idx) != 0) {
+    if (tea.analyze(idx, s) != 0) {
         error = "Error reading mail body.";
         return -1;
     }
     s = mail.nextEntry();
     int n = 1;
     while (s) {
-        std::string file = filename+'/';
+        std::string file;
         if (mail.getEntryInfo().filename.length() == 0) {
-            file += (char)(n+'1');
+            file = (char)(n+'1');
         } else {
-            file += mail.getEntryInfo().filename;
+            file = mail.getEntryInfo().filename;
         }
         // maybe use the date of sending the mail here
-        indexer->analyze(file, idx->getMTime(), s, depth);
+        idx.indexChild(file, idx.getMTime(), *s);
         s = mail.nextEntry();
         n++;
     }

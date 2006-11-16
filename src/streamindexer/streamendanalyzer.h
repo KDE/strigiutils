@@ -33,8 +33,7 @@ protected:
 public:
     virtual ~StreamEndAnalyzer() {};
     virtual bool checkHeader(const char* header, int32_t headersize) const = 0;
-    virtual char analyze(std::string filename, jstreams::InputStream* in,
-        int depth, StreamIndexer* indexer, jstreams::Indexable*) = 0;
+    virtual char analyze(jstreams::Indexable& idx, jstreams::InputStream* in)=0;
     const std::string& getError() const { return error; }
     virtual const char* getName() const = 0;
 };

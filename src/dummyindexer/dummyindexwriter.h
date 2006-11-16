@@ -20,7 +20,7 @@
 #ifndef DUMMYINDEXWRITER_H
 #define DUMMYINDEXWRITER_H
 
-#include "indexwriter.h"
+#include "indexable.h"
 
 class DummyIndexWriter : public jstreams::IndexWriter {
 private:
@@ -28,7 +28,7 @@ private:
 protected:
     void startIndexable(jstreams::Indexable* idx) {
         if (verbosity >= 1) {
-            printf("%s\n", idx->getName().c_str());
+            printf("%s\n", idx->getPath().c_str());
         }
         if (verbosity == -1) { // sha1 mode
             std::string* s = new std::string();
@@ -39,21 +39,21 @@ protected:
         if (verbosity == -1) { // sha1 mode
             const std::string* s = static_cast<const std::string*>(
                 idx->getWriterData());
-            printf("%s\t%s\n", idx->getName().c_str(), s->c_str());
+            printf("%s\t%s\n", idx->getPath().c_str(), s->c_str());
             delete s;
         }
     }
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length) {
         if (verbosity > 2) {
-            printf("%s: addText '%.*s'\n", idx->getName().c_str(), length,
+            printf("%s: addText '%.*s'\n", idx->getPath().c_str(), length,
                 text);
         }
     }
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value) {
         if (verbosity > 1) {
-            printf("%s: setField '%s': '%s'\n", idx->getName().c_str(),
+            printf("%s: setField '%s': '%s'\n", idx->getPath().c_str(),
                 fieldname.c_str(), value.c_str());
         } else if (verbosity == -1 && fieldname == "sha1") {
             std::string* s = static_cast<std::string*>(idx->getWriterData());

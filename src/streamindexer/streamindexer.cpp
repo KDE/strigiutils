@@ -37,7 +37,7 @@
 #include "digestthroughanalyzer.h"
 #include "pluginthroughanalyzer.h"
 #include "pluginendanalyzer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 #include "textutils.h"
 #include <sys/stat.h>
 
@@ -90,7 +90,9 @@ StreamIndexer::indexFile(const std::string& filepath) {
     FileInputStream file(filepath.c_str());
     // ensure a decent buffer size
     //file.mark(65530);
-    return analyze(filepath, s.st_mtime, &file, 0);
+    string name;
+    Indexable indexable(filepath, s.st_mtime, *writer, *this);
+    return indexable.index(file);
 }
 void
 StreamIndexer::addThroughAnalyzers() {
@@ -140,24 +142,22 @@ StreamIndexer::addEndAnalyzers() {
     eIter->push_back(ana);
 }
 char
-StreamIndexer::analyze(const std::string& path, time_t mtime,
-        InputStream *input, uint depth) {
-    static int count = 1;
+StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
+//    static int count = 1;
 //    if (++count % 1000 == 0) {
 //        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
 //    }
     //printf("depth #%i: %s\n", depth, path.c_str());
-    Indexable idx(path, mtime, writer, depth);
    
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
-    while (through.size() < depth+1) {
+    while ((int)through.size() <= idx.getDepth()) {
         addThroughAnalyzers();
         addEndAnalyzers();
     }
-    tIter = through.begin() + depth;
-    eIter = end.begin() + depth;
+    tIter = through.begin() + idx.getDepth();
+    eIter = end.begin() + idx.getDepth();
 
     // insert the through analyzers
     std::vector<StreamThroughAnalyzer*>::iterator ts;
@@ -178,27 +178,27 @@ StreamIndexer::analyze(const std::string& path, time_t mtime,
     while (!finished && es != size) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {
-            char ar = sea->analyze(path, input, depth+1, this, &idx);
+            char ar = sea->analyze(idx, input);
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
                     fprintf(stderr, "could not reset stream of %s from pos "
-                        "%lli to 0 after reading with %s: %s\n", path.c_str(),
-                        input->getPosition(), sea->getName(),
-                        sea->getError().c_str());
-                    removeIndexable(depth);
+                        "%lli to 0 after reading with %s: %s\n",
+                        idx.getPath().c_str(), input->getPosition(),
+                        sea->getName(), sea->getError().c_str());
+                    removeIndexable(idx.getDepth());
                     return -2;
                 }
             } else {
                 finished = true;
             }
-            eIter = end.begin() + depth;
+            eIter = end.begin() + idx.getDepth();
         }
         es++;
     }
     // make sure the entire stream as read
     bool ready;
-    tIter = through.begin() + depth;
+    tIter = through.begin() + idx.getDepth();
     do {
         ready = true;
         std::vector<StreamThroughAnalyzer*>::iterator ts;
@@ -211,7 +211,7 @@ StreamIndexer::analyze(const std::string& path, time_t mtime,
     } while (!ready && input->getStatus() == Ok);
     if (input->getStatus() == Error) {
         fprintf(stderr, "Error: %s\n", input->getError());
-        removeIndexable(depth);
+        removeIndexable(idx.getDepth());
         return -2;
     }
 
@@ -224,7 +224,7 @@ StreamIndexer::analyze(const std::string& path, time_t mtime,
     }
 
     // remove references to the indexable before it goes out of scope
-    removeIndexable(depth);
+    removeIndexable(idx.getDepth());
     return 0;
 }
 void

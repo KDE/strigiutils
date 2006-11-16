@@ -19,6 +19,7 @@
  */
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
+#include "indexable.h"
 #include <vector>
 #include <sstream>
 #include <cassert>
@@ -135,12 +136,12 @@ SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
 void
 SqliteIndexWriter::startIndexable(Indexable* idx) {
     // get the file name
-    const char* name = idx->getName().c_str();
-    size_t namelen = idx->getName().length();
+    const char* name = idx->getPath().c_str();
+    size_t namelen = idx->getPath().length();
 
     // remove old entry
     vector<string> v;
-    v.push_back(idx->getName());
+    v.push_back(idx->getPath());
     deleteEntries(v);
 
     sqlite3* db = manager->ref();

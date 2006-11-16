@@ -24,7 +24,7 @@
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
 #include "streamindexer.h"
-#include "indexwriter.h"
+#include "indexable.h"
 using namespace std;
 using namespace jstreams;
 
@@ -34,8 +34,7 @@ BZ2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return v;
 }
 char
-BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
-        int depth, StreamIndexer *indexer, jstreams::Indexable* idx) {
+BZ2EndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     BZ2InputStream stream(in);
 /*    char r = testStream(&stream);
     if (r) {
@@ -45,28 +44,18 @@ BZ2EndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
     const char* start;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
-        printf("Error reading bz2: %s\n", stream.getError());
+        fprintf(stderr, "Error reading bz2: %s\n", stream.getError());
         return -2;
     }
     stream.reset(0);
     if (TarInputStream::checkHeader(start, nread)) {
-        return TarEndAnalyzer::staticAnalyze(filename, &stream, depth, indexer,
-            idx);
+        return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
-        std::string file;
-        uint p1 = filename.rfind("/");
-        //int len = filename.length();
-        if (p1 != string::npos) {
-            int len = filename.length();
-            if (len > 4 && filename.substr(len-4)==".bz2") {
-                file = filename + filename.substr(p1,len-p1-4);
-            } else {
-                file = filename + filename.substr(p1);
-            }
-        } else {
-            // last resort
-            file = filename+"/bunzipped";
+        std::string name = idx.getFileName();
+        int len = name.length();
+        if (len > 4 && name.substr(len-4)==".bz2") {
+            name = name.substr(0, len-4);
         }
-        return indexer->analyze(file, idx->getMTime(), &stream, depth);
+        return idx.indexChild(name, idx.getMTime(), stream);
     }
 }

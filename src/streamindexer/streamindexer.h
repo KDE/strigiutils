@@ -27,6 +27,7 @@ namespace jstreams {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 class IndexWriter;
+class Indexable;
 template <class T> class StreamBase;
 /**
  * The class StreamIndexer extracts information from files or character
@@ -58,8 +59,7 @@ public:
     ~StreamIndexer();
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);
-    char analyze(const std::string &path, time_t mtime,
-        jstreams::StreamBase<char> *input, uint depth);
+    char analyze(Indexable& idx, jstreams::StreamBase<char> *input);
 };
 }
 
