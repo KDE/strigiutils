@@ -140,7 +140,7 @@ HelperEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
             = helperconfig.findHelper(b, nread);
         if (h) {
 //            fprintf(stderr, "calling %s on %s\n", h->arguments[0].c_str(),
-//                filename.c_str());
+//                idx.getPath().c_str());
             if (h->readfromstdin) {
                 ProcessInputStream pis(h->arguments, in);
                 TextEndAnalyzer t;
@@ -168,9 +168,9 @@ HelperEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
             }
         }
     }
-    if (in->getStatus() != Eof) {
+    if (in->getStatus() == Error) {
         error = in->getError();
-        state = -1;
+        state = Error;
     }
     return state;
 }
