@@ -141,7 +141,6 @@ Interface::getIndexedFiles() {
     
     return r;
 }
-#include "indexwriter.h"
 void
 Interface::indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>& content) {
