@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "processinputstream.h"
+#include <errno.h>
 using namespace jstreams;
 using namespace std;
 
@@ -69,16 +70,18 @@ ProcessInputStream::writeToPipe() {
     const char* b;
     int32_t n = input->read(b, 1, 0);
     if (n <= 0 || input->getStatus() == Eof) {
-        input = 0;
         if (n < 0) {
             status = Error;
+            error = input->getError();
             n = 0;
         }
+        input = 0;
     }
 
     // write into the pipe
     int32_t m = write(fdin, b, n);
     if (m < 0) {
+        error = strerror(errno);
         status = Error;
         input = 0;
     } else if (m != n) {
@@ -99,6 +102,7 @@ ProcessInputStream::fillBuffer(char* start, int32_t space) {
     }
     ssize_t n = ::read(fdout, start, space);
     if (n < 0) {
+        error = strerror(errno);
         status = Error;
     }
     if (n <= 0) {
@@ -108,7 +112,6 @@ ProcessInputStream::fillBuffer(char* start, int32_t space) {
     }
     return n;
 }
-#include <errno.h>
 void
 ProcessInputStream::runCmd() {
     int p[2];
