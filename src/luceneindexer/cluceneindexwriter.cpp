@@ -99,7 +99,6 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     if (field.length()) ::setField(idx, _T("filename"), field);
     field = idx->getExtension();
     if (field.length()) ::setField(idx, _T("ext"), field);
-//    printf("%i %s\n", idx->getDepth(), idx->getName().c_str());
     ostringstream o;
     o << (int)idx->getDepth();
     ::setField(idx, _T("depth"), o.str());
@@ -109,43 +108,36 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         snprintf(tmp,100,"%llu",(uint64_t)idx->getMTime());
         o << tmp;
     }
-    ::setField(idx, _T("mtime"), o.str());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
+    ::setField(idx, _T("mtime"), o.str());
+    StringReader<char>* sr = 0;
+    InputStreamReader* streamreader = 0;
+    lucene::util::Reader* reader = 0;
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
-        StringReader<char> sr(doc->content.c_str(), doc->content.length(),
+        sr = new StringReader<char>(doc->content.c_str(), doc->content.length(),
             false);
-        InputStreamReader streamreader(&sr);
-        const wchar_t* data;
-        int32_t nread = streamreader.read(data, 10000000, 0);
-        if (nread > 0) {
-            wchar_t *naughty = (wchar_t*)(data);
-            naughty[nread-1] = '\0';
-            doc->doc.add(*Field::Text(L"content", naughty));
-        }
+        streamreader = new InputStreamReader(sr);
+        reader = new lucene::util::Reader(streamreader, false);
+        doc->doc.add(*Field::Text(L"content", reader));
 #else
         doc->doc.add(*Field::Text("content", doc->content.c_str()) );
 #endif
-        lucene::index::IndexWriter* writer = manager->refWriter();
-        if (writer) {
-            try {
-                writer->addDocument(&doc->doc);
-            } catch (CLuceneError& err) {
-                fprintf(stderr, "%s: %s\n", idx->getPath().c_str(), err.what());
-            }
-        }
-    } else {
-        lucene::index::IndexWriter* writer = manager->refWriter();
-        if (writer) {
-            try {
-                writer->addDocument(&doc->doc);
-            } catch (CLuceneError& err)  {
-                fprintf(stderr, "%s: %s\n", idx->getPath().c_str(), err.what());
-            }
+    }
+    lucene::index::IndexWriter* writer = manager->refWriter();
+    if (writer) {
+        try {
+            writer->addDocument(&doc->doc);
+        } catch (CLuceneError& err) {
+            fprintf(stderr, "%s: %s\n", idx->getPath().c_str(), err.what());
         }
     }
     manager->derefWriter();
     delete doc;
+    if (sr) {
+        delete sr;
+        delete streamreader;
+    }
 }
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
