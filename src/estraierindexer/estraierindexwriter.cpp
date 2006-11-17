@@ -19,6 +19,7 @@
  */
 #include "estraierindexwriter.h"
 #include "estraierindexmanager.h"
+#include "indexable.h"
 #include <vector>
 #include <sstream>
 using namespace std;
@@ -69,7 +70,7 @@ EstraierIndexWriter::finishIndexable(const Indexable* idx) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
     // add required url field
 
-    est_doc_add_attr(doc, "@uri", idx->getName().c_str());
+    est_doc_add_attr(doc, "@uri", idx->getPath().c_str());
     char numbuf[64];
     sprintf(numbuf, "%llu", (int64_t)idx->getMTime());
     est_doc_add_attr(doc, "@mdate", numbuf);
