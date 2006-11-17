@@ -44,13 +44,17 @@ private:
                 if ((0xC0 & c) != 0x80) {
                     return;
                 }
+                out.put(c);
                 nb--;
             } else if ((0xE0 & c) == 0xC0) {
                 nb = 1;
+                out.put(c);
             } else if ((0xF0 & c) == 0xE0) {
                 nb = 2;
+                out.put(c);
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
+                out.put(c);
             } else if (c <= 8) {
                 return;
             } else if (c == '&') {
@@ -61,13 +65,12 @@ private:
                 out << "&gt;";
             } else if (isspace(c)) {
                 if (!lastwhite) {
-                    //fwrite(&c, 1, 1, fd);
                     out.put(c);
                 }
                 lastwhite = true;
             } else {
                 lastwhite = false;
-                out.put(c);//fwrite(&c, 1, 1, fd);
+                out.put(c);
             }
             p++;
         }
@@ -123,12 +126,16 @@ private:
                     return;
                 }
                 nb--;
+                value += c;
             } else if ((0xE0 & c) == 0xC0) {
                 nb = 1;
+                value += c;
             } else if ((0xF0 & c) == 0xE0) {
                 nb = 2;
+                value += c;
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
+                value += c;
             } else if (c <= 8) {
                 value = "";
                 return;
