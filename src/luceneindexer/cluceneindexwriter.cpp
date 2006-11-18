@@ -28,8 +28,6 @@
 #include <sstream>
 #include <assert.h>
 
-using lucene::analysis::Analyzer;
-using lucene::analysis::standard::StandardAnalyzer;
 using lucene::document::Document;
 using lucene::document::Field;
 using lucene::index::IndexWriter;
@@ -106,18 +104,10 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     }
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     ::setField(idx, _T("mtime"), o.str());
-    StringReader<char>* sr = 0;
-    //InputStreamReader* streamreader = 0;
-    lucene::util::Reader* reader = 0;
+    wstring c(utf8toucs2(doc->content));
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
-        sr = new StringReader<char>(doc->content.c_str(), doc->content.length(),
-            false);
-//        streamreader = new InputStreamReader(sr);
-//        reader = new lucene::util::Reader(streamreader, false);
-        //StreamBase<wchar_t>* ws = streamreader;
-        reader = new lucene::util::Reader(new lucene::util::SimpleInputStreamReader(sr, "UTF-8"), true);
-        doc->doc.add(*Field::Text(L"content", reader));
+        doc->doc.add(*Field::Text(L"content", c.c_str(), true));
 #else
         doc->doc.add(*Field::Text("content", doc->content.c_str()) );
 #endif
@@ -132,10 +122,6 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     }
     manager->derefWriter();
     delete doc;
-    if (sr) {
-        delete sr;
-        //delete streamreader;
-    }
 }
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {

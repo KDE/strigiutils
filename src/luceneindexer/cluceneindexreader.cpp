@@ -54,6 +54,8 @@ class CLuceneIndexReader::Private {
 public:
     static lucene::index::Term* createTerm(const std::string& name,
         const std::string& value);
+    static lucene::index::Term* createWildCardTerm(const std::string& name,
+        const std::string& value);
     static void createBooleanQuery(const jstreams::Query& query,
         lucene::search::BooleanQuery& bq);
     static void addField(lucene::document::Field* field,
@@ -73,18 +75,36 @@ CLuceneIndexReader::mapId(const std::string& id) {
     return id.c_str();
 }
 Term*
-CLuceneIndexReader::Private::createTerm(const string& name, const string& value) {
-#ifndef _CL_HAVE_WCSLEN
-    return _CLNEW Term(name.c_str(), value.c_str());
-#else
-#endif
+CLuceneIndexReader::Private::createWildCardTerm(const string& name,
+        const string& value) {
     wstring n = utf8toucs2(name);
     wstring v = utf8toucs2(value);
-    Term* t = _CLNEW Term(n.c_str(), v.c_str());
+    return _CLNEW Term(n.c_str(), v.c_str());
+}
+Term*
+CLuceneIndexReader::Private::createTerm(const string& name, const string& value) {
+    wstring n = utf8toucs2(name);
+    wstring v = utf8toucs2(value);
+    lucene::util::StringReader sr(v.c_str());
+    lucene::analysis::standard::StandardAnalyzer a;
+    lucene::analysis::TokenStream* ts = a.tokenStream(n.c_str(), &sr);
+    lucene::analysis::Token* to = ts->next();
+    const wchar_t *tv;
+    if (to) {
+        tv = to->termText();
+    } else {
+        tv = v.c_str();
+    }
+    Term* t = _CLNEW Term(n.c_str(), tv);
+    if (to) {
+        _CLDELETE(to);
+    }
+    _CLDELETE(ts);
     return t;
 }
 void
 CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery& bq) {
+    lucene::analysis::standard::StandardAnalyzer a;
     // add the attributes
     const map<string, set<string> >& includes = query.getIncludes();
     map<string, set<string> >::const_iterator i;
@@ -93,7 +113,7 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             lucene::search::Query* tq;
-            Term* t;
+            Term* t = 0;
             if (j->length() > 0 && (*j)[0] == '<') {
                 t = createTerm(mapId(i->first), j->substr(1));
                 tq = _CLNEW RangeQuery(0, t, false);
@@ -101,14 +121,15 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
                 t = createTerm(mapId(i->first), j->substr(1));
                 tq = _CLNEW RangeQuery(t, 0, false);
             } else {
-                t = createTerm(mapId(i->first), *j);
                 if (strpbrk(j->c_str(), "*?")) {
+                    t = createWildCardTerm(mapId(i->first), *j);
                     tq = _CLNEW WildcardQuery(t);
                 } else {
+                    t = createTerm(mapId(i->first), *j);
                     tq = _CLNEW TermQuery(t);
                 }
             }
-            _CLDECDELETE(t);
+            if (t) _CLDECDELETE(t);
             bq.add(tq, true, true, false);
         }
     }
@@ -116,12 +137,14 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
     for (i = excludes.begin(); i != excludes.end(); ++i) {
         string id = mapId(i->first);
         for (j = i->second.begin(); j != i->second.end(); ++j) {
-            Term* t = createTerm(mapId(i->first), *j);
             lucene::search::Query* tq;
             bool wildcard = strpbrk(j->c_str(), "*?")!=NULL;
+            Term* t;
             if (wildcard) {
+                t = createWildCardTerm(mapId(i->first), *j);
                 tq = _CLNEW WildcardQuery(t);
             } else {
+                t = createTerm(mapId(i->first), *j);
                 tq = _CLNEW TermQuery(t);
             }
             _CLDECDELETE(t);
@@ -135,6 +158,8 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     if (field->stringValue() == 0) return;
     string value(wchartoutf8(field->stringValue()));
     const TCHAR* name = field->name();
+    //string n(wchartoutf8(name));
+    //printf("%s\t%s\n", n.c_str(), value.c_str());
     if (wcscmp(name, L"content") == 0) {
         doc.fragment = value;
     } else if (wcscmp(name, L"path") == 0) {
