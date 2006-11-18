@@ -197,6 +197,45 @@ CLuceneIndexManager::deleteIndex() {
     closeWriter();
     openWriter(true);
 }
+std::wstring
+utf8toucs2(const char*p, const char*e) {
+    wstring ucs2;
+    ucs2.reserve(3*(e-p));
+    wchar_t w = 0;
+    char nb = 0;
+    while (p < e) {
+        char c = *p;
+        if (nb--) {
+            w = (w<<6) + (c & 0x3f);
+        } else if ((0xE0 & c) == 0xC0) {
+            w = c & 0x1F;
+            nb = 0;
+        } else if ((0xF0 & c) == 0xE0) {
+            w = c & 0x0F;
+            nb = 1;
+        } else if ((0xF8 & c) == 0xF0) {
+            w = c & 0x07;
+            nb = 2;
+        } else {
+            w = (w<<6) + (c&0x7F);
+            ucs2 += w; 
+            w = 0;
+            nb = 0;
+        }
+        p++;
+    }
+    return ucs2;
+}
+std::wstring
+utf8toucs2(const char* p) {
+    return utf8toucs2(p, p+strlen(p));
+}
+std::wstring
+utf8toucs2(const std::string& utf8) {
+    const char* p = utf8.c_str();
+    const char* e = p + utf8.length();
+    return utf8toucs2(p, e);
+}
 std::string
 wchartoutf8(const wchar_t* p, const wchar_t* e) {
     string utf8;
@@ -229,43 +268,4 @@ wchartoutf8(const std::wstring& wchar) {
     const wchar_t *p = wchar.c_str();
     const wchar_t *e = p+wchar.length();
     return wchartoutf8(p, e);
-}
-//std::string wchartoutf8(const wchar_t*);
-std::wstring
-utf8toucs2(const char*p, const char*e) {
-    wstring ucs2;
-    ucs2.reserve(3*(e-p));
-    wchar_t w = 0;
-    char nb = 0;
-    while (p < e) {
-        char c = *p;
-        if (nb--) {
-            w = (w<<6) + c;
-        } else if ((0xE0 & c) == 0xC0) {
-            w = c & 0x1F;
-            nb = 1;
-        } else if ((0xF0 & c) == 0xE0) {
-            w = c & 0x0F;
-            nb = 2;
-        } else if ((0xF8 & c) == 0xF0) {
-            w = c & 0x07;
-            nb = 3;
-        } else {
-            ucs2 += (w<<6) + c;
-            w = 0;
-            nb = 0;
-        }
-        p++;
-    }
-    return ucs2;
-}
-std::wstring
-utf8toucs2(const char* p) {
-    return utf8toucs2(p, p+strlen(p));
-}
-std::wstring
-utf8toucs2(const std::string& utf8) {
-    const char* p = utf8.c_str();
-    const char* e = p + utf8.length();
-    return utf8toucs2(p, e);
 }

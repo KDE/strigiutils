@@ -107,7 +107,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     wstring c(utf8toucs2(doc->content));
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
-        doc->doc.add(*Field::Text(L"content", c.c_str(), true));
+        doc->doc.add(*Field::Text(L"content", c.c_str(), false));
 #else
         doc->doc.add(*Field::Text("content", doc->content.c_str()) );
 #endif

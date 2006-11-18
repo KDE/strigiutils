@@ -158,8 +158,8 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     if (field->stringValue() == 0) return;
     string value(wchartoutf8(field->stringValue()));
     const TCHAR* name = field->name();
-    //string n(wchartoutf8(name));
-    //printf("%s\t%s\n", n.c_str(), value.c_str());
+//    string n(wchartoutf8(name));
+//    printf("%s\t%s\n", n.c_str(), value.c_str());
     if (wcscmp(name, L"content") == 0) {
         doc.fragment = value;
     } else if (wcscmp(name, L"path") == 0) {
