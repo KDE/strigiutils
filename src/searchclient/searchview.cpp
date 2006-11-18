@@ -74,7 +74,7 @@ SearchViewHtmlHelper::encodeString(const string& url) {
 }
 string
 SearchViewHtmlHelper::escapeString(const string& line) {
-    return (const char*)Qt::escape(line.c_str()).toUtf8();
+    return (const char*)Qt::escape(QString::fromUtf8(line.c_str())).toUtf8();
 }
 string
 SearchViewHtmlHelper::formatDate(time_t date) {
@@ -168,13 +168,13 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     setEnabled(true);
     if (q != query) return;
     QUrl cssurl(":/strigi/result.css");
-    QVariant css = "h2{background:blue;}";
-//    view->document()->addResource(QTextDocument::StyleSheetResource,
-//        cssurl, css);
+    QVariant css = "";
+    view->document()->addResource(QTextDocument::StyleSheetResource,
+        cssurl, css);
     if (hits.hits.size() > 0) {
         ostringstream str;
         htmlgui->printSearchResults(str, hits, (const char*)q.toUtf8());
-        QString html(str.str().c_str());
+        QString html(QString::fromUtf8(str.str().c_str()));
         view->setHtml(html);
     } else {
         view->append("no results");
