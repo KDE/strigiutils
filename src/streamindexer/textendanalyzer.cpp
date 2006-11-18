@@ -55,6 +55,9 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 
 char
 TextEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+    if (idx.getEncoding().length()) {
+//        fprintf(stderr, "%s\n", idx.getEncoding().c_str());
+    }
     // pass a piece of text to the indexer. it's up to the indexer to break
     // it down into words
     const char* b;

@@ -58,7 +58,6 @@ public:
         lucene::search::BooleanQuery& bq);
     static void addField(lucene::document::Field* field,
         jstreams::IndexedDocument&);
-    static std::string convertValue(const TCHAR* value);
 };
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m)
@@ -79,14 +78,9 @@ CLuceneIndexReader::Private::createTerm(const string& name, const string& value)
     return _CLNEW Term(name.c_str(), value.c_str());
 #else
 #endif
-    TCHAR* n = new TCHAR[name.length()+1];
-    STRCPY_AtoT(n, name.c_str(), name.length()+1);
-    TCHAR* v = new TCHAR[value.length()+1];
-    STRCPY_AtoT(v, value.c_str(), value.length()+1);
-    //printf("'%s' '%s'\n", name.c_str(), value.c_str());
-    Term* t = _CLNEW Term(n, v);
-    delete [] n;
-    delete [] v;
+    wstring n = utf8toucs2(name);
+    wstring v = utf8toucs2(value);
+    Term* t = _CLNEW Term(n.c_str(), v.c_str());
     return t;
 }
 void
@@ -135,37 +129,26 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
         }
     }
 }
-std::string
-CLuceneIndexReader::Private::convertValue(const TCHAR* v) {
-    if (v == 0) return "";
-    char after[CL_MAX_DIR];
-    STRCPY_TtoA(after, v, CL_MAX_DIR);
-    after[CL_MAX_DIR-1] = '\0';
-    // remove newlines
-    jstreams::convertNewLines(after);
-    return after;
-}
 void
 CLuceneIndexReader::Private::addField(lucene::document::Field* field,
         IndexedDocument& doc) {
-    const TCHAR* value = field->stringValue();
-    if (value == 0) return;
-    char name[CL_MAX_DIR];
-    STRCPY_TtoA(name, field->name(), CL_MAX_DIR);
-    if (strcmp(name, "content") == 0) {
-        doc.fragment = convertValue(value);
-    } else if (strcmp(name, "path") == 0) {
-        doc.uri = convertValue(value);
-    } else if (strcmp(name, "mimetype") == 0) {
-        doc.mimetype = convertValue(value);
-    } else if (strcmp(name, "mtime") == 0) {
-        istringstream iss(convertValue(value));
+    if (field->stringValue() == 0) return;
+    string value(wchartoutf8(field->stringValue()));
+    const TCHAR* name = field->name();
+    if (wcscmp(name, L"content") == 0) {
+        doc.fragment = value;
+    } else if (wcscmp(name, L"path") == 0) {
+        doc.uri = value;
+    } else if (wcscmp(name, L"mimetype") == 0) {
+        doc.mimetype = value;
+    } else if (wcscmp(name, L"mtime") == 0) {
+        istringstream iss(value);
         iss >> doc.mtime;
-    } else if (strcmp(name, "size") == 0) {
-        string size = convertValue(value);
+    } else if (wcscmp(name, L"size") == 0) {
+        string size = value;
         doc.size = atoi(size.c_str());
     } else {
-        doc.properties.insert(make_pair(name,convertValue(value)));
+        doc.properties.insert(make_pair(wchartoutf8(name), value));
     }
 }
 int32_t
@@ -227,7 +210,6 @@ CLuceneIndexReader::query(const Query& q) {
         return results;
     }
     IndexSearcher searcher(reader);
-    TCHAR tf[CL_MAX_DIR];
     Hits* hits = 0;
     int s = 0;
     try {
@@ -236,7 +218,6 @@ CLuceneIndexReader::query(const Query& q) {
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    STRCPY_AtoT(tf, "path", CL_MAX_DIR);
     int off = q.getOffset();
     if (off < 0) off = 0;
     int max = q.getMax() + off;
@@ -284,8 +265,7 @@ CLuceneIndexReader::getFiles(char depth) {
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         time_t mtime = atoi(cstr);
         v = d->get(_T("path"));
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        files[cstr] = mtime;
+        files[wchartoutf8(v)] = mtime;
     }
     searcher.close();
     _CLDELETE(hits);
@@ -322,9 +302,8 @@ int64_t
 CLuceneIndexReader::getDocumentId(const std::string& uri) {
     lucene::index::IndexReader* reader = manager->refReader();
     IndexSearcher searcher(reader);
-    TCHAR tstr[CL_MAX_DIR];
-    STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
-    Term* term = _CLNEW Term(_T("path"), tstr);
+    wstring tstr(utf8toucs2(uri));
+    Term* term = _CLNEW Term(_T("path"), tstr.c_str());
     TermQuery* termquery = _CLNEW TermQuery(term);
     Hits *hits = searcher.search(termquery);
     int s = hits->length();

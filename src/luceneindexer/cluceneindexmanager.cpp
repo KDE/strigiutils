@@ -197,3 +197,58 @@ CLuceneIndexManager::deleteIndex() {
     closeWriter();
     openWriter(true);
 }
+std::string
+wchartoutf8(const std::wstring& wchar) {
+    const wchar_t *p = wchar.c_str();
+    const wchar_t *e = p+wchar.length();
+    string utf8;
+    utf8.reserve((int)(1.5*(e-p)));
+    while (p < e) {
+        wchar_t c = *p;
+        if (c < 0x80) {
+            utf8 += (char)c;
+        } else if (c < 0x800) {
+            char c2 = (char)((c & 0x3f) | 0x80);
+            utf8 += (c>>6) | 0xc0;
+            utf8 += c2;
+        } else if (c < 0x10000) {
+            char c3 = (char)((c & 0x3f) | 0x80);
+            char c2 = (char)(((c>>6) & 0x3f) | 0x80);
+            utf8 += (c>>12) | 0xe0;
+            utf8 += c2;
+            utf8 += c3;
+        }
+        p++;
+    }
+    return utf8;
+}
+std::wstring
+utf8toucs2(const std::string& utf8) {
+    const char* p = utf8.c_str();
+    const char* e = p + utf8.length();
+    wstring ucs2;
+    ucs2.reserve(3*(e-p));
+    wchar_t w = 0;
+    char nb = 0;
+    while (p < e) {
+        char c = *p;
+        if (nb--) {
+            w = (w<<6) + c;
+        } else if ((0xE0 & c) == 0xC0) {
+            w = c & 0x1F;
+            nb = 1;
+        } else if ((0xF0 & c) == 0xE0) {
+            w = c & 0x0F;
+            nb = 2;
+        } else if ((0xF8 & c) == 0xF0) {
+            w = c & 0x07;
+            nb = 3;
+        } else {
+            ucs2 += (w<<6) + c;
+            w = 0;
+            nb = 0;
+        }
+        p++;
+    }
+    return ucs2;
+}

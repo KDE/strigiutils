@@ -82,4 +82,7 @@ public:
 jstreams::IndexManager*
 createCLuceneIndexManager(const char* path);
 
+std::string wchartoutf8(const std::wstring&);
+std::wstring utf8toucs2(const std::string&);
+
 #endif

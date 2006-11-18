@@ -61,9 +61,7 @@ setField(const jstreams::Indexable* idx, const TCHAR* fn,
         const std::string& value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
 #if defined(_UCS2)
-    TCHAR fv[CL_MAX_DIR];
-    STRCPY_AtoT(fv, value.c_str(), CL_MAX_DIR);
-    doc->doc.add( *Field::Keyword(fn, fv) );
+    doc->doc.add( *Field::Keyword(fn, utf8toucs2(value).c_str()) );
 #else
     doc->doc.add( *Field::Keyword(fn, value.c_str()) );
 #endif
@@ -72,9 +70,7 @@ void
 CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
         const string& value) {
 #if defined(_UCS2)
-    TCHAR fn[CL_MAX_DIR];
-    STRCPY_AtoT(fn, fieldname.c_str(), CL_MAX_DIR);
-    ::setField(idx, fn, value);
+    ::setField(idx, utf8toucs2(fieldname).c_str(), value);
 #else
     ::setField(idx, fieldname.c_str(), value);
 #endif
@@ -111,14 +107,16 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     ::setField(idx, _T("mtime"), o.str());
     StringReader<char>* sr = 0;
-    InputStreamReader* streamreader = 0;
+    //InputStreamReader* streamreader = 0;
     lucene::util::Reader* reader = 0;
     if (doc->content.length() > 0) {
 #if defined(_UCS2)
         sr = new StringReader<char>(doc->content.c_str(), doc->content.length(),
             false);
-        streamreader = new InputStreamReader(sr);
-        reader = new lucene::util::Reader(streamreader, false);
+//        streamreader = new InputStreamReader(sr);
+//        reader = new lucene::util::Reader(streamreader, false);
+        //StreamBase<wchar_t>* ws = streamreader;
+        reader = new lucene::util::Reader(new lucene::util::SimpleInputStreamReader(sr, "UTF-8"), true);
         doc->doc.add(*Field::Text(L"content", reader));
 #else
         doc->doc.add(*Field::Text("content", doc->content.c_str()) );
@@ -136,7 +134,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     delete doc;
     if (sr) {
         delete sr;
-        delete streamreader;
+        //delete streamreader;
     }
 }
 void
@@ -151,9 +149,8 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
 
 //    QueryBitset qbs = manager->getBitSets()->getBitset("path:"+entry);
 
-    TCHAR tstr[CL_MAX_DIR];
-    STRCPY_AtoT(tstr, entry.c_str(), CL_MAX_DIR);
-    Term* term = _CLNEW Term(_T("path"), tstr);
+    wstring tstr(utf8toucs2(entry));
+    Term* term = _CLNEW Term(_T("path"), tstr.c_str());
     PrefixQuery* query = _CLNEW PrefixQuery(term);
     QueryFilter* filter = _CLNEW QueryFilter(query);
     BitSet* bits;
