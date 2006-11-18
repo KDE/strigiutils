@@ -7,7 +7,7 @@ set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
 	pluginthroughanalyzer.cpp moduleloader.cpp pluginendanalyzer.cpp
-	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp
+	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp indexable.cpp
 	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp)
 
 if (Expat_FOUND)
@@ -36,7 +36,7 @@ set_target_properties(streamindexer PROPERTIES
 
 target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
 
-install(FILES indexeddocument.h indexwriter.h strigi_plugins.h
+install(FILES indexeddocument.h indexable.h strigi_plugins.h
 	streamthroughanalyzer.h streamendanalyzer.h
 	DESTINATION include)
 

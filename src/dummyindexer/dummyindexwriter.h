@@ -21,6 +21,7 @@
 #define DUMMYINDEXWRITER_H
 
 #include "indexable.h"
+#include "indexwriter.h"
 
 class DummyIndexWriter : public jstreams::IndexWriter {
 private:

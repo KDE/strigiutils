@@ -20,6 +20,7 @@
 #ifndef XMLINDEXWRITER_H
 #define XMLINDEXWRITER_H
 
+#include "indexwriter.h"
 #include "indexable.h"
 #include <iostream>
 #include <map>

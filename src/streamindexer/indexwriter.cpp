@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "indexable.h"
+#include "indexwriter.h"
 #include "textutils.h"
 using namespace jstreams;
 using namespace std;

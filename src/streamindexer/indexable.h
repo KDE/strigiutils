@@ -20,13 +20,14 @@
 #ifndef INDEXABLE_H
 #define INDEXABLE_H
 
-#include "indexwriter.h"
-#include "streamindexer.h"
 #include <string>
 
 namespace jstreams {
 
+class IndexWriter;
 class IndexableConfiguration;
+class StreamIndexer;
+template <class T> class StreamBase;
 /**
  * Indexed representation of a file.
  *
@@ -34,7 +35,6 @@ class IndexableConfiguration;
  * write data associated with a document to the index. The data is
  * automatically written do the index when ~Indexable() is called.
  **/
-class StreamIndexer;
 class Indexable {
 friend class IndexWriter;
 private:
@@ -59,46 +59,23 @@ private:
      * @param d the depth at which a document is embedded in other documents.
      *        a depth of 0 means a document is not embedded in another document.
      **/        
-    Indexable(const std::string& name, time_t mt, const Indexable& parent)
-            :mtime(mt), name(name), path(parent.path+'/'+name),
-             writer(parent.writer), depth(parent.getDepth()+1),
-             indexer(parent.indexer)  {
-        writer.startIndexable(this);
-    }
+    Indexable(const std::string& name, time_t mt, const Indexable& parent);
 public:
     Indexable(const std::string& p, time_t mt, IndexWriter& w,
-            StreamIndexer& indexer)
-            :mtime(mt), path(p), writer(w), depth(0), indexer(indexer) {
-        size_t pos = path.rfind('/');
-        if (pos == std::string::npos) {
-             name = path;
-        } else {
-             name = path.substr(pos+1);
-        }
-        writer.startIndexable(this);
-    }
-     /**
-      * Write the indexable to the index and release the allocated resources.
-      **/
-    ~Indexable() {
-        writer.finishIndexable(this);
-    }
-    char index(StreamBase<char>& file) {
-        return indexer.analyze(*this, &file);
-    }
-    char indexChild(const std::string& name, time_t mt, StreamBase<char>& file){
-        Indexable i(name, mt, *this);
-        return indexer.analyze(i, &file);
-    }
+            StreamIndexer& indexer);
+    /**
+     * Write the indexable to the index and release the allocated resources.
+     **/
+    ~Indexable();
+    char index(StreamBase<char>& file);
+    char indexChild(const std::string& name, time_t mt, StreamBase<char>& file);
     /**
      * Associate a fragment of text with the object.
      *
      * @param a pointer to a fragment of utf8 encoded text
      * @param the length of the fragment
      **/
-    void addText(const char* text, int32_t length) {
-        writer.addText(this, text, length);
-    }
+    void addText(const char* text, int32_t length);
     /**
      * Add a name, value pair to the index.
      *

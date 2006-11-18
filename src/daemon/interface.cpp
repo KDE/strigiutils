@@ -152,5 +152,5 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     StreamIndexer streamindexer(writer);
     StringReader<char> sr(&content[0], content.size(), false);
     Indexable idx(path, mtime, *writer, streamindexer);
-    char r = idx.index(sr);
+    idx.index(sr);
 }

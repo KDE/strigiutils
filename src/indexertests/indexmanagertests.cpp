@@ -1,6 +1,7 @@
 #include "jstreamsconfig.h"
 #include "indexmanagertests.h"
 #include "indexreader.h"
+#include "indexwriter.h"
 #include "indexable.h"
 #include "indexmanager.h"
 #include "query.h"
@@ -110,7 +111,7 @@ IndexManagerTester::testNumberQuery() {
 /* below here the threading plumbing is done */
 void*
 threadstarter(void *d) {
-    IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
+//    IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
 //    tester->runThreadedTests();
     STRIGI_THREAD_EXIT(0);
 }

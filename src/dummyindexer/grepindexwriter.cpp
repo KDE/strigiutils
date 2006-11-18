@@ -23,7 +23,7 @@
 using namespace std;
 
 GrepIndexWriter::GrepIndexWriter(const char* re) {
-    int i = regcomp(&regex, re, REG_NOSUB);
+    regcomp(&regex, re, REG_NOSUB);
 }
 GrepIndexWriter::~GrepIndexWriter() {
     regfree(&regex);
