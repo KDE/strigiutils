@@ -25,11 +25,11 @@ XMLStream& operator>>(XMLStream&, Path&);
 XMLStream&
 operator>>(XMLStream& in, Repository& e) {
 	in.setFromAttribute(e.a_indexdir,"indexdir");
-	in.setFromAttribute(e.a_name,"name");
-	in.setFromAttribute(e.a_type,"type");
-	in.setFromAttribute(e.a_writeable,"writeable");
-	in.setFromAttribute(e.a_pollingInterval,"pollingInterval");
 	in.setFromAttribute(e.a_urlbase,"urlbase");
+	in.setFromAttribute(e.a_type,"type");
+	in.setFromAttribute(e.a_pollingInterval,"pollingInterval");
+	in.setFromAttribute(e.a_writeable,"writeable");
+	in.setFromAttribute(e.a_name,"name");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
 	while (n && in.getTagName() == "path") {
@@ -44,8 +44,8 @@ operator>>(XMLStream& in, Repository& e) {
 	return in;
 }
 Repository::Repository(const std::string& xml) {
-	a_writeable = false;
 	a_pollingInterval = 0;
+	a_writeable = false;
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
@@ -55,11 +55,11 @@ std::ostream&
 operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
 	out << " indexdir='" << e.a_indexdir << "'";
-	out << " name='" << e.a_name << "'";
-	out << " type='" << e.a_type << "'";
-	out << " writeable='" << e.a_writeable << "'";
-	out << " pollingInterval='" << e.a_pollingInterval << "'";
 	out << " urlbase='" << e.a_urlbase << "'";
+	out << " type='" << e.a_type << "'";
+	out << " pollingInterval='" << e.a_pollingInterval << "'";
+	out << " writeable='" << e.a_writeable << "'";
+	out << " name='" << e.a_name << "'";
 	out << ">\n";
 	std::list<Path>::const_iterator path_it;
 	for (path_it = e.e_path.begin(); path_it != e.e_path.end(); path_it++) {

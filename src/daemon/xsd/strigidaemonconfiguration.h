@@ -15,11 +15,11 @@ public:
 	Repository(const std::string& xml = "");
 	friend std::ostream& operator<<(std::ostream&, const Repository&);
 	std::string a_indexdir;
-	std::string a_name;
-	std::string a_type;
-	bool a_writeable;
-	int a_pollingInterval;
 	std::string a_urlbase;
+	std::string a_type;
+	int a_pollingInterval;
+	bool a_writeable;
+	std::string a_name;
 	std::list<Path> e_path;
 };
 class Pathfilter {

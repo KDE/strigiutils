@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2006 Flavio Castelli <flavio.castelli@gmail.com>
+ *                    Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,19 +32,19 @@
 
 using namespace std;
 
-class FindRepository
-{
-    private:
-        string m_repoName;
+class FindRepository {
+private:
+    string m_repoName;
 
-    public:
-        FindRepository (string repoName) { m_repoName = repoName; }
+public:
+    FindRepository(string repoName) { m_repoName = repoName; }
 
-        bool operator () (Repository repo) {
-            if (repo.a_name.compare (m_repoName) == 0)
-                return true;
-            return false;
+    bool operator()(Repository repo) {
+        if (repo.a_name.compare(m_repoName) == 0) {
+            return true;
         }
+        return false;
+    }
 };
 
 DaemonConfigurator::DaemonConfigurator (const string& confFile)
@@ -58,16 +59,16 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         XMLStream stream(xml.str());
         stream >> *this;
     }
-    FindRepository findRepository ("localhost");
-    list<Repository>::iterator match = find_if (e_repository.begin(),
-                                                e_repository.end(),
-                                                findRepository);
+    FindRepository findRepository("localhost");
+    list<Repository>::iterator match = find_if(e_repository.begin(),
+                                               e_repository.end(),
+                                               findRepository);
     
     // entry for localhost repository doesn't exists
     if (match == e_repository.end()) {
         a_useDBus = true;
         Repository r;
-        r.a_name = string ("localhost");
+        r.a_name = "localhost";
         string s = getenv("HOME"); 
         r.a_indexdir = s + "/.strigi/clucene";
         r.a_writeable = true;
