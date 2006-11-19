@@ -118,8 +118,9 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
     DBusMessageIter ssub;
     DBusMessageIter sssub;
     DBusMessageIter ssssub;
+    DBusMessageIter sssssub;
     dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
-        "(sdsssxxa(ss))", &sub);
+        "(sdsssxxa{sas})", &sub);
     vector<jstreams::IndexedDocument>::const_iterator i;
     for (i=s.hits.begin(); i!=s.hits.end(); ++i) {
         dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
@@ -145,15 +146,19 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
         n = i->mtime;
         dbus_message_iter_append_basic(&ssub, DBUS_TYPE_INT64, &n);
-        dbus_message_iter_open_container(&ssub, DBUS_TYPE_ARRAY, "(ss)",&sssub);
+        dbus_message_iter_open_container(&ssub, DBUS_TYPE_ARRAY, "{sas})",
+            &sssub);
         multimap<string, string>::const_iterator j;
         for (j = i->properties.begin(); j != i->properties.end(); ++j) {
-            dbus_message_iter_open_container(&sssub, DBUS_TYPE_STRUCT, 0,
+            dbus_message_iter_open_container(&sssub, DBUS_TYPE_DICT_ENTRY, 0,
                 &ssssub);
-            c = j->first.c_str();
+            const char* c = j->first.c_str();
             dbus_message_iter_append_basic(&ssssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_open_container(&ssssub, DBUS_TYPE_ARRAY, "s",
+                &sssssub);
             c = j->second.c_str();
-            dbus_message_iter_append_basic(&ssssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_append_basic(&sssssub, DBUS_TYPE_STRING, &c);
+            dbus_message_iter_close_container(&ssssub, &sssssub);
             dbus_message_iter_close_container(&sssub, &ssssub);
         }
         dbus_message_iter_close_container(&ssub, &sssub);
