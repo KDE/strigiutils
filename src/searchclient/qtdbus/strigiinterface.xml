@@ -1,0 +1,61 @@
+<node name='/search'>
+  <interface name='vandenoever.strigi'>
+    <method name='indexFile'>
+      <arg name='path' type='s' direction='in'/>
+      <arg name='mtime' type='t' direction='in'/>
+      <arg name='content' type='ay' direction='in'/>
+    </method>
+    <method name='getStatus'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
+      value="QMap&lt;QString,QString>"/>
+      <arg name='out' type='a{ss}' direction='out'/>
+    </method>
+    <method name='isActive'>
+      <arg name='out' type='b' direction='out'/>
+    </method>
+    <method name='getIndexedFiles'>
+      <arg name='out' type='as' direction='out'/>
+    </method>
+    <method name='getFilteringRules'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
+      value="QMultiMap&lt;int,QString>"/>
+      <arg name='out' type='a(is)' direction='out'/>
+    </method>
+    <method name='setIndexedDirectories'>
+      <arg name='d' type='as' direction='in'/>
+      <arg name='out' type='s' direction='out'/>
+    </method>
+    <method name='getBackEnds'>
+      <arg name='out' type='as' direction='out'/>
+    </method>
+    <method name='getIndexedDirectories'>
+      <arg name='out' type='as' direction='out'/>
+    </method>
+    <method name='stopIndexing'>
+      <arg name='out' type='s' direction='out'/>
+    </method>
+    <method name='setFilteringRules'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.In0"
+      value="QMultiMap&lt;int,QString>"/>
+      <arg name='rules' type='a(is)' direction='in'/>
+    </method>
+    <method name='getHits'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
+      value="QList&lt;StrigiHit>"/>
+      <arg name='query' type='s' direction='in'/>
+      <arg name='max' type='i' direction='in'/>
+      <arg name='offset' type='i' direction='in'/>
+      <arg name='out' type='a(sdsssxxa{sas})' direction='out'/>
+    </method>
+    <method name='startIndexing'>
+      <arg name='out' type='s' direction='out'/>
+    </method>
+    <method name='countHits'>
+      <arg name='query' type='s' direction='in'/>
+      <arg name='out' type='i' direction='out'/>
+    </method>
+    <method name='stopDaemon'>
+      <arg name='out' type='s' direction='out'/>
+    </method>
+  </interface>
+</node>

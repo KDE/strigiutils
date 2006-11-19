@@ -1,4 +1,5 @@
 include_directories(../daemon ../streamindexer ../htmlgui ../filters ../streams)
+add_subdirectory(qtdbus)
 
 if (QT4_FOUND)
   include(${QT_USE_FILE})
