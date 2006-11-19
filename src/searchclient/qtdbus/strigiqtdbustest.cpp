@@ -1,4 +1,5 @@
 #include "strigiclient.h"
+#include "strigiasyncclient.h"
 #include <QCoreApplication>
 #include <QDebug>
 
@@ -37,5 +38,15 @@ int main(int argc, char **argv) {
     // do a query
     printStrigiQuery(strigi, "kde");
 
-    return 0;
+    StrigiAsyncClient asyncstrigi;
+    asyncstrigi.updateStatus();
+    asyncstrigi.updateStatus();
+    asyncstrigi.updateStatus();
+    asyncstrigi.updateStatus();
+    asyncstrigi.updateStatus();
+    asyncstrigi.updateStatus();
+    asyncstrigi.addCountQuery("kde");
+
+
+    return app.exec();
 }
