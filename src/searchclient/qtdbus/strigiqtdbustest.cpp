@@ -1,60 +1,41 @@
 #include "strigiclient.h"
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTextStream>
-#include <QtDBus/qdbusmetatype.h>
+#include <QCoreApplication>
 #include <QDebug>
 
 void
-printStrigiStatus(VandenoeverStrigiInterface& strigi) {
-   // query strigi
-   QDBusReply<QMap<QString,QString> > r = strigi.getStatus();
-   if (r.isValid()) {
-       QTextStream out(stdout);
-       QMapIterator<QString, QString> i(r);
-       while (i.hasNext()) {
-           i.next();
-           out << i.key() << ": " << i.value() << endl;
-       }
-   } else {
-       QTextStream err(stderr);
-       err << r.error().message() << endl;
-   }
+printStrigiStatus(StrigiClient& strigi) {
+    // query strigi
+    QMap<QString,QString> r = strigi.getStatus();
+    QTextStream out(stdout);
+    QMapIterator<QString, QString> i(r);
+    while (i.hasNext()) {
+        i.next();
+        out << i.key() << ": " << i.value() << endl;
+    }
 }
 void
-printStrigiQuery(VandenoeverStrigiInterface& strigi, const QString& query) {
-   // query strigi
-   QDBusReply<QList<StrigiHit> > r = strigi.getHits(query, 10, 0);
-   if (r.isValid()) {
-       QTextStream out(stdout);
-       QList<StrigiHit> h = r;
+printStrigiQuery(StrigiClient& strigi, const QString& query) {
+    // query strigi
+    QList<StrigiHit> r = strigi.getHits(query, 10, 0);
+    QTextStream out(stdout);
+    QList<StrigiHit> h = r;
 
-       // print the paths for the first 10 hits
-       foreach (StrigiHit sh, h) {
-           out << sh.uri << endl;
-       }
-   } else {
-       QTextStream err(stderr);
-       err << r.error().message() << endl;
-   }
+    // print the paths for the first 10 hits
+    foreach (const StrigiHit& sh, h) {
+        out << sh.uri << endl;
+    }
 }
 int main(int argc, char **argv) {
-   QCoreApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
-   // register the custom types
-   qDBusRegisterMetaType<QMap<QString,QString> >();
-   qDBusRegisterMetaType<QMultiMap<int,QString> >();
-   qDBusRegisterMetaType<QList<StrigiHit> >();
-   qDBusRegisterMetaType<StrigiHit>();
+    // initialize the interface to Strigi
+    StrigiClient strigi;
 
-   // initialize the interface to Strigi
-   VandenoeverStrigiInterface strigi("vandenoever.strigi", "/search",
-       QDBusConnection::sessionBus());
+    // get strigis status
+    printStrigiStatus(strigi);
 
-   // get strigis status
-   printStrigiStatus(strigi);
+    // do a query
+    printStrigiQuery(strigi, "kde");
 
-   // do a query
-   printStrigiQuery(strigi, "kde");
-
-   return 0;
+    return 0;
 }

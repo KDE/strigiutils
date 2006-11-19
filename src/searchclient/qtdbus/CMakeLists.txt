@@ -4,8 +4,8 @@ if (QT4_FOUND)
   include(${QT_USE_FILE})
 
   # strigiclient
-  set(strigiqtdbusclient_SRCS strigitypes.cpp strigiclient.cpp)
-  set(strigiqtdbusclient_MOC_HDRS strigiclient.h)
+  set(strigiqtdbusclient_SRCS strigitypes.cpp strigidbus.cpp strigiclient.cpp)
+  set(strigiqtdbusclient_MOC_HDRS strigidbus.h)
 
   qt4_wrap_cpp(strigiqtdbusclient_MOC_SRCS ${strigiqtdbusclient_MOC_HDRS})
 
