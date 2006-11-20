@@ -38,6 +38,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QProcess>
+#include <QTimer>
 #include <string>
 #include <map>
 #include <vector>
@@ -84,7 +85,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     statuslayout->addLayout(hlayout);
     statuswidget->setLayout(statuslayout);
 
-    tabs = new SearchTabs(&strigi);
+    tabs = new SearchTabs();
     tabs->addTab("kde", "kde");
     tabs->addTab("msg", "mimetype:message/*");
     tabs->addTab("irc", "path:*konversation*log");
@@ -124,14 +125,14 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     socketfile = getenv("HOME");
     socketfile += "/.strigi/socket";
 
-    connect (&strigi, SIGNAL (gotDaemonStatus( const QMap< QString, QString >& )), this, SLOT (updateStatus( const QMap< QString, QString >& )));
-    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
+    connect (&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
+        this, SLOT(updateStatus(const QMap<QString, QString>& )));
+//    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
     
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), &strigi, SLOT(getDaemonStatus()));
+    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
     timer->start(2000);
-    QMap<QString,QString> emptyMap;
-    updateStatus(emptyMap);
+    asyncstrigi.updateStatus();
 }
 void
 SimpleSearchGui::createMenus() {
@@ -170,7 +171,7 @@ SimpleSearchGui::query(const QString& item) {
     }
 }
 void
-SimpleSearchGui::updateStatus(const QMap< QString, QString >& s) {
+SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     static bool first = true;
     static bool attemptedstart = false;
     if (!first && !statusview->isVisible()) return;
@@ -219,21 +220,6 @@ SimpleSearchGui::updateStatus(const QMap< QString, QString >& s) {
         text += '\n';
     }
     statusview->setText(text);
-}
-void
-SimpleSearchGui::socketError(Qt4StrigiClient::Mode mode)
-{
-    switch (mode)
-    {
-        case Qt4StrigiClient::GetDaemonStatus:
-        {
-            QMap<QString, QString> emptyMap;
-            updateStatus (emptyMap);
-            break;
-        }
-        default:
-            break;
-    }
 }
 void
 SimpleSearchGui::startDaemon() {

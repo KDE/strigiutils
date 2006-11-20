@@ -39,7 +39,7 @@ public slots:
     void clearGetQueries();
 
 signals:
-    void statusUpdated(QMap<QString,QString>& status);
+    void statusUpdated(const QMap<QString,QString>& status);
     void countedQuery(const QString& query, int count);
     void gotHits(const QString& query, int offset,
         const QList<StrigiHit>& hits);

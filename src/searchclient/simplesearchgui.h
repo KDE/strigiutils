@@ -21,8 +21,8 @@
 #define SIMPLESEARCHGUI_H
 
 #include <QtGui/QMainWindow>
-
-#include "qt4strigiclient.h"
+#include "strigiclient.h"
+#include "strigiasyncclient.h"
 
 class QLineEdit;
 class QListWidget;
@@ -59,7 +59,8 @@ private:
     QAction *fileExitAct;
     QAction *editPreferenceAct;
     QAction *editListIndexedFilesAct;
-    Qt4StrigiClient strigi;
+    StrigiAsyncClient asyncstrigi;
+    StrigiClient strigi;
    
     void startDaemon();
     void setDirectories();
@@ -67,7 +68,7 @@ private:
     void createMenus();
     void createActions();
 private slots:
-    void updateStatus( const QMap< QString, QString >& );
+    void updateStatus(const QMap<QString, QString>& s);
     void toggleDaemon();
     void toggleIndexing();
     void query(const QString&);
@@ -75,7 +76,6 @@ private slots:
     void removeDirectory();
     void editPreferences();
     void editListIndexedFiles();
-    void socketError(Qt4StrigiClient::Mode);
 
 public:
     SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);

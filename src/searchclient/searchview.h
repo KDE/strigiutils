@@ -21,9 +21,8 @@
 #define SEARCHVIEW_H
 
 #include <QtGui/QWidget>
-#include "qt4strigiclient.h"
+#include "strigiasyncclient.h"
 
-class Qt4StrigiClient;
 class QTextBrowser;
 class QUrl;
 class SearchViewHtmlHelper;
@@ -34,18 +33,18 @@ Q_OBJECT
 private:
     QTextBrowser* view;
     QString query;
-    Qt4StrigiClient* strigi;
+    StrigiAsyncClient asyncstrigi;
     SearchViewHtmlHelper* htmlguihelper;
     StrigiHtmlGui* htmlgui;
 
 private slots:
     void openItem(const QUrl& url);
 public:
-    explicit SearchView(Qt4StrigiClient* k);
+    explicit SearchView();
     ~SearchView();
     void setHTML(const QString&html);
 public slots:
-    void handleHits(const QString&, const ClientInterface::Hits&);
+    void handleHits(const QString& q, int offset, const QList<StrigiHit>& hits);
     void setQuery(const QString&);
 };
 

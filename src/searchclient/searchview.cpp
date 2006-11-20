@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "qt4strigiclient.h"
+//#include "qt4strigiclient.h"
 #include "searchview.h"
 #include "strigihtmlgui.h"
 #include <QtGui/QVBoxLayout>
@@ -139,7 +139,7 @@ SearchViewHtmlHelper::highlight(const std::string& text,
     }
     return (const char*)out.toUtf8();
 }
-SearchView::SearchView(Qt4StrigiClient* k) :strigi(k) {
+SearchView::SearchView() {
     view = new QTextBrowser();
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -148,9 +148,9 @@ SearchView::SearchView(Qt4StrigiClient* k) :strigi(k) {
     htmlguihelper = new SearchViewHtmlHelper();
     htmlgui = new StrigiHtmlGui(htmlguihelper);
 
-    connect(strigi,
-        SIGNAL(gotHits(const QString&, const ClientInterface::Hits&)),
-        this, SLOT(handleHits(const QString&, const ClientInterface::Hits&)));
+    connect(&asyncstrigi,
+        SIGNAL(gotHits(const QString&, int, const QList<StrigiHit>&)),
+        this, SLOT(handleHits(const QString&, int, const QList<StrigiHit>&)));
     connect(view, SIGNAL(anchorClicked(const QUrl&)),
         this, SLOT(openItem(const QUrl&)));
 }
@@ -162,8 +162,25 @@ QString str(const string&s) {
     return QString::fromUtf8(s.c_str(), s.length());
 }
 #include <sstream>
+ClientInterface::Hits
+toID(const QList<StrigiHit>& hits) {
+    ClientInterface::Hits id;
+    foreach (const StrigiHit&h, hits) {
+        jstreams::IndexedDocument i;
+        i.uri.assign(h.uri.toUtf8());
+        i.score = h.score;
+        i.fragment.assign(h.fragment.toUtf8());
+        i.mimetype.assign(h.mimetype.toUtf8());
+        i.sha1.assign(h.sha1.toUtf8());
+        i.size = h.size;
+        i.mtime = h.mtime;
+        id.hits.push_back(i);
+    }
+    return id;
+}
 void
-SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
+SearchView::handleHits(const QString& q, int offset,
+        const QList<StrigiHit>& hits) {
     view->clear();
     setEnabled(true);
     if (q != query) return;
@@ -171,9 +188,10 @@ SearchView::handleHits(const QString& q, const ClientInterface::Hits& hits) {
     QVariant css = "";
     view->document()->addResource(QTextDocument::StyleSheetResource,
         cssurl, css);
-    if (hits.hits.size() > 0) {
+    if (hits.size() > 0) {
         ostringstream str;
-        htmlgui->printSearchResults(str, hits, (const char*)q.toUtf8());
+        ClientInterface::Hits shits = toID(hits);
+        htmlgui->printSearchResults(str, shits, (const char*)q.toUtf8());
         QString html(QString::fromUtf8(str.str().c_str()));
         view->setHtml(html);
     } else {
@@ -187,7 +205,8 @@ SearchView::setHTML(const QString& html) {
 void
 SearchView::setQuery(const QString& q) {
     query = q;
-    strigi->query(query);
+    asyncstrigi.clearGetQueries();
+    asyncstrigi.addGetQuery(query, 10, 0);
 }
 void
 SearchView::openItem(const QUrl& url) {

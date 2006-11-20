@@ -24,19 +24,17 @@
 #include <QtCore/QDebug>
 #include <QtCore/QVariant>
 
-SearchTabs::SearchTabs(Qt4StrigiClient* s)
-    : strigi (s)
-{
+SearchTabs::SearchTabs() {
     tabs = new QTabBar();
     tabs->setDrawBase(false);
-    view = new SearchView(strigi);
+    view = new SearchView();
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->addWidget(tabs);
     layout->addWidget(view);
     setLayout(layout);
 
-    connect(strigi, SIGNAL(gotHitsCount(const QString&, int)),
+    connect(&strigi, SIGNAL(countedQuery(const QString&, int)),
         this, SLOT(handleHitsCount(const QString&, int)));
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
 }
@@ -52,11 +50,12 @@ SearchTabs::setQuery(const QString& query) {
     // remove all tabs
     while (tabs->count()) tabs->removeTab(0);
     // run queries for each name
+    strigi.clearCountQueries();
     QMapIterator<QString, QString> i(querynames);
     while (i.hasNext()) {
         i.next();
         QString tabquery = i.key() + query;
-        strigi->countHits(tabquery);
+        strigi.addCountQuery(tabquery);
     }
 }
 void
