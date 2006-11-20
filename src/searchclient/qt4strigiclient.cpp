@@ -28,7 +28,7 @@ Qt4StrigiClient::Qt4StrigiClient() {
     getIndexedDirsQueue = 0;
     getDaemonStatusQueue = 0;
     poller.setSingleShot(false);
-    poller.setInterval(1);
+    poller.setInterval(1000);
     connect(&poller, SIGNAL(timeout()), this, SLOT(poll()));
 }
 void
@@ -132,7 +132,7 @@ Qt4StrigiClient::startGetIndexedDirs() {
     bool ok = socket.getIndexedDirectories();
     if (ok) {
         mode = GetIndexedDirs;
-        poller.start(1);
+        poller.start(100);
     } else {
         // fail in silence
         if (getIndexedDirsQueue != 0)
@@ -145,7 +145,7 @@ Qt4StrigiClient::startGetDaemonStatus() {
 
     if (ok) {
         mode = GetDaemonStatus;
-        poller.start(1);
+        poller.start(100);
     } else {
         // fail in silence
         if (getDaemonStatusQueue != 0)
