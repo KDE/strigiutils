@@ -23,6 +23,7 @@
 #include "filereader.h"
 #include "filtermanager.h"
 #include <iostream>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -41,6 +42,16 @@ Indexer::~Indexer( )
 void
 Indexer::index(const char *dir) {
     out << "<?xml version='1.0' encoding='UTF-8'?>\n<metadata>\n";
+
+    // check if the path is a file
+    struct stat s;
+    if (stat(dir, &s) == -1) return;
+
+    if (S_ISREG(s.st_mode)) {
+        doFile(dir);
+        return;
+    }
+
     workingIndexer = this;
     m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
     bool exceptions = true;
@@ -48,7 +59,7 @@ Indexer::index(const char *dir) {
         try {
             m_lister->listFiles(dir);
         } catch(...) {
-            printf("Unknown error");
+            fprintf(stderr, "Unknown error");
         }
     } else {
         m_lister->listFiles(dir);
