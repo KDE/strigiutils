@@ -23,6 +23,7 @@ StrigiAsyncWidget::StrigiAsyncWidget() {
 }
 void
 StrigiAsyncWidget::newQuery(const QString& q) {
+    strigi.clearGetQueries();
     strigi.addGetQuery(q, 20, 0);
     query = q;
 }

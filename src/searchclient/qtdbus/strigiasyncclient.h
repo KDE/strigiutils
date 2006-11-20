@@ -35,8 +35,8 @@ public slots:
     void updateStatus();
     void addCountQuery(const QString& query);
     void addGetQuery(const QString& query, int max, int offset);
-    void clearCountQueries() {}
-    void clearGetQueries() {}
+    void clearCountQueries();
+    void clearGetQueries();
 
 signals:
     void statusUpdated(QMap<QString,QString>& status);

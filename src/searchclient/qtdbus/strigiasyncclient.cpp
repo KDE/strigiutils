@@ -33,6 +33,32 @@ StrigiAsyncClient::addGetQuery(const QString& query, int max, int offset) {
     appendRequest(r);
 }
 void
+StrigiAsyncClient::clearCountQueries() {
+    queuelock.lock();
+    QList<Request>::iterator i = queue.begin();
+    while (i != queue.end()) {
+        if (!i->query.isNull() && i->max < 0) {
+            i = queue.erase(i);
+        } else {
+            i++;
+        }
+    }
+    queuelock.unlock();
+}
+void
+StrigiAsyncClient::clearGetQueries() {
+    queuelock.lock();
+    QList<Request>::iterator i = queue.begin();
+    while (i != queue.end()) {
+        if (!i->query.isNull() && i->max > 0) {
+            i = queue.erase(i);
+        } else {
+            i++;
+        }
+    }
+    queuelock.unlock();
+}
+void
 StrigiAsyncClient::handleStatus(const QDBusMessage& msg) {
     QDBusReply<QMap<QString,QString> > r = msg;
     if (r.isValid()) {
