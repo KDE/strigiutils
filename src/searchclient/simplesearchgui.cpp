@@ -96,6 +96,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     tabs->addTab("all", "");
     mainview->addWidget(tabs);
     mainview->addWidget(statuswidget);
+    asyncstrigi.updateStatus();
     mainview->setCurrentIndex(1);
 
     queryfield = new QLineEdit();
@@ -130,8 +131,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
     
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
-    timer->start(2000);
+//    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
+//    timer->start(2000);
     asyncstrigi.updateStatus();
 }
 void
@@ -165,6 +166,7 @@ SimpleSearchGui::query(const QString& item) {
     }
     QString query = item.trimmed();
     if (query.length() == 0) {
+        asyncstrigi.updateStatus();
         mainview->setCurrentIndex(1);
     } else {
         mainview->setCurrentIndex(0);
