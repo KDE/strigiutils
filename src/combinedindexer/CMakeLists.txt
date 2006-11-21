@@ -1,4 +1,4 @@
-subdirs(tests)
+#subdirs(tests)
 
 include_directories( ../streamindexer ../streams ../filters)
 
