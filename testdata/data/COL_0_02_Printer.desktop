@@ -16,12 +16,14 @@ renameOnDesktop=true
 [Desktop Action List]
 Exec=kjobviewer --show
 Name=State for all printers
+Name[da]=Tilstand for alle printere
 Name[pt]=Estado de todas as impressoras
 Name[pt_BR]=Estado de todas as impressoras
 Name[sv]=Tillstånd hos alla skrivare
 [Desktop Action Print]
 Exec=kprinter %u
 Name=Print files
+Name[da]=Udskriv filer
 Name[ga]=Priontáil comhaid
 Name[pt]=Imprimir os ficheiros
 Name[pt_BR]=Imprimir os ficheiros
