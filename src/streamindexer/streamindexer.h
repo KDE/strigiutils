@@ -28,6 +28,7 @@ class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 class IndexWriter;
 class Indexable;
+class IndexerConfiguration;
 template <class T> class StreamBase;
 /**
  * The class StreamIndexer extracts information from files or character
@@ -57,8 +58,8 @@ private:
 public:
     explicit StreamIndexer(IndexWriter *w);
     ~StreamIndexer();
-    char indexFile(const char *filepath);
-    char indexFile(const std::string& filepath);
+    char indexFile(const char *filepath, IndexerConfiguration* ic=0);
+    char indexFile(const std::string& filepath, IndexerConfiguration* ic=0);
     char analyze(Indexable& idx, jstreams::StreamBase<char> *input);
 };
 }

@@ -77,12 +77,12 @@ StreamIndexer::~StreamIndexer() {
     }
 }
 char
-StreamIndexer::indexFile(const char *filepath) {
+StreamIndexer::indexFile(const char *filepath, IndexerConfiguration* ic) {
     std::string path(filepath);
     return indexFile(path);
 }
 char
-StreamIndexer::indexFile(const std::string& filepath) {
+StreamIndexer::indexFile(const std::string& filepath, IndexerConfiguration* ic){
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }
@@ -93,7 +93,10 @@ StreamIndexer::indexFile(const std::string& filepath) {
     //file.mark(65530);
     string name;
     DefaultIndexerConfiguration dic;
-    Indexable indexable(filepath, s.st_mtime, *writer, *this, dic);
+    if (ic == 0) {
+        ic = &dic;
+    }
+    Indexable indexable(filepath, s.st_mtime, *writer, *this, *ic);
     return indexable.index(file);
 }
 void
