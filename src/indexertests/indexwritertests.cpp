@@ -2,6 +2,7 @@
 #include "indexwritertests.h"
 #include "indexwriter.h"
 #include "indexable.h"
+#include "indexerconfiguration.h"
 using namespace jstreams;
 
 class IndexWriterTester {
@@ -18,7 +19,8 @@ public:
     int add() {
         std::string s("a"); // we must pass a string, not a const char*
         {
-            Indexable i(s, 0, *writer, si);
+            DefaultIndexerConfiguration dic;
+            Indexable i(s, 0, *writer, si, dic);
         }
         writer->commit();
 

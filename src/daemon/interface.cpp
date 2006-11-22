@@ -27,6 +27,7 @@
 #include "filtermanager.h"
 #include "streamindexer.h"
 #include "indexable.h"
+#include "indexerconfiguration.h"
 #include "stringreader.h"
 #include "query.h"
 #include <sstream>
@@ -151,6 +152,7 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     writer->deleteEntries(paths);
     StreamIndexer streamindexer(writer);
     StringReader<char> sr(&content[0], content.size(), false);
-    Indexable idx(path, mtime, *writer, streamindexer);
+    DefaultIndexerConfiguration dic;
+    Indexable idx(path, mtime, *writer, streamindexer, dic);
     idx.index(sr);
 }

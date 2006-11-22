@@ -38,6 +38,7 @@
 #include "pluginthroughanalyzer.h"
 #include "pluginendanalyzer.h"
 #include "indexable.h"
+#include "indexerconfiguration.h"
 #include "textutils.h"
 #include <sys/stat.h>
 
@@ -91,7 +92,8 @@ StreamIndexer::indexFile(const std::string& filepath) {
     // ensure a decent buffer size
     //file.mark(65530);
     string name;
-    Indexable indexable(filepath, s.st_mtime, *writer, *this);
+    DefaultIndexerConfiguration dic;
+    Indexable indexable(filepath, s.st_mtime, *writer, *this, dic);
     return indexable.index(file);
 }
 void

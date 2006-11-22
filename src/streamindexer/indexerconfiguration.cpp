@@ -22,6 +22,11 @@
 using namespace std;
 using namespace jstreams;
 
+IndexerConfiguration::FieldType
+operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
+    return static_cast<IndexerConfiguration::FieldType>((int)a|(int)b);
+}
+
 IndexerConfiguration::IndexerConfiguration() {
 }
 /**

@@ -4,6 +4,7 @@
 #include "indexwriter.h"
 #include "indexable.h"
 #include "indexmanager.h"
+#include "indexerconfiguration.h"
 #include "query.h"
 #include "strigi_thread.h"
 #include <sstream>
@@ -78,7 +79,8 @@ IndexManagerTester::addAndCount() {
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        { Indexable idx(s, 0, *writer, si); }
+        DefaultIndexerConfiguration dic;
+        { Indexable idx(s, 0, *writer, si, dic); }
         str.str("");
     }
     writer->commit();
@@ -97,7 +99,8 @@ IndexManagerTester::testNumberQuery() {
         string value(str.str());
         string name('/'+value);
         {
-             Indexable idx(name, 0, *writer, si);
+             DefaultIndexerConfiguration dic;
+             Indexable idx(name, 0, *writer, si, dic);
              idx.setField(size, value);
         }
         str.str("");

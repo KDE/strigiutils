@@ -17,9 +17,14 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-
+#ifndef INDEXERCONFIGURATION_H
+#define INDEXERCONFIGURATION_H
 #include <string>
 
+/**
+ * This class allows the Indexable to determine how each field should be
+ * indexed.
+ **/
 namespace jstreams {
 class IndexerConfiguration {
 public:
@@ -28,14 +33,25 @@ enum FieldType {
     Indexed   = 0x0010, Lazy   = 0x0020, Stored     = 0x0040,
     Tokenized = 0x0100
 };
+
 public:
     IndexerConfiguration();
-    FieldType getIndexType(const std::string& fieldname) const;    
+    virtual ~IndexerConfiguration() {}
+    virtual bool indexMore() const {return true;}
+    virtual bool addMoreText() const {return true;}
+    virtual FieldType getIndexType(const std::string& fieldname) const;    
 };
 
-IndexerConfiguration::FieldType
-operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
-    return static_cast<IndexerConfiguration::FieldType>(a|b);
-}
+/**
+ * Overloaded operator| that retains the type of the flag when |'ing two
+ * field values.
+ **/
+//IndexerConfiguration::FieldType
+//operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b);
+
+class DefaultIndexerConfiguration : public IndexerConfiguration {
+};
+
 
 }
+#endif

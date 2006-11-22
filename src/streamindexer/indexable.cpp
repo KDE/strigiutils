@@ -29,12 +29,13 @@ Indexable::Indexable(const std::string& name, time_t mt,
         const Indexable& parent)
             :mtime(mt), name(name), path(parent.path+'/'+name),
              writer(parent.writer), depth(parent.getDepth()+1),
-             indexer(parent.indexer) {
+             indexer(parent.indexer), indexableconfig(parent.indexableconfig) {
     writer.startIndexable(this);
 }
 Indexable::Indexable(const std::string& p, time_t mt, IndexWriter& w,
-        StreamIndexer& indexer)
-            :mtime(mt), path(p), writer(w), depth(0), indexer(indexer) {
+        StreamIndexer& indexer, IndexerConfiguration& ic)
+            :mtime(mt), path(p), writer(w), depth(0), indexer(indexer),
+             indexableconfig(&ic) {
     size_t pos = path.rfind('/');
     if (pos == std::string::npos) {
         name = path;
@@ -59,4 +60,8 @@ Indexable::indexChild(const std::string& name, time_t mt,
 void
 Indexable::addText(const char* text, int32_t length) {
     writer.addText(this, text, length);
+}
+IndexerConfiguration&
+Indexable::config() const {
+    return *indexableconfig;
 }
