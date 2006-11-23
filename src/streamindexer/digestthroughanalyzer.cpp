@@ -52,3 +52,7 @@ DigestThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
 
     indexable = idx;
 }
+bool
+DigestThroughAnalyzer::isReadyWithStream() {
+    return stream->getStatus() != Ok;
+}

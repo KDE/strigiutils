@@ -104,9 +104,9 @@ StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
+    StreamThroughAnalyzer* ana = new PluginThroughAnalyzer(&moduleLoader);
     tIter->push_back(ana);
-    ana = new PluginThroughAnalyzer(&moduleLoader);
+    ana = new DigestThroughAnalyzer();
     tIter->push_back(ana);
     ana = new ID3V2ThroughAnalyzer();
     tIter->push_back(ana);
@@ -201,7 +201,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
         }
         es++;
     }
-    // make sure the entire stream as read
+    // make sure the entire stream is read
     bool ready;
     tIter = through.begin() + idx.getDepth();
     do {
