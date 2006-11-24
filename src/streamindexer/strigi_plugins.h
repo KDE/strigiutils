@@ -24,11 +24,15 @@
 #include "streamthroughanalyzer.h"
 #include "streamendanalyzer.h"
 #include <vector>
+#include <list>
 
 class ThroughAnalyzerFactory {
 public:
     virtual ~ThroughAnalyzerFactory() {}
     virtual jstreams::StreamThroughAnalyzer* create() = 0;
+    virtual std::list<std::string> getFieldNames() {
+        return std::list<std::string>();
+    }
 };
 
 template<typename CLASS>
@@ -87,6 +91,12 @@ class EndAnalyzerFactoryImpl: public EndAnalyzerFactory{
 public:
     jstreams::StreamEndAnalyzer* create(){
         return new CLASS;
+    }
+    virtual std::list<std::string> getFieldNames() {
+        return std::list<std::string>();
+    }
+    virtual bool readsSubStreams() const {
+        return false;
     }
 };
 std::vector<EndAnalyzerFactory*> strigi_end_analyzer_factories;
