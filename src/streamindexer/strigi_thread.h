@@ -34,8 +34,9 @@
     
     #define STRIGI_THREAD_DEFINE(x) pthread_t x
     #define STRIGI_THREAD_TYPE pthread_t
-    #define STRIGI_THREAD_CREATE(object, function, data) pthread_create(object, NULL, function, data)
-    #define STRIGI_THREAD_JOIN(object, ret) pthread_join(object,ret)
+    #define STRIGI_THREAD_CREATE(threadObject, function, data) pthread_create(threadObject, NULL, function, data)
+    #define STRIGI_THREAD_FUNCTION(functionName, param) void* functionName(void *param)
+    #define STRIGI_THREAD_JOIN(object) pthread_join(object,0)
     #define STRIGI_THREAD_EXIT(ret) pthread_exit(ret)
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     #define STRIGI_MUTEX_DEFINE(x) CRITICAL_SECTION x
@@ -44,12 +45,13 @@
     #define STRIGI_MUTEX_LOCK(x) EnterCriticalSection(x)
     #define STRIGI_MUTEX_TRY_LOCK(x) TryEnterCriticalSection(x)
     #define STRIGI_MUTEX_UNLOCK(x) LeaveCriticalSection(x)
-    
+
     #define STRIGI_THREAD_DEFINE(x) HANDLE x
     #define STRIGI_THREAD_TYPE HANDLE
-    #define STRIGI_THREAD_CREATE(object, rfunction, data) 0
-    #define STRIGI_THREAD_JOIN(object, ret)
-    #define STRIGI_THREAD_EXIT(ret)
+    #define STRIGI_THREAD_CREATE(threadObject, rfunction, data) ((*(threadObject)=CreateThread( NULL, 0, rfunction,  data, 0, NULL))==NULL?-1:0)
+    #define STRIGI_THREAD_FUNCTION(functionName, param) DWORD WINAPI functionName(LPVOID param)
+    #define STRIGI_THREAD_JOIN(object) WaitForSingleObject (object, INFINITE)
+    #define STRIGI_THREAD_EXIT(ret) ExitThread(ret)
 #else
     #error A valid thread library was not found
 #endif //mutex types
