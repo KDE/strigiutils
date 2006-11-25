@@ -25,6 +25,7 @@
 #cmakedefine HAVE_STRCASESTR
 #cmakedefine HAVE_ISBLANK
 #cmakedefine HAVE_FCHDIR
+#cmakedefine HAVE_NANOSLEEP
 #cmakedefine HAVE_STRLWR
 
 #cmakedefine HAVE_UNISTD_H
@@ -61,7 +62,7 @@
   typedef __int64 int64_t; 
  #elif ${SIZEOF_LONG}==8
   typedef long int64_t
- #elif ${SIZEOF_LONGLONG}==8
+ #elif 0${SIZEOF_LONGLONG}==8
   typedef long long int64_t; 
  #endif
 #endif
@@ -70,8 +71,10 @@
   typedef __uint64 uint64_t; 
  #elif ${SIZEOF_LONG}==8
   typedef unsigned long uint64_t
- #elif ${SIZEOF_LONGLONG}==8
+ #elif 0${SIZEOF_LONGLONG}==8
   typedef unsigned long long uint64_t; 
+ #elif defined(HAVE___INT64)
+  typedef unsigned __int64 uint64_t; 
  #endif
 #endif
 
@@ -95,7 +98,7 @@
 #endif
 
 #ifndef HAVE_INTPTR_T
- typedef long intptr_t;
+ typedef int intptr_t;
 #endif
 
 #ifndef HAVE_SYS_SOCKET_H
@@ -136,12 +139,13 @@ bool isblank(char c);
  #ifndef snprintf
  	#define snprintf _snprintf
  #endif
+ 
+//for some reason linux is not picking up HAVE_SSIZE_T properly
+//but windows always needs it... hack ack
+#ifndef HAVE_SSIZE_T
+    typedef size_t ssize_t;
 #endif
-
-// this should have been handled by  HAVE_SSIZE_T above
-//#ifndef HAVE_SSIZE_T
-//    typedef size_t ssize_t;
-//#endif
+#endif
 
 #ifndef S_ISREG
     #define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
@@ -150,9 +154,18 @@ bool isblank(char c);
     #define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
 #endif
 
+// set sleep time
+#ifdef HAVE_NANOSLEEP
+    #define strigi_nanosleep(nanoseconds) struct timespec sleeptime; sleeptime.tv_sec = 0; sleeptime.tv_nsec = nanoseconds; nanosleep(&sleeptime, 0);
+#endif
+
 
 #ifdef _MSC_VER
 	#define sleep(x) Sleep(x*1000)
+	
+	#ifndef strigi_nanosleep
+	    #define strigi_nanosleep(nanoseconds) Sleep(nanoseconds/1000000)
+	#endif
 
 	#if (_MSC_VER == 1200)
 		#pragma warning(disable: 4503) //decorated name length exceeded

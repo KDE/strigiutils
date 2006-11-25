@@ -11,7 +11,7 @@ if (XATTR_FOUND)
 endif (XATTR_FOUND)
 
 if (Magic_FOUND)
-  include_directories(MAGIC_INCLUDE_DIR)
+  include_directories(${MAGIC_INCLUDE_DIR})
   add_library(magic MODULE mimetypethroughanalyzer.cpp)
   set_target_properties(magic PROPERTIES
     PREFIX strigita_
