@@ -8,7 +8,7 @@ IF(MSVC)
     ADD_DEFINITIONS(-DUNICODE)
 ENDIF(MSVC)
 add_library(cluceneindex cluceneindexwriter.cpp cluceneindexmanager.cpp
-        cluceneindexreader.cpp)
+        cluceneindexreader.cpp PrefixFilter.cpp)
 
 target_link_libraries(cluceneindex streamindexer ${CLUCENE_LIBRARY})
 

@@ -33,7 +33,7 @@
 #endif
 
 //comment this out if you have clucene 0.9.17 or later
-//#include "PrefixFilter.h"
+#include "PrefixFilter.h"
 
 using lucene::document::Document;
 using lucene::document::Field;
