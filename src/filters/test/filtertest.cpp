@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "jstreamsconfig.h"
 #include "filters.h"
 #include "jstreamsconfig.h"
 #include "filtermanager.h"
@@ -26,6 +27,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <assert.h>
 
 using namespace std;
 
@@ -41,17 +43,26 @@ int main()
     FilterManager filtermanager;
     filtermanager.setFilteringRules(rules);
     
+	vector<bool> correct;
     vector<string> text;
-    text.push_back("/home/user/foo/");
-    text.push_back(string("/foo/"));
-    text.push_back(string("/home/user/bar/foo/test"));
+    text.push_back("/home/user/foo/"); correct.push_back(true);
+    text.push_back(string("/foo/")); correct.push_back(false); //shouldn't match
+    text.push_back(string("/home/user/bar/foo/test")); correct.push_back(true);
     
+	vector<bool>::iterator iter2 = correct.begin();
     for (vector<string>::iterator iter = text.begin(); iter != text.end(); iter++)
     {
-        if (!filtermanager.findMatch( *iter))
+		bool shouldMatch = *iter2;
+        if (!filtermanager.findMatch( *iter)){
             cout << *iter << " doesn't match any filtering rule!\n";
-        else
-            cout << *iter << " match a filtering rule!\n";
+			assert(! shouldMatch );
+		}else{
+            cout << *iter << " matches a filtering rule...\n";
+			assert( shouldMatch );
+		}
+
+		
+		iter2++;
     }
     
     return 0;
