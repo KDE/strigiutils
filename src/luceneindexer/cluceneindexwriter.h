@@ -34,12 +34,18 @@ protected:
     void setField(const jstreams::Indexable*, const std::string &fieldname,
         const std::string &value);
 public:
-    CLuceneIndexWriter(CLuceneIndexManager* m) :manager(m), doccount(0) {}
+    CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();
     void commit() {};
+
+	/** cleanup clucene files. this is run when clucene starts up */
+    void cleanUp();
     void deleteEntries(const std::vector<std::string>& entries);
     void deleteAllEntries();
     void deleteEntry(const std::string& entry);
+
+    static const TCHAR* mapId(const TCHAR* id);
+    static void addMapping(const TCHAR* from, const TCHAR* to);
 };
 
 #endif
