@@ -21,7 +21,7 @@
 #include "indexer.h"
 #include "filtermanager.h"
 #include <sys/types.h>
-#include <dirent.h>
+#include <stgdirent.h>
 
 bool
 containsHelp(int argc, char **argv) {
