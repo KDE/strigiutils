@@ -62,7 +62,7 @@ bool FilterManager::findMatch(const char* text, uint len)
     return findMatch (t);
 }
 
-bool FilterManager::findMatch (string& text)
+bool FilterManager::findMatch (const string& text)
 {
     STRIGI_MUTEX_LOCK (&m_rulesMutex.lock);
     

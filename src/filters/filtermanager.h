@@ -45,7 +45,7 @@ class FilterManager
         * check if text matches a filtering rules
         * @return true if text matches a filtering rule, false otherwise
         */
-        bool findMatch(std::string& text);
+        bool findMatch(const std::string& text);
         
         /** 
          * convenience method, same as above
