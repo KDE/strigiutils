@@ -40,7 +40,7 @@ class RpmInputStream::RpmHeaderInfo {
  **/
 bool
 RpmInputStream::checkHeader(const char* data, int32_t datasize) {
-    static const char magic[] = {0xed,0xab,0xee,0xdb,0x03,0x00};
+    static const char unsigned magic[] = {0xed,0xab,0xee,0xdb,0x03,0x00};
     if (datasize < 6) return false;
     // this check could be more strict
     bool ok = memcmp(data, magic, 6) == 0;
@@ -59,7 +59,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     }
 
     // read signature
-    const char headmagic[] = {0x8e,0xad,0xe8,0x01};
+    const unsigned char headmagic[] = {0x8e,0xad,0xe8,0x01};
     if (input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
         error = "error in signature\n";
         status = Error;

@@ -55,7 +55,7 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
     bool reqheader = checkHeaderKey(data, datasize);
     char prevc = 0;
     while (pos < datasize) {
-        char c = data[pos++];
+        unsigned char c = data[pos++];
         if (slashr) {
             slashr = false;
             if (c == '\n') {

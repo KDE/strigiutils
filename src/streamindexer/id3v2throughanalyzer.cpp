@@ -32,7 +32,7 @@ ID3V2ThroughAnalyzer::setIndexable(jstreams::Indexable* i) {
     indexable = i;
 }
 int32_t
-readSize(const char* b, bool async) {
+readSize(const unsigned char* b, bool async) {
     if (async) {
         if (b[0] < 0 || b[1] < 0 || b[2] < 0 || b[3] < 0) {
             return -1;
@@ -56,7 +56,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
         bool async = buf[3] >= 4;
 
         // calculate size from 4 syncsafe bytes
-        int32_t size = readSize(buf+6, async);
+        int32_t size = readSize((unsigned char*)buf+6, async);
         if (size < 0) return in;
         size += 10; // add the size of the header
 
@@ -69,7 +69,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
         const char* p = buf + 10;
         buf += size;
         while (indexable && p < buf && *p) {
-            size = readSize(p+4, async);
+            size = readSize((unsigned char*)p+4, async);
             if (size < 0) {
                 fprintf(stderr, "size < 0: %i\n", size);
                 return in;

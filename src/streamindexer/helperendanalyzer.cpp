@@ -31,8 +31,6 @@ using namespace std;
 
 #ifdef WIN32
     #include <fcntl.h>
-    #define _S_IREAD 256
-    #define _S_IWRITE 128
     int mkstemp(char *tmpl)
     {
        mktemp(tmpl);
@@ -42,14 +40,14 @@ using namespace std;
 
 class HelperProgramConfig::HelperRecord {
 public:
-    const char* magic;
+    const unsigned char* magic;
     ssize_t magicsize;
     vector<string> arguments;
     bool readfromstdin;
 };
 
 HelperProgramConfig::HelperProgramConfig() {
-    static const char wordmagic[] = {0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1,
+    static const unsigned char wordmagic[] = {0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1,
         0,0,0,0,0,0,0,0};
 
     // make a vector with all the paths
@@ -70,7 +68,7 @@ HelperProgramConfig::HelperProgramConfig() {
     string exepath = getPath("pdftotext", paths);
     if (exepath.length()) { 
         HelperRecord* h = new HelperRecord();
-        h->magic = "%PDF-1.";
+        h->magic = (unsigned char*)"%PDF-1.";
         h->magicsize = 7;
         h->arguments.push_back(exepath);
         h->arguments.push_back("%s");
