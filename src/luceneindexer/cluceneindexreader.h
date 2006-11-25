@@ -35,7 +35,7 @@ private:
     CLuceneIndexReader(CLuceneIndexManager* m);
     ~CLuceneIndexReader();
     static const TCHAR* mapId(const wchar_t* id);
-    static const TCHAR* mapId(const char* id);
+	static std::wstring mapId(const char* id);
     
     friend class CLuceneIndexReader::Private;
 public:

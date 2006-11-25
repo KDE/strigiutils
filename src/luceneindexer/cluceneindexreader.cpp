@@ -94,11 +94,9 @@ CLuceneIndexReader::mapId(const TCHAR* id) {
         return itr->second.c_str();
 }
 #ifdef _UCS2
-const TCHAR* CLuceneIndexReader::mapId(const char* id) {
-    TCHAR* tid = STRDUP_AtoT(id);
-    const TCHAR* ret = mapId(tid);
-    _CLDELETE_CARRAY(tid);
-    return ret;
+std::wstring CLuceneIndexReader::mapId(const char* id) {
+	wstring tid = utf8toucs2(id);
+	return mapId(tid.c_str());
 }
 #endif
 
@@ -138,22 +136,22 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
     map<string, set<string> >::const_iterator i;
     set<string>::const_iterator j;
     for (i = includes.begin(); i != includes.end(); ++i) {
-        const TCHAR* mappedId = mapId(i->first.c_str());
+        wstring mappedId = mapId(i->first.c_str());
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             lucene::search::Query* tq;
             Term* t = 0;
             if (j->length() > 0 && (*j)[0] == '<') {
-                t = createTerm(mappedId, (*j).substr(1).c_str());
+                t = createTerm(mappedId.c_str(), (*j).substr(1).c_str());
                 tq = _CLNEW RangeQuery(0, t, false);
             } else if (j->length() > 0 && (*j)[0] == '>') {
-                t = createTerm(mappedId, (*j).substr(1).c_str());
+                t = createTerm(mappedId.c_str(), (*j).substr(1).c_str());
                 tq = _CLNEW RangeQuery(t, 0, false);
             } else {
                 if (strpbrk(j->c_str(), "*?")) {
-                    t = createWildCardTerm(mappedId, (*j).c_str());
+                    t = createWildCardTerm(mappedId.c_str(), (*j).c_str());
                     tq = _CLNEW WildcardQuery(t);
                 } else {
-                    t = createTerm(mappedId, (*j).c_str());
+                    t = createTerm(mappedId.c_str(), (*j).c_str());
                     tq = _CLNEW TermQuery(t);
                 }
             }
@@ -163,16 +161,16 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
     }
     const map<string, set<string> >& excludes = query.getExcludes();
     for (i = excludes.begin(); i != excludes.end(); ++i) {
-        const TCHAR* mappedId = mapId(i->first.c_str());
+        wstring mappedId = mapId(i->first.c_str());
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             lucene::search::Query* tq;
             bool wildcard = strpbrk(j->c_str(), "*?")!=NULL;
             Term* t;
             if (wildcard) {
-                t = createWildCardTerm(mappedId, *j);
+                t = createWildCardTerm(mappedId.c_str(), *j);
                 tq = _CLNEW WildcardQuery(t);
             } else {
-                t = createTerm(mappedId, (*j).c_str() );
+                t = createTerm(mappedId.c_str(), (*j).c_str() );
                 tq = _CLNEW TermQuery(t);
             }
             _CLDECDELETE(t);
