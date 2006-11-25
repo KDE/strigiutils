@@ -112,8 +112,7 @@ IndexManagerTester::testNumberQuery() {
     return count != m;
 }
 /* below here the threading plumbing is done */
-void*
-threadstarter(void *d) {
+STRIGI_THREAD_FUNCTION(threadstarter,d) {
 //    IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
 //    tester->runThreadedTests();
     STRIGI_THREAD_EXIT(0);
@@ -129,10 +128,10 @@ IndexManagerTests::testAllInThreads(int n) {
     tester->cleanErrors();
     STRIGI_THREAD_TYPE* thread = new STRIGI_THREAD_TYPE[n];
     for (int i=0; i<n; ++i) {
-        STRIGI_THREAD_CREATE(thread+i, threadstarter, this);
+        STRIGI_THREAD_CREATE(&thread[i], threadstarter, this);
     }
     for (int i=0; i<n; ++i) {
-        STRIGI_THREAD_JOIN(thread[i], 0);
+        STRIGI_THREAD_JOIN(thread[i]);
     }
 
     delete [] thread;
