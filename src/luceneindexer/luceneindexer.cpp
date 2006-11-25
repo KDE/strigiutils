@@ -35,6 +35,7 @@ containsHelp(int argc, char **argv) {
 void
 checkIndexdirIsEmpty(const char* dir) {
     DIR* d = opendir(dir);
+    if (!d) return;
     struct dirent* de = readdir(d);
     while (de) {
         if (strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
