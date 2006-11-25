@@ -53,6 +53,7 @@ find_package(Sha REQUIRED)
 find_package(Threads REQUIRED)
 find_package(CLucene REQUIRED)
 find_package(Iconv REQUIRED)
+find_package(Regex REQUIRED)
 find_package(Expat REQUIRED)
 # Xerces requirement switched off until the next release
 find_package(XERCESC)
@@ -115,6 +116,10 @@ SET(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} stdint.h")
 CHECK_TYPE_SIZE(int64_t INT64_T)
 CHECK_TYPE_SIZE(__int64 __INT64)
 CHECK_TYPE_SIZE("long long" SIZEOF_LONGLONG)
+IF( ${SIZEOF_LONGLONG} STREQUAL "" )
+ set( SIZEOF_LONGLONG "0")
+ENDIF( ${SIZEOF_LONGLONG} STREQUAL "" )
+
 
 CHECK_TYPE_SIZE(int32_t INT32_T)
 CHECK_TYPE_SIZE(long SIZEOF_LONG)

@@ -62,7 +62,7 @@
   typedef __int64 int64_t; 
  #elif ${SIZEOF_LONG}==8
   typedef long int64_t
- #elif 0${SIZEOF_LONGLONG}==8
+ #elif ${SIZEOF_LONGLONG}==8
   typedef long long int64_t; 
  #endif
 #endif
@@ -71,7 +71,7 @@
   typedef __uint64 uint64_t; 
  #elif ${SIZEOF_LONG}==8
   typedef unsigned long uint64_t
- #elif 0${SIZEOF_LONGLONG}==8
+ #elif ${SIZEOF_LONGLONG}==8
   typedef unsigned long long uint64_t; 
  #elif defined(HAVE___INT64)
   typedef unsigned __int64 uint64_t; 
