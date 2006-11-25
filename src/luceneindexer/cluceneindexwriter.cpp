@@ -190,11 +190,11 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     lucene::index::IndexReader* reader = manager->refReader();
 
     wstring tstr(utf8toucs2(entry));
-    Term* term = _CLNEW Term(_T("path"), tstr.c_str());
-    PrefixFilter* filter = _CLNEW PrefixFilter(term);
+    Term term(_T("path"), tstr.c_str());
+    PrefixFilter filter(&term);
     BitSet* bits;
     try {
-        bits = filter->bits(reader);
+        bits = filter.bits(reader);
     } catch (CLuceneError& err) {
         fprintf(stderr, "error creating filter %s: %s\n", entry.c_str(),
             err.what());
@@ -208,8 +208,6 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
         }
         _CLDELETE(bits);
     }
-    _CLDELETE(filter);
-    _CLDECDELETE(term);
 
     manager->derefReader();
 }

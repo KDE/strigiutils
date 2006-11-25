@@ -21,20 +21,20 @@ CL_NS_DEF(search)
     class PrefixFilter: public Filter 
     {
     private:
-    	CL_NS(index)::Term* prefix;
+        CL_NS(index)::Term* prefix;
     protected:
-    	PrefixFilter( const PrefixFilter& copy );
-    	
+        PrefixFilter( const PrefixFilter& copy );
+        
     public:
-    	PrefixFilter(CL_NS(index)::Term* prefix);
-    	~PrefixFilter();
+        PrefixFilter(CL_NS(index)::Term* prefix);
+        ~PrefixFilter();
     
-    	/** Returns a BitSet with true for documents which should be permitted in
-    	search results, and false for those that should not. */
-    	CL_NS(util)::BitSet* bits( CL_NS(index)::IndexReader* reader );
-    	
-    	Filter* clone() const;
-    	TCHAR* toString();
+        /** Returns a BitSet with true for documents which should be permitted in
+        search results, and false for those that should not. */
+        CL_NS(util)::BitSet* bits( CL_NS(index)::IndexReader* reader );
+        
+        Filter* clone() const;
+        TCHAR* toString();
     };
 CL_NS_END
 #endif

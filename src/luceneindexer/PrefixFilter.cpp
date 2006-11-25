@@ -17,39 +17,39 @@ CL_NS_DEF(search)
 
 PrefixFilter::PrefixFilter( Term* prefix )
 {
-	this->prefix = _CL_POINTER(prefix);
+    this->prefix = _CL_POINTER(prefix);
 }
 
 PrefixFilter::~PrefixFilter()
 {
-	_CLDECDELETE(prefix);
+    _CLDECDELETE(prefix);
 }
 
 PrefixFilter::PrefixFilter( const PrefixFilter& copy ) : 
-	prefix( _CL_POINTER(copy.prefix) )
+    prefix( _CL_POINTER(copy.prefix) )
 {
 }
 
 Filter* PrefixFilter::clone() const {
-	return _CLNEW PrefixFilter(*this );
+    return _CLNEW PrefixFilter(*this );
 }
 
 TCHAR* PrefixFilter::toString()
 {
-	//Instantiate a stringbuffer buffer to store the readable version temporarily
+    //Instantiate a stringbuffer buffer to store the readable version temporarily
     CL_NS(util)::StringBuffer buffer;
     //check if field equal to the field of prefix
     if( prefix->field() != NULL ) {
-	  //Append the field of prefix to the buffer
+      //Append the field of prefix to the buffer
       buffer.append(prefix->field());
-	  //Append a colon
+      //Append a colon
       buffer.append(_T(":") );
     }
     //Append the text of the prefix
     buffer.append(prefix->text());
     buffer.append(_T("*"));
 
-	//Convert StringBuffer buffer to TCHAR block and return it
+    //Convert StringBuffer buffer to TCHAR block and return it
     return buffer.toString();
 }
 
@@ -57,19 +57,19 @@ TCHAR* PrefixFilter::toString()
 search results, and false for those that should not. */
 BitSet* PrefixFilter::bits( IndexReader* reader )
 {
-	BitSet* bts = _CLNEW BitSet( reader->maxDoc() );
-	TermEnum* enumerator = reader->terms(prefix);
-	TermDocs* docs = reader->termDocs();
+    BitSet* bts = _CLNEW BitSet( reader->maxDoc() );
+    TermEnum* enumerator = reader->terms(prefix);
+    TermDocs* docs = reader->termDocs();
     const TCHAR* prefixText = prefix->text();
     const TCHAR* prefixField = prefix->field();
     int32_t prefixLen = prefix->textLength();
-	Term* lastTerm = NULL;
+    Term* lastTerm = NULL;
     
-	try{
-		do{
+    try{
+        do{
             lastTerm = enumerator->term(false);
-    		if (lastTerm != NULL && lastTerm->field() == prefixField ){
-    		    //now see if term->text() starts with prefixText
+            if (lastTerm != NULL && lastTerm->field() == prefixField ){
+                //now see if term->text() starts with prefixText
                 int32_t termLen = lastTerm->textLength();
                 if ( prefixLen>termLen )
                     break; //the prefix is longer than the term, can't be matched
@@ -78,20 +78,20 @@ BitSet* PrefixFilter::bits( IndexReader* reader )
                 if ( _tcsncmp(lastTerm->text(),prefixText,prefixLen)!=0 )
                     break;
 
-    			docs->seek(enumerator);
-    			while (docs->next()) {
-    			  bts->set(docs->doc());
-    			}
-    		}
-		}while(enumerator->next());
-	} _CLFINALLY(
+                docs->seek(enumerator);
+                while (docs->next()) {
+                  bts->set(docs->doc());
+                }
+            }
+        }while(enumerator->next());
+    } _CLFINALLY(
       docs->close();
       _CLDELETE(docs);
       enumerator->close();
-	  _CLDELETE(enumerator);
+      _CLDELETE(enumerator);
     )
 
-	return bts;
+    return bts;
 }
 
 CL_NS_END

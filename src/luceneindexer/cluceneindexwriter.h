@@ -38,7 +38,7 @@ public:
     ~CLuceneIndexWriter();
     void commit() {};
 
-	/** cleanup clucene files. this is run when clucene starts up */
+    /** cleanup clucene files. this is run when clucene starts up */
     void cleanUp();
     void deleteEntries(const std::vector<std::string>& entries);
     void deleteAllEntries();

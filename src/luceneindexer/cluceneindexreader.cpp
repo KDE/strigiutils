@@ -79,12 +79,12 @@ typedef map<string,string> CLuceneIndexReaderFieldMapType;
 CLuceneIndexReaderFieldMapType CLuceneIndexReaderFieldMap;
 
 void CLuceneIndexReader::addMapping(const TCHAR* from, const TCHAR* to){
-	CLuceneIndexReaderFieldMap[from] = to;
+    CLuceneIndexReaderFieldMap[from] = to;
 }
 const TCHAR*
 CLuceneIndexReader::mapId(const TCHAR* id) {
     if ( CLuceneIndexReaderFieldMap.size() == 0 ){
-		addMapping(_T(""),_T("content"));
+        addMapping(_T(""),_T("content"));
     }
     if (id==0 ) id = _T("");
     CLuceneIndexReaderFieldMapType::iterator itr = CLuceneIndexReaderFieldMap.find(id);
@@ -95,10 +95,10 @@ CLuceneIndexReader::mapId(const TCHAR* id) {
 }
 #ifdef _UCS2
 const TCHAR* CLuceneIndexReader::mapId(const char* id) {
-	TCHAR* tid = STRDUP_AtoT(id);
-	const TCHAR* ret = mapId(tid);
-	_CLDELETE_CARRAY(tid);
-	return ret;
+    TCHAR* tid = STRDUP_AtoT(id);
+    const TCHAR* ret = mapId(tid);
+    _CLDELETE_CARRAY(tid);
+    return ret;
 }
 #endif
 
@@ -194,7 +194,7 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     } else if (wcscmp(name, L"mimetype") == 0) {
         doc.mimetype = value;
     } else if (wcscmp(name, L"mtime") == 0) {
-		doc.mtime=atol(value.c_str());
+        doc.mtime=atol(value.c_str());
     } else if (wcscmp(name, L"size") == 0) {
         string size = value;
         doc.size = atoi(size.c_str());
@@ -301,30 +301,30 @@ CLuceneIndexReader::getFiles(char depth) {
         manager->derefReader();
         return files;
     }
-	    
-	TCHAR tstr[CL_MAX_DIR];
-	char cstr[CL_MAX_DIR];
-	snprintf(cstr, CL_MAX_DIR, "%i", depth);
-	STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
+        
+    TCHAR tstr[CL_MAX_DIR];
+    char cstr[CL_MAX_DIR];
+    snprintf(cstr, CL_MAX_DIR, "%i", depth);
+    STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
 
-	Term* term = _CLNEW Term(mapId(_T("depth")), tstr);
-	TermDocs* docs = reader->termDocs(term);
-	while ( docs->next() ){
-		Document *d = reader->document(docs->doc());
+    Term* term = _CLNEW Term(mapId(_T("depth")), tstr);
+    TermDocs* docs = reader->termDocs(term);
+    while ( docs->next() ){
+        Document *d = reader->document(docs->doc());
 
-		const TCHAR* v = d->get(mapId(_T("mtime")));
-		STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-		time_t mtime = atoi(cstr);
-		v = d->get(_T("path"));
-		STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-		files[cstr] = mtime;
+        const TCHAR* v = d->get(mapId(_T("mtime")));
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        time_t mtime = atoi(cstr);
+        v = d->get(_T("path"));
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        files[cstr] = mtime;
 
-		_CLDELETE(d);
-	}
-	_CLDELETE(docs);
-	_CLDECDELETE(term);
-	manager->derefReader();
-	return files;
+        _CLDELETE(d);
+    }
+    _CLDELETE(docs);
+    _CLDECDELETE(term);
+    manager->derefReader();
+    return files;
 }
 int32_t
 CLuceneIndexReader::countDocuments() {
@@ -355,18 +355,18 @@ CLuceneIndexReader::getDocumentId(const std::string& uri) {
     lucene::index::IndexReader* reader = manager->refReader();
     int64_t id = -1;
     
-	TCHAR tstr[CL_MAX_DIR];
+    TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
     Term* term = _CLNEW Term(mapId(_T("path")), tstr);
-	TermDocs* docs = reader->termDocs(term);
-	if ( docs->next() ){
-		id = docs->doc();
-	}
+    TermDocs* docs = reader->termDocs(term);
+    if ( docs->next() ){
+        id = docs->doc();
+    }
     _CLDECDELETE(term);
     _CLDELETE(docs);
 
-	if ( id != -1 && reader->isDeleted(id) )
-		id = -1;
+    if ( id != -1 && reader->isDeleted(id) )
+        id = -1;
 
     manager->derefReader();
     return id;
@@ -386,7 +386,7 @@ CLuceneIndexReader::getMTime(int64_t docid) {
         const TCHAR* v = d->get(mapId(_T("mtime")));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         mtime = atoi(cstr);
-		delete d;
+        delete d;
     }
     manager->derefReader();
     return mtime;

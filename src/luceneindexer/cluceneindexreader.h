@@ -47,7 +47,7 @@ public:
     int64_t getIndexSize();
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
-	static void addMapping(const TCHAR* from, const TCHAR* to);
+    static void addMapping(const TCHAR* from, const TCHAR* to);
 };
 
 #endif
