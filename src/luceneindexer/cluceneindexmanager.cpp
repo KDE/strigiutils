@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
+#include <CLucene.h>
 #include "cluceneindexmanager.h"
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
-#include <CLucene.h>
 #include <sys/types.h>
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 

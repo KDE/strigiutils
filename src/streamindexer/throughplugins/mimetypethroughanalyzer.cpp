@@ -19,11 +19,11 @@
  */
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
 #include "jstreamsconfig.h"
-#include "strigi_plugins.h"
 
 #include "mimetypethroughanalyzer.h"
 #include "indexable.h"
 using namespace std;
+using namespace jstreams;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
@@ -35,8 +35,8 @@ MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
 MimeTypeThroughAnalyzer::~MimeTypeThroughAnalyzer() {
     magic_close(magic);
 }
-jstreams::InputStream *
-MimeTypeThroughAnalyzer::connectInputStream(jstreams::InputStream *in) {
+::InputStream *
+MimeTypeThroughAnalyzer::connectInputStream(::InputStream *in) {
     // determine the mimetype
     const char* mime;
     int64_t pos = in->getPosition();
@@ -63,7 +63,23 @@ MimeTypeThroughAnalyzer::isReadyWithStream() {
     return true;
 }
 
-//define all the available analyzers in this plugin
-STRIGI_THROUGH_PLUGINS_START
-STRIGI_THROUGH_PLUGINS_REGISTER(MimeTypeThroughAnalyzer)
-STRIGI_THROUGH_PLUGINS_END
+class MimeTypeThroughAnalyzerFactory
+    : public StreamThroughAnalyzerFactory {
+private:
+    const char* getName() const {
+        return "TestEndAnalyzerFactory";
+    }
+};
+
+class Factory : public AnalyzerFactoryFactory {
+public:
+    list<StreamThroughAnalyzerFactory*>
+    getStreamThroughAnalyzerFactories() const {
+        list<StreamThroughAnalyzerFactory*> af;
+        af.push_back(new MimeTypeThroughAnalyzerFactory());
+        return af;
+    }
+};
+
+STRIGI_ANALYZER_FACTORY(Factory)
+

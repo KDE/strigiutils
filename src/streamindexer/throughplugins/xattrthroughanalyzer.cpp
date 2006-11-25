@@ -19,11 +19,14 @@
  */
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
 #include <jstreamsconfig.h>
-#include <strigi_plugins.h>
+#include <streamthroughanalyzer.h>
+#include <analyzerplugin.h>
 #include <indexable.h>
 #include <sys/types.h>
 #include <attr/xattr.h>
 #include <errno.h>
+using namespace jstreams;
+using namespace std;
 
 class XattrAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
@@ -53,8 +56,6 @@ public:
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream() { return true; }
 };
-
-//REGISTER_THROUGHANALYZER(XattrAnalyzer)
 
 jstreams::InputStream *
 XattrAnalyzer::connectInputStream(jstreams::InputStream *in) {
@@ -105,6 +106,22 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
 }
 
 //define all the available analyzers in this plugin
-STRIGI_THROUGH_PLUGINS_START
-STRIGI_THROUGH_PLUGINS_REGISTER(XattrAnalyzer)
-STRIGI_THROUGH_PLUGINS_END
+class XattrThroughAnalyzerFactory
+    : public StreamThroughAnalyzerFactory {
+private:
+    const char* getName() const {
+        return "TestEndAnalyzerFactory";
+    }
+};
+
+class Factory : public AnalyzerFactoryFactory {
+public:
+    list<StreamThroughAnalyzerFactory*>
+    getStreamThroughAnalyzerFactories() const {
+        list<StreamThroughAnalyzerFactory*> af;
+        af.push_back(new XattrThroughAnalyzerFactory());
+        return af;
+    }
+};
+
+STRIGI_ANALYZER_FACTORY(Factory)

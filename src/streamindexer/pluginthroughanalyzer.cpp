@@ -19,12 +19,12 @@
  */
 #include "jstreamsconfig.h"
 #include "pluginthroughanalyzer.h"
-#include "moduleloader.h"
+#include "analyzerloader.h"
 
 using namespace std;
 using namespace jstreams;
 
-PluginThroughAnalyzer::PluginThroughAnalyzer(ModuleLoader* ml) {
+PluginThroughAnalyzer::PluginThroughAnalyzer(AnalyzerLoader* ml) {
     moduleLoader = ml;
    
     /* For now we just load all the plugins in any order...

@@ -99,13 +99,13 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
             nwritten = space;
             break;
         default:
-			char tmp[10];
-			itoa(errno,tmp,10);
+            char tmp[10];
+            snprintf(tmp, 10, "%i", errno);
             error = "inputstreamreader error: ";
-			error.append(tmp);
-			printf("inputstreamreader::error %d\n", errno);
+            error.append(tmp);
+            fprintf(stderr, "inputstreamreader::error %d\n", errno);
             status = Error;
-			return -1;
+            return -1;
         }
     } else { //input sequence was completely converted
         charbuf.readPos = charbuf.start;

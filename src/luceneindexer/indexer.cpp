@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "indexer.h"
 #include <CLucene.h>
+#include "indexer.h"
 #include "filelister.h"
 #include "filereader.h"
 #include "filtermanager.h"

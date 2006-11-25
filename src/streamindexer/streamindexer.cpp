@@ -35,8 +35,6 @@
 #include "helperendanalyzer.h"
 #include "id3v2throughanalyzer.h"
 #include "digestthroughanalyzer.h"
-#include "pluginthroughanalyzer.h"
-#include "pluginendanalyzer.h"
 #include "indexable.h"
 #include "indexerconfiguration.h"
 #include "textutils.h"
@@ -60,6 +58,15 @@ StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
     }
 }
 StreamIndexer::~StreamIndexer() {
+    // delete all factories
+    std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
+    for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
+        delete *ta;
+    }
+    std::vector<StreamEndAnalyzerFactory*>::iterator ea;
+    for (ea = endfactories.begin(); ea != endfactories.end(); ++ea) {
+        delete *ea;
+    }
     // delete the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     for (tIter = through.begin(); tIter != through.end(); ++tIter) {
@@ -100,13 +107,17 @@ StreamIndexer::indexFile(const std::string& filepath, IndexerConfiguration* ic){
     return indexable.index(file);
 }
 void
+StreamIndexer::initializeThroughFactories() {
+}
+void
+StreamIndexer::initializeEndFactories() {
+}
+void
 StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    StreamThroughAnalyzer* ana = new PluginThroughAnalyzer(&moduleLoader);
-    tIter->push_back(ana);
-    ana = new DigestThroughAnalyzer();
+    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
     tIter->push_back(ana);
     ana = new ID3V2ThroughAnalyzer();
     tIter->push_back(ana);
@@ -131,8 +142,6 @@ StreamIndexer::addEndAnalyzers() {
     ana = new RpmEndAnalyzer();
     eIter->push_back(ana);
     ana = new PngEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new PluginEndAnalyzer(&moduleLoader);
     eIter->push_back(ana);
 
 /*    ana = new PdfEndAnalyzer();

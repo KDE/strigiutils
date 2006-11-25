@@ -119,7 +119,7 @@ stopserver() {
     close(quitpipe[1]);
 
     printf("before join\n");
-    STRIGI_THREAD_JOIN(thread, 0);
+    STRIGI_THREAD_JOIN(thread);
     printf("after join\n");
     STRIGI_MUTEX_DESTROY(&lock);
     printf("end of stopserver\n");

@@ -43,7 +43,8 @@ ModuleLoader::~ModuleLoader(){
     }
     modules.clear();
 }
-void ModuleLoader::loadPlugins(const char* d) {
+void
+ModuleLoader::loadPlugins(const char* d) {
     DIR *dir = opendir(d);
     if (dir == 0) {
         // TODO handle error
@@ -103,7 +104,7 @@ ModuleLoader::Module* ModuleLoader::loadModule(const char* lib) {
         wprintf(L"%s\n", lpMsgBuf);
         LocalFree(lpMsgBuf);
     }
-    #endif
+#endif
    
     if ( mod == NULL ) {
         return NULL;

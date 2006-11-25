@@ -179,7 +179,7 @@ StrigiThread::stop() {
         // signal the thread to wake up
         pthread_kill(thread, SIGALRM);
         // wait for the thread to finish
-        STRIGI_THREAD_JOIN(thread, 0);
+        STRIGI_THREAD_JOIN(thread);
     }
     thread = 0;
 }

@@ -23,16 +23,16 @@
 #include "streamthroughanalyzer.h"
 #include <map>
 
-class ModuleLoader;
+class AnalyzerLoader;
 class PluginThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
     std::multimap<void*, jstreams::StreamThroughAnalyzer*> analyzers;
-    //std::list<ModuleLoader::ThroughPair> analyzers;
-    ModuleLoader* moduleLoader;
+    //std::list<AnalyzerLoader::ThroughPair> analyzers;
+    AnalyzerLoader* moduleLoader;
 public:
-    explicit PluginThroughAnalyzer(ModuleLoader* moduleLoader);
+    explicit PluginThroughAnalyzer(AnalyzerLoader* moduleLoader);
     ~PluginThroughAnalyzer();
     void setIndexable(jstreams::Indexable* i);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);

@@ -23,18 +23,18 @@
 #include "streamendanalyzer.h"
 #include <map>
 
-class ModuleLoader;
+class AnalyzerLoader;
 class PluginEndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
 private:
     //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
     std::multimap<void*, jstreams::StreamEndAnalyzer*> analyzers;
-    ModuleLoader* moduleLoader;
+    AnalyzerLoader* moduleLoader;
 
     mutable jstreams::StreamEndAnalyzer* selectedEndAnalyzer;
 public:
-    explicit PluginEndAnalyzer(ModuleLoader* moduleLoader);
+    explicit PluginEndAnalyzer(AnalyzerLoader* moduleLoader);
     ~PluginEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);

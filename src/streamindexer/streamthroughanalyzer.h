@@ -46,6 +46,12 @@ public:
      **/
     virtual bool isReadyWithStream() = 0;
 };
+class StreamThroughAnalyzerFactory {
+public:
+    virtual ~StreamThroughAnalyzerFactory(){}
+    virtual const char* getName() const = 0;
+};
+
 }
 
 #endif

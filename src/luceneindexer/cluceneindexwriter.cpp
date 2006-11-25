@@ -18,13 +18,14 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "cluceneindexwriter.h"
-#include "cluceneindexmanager.h"
 #include <CLucene.h>
 #include <CLucene/store/Lock.h>
+#include "cluceneindexwriter.h"
+#include "cluceneindexmanager.h"
 #include "stringreader.h"
 #include "inputstreamreader.h"
 #include "indexable.h"
+#include "PrefixFilter.h"
 #include <sstream>
 #include <assert.h>
 
@@ -75,12 +76,12 @@ typedef map<string,string> CLuceneIndexWriterFieldMapType;
 CLuceneIndexWriterFieldMapType CLuceneIndexWriterFieldMap;
 
 void CLuceneIndexWriter::addMapping(const TCHAR* from, const TCHAR* to){
-	CLuceneIndexWriterFieldMap[from] = to;
+    CLuceneIndexWriterFieldMap[from] = to;
 }
 const TCHAR*
 CLuceneIndexWriter::mapId(const TCHAR* id) {
     if ( CLuceneIndexWriterFieldMap.size() == 0 ){
-		addMapping(_T(""),_T("content"));
+        addMapping(_T(""),_T("content"));
     }
     if (id==0 ) id = _T("");
     CLuceneIndexWriterFieldMapType::iterator itr = CLuceneIndexWriterFieldMap.find(id);
@@ -140,25 +141,26 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     ::setField(idx, _T("mtime"), o.str());
     wstring c(utf8toucs2(doc->content));
-	StringReader<char>* sr = NULL; //we use this for compressed streams
+    StringReader<char>* sr = NULL; //we use this for compressed streams
 
     if (doc->content.length() > 0) {
         const TCHAR* mappedFn = mapId(_T(""));
 #if defined(_UCS2)
     #ifndef STRIGI_USE_CLUCENE_COMPRESSEDFIELDS
-		doc->doc.add(*Field::Text(mappedFn, c.c_str(), false));
+        doc->doc.add(*Field::Text(mappedFn, c.c_str(), false));
     #else
         //lets store the content as utf8. remember, the stream is required
         //until the document is added, so a static construction of stringreader is not good enough
-		sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
+        sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
 
-		//add the stored field with the zipstream
-		doc->doc.add(*new Field(mappedFn, 
-    		new GZipCompressInputStream(sr), 
-    		Field::STORE_YES ) );
+    //add the stored field with the zipstream
+    doc->doc.add(*new Field(mappedFn, 
+        new GZipCompressInputStream(sr), 
+        Field::STORE_YES ) );
 
-		//add add the tokenized/indexed field
-		doc->doc.add(*new Field::Text(mappedFn, c.c_str(), Field::STORE_NO | Field::INDEX_TOKENIZED));
+    //add add the tokenized/indexed field
+    doc->doc.add(*new Field::Text(mappedFn, c.c_str(),
+            Field::STORE_NO | Field::INDEX_TOKENIZED));
     #endif
 #else //_UCS2
         doc->doc.add(*Field::Text(mappedFn, doc->content.c_str()) );
@@ -174,8 +176,8 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     }
     manager->derefWriter();
     delete doc;
-	if ( sr )
-		delete sr;
+    if ( sr )
+        delete sr;
 }
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
@@ -202,12 +204,12 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
         for (int32_t i = 0; i < bits->size(); ++i) {
             if (bits->get(i) && !reader->isDeleted(i)) {
                 reader->deleteDocument(i);
-			}
+            }
         }
         _CLDELETE(bits);
     }
     _CLDELETE(filter);
-	_CLDECDELETE(term);
+    _CLDECDELETE(term);
 
     manager->derefReader();
 }
@@ -218,125 +220,128 @@ CLuceneIndexWriter::deleteAllEntries() {
 
 //this function is in 0.9.17, which we dont have yet...
 bool isLuceneFile(const char* filename){
-	if ( !filename )
-		return false;
-	size_t len = strlen(filename);
-	if ( len < 6 ) //need at least x.frx
-		return false;
-	const char* ext = filename + len;
-	while ( *ext != '.' && ext != filename )
-	    ext--;
+    if ( !filename )
+        return false;
+    size_t len = strlen(filename);
+    if ( len < 6 ) //need at least x.frx
+        return false;
+    const char* ext = filename + len;
+    while ( *ext != '.' && ext != filename )
+        ext--;
 
-	if ( strcmp(ext, ".cfs") == 0 )
-		return true;
-	else if ( strcmp(ext, ".fnm") == 0 )
-		return true;
-	else if ( strcmp(ext, ".fdx") == 0 )
-		return true;
-	else if ( strcmp(ext, ".fdt") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tii") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tis") == 0 )
-		return true;
-	else if ( strcmp(ext, ".frq") == 0 )
-		return true;
-	else if ( strcmp(ext, ".prx") == 0 )
-		return true;
-	else if ( strcmp(ext, ".del") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tvx") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tvd") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tvf") == 0 )
-		return true;
-	else if ( strcmp(ext, ".tvp") == 0 )
-		return true;
+    if ( strcmp(ext, ".cfs") == 0 )
+        return true;
+    else if ( strcmp(ext, ".fnm") == 0 )
+        return true;
+    else if ( strcmp(ext, ".fdx") == 0 )
+        return true;
+    else if ( strcmp(ext, ".fdt") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tii") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tis") == 0 )
+        return true;
+    else if ( strcmp(ext, ".frq") == 0 )
+        return true;
+    else if ( strcmp(ext, ".prx") == 0 )
+        return true;
+    else if ( strcmp(ext, ".del") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tvx") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tvd") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tvf") == 0 )
+        return true;
+    else if ( strcmp(ext, ".tvp") == 0 )
+        return true;
 
-	else if ( strcmp(filename, "segments") == 0 )
-		return true;
-	else if ( strcmp(filename, "segments.new") == 0 )
-		return true;
-	else if ( strcmp(filename, "deletable") == 0 )
-		return true;
+    else if ( strcmp(filename, "segments") == 0 )
+        return true;
+    else if ( strcmp(filename, "segments.new") == 0 )
+        return true;
+    else if ( strcmp(filename, "deletable") == 0 )
+        return true;
 
-	else if ( strncmp(ext,".f",2)==0 ){
-		const char* n = ext+2;
-		if ( *n && _istdigit(*n) )
-			return true;	
-	}
+    else if ( strncmp(ext,".f",2)==0 ){
+        const char* n = ext+2;
+        if ( *n && _istdigit(*n) )
+            return true;    
+    }
 
-	return false;
+    return false;
 }
 
 void
 CLuceneIndexWriter::cleanUp() {
     //remove all unused lucene file elements... unused elements are the result of unexpected shutdowns...
-	//this can add up to a lot of after a while.
-	
-	lucene::index::IndexReader* reader = manager->refReader();
-	if ( !reader )
-		return;
-	lucene::store::Directory* directory = reader->getDirectory();
-
-	
-	//Instantiate SegmentInfos
-	lucene::store::LuceneLock* lock = directory->makeLock("commit.lock");
+    //this can add up to a lot of after a while.
+    
+    lucene::index::IndexReader* reader = manager->refReader();
+    if (!reader) {
+        return;
+    }
+    lucene::store::Directory* directory = reader->getDirectory();
+    
+    //Instantiate SegmentInfos
+    lucene::store::LuceneLock* lock = directory->makeLock("commit.lock");
 #ifdef LUCENE_COMMIT_LOCK_TIMEOUT
-	//version <0.9.16
-	bool locked = lock->obtain(LUCENE_COMMIT_LOCK_TIMEOUT);
+    //version <0.9.16
+    bool locked = lock->obtain(LUCENE_COMMIT_LOCK_TIMEOUT);
 #else
-	bool locked = lock->obtain(lucene::index::IndexWriter::COMMIT_LOCK_TIMEOUT);
+    bool locked = lock->obtain(lucene::index::IndexWriter::COMMIT_LOCK_TIMEOUT);
 #endif
-	if ( !locked )
-		return;
-	lucene::index::SegmentInfos infos;
-	try{
-		//Have SegmentInfos read the segments file in directory
-		infos.read(directory);
-	}catch(...){
-		lock->release();
-		return; //todo: this may suggest an error...
-	}
-	lock->release();
+    if (!locked) {
+        return;
+    }
+    lucene::index::SegmentInfos infos;
+    try {
+        //Have SegmentInfos read the segments file in directory
+        infos.read(directory);
+    } catch(...) {
+        lock->release();
+        return; //todo: this may suggest an error...
+    }
+    lock->release();
 
+    int i;
+    set<string> segments;
+    for (i = 0; i < infos.size(); i++) {
+            lucene::index::SegmentInfo* info = infos.info(i);
+            segments.insert(info->name);
+    }
 
-	int i;
-	set<string> segments;
-	for ( i=0;i<infos.size();i++ ){
-		lucene::index::SegmentInfo* info = infos.info(i);
-		segments.insert(info->name);
-	}
+    char** files = directory->list();
+    char tmp[CL_MAX_PATH];
+    for (i = 0; files[i] != NULL; ++i) {
+        char* file = files[i];
+ 
+        int fileLength = strlen(file);
+        if ( fileLength < 6 ) {
+            continue;
+        }
 
+        if (strncmp(file,"segments", 8) == 0
+                || strncmp(file, "deletable", 9) == 0) {
+            continue;
+        }
+        if (!isLuceneFile(file)) {
+            continue;
+        }
 
-	char** files = directory->list();
-	char tmp[MAX_PATH];
-	for ( i = 0;files[i] != NULL;++i ){
-		char* file = files[i];
-		
-		int fileLength = strlen(file);
-		if ( fileLength < 6 )
-			continue;
+        strcpy(tmp, file);
+        tmp[fileLength-4] = '\0';
 
-		if ( strncmp(file,"segments", 8)==0 || strncmp(file, "deletable", 9)==0) 
-			continue;
-        if ( !isLuceneFile(file) )
-			continue;
+        if (segments.find(tmp) != segments.end()) {
+            continue;
+        }
 
-		
-		strcpy(tmp,file);
-		tmp[fileLength-4] = '\0';
-
-		if ( segments.find(tmp) != segments.end() )
-			continue;
-
-		directory->deleteFile(file, false);
-	}
-	for(i=0;files[i]!=NULL;i++){
-		_CLDELETE_CaARRAY(files[i]);
-	}
-	_CLDELETE_ARRAY(files)
+        directory->deleteFile(file, false);
+    }
+    for (i = 0; files[i] != NULL; i++) {
+        _CLDELETE_CaARRAY(files[i]);
+    }
+    _CLDELETE_ARRAY(files)
 
     manager->derefReader();
 }
