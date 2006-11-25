@@ -24,6 +24,7 @@
 #include "cluceneindexmanager.h"
 #include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
+#include <CLucene/index/Terms.h>
 #include <sstream>
 
 using lucene::search::Hits;
@@ -31,6 +32,7 @@ using lucene::search::IndexSearcher;
 using lucene::document::Document;
 using lucene::document::Field;
 using lucene::index::Term;
+using lucene::index::TermDocs;
 using lucene::search::TermQuery;
 using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
@@ -52,9 +54,9 @@ public:
 
 class CLuceneIndexReader::Private {
 public:
-    static lucene::index::Term* createTerm(const std::string& name,
+    static lucene::index::Term* createTerm(const wchar_t* name,
         const std::string& value);
-    static lucene::index::Term* createWildCardTerm(const std::string& name,
+    static lucene::index::Term* createWildCardTerm(const wchar_t* name,
         const std::string& value);
     static void createBooleanQuery(const jstreams::Query& query,
         lucene::search::BooleanQuery& bq);
@@ -69,25 +71,50 @@ CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m)
 CLuceneIndexReader::~CLuceneIndexReader() {
 }
 
-const char*
-CLuceneIndexReader::mapId(const std::string& id) {
-    if (id == "") return "content";
-    return id.c_str();
+#ifdef _UCS2
+typedef map<wstring,wstring> CLuceneIndexReaderFieldMapType;;
+#else
+typedef map<string,string> CLuceneIndexReaderFieldMapType;
+#endif
+CLuceneIndexReaderFieldMapType CLuceneIndexReaderFieldMap;
+
+void CLuceneIndexReader::addMapping(const TCHAR* from, const TCHAR* to){
+	CLuceneIndexReaderFieldMap[from] = to;
 }
+const TCHAR*
+CLuceneIndexReader::mapId(const TCHAR* id) {
+    if ( CLuceneIndexReaderFieldMap.size() == 0 ){
+		addMapping(_T(""),_T("content"));
+    }
+    if (id==0 ) id = _T("");
+    CLuceneIndexReaderFieldMapType::iterator itr = CLuceneIndexReaderFieldMap.find(id);
+    if ( itr == CLuceneIndexReaderFieldMap.end() )
+        return id;
+    else
+        return itr->second.c_str();
+}
+#ifdef _UCS2
+const TCHAR* CLuceneIndexReader::mapId(const char* id) {
+	TCHAR* tid = STRDUP_AtoT(id);
+	const TCHAR* ret = mapId(tid);
+	_CLDELETE_CARRAY(tid);
+	return ret;
+}
+#endif
+
+
 Term*
-CLuceneIndexReader::Private::createWildCardTerm(const string& name,
+CLuceneIndexReader::Private::createWildCardTerm(const wchar_t* name,
         const string& value) {
-    wstring n = utf8toucs2(name);
     wstring v = utf8toucs2(value);
-    return _CLNEW Term(n.c_str(), v.c_str());
+    return _CLNEW Term(name, v.c_str());
 }
 Term*
-CLuceneIndexReader::Private::createTerm(const string& name, const string& value) {
-    wstring n = utf8toucs2(name);
+CLuceneIndexReader::Private::createTerm(const wchar_t* name, const string& value) {
     wstring v = utf8toucs2(value);
     lucene::util::StringReader sr(v.c_str());
     lucene::analysis::standard::StandardAnalyzer a;
-    lucene::analysis::TokenStream* ts = a.tokenStream(n.c_str(), &sr);
+    lucene::analysis::TokenStream* ts = a.tokenStream(name, &sr);
     lucene::analysis::Token* to = ts->next();
     const wchar_t *tv;
     if (to) {
@@ -95,7 +122,7 @@ CLuceneIndexReader::Private::createTerm(const string& name, const string& value)
     } else {
         tv = v.c_str();
     }
-    Term* t = _CLNEW Term(n.c_str(), tv);
+    Term* t = _CLNEW Term(name, tv);
     if (to) {
         _CLDELETE(to);
     }
@@ -110,22 +137,22 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
     map<string, set<string> >::const_iterator i;
     set<string>::const_iterator j;
     for (i = includes.begin(); i != includes.end(); ++i) {
-        string id = mapId(i->first);
+        const TCHAR* mappedId = mapId(i->first.c_str());
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             lucene::search::Query* tq;
             Term* t = 0;
             if (j->length() > 0 && (*j)[0] == '<') {
-                t = createTerm(mapId(i->first), j->substr(1));
+                t = createTerm(mappedId, (*j).substr(1).c_str());
                 tq = _CLNEW RangeQuery(0, t, false);
             } else if (j->length() > 0 && (*j)[0] == '>') {
-                t = createTerm(mapId(i->first), j->substr(1));
+                t = createTerm(mappedId, (*j).substr(1).c_str());
                 tq = _CLNEW RangeQuery(t, 0, false);
             } else {
                 if (strpbrk(j->c_str(), "*?")) {
-                    t = createWildCardTerm(mapId(i->first), *j);
+                    t = createWildCardTerm(mappedId, (*j).c_str());
                     tq = _CLNEW WildcardQuery(t);
                 } else {
-                    t = createTerm(mapId(i->first), *j);
+                    t = createTerm(mappedId, (*j).c_str());
                     tq = _CLNEW TermQuery(t);
                 }
             }
@@ -135,16 +162,16 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
     }
     const map<string, set<string> >& excludes = query.getExcludes();
     for (i = excludes.begin(); i != excludes.end(); ++i) {
-        string id = mapId(i->first);
+        const TCHAR* mappedId = mapId(i->first.c_str());
         for (j = i->second.begin(); j != i->second.end(); ++j) {
             lucene::search::Query* tq;
             bool wildcard = strpbrk(j->c_str(), "*?")!=NULL;
             Term* t;
             if (wildcard) {
-                t = createWildCardTerm(mapId(i->first), *j);
+                t = createWildCardTerm(mappedId, *j);
                 tq = _CLNEW WildcardQuery(t);
             } else {
-                t = createTerm(mapId(i->first), *j);
+                t = createTerm(mappedId, (*j).c_str() );
                 tq = _CLNEW TermQuery(t);
             }
             _CLDECDELETE(t);
@@ -167,8 +194,7 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     } else if (wcscmp(name, L"mimetype") == 0) {
         doc.mimetype = value;
     } else if (wcscmp(name, L"mtime") == 0) {
-        istringstream iss(value);
-        iss >> doc.mtime;
+		doc.mtime=atol(value.c_str());
     } else if (wcscmp(name, L"size") == 0) {
         string size = value;
         doc.size = atoi(size.c_str());
@@ -275,29 +301,30 @@ CLuceneIndexReader::getFiles(char depth) {
         manager->derefReader();
         return files;
     }
-    IndexSearcher searcher(reader);
-    TCHAR tstr[CL_MAX_DIR];
-    char cstr[CL_MAX_DIR];
-    snprintf(cstr, CL_MAX_DIR, "%i", depth);
-    STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
-    Term* term = _CLNEW Term(_T("depth"), tstr);
-    TermQuery* termquery = _CLNEW TermQuery(term);
-    Hits *hits = searcher.search(termquery);
-    int s = hits->length();
-    for (int i = 0; i < s; ++i) {
-        Document *d = &hits->doc(i);
-        const TCHAR* v = d->get(_T("mtime"));
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        time_t mtime = atoi(cstr);
-        v = d->get(_T("path"));
-        files[wchartoutf8(v)] = mtime;
-    }
-    searcher.close();
-    _CLDELETE(hits);
-    _CLDELETE(termquery);
-    _CLDECDELETE(term);
-    manager->derefReader();
-    return files;
+	    
+	TCHAR tstr[CL_MAX_DIR];
+	char cstr[CL_MAX_DIR];
+	snprintf(cstr, CL_MAX_DIR, "%i", depth);
+	STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
+
+	Term* term = _CLNEW Term(mapId(_T("depth")), tstr);
+	TermDocs* docs = reader->termDocs(term);
+	while ( docs->next() ){
+		Document *d = reader->document(docs->doc());
+
+		const TCHAR* v = d->get(mapId(_T("mtime")));
+		STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+		time_t mtime = atoi(cstr);
+		v = d->get(_T("path"));
+		STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+		files[cstr] = mtime;
+
+		_CLDELETE(d);
+	}
+	_CLDELETE(docs);
+	_CLDECDELETE(term);
+	manager->derefReader();
+	return files;
 }
 int32_t
 CLuceneIndexReader::countDocuments() {
@@ -326,20 +353,21 @@ CLuceneIndexReader::getIndexSize() {
 int64_t
 CLuceneIndexReader::getDocumentId(const std::string& uri) {
     lucene::index::IndexReader* reader = manager->refReader();
-    IndexSearcher searcher(reader);
-    wstring tstr(utf8toucs2(uri));
-    Term* term = _CLNEW Term(_T("path"), tstr.c_str());
-    TermQuery* termquery = _CLNEW TermQuery(term);
-    Hits *hits = searcher.search(termquery);
-    int s = hits->length();
     int64_t id = -1;
-    if (s == 1) {
-        id = hits->id(0);
-    }
-    searcher.close();
-    _CLDELETE(hits);
-    _CLDELETE(termquery);
+    
+	TCHAR tstr[CL_MAX_DIR];
+    STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
+    Term* term = _CLNEW Term(mapId(_T("path")), tstr);
+	TermDocs* docs = reader->termDocs(term);
+	if ( docs->next() ){
+		id = docs->doc();
+	}
     _CLDECDELETE(term);
+    _CLDELETE(docs);
+
+	if ( id != -1 && reader->isDeleted(id) )
+		id = -1;
+
     manager->derefReader();
     return id;
 }
@@ -355,9 +383,10 @@ CLuceneIndexReader::getMTime(int64_t docid) {
     Document *d = reader->document(docid);
     if (d) {
         char cstr[CL_MAX_DIR];
-        const TCHAR* v = d->get(_T("mtime"));
+        const TCHAR* v = d->get(mapId(_T("mtime")));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         mtime = atoi(cstr);
+		delete d;
     }
     manager->derefReader();
     return mtime;

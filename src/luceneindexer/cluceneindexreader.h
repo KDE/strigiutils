@@ -34,8 +34,10 @@ private:
 
     CLuceneIndexReader(CLuceneIndexManager* m);
     ~CLuceneIndexReader();
-
-    static const char* mapId(const std::string& id);
+    static const TCHAR* mapId(const wchar_t* id);
+    static const TCHAR* mapId(const char* id);
+    
+    friend class CLuceneIndexReader::Private;
 public:
     int32_t countHits(const jstreams::Query&);
     std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
@@ -45,6 +47,7 @@ public:
     int64_t getIndexSize();
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
+	static void addMapping(const TCHAR* from, const TCHAR* to);
 };
 
 #endif
