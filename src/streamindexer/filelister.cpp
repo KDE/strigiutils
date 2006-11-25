@@ -37,15 +37,22 @@ using namespace std;
 
 string fixPath (string path)
 {
-    string temp (path);
-    
-    char separator;
+	if ( path.c_str() == NULL || path.length() == 0 )
+		return "";
+
+    string temp(path);
     
 #ifdef HAVE_WINDOWS_H
-    separator = '\\';
-#else
-    separator = '/';
+	size_t l= temp.length();
+	char* t = (char*)temp.c_str();
+	for (size_t i=0;i<l;i++){
+		if ( t[i] == '\\' )
+			t[i] = '/';
+	}
+	temp[0] = tolower(temp.at(0));
 #endif
+
+    char separator = '/';
 
     if (temp[temp.length() - 1 ] != separator)
         temp += separator;
@@ -102,17 +109,23 @@ FileLister::walk_directory(uint len) {
         return true; 
     else if (m_filterManager == NULL)
         printf ("m_filtermanager is NULL!!\n");
-    
-#ifndef WIN32
+
+#ifdef WIN32
+	// windows opendir expects no trailing slash on the end of directories...
+	// remove the trailing '/' on windows machines before the call to opendir(),
+    // but do not strip off the trailing slash from windows c:/
+    if ( len > 3) {
+		while(path[len-1]=='/' || path[len-1]=='\\'){
+			len--;
+			path[len] = '\0';
+		}
+    }
+	path[0] = tolower(path[0]);
+#endif
+
     // call dir function callback, actually there's only inotify dir callback
     if (m_dirCallback != 0)
         m_dirCallback (path, len);
-#else// remove the trailing '/' on windows machines before the call to opendir(),
-    // but do not strip off the trailing slash from windows c:/
-    if ( len > 3) {
-        path[len-1] = '\0';
-    }
-#endif
 
     // open the directory
     dir = opendir(path);
@@ -120,7 +133,11 @@ FileLister::walk_directory(uint len) {
         return true;
     }
 #ifdef WIN32
-    path[len-1] = '/';
+	//add the trailing slash back on
+	if ( len > 3) {
+		strcat(path,"/");
+		len++;
+	}
 #endif
 
     subdir = readdir(dir);
@@ -140,7 +157,7 @@ FileLister::walk_directory(uint len) {
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
-        if (lstat(path, &dirstat) == 0) {
+        if (stat(path, &dirstat) == 0) {
             bool c = true;
             if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))
