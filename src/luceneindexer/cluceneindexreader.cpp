@@ -72,9 +72,9 @@ CLuceneIndexReader::~CLuceneIndexReader() {
 }
 
 #ifdef _UCS2
-typedef map<wstring,wstring> CLuceneIndexReaderFieldMapType;;
+typedef map<wstring, wstring> CLuceneIndexReaderFieldMapType;
 #else
-typedef map<string,string> CLuceneIndexReaderFieldMapType;
+typedef map<string, string> CLuceneIndexReaderFieldMapType;
 #endif
 CLuceneIndexReaderFieldMapType CLuceneIndexReaderFieldMap;
 
@@ -83,23 +83,27 @@ void CLuceneIndexReader::addMapping(const TCHAR* from, const TCHAR* to){
 }
 const TCHAR*
 CLuceneIndexReader::mapId(const TCHAR* id) {
-    if ( CLuceneIndexReaderFieldMap.size() == 0 ){
-        addMapping(_T(""),_T("content"));
+    if (CLuceneIndexReaderFieldMap.size() == 0) {
+        addMapping(_T(""), _T("content"));
     }
-    if (id==0 ) id = _T("");
-    CLuceneIndexReaderFieldMapType::iterator itr = CLuceneIndexReaderFieldMap.find(id);
-    if ( itr == CLuceneIndexReaderFieldMap.end() )
+    if (id == 0) {
+        id = _T("");
+    }
+    CLuceneIndexReaderFieldMapType::iterator itr
+        = CLuceneIndexReaderFieldMap.find(id);
+    if (itr == CLuceneIndexReaderFieldMap.end()) {
         return id;
-    else
+    } else {
         return itr->second.c_str();
+    }
 }
 #ifdef _UCS2
-std::wstring CLuceneIndexReader::mapId(const char* id) {
-	wstring tid = utf8toucs2(id);
-	return mapId(tid.c_str());
+std::wstring
+CLuceneIndexReader::mapId(const char* id) {
+    wstring tid = utf8toucs2(id);
+    return mapId(tid.c_str());
 }
 #endif
-
 
 Term*
 CLuceneIndexReader::Private::createWildCardTerm(const wchar_t* name,
@@ -141,17 +145,17 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
             lucene::search::Query* tq;
             Term* t = 0;
             if (j->length() > 0 && (*j)[0] == '<') {
-                t = createTerm(mappedId.c_str(), (*j).substr(1).c_str());
+                t = createTerm(mappedId.c_str(), (*j).substr(1));
                 tq = _CLNEW RangeQuery(0, t, false);
             } else if (j->length() > 0 && (*j)[0] == '>') {
-                t = createTerm(mappedId.c_str(), (*j).substr(1).c_str());
+                t = createTerm(mappedId.c_str(), (*j).substr(1));
                 tq = _CLNEW RangeQuery(t, 0, false);
             } else {
                 if (strpbrk(j->c_str(), "*?")) {
-                    t = createWildCardTerm(mappedId.c_str(), (*j).c_str());
+                    t = createWildCardTerm(mappedId.c_str(), *j);
                     tq = _CLNEW WildcardQuery(t);
                 } else {
-                    t = createTerm(mappedId.c_str(), (*j).c_str());
+                    t = createTerm(mappedId.c_str(), *j);
                     tq = _CLNEW TermQuery(t);
                 }
             }
@@ -170,7 +174,7 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery
                 t = createWildCardTerm(mappedId.c_str(), *j);
                 tq = _CLNEW WildcardQuery(t);
             } else {
-                t = createTerm(mappedId.c_str(), (*j).c_str() );
+                t = createTerm(mappedId.c_str(), *j);
                 tq = _CLNEW TermQuery(t);
             }
             _CLDECDELETE(t);
