@@ -95,17 +95,17 @@ public:
     /**
      * Get the filename of this Indexble. For the full name see getPath().
      **/
-    const std::string& getFileName() const { return name; }
+    const std::string& getFileName() const;
     /**
      * Retrieve the full name of this Indexable.
      **/
-    const std::string& getPath() const { return path; }
-    time_t getMTime() const { return mtime; }
-    char getDepth() const { return depth; }
-    int64_t getId() const { return id; }
-    void setId(int64_t i) { id = i; }
-    void setEncoding(const char* enc) { encoding = enc; }
-    const std::string& getEncoding() const { return encoding; }
+    const std::string& getPath() const;
+    time_t getMTime() const;
+    char getDepth() const;
+    int64_t getId() const;
+    void setId(int64_t i);
+    virtual void setEncoding(const char* enc);
+    const std::string& getEncoding() const;
     /**
      * Retrieve the IndexWriter specific object associated with this Indexable.
      * This object allows the IndexWriter to store intermediate results
@@ -115,14 +115,14 @@ public:
      * Each of these functions will be called once during the lifetime of each
      * Indexable.
      **/
-    void* getWriterData() const { return writerData; }
+    void* getWriterData() const;
     /**
      * Set the value for the IndexWriter specific data. See
      * IndexWriter::getWriterData() for more details.
      **/
-    void setWriterData(void* wd) { writerData = wd; }
-    void setMimeType(const std::string& mt) { mimetype = mt; }
-    const std::string& getMimeType() const { return mimetype; }
+    void setWriterData(void* wd);
+    virtual void setMimeType(const std::string& mt);
+    const std::string& getMimeType() const;
     std::string getExtension() const;
     IndexerConfiguration& config() const;
 };

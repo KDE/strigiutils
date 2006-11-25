@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "jstreamsconfig.h"
 #include "indexable.h"
 #include "indexwriter.h"
 #include "streamindexer.h"
@@ -47,6 +48,20 @@ Indexable::Indexable(const std::string& p, time_t mt, IndexWriter& w,
 Indexable::~Indexable() {
     writer.finishIndexable(this);
 }
+
+const std::string& Indexable::getFileName() const { return name; }
+const std::string& Indexable::getPath() const { return path; }
+time_t Indexable::getMTime() const { return mtime; }
+char Indexable::getDepth() const { return depth; }
+int64_t Indexable::getId() const { return id; }
+void Indexable::setId(int64_t i) { id = i; }
+void Indexable::setEncoding(const char* enc) { encoding = enc; }
+const std::string& Indexable::getEncoding() const { return encoding; }
+void* Indexable::getWriterData() const { return writerData; }
+void Indexable::setWriterData(void* wd) { writerData = wd; }
+void Indexable::setMimeType(const std::string& mt) { mimetype = mt; }
+const std::string& Indexable::getMimeType() const { return mimetype; }
+
 char
 Indexable::index(StreamBase<char>& file) {
     return indexer.analyze(*this, &file);
