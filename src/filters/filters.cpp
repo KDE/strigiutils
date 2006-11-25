@@ -28,7 +28,11 @@ using namespace std;
 
 bool PatternFilter::match(const string& text)
 {
-    int ret = fnmatch (m_rule.c_str(), text.c_str(), 0);
+	int flags = 0;
+#ifdef _WIN32
+	flags |= FNM_CASE_BLIND;
+#endif
+    int ret = fnmatch (m_rule.c_str(), text.c_str(), flags);
        
     if ((ret != FNM_NOMATCH) && (ret != 0))
         STRIGI_LOG_WARNING ("strigi.filtermanager.PatternFilter", "error while applying pattern " + m_rule + "over text " + text)
@@ -43,6 +47,11 @@ bool PatternFilter::match(const string& text)
 
 bool PathFilter::match (const string& text)
 {
+	int flags = 0;
+#ifdef _WIN32
+	flags |= FNM_CASE_BLIND;
+#endif
+
     // create the real pattern, whe have to add a * for globbing
     string realPattern = m_rule;
     
@@ -52,7 +61,7 @@ bool PathFilter::match (const string& text)
     
     realPattern+='*';
     
-    int ret = fnmatch (realPattern.c_str(), text.c_str(), 0);
+    int ret = fnmatch (realPattern.c_str(), text.c_str(), flags);
        
     if ((ret != FNM_NOMATCH) && (ret != 0))
         STRIGI_LOG_WARNING ("strigi.filtermanager.PathFilter", "error while applying pattern " + m_rule + "over text " + text)
