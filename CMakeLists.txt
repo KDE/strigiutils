@@ -53,7 +53,6 @@ find_package(Sha REQUIRED)
 find_package(Threads REQUIRED)
 find_package(CLucene REQUIRED)
 find_package(Iconv REQUIRED)
-find_package(Regex REQUIRED)
 find_package(Expat REQUIRED)
 # Xerces requirement switched off until the next release
 find_package(XERCESC)
