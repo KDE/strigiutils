@@ -110,7 +110,8 @@ CLuceneIndexReader::Private::createWildCardTerm(const wchar_t* name,
     return _CLNEW Term(name, v.c_str());
 }
 Term*
-CLuceneIndexReader::Private::createTerm(const wchar_t* name, const string& value) {
+CLuceneIndexReader::Private::createTerm(const wchar_t* name,
+        const string& value) {
     wstring v = utf8toucs2(value);
     lucene::util::StringReader sr(v.c_str());
     lucene::analysis::standard::StandardAnalyzer a;
@@ -307,8 +308,8 @@ CLuceneIndexReader::getFiles(char depth) {
     snprintf(cstr, CL_MAX_DIR, "%i", depth);
     STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
 
-    Term* term = _CLNEW Term(mapId(_T("depth")), tstr);
-    TermDocs* docs = reader->termDocs(term);
+    Term term(mapId(_T("depth")), tstr);
+    TermDocs* docs = reader->termDocs(&term);
     while ( docs->next() ){
         Document *d = reader->document(docs->doc());
 
@@ -322,7 +323,6 @@ CLuceneIndexReader::getFiles(char depth) {
         _CLDELETE(d);
     }
     _CLDELETE(docs);
-    _CLDECDELETE(term);
     manager->derefReader();
     return files;
 }
@@ -357,16 +357,16 @@ CLuceneIndexReader::getDocumentId(const std::string& uri) {
     
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
-    Term* term = _CLNEW Term(mapId(_T("path")), tstr);
-    TermDocs* docs = reader->termDocs(term);
-    if ( docs->next() ){
+    Term term(mapId(_T("path")), tstr);
+    TermDocs* docs = reader->termDocs(&term);
+    if (docs->next()) {
         id = docs->doc();
     }
-    _CLDECDELETE(term);
     _CLDELETE(docs);
 
-    if ( id != -1 && reader->isDeleted(id) )
+    if (id != -1 && reader->isDeleted(id)) {
         id = -1;
+    }
 
     manager->derefReader();
     return id;
