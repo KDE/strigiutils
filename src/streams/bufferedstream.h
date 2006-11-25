@@ -122,7 +122,7 @@ BufferedInputStream<T>::reset(int64_t newpos) {
     int64_t d = BufferedInputStream<T>::position - newpos;
     if (buffer.readPos - d >= buffer.start && -d < buffer.avail) {
         BufferedInputStream<T>::position -= d;
-        buffer.avail += d;
+        buffer.avail += (int32_t)d;
         buffer.readPos -= d;
         StreamBase<T>::status = Ok;
     }
