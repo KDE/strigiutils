@@ -277,6 +277,7 @@ CLuceneIndexWriter::cleanUp() {
 
     lucene::index::IndexReader* reader = manager->refReader();
     if (!reader) {
+        manager->derefReader();
         return;
     }
     lucene::store::Directory* directory = reader->getDirectory();
@@ -290,6 +291,7 @@ CLuceneIndexWriter::cleanUp() {
     bool locked = lock->obtain(lucene::index::IndexWriter::COMMIT_LOCK_TIMEOUT);
 #endif
     if (!locked) {
+        manager->derefReader();
         return;
     }
     lucene::index::SegmentInfos infos;
@@ -298,6 +300,7 @@ CLuceneIndexWriter::cleanUp() {
         infos.read(directory);
     } catch(...) {
         lock->release();
+        manager->derefReader();
         return; //todo: this may suggest an error...
     }
     lock->release();
