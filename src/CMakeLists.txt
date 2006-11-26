@@ -6,14 +6,21 @@ endif (CLucene_FOUND)
 
 if (HyperEstraier_FOUND)
   set(DIRS ${DIRS} estraierindexer)
+  message("** HyperEstraier support is experimental. **")
 endif (HyperEstraier_FOUND)
 
 if (SQLite_FOUND)
   set(DIRS ${DIRS} sqliteindexer)
+  message("** SQLite support is experimental. **")
 endif (SQLite_FOUND)
 
 if (Lucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
   set(DIRS ${DIRS} indexertests combinedindexer daemon htmlgui searchclient)
+  message("** Index libraries were found. strigidaemon will be built.")
+else (Lucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
+  message("** No index libraries were found. strigidaemon will not be built.")
+  message("** It is recommended to install CLucene >= 0.9.16.")
+  message("** You will still be able to use deepfind, deepgrep and xmlindexer.")
 endif (Lucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
 
 if (QT4_FOUND)
