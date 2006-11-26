@@ -37,6 +37,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new MailEndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 #endif

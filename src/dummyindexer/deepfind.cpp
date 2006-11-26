@@ -23,6 +23,18 @@
 #include "dummyindexwriter.h"
 #include "streamindexer.h"
 #include "indexerconfiguration.h"
+#include "streamendanalyzer.h"
+using namespace jstreams;
+
+class FindIndexerConfiguration : public IndexerConfiguration {
+public:
+    bool useFactory(StreamEndAnalyzerFactory* e) const {
+        return e->analyzesSubStreams();
+    }
+    bool useFactory(StreamThroughAnalyzerFactory*) const {return false;}
+    bool indexMore() const {return true;}
+    bool addMoreText() const {return false;}
+};
 
 void
 printUsage(char** argv) {
@@ -51,7 +63,7 @@ main(int argc, char **argv) {
     FilterManager filtermanager;
 
     DummyIndexWriter writer(1);
-    jstreams::IndexerConfiguration conf;
+    FindIndexerConfiguration conf;
     Indexer indexer(&filtermanager, writer, conf);
     indexer.index(path);
     return 0;

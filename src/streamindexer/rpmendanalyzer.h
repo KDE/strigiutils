@@ -37,6 +37,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new RpmEndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 #endif

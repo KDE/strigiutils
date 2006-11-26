@@ -39,6 +39,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new ArEndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 #endif

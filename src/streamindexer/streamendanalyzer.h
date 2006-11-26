@@ -43,6 +43,7 @@ public:
     virtual ~StreamEndAnalyzerFactory(){}
     virtual const char* getName() const = 0;
     virtual StreamEndAnalyzer* newInstance() const = 0;
+    virtual bool analyzesSubStreams() const { return false; }
 };
 
 

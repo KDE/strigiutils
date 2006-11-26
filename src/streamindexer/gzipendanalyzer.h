@@ -38,6 +38,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new GZipEndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 #endif

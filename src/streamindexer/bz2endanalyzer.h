@@ -38,6 +38,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new BZ2EndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 #endif

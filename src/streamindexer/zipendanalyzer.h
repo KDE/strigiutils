@@ -37,6 +37,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new ZipEndAnalyzer();
     }
+    bool analyzesSubStreams() const { return true; }
 };
 
 
