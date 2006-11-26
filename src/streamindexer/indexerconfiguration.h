@@ -49,9 +49,5 @@ public:
 //IndexerConfiguration::FieldType
 //operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b);
 
-class DefaultIndexerConfiguration : public IndexerConfiguration {
-};
-
-
 }
 #endif

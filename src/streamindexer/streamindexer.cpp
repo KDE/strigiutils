@@ -43,7 +43,8 @@
 using namespace std;
 using namespace jstreams;
 
-StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
+StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
+        :writer(w), conf(c) {
    
     moduleLoader.loadPlugins("/usr/local/lib/strigi");
     moduleLoader.loadPlugins("/usr/lib/strigi");
@@ -91,7 +92,7 @@ StreamIndexer::indexFile(const char *filepath, IndexerConfiguration* ic) {
     return indexFile(path);
 }
 char
-StreamIndexer::indexFile(const std::string& filepath, IndexerConfiguration* ic){
+StreamIndexer::indexFile(const std::string& filepath){
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }
@@ -101,11 +102,7 @@ StreamIndexer::indexFile(const std::string& filepath, IndexerConfiguration* ic){
     // ensure a decent buffer size
     //file.mark(65530);
     string name;
-    DefaultIndexerConfiguration dic;
-    if (ic == 0) {
-        ic = &dic;
-    }
-    Indexable indexable(filepath, s.st_mtime, *writer, *this, *ic);
+    Indexable indexable(filepath, s.st_mtime, writer, *this);
     return indexable.index(file);
 }
 void

@@ -30,6 +30,7 @@
 #include "indexerconfiguration.h"
 #include "stringreader.h"
 #include "query.h"
+#include "indexerconfiguration.h"
 #include <sstream>
 #include <vector>
 using namespace std;
@@ -150,9 +151,10 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     vector<string> paths;
     paths.push_back(path);
     writer->deleteEntries(paths);
-    StreamIndexer streamindexer(writer);
+    IndexerConfiguration ic;
+    StreamIndexer streamindexer(*writer, ic);
     StringReader<char> sr(&content[0], content.size(), false);
-    DefaultIndexerConfiguration dic;
-    Indexable idx(path, mtime, *writer, streamindexer, dic);
+    IndexerConfiguration dic;
+    Indexable idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
 }

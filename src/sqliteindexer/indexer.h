@@ -39,7 +39,8 @@ private:
     static Indexer *workingIndexer;
     void doFile(const std::string &filepath);
 public:
-    explicit Indexer(const char *indexdir, FilterManager* filtermanager);
+    Indexer(const char *indexdir, FilterManager* filtermanager,
+        jstreams::IndexerConfiguration&);
     ~Indexer();
     void index(const char *dir);
 };

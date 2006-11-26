@@ -7,29 +7,30 @@ using namespace jstreams;
 
 class IndexWriterTester {
 private:
-    IndexWriter* writer;
+    IndexWriter& writer;
     StreamIndexer si;
 public:
-    IndexWriterTester(IndexWriter* w) :writer(w), si(w) {
+    IndexWriterTester(IndexWriter& w, IndexerConfiguration& ic)
+        :writer(w), si(w, ic) {
     }
     int optimize() {
-        writer->optimize();
+        writer.optimize();
         return 0;
     }
     int add() {
         std::string s("a"); // we must pass a string, not a const char*
         {
-            DefaultIndexerConfiguration dic;
-            Indexable i(s, 0, *writer, si, dic);
+            Indexable i(s, 0, writer, si);
         }
-        writer->commit();
+        writer.commit();
 
         return 0;
     }
 };
 
-IndexWriterTests::IndexWriterTests(jstreams::IndexWriter* w)
-    :tester (new IndexWriterTester(w)) {
+IndexWriterTests::IndexWriterTests(jstreams::IndexWriter& w,
+        IndexerConfiguration& ic)
+    :tester (new IndexWriterTester(w, ic)) {
 }
 IndexWriterTests::~IndexWriterTests() {
     delete tester;

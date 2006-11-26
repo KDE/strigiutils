@@ -21,8 +21,9 @@ private:
     IndexReader* reader;
     StreamIndexer si;
 public:
-    IndexManagerTester(IndexManager* m) :errors(0), manager(m),
-            writer(manager->getIndexWriter()), si(writer) {
+    IndexManagerTester(IndexManager* m, IndexerConfiguration& ic)
+            : errors(0), manager(m), writer(manager->getIndexWriter()),
+              si(*writer, ic) {
         reader = manager->getIndexReader();
         STRIGI_MUTEX_INIT(&lock);
     }
@@ -79,8 +80,7 @@ IndexManagerTester::addAndCount() {
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        DefaultIndexerConfiguration dic;
-        { Indexable idx(s, 0, *writer, si, dic); }
+        { Indexable idx(s, 0, *writer, si); }
         str.str("");
     }
     writer->commit();
@@ -99,8 +99,7 @@ IndexManagerTester::testNumberQuery() {
         string value(str.str());
         string name('/'+value);
         {
-             DefaultIndexerConfiguration dic;
-             Indexable idx(name, 0, *writer, si, dic);
+             Indexable idx(name, 0, *writer, si);
              idx.setField(size, value);
         }
         str.str("");
@@ -117,8 +116,9 @@ STRIGI_THREAD_FUNCTION(threadstarter,d) {
 //    tester->runThreadedTests();
     STRIGI_THREAD_EXIT(0);
 }
-IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m)
-    :tester (new IndexManagerTester(m)) {
+IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m,
+        IndexerConfiguration& ic)
+    :tester (new IndexManagerTester(m, ic)) {
 }
 IndexManagerTests::~IndexManagerTests() {
     delete tester;

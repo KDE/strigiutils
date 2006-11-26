@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "filtermanager.h"
+#include "indexerconfiguration.h"
 #include <iostream>
 using namespace std;
 
@@ -48,7 +49,8 @@ main(int argc, char **argv) {
     filters.insert(make_pair(1, "*/.*"));
     filtermanager.setFilteringRules(filters);
 
-    Indexer indexer(&filtermanager, cout);
+    jstreams::IndexerConfiguration ic;
+    Indexer indexer(&filtermanager, cout, ic);
     indexer.index(argv[argc-1]);
     return 0;
 }

@@ -26,11 +26,13 @@
 #include <sys/stat.h>
 
 using namespace std;
+using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(FilterManager* filtermanager, ostream& o)
-    :out(o), writer(out), m_indexer(&writer)
+Indexer::Indexer(FilterManager* filtermanager, ostream& o,
+        IndexerConfiguration& ic)
+    :out(o), writer(out), m_indexer(writer, ic)
 {
     m_lister = new FileLister (filtermanager);
 }

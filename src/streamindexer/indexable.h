@@ -48,7 +48,7 @@ private:
     IndexWriter& writer;
     const int depth;
     StreamIndexer& indexer;
-    IndexerConfiguration* const indexableconfig;
+    IndexerConfiguration& indexableconfig;
 
     /**
      * Create a new Indexable object that will be written to the index.
@@ -63,7 +63,7 @@ private:
     Indexable(const std::string& name, time_t mt, const Indexable& parent);
 public:
     Indexable(const std::string& p, time_t mt, IndexWriter& w,
-            StreamIndexer& indexer, IndexerConfiguration& ic);
+            StreamIndexer& indexer);
     /**
      * Write the indexable to the index and release the allocated resources.
      **/

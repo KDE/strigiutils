@@ -30,8 +30,10 @@ using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, FilterManager* filtermanager) :m_indexdir(indexdir),
-        m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer)
+Indexer::Indexer(const char *indexdir, FilterManager* filtermanager,
+        IndexerConfiguration& ic)
+        : m_indexdir(indexdir), m_manager(indexdir), m_writer(&m_manager),
+          m_indexer(m_writer, ic)
 {
     m_lister = new FileLister (filtermanager);
 }

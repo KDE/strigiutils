@@ -36,7 +36,8 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(FilterManager* filtermanager, jstreams::IndexWriter* writer);
+    Indexer(FilterManager* filtermanager, jstreams::IndexWriter& writer,
+        jstreams::IndexerConfiguration& c);
     ~Indexer();
     void index(const char *dir);
 };

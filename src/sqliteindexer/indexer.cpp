@@ -27,8 +27,10 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, FilterManager* filtermanager) :m_indexdir(indexdir),
-        m_manager(indexdir), m_indexer(m_manager.getIndexWriter())
+Indexer::Indexer(const char *indexdir, FilterManager* filtermanager,
+    jstreams::IndexerConfiguration& ic)
+        : m_indexdir(indexdir), m_manager(indexdir),
+          m_indexer(*m_manager.getIndexWriter(), ic)
 {
     m_lister = new FileLister (filtermanager);
 }

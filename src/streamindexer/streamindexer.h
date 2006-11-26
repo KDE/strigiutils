@@ -26,8 +26,6 @@
 namespace jstreams {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
-class StreamEndAnalyzerFactory;
-class StreamThroughAnalyzerFactory;
 class IndexWriter;
 class Indexable;
 class IndexerConfiguration;
@@ -46,7 +44,8 @@ template <class T> class StreamBase;
  **/
 class StreamIndexer {
 private:
-    IndexWriter* writer;
+    IndexWriter& writer;
+    IndexerConfiguration& conf;
     std::vector<jstreams::StreamThroughAnalyzerFactory*> throughfactories;
     std::vector<jstreams::StreamEndAnalyzerFactory*> endfactories;
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
@@ -59,11 +58,12 @@ private:
     void addEndAnalyzers();
     void removeIndexable(uint depth);
 public:
-    explicit StreamIndexer(IndexWriter *w);
+    StreamIndexer(IndexWriter& w, IndexerConfiguration& conf);
     ~StreamIndexer();
     char indexFile(const char *filepath, IndexerConfiguration* ic=0);
-    char indexFile(const std::string& filepath, IndexerConfiguration* ic=0);
+    char indexFile(const std::string& filepath);
     char analyze(Indexable& idx, jstreams::StreamBase<char> *input);
+    IndexerConfiguration& getConfiguration() const { return conf; }
 };
 }
 

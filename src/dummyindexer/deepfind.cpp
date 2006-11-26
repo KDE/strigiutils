@@ -21,6 +21,8 @@
 #include "indexer.h"
 #include "filtermanager.h"
 #include "dummyindexwriter.h"
+#include "streamindexer.h"
+#include "indexerconfiguration.h"
 
 void
 printUsage(char** argv) {
@@ -47,9 +49,10 @@ main(int argc, char **argv) {
     }
     
     FilterManager filtermanager;
-   
-    DummyIndexWriter writer(1); 
-    Indexer indexer(&filtermanager, &writer);
+ 
+    DummyIndexWriter writer(1);
+    jstreams::IndexerConfiguration conf;
+    Indexer indexer(&filtermanager, writer, conf);
     indexer.index(path);
     return 0;
 }

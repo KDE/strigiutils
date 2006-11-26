@@ -3,6 +3,7 @@
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
+#include "indexerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -15,12 +16,13 @@ CLuceneTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     jstreams::IndexManager* manager = createCLuceneIndexManager(path);
 
-    IndexManagerTests tests(manager);
+    jstreams::IndexerConfiguration ic;
+    IndexManagerTests tests(manager, ic);
     errors += tests.testAll();
     errors += tests.testAllInThreads(20);
 
     jstreams::IndexWriter* writer = manager->getIndexWriter();
-    IndexWriterTests wtests(writer);
+    IndexWriterTests wtests(*writer, ic);
     errors += wtests.testAll();
 
     jstreams::IndexReader* reader = manager->getIndexReader();

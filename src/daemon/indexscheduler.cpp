@@ -26,6 +26,7 @@
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "filtermanager.h"
+#include "indexerconfiguration.h"
 
 #include "filelister.h"
 #include "streamindexer.h"
@@ -114,7 +115,8 @@ void
 IndexScheduler::index() {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(writer);
+    IndexerConfiguration ic;
+    StreamIndexer* streamindexer = new StreamIndexer(*writer, ic);
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
@@ -169,7 +171,8 @@ void
 IndexScheduler::processListenerEvents(vector<Event*>& events) {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(writer);
+    IndexerConfiguration ic;
+    StreamIndexer* streamindexer = new StreamIndexer(*writer, ic);
    
     vector<string> toDelete;
    

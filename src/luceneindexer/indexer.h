@@ -40,7 +40,8 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(const char *indexdir, FilterManager* filtermanager);
+    Indexer(const char *indexdir, FilterManager* filtermanager,
+        jstreams::IndexerConfiguration& ic);
     ~Indexer();
     void index(const char *dir);
 };

@@ -34,9 +34,9 @@ Indexable::Indexable(const std::string& name, time_t mt,
     writer.startIndexable(this);
 }
 Indexable::Indexable(const std::string& p, time_t mt, IndexWriter& w,
-        StreamIndexer& indexer, IndexerConfiguration& ic)
+        StreamIndexer& indexer)
             :mtime(mt), path(p), writer(w), depth(0), indexer(indexer),
-             indexableconfig(&ic) {
+             indexableconfig(indexer.getConfiguration()) {
     size_t pos = path.rfind('/');
     if (pos == std::string::npos) {
         name = path;
@@ -78,5 +78,5 @@ Indexable::addText(const char* text, int32_t length) {
 }
 IndexerConfiguration&
 Indexable::config() const {
-    return *indexableconfig;
+    return indexableconfig;
 }

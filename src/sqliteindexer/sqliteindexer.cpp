@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "filtermanager.h"
+#include "indexerconfiguration.h"
 
 int
 main(int argc, char **argv) {
@@ -31,7 +32,8 @@ main(int argc, char **argv) {
     file += "/sqlite.db";
     
     FilterManager filtermanager;
-    Indexer indexer(file.c_str(), &filtermanager);
+    jstreams::IndexerConfiguration ic;
+    Indexer indexer(file.c_str(), &filtermanager, ic);
     indexer.index(argv[2]);
     return 0;
 }

@@ -22,6 +22,7 @@
 #include "bz2inputstream.h"
 #include "indexer.h"
 #include "filtermanager.h"
+#include "indexerconfiguration.h"
 
 #include <cstdio>
 #include <cstring>
@@ -56,7 +57,8 @@ main(int argc, char** argv) {
     filtermanager.setFilteringRules(filters);
 
     ostringstream s;
-    Indexer indexer(&filtermanager, s);
+    jstreams::IndexerConfiguration ic;
+    Indexer indexer(&filtermanager, s, ic);
     chdir(argv[1]);
     indexer.index(argv[2]);
     string str = s.str();
