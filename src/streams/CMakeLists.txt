@@ -29,7 +29,8 @@ target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARY} ${SHA_LIBRARY} 
 
 install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	bufferedstream.h streambase.h inputstreambuffer.h inputstream.h
-	archivereader.h jstreamsconfig.h inputstreamreader.h stringreader.h
+	archivereader.h inputstreamreader.h stringreader.h
+	${strigi_BINARY_DIR}/src/streams/jstreamsconfig.h
 	DESTINATION include)
 
 add_executable(testpt testpt.cpp processinputstream.cpp)
