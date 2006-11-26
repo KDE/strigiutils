@@ -131,8 +131,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
 
     QTimer *timer = new QTimer(this);
-//    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
-//    timer->start(2000);
+    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
+    timer->start(2000);
     asyncstrigi.updateStatus();
 }
 void
