@@ -115,6 +115,12 @@ StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
 }
 void
 StreamIndexer::initializeThroughFactories() {
+    list<StreamThroughAnalyzerFactory*> plugins
+        = moduleLoader.getStreamThroughAnalyzerFactories();
+    list<StreamThroughAnalyzerFactory*>::iterator i;
+    for (i = plugins.begin(); i != plugins.end(); ++i) {
+        addFactory(*i);
+    }
     addFactory(new DigestThroughAnalyzerFactory());
     addFactory(new ID3V2ThroughAnalyzerFactory());
 }
@@ -131,6 +137,12 @@ StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
  **/
 void
 StreamIndexer::initializeEndFactories() {
+    list<StreamEndAnalyzerFactory*> plugins
+        = moduleLoader.getStreamEndAnalyzerFactories();
+    list<StreamEndAnalyzerFactory*>::iterator i;
+    for (i = plugins.begin(); i != plugins.end(); ++i) {
+        addFactory(*i);
+    }
     addFactory(new BZ2EndAnalyzerFactory());
     addFactory(new GZipEndAnalyzerFactory());
     addFactory(new TarEndAnalyzerFactory());
