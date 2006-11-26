@@ -40,8 +40,8 @@ set_target_properties(streamindexer PROPERTIES
 
 target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
 
-install(FILES indexeddocument.h indexable.h
-	streamthroughanalyzer.h streamendanalyzer.h
+install(FILES indexeddocument.h indexable.h analyzerplugin.h
+	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
 	DESTINATION include)
 
 
