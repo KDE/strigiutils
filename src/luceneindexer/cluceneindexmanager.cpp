@@ -51,7 +51,7 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     analyzer = new StandardAnalyzer();
 
     //remove any old segments lying around from crashes, etc
-    writer->cleanUp();
+    //writer->cleanUp();
     // make sure there's at least an index
     openWriter();
 }

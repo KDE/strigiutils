@@ -180,7 +180,6 @@ SimpleSearchGui::updateStatus() {
 }
 void
 SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
-    qDebug() << s;
     static bool first = true;
     static bool attemptedstart = false;
     if (!first && !statusview->isVisible()) return;
