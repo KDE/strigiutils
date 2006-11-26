@@ -42,6 +42,7 @@ class StreamEndAnalyzerFactory {
 public:
     virtual ~StreamEndAnalyzerFactory(){}
     virtual const char* getName() const = 0;
+    virtual StreamEndAnalyzer* newInstance() const = 0;
 };
 
 

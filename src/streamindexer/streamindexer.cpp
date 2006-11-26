@@ -56,6 +56,8 @@ StreamIndexer::StreamIndexer(IndexWriter* w) :writer(w) {
         homedir += "/testinstall/lib/strigi";
         moduleLoader.loadPlugins(homedir.c_str());
     }
+    initializeThroughFactories();
+    initializeEndFactories();
 }
 StreamIndexer::~StreamIndexer() {
     // delete all factories
@@ -108,52 +110,46 @@ StreamIndexer::indexFile(const std::string& filepath, IndexerConfiguration* ic){
 }
 void
 StreamIndexer::initializeThroughFactories() {
+    throughfactories.push_back(new DigestThroughAnalyzerFactory());
+    throughfactories.push_back(new ID3V2ThroughAnalyzerFactory());
 }
+/**
+ * Instantiate factories for all analyzers.
+ **/
 void
 StreamIndexer::initializeEndFactories() {
+    endfactories.push_back(new BZ2EndAnalyzerFactory());
+    endfactories.push_back(new GZipEndAnalyzerFactory());
+    endfactories.push_back(new TarEndAnalyzerFactory());
+    endfactories.push_back(new ArEndAnalyzerFactory());
+    endfactories.push_back(new MailEndAnalyzerFactory());
+    endfactories.push_back(new ZipEndAnalyzerFactory());
+    endfactories.push_back(new RpmEndAnalyzerFactory());
+    endfactories.push_back(new PngEndAnalyzerFactory());
+//    endfactories.push_back(new PdfEndAnalyzerFactory());
+    endfactories.push_back(new SaxEndAnalyzerFactory());
+    endfactories.push_back(new HelperEndAnalyzerFactory());
+    endfactories.push_back(new TextEndAnalyzerFactory());
 }
 void
 StreamIndexer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    StreamThroughAnalyzer* ana = new DigestThroughAnalyzer();
-    tIter->push_back(ana);
-    ana = new ID3V2ThroughAnalyzer();
-    tIter->push_back(ana);
+    std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
+    for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
+        tIter->push_back((*ta)->newInstance());
+    }
 }
 void
 StreamIndexer::addEndAnalyzers() {
     end.resize(end.size()+1);
     std::vector<std::vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
     eIter = end.rbegin();
-    StreamEndAnalyzer* ana = new BZ2EndAnalyzer();
-    eIter->push_back(ana);
-    ana = new GZipEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new TarEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new ArEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new MailEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new ZipEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new RpmEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new PngEndAnalyzer();
-    eIter->push_back(ana);
-
-/*    ana = new PdfEndAnalyzer();
-    eIter->push_back(ana);*/
-    // add a sax analyzer before the text analyzer
-    ana = new SaxEndAnalyzer();
-    eIter->push_back(ana);
-    ana = new HelperEndAnalyzer();
-    eIter->push_back(ana);
-    // add a text analyzer to the end of the queue
-    ana = new TextEndAnalyzer();
-    eIter->push_back(ana);
+    std::vector<StreamEndAnalyzerFactory*>::iterator ea;
+    for (ea = endfactories.begin(); ea != endfactories.end(); ++ea) {
+        eIter->push_back((*ea)->newInstance());
+    }
 }
 char
 StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {

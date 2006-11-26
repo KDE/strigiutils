@@ -29,4 +29,14 @@ public:
     const char* getName() const { return "TextEndAnalyzer"; }
 };
 
+class TextEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "TextEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new TextEndAnalyzer();
+    }
+};
+
 #endif

@@ -29,4 +29,15 @@ public:
     const char* getName() const { return "ZipEndAnalyzer"; }
 };
 
+class ZipEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "ZipEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new ZipEndAnalyzer();
+    }
+};
+
+
 #endif

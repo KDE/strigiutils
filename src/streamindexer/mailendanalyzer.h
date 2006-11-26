@@ -29,4 +29,14 @@ public:
     const char* getName() const { return "MailEndAnalyzer"; }
 };
 
+class MailEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "MailEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new MailEndAnalyzer();
+    }
+};
+
 #endif

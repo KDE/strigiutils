@@ -38,4 +38,15 @@ public:
     bool isReadyWithStream();
 };
 
+class DigestThroughAnalyzerFactory
+        : public jstreams::StreamThroughAnalyzerFactory {
+private:
+    const char* getName() const {
+        return "DigestThroughAnalyzer";
+    }
+    jstreams::StreamThroughAnalyzer* newInstance() const {
+        return new DigestThroughAnalyzer();
+    }
+};
+
 #endif

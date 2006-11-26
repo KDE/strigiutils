@@ -29,4 +29,14 @@ public:
     const char* getName() const { return "RpmEndAnalyzer"; }
 };
 
+class RpmEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "RpmEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new RpmEndAnalyzer();
+    }
+};
+
 #endif

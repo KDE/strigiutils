@@ -30,4 +30,14 @@ public:
     const char* getName() const { return "GZipEndAnalyzer"; }
 };
 
+class GZipEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "GZipEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new GZipEndAnalyzer();
+    }
+};
+
 #endif

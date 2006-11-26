@@ -35,4 +35,16 @@ public:
     bool isReadyWithStream();
 };
 
+class ID3V2ThroughAnalyzerFactory
+        : public jstreams::StreamThroughAnalyzerFactory {
+private:
+    const char* getName() const {
+        return "ID3V2ThroughAnalyzer";
+    }
+    jstreams::StreamThroughAnalyzer* newInstance() const {
+        return new ID3V2ThroughAnalyzer();
+    }
+};
+
+
 #endif

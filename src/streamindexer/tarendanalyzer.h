@@ -31,4 +31,14 @@ public:
     const char* getName() const { return "TarEndAnalyzer"; }
 };
 
+class TarEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "TarEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new TarEndAnalyzer();
+    }
+};
+
 #endif

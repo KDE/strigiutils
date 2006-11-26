@@ -50,6 +50,7 @@ class StreamThroughAnalyzerFactory {
 public:
     virtual ~StreamThroughAnalyzerFactory(){}
     virtual const char* getName() const = 0;
+    virtual StreamThroughAnalyzer* newInstance() const = 0;
 };
 
 }

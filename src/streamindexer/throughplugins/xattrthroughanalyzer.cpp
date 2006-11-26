@@ -106,11 +106,13 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
 }
 
 //define all the available analyzers in this plugin
-class XattrThroughAnalyzerFactory
-    : public StreamThroughAnalyzerFactory {
+class XattrThroughAnalyzerFactory : public StreamThroughAnalyzerFactory {
 private:
     const char* getName() const {
-        return "TestEndAnalyzerFactory";
+        return "XattrThroughAnalyzer";
+    }
+    StreamThroughAnalyzer* newInstance() const {
+        return new XattrAnalyzer();
     }
 };
 

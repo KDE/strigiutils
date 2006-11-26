@@ -34,4 +34,14 @@ public:
     const char* getName() const { return "SaxEndAnalyzer"; }
 };
 
+class SaxEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "SaxEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new SaxEndAnalyzer();
+    }
+};
+
 #endif

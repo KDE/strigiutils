@@ -67,7 +67,10 @@ class MimeTypeThroughAnalyzerFactory
     : public StreamThroughAnalyzerFactory {
 private:
     const char* getName() const {
-        return "TestEndAnalyzerFactory";
+        return "MimeTypeThroughAnalyzer";
+    }
+    StreamThroughAnalyzer* newInstance() const {
+        return new MimeTypeThroughAnalyzer();
     }
 };
 

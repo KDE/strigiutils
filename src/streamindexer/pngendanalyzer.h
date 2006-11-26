@@ -29,4 +29,14 @@ public:
     const char* getName() const { return "PngEndAnalyzer"; }
 };
 
+class PngEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "PngEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new PngEndAnalyzer();
+    }
+};
+
 #endif

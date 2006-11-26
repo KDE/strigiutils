@@ -50,4 +50,14 @@ public:
     const char* getName() const { return "HelperEndAnalyzer"; }
 };
 
+class HelperEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "HelperEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new HelperEndAnalyzer();
+    }
+};
+
 #endif

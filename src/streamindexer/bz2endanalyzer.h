@@ -30,4 +30,14 @@ public:
     const char* getName() const { return "BZ2EndAnalyzer"; }
 };
 
+class BZ2EndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "BZ2EndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new BZ2EndAnalyzer();
+    }
+};
+
 #endif
