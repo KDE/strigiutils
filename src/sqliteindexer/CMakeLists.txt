@@ -5,7 +5,7 @@ include_directories( ../streamindexer ../streams ../filters
 add_library(sqliteindex sqliteindexwriter.cpp sqliteindexmanager.cpp
         sqliteindexreader.cpp)
 
-target_link_libraries(sqliteindex streamindexer ${CLUCENE_LIBRARY})
+target_link_libraries(sqliteindex streamindexer ${SQLITE_LIBRARY})
 
 add_executable(sqliteindexer sqliteindexer.cpp indexer.cpp)
 target_link_libraries(sqliteindexer sqliteindex sqlite3 filters)

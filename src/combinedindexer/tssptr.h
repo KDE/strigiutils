@@ -18,6 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "strigi_thread.h"
+
 // thread safe smart pointer
 template <class T>
 class TSSPtr {

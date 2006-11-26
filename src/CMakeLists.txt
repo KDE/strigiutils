@@ -1,5 +1,4 @@
-set(DIRS filters streams streamindexer dummyindexer archivereader indexertests
-    xmlindexer combinedindexer)
+set(DIRS filters streams streamindexer dummyindexer archivereader xmlindexer)
 
 if (CLucene_FOUND)
   set(DIRS ${DIRS} luceneindexer)
@@ -13,7 +12,9 @@ if (SQLite_FOUND)
   set(DIRS ${DIRS} sqliteindexer)
 endif (SQLite_FOUND)
 
-set(DIRS ${DIRS} daemon htmlgui searchclient)
+if (Lucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
+  set(DIRS ${DIRS} indexertests combinedindexer daemon htmlgui searchclient)
+endif (Lucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
 
 if (QT4_FOUND)
   set(DIRS ${DIRS} archiveengine qclient)
