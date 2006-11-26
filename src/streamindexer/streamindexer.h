@@ -54,6 +54,8 @@ private:
     AnalyzerLoader moduleLoader;
     void initializeThroughFactories();
     void initializeEndFactories();
+    void addFactory(StreamThroughAnalyzerFactory* f);
+    void addFactory(StreamEndAnalyzerFactory* f);
     void addThroughAnalyzers();
     void addEndAnalyzers();
     void removeIndexable(uint depth);

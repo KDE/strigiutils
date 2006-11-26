@@ -26,6 +26,9 @@
  * indexed.
  **/
 namespace jstreams {
+class StreamEndAnalyzerFactory;
+class StreamThroughAnalyzerFactory;
+
 class IndexerConfiguration {
 public:
 enum FieldType {
@@ -37,6 +40,8 @@ enum FieldType {
 public:
     IndexerConfiguration();
     virtual ~IndexerConfiguration() {}
+    virtual bool useFactory(StreamEndAnalyzerFactory*) const { return true; }
+    virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
     virtual FieldType getIndexType(const std::string& fieldname) const;

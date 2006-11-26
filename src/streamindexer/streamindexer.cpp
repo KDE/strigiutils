@@ -106,27 +106,43 @@ StreamIndexer::indexFile(const std::string& filepath){
     return indexable.index(file);
 }
 void
+StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
+    if (conf.useFactory(f)) {
+        throughfactories.push_back(f);
+    } else {
+        delete f;
+    }
+}
+void
 StreamIndexer::initializeThroughFactories() {
-    throughfactories.push_back(new DigestThroughAnalyzerFactory());
-    throughfactories.push_back(new ID3V2ThroughAnalyzerFactory());
+    addFactory(new DigestThroughAnalyzerFactory());
+    addFactory(new ID3V2ThroughAnalyzerFactory());
+}
+void
+StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
+    if (conf.useFactory(f)) {
+        endfactories.push_back(f);
+    } else {
+        delete f;
+    }
 }
 /**
  * Instantiate factories for all analyzers.
  **/
 void
 StreamIndexer::initializeEndFactories() {
-    endfactories.push_back(new BZ2EndAnalyzerFactory());
-    endfactories.push_back(new GZipEndAnalyzerFactory());
-    endfactories.push_back(new TarEndAnalyzerFactory());
-    endfactories.push_back(new ArEndAnalyzerFactory());
-    endfactories.push_back(new MailEndAnalyzerFactory());
-    endfactories.push_back(new ZipEndAnalyzerFactory());
-    endfactories.push_back(new RpmEndAnalyzerFactory());
-    endfactories.push_back(new PngEndAnalyzerFactory());
-//    endfactories.push_back(new PdfEndAnalyzerFactory());
-    endfactories.push_back(new SaxEndAnalyzerFactory());
-    endfactories.push_back(new HelperEndAnalyzerFactory());
-    endfactories.push_back(new TextEndAnalyzerFactory());
+    addFactory(new BZ2EndAnalyzerFactory());
+    addFactory(new GZipEndAnalyzerFactory());
+    addFactory(new TarEndAnalyzerFactory());
+    addFactory(new ArEndAnalyzerFactory());
+    addFactory(new MailEndAnalyzerFactory());
+    addFactory(new ZipEndAnalyzerFactory());
+    addFactory(new RpmEndAnalyzerFactory());
+    addFactory(new PngEndAnalyzerFactory());
+//    addFactory(new PdfEndAnalyzerFactory());
+    addFactory(new SaxEndAnalyzerFactory());
+    addFactory(new HelperEndAnalyzerFactory());
+    addFactory(new TextEndAnalyzerFactory());
 }
 void
 StreamIndexer::addThroughAnalyzers() {
