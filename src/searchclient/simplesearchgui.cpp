@@ -131,7 +131,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
     timer->start(2000);
     asyncstrigi.updateStatus();
 }
@@ -173,7 +173,14 @@ SimpleSearchGui::query(const QString& item) {
     }
 }
 void
+SimpleSearchGui::updateStatus() {
+    if (statusview->isVisible()) {
+        asyncstrigi.updateStatus();
+    }
+}
+void
 SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
+    qDebug() << s;
     static bool first = true;
     static bool attemptedstart = false;
     if (!first && !statusview->isVisible()) return;

@@ -62,10 +62,11 @@ StrigiAsyncClient::clearGetQueries() {
 void
 StrigiAsyncClient::handleStatus(const QDBusMessage& msg) {
     QDBusReply<QMap<QString,QString> > r = msg;
+    QMap<QString,QString> status;
     if (r.isValid()) {
-        QMap<QString,QString> status = r;
-        emit statusUpdated(status);
+        status = r;
     }
+    emit statusUpdated(status);
     sendNextRequest();
 }
 void

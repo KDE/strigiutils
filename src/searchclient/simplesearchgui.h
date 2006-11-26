@@ -68,6 +68,7 @@ private:
     void createMenus();
     void createActions();
 private slots:
+    void updateStatus();
     void updateStatus(const QMap<QString, QString>& s);
     void toggleDaemon();
     void toggleIndexing();
