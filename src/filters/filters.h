@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
- 
+
 #include <string>
 
 #ifndef FILTERS_H
@@ -32,19 +32,19 @@ class Filter
     public:
         explicit Filter(const std::string& rule) :m_rule(rule) {}
         virtual ~Filter() {}
-        
+
         /**
         * check if param text matches with rule m_rule
         * @return true if text matches the rule, false otherwise
         **/
         virtual bool match(const std::string& text) = 0;
         const std::string& rule() const { return m_rule; }
-        
+
         /**
         * method used to know the type of a filter instance
         **/
         virtual int rtti() const = 0;
-        
+
     protected:
         const std::string m_rule;
 };
@@ -61,9 +61,9 @@ class PatternFilter : public Filter
     public:
         PatternFilter(const std::string& rule) : Filter (rule) {}
         ~PatternFilter() {}
-        
+
         enum {RTTI = 1};
-        
+
         bool match(const std::string& text);
         int rtti() const { return RTTI; }
 };
@@ -71,7 +71,7 @@ class PatternFilter : public Filter
 /**
  * @class PathFilter
  * Filters all path that are equals to m_rule, and all their subdirs
- * 
+ *
  * <b><i>Example:</i></b> path filter <i>/home/foo/bar/</i> will prevent directory <i>/home/foo/bar/</i> and all its contents from being indexed
  **/
 class PathFilter : public Filter
@@ -79,9 +79,9 @@ class PathFilter : public Filter
     public:
         explicit PathFilter(const std::string& rule) : Filter (rule) {}
         ~PathFilter() {}
-        
+
         enum {RTTI = 2};
-        
+
         bool match (const std::string& text);
         int rtti() const { return RTTI; }
 };

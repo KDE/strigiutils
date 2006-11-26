@@ -19,7 +19,7 @@
  */
 
 // thread safe smart pointer
-template <class T> 
+template <class T>
 class TSSPtr {
 private:
     struct P {

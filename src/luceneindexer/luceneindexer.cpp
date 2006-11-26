@@ -55,7 +55,7 @@ main(int argc, char **argv) {
     }
 
     checkIndexdirIsEmpty(argv[1]);
-    
+
     FilterManager filtermanager;
     jstreams::IndexerConfiguration ic;
     Indexer indexer(argv[1], &filtermanager, ic);

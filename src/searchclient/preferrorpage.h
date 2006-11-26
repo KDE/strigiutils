@@ -31,7 +31,7 @@ class ErrorPage : public QWidget
 
     public:
         ErrorPage(QWidget* parent = 0);
-       
+
     private:
         QLabel* label;
 };

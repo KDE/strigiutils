@@ -8,7 +8,7 @@ set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
 	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
-	analyzerloader.cpp 
+	analyzerloader.cpp
 	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp indexable.cpp
 	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp)
 

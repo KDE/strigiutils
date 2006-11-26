@@ -53,6 +53,6 @@ main(int argc, char** argv) {
         }
     } else {
         indexer.index(".");
-    }    
+    }
     return 0;
 }

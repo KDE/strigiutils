@@ -46,7 +46,7 @@ AsyncSocketClient::splitResponse() const {
     vector<string> response;
     const char* p = socket.getResponse().c_str();
     string line;
-    
+
     while (true)
     {
         if ((*p != '\n') && (*p != '\0'))
@@ -56,13 +56,13 @@ AsyncSocketClient::splitResponse() const {
             response.push_back (line);
             line.clear();
         }
-        
+
         p++;
-        
+
         if (*p == '\0')
             break;
     }
-    
+
     return response;
 }
 bool
@@ -129,7 +129,7 @@ AsyncSocketClient::handleGetIndexedDirectoriesResponse() {
     if (socket.getStatus() == AsyncSocket::Error) {
         return;
     }
-    
+
     indexedDirs = splitResponse();
 }
 bool

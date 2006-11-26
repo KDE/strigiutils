@@ -125,7 +125,7 @@ startDaemon() {
             break;
         }
     }
-    
+
 }
 void
 StrigiHtmlGui::printStatus(ostream& out, const string& path,

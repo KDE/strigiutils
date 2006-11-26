@@ -37,10 +37,10 @@ int strncasecmp(const char* sa, const char* sb, int l){
 
         ca = tolower( (*(sa++)) );
         cb = tolower( (*(sb++)) );
-       
+
         i++;
     } while ( ca != L'\0' && (ca == cb) );
-   
+
     return (int)(ca - cb);
 }
 #endif
@@ -70,7 +70,7 @@ const char * strcasestr(const char *big, const char *little){
     if ( ret != NULL ){
         ret = big + (ret-tmp1);
     }
-   
+
     free(tmp1);
     free(tmp2);
 

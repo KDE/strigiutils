@@ -34,21 +34,21 @@ using namespace std;
 int main()
 {
     multimap <int, string> rules;
-    
+
     // add filtering rules
     rules.insert (make_pair(int(PathFilter::RTTI), string("/home/user/foo/")));
     rules.insert (make_pair(int(PathFilter::RTTI), string("/home/user/bar/")));
     rules.insert (make_pair(int(PathFilter::RTTI), string("*test*")));
-    
+
     FilterManager filtermanager;
     filtermanager.setFilteringRules(rules);
-    
+
 	vector<bool> correct;
     vector<string> text;
     text.push_back("/home/user/foo/"); correct.push_back(true);
     text.push_back(string("/foo/")); correct.push_back(false); //shouldn't match
     text.push_back(string("/home/user/bar/foo/test")); correct.push_back(true);
-    
+
 	vector<bool>::iterator iter2 = correct.begin();
     for (vector<string>::iterator iter = text.begin(); iter != text.end(); iter++)
     {
@@ -61,10 +61,10 @@ int main()
 			assert( shouldMatch );
 		}
 
-		
+
 		iter2++;
     }
-    
+
     return 0;
 }
 

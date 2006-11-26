@@ -36,7 +36,7 @@ private:
     void handleCountHitsResponse();
     void handleGetIndexedDirectoriesResponse();
     void handleGetDaemonStatusResponse();
-    
+
     std::vector<std::string> splitResponse() const;
 public:
     void setSocketPath(const std::string& path) {

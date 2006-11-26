@@ -32,7 +32,7 @@ bool PatternFilter::match(const string& text) {
 	flags |= FNM_CASE_BLIND;
 #endif
     int ret = fnmatch (m_rule.c_str(), text.c_str(), flags);
-       
+
     if ((ret != FNM_NOMATCH) && (ret != 0))
         STRIGI_LOG_WARNING ("strigi.filtermanager.PatternFilter", "error while applying pattern " + m_rule + "over text " + text)
     else if ( ret == 0)
@@ -40,7 +40,7 @@ bool PatternFilter::match(const string& text) {
         STRIGI_LOG_DEBUG ("strigi.filtermanager.PatternFilter", text + " matched pattern " + m_rule)
         return true;
     }
-    
+
     return false;
 }
 
@@ -52,15 +52,15 @@ bool PathFilter::match (const string& text) {
 
     // create the real pattern, whe have to add a * for globbing
     string realPattern = m_rule;
-    
-    // remove the trailing / (unix) or \ (win) 
+
+    // remove the trailing / (unix) or \ (win)
     if ((realPattern[realPattern.size() - 1] == '/') || (realPattern[realPattern.size()-1] == '\\'))
         realPattern.resize(realPattern.size() - 1);
-    
+
     realPattern+='*';
-    
+
     int ret = fnmatch (realPattern.c_str(), text.c_str(), flags);
-       
+
     if ((ret != FNM_NOMATCH) && (ret != 0))
         STRIGI_LOG_WARNING ("strigi.filtermanager.PathFilter", "error while applying pattern " + m_rule + "over text " + text)
     else if ( ret == 0)
@@ -68,7 +68,7 @@ bool PathFilter::match (const string& text) {
         STRIGI_LOG_DEBUG ("strigi.filtermanager.PathFilter", text + " matched pattern " + m_rule)
         return true;
     }
-    
+
     return false;
 }
 

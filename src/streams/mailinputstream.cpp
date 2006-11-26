@@ -309,7 +309,7 @@ MailInputStream::checkHeaderLine() const {
         while (*colpos != ':' && ++colpos != lineend) {}
         validheader = colpos != lineend || isblank(*linestart);
     }
-    return validheader;   
+    return validheader;
 }
 // return true if we are at the start of a base64 encoded block
 void

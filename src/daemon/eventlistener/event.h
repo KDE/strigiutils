@@ -39,7 +39,7 @@ class Event
         * Creates a new event. m_time is automatically set to current time
         */
         Event(Type type, const std::string& path);
-        
+
         /*!
         * @param type event type
         * @param path complete path to created/updated/deleted file

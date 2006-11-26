@@ -41,7 +41,7 @@ string fixPath (string path)
 		return "";
 
     string temp(path);
-    
+
 #ifdef HAVE_WINDOWS_H
 	size_t l= temp.length();
 	char* t = (char*)temp.c_str();
@@ -56,7 +56,7 @@ string fixPath (string path)
 
     if (temp[temp.length() - 1 ] != separator)
         temp += separator;
-    
+
     return temp;
 }
 
@@ -104,9 +104,9 @@ FileLister::walk_directory(uint len) {
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
-    
+
     if ((m_filterManager != NULL) && (m_filterManager->findMatch( path, len)))
-        return true; 
+        return true;
     else if (m_filterManager == NULL)
         printf ("m_filtermanager is NULL!!\n");
 

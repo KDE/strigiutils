@@ -95,7 +95,7 @@ EstraierIndexManager::closedb() {
 }
 void
 removefiles(const string& d, bool rmd = false) {
-    // remove all entries from the subdir 
+    // remove all entries from the subdir
     DIR* dir = opendir(d.c_str());
     if (dir == 0) {
         fprintf(stderr, "could not open index directory.\n");

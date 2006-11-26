@@ -36,7 +36,7 @@ private:
     ~CLuceneIndexReader();
     static const TCHAR* mapId(const wchar_t* id);
 	static std::wstring mapId(const char* id);
-    
+
     friend class CLuceneIndexReader::Private;
 public:
     int32_t countHits(const jstreams::Query&);

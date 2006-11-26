@@ -31,7 +31,7 @@
     #define STRIGI_MUTEX_LOCK(x) pthread_mutex_lock(x)
     #define STRIGI_MUTEX_TRY_LOCK(x) pthread_mutex_trylock(x)
     #define STRIGI_MUTEX_UNLOCK(x) pthread_mutex_unlock(x)
-    
+
     #define STRIGI_THREAD_DEFINE(x) pthread_t x
     #define STRIGI_THREAD_TYPE pthread_t
     #define STRIGI_THREAD_CREATE(threadObject, function, data) pthread_create(threadObject, NULL, function, data)

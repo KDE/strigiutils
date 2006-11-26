@@ -58,9 +58,9 @@ void loadConfFile(string file, set<string>& entries, string name)
     string line;
     char buffer [500];
     unsigned int counter = 0;
-   
+
     confFile.open(file.c_str(), ios::in);
-    
+
     if (confFile.is_open())
     {
         // read filter rules
@@ -68,12 +68,12 @@ void loadConfFile(string file, set<string>& entries, string name)
         {
             confFile.getline(buffer, 500);
             line = buffer;
-            
+
             if (line.size() > 0)
             {
                 set<string>::iterator iter;
                 iter = find(entries.begin(), entries.end(), line);
-                
+
                 if (iter == entries.end())
                 {
                     // it's a new entry
@@ -82,10 +82,10 @@ void loadConfFile(string file, set<string>& entries, string name)
                 }
             }
         }
-       
+
         confFile.close();
     }
-    
+
     printf ("added %i new %s\n",counter, name.c_str());
 }
 
@@ -105,7 +105,7 @@ int main(int argc,char *argv[])
         help();
         return 1;
     }
-    
+
     string homedir = getenv("HOME");
     string daemondir = homedir+"/.strigi";
     string dirsfile = daemondir+"/dirstoindex";
@@ -118,11 +118,11 @@ int main(int argc,char *argv[])
     bool   mergePath = false;
     bool   save = true;
     set<string> entries;
-    
+
     // init logging
     checkLogConf(logconffile);
     STRIGI_LOG_INIT(logconffile)
-    
+
     while (1)
      {
         int option_index = 0;
@@ -165,12 +165,12 @@ int main(int argc,char *argv[])
                 return 1;
         }
     }
-    
+
     // init daemon configurator
     DaemonConfigurator config (conffile);
-    
+
     // load path filtering rules
-    
+
     if (mergeFilters) // read existing rules, avoid duplicate rules creation
     {
         printf ("merging ");
@@ -179,19 +179,19 @@ int main(int argc,char *argv[])
     else
         printf ("restoring ");
     printf ("path filtering rules\n");
-    
+
     loadConfFile (pathfilterfile, entries, "path filtering rules");
     config.saveFilteringRules(entries, PathFilter::RTTI, false);
-    
+
     entries.clear();
-    
+
     // load pattern filtering rules
     printf ("restoring pattern filtering rules\n");
     loadConfFile (patternfilterfile, entries, "pattern filtering rules");
     config.saveFilteringRules(entries, PatternFilter::RTTI, true);
-    
+
     entries.clear();
-    
+
     // load dirs to index
     if (mergePath)
     {
@@ -201,10 +201,10 @@ int main(int argc,char *argv[])
     else
         printf ("restoring ");
     printf ("indexed directories paths\n");
-    
+
     loadConfFile (dirsfile, entries, "indexed dirs paths");
     config.setIndexedDirectories( entries, "localhost", mergePath);
-    
+
     if (save)
     {
         printf ("writing new configuration file\n");
@@ -212,6 +212,6 @@ int main(int argc,char *argv[])
     }
     else
         cout << endl << endl << config;
-    
+
     return 0;
 }

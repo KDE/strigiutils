@@ -54,7 +54,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     ifstream f(confFile.c_str(), ios::binary);
     f.get(xml, '\0');
     f.close();
-    
+
     if (xml.str().length()) {
         XMLStream stream(xml.str());
         stream >> *this;
@@ -63,13 +63,13 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
     list<Repository>::iterator match = find_if(e_repository.begin(),
                                                e_repository.end(),
                                                findRepository);
-    
+
     // entry for localhost repository doesn't exists
     if (match == e_repository.end()) {
         a_useDBus = true;
         Repository r;
         r.a_name = "localhost";
-        string s = getenv("HOME"); 
+        string s = getenv("HOME");
         r.a_indexdir = s + "/.strigi/clucene";
         r.a_writeable = true;
         r.a_type = "clucene";
@@ -82,7 +82,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
 
-        // add pattern to ignore hidden directories 
+        // add pattern to ignore hidden directories
         Filteringrules rules;
         Patternfilter filter;
         filter.a_pattern="*/.*";
@@ -103,13 +103,13 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
                                             bool  merge)
 {
     FindRepository findRepository (repositoryName);
-    
+
     list<Repository>::iterator match = find_if (e_repository.begin(),
                                                 e_repository.end(),
                                                 findRepository);
-    
+
     Repository* r;
-    
+
     if (match != e_repository.end())
         r = &(*match);
     else
@@ -120,11 +120,11 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
         e_repository.push_back(repo);
         r = &repo;
     }
-    
+
     // clear old path
     if (!merge)
         r->e_path.clear();
-    
+
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
     {
         Path p;
@@ -136,26 +136,26 @@ set<string>
 DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 {
     set<string> dirs;
-    
+
     FindRepository findRepository (repositoryName);
-    
+
     list<Repository>::iterator match = find_if (e_repository.begin(),
                                                 e_repository.end(),
                                                 findRepository);
-    
+
     if (match == e_repository.end())
     {
         STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs",
                         "cannot find repository name: |" + repositoryName + "|")
         return dirs;
     }
-    
+
     for (list<Path>::const_iterator iter = match->e_path.begin();
          iter != match->e_path.end(); iter++)
     {
         dirs.insert (iter->a_path);
     }
-    
+
     return dirs;
 }
 void DaemonConfigurator::save(const char* file)
@@ -180,7 +180,7 @@ void
 DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
 {
     multimap<int,string> rules;
-    
+
     list<Filteringrules>::const_iterator i;
     for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
         for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
@@ -190,7 +190,7 @@ DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
             STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator.loadFilteringRules",
                               "added path filter: |" + j->a_path + '|')
         }
-        
+
         for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
                 j != i->e_patternfilter.end(); ++j)
         {
@@ -199,7 +199,7 @@ DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
                               "added pattern filter: |" + j->a_pattern + '|')
         }
     }
-    
+
     filterManager->setFilteringRules (rules);
 }
 void
@@ -210,9 +210,9 @@ DaemonConfigurator::saveFilteringRules(set<string>& rules,
     // remove old filtering rules
     if (!merge)
         e_filteringrules.clear();
-        
+
     Filteringrules f;
-    
+
     for (set<string>::iterator iter = rules.begin();iter != rules.end(); iter++)
     {
         switch (filterRTTI)
@@ -237,19 +237,19 @@ DaemonConfigurator::saveFilteringRules(set<string>& rules,
                 break;
         }
     }
-    
+
     e_filteringrules.push_back (f);
 }
 void
 DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
 {
     multimap<int,string>  rules = filterManager->getFilteringRules();
-    
+
     // remove old filtering rules
     e_filteringrules.clear();
-        
+
     Filteringrules f;
-    
+
     for (multimap<int,string>::iterator iter = rules.begin();
          iter != rules.end(); iter++)
     {
@@ -275,9 +275,9 @@ DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
                 break;
         }
     }
-    
+
     e_filteringrules.push_back (f);
-    
+
     STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator",
                       "successfully saved filtering rules")
 }
@@ -285,7 +285,7 @@ set<string>
 DaemonConfigurator::readFilteringRules()
 {
     set<string> rules;
-    
+
     list<Filteringrules>::const_iterator i;
     for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
         for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
@@ -293,14 +293,14 @@ DaemonConfigurator::readFilteringRules()
         {
             rules.insert (j->a_path);
         }
-        
+
         for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
                 j != i->e_patternfilter.end(); ++j)
         {
             rules.insert (j->a_pattern);
         }
     }
-    
+
     return rules;
 }
 list<Repository>
@@ -319,13 +319,13 @@ DaemonConfigurator::setPollingInterval (unsigned int value,
                                         const string& repositoryName)
 {
     FindRepository findRepository (repositoryName);
-    
+
     list<Repository>::iterator match = find_if (e_repository.begin(),
                                                 e_repository.end(),
                                                 findRepository);
-    
+
     Repository* r;
-    
+
     if (match != e_repository.end())
         r = &(*match);
     else
@@ -337,7 +337,7 @@ DaemonConfigurator::setPollingInterval (unsigned int value,
         e_repository.push_back(repo);
         r = &repo;
     }
-    
+
     r->a_pollingInterval = value;
 }
 
@@ -345,13 +345,13 @@ unsigned int
 DaemonConfigurator::getPollingInterval(const string& repositoryName)
 {
     FindRepository findRepository (repositoryName);
-    
+
     list<Repository>::iterator match = find_if (e_repository.begin(),
                                                 e_repository.end(),
                                                 findRepository);
-    
+
     Repository* r;
-    
+
     if (match != e_repository.end())
         r = &(*match);
     else
@@ -362,7 +362,7 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
         e_repository.push_back(repo);
         r = &repo;
     }
-    
+
     // minimum polling interval is 60 seconds
     if (r->a_pollingInterval > 0 && r->a_pollingInterval < 180)
         return 180;

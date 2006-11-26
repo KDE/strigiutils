@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
 * Copyright (C) 2003-2006 Ben van Klinken and the CLucene Team
-* 
-* Distributable under the terms of either the Apache License (Version 2.0) or 
+*
+* Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
 #include "CLucene/StdHeader.h"
@@ -25,7 +25,7 @@ PrefixFilter::~PrefixFilter()
     _CLDECDELETE(prefix);
 }
 
-PrefixFilter::PrefixFilter( const PrefixFilter& copy ) : 
+PrefixFilter::PrefixFilter( const PrefixFilter& copy ) :
     prefix( _CL_POINTER(copy.prefix) )
 {
 }
@@ -64,7 +64,7 @@ BitSet* PrefixFilter::bits( IndexReader* reader )
     const TCHAR* prefixField = prefix->field();
     int32_t prefixLen = prefix->textLength();
     Term* lastTerm = NULL;
-    
+
     try{
         do{
             lastTerm = enumerator->term(false);

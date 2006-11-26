@@ -38,17 +38,17 @@ class DlgAddFilteringRule : public QDialog
         explicit DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent=0);
         DlgAddFilteringRule(QString* rule, int* type, QWidget *parent = 0);
         virtual ~DlgAddFilteringRule() {};
-       
+
     private slots:
         void patternClicked ();
         void pathClicked ();
         void browseClicked ();
         void accept();
         void reject();
-       
+
     private:
         void setupUi();
-        
+
         QString* m_rule;
         int*     m_type;
         QRadioButton *rbtnPattern;

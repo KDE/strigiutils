@@ -34,7 +34,7 @@ class QSpacerItem;
 class FilteringRulesPage : public QWidget
 {
     Q_OBJECT
-   
+
     public:
         FilteringRulesPage(std::multimap<int,std::string>* rules, QWidget* parent = 0);
         ~FilteringRulesPage();
@@ -45,7 +45,7 @@ class FilteringRulesPage : public QWidget
         void addRule();
         void editRule(QListWidgetItem* item = 0);
         void delRule();
-       
+
     private:
         QListWidget *ruleList;
         QSpacerItem *spacerItem;

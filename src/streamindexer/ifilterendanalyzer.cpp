@@ -53,7 +53,7 @@ IFilterEndAnalyzer::IFilterEndAnalyzer(){
     if (converter == (iconv_t) -1) {
         return;
     }
-	
+
 	if ( extensions.size() == 0 ){
 		HKEY pKey, kKey;
 		if (RegOpenKeyEx(HKEY_CLASSES_ROOT, "\\", 0, KEY_READ, &pKey) != ERROR_SUCCESS)
@@ -148,7 +148,7 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 			char *outbuf;
 			wchar_t sbBuffer[1024];
 			char asbBuffer[4096];
-    
+
 
 			STAT_CHUNK ps;
 			hr = filter->GetChunk(&ps);
@@ -207,7 +207,7 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 							 ps.attribute.psProperty.ulKind == 1 &&
 							 pVar->vt == VT_LPWSTR ){
 
-							
+
 							inbuf = (ICONV_CONST char *)pVar->pwszVal;
 							inbytesleft = sizeof(wchar_t)*wcslen(pVar->pwszVal);
 							outbuf = (char*)asbBuffer;
@@ -233,13 +233,13 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
                 unlink(filepath.c_str());
 			return 0;
 		}
-		
 
-		DWORD dw = GetLastError(); 
+
+		DWORD dw = GetLastError();
 		if ( dw != 0 ){
 			LPVOID lpMsgBuf;
 			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+				FORMAT_MESSAGE_ALLOCATE_BUFFER |
 				FORMAT_MESSAGE_FROM_SYSTEM,
 				NULL,
 				dw,
@@ -247,7 +247,7 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 				(LPTSTR) &lpMsgBuf,
 				0, NULL );
 
-			wprintf(L"%s\n", lpMsgBuf); 
+			wprintf(L"%s\n", lpMsgBuf);
 			LocalFree(lpMsgBuf);
 		}
 	}
@@ -291,7 +291,7 @@ IFilterEndAnalyzer::writeToTempFile(jstreams::InputStream *in, const char* ext) 
             nread -= n;
         } while (nread > 0);
         nread = in->read(b, 1, 0);
-    } 
+    }
     close(fd);
     return filepath;
 }

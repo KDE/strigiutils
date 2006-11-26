@@ -35,19 +35,19 @@ EventListenerQueue::EventListenerQueue()
 EventListenerQueue::~EventListenerQueue()
 {
     STRIGI_MUTEX_DESTROY (&m_mutex);
-   
+
     clear();
 }
 
 void EventListenerQueue::clear()
 {
     map < string, Event*>:: iterator iter;
-   
+
     for (iter = m_events.begin(); iter != m_events.end(); iter++)
     {
         delete iter->second;
     }
-   
+
     m_events.clear();
 }
 
@@ -55,39 +55,39 @@ void EventListenerQueue::addEvents (vector<Event*> events)
 {
     vector<Event*>::iterator iter;
     map < string, Event*>::iterator mapIt;
-   
+
     STRIGI_MUTEX_LOCK (&m_mutex);
-   
+
     for (iter = events.begin(); iter != events.end(); iter++)
     {
         Event* event = *iter;
-       
+
         mapIt = m_events.find(event->getPath());
-       
+
         if (mapIt != m_events.end())
             delete mapIt->second;
-       
+
         m_events[event->getPath()] = event;
     }
-   
+
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 }
 
 vector <Event*> EventListenerQueue::getEvents()
 {
     vector <Event*> result;
-   
+
     if (STRIGI_MUTEX_TRY_LOCK (&m_mutex))
     {
         for (map<string, Event*>::iterator iter = m_events.begin(); iter != m_events.end(); iter++)
         {
             result.push_back (iter->second);
         }
-       
+
         m_events.clear();
-       
+
         STRIGI_MUTEX_UNLOCK (&m_mutex);
     }
-   
+
     return result;
 }

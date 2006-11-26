@@ -35,7 +35,7 @@ PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     int32_t n = in->read(h, 24, 24);
     if (n < 24) return -1;
     in->reset(0);
-  
+
     // perform magic to access png dimensions
     int32_t x = (unsigned char)h[19] + ((unsigned char)h[18]<<8)
          + ((unsigned char)h[17]<<16) + ((unsigned char)h[16]<<24);

@@ -239,7 +239,7 @@ CLuceneIndexReader::countHits(const Query& q) {
             printf("ccould not query: %s\n", err.what());
         }
         s = counter.getCount();
-        
+
         printf("counted %i hits\n", count);
         // try to do a constant score query
         //QueryFilter* filter = _CLNEW QueryFilter(&bq);
@@ -304,7 +304,7 @@ CLuceneIndexReader::getFiles(char depth) {
         manager->derefReader();
         return files;
     }
-        
+
     TCHAR tstr[CL_MAX_DIR];
     char cstr[CL_MAX_DIR];
     snprintf(cstr, CL_MAX_DIR, "%i", depth);
@@ -356,7 +356,7 @@ int64_t
 CLuceneIndexReader::getDocumentId(const std::string& uri) {
     lucene::index::IndexReader* reader = manager->refReader();
     int64_t id = -1;
-    
+
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
     Term term(mapId(_T("path")), tstr);

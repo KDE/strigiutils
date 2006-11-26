@@ -42,7 +42,7 @@ main(int argc, char **argv) {
         }
         verbosity = atoi(argv[2]);
     }
-    
+
     FilterManager filtermanager;
     DummyIndexWriter writer(verbosity);
     jstreams::IndexerConfiguration ic;

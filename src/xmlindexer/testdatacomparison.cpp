@@ -64,7 +64,7 @@ main(int argc, char** argv) {
     string str = s.str();
     int32_t n = 2*str.length();
 
-    // load the file to compare with 
+    // load the file to compare with
     FileInputStream f(argv[3]);
     BZ2InputStream bz2(&f);
     const char* c;

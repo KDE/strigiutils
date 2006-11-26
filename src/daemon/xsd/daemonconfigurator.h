@@ -31,7 +31,7 @@ class DaemonConfigurator : public StrigiDaemonConfiguration
 {
     public:
         DaemonConfigurator (const std::string& confFile);
-    
+
         void setIndexedDirectories(std::set<std::string>& dirs,
             const std::string& repositoryName = "localhost",
             bool  merge = false);
@@ -48,12 +48,12 @@ class DaemonConfigurator : public StrigiDaemonConfiguration
                                const std::string& repositoryName = "localhost");
         unsigned int getPollingInterval(
                                const std::string& repositoryName = "localhost");
-        
+
         void save(const char* file = NULL);
         std::string getWriteableIndexType() const;
         std::string getWriteableIndexDir() const;
         std::list<Repository> getReadOnlyRepositories() const;
-        
+
     private:
         std::string m_confFile;
 };

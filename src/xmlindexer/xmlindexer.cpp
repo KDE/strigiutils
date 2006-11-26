@@ -43,7 +43,7 @@ main(int argc, char **argv) {
         printUsage(argv);
         return -1;
     }
-    
+
     FilterManager filtermanager;
     multimap<int, string> filters;
     filters.insert(make_pair(1, "*/.*"));

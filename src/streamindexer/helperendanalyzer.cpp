@@ -66,7 +66,7 @@ HelperProgramConfig::HelperProgramConfig() {
     }
 
     string exepath = getPath("pdftotext", paths);
-    if (exepath.length()) { 
+    if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = (unsigned char*)"%PDF-1.";
         h->magicsize = 7;
@@ -194,7 +194,7 @@ HelperEndAnalyzer::writeToTempFile(jstreams::InputStream *in) const {
             nread -= n;
         } while (nread > 0);
         nread = in->read(b, 1, 0);
-    } 
+    }
     close(fd);
     return filepath;
 }

@@ -27,7 +27,7 @@ main(int argc, char **argv) {
         printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
         return -1;
     }
-    
+
     FilterManager filtermanager;
     Indexer indexer(argv[1], &filtermanager);
     indexer.index(argv[2]);

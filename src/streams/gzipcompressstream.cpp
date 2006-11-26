@@ -21,7 +21,7 @@ GZipCompressInputStream::GZipCompressInputStream(StreamBase<char>* input, int le
     zstream->zfree = Z_NULL;
     zstream->opaque = Z_NULL;
 	zstream->avail_in = 0;
-    
+
     // initialize for writing gzip streams
 	int r = deflateInit(zstream, level);
     if (r != Z_OK) {

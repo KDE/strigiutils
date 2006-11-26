@@ -27,7 +27,7 @@ public:
     public:
         jstreams::EntryInfo entry;
 		//can't define staticly constructed object while object is being defined
-        std::map<std::string, SubEntry>* entries; 
+        std::map<std::string, SubEntry>* entries;
         int32_t getCount() const;
 		SubEntry(){
 			entries = new std::map<std::string, SubEntry>;
@@ -334,7 +334,7 @@ ArchiveReader::ArchiveReaderPrivate::getSubStreamProvider(
             s->reset(0);
         }
     }
-   
+
     return 0;
 }
 bool

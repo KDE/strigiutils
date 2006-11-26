@@ -48,7 +48,7 @@ private:
 
     char* resize(uint len);
     bool walk_directory(uint len);
-    
+
     FilterManager* m_filterManager;
 public:
     explicit FileLister(FilterManager* filtermanager);
@@ -60,11 +60,11 @@ public:
             uint dirlen, uint len, time_t mtime)) {
         m_fileCallback = callback;
     }
-   
+
     void setDirCallbackFunction(void (*callback)(const char* fullpath , uint len)) {
                                  m_dirCallback = callback;
     }
-   
+
     /**
      * List all the files in directory dir that have been modified more
      * recently then oldestdate.

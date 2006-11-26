@@ -27,7 +27,7 @@ class DBusServer : public StrigiThread {
 private:
     int quitpipe[2];
     Interface* interface;
-    void* run(void*);   
+    void* run(void*);
     void stopThread();
 public:
     explicit DBusServer(Interface* i) :StrigiThread("DBusServer"),

@@ -51,7 +51,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
       m_item (item)
 {
     setupUi();
-    
+
     switch (m_item->type())
     {
         case PathFilter::RTTI:
@@ -62,11 +62,11 @@ DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
             btnBrowse->hide();
             break;
     }
-    
+
     lineEdit->setText(item->text());
     rbtnPath->hide();
     rbtnPattern->hide();
-    
+
     setWindowTitle ("strigiclient - Edit filtering rule");
     label->setText(tr("Edit a filtering rule of type:"));
 }
@@ -74,7 +74,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
 void DlgAddFilteringRule::setupUi ()
 {
     setWindowTitle ("strigiclient - Add new filtering rule");
-   
+
     QVBoxLayout* vboxLayout = new QVBoxLayout(this);
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(9);
@@ -86,7 +86,7 @@ void DlgAddFilteringRule::setupUi ()
     QVBoxLayout* vboxLayout1 = new QVBoxLayout();
     vboxLayout1->setSpacing(6);
     vboxLayout1->setMargin(0);
-   
+
     rbtnPattern = new QRadioButton(this);
     rbtnPattern->setText(tr("Pattern"));
     rbtnPattern->setChecked(true);
@@ -101,7 +101,7 @@ void DlgAddFilteringRule::setupUi ()
     QHBoxLayout* hboxLayout = new QHBoxLayout();
     hboxLayout->setSpacing(6);
     hboxLayout->setMargin(0);
-   
+
     labelType = new QLabel(this);
     labelType->setText(tr("Pattern: "));
     hboxLayout->addWidget(labelType);
@@ -121,11 +121,11 @@ void DlgAddFilteringRule::setupUi ()
     labelExplanation->setScaledContents (true);
     labelExplanation->setWordWrap (true);
     vboxLayout->addWidget(labelExplanation);
-    
+
     QHBoxLayout* hboxLayout1 = new QHBoxLayout();
     hboxLayout1->setSpacing(6);
     hboxLayout1->setMargin(0);
-   
+
     QSpacerItem* spacerItem = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
     hboxLayout1->addItem(spacerItem);
 
@@ -138,10 +138,10 @@ void DlgAddFilteringRule::setupUi ()
     hboxLayout1->addWidget(cancelButton);
 
     vboxLayout->addLayout(hboxLayout1);
-   
+
     QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-   
+
     connect (rbtnPattern, SIGNAL (clicked()), this, SLOT (patternClicked()));
     connect (rbtnPath, SIGNAL (clicked()), this, SLOT (pathClicked()));
     connect (btnBrowse, SIGNAL (clicked()), this, SLOT (browseClicked()));
@@ -170,7 +170,7 @@ void DlgAddFilteringRule::accept()
 
         return;
     }
-    
+
     if (m_item != NULL) {
         m_item->setText (lineEdit->text());
     } else if ((m_type != NULL) && (m_rule != NULL)) {
@@ -179,12 +179,12 @@ void DlgAddFilteringRule::accept()
         } else if (rbtnPattern->isChecked()) {
             *m_type = PatternFilter::RTTI;
         }
-    
+
         *m_rule = lineEdit->text();
     }
     else
         printf ("DlgAddFilteringRule::accept() : NULL values!\n");
-    
+
     QDialog::accept();
 }
 
@@ -196,7 +196,7 @@ void DlgAddFilteringRule::reject()
 void DlgAddFilteringRule::browseClicked()
 {
     QString dir = QFileDialog::getExistingDirectory (this);
-   
+
     if (!dir.isEmpty())
         lineEdit->setText (dir);
 }

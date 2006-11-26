@@ -40,7 +40,7 @@ KMPSearcher::setQuery(const string& query) {
     int32_t j = -1;
     char c = '\0';
 
-    // build the mismatch table   
+    // build the mismatch table
     table[0] = j;
     while (i < len) {
         if (p[i] == c) {
@@ -73,7 +73,7 @@ KMPSearcher::search(const char* haystack, int32_t haylen) const {
             if (i > 0) i = table[i];
         }
     }
-   
+
     if (needle[i] == '\0') {
         return haystack + j;
     } else {

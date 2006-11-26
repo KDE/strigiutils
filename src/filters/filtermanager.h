@@ -40,29 +40,29 @@ class FilterManager
     public:
         FilterManager();
         ~FilterManager();
-       
-        /** 
+
+        /**
         * check if text matches a filtering rules
         * @return true if text matches a filtering rule, false otherwise
         */
         bool findMatch(const std::string& text);
-        
-        /** 
+
+        /**
          * convenience method, same as above
-         * @param text message 
+         * @param text message
          * @param len length of message
          */
         bool findMatch(const char* text, uint len);
-       
-        /** 
-         * @return a multimap with filtering RTTI as key, and m_rule as value 
+
+        /**
+         * @return a multimap with filtering RTTI as key, and m_rule as value
          */
         std::multimap<int,std::string> getFilteringRules();
         void setFilteringRules(const std::multimap<int,std::string>& rules);
-       
+
     private:
         void clearRules();
-        
+
         std::vector<Filter*> m_rules;
         std::string m_strigidir;
         StrigiMutex m_rulesMutex;

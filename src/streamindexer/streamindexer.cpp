@@ -45,7 +45,7 @@ using namespace jstreams;
 
 StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
         :writer(w), conf(c) {
-   
+
     moduleLoader.loadPlugins("/usr/local/lib/strigi");
     moduleLoader.loadPlugins("/usr/lib/strigi");
     moduleLoader.loadPlugins("/lib/strigi");
@@ -155,7 +155,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
 //        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
 //    }
     //printf("depth #%i: %s\n", depth, path.c_str());
-   
+
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
@@ -223,7 +223,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
     }
 
     // store the size of the stream
-    {  
+    {
         //tmp scope out tmp mem
         char tmp[100];
         sprintf(tmp, "%lli", input->getSize());

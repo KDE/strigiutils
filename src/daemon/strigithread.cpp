@@ -149,7 +149,7 @@ StrigiThread::getStringState() {
         break;
     case Stopping:
         str = "stopping";
-        break; 
+        break;
     }
     return str;
 }

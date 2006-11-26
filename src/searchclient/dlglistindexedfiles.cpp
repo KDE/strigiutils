@@ -33,7 +33,7 @@ DlgListIndexedFiles::DlgListIndexedFiles (set<string>& files, QWidget* parent)
     : QDialog (parent)
 {
     setWindowTitle(tr("Indexed Files"));
-    
+
     QVBoxLayout* vboxLayout = new QVBoxLayout(this);
     vboxLayout->setSpacing(6);
     vboxLayout->setMargin(9);
@@ -41,7 +41,7 @@ DlgListIndexedFiles::DlgListIndexedFiles (set<string>& files, QWidget* parent)
     QGroupBox* groupBox = new QGroupBox(this);
     groupBox->setTitle(tr("Files Indexed"));
     groupBox->setAlignment(Qt::AlignHCenter);
-    
+
     QVBoxLayout* vboxLayout1 = new QVBoxLayout(groupBox);
     vboxLayout1->setSpacing(6);
     vboxLayout1->setMargin(9);

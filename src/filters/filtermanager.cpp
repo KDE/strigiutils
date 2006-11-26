@@ -30,7 +30,7 @@
 using namespace std;
 
 FilterManager::FilterManager() {
-    // won't index strigi configuration directory 
+    // won't index strigi configuration directory
 #ifdef WIN32
 	m_strigidir.append( getenv("HOMEDRIVE") );
 	m_strigidir.append( getenv("HOMEPATH") );
@@ -47,12 +47,12 @@ FilterManager::~ FilterManager() {
 void FilterManager::clearRules()
 {
     STRIGI_MUTEX_LOCK (&m_rulesMutex.lock);
-    
+
     for (unsigned int i = 0; i < m_rules.size(); i++)
         delete m_rules[i];
-    
+
     m_rules.clear();
-    
+
     STRIGI_MUTEX_UNLOCK (&m_rulesMutex.lock);
 }
 
@@ -65,10 +65,10 @@ bool FilterManager::findMatch(const char* text, uint len)
 bool FilterManager::findMatch (const string& text)
 {
     STRIGI_MUTEX_LOCK (&m_rulesMutex.lock);
-    
+
     // check if text is related with strigi configuration directory
     int ret = fnmatch (m_strigidir.c_str(), text.c_str(), 0);
-       
+
     if ((ret != FNM_NOMATCH) && (ret != 0))
         STRIGI_LOG_WARNING ("strigi.filtermanager.PathFilter", "error while applying pattern " + m_strigidir + "over text " + text)
     else if ( ret == 0)
@@ -77,7 +77,7 @@ bool FilterManager::findMatch (const string& text)
         STRIGI_MUTEX_UNLOCK (&m_rulesMutex.lock);
         return true;
     }
-    
+
     for (vector<Filter*>::iterator iter = m_rules.begin(); iter != m_rules.end(); iter++)
     {
         Filter* filter = *iter;
@@ -87,7 +87,7 @@ bool FilterManager::findMatch (const string& text)
             return true;
         }
     }
-   
+
     STRIGI_MUTEX_UNLOCK (&m_rulesMutex.lock);
 
     //STRIGI_LOG_DEBUG ("strigi.filtermanager", text + " didn't match any pattern")
@@ -97,9 +97,9 @@ bool FilterManager::findMatch (const string& text)
 multimap<int,string> FilterManager::getFilteringRules()
 {
     STRIGI_MUTEX_LOCK (&m_rulesMutex.lock);
-    
+
     multimap<int,string> rules;
-    
+
     for (vector<Filter*>::iterator iter = m_rules.begin(); iter != m_rules.end(); iter++)
     {
         Filter* filter = *iter;
@@ -107,7 +107,7 @@ multimap<int,string> FilterManager::getFilteringRules()
     }
 
     STRIGI_MUTEX_UNLOCK (&m_rulesMutex.lock);
-    
+
     return rules;
 }
 
@@ -116,7 +116,7 @@ void FilterManager::setFilteringRules(const multimap<int, string>& rules)
     clearRules();
 
     STRIGI_MUTEX_LOCK (&m_rulesMutex.lock);
-    
+
     multimap<int,string>::const_iterator iter;
     for (iter = rules.begin(); iter != rules.end(); iter++)
     {
@@ -132,6 +132,6 @@ void FilterManager::setFilteringRules(const multimap<int, string>& rules)
                 STRIGI_LOG_ERROR ("strigi.filtermanager.setFilteringRules", "unknown rule RTTI")
         }
     }
-    
+
     STRIGI_MUTEX_UNLOCK (&m_rulesMutex.lock);
 }

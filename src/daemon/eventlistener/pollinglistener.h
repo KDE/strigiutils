@@ -52,15 +52,15 @@ class PollingListener : public EventListener
         void rmWatch (const std::string& path);
         void addWatches (const std::set<std::string>& watches);
         void setIndexedDirectories (const std::set<std::string>& dirs);
-        
-        
+
+
         void* run(void*);
 
         static bool fileCallback(const char* path, uint dirlen, uint len, time_t mtime);
     private:
         void pool ();
         void clearWatches();
-       
+
         bool m_firstTime;
         std::set<std::string> m_watches;
         std::map<std::string, time_t> m_toIndex;

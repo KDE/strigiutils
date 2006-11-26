@@ -39,28 +39,28 @@ class EventListenerQueue
     public:
         explicit EventListenerQueue();
         ~EventListenerQueue();
-        
+
         /*!
         * @param events a vector containing new Events to manage
         */
         void addEvents (std::vector<Event*> events);
-        
+
         /*!
         * @return the number of events availables
         */
         unsigned int size() { return m_events.size(); }
-        
+
         /*!
         * @return a vector containing all events, after that m_events is cleared
         */
         std::vector <Event*> getEvents();
-       
+
     protected:
         /*!
         * deallocate all events stored into m_events. In the end m_events will be empty.
         */
         void clear();
-       
+
         std::map <std::string, Event*> m_events; //!< all event instances
         pthread_mutex_t m_mutex;//!< mutex lock over m_events
 };

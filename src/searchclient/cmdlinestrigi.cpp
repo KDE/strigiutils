@@ -58,6 +58,6 @@ main(int argc, char** argv) {
         }
         printf("hits: %i\n", client.getHits().hits.size());
     }
-           
+
     return 0;
 }

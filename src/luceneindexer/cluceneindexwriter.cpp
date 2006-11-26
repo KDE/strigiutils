@@ -56,7 +56,7 @@ struct CLuceneDocData {
 };
 
 CLuceneIndexWriter::CLuceneIndexWriter(CLuceneIndexManager* m):
-    manager(m), doccount(0) 
+    manager(m), doccount(0)
 {
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
@@ -154,8 +154,8 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
 
     //add the stored field with the zipstream
-    doc->doc.add(*new Field(mappedFn, 
-        new GZipCompressInputStream(sr), 
+    doc->doc.add(*new Field(mappedFn,
+        new GZipCompressInputStream(sr),
         Field::STORE_YES ) );
 
     //add add the tokenized/indexed field
@@ -264,7 +264,7 @@ bool isLuceneFile(const char* filename){
     else if ( strncmp(ext,".f",2)==0 ){
         const char* n = ext+2;
         if ( *n && _istdigit(*n) )
-            return true;    
+            return true;
     }
 
     return false;
@@ -274,13 +274,13 @@ void
 CLuceneIndexWriter::cleanUp() {
     //remove all unused lucene file elements... unused elements are the result of unexpected shutdowns...
     //this can add up to a lot of after a while.
-    
+
     lucene::index::IndexReader* reader = manager->refReader();
     if (!reader) {
         return;
     }
     lucene::store::Directory* directory = reader->getDirectory();
-    
+
     //Instantiate SegmentInfos
     lucene::store::LuceneLock* lock = directory->makeLock("commit.lock");
 #ifdef LUCENE_COMMIT_LOCK_TIMEOUT
@@ -313,7 +313,7 @@ CLuceneIndexWriter::cleanUp() {
     char tmp[CL_MAX_PATH];
     for (i = 0; files[i] != NULL; ++i) {
         char* file = files[i];
- 
+
         int fileLength = strlen(file);
         if ( fileLength < 6 ) {
             continue;

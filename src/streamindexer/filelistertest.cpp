@@ -41,7 +41,7 @@ bool fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
     // stupid callback, used to test a situation similar to inotify's memory leak
     string file (path, len);
     files.push_back(file);
-    
+
     return true;
 }
 
@@ -57,26 +57,26 @@ main(int argc, char** argv) {
     if (argc != 2) {
         return -1;
     }
-    
+
     multimap <int, string> rules;
     rules.insert (make_pair((int)PathFilter::RTTI, string("*/.svn")));
-    
+
     FilterManager filtermanager;
     filtermanager.setFilteringRules( rules);
-    
+
     FileLister lister (&filtermanager);
     lister.setFileCallbackFunction(&fileCallback);
     lister.setDirCallbackFunction(&dirCallback);
-    
+
     lister.listFiles(argv[1]);
-    
+
     printf ("files:\n");
     for (unsigned int i = 0; i < files.size(); i++)
         cout <<"\t|"<< files[i] << "|\n";
-    
+
     printf ("dirs:\n");
     for (unsigned int i = 0; i < dirs.size(); i++)
         cout <<"\t|"<< dirs[i] << "|\n";
-    
+
     return 0;
 }

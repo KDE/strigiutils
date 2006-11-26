@@ -9,7 +9,7 @@
     #define FNM_PATHNAME    0x02  /**< Slash must be matched by slash. */
     #define FNM_PERIOD      0x04  /**< Period must be matched by period. */
     #define FNM_CASE_BLIND  0x08  /**< Compare characters case-insensitively.
-                                       * @remark This flag is an Apache addition 
+                                       * @remark This flag is an Apache addition
                                        */
     #define SUCCESS 0
 

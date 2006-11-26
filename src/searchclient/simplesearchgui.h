@@ -61,7 +61,7 @@ private:
     QAction *editListIndexedFilesAct;
     StrigiAsyncClient asyncstrigi;
     StrigiClient strigi;
-   
+
     void startDaemon();
     void setDirectories();
     void updateDirectories();

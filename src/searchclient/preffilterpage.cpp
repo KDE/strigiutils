@@ -66,14 +66,14 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
     vboxLayout->addWidget(btnDelRule);
 
     hboxLayout->addLayout(vboxLayout);
-   
-   
+
+
     ruleList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     for (multimap<int,string>::iterator iter = m_rules->begin(); iter != m_rules->end(); iter++)
     {
         QListWidgetItem* item = new QListWidgetItem((iter->second).c_str(), ruleList, iter->first);
-        
+
         switch (iter->first)
         {
             case PathFilter::RTTI:
@@ -86,14 +86,14 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
                 break;
         }
     }
-   
+
     connect (ruleList, SIGNAL(itemSelectionChanged ()), this, SLOT (selectionChanged()));
     connect (ruleList, SIGNAL(itemDoubleClicked (QListWidgetItem*)), this, SLOT (doubleClick(QListWidgetItem*)));
     connect (btnAddRule, SIGNAL(clicked()), this, SLOT (addRule()));
     connect (btnEditRule, SIGNAL(clicked()), this, SLOT (editRule()));
     connect (btnDelRule, SIGNAL(clicked()), this, SLOT (delRule()));
 
-   
+
 }
 
 FilteringRulesPage::~ FilteringRulesPage()
@@ -126,7 +126,7 @@ void FilteringRulesPage::doubleClick( QListWidgetItem* item)
 {
     if (item == 0)
         return;
-   
+
     editRule (item);
 }
 
@@ -134,14 +134,14 @@ void FilteringRulesPage::addRule()
 {
     QString rule;
     int type;
-    
+
     DlgAddFilteringRule dlg (&rule, &type);
     dlg.exec();
-   
+
     if (!rule.isEmpty())
     {
         QListWidgetItem* item = new QListWidgetItem (rule, ruleList, type);
-        
+
         switch (type)
         {
             case PathFilter::RTTI:
@@ -157,7 +157,7 @@ void FilteringRulesPage::addRule()
 void FilteringRulesPage::delRule()
 {
     QList<QListWidgetItem*> items = ruleList->selectedItems();
-   
+
     if (items.size() == 0)
         return;
 
@@ -173,13 +173,13 @@ void FilteringRulesPage::editRule(QListWidgetItem* item)
     if (item == 0)
     {
         QList<QListWidgetItem*> items = ruleList->selectedItems();
-   
+
         if (items.size() != 1)
             return;
-       
+
         item = *(items.begin());
     }
-   
+
     DlgAddFilteringRule dlg (item);
     dlg.exec();
 }

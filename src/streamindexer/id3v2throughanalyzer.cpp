@@ -50,7 +50,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
     int32_t nread = in->read(buf, 10, 10);
     in->reset(0);
     if (nread == 10 && strncmp("ID3", buf, 3) == 0 // check that it's ID3
-            && buf[3] >= 0 && buf[3] <= 4  // only handle version <= 4 
+            && buf[3] >= 0 && buf[3] <= 4  // only handle version <= 4
             && buf[5] == 0 // we're too dumb too handle flags
             ) {
         bool async = buf[3] >= 4;

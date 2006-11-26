@@ -39,7 +39,7 @@ public:
     virtual ~IndexerConfiguration() {}
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
-    virtual FieldType getIndexType(const std::string& fieldname) const;    
+    virtual FieldType getIndexType(const std::string& fieldname) const;
 };
 
 /**

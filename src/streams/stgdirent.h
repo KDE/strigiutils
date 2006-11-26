@@ -54,7 +54,7 @@ struct DIR
      *   positive = 0 based index of next entry
      */
     int32_t            dd_stat;
-   
+
     /** given path for dir with search pattern (struct is extended) */
     char            dd_name[MAX_PATH];
 

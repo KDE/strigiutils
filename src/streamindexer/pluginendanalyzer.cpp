@@ -36,7 +36,7 @@ using namespace jstreams;
 PluginEndAnalyzer::PluginEndAnalyzer(ModuleLoader* ml) {
     moduleLoader = ml;
     selectedEndAnalyzer = NULL;
-   
+
     /* For now we just load all the plugins in any order...
      * configuration required
      */

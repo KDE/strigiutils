@@ -30,7 +30,7 @@ main(int argc, char **argv) {
     }
     std::string file = argv[1];
     file += "/sqlite.db";
-    
+
     FilterManager filtermanager;
     jstreams::IndexerConfiguration ic;
     Indexer indexer(file.c_str(), &filtermanager, ic);

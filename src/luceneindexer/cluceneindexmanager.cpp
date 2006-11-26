@@ -49,9 +49,9 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     writer = new CLuceneIndexWriter(this);
     reader = new CLuceneIndexReader(this);
     analyzer = new StandardAnalyzer();
-    
+
     //remove any old segments lying around from crashes, etc
-    writer->cleanUp(); 
+    writer->cleanUp();
     // make sure there's at least an index
     openWriter();
 }
@@ -221,7 +221,7 @@ utf8toucs2(const char*p, const char*e) {
             nb = 2;
         } else {
             w = (w<<6) + (c&0x7F);
-            ucs2 += w; 
+            ucs2 += w;
             w = 0;
             nb = 0;
         }

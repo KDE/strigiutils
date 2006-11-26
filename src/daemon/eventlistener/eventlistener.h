@@ -64,9 +64,9 @@ public:
     unsigned int getPollingInterval() {
         return m_pollingInterval;
     }
-    /*! 
+    /*!
     * configure the polling interval. The time elapsed between each polling
-    * operation (expressed in seconds) 
+    * operation (expressed in seconds)
     */
     void setPollingInterval(unsigned int value) {
         m_pollingInterval = value;

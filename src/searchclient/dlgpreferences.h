@@ -37,17 +37,17 @@ class DlgPreferences : public QDialog
     public:
         DlgPreferences(bool running, std::multimap<int,std::string>* rules, QWidget *parent = 0);
         virtual ~DlgPreferences() {};
-       
+
     private slots:
         void accept();
         void reject();
         void currentOptionChanged ( QListWidgetItem * current, QListWidgetItem * previous );
-       
+
     private:
         void setupFilteringPage();
         void showPage (int optionNum);
         void showPage (QListWidgetItem* option);
-       
+
         QListWidget *optionsList;
         QStackedWidget *stackedView;
         QPushButton *okButton;

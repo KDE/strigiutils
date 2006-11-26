@@ -155,7 +155,7 @@ main(int argc, char** argv) {
     FilterManager filterManager;
     config.loadFilteringRules (&filterManager);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
-    
+
     IndexScheduler scheduler;
     scheduler.setFilterManager (&filterManager);
 
@@ -189,7 +189,7 @@ main(int argc, char** argv) {
     for (i = rors.begin(); i != rors.end(); ++i) {
         index->addReadonlyIndex(i->a_indexdir, i->a_type);
     }
-    
+
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 
@@ -203,7 +203,7 @@ main(int argc, char** argv) {
     Interface interface(*index, scheduler);
 
     EventListener* listener = NULL;
-    
+
 #if defined (HAVE_INOTIFY)
     // listen for requests
     listener = new InotifyListener(dirs);
@@ -243,22 +243,22 @@ main(int argc, char** argv) {
 
     server.listen();
     StrigiThread::stopThreads();
-   
+
     //save indexed dirs
     dirs = scheduler.getIndexedDirectories();
     config.setIndexedDirectories (dirs);
-  
+
     //save the pollingtime
     if (listener) {
         config.setPollingInterval (listener->getPollingInterval());
     }
- 
+
     //save filtering rules
     config.saveFilteringRules (&filterManager);
-    
+
     //save the updated xml configuration file
     config.save();
-    
+
     // close the indexmanager
     delete index;
 

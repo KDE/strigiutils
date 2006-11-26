@@ -103,14 +103,14 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
-   
+
     centralview = new QWidget();
     centralview->setLayout(layout);
     setCentralWidget(centralview);
-   
+
     createActions();
     createMenus();
-   
+
     connect(queryfield, SIGNAL(textChanged(const QString&)),
         this, SLOT(query(const QString&)));
     connect(toggleindexing, SIGNAL(clicked()),
@@ -129,7 +129,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     connect (&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
         this, SLOT(updateStatus(const QMap<QString, QString>& )));
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
-    
+
     QTimer *timer = new QTimer(this);
 //    connect(timer, SIGNAL(timeout()), &asyncstrigi, SLOT(updateStatus()));
 //    timer->start(2000);
@@ -139,7 +139,7 @@ void
 SimpleSearchGui::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(fileExitAct);
-   
+
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(editPreferenceAct);
     editMenu->addAction(editListIndexedFilesAct);
@@ -150,11 +150,11 @@ SimpleSearchGui::createActions() {
     fileExitAct->setShortcut(tr("Ctrl+Q"));
     fileExitAct->setStatusTip(tr("Quit the program"));
     connect(fileExitAct, SIGNAL(triggered()), this, SLOT(close()));
-   
+
     editPreferenceAct = new QAction(tr("Edit Preferences"), this);
     editPreferenceAct->setStatusTip(tr("Edit program preferences"));
     connect(editPreferenceAct, SIGNAL(triggered()), this, SLOT(editPreferences()));
-    
+
     editListIndexedFilesAct = new QAction(tr("List indexed files"), this);
     editListIndexedFilesAct->setStatusTip(tr("Show files indexed by strigi"));
     connect(editListIndexedFilesAct, SIGNAL(triggered()), this, SLOT(editListIndexedFiles()));
@@ -212,7 +212,7 @@ SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
         indexing = idxng;
         toggleindexing->setText((indexing)?"stop indexing":"start indexing");
     }
-   
+
     QMap<QString,QString>::const_iterator i;
     QString text;
     for (i = status.begin(); i != status.end(); ++i) {
@@ -323,12 +323,12 @@ SimpleSearchGui::editPreferences() {
     SocketClient client;
     client.setSocketName(socketfile.c_str());
     multimap<int,string> rules = client.getFilteringRules();
-   
+
     DlgPreferences* dlg = new DlgPreferences (running, &rules);
     dlg->exec();
-   
+
     delete dlg;
-    
+
     //update filtering rules
     client.setFilteringRules( rules);
 }
@@ -337,7 +337,7 @@ SimpleSearchGui::editListIndexedFiles() {
     SocketClient client;
     client.setSocketName(socketfile.c_str());
     set<string> files = client.getIndexedFiles();
-   
+
     DlgListIndexedFiles dlg (files);
     dlg.exec();
 }

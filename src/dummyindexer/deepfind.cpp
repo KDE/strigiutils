@@ -47,9 +47,9 @@ main(int argc, char **argv) {
     if (argc == 2) {
         path = argv[1];
     }
-    
+
     FilterManager filtermanager;
- 
+
     DummyIndexWriter writer(1);
     jstreams::IndexerConfiguration conf;
     Indexer indexer(&filtermanager, writer, conf);
