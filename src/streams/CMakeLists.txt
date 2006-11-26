@@ -1,7 +1,8 @@
 subdirs(tests pdf)
 
 include_directories( ${ZLIB_INCLUDE_DIR} ${BZIP2_INCLUDE_DIR}
-	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
+	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+	${strigi_BINARY_DIR}/src/streams)
 
 set(streams_SRCS compat.cpp stgdirent.cpp bz2inputstream.cpp
 	digestinputstream.cpp fileinputstream.cpp gzipinputstream.cpp

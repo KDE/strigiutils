@@ -1,6 +1,8 @@
 subdirs (throughplugins)
 
-include_directories( ./ ../streams ../filters ${BZIP2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
+include_directories( ./ ../streams ../filters ${BZIP2_INCLUDE_DIR}
+	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+	${strigi_BINARY_DIR}/src/streams)
 
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp

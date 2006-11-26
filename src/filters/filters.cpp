@@ -26,8 +26,7 @@
 
 using namespace std;
 
-bool PatternFilter::match(const string& text)
-{
+bool PatternFilter::match(const string& text) {
 	int flags = 0;
 #ifdef _WIN32
 	flags |= FNM_CASE_BLIND;
@@ -45,8 +44,7 @@ bool PatternFilter::match(const string& text)
     return false;
 }
 
-bool PathFilter::match (const string& text)
-{
+bool PathFilter::match (const string& text) {
 	int flags = 0;
 #ifdef _WIN32
 	flags |= FNM_CASE_BLIND;

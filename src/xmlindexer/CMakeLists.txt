@@ -1,4 +1,5 @@
-include_directories( ../streamindexer ../streams ../filters)
+include_directories( ../streamindexer ../streams ../filters
+	${strigi_BINARY_DIR}/src/streams)
 
 add_executable(xmlindexer xmlindexer.cpp indexer.cpp)
 

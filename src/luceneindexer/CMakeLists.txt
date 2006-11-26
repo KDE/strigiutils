@@ -1,7 +1,8 @@
 subdirs(tests indexdump)
 
 include_directories( ../streamindexer ../streams ../filters
-	${CLUCENE_LIBRARY_DIR} ${CLUCENE_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
+	${CLUCENE_LIBRARY_DIR} ${CLUCENE_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+	${strigi_BINARY_DIR}/src/streams)
 
 IF(MSVC)
     ADD_DEFINITIONS(-D_UNICODE)

@@ -131,10 +131,11 @@ CHECK_TYPE_SIZE(intptr_t INTPTR_T)
 
 #now write out our configuration....
 CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h.cmake
-  ${strigi_SOURCE_DIR}/src/streams/jstreamsconfig.h)
+  ${strigi_BINARY_DIR}/src/streams/jstreamsconfig.h)
 
-CONFIGURE_FILE(${strigi_SOURCE_DIR}/src/streamindexer/strigi_thread_config.h.cmake
-  ${strigi_SOURCE_DIR}/src/streamindexer/strigi_thread_config.h)
+CONFIGURE_FILE(
+  ${strigi_SOURCE_DIR}/src/streams/strigi_thread_config.h.cmake
+  ${strigi_BINARY_DIR}/src/streams/strigi_thread_config.h)
 
 CONFIGURE_FILE(
   "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"

@@ -1,5 +1,6 @@
 include_directories( ../streamindexer ../streams ../filters
-	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR})
+	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR}
+	${strigi_BINARY_DIR}/src/streams)
 
 add_library(sqliteindex sqliteindexwriter.cpp sqliteindexmanager.cpp
         sqliteindexreader.cpp)

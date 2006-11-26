@@ -1,4 +1,5 @@
-include_directories(../daemon ../streamindexer ../htmlgui ../filters ../streams qtdbus)
+include_directories(../daemon ../streamindexer ../htmlgui ../filters ../streams
+	qtdbus ${strigi_BINARY_DIR}/src/streams)
 add_subdirectory(qtdbus)
 
 if (QT4_FOUND)
