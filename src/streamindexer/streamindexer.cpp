@@ -235,7 +235,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
     bool ready;
     tIter = through.begin() + idx.getDepth();
     do {
-        ready = true;
+        ready = input->getSize() != -1;
         std::vector<StreamThroughAnalyzer*>::iterator ts;
         for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
             ready = (*ts)->isReadyWithStream();
