@@ -96,4 +96,26 @@ IndexerConfiguration::indexDir(const char* path, const char* filename) const {
 void
 IndexerConfiguration::setFilters(
         const std::vector<std::pair<bool,std::string> >& filters) {
+    vector<pair<bool,string> >::const_iterator i;
+    filepatterns.clear();
+    dirpatterns.clear();
+    for (i = filters.begin(); i != filters.end(); ++i) {
+        string s = i->second;
+        if (s.length()) {
+            Pattern p;
+            p.include = i->first;
+            bool dirmatch = false;
+            if (s[s.length()-1] == '/') { // directory pattern
+                dirmatch = true;
+                s = s.substr(0, s.length()-1);
+            }
+            p.matchfullpath = s.find('/') != string::npos;
+            p.pattern = s;
+            if (dirmatch) {
+                dirpatterns.push_back(p);
+            } else {
+                filepatterns.push_back(p);
+            }
+        }
+    }
 }

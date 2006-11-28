@@ -41,7 +41,6 @@ private:
         std::string pattern;
         bool matchfullpath;
         bool include;
-        bool ispattern;
     };
     std::vector<Pattern> dirpatterns;
     std::vector<Pattern> filepatterns;
