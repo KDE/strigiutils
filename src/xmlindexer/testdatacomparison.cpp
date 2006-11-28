@@ -58,7 +58,7 @@ main(int argc, char** argv) {
 
     ostringstream s;
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(&filtermanager, s, ic);
+    Indexer indexer(s, ic);
     chdir(argv[1]);
     indexer.index(argv[2]);
     string str = s.str();

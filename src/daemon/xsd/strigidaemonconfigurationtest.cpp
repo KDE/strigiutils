@@ -61,6 +61,22 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
+	Fylter fylter(xml);
+	f.open(filename.str().c_str(), std::ios::binary);
+	f << fylter;
+	f.close();
+	filename.str("");
+
+	filename << n++ << ".xml";
+	xml = read(filename.str());
+	Filters filters(xml);
+	f.open(filename.str().c_str(), std::ios::binary);
+	f << filters;
+	f.close();
+	filename.str("");
+
+	filename << n++ << ".xml";
+	xml = read(filename.str());
 	StrigiDaemonConfiguration strigidaemonconfiguration(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
 	f << strigidaemonconfiguration;

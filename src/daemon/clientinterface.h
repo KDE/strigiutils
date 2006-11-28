@@ -48,6 +48,7 @@ public:
     virtual std::multimap<int, std::string> getFilteringRules() = 0;
     virtual void setFilteringRules(const std::multimap<int, std::string>& rules)
         = 0;
+    virtual void setFilters(const std::vector<std::pair<bool,std::string> >& rules) = 0;
     virtual std::set<std::string> getIndexedFiles() = 0;
     bool isActive() { return active; }
     virtual std::vector<std::string> getBackEnds() = 0;

@@ -50,7 +50,7 @@ main(int argc, char **argv) {
     filtermanager.setFilteringRules(filters);
 
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(&filtermanager, cout, ic);
+    Indexer indexer(cout, ic);
     indexer.index(argv[argc-1]);
     return 0;
 }

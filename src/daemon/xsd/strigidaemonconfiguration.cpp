@@ -154,8 +154,66 @@ operator<<(std::ostream& out, const Filteringrules& e) {
 
 	return out;
 }
+XMLStream&
+operator>>(XMLStream& in, Fylter& e) {
+	in.setFromAttribute(e.a_include,"include");
+	in.setFromAttribute(e.a_pattern,"pattern");
+	return in;
+}
+Fylter::Fylter(const std::string& xml) {
+	a_include = false;
+	if (xml.length()) {
+		XMLStream stream(xml);
+		stream >> *this;
+	}
+}
+std::ostream&
+operator<<(std::ostream& out, const Fylter& e) {
+	out << " <fylter";
+	out << " include='" << e.a_include << "'";
+	out << " pattern='" << e.a_pattern << "'";
+	out << ">\n";
+	out << " </fylter>\n";
+
+	return out;
+}
+XMLStream& operator>>(XMLStream&, Fylter&);
+XMLStream&
+operator>>(XMLStream& in, Filters& e) {
+	const SimpleNode* n = in.firstChild();
+	bool hasChildren = n;
+	while (n && in.getTagName() == "fylter") {
+		Fylter v;
+		in >> v;
+		e.e_fylter.push_back(v);
+		n = in.nextSibling();
+	}
+	if (hasChildren) {
+		in.parentNode();
+	}
+	return in;
+}
+Filters::Filters(const std::string& xml) {
+	if (xml.length()) {
+		XMLStream stream(xml);
+		stream >> *this;
+	}
+}
+std::ostream&
+operator<<(std::ostream& out, const Filters& e) {
+	out << " <filters";
+	out << ">\n";
+	std::list<Fylter>::const_iterator fylter_it;
+	for (fylter_it = e.e_fylter.begin(); fylter_it != e.e_fylter.end(); fylter_it++) {
+		out << *fylter_it;
+	}
+	out << " </filters>\n";
+
+	return out;
+}
 XMLStream& operator>>(XMLStream&, Repository&);
 XMLStream& operator>>(XMLStream&, Filteringrules&);
+XMLStream& operator>>(XMLStream&, Filters&);
 XMLStream&
 operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 	in.setFromAttribute(e.a_useDBus,"useDBus");
@@ -171,6 +229,10 @@ operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 		Filteringrules v;
 		in >> v;
 		e.e_filteringrules.push_back(v);
+		n = in.nextSibling();
+	}
+	if (n && in.getTagName() == "filters") {
+		in >> e.e_filters;
 		n = in.nextSibling();
 	}
 	if (hasChildren) {
@@ -198,6 +260,7 @@ operator<<(std::ostream& out, const StrigiDaemonConfiguration& e) {
 	for (filteringrules_it = e.e_filteringrules.begin(); filteringrules_it != e.e_filteringrules.end(); filteringrules_it++) {
 		out << *filteringrules_it;
 	}
+	out << e.e_filters;
 	out << "</strigiDaemonConfiguration>\n";
 
 	return out;

@@ -31,6 +31,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace jstreams;
 
 class FindRepository {
 private:
@@ -368,4 +369,16 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
         return 180;
     else
         return r->a_pollingInterval;
+}
+void
+DaemonConfigurator::loadFilteringRules(IndexerConfiguration& config) {
+    vector<pair<bool,string> > filters;
+    list<Fylter>::const_iterator i;
+    for (i = e_filters.e_fylter.begin(); i != e_filters.e_fylter.end(); ++i) {
+        filters.push_back(make_pair(i->a_include, i->a_pattern));
+    }
+    config.setFilters(filters);
+}
+void
+DaemonConfigurator::saveFilteringRules(const IndexerConfiguration& config) {
 }

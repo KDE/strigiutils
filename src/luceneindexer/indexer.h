@@ -25,7 +25,6 @@
 #include "streamindexer.h"
 
 class FileLister;
-class FilterManager;
 
 class Indexer {
 private:
@@ -40,8 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(const char *indexdir, FilterManager* filtermanager,
-        jstreams::IndexerConfiguration& ic);
+    Indexer(const char *indexdir, jstreams::IndexerConfiguration& ic);
     ~Indexer();
     void index(const char *dir);
 };

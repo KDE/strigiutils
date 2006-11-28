@@ -60,7 +60,7 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     bzstream->avail_out = 1;
 
     // set the minimum size for the output buffer
-    mark(262144);
+    setMinBufSize(262144);
 }
 BZ2InputStream::~BZ2InputStream() {
     dealloc();

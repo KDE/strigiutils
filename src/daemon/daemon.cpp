@@ -23,6 +23,7 @@
 #include "combinedindexmanager.h"
 
 #include "indexscheduler.h"
+#include "indexerconfiguration.h"
 
 #if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
@@ -152,8 +153,10 @@ main(int argc, char** argv) {
     DaemonConfigurator config (conffile);
 
     // init filter manager
+    IndexerConfiguration ic;
     FilterManager filterManager;
-    config.loadFilteringRules (&filterManager);
+    config.loadFilteringRules(&filterManager);
+    config.loadFilteringRules(ic);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
 
     IndexScheduler scheduler;
@@ -218,7 +221,7 @@ main(int argc, char** argv) {
     // configure & start inotfy's watcher thread
     if (listener  && listener->init()) {
         listener->setEventListenerQueue (&listenerEventQueue);
-        listener->setFilterManager (&filterManager);
+        listener->setIndexerConfiguration(&ic);
         listener->setIndexReader (index->getIndexReader());
         listener->setPollingInterval (config.getPollingInterval());
         // do not start scanning until execution is in the thread!

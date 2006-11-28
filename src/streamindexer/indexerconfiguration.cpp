@@ -19,6 +19,7 @@
  */
 #include "indexerconfiguration.h"
 #include "jstreamsconfig.h"
+#include <fnmatch.h>
 using namespace std;
 using namespace jstreams;
 
@@ -26,8 +27,12 @@ IndexerConfiguration::FieldType
 operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
     return static_cast<IndexerConfiguration::FieldType>((int)a|(int)b);
 }
-
 IndexerConfiguration::IndexerConfiguration() {
+    Pattern svn;
+    svn.pattern = ".svn";
+    svn.include = false;
+    svn.matchfullpath = false;
+    dirpatterns.push_back(svn);
 }
 /**
  * Placeholder implementation that agrees to everything and only makes a
@@ -37,4 +42,58 @@ IndexerConfiguration::FieldType
 IndexerConfiguration::getIndexType(const std::string& fieldname) const {
     return (fieldname == "text") ? Tokenized|Stored|Indexed
                                 : Stored|Indexed;
+}
+bool
+IndexerConfiguration::indexPathFragment(const string& pathfragment) const {
+    return true;
+}
+bool
+IndexerConfiguration::indexFile(const char* filename) const {
+    vector<Pattern>::const_iterator i;
+    for (i = filepatterns.begin(); i != filepatterns.end(); ++i) {
+    }
+    return true;
+}
+bool
+IndexerConfiguration::indexFile(const char* path, const char* filename) const {
+    vector<Pattern>::const_iterator i;
+    for (i = filepatterns.begin(); i != filepatterns.end(); ++i) {
+        bool match;
+        if (i->matchfullpath) {
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path, 0);
+        } else {
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename, 0);
+        }
+        if (match) {
+            return i->include;
+        }
+    }
+    return true;
+}
+bool
+IndexerConfiguration::indexDir(const char* filename) const {
+    vector<Pattern>::const_iterator i;
+    for (i = dirpatterns.begin(); i != dirpatterns.end(); ++i) {
+    }
+    return true;
+}
+bool
+IndexerConfiguration::indexDir(const char* path, const char* filename) const {
+    vector<Pattern>::const_iterator i;
+    for (i = dirpatterns.begin(); i != dirpatterns.end(); ++i) {
+        bool match;
+        if (i->matchfullpath) {
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path, 0);
+        } else {
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename, 0);
+        }
+        if (match) {
+            return i->include;
+        }
+    }
+    return true;
+}
+void
+IndexerConfiguration::setFilters(
+        const std::vector<std::pair<bool,std::string> >& filters) {
 }

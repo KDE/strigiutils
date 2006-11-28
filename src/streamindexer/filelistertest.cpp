@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "filelister.h"
 #include "filtermanager.h"
+#include "indexerconfiguration.h"
 #include "filters.h"
 #include <iostream>
 #include <map>
@@ -27,6 +28,7 @@
 #include <vector>
 
 using namespace std;
+using namespace jstreams;
 
 /**
  * This test file can be used to measure the performance of the filelister
@@ -58,13 +60,15 @@ main(int argc, char** argv) {
         return -1;
     }
 
-    multimap <int, string> rules;
-    rules.insert (make_pair((int)PathFilter::RTTI, string("*/.svn")));
-
+/* TODO add the rules to the indexerconfiguration
+    multimap <int, string> rules;*/
+//    rules.insert (make_pair((int)PathFilter::RTTI, string("*/.svn")));
+/*
     FilterManager filtermanager;
-    filtermanager.setFilteringRules( rules);
+    filtermanager.setFilteringRules( rules); */
 
-    FileLister lister (&filtermanager);
+    IndexerConfiguration ic;
+    FileLister lister (ic);
     lister.setFileCallbackFunction(&fileCallback);
     lister.setDirCallbackFunction(&dirCallback);
 

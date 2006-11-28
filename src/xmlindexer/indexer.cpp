@@ -21,7 +21,6 @@
 #include "indexer.h"
 #include "filelister.h"
 #include "filereader.h"
-#include "filtermanager.h"
 #include <iostream>
 #include <sys/stat.h>
 
@@ -30,11 +29,9 @@ using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(FilterManager* filtermanager, ostream& o,
-        IndexerConfiguration& ic)
-    :out(o), writer(out), m_indexer(writer, ic)
-{
-    m_lister = new FileLister (filtermanager);
+Indexer::Indexer(ostream& o, IndexerConfiguration& ic)
+    :out(o), writer(out), m_indexer(writer, ic) {
+    m_lister = new FileLister(ic);
 }
 
 Indexer::~Indexer( )

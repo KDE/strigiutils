@@ -22,11 +22,13 @@
 #include "filereader.h"
 #include "filelister.h"
 using namespace std;
+using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-        m_manager(indexdir), m_indexer(m_manager.getIndexWriter()) {
+Indexer::Indexer(const char *indexdir, IndexerConfiguration& ic)
+        :m_indexdir(indexdir), m_manager(indexdir),
+         m_indexer(*m_manager.getIndexWriter(), ic) {
 }
 Indexer::~Indexer() {
 }

@@ -20,7 +20,7 @@
 #ifndef INDEXERCONFIGURATION_H
 #define INDEXERCONFIGURATION_H
 #include <string>
-
+#include <vector>
 /**
  * This class allows the Indexable to determine how each field should be
  * indexed.
@@ -36,15 +36,34 @@ enum FieldType {
     Indexed   = 0x0010, Lazy   = 0x0020, Stored     = 0x0040,
     Tokenized = 0x0100
 };
+private:
+    struct Pattern {
+        std::string pattern;
+        bool matchfullpath;
+        bool include;
+        bool ispattern;
+    };
+    std::vector<Pattern> dirpatterns;
+    std::vector<Pattern> filepatterns;
 
 public:
     IndexerConfiguration();
     virtual ~IndexerConfiguration() {}
+    /**
+     * A path fragment is e.g. a.txt for folder/a.txt
+     **/
+    virtual bool indexPathFragment(const std::string& pathfragment) const;
+    virtual bool indexFile(const char* path, const char* filename) const;
+    virtual bool indexFile(const char* filename) const;
+    virtual bool indexDir(const char* path, const char* filename) const;
+    virtual bool indexDir(const char* filename) const;
     virtual bool useFactory(StreamEndAnalyzerFactory*) const { return true; }
     virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
     virtual FieldType getIndexType(const std::string& fieldname) const;
+
+    void setFilters(const std::vector<std::pair<bool,std::string> >& filters);
 };
 
 /**

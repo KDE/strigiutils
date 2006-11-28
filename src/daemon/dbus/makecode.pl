@@ -25,6 +25,7 @@ my %typemapping = (
 	"std::map<std::string, std::string>" => "a{ss}",
 	"std::vector<char>" => "ay",
 	"std::multimap<int, std::string>" => "a(is)",
+	"std::vector<std::pair<bool,std::string> >" => "a(bs)",
 	"uint64_t" => "t"
 );
 

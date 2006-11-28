@@ -133,6 +133,9 @@ Interface::setFilteringRules(const multimap<int,string>& rules) {
     if (filterManager != NULL)
         filterManager->setFilteringRules (rules);
 }
+void
+Interface::setFilters(const std::vector<std::pair<bool,std::string> >& rules) {
+}
 set<string>
 Interface::getIndexedFiles() {
     map<string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);

@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <cassert>
 
 #include "event.h"
 #include "eventlistenerqueue.h"
@@ -107,7 +108,8 @@ void PollingListener::pool ()
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
     set<string> watches;
 
-    FileLister lister (m_pFilterManager);
+    assert(m_pindexerconfiguration);
+    FileLister lister (*m_pindexerconfiguration);
     lister.setFileCallbackFunction(&fileCallback);
 
     m_toIndex.clear();

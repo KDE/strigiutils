@@ -41,6 +41,19 @@ public:
 	std::list<Pathfilter> e_pathfilter;
 	std::list<Patternfilter> e_patternfilter;
 };
+class Fylter {
+public:
+	Fylter(const std::string& xml = "");
+	friend std::ostream& operator<<(std::ostream&, const Fylter&);
+	bool a_include;
+	std::string a_pattern;
+};
+class Filters {
+public:
+	Filters(const std::string& xml = "");
+	friend std::ostream& operator<<(std::ostream&, const Filters&);
+	std::list<Fylter> e_fylter;
+};
 class StrigiDaemonConfiguration {
 public:
 	StrigiDaemonConfiguration(const std::string& xml = "");
@@ -50,5 +63,6 @@ protected:
 	bool a_useDBus;
 	std::list<Repository> e_repository;
 	std::list<Filteringrules> e_filteringrules;
+	Filters e_filters;
 };
 #endif

@@ -369,6 +369,9 @@ SocketClient::setFilteringRules(const multimap<int,string>& rules) {
     readResponse(sd);
     close(sd);
 }
+void
+SocketClient::setFilters(const std::vector<std::pair<bool,std::string> >&rules){
+}
 set<string>
 SocketClient::getIndexedFiles() {
     set<string> r;

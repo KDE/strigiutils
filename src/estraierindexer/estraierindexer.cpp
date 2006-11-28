@@ -19,6 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
+#include "indexerconfiguration.h"
 
 int
 main(int argc, char **argv) {
@@ -28,7 +29,8 @@ main(int argc, char **argv) {
     }
     std::string file = argv[1];
     file += "/estraier.db";
-        Indexer indexer(file.c_str());
+    jstreams::IndexerConfiguration ic;
+    Indexer indexer(file.c_str(), ic);
     indexer.index(argv[2]);
     return 0;
 }

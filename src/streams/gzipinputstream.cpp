@@ -69,7 +69,7 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
     zstream->avail_out = 1;
 
     // initialize the buffer
-    mark(262144);
+    setMinBufSize(262144);
 }
 GZipInputStream::~GZipInputStream() {
     dealloc();

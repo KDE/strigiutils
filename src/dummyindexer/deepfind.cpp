@@ -19,7 +19,6 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
-#include "filtermanager.h"
 #include "dummyindexwriter.h"
 #include "streamindexer.h"
 #include "indexerconfiguration.h"
@@ -60,11 +59,9 @@ main(int argc, char **argv) {
         path = argv[1];
     }
 
-    FilterManager filtermanager;
-
     DummyIndexWriter writer(1);
     FindIndexerConfiguration conf;
-    Indexer indexer(&filtermanager, writer, conf);
+    Indexer indexer(writer, conf);
     indexer.index(path);
     return 0;
 }

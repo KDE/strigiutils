@@ -39,7 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    explicit Indexer(const char *indexdir);
+    Indexer(const char *indexdir, jstreams::IndexerConfiguration& ic);
     ~Indexer();
     void index(const char *dir);
 };

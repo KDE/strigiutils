@@ -32,7 +32,7 @@ private:
     bool finishedWritingToBuffer;
     InputStreamBuffer<T> buffer;
 
-    void writeToBuffer(int32_t minsize);
+    void writeToBuffer(int32_t minsize, int32_t maxsize);
     int32_t read_(const T*& start, int32_t min, int32_t max);
 protected:
     /**
@@ -46,6 +46,9 @@ protected:
     virtual int32_t fillBuffer(T* start, int32_t space) = 0;
     // this function might be useful if you want to reuse a bufferedstream
     void resetBuffer() {printf("implement 'resetBuffer'\n");}
+    void setMinBufSize(int32_t s) {
+        buffer.makeSpace(s);
+    }
     BufferedInputStream<T>();
 public:
     int32_t read(const T*& start, int32_t min, int32_t max);
@@ -60,12 +63,15 @@ BufferedInputStream<T>::BufferedInputStream() {
 
 template <class T>
 void
-BufferedInputStream<T>::writeToBuffer(int32_t ntoread) {
+BufferedInputStream<T>::writeToBuffer(int32_t ntoread, int32_t maxread) {
     int32_t missing = ntoread - buffer.avail;
     int32_t nwritten = 0;
     while (missing > 0 && nwritten >= 0) {
         int32_t space;
         space = buffer.makeSpace(missing);
+        if (maxread >= ntoread && space > maxread) {
+             space = maxread;
+        }
         T* start = buffer.readPos + buffer.avail;
         nwritten = fillBuffer(start, space);
         assert(StreamBase<T>::status != Eof);
@@ -87,7 +93,7 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     // do we need to read data into the buffer?
     if (!finishedWritingToBuffer && min > buffer.avail) {
         // do we have enough space in the buffer?
-        writeToBuffer(min);
+        writeToBuffer(min, max);
         if (StreamBase<T>::status == Error) return -2;
     }
 

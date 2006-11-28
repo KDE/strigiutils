@@ -42,6 +42,20 @@ xmlns:tns="http://www.vandenoever.info/strigi">
         </complexType>
       </element>
     </sequence>
+    <sequence>
+      <element name="filters" minOccurs="1" maxOccurs="1">
+        <complexType>
+          <sequence>
+            <element name="fylter"  minOccurs="0" maxOccurs="unbounded">
+              <complexType>
+                <attribute name="pattern" type="string"/>
+                <attribute name="include" type="boolean"/>
+              </complexType>
+            </element>
+          </sequence>
+        </complexType>
+      </element>
+    </sequence>
     <attribute name="useDBus" type="boolean"/>
   </complexType>
 </element>

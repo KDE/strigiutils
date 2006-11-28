@@ -13,6 +13,7 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
     handlers["getFilteringRules"] = &DBusClientInterface::getFilteringRules;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
     handlers["getBackEnds"] = &DBusClientInterface::getBackEnds;
+    handlers["setFilters"] = &DBusClientInterface::setFilters;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
     handlers["stopIndexing"] = &DBusClientInterface::stopIndexing;
     handlers["setFilteringRules"] = &DBusClientInterface::setFilteringRules;
@@ -60,6 +61,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "    <method name='getBackEnds'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='setFilters'>\n"
+    << "      <arg name='rules' type='a(bs)' direction='in'/>\n"
     << "    </method>\n"
     << "    <method name='getIndexedDirectories'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
@@ -149,6 +153,16 @@ DBusClientInterface::getBackEnds(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl->getBackEnds();
+    }
+}
+void
+DBusClientInterface::setFilters(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::vector<std::pair<bool,std::string> > rules;
+    reader >> rules;
+    if (reader.isOk()) {
+        impl->setFilters(rules);
     }
 }
 void

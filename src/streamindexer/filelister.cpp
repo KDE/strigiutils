@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "filelister.h"
-#include "filtermanager.h"
+#include "indexerconfiguration.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -34,6 +34,7 @@
 #endif
 
 using namespace std;
+using namespace jstreams;
 
 string fixPath (string path)
 {
@@ -60,19 +61,17 @@ string fixPath (string path)
     return temp;
 }
 
-FileLister::FileLister(FilterManager* filtermanager) {
+FileLister::FileLister(IndexerConfiguration& ic) :m_config(ic) {
     m_fileCallback = 0;
     m_dirCallback = 0;
     path = 0;
     length = 0;
-    m_filterManager = filtermanager;
 }
 FileLister::~FileLister() {
     if (length) {
         free(path);
     }
 }
-
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_fileCallback == 0) return;
@@ -85,6 +84,9 @@ FileLister::listFiles(const char *dir, time_t oldestdate) {
         strcpy(path+len, "/");
         len++;
     }
+#ifdef WIN32
+    path[0] = tolower(path[0]);
+#endif
     walk_directory(len);
 }
 char*
@@ -105,27 +107,27 @@ FileLister::walk_directory(uint len) {
     struct dirent *subdir;
     struct stat dirstat;
 
-    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path, len)))
+/*    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path, len)))
         return true;
     else if (m_filterManager == NULL)
         printf ("m_filtermanager is NULL!!\n");
+*/
 
 #ifdef WIN32
-	// windows opendir expects no trailing slash on the end of directories...
-	// remove the trailing '/' on windows machines before the call to opendir(),
+    // windows opendir expects no trailing slash on the end of directories...
+    // remove the trailing '/' on windows machines before the call to opendir(),
     // but do not strip off the trailing slash from windows c:/
     if ( len > 3) {
-		while(path[len-1]=='/' || path[len-1]=='\\'){
-			len--;
-			path[len] = '\0';
-		}
+        while(path[len-1]=='/' || path[len-1]=='\\') {
+            len--;
+            path[len] = '\0';
+        }
     }
-	path[0] = tolower(path[0]);
 #endif
 
     // call dir function callback, actually there's only inotify dir callback
     if (m_dirCallback != 0)
-        m_dirCallback (path, len);
+        m_dirCallback(path, len);
 
     // open the directory
     dir = opendir(path);
@@ -133,11 +135,11 @@ FileLister::walk_directory(uint len) {
         return true;
     }
 #ifdef WIN32
-	//add the trailing slash back on
-	if ( len > 3) {
-		strcat(path,"/");
-		len++;
-	}
+    //add the trailing slash back on
+    if ( len > 3) {
+        strcat(path, "/");
+        len++;
+    }
 #endif
 
     subdir = readdir(dir);
@@ -153,16 +155,19 @@ FileLister::walk_directory(uint len) {
             }
         }
 
-        uint l = len+strlen(subdir->d_name);
+        uint l = len + strlen(subdir->d_name);
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
         if (stat(path, &dirstat) == 0) {
             bool c = true;
-            if ( S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
-                if ((m_filterManager != NULL) && (!m_filterManager->findMatch( path, l)))
+            if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
+                if (m_config.indexFile(path, path+len)) {
                     c = m_fileCallback(path, len, l, dirstat.st_mtime);
-            } else if ( dirstat.st_mode & S_IFDIR) {
+                }
+            } else if (dirstat.st_mode & S_IFDIR
+                    && m_config.indexDir(path, path+len)) {
+                // append a '/' to the path
                 strcpy(path+l, "/");
                 c = walk_directory(l+1);
             }

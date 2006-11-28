@@ -19,7 +19,6 @@
  */
 #include "jstreamsconfig.h"
 #include "indexer.h"
-#include "filtermanager.h"
 #include "dummyindexwriter.h"
 #include "indexerconfiguration.h"
 
@@ -43,10 +42,9 @@ main(int argc, char **argv) {
         verbosity = atoi(argv[2]);
     }
 
-    FilterManager filtermanager;
     DummyIndexWriter writer(verbosity);
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(&filtermanager, writer, ic);
+    Indexer indexer(writer, ic);
     indexer.index(argv[argc-1]);
     return 0;
 }

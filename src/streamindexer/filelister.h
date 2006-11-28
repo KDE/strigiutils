@@ -35,7 +35,9 @@
 #include <sys/types.h>
 #include <string>
 
-class FilterManager;
+namespace jstreams {
+    class IndexerConfiguration;
+}
 
 class FileLister {
 private:
@@ -49,9 +51,9 @@ private:
     char* resize(uint len);
     bool walk_directory(uint len);
 
-    FilterManager* m_filterManager;
+    jstreams::IndexerConfiguration& m_config;
 public:
-    explicit FileLister(FilterManager* filtermanager);
+    explicit FileLister(jstreams::IndexerConfiguration& ic);
     ~FileLister();
     /**
      * Specify the callback function that reports the files found.

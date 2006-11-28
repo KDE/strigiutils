@@ -21,6 +21,7 @@
 #include "jstreamsconfig.h"
 #include "indexable.h"
 #include "indexwriter.h"
+#include "indexerconfiguration.h"
 #include "streamindexer.h"
 #include "streambase.h"
 #include <string>
@@ -68,9 +69,13 @@ Indexable::index(StreamBase<char>& file) {
 }
 char
 Indexable::indexChild(const std::string& name, time_t mt,
-        StreamBase<char>& file){
-    Indexable i(name, mt, *this);
-    return indexer.analyze(i, &file);
+        StreamBase<char>& file) {
+    // TODO check if this is a name we want to index
+    if (indexableconfig.indexPathFragment(name)) {
+        Indexable i(name, mt, *this);
+        return indexer.analyze(i, &file);
+    }
+    return 0;
 }
 void
 Indexable::addText(const char* text, int32_t length) {

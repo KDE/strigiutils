@@ -49,7 +49,7 @@ set(strigidaemon_LIBS streamindexer eventlistener filters combinedindex
 target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
 target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters
-                      daemonconfigurator)
+                      daemonconfigurator streamindexer)
 
 add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
 	asyncsocketclient.cpp)

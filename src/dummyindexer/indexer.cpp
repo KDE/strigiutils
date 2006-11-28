@@ -28,10 +28,9 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(FilterManager* filtermanager, jstreams::IndexWriter& w,
-        jstreams::IndexerConfiguration& c)
+Indexer::Indexer(jstreams::IndexWriter& w, jstreams::IndexerConfiguration& c)
         : m_indexer(w, c) {
-    m_lister = new FileLister (filtermanager);
+    m_lister = new FileLister(c);
 }
 Indexer::~Indexer() {
     delete m_lister;

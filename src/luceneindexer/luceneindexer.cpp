@@ -20,7 +20,6 @@
 #include "jstreamsconfig.h"
 #include <CLucene.h>
 #include "indexer.h"
-#include "filtermanager.h"
 #include "indexerconfiguration.h"
 #include <sys/types.h>
 #include <stgdirent.h>
@@ -56,9 +55,8 @@ main(int argc, char **argv) {
 
     checkIndexdirIsEmpty(argv[1]);
 
-    FilterManager filtermanager;
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(argv[1], &filtermanager, ic);
+    Indexer indexer(argv[1], ic);
     indexer.index(argv[2]);
     return 0;
 }

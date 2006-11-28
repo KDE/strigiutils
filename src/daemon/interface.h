@@ -52,12 +52,14 @@ public:
     std::string setIndexedDirectories(std::set<std::string>);
     std::multimap<int, std::string> getFilteringRules();
     void setFilteringRules(const std::multimap<int, std::string>&);
-    void setEventListener(EventListener* eListener);
-    void setFilterManager(FilterManager* fManager);
+    void setFilters(const std::vector<std::pair<bool,std::string> >& rules);
     std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);
+
     std::vector<std::string> getBackEnds();
+    void setEventListener(EventListener* eListener);
+    void setFilterManager(FilterManager* fManager);
 };
 
 #endif

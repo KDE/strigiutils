@@ -22,7 +22,6 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "indexerconfiguration.h"
-#include "filtermanager.h"
 
 void
 printUsage(char** argv) {
@@ -43,10 +42,9 @@ main(int argc, char** argv) {
         printUsage(argv);
         return -1;
     }
-    FilterManager filtermanager;
     GrepIndexWriter writer(argv[1]);
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(&filtermanager, writer, ic);
+    Indexer indexer(writer, ic);
     if (argc > 2) {
         for (int32_t i=2; i<argc; ++i) {
             indexer.index(argv[i]);

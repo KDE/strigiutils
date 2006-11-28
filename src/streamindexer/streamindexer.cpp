@@ -203,7 +203,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
     bool finished = false;
     int32_t headersize = 1024;
     const char* header;
-    headersize = input->read(header, headersize, 0);
+    headersize = input->read(header, headersize, headersize);
     if (input->reset(0) != 0) {
         fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
             input->getPosition(), input->getStatus());
@@ -262,6 +262,9 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
     removeIndexable(idx.getDepth());
     return 0;
 }
+/**
+ * Remove references to the indexable before it goes out of scope.
+ **/
 void
 StreamIndexer::removeIndexable(uint depth) {
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;

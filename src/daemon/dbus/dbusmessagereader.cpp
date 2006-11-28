@@ -148,3 +148,8 @@ DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
     dbus_message_iter_next(&it);
     return *this;
 }
+DBusMessageReader&
+DBusMessageReader::operator>>(std::vector<std::pair<bool, std::string> >&) {
+    // TODO implement me
+    return *this;
+}

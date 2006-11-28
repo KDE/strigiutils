@@ -25,11 +25,10 @@
 #include "strigithread.h"
 
 class EventListenerQueue;
-class FilterManager;
 
-namespace jstreams
-{
+namespace jstreams {
     class IndexReader;
+    class IndexerConfiguration;
 }
 
 /*!
@@ -41,7 +40,7 @@ class EventListener : public StrigiThread {
 public:
     explicit EventListener(const char* name) :StrigiThread(name) {
         m_pEventQueue = NULL;
-        m_pFilterManager = NULL;
+        m_pindexerconfiguration = NULL;
         m_pIndexReader = NULL;
         m_pollingInterval = 180;
     }
@@ -55,8 +54,8 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_pEventQueue = eventQueue;
     }
-    void setFilterManager (FilterManager* filterManager) {
-        m_pFilterManager = filterManager;
+    void setIndexerConfiguration(jstreams::IndexerConfiguration* ic) {
+        m_pindexerconfiguration = ic;
     }
     void setIndexReader (jstreams::IndexReader* ireader) {
         m_pIndexReader = ireader;
@@ -74,7 +73,7 @@ public:
 
 protected:
     EventListenerQueue* m_pEventQueue;
-    FilterManager* m_pFilterManager;
+    jstreams::IndexerConfiguration* m_pindexerconfiguration;
     jstreams::IndexReader* m_pIndexReader;
     unsigned int m_pollingInterval;//!< pause time between each polling operation
 };
