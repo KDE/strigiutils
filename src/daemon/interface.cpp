@@ -24,7 +24,6 @@
 #include "indexwriter.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
-#include "filtermanager.h"
 #include "streamindexer.h"
 #include "indexable.h"
 #include "indexerconfiguration.h"
@@ -117,21 +116,6 @@ Interface::setIndexedDirectories(set<string> dirs) {
 
     scheduler.setIndexedDirectories(dirs);
     return "";
-}
-multimap<int,string>
-Interface::getFilteringRules() {
-    if (filterManager != NULL)
-        return filterManager->getFilteringRules();
-    else
-    {
-        multimap<int,string> empty;
-        return empty;
-    }
-}
-void
-Interface::setFilteringRules(const multimap<int,string>& rules) {
-    if (filterManager != NULL)
-        filterManager->setFilteringRules (rules);
 }
 void
 Interface::setFilters(const std::vector<std::pair<bool,std::string> >& rules) {

@@ -19,9 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "filelister.h"
-#include "filtermanager.h"
 #include "indexerconfiguration.h"
-#include "filters.h"
 #include <iostream>
 #include <map>
 #include <string>

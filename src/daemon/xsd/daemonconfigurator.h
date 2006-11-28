@@ -26,8 +26,6 @@
 
 #include <set>
 
-class FilterManager;
-
 class DaemonConfigurator : public StrigiDaemonConfiguration {
 public:
     DaemonConfigurator (const std::string& confFile);
@@ -38,12 +36,7 @@ public:
             const std::string& repositoryName = "localhost");
     bool useDBus() { return a_useDBus; }
     void loadFilteringRules(jstreams::IndexerConfiguration& config);
-    void saveFilteringRules(const jstreams::IndexerConfiguration& config);
-    void loadFilteringRules (FilterManager* filterManager);
-    void saveFilteringRules (FilterManager* filterManager);
-    void saveFilteringRules(std::set<std::string>& rules,
-        unsigned int filterRTTI, bool  merge = false);
-    std::set<std::string> readFilteringRules();
+    void saveFilteringRules(const std::vector<std::pair<bool,std::string> >& f);
     void setPollingInterval (unsigned int value,
         const std::string& repositoryName = "localhost");
     unsigned int getPollingInterval(

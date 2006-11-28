@@ -32,7 +32,6 @@
 #include "eventlistener.h"
 #endif
 #include "eventlistenerqueue.h"
-#include "filtermanager.h"
 #include "strigilogging.h"
 
 #ifdef HAVE_DBUS
@@ -154,13 +153,11 @@ main(int argc, char** argv) {
 
     // init filter manager
     IndexerConfiguration ic;
-    FilterManager filterManager;
-    config.loadFilteringRules(&filterManager);
     config.loadFilteringRules(ic);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
 
     IndexScheduler scheduler;
-    scheduler.setFilterManager (&filterManager);
+    scheduler.setIndexerConfiguration(&ic);
 
     if (!initializeDir(lucenedir)) {
         STRIGI_LOG_FATAL ("strigi.daemon",
@@ -231,8 +228,6 @@ main(int argc, char** argv) {
     interface.setEventListener (listener);
 //    threads.push_back(listener);
 
-    interface.setFilterManager (&filterManager);
-
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     if (config.useDBus()) {
@@ -257,7 +252,7 @@ main(int argc, char** argv) {
     }
 
     //save filtering rules
-    config.saveFilteringRules (&filterManager);
+    //config.saveFilteringRules(&filterManager);
 
     //save the updated xml configuration file
     config.save();

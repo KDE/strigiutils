@@ -19,7 +19,6 @@
  */
 
 #include "socketserver.h"
-#include "filters.h"
 #include "interface.h"
 #include <sstream>
 #include <sys/types.h>
@@ -222,59 +221,6 @@ SocketServer::handleRequest() {
             dirs.insert(request[i]);
         }
         interface->setIndexedDirectories(dirs);
-        return;
-    }
-    if (request.size() == 1 && request[0] == "getFilteringRules") {
-        response.clear();
-        multimap<int,string> d = interface->getFilteringRules();
-        multimap<int,string>::iterator lb, ub, i;
-        char buffer[500];
-
-        lb = d.lower_bound(PathFilter::RTTI);
-        ub = d.upper_bound(PathFilter::RTTI);
-
-        // response structure:
-        // LINE 0: FILTER_RTTI-TOT_RULES_NUMBER
-        // ... rules ...
-        // LINE $RULES_NUMBER: FILTER_RTTI-TOT_RULES_NUMBER
-        // ... rules ...
-
-        snprintf (buffer, 500*sizeof(char), "%i-%u",PathFilter::RTTI, d.count(PathFilter::RTTI));
-        response.push_back(string(buffer));
-        for (i = lb; i != ub; ++i) {
-            response.push_back(i->second);
-        }
-
-        lb = d.lower_bound(PatternFilter::RTTI);
-        ub = d.upper_bound(PatternFilter::RTTI);
-
-        snprintf (buffer, 500*sizeof(char), "%i-%u",PatternFilter::RTTI, d.count(PatternFilter::RTTI));
-        response.push_back(string(buffer));
-        for (i = lb; i != ub; ++i) {
-            response.push_back(i->second);
-        }
-
-        return;
-    }
-    if (request.size() >= 1 && request[0] == "setFilteringRules") {
-        // response structure:
-        // LINE 0: FILTER_RTTI-TOT_RULES_NUMBER
-        // ... rules ...
-        // LINE $RULES_NUMBER: FILTER_RTTI-TOT_RULES_NUMBER
-        // ... rules ...
-        multimap<int,string> rules;
-        int filterRTTI = 0;
-        unsigned int filterNum = 0;
-        int unsigned i = 1;
-
-        while ((i < request.size()) && (sscanf(request[i].c_str(), "%i-%u", &filterRTTI, &filterNum) != 0))
-        {
-            i++;
-            for (unsigned int ub = i + filterNum; (i < ub) && (i < request.size()); i++)
-                rules.insert (make_pair(filterRTTI, request[i]));
-        }
-
-        interface->setFilteringRules(rules);
         return;
     }
     if (request.size() == 1 && request[0] == "getIndexedFiles") {

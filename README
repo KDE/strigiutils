@@ -22,7 +22,7 @@ Here are the main features of Strigi:
 - calculation of sha1 for every file crawled (allows fast finding of duplicates)
 
 Requirements
-- CLucene >= 0.9.15 (http://clucene.sf.net)
+- CLucene >= 0.9.16 (http://clucene.sf.net)
 - CMake >= 2.4.2 (http://www.cmake.org)
 - ZLib >= 1.2.3 (http://www.zlib.net)
 - BZip2 >= 1.0.3 (http://www.bzip.org)
@@ -79,14 +79,8 @@ Strigi can currently use 2 different backends with 2 more in the works. Install 
 +  Sqlite3        http://sqlite.org/
 +  Xapian         http://xapian.org/
 
-You need to use a patched version of CLucene 0.9.15. The unpatched version  can
-be found here: http://sourceforge.net/project/showfiles.php?group_id=80013
-To patch CLucene you need to copy a few header files before compiling CLucene:
-If cmake still cannot find CLucene, it can help to set CLUCENE_HOME like this:
-  export CLUCENE_HOME=/path/to/clucene
-before running cmake.
-
-cd $STRIGIDIR/src/streams; cp streambase.h bufferedstream.h inputstreambuffer.h clucene-core-0.9.15/src/CLucene/util/
+You need to use a CLucene 0.9.16. It can be found here:
+ http://sourceforge.net/project/showfiles.php?group_id=80013
 
 Usage:
 Start Strigi by running 'strigiclient', then choose a backend and press 'Start daemon'. Now you can configure directories to index and start indexing.

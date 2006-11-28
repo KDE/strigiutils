@@ -28,8 +28,6 @@
 #include <QSpacerItem>
 #include <QVBoxLayout>
 
-#include "filters.h"
-
 using namespace std;
 
 FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* parent)
@@ -74,7 +72,7 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
     {
         QListWidgetItem* item = new QListWidgetItem((iter->second).c_str(), ruleList, iter->first);
 
-        switch (iter->first)
+/*        switch (iter->first)
         {
             case PathFilter::RTTI:
                 item->setToolTip(tr("Path filtering rule"));
@@ -84,7 +82,7 @@ FilteringRulesPage::FilteringRulesPage(multimap<int,string>* rules, QWidget* par
                 item->setToolTip(tr("Pattern filtering rule"));
                 item->setWhatsThis(tr("<p align=\"center\"><b>Pattern filtering rule</b></p><br><p><b>Explanation:</b> all files and directories matching the pattern wont be indexed</p><br><p><b><i>Example:</i></b> pattern <i>*log</i> will prevent <i>foo.log</i> and <i>prolog.pdf</i> from being indexed, but also directory <i>/home/foo/log/</i> and all its contents</p>"));
                 break;
-        }
+        }*/
     }
 
     connect (ruleList, SIGNAL(itemSelectionChanged ()), this, SLOT (selectionChanged()));
@@ -142,7 +140,7 @@ void FilteringRulesPage::addRule()
     {
         QListWidgetItem* item = new QListWidgetItem (rule, ruleList, type);
 
-        switch (type)
+/*        switch (type)
         {
             case PathFilter::RTTI:
                 item->setToolTip("Path filtering rule");
@@ -150,7 +148,7 @@ void FilteringRulesPage::addRule()
             case PatternFilter::RTTI:
                 item->setToolTip("Pattern filtering rule");
                 break;
-        }
+        }*/
     }
 }
 

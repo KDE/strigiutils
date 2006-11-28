@@ -37,33 +37,9 @@ main() {
 
 	filename << n++ << ".xml";
 	xml = read(filename.str());
-	Pathfilter pathfilter(xml);
+	Filter filter(xml);
 	f.open(filename.str().c_str(), std::ios::binary);
-	f << pathfilter;
-	f.close();
-	filename.str("");
-
-	filename << n++ << ".xml";
-	xml = read(filename.str());
-	Patternfilter patternfilter(xml);
-	f.open(filename.str().c_str(), std::ios::binary);
-	f << patternfilter;
-	f.close();
-	filename.str("");
-
-	filename << n++ << ".xml";
-	xml = read(filename.str());
-	Filteringrules filteringrules(xml);
-	f.open(filename.str().c_str(), std::ios::binary);
-	f << filteringrules;
-	f.close();
-	filename.str("");
-
-	filename << n++ << ".xml";
-	xml = read(filename.str());
-	Fylter fylter(xml);
-	f.open(filename.str().c_str(), std::ios::binary);
-	f << fylter;
+	f << filter;
 	f.close();
 	filename.str("");
 

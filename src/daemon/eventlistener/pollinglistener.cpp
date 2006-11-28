@@ -27,7 +27,6 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filtermanager.h"
 #include "filelister.h"
 #include "indexreader.h"
 #include "../strigilogging.h"

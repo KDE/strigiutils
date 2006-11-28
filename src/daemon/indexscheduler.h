@@ -32,6 +32,7 @@ class FilterManager;
 
 namespace jstreams {
     class IndexManager;
+    class IndexerConfiguration;
 }
 class IndexScheduler : public StrigiThread {
 friend bool addFileCallback(const char* path, uint dirlen, uint len,
@@ -43,7 +44,7 @@ private:
     std::map<std::string, time_t> toindex;
 
     EventListenerQueue* m_listenerEventQueue;
-    FilterManager* m_filterManager;
+    jstreams::IndexerConfiguration* m_indexerconfiguration;
     void processListenerEvents(std::vector<Event*>& events);
 
     void* run(void*);
@@ -58,8 +59,12 @@ public:
     void setIndexManager(jstreams::IndexManager* m) {
         indexmanager = m;
     }
-    void setEventListenerQueue (EventListenerQueue* eventQueue) { m_listenerEventQueue = eventQueue; }
-    void setFilterManager (FilterManager* filterManager) { m_filterManager = filterManager;}
+    void setEventListenerQueue (EventListenerQueue* eventQueue) {
+        m_listenerEventQueue = eventQueue;
+    }
+    void setIndexerConfiguration(jstreams::IndexerConfiguration* ic) {
+        m_indexerconfiguration = ic;
+    }
     int getQueueSize();
     void startIndexing() { setState(Working); }
     void stopIndexing() { setState(Idling); }

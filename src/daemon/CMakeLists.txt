@@ -37,19 +37,19 @@ IF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
     MESSAGE("-- log4cxx WONT be enabled")
 ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
 
-include_directories( eventlistener ../filters .)
+include_directories(eventlistener .)
 
 add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
 	indexscheduler.cpp strigilogging.h strigithread.cpp)
 
-add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
+#add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
 
-set(strigidaemon_LIBS streamindexer eventlistener filters combinedindex
+set(strigidaemon_LIBS streamindexer eventlistener combinedindex
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
-target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters
-                      daemonconfigurator streamindexer)
+#target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters
+#                      daemonconfigurator streamindexer)
 
 add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
 	asyncsocketclient.cpp)
@@ -57,7 +57,7 @@ set_target_properties(searchclient PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-install(TARGETS strigidaemon searchclient strigiconfupdater
+install(TARGETS strigidaemon searchclient #strigiconfupdater
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib)
 install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h

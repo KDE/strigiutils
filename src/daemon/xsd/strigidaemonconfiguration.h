@@ -22,29 +22,10 @@ public:
 	std::string a_name;
 	std::list<Path> e_path;
 };
-class Pathfilter {
+class Filter {
 public:
-	Pathfilter(const std::string& xml = "");
-	friend std::ostream& operator<<(std::ostream&, const Pathfilter&);
-	std::string a_path;
-};
-class Patternfilter {
-public:
-	Patternfilter(const std::string& xml = "");
-	friend std::ostream& operator<<(std::ostream&, const Patternfilter&);
-	std::string a_pattern;
-};
-class Filteringrules {
-public:
-	Filteringrules(const std::string& xml = "");
-	friend std::ostream& operator<<(std::ostream&, const Filteringrules&);
-	std::list<Pathfilter> e_pathfilter;
-	std::list<Patternfilter> e_patternfilter;
-};
-class Fylter {
-public:
-	Fylter(const std::string& xml = "");
-	friend std::ostream& operator<<(std::ostream&, const Fylter&);
+	Filter(const std::string& xml = "");
+	friend std::ostream& operator<<(std::ostream&, const Filter&);
 	bool a_include;
 	std::string a_pattern;
 };
@@ -52,7 +33,7 @@ class Filters {
 public:
 	Filters(const std::string& xml = "");
 	friend std::ostream& operator<<(std::ostream&, const Filters&);
-	std::list<Fylter> e_fylter;
+	std::list<Filter> e_filter;
 };
 class StrigiDaemonConfiguration {
 public:
@@ -62,7 +43,6 @@ public:
 protected:
 	bool a_useDBus;
 	std::list<Repository> e_repository;
-	std::list<Filteringrules> e_filteringrules;
 	Filters e_filters;
 };
 #endif

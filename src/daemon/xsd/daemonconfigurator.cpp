@@ -20,10 +20,6 @@
  */
 
 #include "daemonconfigurator.h"
-// #include "../../filters/filtermanager.h"
-// #include "../../filters/filters.h"
-#include "filtermanager.h"
-#include "filters.h"
 #include "../strigilogging.h"
 
 #include <algorithm>
@@ -84,11 +80,6 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         e_repository.push_back(r);
 
         // add pattern to ignore hidden directories
-        Filteringrules rules;
-        Patternfilter filter;
-        filter.a_pattern="*/.*";
-        rules.e_patternfilter.push_back(filter);
-        e_filteringrules.push_back(rules);
 
         STRIGI_LOG_WARNING ("DaemonConfigurator",
                             "created default config for indexed dirs")
@@ -159,8 +150,8 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 
     return dirs;
 }
-void DaemonConfigurator::save(const char* file)
-{
+void
+DaemonConfigurator::save(const char* file) {
     ofstream f;
     if (file == NULL)
         f.open(m_confFile.c_str(), ios::binary);
@@ -176,133 +167,6 @@ DaemonConfigurator::getWriteableIndexType() const {
 string
 DaemonConfigurator::getWriteableIndexDir() const {
     return (e_repository.size()) ?e_repository.begin()->a_indexdir : "";
-}
-void
-DaemonConfigurator::loadFilteringRules (FilterManager* filterManager)
-{
-    multimap<int,string> rules;
-
-    list<Filteringrules>::const_iterator i;
-    for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
-        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
-             j != i->e_pathfilter.end(); ++j)
-        {
-            rules.insert (make_pair((int)PathFilter::RTTI, j->a_path));
-            STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator.loadFilteringRules",
-                              "added path filter: |" + j->a_path + '|')
-        }
-
-        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
-                j != i->e_patternfilter.end(); ++j)
-        {
-            rules.insert (make_pair((int)PatternFilter::RTTI, j->a_pattern));
-            STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator.loadFilteringRules",
-                              "added pattern filter: |" + j->a_pattern + '|')
-        }
-    }
-
-    filterManager->setFilteringRules (rules);
-}
-void
-DaemonConfigurator::saveFilteringRules(set<string>& rules,
-                                       unsigned int filterRTTI,
-                                       bool merge)
-{
-    // remove old filtering rules
-    if (!merge)
-        e_filteringrules.clear();
-
-    Filteringrules f;
-
-    for (set<string>::iterator iter = rules.begin();iter != rules.end(); iter++)
-    {
-        switch (filterRTTI)
-        {
-            case PathFilter::RTTI:
-            {
-                Pathfilter p;
-                p.a_path = *iter;
-                f.e_pathfilter.push_back (p);
-                break;
-            }
-            case PatternFilter::RTTI:
-            {
-                Patternfilter p;
-                p.a_pattern = *iter;
-                f.e_patternfilter.push_back (p);
-                break;
-            }
-            default:
-                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules",
-                                  "unknown rule RTTI")
-                break;
-        }
-    }
-
-    e_filteringrules.push_back (f);
-}
-void
-DaemonConfigurator::saveFilteringRules (FilterManager* filterManager)
-{
-    multimap<int,string>  rules = filterManager->getFilteringRules();
-
-    // remove old filtering rules
-    e_filteringrules.clear();
-
-    Filteringrules f;
-
-    for (multimap<int,string>::iterator iter = rules.begin();
-         iter != rules.end(); iter++)
-    {
-        switch (iter->first)
-        {
-            case PathFilter::RTTI:
-            {
-                Pathfilter p;
-                p.a_path = iter->second;
-                f.e_pathfilter.push_back (p);
-                break;
-            }
-            case PatternFilter::RTTI:
-            {
-                Patternfilter p;
-                p.a_pattern = iter->second;
-                f.e_patternfilter.push_back (p);
-                break;
-            }
-            default:
-                STRIGI_LOG_ERROR ("DaemonConfigurator.saveFilteringRules",
-                                  "unknown rule RTTI")
-                break;
-        }
-    }
-
-    e_filteringrules.push_back (f);
-
-    STRIGI_LOG_DEBUG ("strigi.DaemonConfigurator",
-                      "successfully saved filtering rules")
-}
-set<string>
-DaemonConfigurator::readFilteringRules()
-{
-    set<string> rules;
-
-    list<Filteringrules>::const_iterator i;
-    for (i = e_filteringrules.begin(); i != e_filteringrules.end(); ++i) {
-        for (list<Pathfilter>::const_iterator j = i->e_pathfilter.begin();
-             j != i->e_pathfilter.end(); ++j)
-        {
-            rules.insert (j->a_path);
-        }
-
-        for (list<Patternfilter>::const_iterator j = i->e_patternfilter.begin();
-                j != i->e_patternfilter.end(); ++j)
-        {
-            rules.insert (j->a_pattern);
-        }
-    }
-
-    return rules;
 }
 list<Repository>
 DaemonConfigurator::getReadOnlyRepositories() const {
@@ -373,12 +237,20 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
 void
 DaemonConfigurator::loadFilteringRules(IndexerConfiguration& config) {
     vector<pair<bool,string> > filters;
-    list<Fylter>::const_iterator i;
-    for (i = e_filters.e_fylter.begin(); i != e_filters.e_fylter.end(); ++i) {
+    list<Filter>::const_iterator i;
+    for (i = e_filters.e_filter.begin(); i != e_filters.e_filter.end(); ++i) {
         filters.push_back(make_pair(i->a_include, i->a_pattern));
     }
     config.setFilters(filters);
 }
 void
-DaemonConfigurator::saveFilteringRules(const IndexerConfiguration& config) {
+DaemonConfigurator::saveFilteringRules(const vector<pair<bool,string> >& f) {
+    e_filters.e_filter.clear();
+    vector<pair<bool,string> >::const_iterator i;
+    for (i = f.begin(); i != f.end(); ++i) {
+        Filter f;
+        f.a_include = i->first;
+        f.a_pattern = i->second;
+        e_filters.e_filter.push_back(f);
+    }
 }

@@ -20,8 +20,6 @@
 
 #include "dlgaddfilteringrule.h"
 
-#include "filters.h"
-
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -52,7 +50,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
 {
     setupUi();
 
-    switch (m_item->type())
+/*    switch (m_item->type())
     {
         case PathFilter::RTTI:
             pathClicked();
@@ -61,7 +59,7 @@ DlgAddFilteringRule::DlgAddFilteringRule(QListWidgetItem* item, QWidget *parent)
             patternClicked();
             btnBrowse->hide();
             break;
-    }
+    }*/
 
     lineEdit->setText(item->text());
     rbtnPath->hide();
@@ -174,11 +172,11 @@ void DlgAddFilteringRule::accept()
     if (m_item != NULL) {
         m_item->setText (lineEdit->text());
     } else if ((m_type != NULL) && (m_rule != NULL)) {
-        if (rbtnPath->isChecked()) {
+/*        if (rbtnPath->isChecked()) {
             *m_type = PathFilter::RTTI;
         } else if (rbtnPattern->isChecked()) {
             *m_type = PatternFilter::RTTI;
-        }
+        }*/
 
         *m_rule = lineEdit->text();
     }

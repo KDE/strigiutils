@@ -25,28 +25,10 @@ xmlns:tns="http://www.vandenoever.info/strigi">
       </element>
     </sequence>
     <sequence>
-      <element name="filteringrules" minOccurs="0" maxOccurs="1">
-        <complexType>
-          <sequence>
-            <element name="pathfilter"  minOccurs="0" maxOccurs="unbounded">
-              <complexType>
-                <attribute name="path" type="string"/>
-              </complexType>
-            </element>
-            <element name="patternfilter" minOccurs="0" maxOccurs="unbounded">
-              <complexType>
-                <attribute name="pattern" type="string"/>
-              </complexType>
-            </element>
-          </sequence>
-        </complexType>
-      </element>
-    </sequence>
-    <sequence>
       <element name="filters" minOccurs="1" maxOccurs="1">
         <complexType>
           <sequence>
-            <element name="fylter"  minOccurs="0" maxOccurs="unbounded">
+            <element name="filter"  minOccurs="0" maxOccurs="unbounded">
               <complexType>
                 <attribute name="pattern" type="string"/>
                 <attribute name="include" type="boolean"/>

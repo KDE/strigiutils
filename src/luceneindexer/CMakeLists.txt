@@ -1,6 +1,6 @@
 subdirs(tests indexdump)
 
-include_directories( ../streamindexer ../streams ../filters
+include_directories( ../streamindexer ../streams
 	${CLUCENE_LIBRARY_DIR} ${CLUCENE_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams)
 
@@ -14,7 +14,7 @@ add_library(cluceneindex cluceneindexwriter.cpp cluceneindexmanager.cpp
 target_link_libraries(cluceneindex streamindexer ${CLUCENE_LIBRARY})
 
 add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
-target_link_libraries(luceneindexer cluceneindex filters)
+target_link_libraries(luceneindexer cluceneindex)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)
 

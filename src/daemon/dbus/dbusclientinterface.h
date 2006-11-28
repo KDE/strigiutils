@@ -15,13 +15,11 @@ private:
     void getStatus(DBusMessage* msg, DBusConnection* conn);
     void isActive(DBusMessage* msg, DBusConnection* conn);
     void getIndexedFiles(DBusMessage* msg, DBusConnection* conn);
-    void getFilteringRules(DBusMessage* msg, DBusConnection* conn);
     void setIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
     void getBackEnds(DBusMessage* msg, DBusConnection* conn);
     void setFilters(DBusMessage* msg, DBusConnection* conn);
     void getIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
     void stopIndexing(DBusMessage* msg, DBusConnection* conn);
-    void setFilteringRules(DBusMessage* msg, DBusConnection* conn);
     void getHits(DBusMessage* msg, DBusConnection* conn);
     void startIndexing(DBusMessage* msg, DBusConnection* conn);
     void countHits(DBusMessage* msg, DBusConnection* conn);

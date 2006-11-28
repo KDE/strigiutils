@@ -1,4 +1,4 @@
-set(DIRS filters streams streamindexer dummyindexer archivereader xmlindexer)
+set(DIRS streams streamindexer dummyindexer archivereader xmlindexer)
 
 if (CLucene_FOUND)
   set(DIRS ${DIRS} luceneindexer)

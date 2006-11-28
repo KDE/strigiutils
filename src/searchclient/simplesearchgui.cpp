@@ -180,21 +180,15 @@ SimpleSearchGui::updateStatus() {
 }
 void
 SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
-    static bool first = true;
+//    static bool first = true;
     static bool attemptedstart = false;
-    if (!first && !statusview->isVisible()) return;
-    first = false;
+//    if (!first && !statusview->isVisible()) return;
+//    first = false;
     QMap<QString, QString> status (s);
     if (status.size() == 0) {
         running = false;
         editListIndexedFilesAct->setEnabled(false);
-        /*if (!attemptedstart) {
-            status["Status"] = "Starting daemon";
-            startDaemon();
-            attemptedstart = true;
-        } else {*/
-            status["Status"] = "Daemon is not running";
-        //}
+        status["Status"] = "Daemon is not running";
     } else {
         attemptedstart = true;
         starting = false;
@@ -328,7 +322,7 @@ void
 SimpleSearchGui::editPreferences() {
     SocketClient client;
     client.setSocketName(socketfile.c_str());
-    multimap<int,string> rules = client.getFilteringRules();
+    multimap<int,string> rules;// = client.getFilteringRules();
 
     DlgPreferences* dlg = new DlgPreferences (running, &rules);
     dlg->exec();
@@ -336,7 +330,7 @@ SimpleSearchGui::editPreferences() {
     delete dlg;
 
     //update filtering rules
-    client.setFilteringRules( rules);
+    //client.setFilteringRules( rules);
 }
 void
 SimpleSearchGui::editListIndexedFiles() {

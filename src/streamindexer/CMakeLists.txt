@@ -1,6 +1,6 @@
 subdirs (throughplugins)
 
-include_directories( ./ ../streams ../filters ${BZIP2_INCLUDE_DIR}
+include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams)
 
@@ -38,7 +38,7 @@ set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(streamindexer streams filters ${streamindex_LIBS})
+target_link_libraries(streamindexer streams ${streamindex_LIBS})
 
 install(FILES indexeddocument.h indexable.h analyzerplugin.h
 	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
@@ -48,4 +48,4 @@ install(FILES indexeddocument.h indexable.h analyzerplugin.h
 # test executable
 add_executable(filelister filelistertest.cpp)
 
-target_link_libraries(filelister streamindexer filters)
+target_link_libraries(filelister streamindexer)

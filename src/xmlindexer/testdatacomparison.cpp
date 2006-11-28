@@ -21,7 +21,6 @@
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
 #include "indexer.h"
-#include "filtermanager.h"
 #include "indexerconfiguration.h"
 
 #include <cstdio>
@@ -50,11 +49,6 @@ main(int argc, char** argv) {
         printUsage(argv);
         return -1;
     }
-
-    FilterManager filtermanager;
-    multimap<int, string> filters;
-    filters.insert(make_pair(1, "*/.*"));
-    filtermanager.setFilteringRules(filters);
 
     ostringstream s;
     jstreams::IndexerConfiguration ic;

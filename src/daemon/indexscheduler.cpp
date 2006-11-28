@@ -25,7 +25,6 @@
 #include "jstreamsconfig.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filtermanager.h"
 #include "indexerconfiguration.h"
 
 #include "filelister.h"
@@ -43,7 +42,6 @@ IndexScheduler* sched;
 IndexScheduler::IndexScheduler() :StrigiThread("IndexScheduler") {
     sched = this;
     m_listenerEventQueue = NULL;
-    m_filterManager = NULL;
 }
 IndexScheduler::~IndexScheduler() {
 }
@@ -115,8 +113,8 @@ void
 IndexScheduler::index() {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    IndexerConfiguration ic;
-    StreamIndexer* streamindexer = new StreamIndexer(*writer, ic);
+    StreamIndexer* streamindexer = new StreamIndexer(*writer,
+        *m_indexerconfiguration);
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
@@ -127,7 +125,7 @@ IndexScheduler::index() {
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database")
 
         // first loop through all files
-        FileLister lister (ic);
+        FileLister lister (*m_indexerconfiguration);
         lister.setFileCallbackFunction(&addFileCallback);
         STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "going to index")
         set<string>::const_iterator i;

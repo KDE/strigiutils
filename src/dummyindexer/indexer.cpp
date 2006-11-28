@@ -21,7 +21,6 @@
 #include "indexer.h"
 #include "filelister.h"
 #include "filereader.h"
-#include "filtermanager.h"
 #include <sys/stat.h>
 
 using namespace std;
