@@ -231,7 +231,6 @@ main(int argc, char** argv) {
 #ifdef HAVE_DBUS
     DBusServer dbusserver(&interface);
     if (config.useDBus()) {
-//        threads.push_back(&dbusserver);
         dbusserver.start();
     }
 #endif
@@ -252,7 +251,7 @@ main(int argc, char** argv) {
     }
 
     //save filtering rules
-    //config.saveFilteringRules(&filterManager);
+    config.saveFilteringRules(scheduler.getIndexerConfiguration().getFilters());
 
     //save the updated xml configuration file
     config.save();
