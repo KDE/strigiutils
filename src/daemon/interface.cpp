@@ -114,11 +114,11 @@ Interface::setIndexedDirectories(set<string> dirs) {
 }
 void
 Interface::setFilters(const std::vector<std::pair<bool,std::string> >& rules) {
+    scheduler.getIndexerConfiguration().setFilters(rules);
 }
 vector<pair<bool,string> >
 Interface::getFilters() {
-    vector<pair<bool,string> > f;
-    return f;
+    return scheduler.getIndexerConfiguration().getFilters();
 }
 set<string>
 Interface::getIndexedFiles() {
@@ -141,7 +141,6 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     IndexerConfiguration ic;
     StreamIndexer streamindexer(*writer, ic);
     StringReader<char> sr(&content[0], content.size(), false);
-    IndexerConfiguration dic;
     Indexable idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
 }

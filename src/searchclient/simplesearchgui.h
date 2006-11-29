@@ -42,7 +42,6 @@ private:
     bool starting;
     bool indexing;
     bool running;
-    std::string socketfile;
     QStackedWidget* mainview;
     SearchTabs* tabs;
     QLabel* statusview;

@@ -28,7 +28,6 @@
 
 class Event;
 class EventListenerQueue;
-class FilterManager;
 
 namespace jstreams {
     class IndexManager;
@@ -64,6 +63,9 @@ public:
     }
     void setIndexerConfiguration(jstreams::IndexerConfiguration* ic) {
         m_indexerconfiguration = ic;
+    }
+    jstreams::IndexerConfiguration& getIndexerConfiguration() const {
+        return *m_indexerconfiguration;
     }
     int getQueueSize();
     void startIndexing() { setState(Working); }

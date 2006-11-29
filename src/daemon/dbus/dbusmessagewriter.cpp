@@ -186,5 +186,17 @@ DBusMessageWriter::operator<<(const std::multimap<int, std::string>& m) {
 }
 DBusMessageWriter&
 DBusMessageWriter::operator<<(const std::vector<std::pair<bool, std::string> >& s) {
+    DBusMessageIter sub, ssub;
+    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY, "(bs)", &sub);
+    vector<pair<bool,string> >::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
+        dbus_bool_t n = i->first;
+        const char* s = i->second.c_str();
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_BOOLEAN, &n);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &s);
+        dbus_message_iter_close_container(&sub, &ssub);
+    }
+    dbus_message_iter_close_container(&it, &sub);
     return *this;
 }

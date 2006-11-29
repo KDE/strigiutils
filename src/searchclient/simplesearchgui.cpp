@@ -122,9 +122,6 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
         this, SLOT(removeDirectory()));
     queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
-    socketfile = getenv("HOME");
-    socketfile += "/.strigi/socket";
-
     connect (&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
         this, SLOT(updateStatus(const QMap<QString, QString>& )));
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
@@ -311,12 +308,8 @@ SimpleSearchGui::editFilters() {
     filters = strigi.getFilters();
 
     DlgFilters dlg(filters);
-    if (dlg.exec()) {
-        //update filtering rules
-        if (filters != dlg.getFilters()) {
-            qDebug() << "new filters";
-            strigi.setFilters(dlg.getFilters());
-        }
+    if (dlg.exec() && filters != dlg.getFilters()) {
+        strigi.setFilters(dlg.getFilters());
     }
 }
 void

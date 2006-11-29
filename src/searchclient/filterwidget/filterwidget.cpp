@@ -49,6 +49,7 @@ FilterWidget::FilterWidget(QWidget* p) :QWidget(p) {
 void
 FilterWidget::setFilters(const QList<QPair<bool,QString> >& f) {
     model->filters = f;
+    qDebug() << f.size();
 }
 const QList<QPair<bool,QString> >&
 FilterWidget::getFilters() const {

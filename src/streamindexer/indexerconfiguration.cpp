@@ -85,7 +85,8 @@ IndexerConfiguration::printFilters() const {
 }
 void
 IndexerConfiguration::setFilters(
-        const std::vector<std::pair<bool,std::string> >& filters) {
+        const std::vector<std::pair<bool,std::string> >& f) {
+    filters = f;
     vector<pair<bool,string> >::const_iterator i;
     patterns.clear();
     for (i = filters.begin(); i != filters.end(); ++i) {

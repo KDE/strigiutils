@@ -43,6 +43,7 @@ private:
         bool include;
     };
     std::vector<Pattern> patterns;
+    std::vector<std::pair<bool,std::string> > filters;
 
 public:
     IndexerConfiguration();
@@ -60,6 +61,9 @@ public:
     virtual FieldType getIndexType(const std::string& fieldname) const;
 
     void setFilters(const std::vector<std::pair<bool,std::string> >& filters);
+    const std::vector<std::pair<bool,std::string> >& getFilters() const {
+        return filters;
+    }
 };
 
 /**
