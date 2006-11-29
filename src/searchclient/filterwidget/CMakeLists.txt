@@ -3,8 +3,8 @@ include_directories()
 if (QT4_FOUND)
   include(${QT_USE_FILE})
 
-  set(filterwidget_SRCS filterwidget.cpp)
-  set(filterwidget_MOC_HDRS filterwidget.h)
+  set(filterwidget_SRCS filterwidget.cpp filtermodel.cpp)
+  set(filterwidget_MOC_HDRS filterwidget.h filtermodel.h)
 
   qt4_wrap_cpp(filterwidget_MOC_SRCS ${filterwidget_MOC_HDRS})
 

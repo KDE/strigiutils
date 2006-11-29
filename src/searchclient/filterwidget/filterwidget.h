@@ -1,14 +1,14 @@
 #include <QWidget>
 
 class QListView;
-class Model;
+class FilterModel;
 class QModelIndex;
 class QPushButton;
 class FilterWidget : public QWidget {
 Q_OBJECT
 private:
     QListView* listview;
-    Model* model;
+    FilterModel* model;
     QPushButton* up;
     QPushButton* down;
     QPushButton* del;
@@ -18,6 +18,4 @@ public:
     FilterWidget();
     void setFilters(const std::vector<std::pair<bool,std::string> >& f);
     std::vector<std::pair<bool,std::string> > getFilters() const;
-private slots:
-    void clicked(const QModelIndex& index);
 };
