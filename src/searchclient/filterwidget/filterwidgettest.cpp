@@ -8,9 +8,9 @@ main(int argc, char** argv) {
     FilterWidget fw;
     fw.show();
 
-    vector<pair<bool,string> > f;
-    f.push_back(make_pair(true, "*.html"));
-    f.push_back(make_pair(false, ".svn/"));
+    QList<QPair<bool,QString> > f;
+    f.append(qMakePair(true, QString("*.html")));
+    f.append(qMakePair(false, QString(".svn/")));
     fw.setFilters(f);
 
     return qapp.exec();
