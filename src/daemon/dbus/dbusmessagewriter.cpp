@@ -184,3 +184,7 @@ DBusMessageWriter::operator<<(const std::multimap<int, std::string>& m) {
     dbus_message_iter_close_container(&it, &sub);
     return *this;
 }
+DBusMessageWriter&
+DBusMessageWriter::operator<<(const std::vector<std::pair<bool, std::string> >& s) {
+    return *this;
+}

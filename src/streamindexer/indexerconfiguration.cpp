@@ -45,17 +45,6 @@ IndexerConfiguration::getIndexType(const std::string& fieldname) const {
                                 : Stored|Indexed;
 }
 bool
-IndexerConfiguration::indexPathFragment(const string& pathfragment) const {
-    return true;
-}
-bool
-IndexerConfiguration::indexFile(const char* filename) const {
-    vector<Pattern>::const_iterator i;
-    for (i = patterns.begin(); i != patterns.end(); ++i) {
-    }
-    return true;
-}
-bool
 IndexerConfiguration::indexFile(const char* path, const char* filename) const {
     vector<Pattern>::const_iterator i;
     for (i = patterns.begin(); i != patterns.end(); ++i) {
@@ -69,10 +58,6 @@ IndexerConfiguration::indexFile(const char* path, const char* filename) const {
             return i->include;
         }
     }
-    return true;
-}
-bool
-IndexerConfiguration::indexDir(const char* filename) const {
     return true;
 }
 bool

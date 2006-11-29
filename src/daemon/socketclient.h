@@ -44,6 +44,7 @@ public:
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
     void setFilters(const std::vector<std::pair<bool,std::string> >& rules);
+    std::vector<std::pair<bool,std::string> > getFilters();
     std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);

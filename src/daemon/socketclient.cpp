@@ -299,6 +299,11 @@ SocketClient::setIndexedDirectories(set<string> dirs) {
 void
 SocketClient::setFilters(const std::vector<std::pair<bool,std::string> >&rules){
 }
+vector<pair<bool,string> >
+SocketClient::getFilters() {
+    vector<pair<bool,string> > f;
+    return f;
+}
 set<string>
 SocketClient::getIndexedFiles() {
     set<string> r;

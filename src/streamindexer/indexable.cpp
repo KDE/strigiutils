@@ -71,7 +71,8 @@ char
 Indexable::indexChild(const std::string& name, time_t mt,
         StreamBase<char>& file) {
     // TODO check if this is a name we want to index
-    if (indexableconfig.indexPathFragment(name)) {
+//    if (indexableconfig.indexPathFragment(name))
+{
         Indexable i(name, mt, *this);
         return indexer.analyze(i, &file);
     }

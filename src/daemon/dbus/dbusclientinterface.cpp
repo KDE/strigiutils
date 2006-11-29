@@ -8,6 +8,7 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
         :DBusObjectInterface("vandenoever.strigi"), impl(i) {
     handlers["indexFile"] = &DBusClientInterface::indexFile;
     handlers["getStatus"] = &DBusClientInterface::getStatus;
+    handlers["getFilters"] = &DBusClientInterface::getFilters;
     handlers["isActive"] = &DBusClientInterface::isActive;
     handlers["getIndexedFiles"] = &DBusClientInterface::getIndexedFiles;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
@@ -43,6 +44,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "    <method name='getStatus'>\n"
     << "      <arg name='out' type='a{ss}' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='getFilters'>\n"
+    << "      <arg name='out' type='a(bs)' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='isActive'>\n"
     << "      <arg name='out' type='b' direction='out'/>\n"
@@ -103,6 +107,14 @@ DBusClientInterface::getStatus(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl->getStatus();
+    }
+}
+void
+DBusClientInterface::getFilters(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    if (reader.isOk()) {
+        writer << impl->getFilters();
     }
 }
 void

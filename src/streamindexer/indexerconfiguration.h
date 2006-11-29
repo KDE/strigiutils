@@ -50,11 +50,8 @@ public:
     /**
      * A path fragment is e.g. a.txt for folder/a.txt
      **/
-    virtual bool indexPathFragment(const std::string& pathfragment) const;
     virtual bool indexFile(const char* path, const char* filename) const;
-    virtual bool indexFile(const char* filename) const;
     virtual bool indexDir(const char* path, const char* filename) const;
-    virtual bool indexDir(const char* filename) const;
     void printFilters() const;
     virtual bool useFactory(StreamEndAnalyzerFactory*) const { return true; }
     virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }

@@ -46,6 +46,7 @@ public:
     virtual std::set<std::string> getIndexedDirectories() = 0;
     virtual std::string setIndexedDirectories(std::set<std::string> d) = 0;
     virtual void setFilters(const std::vector<std::pair<bool,std::string> >& rules) = 0;
+    virtual std::vector<std::pair<bool,std::string> > getFilters() = 0;
     virtual std::set<std::string> getIndexedFiles() = 0;
     bool isActive() { return active; }
     virtual std::vector<std::string> getBackEnds() = 0;

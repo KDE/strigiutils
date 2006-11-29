@@ -38,15 +38,10 @@ using namespace jstreams;
 Interface::Interface(CombinedIndexManager& m, IndexScheduler& s)
         :manager(m), scheduler(s) {
     eventListener = NULL;
-    filterManager = NULL;
 }
 void
 Interface::setEventListener (EventListener* eListener) {
     eventListener = eListener;
-}
-void
-Interface::setFilterManager (FilterManager* fManager) {
-    filterManager = fManager;
 }
 int
 Interface::countHits(const string& query) {
@@ -119,6 +114,11 @@ Interface::setIndexedDirectories(set<string> dirs) {
 }
 void
 Interface::setFilters(const std::vector<std::pair<bool,std::string> >& rules) {
+}
+vector<pair<bool,string> >
+Interface::getFilters() {
+    vector<pair<bool,string> > f;
+    return f;
 }
 set<string>
 Interface::getIndexedFiles() {
