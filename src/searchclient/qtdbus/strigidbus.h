@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef STRIGIDBUS_H_1163949528
-#define STRIGIDBUS_H_1163949528
+#ifndef STRIGIDBUS_H_1164808951
+#define STRIGIDBUS_H_1164808951
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -50,10 +50,10 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("getBackEnds"), argumentList);
     }
 
-    inline QDBusReply<QMultiMap<int,QString> > getFilteringRules()
+    inline QDBusReply<QList<QPair<bool,QString> > > getFilters()
     {
         QList<QVariant> argumentList;
-        return callWithArgumentList(QDBus::Block, QLatin1String("getFilteringRules"), argumentList);
+        return callWithArgumentList(QDBus::Block, QLatin1String("getFilters"), argumentList);
     }
 
     inline QDBusReply<QList<StrigiHit> > getHits(const QString &query, int max, int offset)
@@ -94,11 +94,11 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("isActive"), argumentList);
     }
 
-    inline QDBusReply<void> setFilteringRules(const QMultiMap<int,QString> &rules)
+    inline QDBusReply<void> setFilters(const QList<QPair<bool,QString> > &rules)
     {
         QList<QVariant> argumentList;
         argumentList << qVariantFromValue(rules);
-        return callWithArgumentList(QDBus::Block, QLatin1String("setFilteringRules"), argumentList);
+        return callWithArgumentList(QDBus::Block, QLatin1String("setFilters"), argumentList);
     }
 
     inline QDBusReply<QString> setIndexedDirectories(const QStringList &d)

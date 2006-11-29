@@ -13,6 +13,8 @@ StrigiClient::StrigiClient() {
     qDBusRegisterMetaType<QMultiMap<int,QString> >();
     qDBusRegisterMetaType<QList<StrigiHit> >();
     qDBusRegisterMetaType<StrigiHit>();
+    qDBusRegisterMetaType<QList<BoolStringPair> >();
+    qDBusRegisterMetaType<BoolStringPair>();
     p = new Private();
 }
 StrigiClient::~StrigiClient() {
@@ -30,6 +32,10 @@ QStringList
 StrigiClient::getIndexedDirectories() const {
     return p->strigi.getIndexedDirectories();
 }
+QString
+StrigiClient::setIndexedDirectories(const QStringList& d) {
+    return p->strigi.setIndexedDirectories(d);
+}
 QMap<QString,QString>
 StrigiClient::getStatus() const {
     QDBusReply<QMap<QString,QString> > r = p->strigi.getStatus();
@@ -39,4 +45,33 @@ StrigiClient::getStatus() const {
     QMap<QString,QString> m;
     m["Status"] = "unreachable";
     return m;
+}
+QList<QPair<bool,QString> >
+StrigiClient::getFilters() const {
+    QDBusReply<QList<QPair<bool,QString> > > r = p->strigi.getFilters();
+    if (r.isValid()) {
+        return r;
+    }
+    QList<QPair<bool,QString> > f;
+    return f;
+}
+void
+StrigiClient::setFilters(const QList<QPair<bool,QString> >& filters) {
+    p->strigi.setFilters(filters);
+}
+QString
+StrigiClient::startIndexing() {
+    return p->strigi.startIndexing();
+}
+QString
+StrigiClient::stopIndexing() {
+    return p->strigi.stopIndexing();
+}
+QString
+StrigiClient::stopDaemon() {
+    return p->strigi.stopDaemon();
+}
+QStringList
+StrigiClient::getIndexedFiles() {
+    return p->strigi.getIndexedFiles();
 }

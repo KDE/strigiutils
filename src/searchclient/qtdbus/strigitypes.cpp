@@ -16,3 +16,17 @@ operator>>(const QDBusArgument &a, StrigiHit& hit) {
    a.endStructure();
    return a;
 }
+QDBusArgument&
+operator<<(QDBusArgument &a, const BoolStringPair &pair) {
+   a.beginStructure();
+   a << pair.first << pair.second;
+   a.endStructure();
+   return a;
+}
+const QDBusArgument&
+operator>>(const QDBusArgument &a, BoolStringPair& pair) {
+   a.beginStructure();
+   a >> pair.first >> pair.second;
+   a.endStructure();
+   return a;
+}

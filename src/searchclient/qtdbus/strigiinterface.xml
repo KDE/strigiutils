@@ -16,10 +16,15 @@
     <method name='getIndexedFiles'>
       <arg name='out' type='as' direction='out'/>
     </method>
-    <method name='getFilteringRules'>
+    <method name='getFilters'>
      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
-      value="QMultiMap&lt;int,QString>"/>
-      <arg name='out' type='a(is)' direction='out'/>
+      value="QList&lt;QPair&lt;bool,QString> >"/>
+      <arg name='out' type='a(bs)' direction='out'/>
+    </method>
+    <method name='setFilters'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.In0"
+      value="QList&lt;QPair&lt;bool,QString> >"/>
+      <arg name='rules' type='a(bs)' direction='in'/>
     </method>
     <method name='setIndexedDirectories'>
       <arg name='d' type='as' direction='in'/>
@@ -33,11 +38,6 @@
     </method>
     <method name='stopIndexing'>
       <arg name='out' type='s' direction='out'/>
-    </method>
-    <method name='setFilteringRules'>
-     <annotation name="com.trolltech.QtDBus.QtTypeName.In0"
-      value="QMultiMap&lt;int,QString>"/>
-      <arg name='rules' type='a(is)' direction='in'/>
     </method>
     <method name='getHits'>
      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"

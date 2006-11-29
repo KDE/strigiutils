@@ -15,17 +15,21 @@ public:
     int countHits(const QString& query) const;
     QList<StrigiHit> getHits(const QString &query, int max, int offset) const;
     QStringList getIndexedDirectories() const;
+    QString setIndexedDirectories(const QStringList& d);
     QMap<QString,QString> getStatus() const;
+    QList<QPair<bool,QString> > getFilters() const;
+    void setFilters(const QList<QPair<bool,QString> >& rules);
+    QString startIndexing();
+    QString stopIndexing();
+    QString stopDaemon();
+    QStringList getIndexedFiles();
 /* Functions that are in the DBus interface but are not exposed over this class:
     QStringList getBackEnds();
     QMultiMap<int,QString> > getFilteringRules();
     QList<StrigiHit> getHits(const QString &query, int max, int offset);
-    QStringList getIndexedFiles();
     void indexFile(const QString &path, qulonglong mtime,
         const QByteArray &content);
     bool isActive();
-    void setFilteringRules(const QMultiMap<int,QString> &rules);
-    QString setIndexedDirectories(const QStringList &d);
     QString startIndexing();
     QString stopIndexing();
     QString stopDaemon();*/
