@@ -10,7 +10,6 @@
 FilterWidget::FilterWidget() {
     listview = new QListView();
     listview->setViewMode(QListView::ListMode);
-    listview->setModel(QListView::Free);
     model = new FilterModel(this);
     listview->setModel(model);
     up = new QPushButton("up");
