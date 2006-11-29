@@ -21,7 +21,6 @@
 #include "indexer.h"
 #include "filelister.h"
 #include "filereader.h"
-#include "filtermanager.h"
 
 using namespace std;
 
