@@ -22,8 +22,6 @@
 #define DLGLISTINDEXEDFILES_H
 
 #include <QDialog>
-#include <set>
-#include <string>
 
 class QListWidget;
 class QPushButton;
@@ -32,8 +30,7 @@ class DlgListIndexedFiles : public QDialog {
 Q_OBJECT
 
 public:
-    explicit DlgListIndexedFiles (std::set<std::string>& files,
-        QWidget* parent = 0);
+    explicit DlgListIndexedFiles(const QStringList& files, QWidget* parent = 0);
     ~DlgListIndexedFiles () {};
 
 private slots:

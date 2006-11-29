@@ -57,7 +57,7 @@ private:
     QMenu *fileMenu;
     QMenu *editMenu;
     QAction *fileExitAct;
-    QAction *editPreferenceAct;
+    QAction *editFiltersAct;
     QAction *editListIndexedFilesAct;
     StrigiAsyncClient asyncstrigi;
     StrigiClient strigi;
@@ -75,7 +75,7 @@ private slots:
     void query(const QString&);
     void addDirectory();
     void removeDirectory();
-    void editPreferences();
+    void editFilters();
     void editListIndexedFiles();
 
 public:

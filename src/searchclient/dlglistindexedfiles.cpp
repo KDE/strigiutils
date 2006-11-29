@@ -29,9 +29,9 @@
 
 using namespace std;
 
-DlgListIndexedFiles::DlgListIndexedFiles (set<string>& files, QWidget* parent)
-    : QDialog (parent)
-{
+DlgListIndexedFiles::DlgListIndexedFiles(const QStringList& files,
+        QWidget* parent)
+    : QDialog (parent) {
     setWindowTitle(tr("Indexed Files"));
 
     QVBoxLayout* vboxLayout = new QVBoxLayout(this);
@@ -47,8 +47,7 @@ DlgListIndexedFiles::DlgListIndexedFiles (set<string>& files, QWidget* parent)
     vboxLayout1->setMargin(9);
 
     listFiles = new QListWidget(groupBox);
-    for (set<string>::iterator iter = files.begin(); iter != files.end(); iter++)
-        listFiles->addItem (iter->c_str());
+    listFiles->addItems(files);
     listFiles->sortItems();
     vboxLayout1->addWidget(listFiles);
 

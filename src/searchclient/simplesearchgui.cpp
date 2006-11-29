@@ -17,11 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "dlgpreferences.h"
+#include "dlgfilters.h"
 #include "dlglistindexedfiles.h"
 #include "simplesearchgui.h"
 #include "searchtabs.h"
-#include "socketclient.h"
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
@@ -141,7 +140,7 @@ SimpleSearchGui::createMenus() {
     fileMenu->addAction(fileExitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(editPreferenceAct);
+    editMenu->addAction(editFiltersAct);
     editMenu->addAction(editListIndexedFilesAct);
 }
 void
@@ -151,9 +150,9 @@ SimpleSearchGui::createActions() {
     fileExitAct->setStatusTip(tr("Quit the program"));
     connect(fileExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    editPreferenceAct = new QAction(tr("Edit Preferences"), this);
-    editPreferenceAct->setStatusTip(tr("Edit program preferences"));
-    connect(editPreferenceAct, SIGNAL(triggered()), this, SLOT(editPreferences()));
+    editFiltersAct = new QAction(tr("Edit Filters"), this);
+    editFiltersAct->setStatusTip(tr("Edit filename filters"));
+    connect(editFiltersAct, SIGNAL(triggered()), this, SLOT(editFilters()));
 
     editListIndexedFilesAct = new QAction(tr("List indexed files"), this);
     editListIndexedFilesAct->setStatusTip(tr("Show files indexed by strigi"));
@@ -187,12 +186,14 @@ SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     QMap<QString, QString> status (s);
     if (status.size() == 0) {
         running = false;
+        editFiltersAct->setEnabled(false);
         editListIndexedFilesAct->setEnabled(false);
         status["Status"] = "Daemon is not running";
     } else {
         attemptedstart = true;
         starting = false;
         running = true;
+        editFiltersAct->setEnabled(true);
         editListIndexedFilesAct->setEnabled(true);
         if (indexeddirs->count() == 0) {
             updateDirectories();
@@ -250,9 +251,7 @@ SimpleSearchGui::startDaemon() {
 void
 SimpleSearchGui::toggleDaemon() {
     if (running) {
-        SocketClient client;
-        client.setSocketName(socketfile.c_str());
-        client.stopDaemon();
+        strigi.stopDaemon();
         indexeddirs->clear();
     } else {
         startDaemon();
@@ -260,12 +259,10 @@ SimpleSearchGui::toggleDaemon() {
 }
 void
 SimpleSearchGui::toggleIndexing() {
-    SocketClient client;
-    client.setSocketName(socketfile.c_str());
     if (indexing) {
-        client.stopIndexing();
+        strigi.stopIndexing();
     } else {
-        client.startIndexing();
+        strigi.startIndexing();
     }
 }
 void
@@ -295,50 +292,37 @@ SimpleSearchGui::removeDirectory() {
 }
 void
 SimpleSearchGui::setDirectories() {
-    set<string> s;
+    QStringList s;
     for (int i=0; i<indexeddirs->count(); ++i) {
         QString text = indexeddirs->item(i)->text();
-        s.insert((const char*)text.toUtf8());
+        s.append(text);
     }
-    SocketClient client;
-    client.setSocketName(socketfile.c_str());
-    client.setIndexedDirectories(s);
+    strigi.setIndexedDirectories(s);
     updateDirectories();
 }
 void
 SimpleSearchGui::updateDirectories() {
     indexeddirs->clear();
-    SocketClient client;
-    client.setSocketName(socketfile.c_str());
-    set<string> s = client.getIndexedDirectories();
-    indexeddirs->clear();
-    set<string>::const_iterator i;
-    for (i = s.begin(); i != s.end(); ++i) {
-        QString dir(QString::fromUtf8(i->c_str()));
-        indexeddirs->addItem(dir);
+    indexeddirs->addItems(strigi.getIndexedDirectories());
+}
+void
+SimpleSearchGui::editFilters() {
+    QList<QPair<bool,QString> > filters;
+    filters = strigi.getFilters();
+
+    DlgFilters dlg(filters);
+    if (dlg.exec()) {
+        //update filtering rules
+        if (filters != dlg.getFilters()) {
+            qDebug() << "new filters";
+            strigi.setFilters(dlg.getFilters());
+        }
     }
 }
 void
-SimpleSearchGui::editPreferences() {
-    SocketClient client;
-    client.setSocketName(socketfile.c_str());
-    multimap<int,string> rules;// = client.getFilteringRules();
-
-    DlgPreferences* dlg = new DlgPreferences (running, &rules);
-    dlg->exec();
-
-    delete dlg;
-
-    //update filtering rules
-    //client.setFilteringRules( rules);
-}
-void
 SimpleSearchGui::editListIndexedFiles() {
-    SocketClient client;
-    client.setSocketName(socketfile.c_str());
-    set<string> files = client.getIndexedFiles();
-
-    DlgListIndexedFiles dlg (files);
+    QStringList files = strigi.getIndexedFiles();
+    DlgListIndexedFiles dlg(files);
     dlg.exec();
 }
 
