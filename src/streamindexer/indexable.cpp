@@ -27,7 +27,7 @@
 #include <string>
 using namespace jstreams;
 
-Indexable::Indexable(const std::string& name, time_t mt,
+Indexable::Indexable(const std::string& path, const char* name, time_t mt,
         const Indexable& parent)
             :mtime(mt), name(name), path(parent.path+'/'+name),
              writer(parent.writer), depth(parent.getDepth()+1),
@@ -70,10 +70,13 @@ Indexable::index(StreamBase<char>& file) {
 char
 Indexable::indexChild(const std::string& name, time_t mt,
         StreamBase<char>& file) {
-    // TODO check if this is a name we want to index
-//    if (indexableconfig.indexPathFragment(name))
-{
-        Indexable i(name, mt, *this);
+    std::string path(this->path);
+    path.append("/");
+    path.append(name);
+    const char* n = path.c_str() + path.rfind('/') + 1;
+    // check if we should index this file by applying the filename filters
+    if (indexableconfig.indexFile(path.c_str(), n)) {
+        Indexable i(path, n, mt, *this);
         return indexer.analyze(i, &file);
     }
     return 0;

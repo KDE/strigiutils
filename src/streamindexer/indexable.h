@@ -60,7 +60,8 @@ private:
      * @param d the depth at which a document is embedded in other documents.
      *        a depth of 0 means a document is not embedded in another document.
      **/
-    Indexable(const std::string& name, time_t mt, const Indexable& parent);
+    Indexable(const std::string& path, const char* name, time_t mt,
+        const Indexable& parent);
 public:
     Indexable(const std::string& p, time_t mt, IndexWriter& w,
             StreamIndexer& indexer);
