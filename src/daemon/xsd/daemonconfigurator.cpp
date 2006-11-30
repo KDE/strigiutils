@@ -79,7 +79,13 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
 
-        // add pattern to ignore hidden directories
+        // add pattern to ignore hidden directories and hidden files
+        Filter f;
+        f.a_include = false;
+        f.a_pattern = ".*/";
+        e_filters.e_filter.push_back(f);
+        f.a_pattern = ".*";
+        e_filters.e_filter.push_back(f);
 
         STRIGI_LOG_WARNING ("DaemonConfigurator",
                             "created default config for indexed dirs")
