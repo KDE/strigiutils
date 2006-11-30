@@ -6,7 +6,8 @@ void
 FilterModel::addFilter(const QModelIndex& index, bool state) {
     int r = (index.isValid()) ?index.row() :filters.size();
     beginInsertRows(QModelIndex(), r-1, r);
-    filters.insert(filters.begin()+r, qMakePair(state, QString()));
+    filters.insert(filters.begin()+r, qMakePair(state,
+        tr("<double-click to edit>")));
     endInsertRows();
 }
 void
