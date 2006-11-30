@@ -22,6 +22,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <unistd.h>
 
 /* workaround for systems without MSG_NOSIGNAL
    on these systems the sending party will receive a SIGPIPE when the receiving

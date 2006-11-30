@@ -24,6 +24,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <sstream>
+#include <unistd.h>
 using namespace std;
 
 #if defined(__APPLE__)

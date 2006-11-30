@@ -31,6 +31,7 @@
 #include "indexreader.h"
 #include "../strigilogging.h"
 #include "strigi_thread.h"
+#include <unistd.h>
 
 using namespace std;
 using namespace jstreams;

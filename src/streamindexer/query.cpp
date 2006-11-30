@@ -20,6 +20,7 @@
 #include "query.h"
 #include "jstreamsconfig.h"
 #include "indexreader.h"
+#include <ctype.h>
 using namespace std;
 using namespace jstreams;
 

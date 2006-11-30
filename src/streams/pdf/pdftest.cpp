@@ -3,6 +3,7 @@
 #include "stringreader.h"
 #include "gzipinputstream.h"
 #include "kmpsearcher.h"
+#include <ctype.h>
 using namespace jstreams;
 extern "C" {
     #include <magic.h>

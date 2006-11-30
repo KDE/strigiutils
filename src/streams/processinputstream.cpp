@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "processinputstream.h"
 #include <errno.h>
+#include <unistd.h>
 using namespace jstreams;
 using namespace std;
 

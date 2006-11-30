@@ -19,6 +19,7 @@
  */
 #ifndef INPUTSTREAMTESTS
 #define INPUTSTREAMTESTS
+#include <unistd.h>
 
 namespace jstreams {
     template <class T>

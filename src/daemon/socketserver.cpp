@@ -26,6 +26,7 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <assert.h>
+#include <unistd.h>
 using namespace std;
 
 #if defined(__APPLE__)

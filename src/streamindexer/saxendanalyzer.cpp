@@ -23,6 +23,7 @@
 #include "inputstreamreader.h"
 #include "indexwriter.h"
 #include <libxml/parser.h>
+#include <ctype.h>
 using namespace jstreams;
 using namespace std;
 

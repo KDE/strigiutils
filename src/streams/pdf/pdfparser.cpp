@@ -3,6 +3,7 @@
 #include "stringterminatedsubstream.h"
 #include "gzipinputstream.h"
 #include "subinputstream.h"
+#include <ctype.h>
 using namespace jstreams;
 using namespace std;
 
