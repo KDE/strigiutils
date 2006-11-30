@@ -96,12 +96,13 @@ DBusMessageReader::operator>>(set<string>& s) {
     }
 
     DBusMessageIter sub;
-    dbus_message_iter_recurse(&it, &sub);
     const char* value;
-    do {
+    dbus_message_iter_recurse(&it, &sub);
+    while (dbus_message_iter_get_arg_type(&sub) == DBUS_TYPE_STRING) {
         dbus_message_iter_get_basic(&sub, &value);
         s.insert(value);
-    } while(dbus_message_iter_next(&sub));
+        dbus_message_iter_next(&sub);
+    }
     dbus_message_iter_next(&it);
 
     return *this;
