@@ -43,6 +43,7 @@ private:
         bool include;
     };
     std::vector<Pattern> patterns;
+    std::vector<Pattern> dirpatterns;
     std::vector<std::pair<bool,std::string> > filters;
 
 public:

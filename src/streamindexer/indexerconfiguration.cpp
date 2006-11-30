@@ -44,9 +44,11 @@ IndexerConfiguration::indexFile(const char* path, const char* filename) const {
     for (i = patterns.begin(); i != patterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
-            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path, 0);
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
+                FNM_PERIOD);
         } else {
-            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename, 0);
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename,
+                FNM_PERIOD);
         }
         if (match) {
             return i->include;
@@ -56,19 +58,21 @@ IndexerConfiguration::indexFile(const char* path, const char* filename) const {
 }
 bool
 IndexerConfiguration::indexDir(const char* path, const char* filename) const {
-/*    vector<Pattern>::const_iterator i;
+    vector<Pattern>::const_iterator i;
     for (i = dirpatterns.begin(); i != dirpatterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
-            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path, 0);
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
+                FNM_PERIOD);
         } else {
-            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename, 0);
+            match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), filename,
+                FNM_PERIOD);
         }
         if (match) {
             printf("dir '%s' %i\n", path, i->include);
             return i->include;
         }
-    }*/
+    }
     return true;
 }
 void
@@ -90,9 +94,12 @@ IndexerConfiguration::setFilters(
     filters = f;
     vector<pair<bool,string> >::const_iterator i;
     patterns.clear();
+    dirpatterns.clear();
+    bool hadinclude = false;
     for (i = filters.begin(); i != filters.end(); ++i) {
         string s = i->second;
         if (s.length()) {
+            hadinclude |= i->first;
             Pattern p;
             p.include = i->first;
             size_t sp = s.rfind('/');
@@ -101,6 +108,13 @@ IndexerConfiguration::setFilters(
             } else {
                 if (sp == s.length()-1) { // directory pattern
                     sp = s.rfind('/', s.length()-2);
+                    if (!hadinclude) { // can exclude entire directory
+                        p.matchfullpath = sp != string::npos;
+                        p.pattern = s.substr(0, s.length()-1);
+                        dirpatterns.push_back(p);
+                        printf("excludedir:'%s'\n", p.pattern.c_str());
+                        continue;
+                    }
                     if (s.length() == 1 || s[s.length()-2] != '*') {
                         s += '*';
                     }
