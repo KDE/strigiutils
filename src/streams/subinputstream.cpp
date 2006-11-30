@@ -111,7 +111,8 @@ SubInputStream::skip(int64_t ntoskip) {
             status = Eof;
         } else if (skipped <= 0) {
             status = Error;
-            error = "Could not read until the end of the stream.";
+            error = "Premature end of stream\n";
+            skipped = -2;
         }
     }
     return skipped;
