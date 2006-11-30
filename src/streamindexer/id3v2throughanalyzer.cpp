@@ -33,8 +33,9 @@ ID3V2ThroughAnalyzer::setIndexable(jstreams::Indexable* i) {
 }
 int32_t
 readSize(const unsigned char* b, bool async) {
+    const char* c = (const char*)b;
     if (async) {
-        if (b[0] < 0 || b[1] < 0 || b[2] < 0 || b[3] < 0) {
+        if (c[0] < 0 || c[1] < 0 || c[2] < 0 || c[3] < 0) {
             return -1;
         }
         return (((int32_t)b[0])<<21) + (((int32_t)b[1])<<14)
