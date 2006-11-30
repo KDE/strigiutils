@@ -28,12 +28,6 @@ operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
     return static_cast<IndexerConfiguration::FieldType>((int)a|(int)b);
 }
 IndexerConfiguration::IndexerConfiguration() {
-    Pattern svn;
-    svn.pattern = ".svn";
-    svn.include = false;
-    svn.matchfullpath = false;
-    //svn.matchdir = true;
-    patterns.push_back(svn);
 }
 /**
  * Placeholder implementation that agrees to everything and only makes a
@@ -83,6 +77,13 @@ IndexerConfiguration::printFilters() const {
     for (i = patterns.begin(); i != patterns.end(); ++i) {
     }
 }
+/**
+ * We need to transform the incoming patterns like this: */
+ //  a   -> a
+ //  .*  -> .*
+ //  *   -> *
+ //  a/  -> */a/*
+ //  .*/ -> */.*
 void
 IndexerConfiguration::setFilters(
         const std::vector<std::pair<bool,std::string> >& f) {
@@ -94,11 +95,21 @@ IndexerConfiguration::setFilters(
         if (s.length()) {
             Pattern p;
             p.include = i->first;
-            if (s[s.length()-1] == '/') { // directory pattern
-                s += '*';
-                p.matchfullpath = true;
+            size_t sp = s.rfind('/');
+            if (sp == string::npos) {
+                p.matchfullpath = false;
             } else {
-                p.matchfullpath = s.find('/') != string::npos;
+                if (sp == s.length()-1) { // directory pattern
+                    sp = s.rfind('/', s.length()-2);
+                    if (s.length() == 1 || s[s.length()-2] != '*') {
+                        s += '*';
+                    }
+                    if (sp == string::npos
+                            && s[0] != '*') {
+                        s = "*/" + s;
+                    }
+                }
+                p.matchfullpath = true;
             }
             p.pattern = s;
             patterns.push_back(p);

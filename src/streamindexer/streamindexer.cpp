@@ -121,7 +121,7 @@ StreamIndexer::initializeThroughFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    addFactory(new DigestThroughAnalyzerFactory());
+    //addFactory(new DigestThroughAnalyzerFactory());
     addFactory(new ID3V2ThroughAnalyzerFactory());
 }
 void
