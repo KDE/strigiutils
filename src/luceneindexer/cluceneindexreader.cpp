@@ -64,11 +64,52 @@ public:
         jstreams::IndexedDocument&);
 };
 
-CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m)
-        :manager(m), countversion(-1) {
+CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
+    const string& dir) :manager(m), dbdir(dir), otime(0), reader(0) {
+    openReader();
 }
 
 CLuceneIndexReader::~CLuceneIndexReader() {
+    closeReader();
+}
+void
+CLuceneIndexReader::openReader() {
+    doccount = -1;
+    wordcount = -1;
+    try {
+//        printf("reader at %s\n", dbdir.c_str());
+        reader = lucene::index::IndexReader::open(dbdir.c_str());
+    } catch (CLuceneError& err) {
+        printf("could not create reader: %s\n", err.what());
+        reader = 0;
+    }
+}
+void
+CLuceneIndexReader::closeReader() {
+    if (reader == 0) return;
+    try {
+        reader->close();
+    } catch (CLuceneError& err) {
+        printf("could not close clucene: %s\n", err.what());
+    }
+    delete reader;
+    reader = 0;
+}
+bool
+CLuceneIndexReader::checkReader(bool enforceCurrent) {
+    if (manager->getIndexMTime() > otime) {
+        struct timeval t;
+        gettimeofday(&t, 0);
+        if (enforceCurrent || t.tv_sec-otime > 60) {
+            fprintf(stderr, "reopening reader.\n");
+            otime = t.tv_sec;
+            closeReader();
+        }
+    }
+    if (reader == 0) {
+        openReader();
+    }
+    return reader;
 }
 
 #ifdef _UCS2
@@ -207,11 +248,10 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
 }
 int32_t
 CLuceneIndexReader::countHits(const Query& q) {
+    if (!checkReader()) return -1;
     BooleanQuery bq;
     Private::createBooleanQuery(q, bq);
-    lucene::index::IndexReader* reader = manager->refReader();
     if (reader == 0) {
-        manager->derefReader();
         return 0;
     }
     IndexSearcher searcher(reader);
@@ -250,7 +290,6 @@ CLuceneIndexReader::countHits(const Query& q) {
         delete hits;
     }
     searcher.close();
-    manager->derefReader();
     return s;
 }
 std::vector<IndexedDocument>
@@ -258,9 +297,7 @@ CLuceneIndexReader::query(const Query& q) {
     BooleanQuery bq;
     Private::createBooleanQuery(q, bq);
     std::vector<IndexedDocument> results;
-    lucene::index::IndexReader* reader = manager->refReader();
-    if (reader == 0) {
-        manager->derefReader();
+    if (!checkReader()) {
         return results;
     }
     IndexSearcher searcher(reader);
@@ -293,15 +330,12 @@ CLuceneIndexReader::query(const Query& q) {
         _CLDELETE(hits);
     }
     searcher.close();
-    manager->derefReader();
     return results;
 }
 std::map<std::string, time_t>
 CLuceneIndexReader::getFiles(char depth) {
     std::map<std::string, time_t> files;
-    lucene::index::IndexReader* reader = manager->refReader();
-    if (reader == 0) {
-        manager->derefReader();
+    if (!checkReader()) {
         return files;
     }
 
@@ -325,28 +359,28 @@ CLuceneIndexReader::getFiles(char depth) {
         _CLDELETE(d);
     }
     _CLDELETE(docs);
-    manager->derefReader();
     return files;
 }
 int32_t
 CLuceneIndexReader::countDocuments() {
-    return manager->docCount();
+    if (!checkReader()) return -1;
+    if (doccount == -1) {
+        doccount = manager->docCount();
+    }
+    return doccount;
 }
 int32_t
 CLuceneIndexReader::countWords() {
-    if (manager->getVersion() == countversion) {
-        return count;
+    if (!checkReader()) return -1;
+    if (wordcount == -1) {
+        if (reader) {
+            wordcount = 0;
+            lucene::index::TermEnum *terms = reader->terms();
+            while (terms->next()) wordcount++;
+            _CLDELETE(terms);
+        }
     }
-    count = 0;
-    countversion = manager->getVersion();
-    lucene::index::IndexReader* reader = manager->refReader();
-    if (reader) {
-        lucene::index::TermEnum *terms = reader->terms();
-        while (terms->next()) count++;
-        _CLDELETE(terms);
-    }
-    manager->derefReader();
-    return count;
+    return wordcount;
 }
 int64_t
 CLuceneIndexReader::getIndexSize() {
@@ -354,7 +388,7 @@ CLuceneIndexReader::getIndexSize() {
 }
 int64_t
 CLuceneIndexReader::getDocumentId(const std::string& uri) {
-    lucene::index::IndexReader* reader = manager->refReader();
+    if (!checkReader()) return -1;
     int64_t id = -1;
 
     TCHAR tstr[CL_MAX_DIR];
@@ -370,7 +404,6 @@ CLuceneIndexReader::getDocumentId(const std::string& uri) {
         id = -1;
     }
 
-    manager->derefReader();
     return id;
 }
 /**
@@ -380,7 +413,7 @@ CLuceneIndexReader::getDocumentId(const std::string& uri) {
 time_t
 CLuceneIndexReader::getMTime(int64_t docid) {
     if (docid < 0) return 0;
-    lucene::index::IndexReader* reader = manager->refReader();
+    if (!checkReader(true)) return 0;
     time_t mtime = 0;
     Document *d = reader->document(docid);
     if (d) {
@@ -390,6 +423,5 @@ CLuceneIndexReader::getMTime(int64_t docid) {
         mtime = atoi(cstr);
         delete d;
     }
-    manager->derefReader();
     return mtime;
 }

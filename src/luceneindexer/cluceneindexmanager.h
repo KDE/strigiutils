@@ -46,37 +46,34 @@ class CLuceneIndexReader;
 class CLuceneIndexWriter;
 class CLuceneIndexManager : public jstreams::IndexManager {
 private:
-    StrigiMutex* dblock;
-    static StrigiMutex lock;
+    StrigiMutex writelock;
+    StrigiMutex lock;
     std::string dbdir;
-    CLuceneIndexReader* reader;
+    std::map<pthread_t, CLuceneIndexReader*> readers;
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
-    lucene::index::IndexReader* indexreader;
     //jstreams::QueryBitsetCache bitsets;
     lucene::analysis::Analyzer* analyzer;
-    int version;
+    time_t mtime;
     static int numberOfManagers;
 
-    void openReader();
-    void closeReader();
     void openWriter(bool truncate=false);
-    void closeWriter();
 public:
     explicit CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
 
     lucene::index::IndexWriter* refWriter();
     void derefWriter();
-    lucene::index::IndexReader* refReader();
-    void derefReader();
     jstreams::IndexReader* getIndexReader();
     jstreams::IndexWriter* getIndexWriter();
+    CLuceneIndexReader* getReader();
 //    jstreams::QueryBitsetCache* getBitSets();
     int32_t docCount();
     int64_t getIndexSize();
-    int getVersion() const { return version; }
     void deleteIndex();
+    void closeWriter();
+    time_t getIndexMTime();
+    void setIndexMTime();
 };
 
 jstreams::IndexManager*

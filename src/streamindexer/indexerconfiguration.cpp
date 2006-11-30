@@ -69,7 +69,6 @@ IndexerConfiguration::indexDir(const char* path, const char* filename) const {
                 FNM_PERIOD);
         }
         if (match) {
-            printf("dir '%s' %i\n", path, i->include);
             return i->include;
         }
     }

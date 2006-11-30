@@ -21,6 +21,7 @@
 #include <CLucene.h>
 #include <CLucene/store/Lock.h>
 #include "cluceneindexwriter.h"
+#include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include "stringreader.h"
 #include "inputstreamreader.h"
@@ -178,16 +179,19 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     delete doc;
     if ( sr )
         delete sr;
+    manager->setIndexMTime();
 }
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
+    manager->closeWriter();
     for (uint i=0; i<entries.size(); ++i) {
         deleteEntry(entries[i]);
     }
+    manager->setIndexMTime();
 }
 void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
-    lucene::index::IndexReader* reader = manager->refReader();
+    lucene::index::IndexReader* reader = manager->getReader()->reader;
 
     wstring tstr(utf8toucs2(entry));
     Term term(_T("path"), tstr.c_str());
@@ -208,8 +212,6 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
         }
         _CLDELETE(bits);
     }
-
-    manager->derefReader();
 }
 void
 CLuceneIndexWriter::deleteAllEntries() {
@@ -275,9 +277,8 @@ CLuceneIndexWriter::cleanUp() {
     //remove all unused lucene file elements... unused elements are the result of unexpected shutdowns...
     //this can add up to a lot of after a while.
 
-    lucene::index::IndexReader* reader = manager->refReader();
+    lucene::index::IndexReader* reader = manager->getReader()->reader;
     if (!reader) {
-        manager->derefReader();
         return;
     }
     lucene::store::Directory* directory = reader->getDirectory();
@@ -291,7 +292,6 @@ CLuceneIndexWriter::cleanUp() {
     bool locked = lock->obtain(lucene::index::IndexWriter::COMMIT_LOCK_TIMEOUT);
 #endif
     if (!locked) {
-        manager->derefReader();
         return;
     }
     lucene::index::SegmentInfos infos;
@@ -300,7 +300,6 @@ CLuceneIndexWriter::cleanUp() {
         infos.read(directory);
     } catch(...) {
         lock->release();
-        manager->derefReader();
         return; //todo: this may suggest an error...
     }
     lock->release();
@@ -344,6 +343,5 @@ CLuceneIndexWriter::cleanUp() {
     }
     _CLDELETE_ARRAY(files)
 
-    manager->derefReader();
 }
 

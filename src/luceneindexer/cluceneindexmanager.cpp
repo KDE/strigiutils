@@ -23,13 +23,13 @@
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include <sys/types.h>
+#include <sys/time.h>
+#include <time.h>
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::store::FSDirectory;
-
-StrigiMutex CLuceneIndexManager::lock;
 
 jstreams::IndexManager*
 createCLuceneIndexManager(const char* path) {
@@ -41,14 +41,11 @@ int CLuceneIndexManager::numberOfManagers = 0;
 CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
         {//: bitsets(this) {
     ++numberOfManagers;
-    dblock = &lock;
     dbdir = path;
-    indexreader = 0;
     indexwriter = 0;
-    version = 0;
     writer = new CLuceneIndexWriter(this);
-    reader = new CLuceneIndexReader(this);
     analyzer = new StandardAnalyzer();
+    mtime = 0;
 
     //remove any old segments lying around from crashes, etc
     //writer->cleanUp();
@@ -58,8 +55,10 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
 CLuceneIndexManager::~CLuceneIndexManager() {
     // close the writer and analyzer
     delete writer;
-    delete reader;
-    closeReader();
+    std::map<pthread_t, CLuceneIndexReader*>::iterator r;
+    for (r = readers.begin(); r != readers.end(); ++r) {
+        delete r->second;
+    }
     closeWriter();
     delete analyzer;
     if (--numberOfManagers == 0) {
@@ -69,7 +68,23 @@ CLuceneIndexManager::~CLuceneIndexManager() {
 }
 jstreams::IndexReader*
 CLuceneIndexManager::getIndexReader() {
-    return reader;
+    return getReader();
+}
+CLuceneIndexReader*
+CLuceneIndexManager::getReader() {
+    // TODO check if we should update/reopen the reader
+    pthread_t self = pthread_self();
+    CLuceneIndexReader* r;
+    STRIGI_MUTEX_LOCK(&lock.lock);
+    r = readers[self];
+    STRIGI_MUTEX_UNLOCK(&lock.lock);
+    if (r == 0) {
+        r = new CLuceneIndexReader(this, dbdir);
+        STRIGI_MUTEX_LOCK(&lock.lock);
+        readers[self] = r;
+        STRIGI_MUTEX_UNLOCK(&lock.lock);
+    }
+    return r;
 }
 jstreams::IndexWriter*
 CLuceneIndexManager::getIndexWriter() {
@@ -81,53 +96,18 @@ CLuceneIndexManager::getBitSets() {
 }*/
 IndexWriter*
 CLuceneIndexManager::refWriter() {
-    STRIGI_MUTEX_LOCK(&dblock->lock);
+    STRIGI_MUTEX_LOCK(&writelock.lock);
     if (indexwriter == 0) {
-        closeReader();
         openWriter();
     }
     return indexwriter;
 }
 void
 CLuceneIndexManager::derefWriter() {
-    STRIGI_MUTEX_UNLOCK(&dblock->lock);
-}
-IndexReader*
-CLuceneIndexManager::refReader() {
-    STRIGI_MUTEX_LOCK(&dblock->lock);
-    if (indexreader == 0) {
-        closeWriter();
-        openReader();
-    }
-    return indexreader;
-}
-void
-CLuceneIndexManager::derefReader() {
-    STRIGI_MUTEX_UNLOCK(&dblock->lock);
-}
-void
-CLuceneIndexManager::openReader() {
-    try {
-//        printf("reader at %s\n", dbdir.c_str());
-        indexreader = IndexReader::open(dbdir.c_str());
-    } catch (CLuceneError& err) {
-        printf("could not create reader: %s\n", err.what());
-    }
-}
-void
-CLuceneIndexManager::closeReader() {
-    if (indexreader == 0) return;
-    try {
-        indexreader->close();
-    } catch (CLuceneError& err) {
-        printf("could not close clucene: %s\n", err.what());
-    }
-    delete indexreader;
-    indexreader = 0;
+    STRIGI_MUTEX_UNLOCK(&writelock.lock);
 }
 void
 CLuceneIndexManager::openWriter(bool truncate) {
-    version++;
     try {
         if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
             if (IndexReader::isLocked(dbdir.c_str())) {
@@ -152,20 +132,7 @@ CLuceneIndexManager::closeWriter() {
 }
 int
 CLuceneIndexManager::docCount() {
-    int count = 0;
-    STRIGI_MUTEX_LOCK(&dblock->lock);
-    if (indexwriter) {
-        count = indexwriter->docCount();
-    } else {
-        if (indexreader == 0) {
-            openReader();
-        }
-        if (indexreader) {
-            count = indexreader->numDocs();
-        }
-    }
-    STRIGI_MUTEX_UNLOCK(&dblock->lock);
-    return count;
+    return getReader()->reader->numDocs();
 }
 int64_t
 CLuceneIndexManager::getIndexSize() {
@@ -196,9 +163,25 @@ CLuceneIndexManager::getIndexSize() {
 }
 void
 CLuceneIndexManager::deleteIndex() {
-    closeReader();
+    // todo: close all readers
     closeWriter();
     openWriter(true);
+}
+time_t
+CLuceneIndexManager::getIndexMTime() {
+    time_t t;
+    STRIGI_MUTEX_LOCK(&lock.lock);
+    t = mtime;
+    STRIGI_MUTEX_UNLOCK(&lock.lock);
+    return t;
+}
+void
+CLuceneIndexManager::setIndexMTime() {
+    struct timeval t;
+    gettimeofday(&t, 0);
+    STRIGI_MUTEX_LOCK(&lock.lock);
+    mtime = t.tv_sec;
+    STRIGI_MUTEX_UNLOCK(&lock.lock);
 }
 std::wstring
 utf8toucs2(const char*p, const char*e) {

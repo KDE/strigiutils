@@ -22,6 +22,13 @@
 
 #include "indexreader.h"
 #include <map>
+#include <sys/time.h>
+#include <time.h>
+namespace lucene {
+    namespace index {
+        class IndexReader;
+    }
+}
 
 class CLuceneIndexManager;
 class CLuceneIndexReader : public jstreams::IndexReader {
@@ -29,13 +36,18 @@ friend class CLuceneIndexManager;
 private:
     CLuceneIndexManager* manager;
     class Private;
-    int countversion;
-    int32_t count;
+    int32_t wordcount;
+    int32_t doccount;
+    const std::string dbdir;
+    time_t otime;
 
-    CLuceneIndexReader(CLuceneIndexManager* m);
+    CLuceneIndexReader(CLuceneIndexManager* m, const std::string& dbdir);
     ~CLuceneIndexReader();
     static const TCHAR* mapId(const wchar_t* id);
 	static std::wstring mapId(const char* id);
+    void openReader();
+    void closeReader();
+    bool checkReader(bool ensureCurrent = false);
 
     friend class CLuceneIndexReader::Private;
 public:
@@ -48,6 +60,7 @@ public:
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
     static void addMapping(const TCHAR* from, const TCHAR* to);
+    lucene::index::IndexReader* reader;
 };
 
 #endif
