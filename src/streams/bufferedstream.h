@@ -99,20 +99,20 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
 
     int32_t nread = buffer.read(start, max);
 
-    BufferedInputStream<T>::position += nread;
-    if (BufferedInputStream<T>::position > BufferedInputStream<T>::size
-        && BufferedInputStream<T>::size > 0) {
+    StreamBase<T>::position += nread;
+    if (StreamBase<T>::position > StreamBase<T>::size
+        && StreamBase<T>::size > 0) {
         // error: we read more than was specified in size
         // this is an error because all dependent code might have been labouring
         // under a misapprehension
-        BufferedInputStream<T>::status = Error;
-        BufferedInputStream<T>::error = "Stream is longer than specified.";
+        StreamBase<T>::status = Error;
+        StreamBase<T>::error = "Stream is longer than specified.";
         nread = -2;
-    } else if (BufferedInputStream<T>::status == Ok && buffer.avail == 0
+    } else if (StreamBase<T>::status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
-        BufferedInputStream<T>::status = Eof;
-        if (BufferedInputStream<T>::size == -1) {
-            BufferedInputStream<T>::size = BufferedInputStream<T>::position;
+        StreamBase<T>::status = Eof;
+        if (StreamBase<T>::size == -1) {
+            StreamBase<T>::size = StreamBase<T>::position;
         }
         // save one call to read() by already returning -1 if no data is there
         if (nread == 0) nread = -1;
@@ -125,9 +125,9 @@ BufferedInputStream<T>::reset(int64_t newpos) {
     assert(newpos >= 0);
     if (StreamBase<T>::status == Error) return -2;
     // check to see if we have this position
-    int64_t d = BufferedInputStream<T>::position - newpos;
+    int64_t d = StreamBase<T>::position - newpos;
     if (buffer.readPos - d >= buffer.start && -d < buffer.avail) {
-        BufferedInputStream<T>::position -= d;
+        StreamBase<T>::position -= d;
         buffer.avail += (int32_t)d;
         buffer.readPos -= d;
         StreamBase<T>::status = Ok;
