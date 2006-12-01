@@ -3,7 +3,6 @@
 
 #include "streamendanalyzer.h"
 #include <set>
-#include <iconv.h>
 
 class IFilterEndAnalyzer : public jstreams::StreamEndAnalyzer {
     static long initd;
@@ -11,7 +10,6 @@ class IFilterEndAnalyzer : public jstreams::StreamEndAnalyzer {
     std::string writeToTempFile(jstreams::InputStream *in, const char* ext) const;
     bool checkForFile(int depth, const std::string& filename);
 	static std::set<std::string> extensions;
-	iconv_t converter;
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream *in);
@@ -19,6 +17,16 @@ public:
 
     IFilterEndAnalyzer();
     ~IFilterEndAnalyzer();
+};
+
+class IFilterEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "IFilterEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new IFilterEndAnalyzer();
+    }
 };
 
 #endif

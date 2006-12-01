@@ -5,7 +5,6 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odc_SP2003_ta/h
 
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
 #include "jstreamsconfig.h"
-#include "strigi_plugins.h"
 
 #include "IFilterEndAnalyzer.h"
 #include "streamindexer.h"
@@ -21,6 +20,8 @@ using namespace jstreams;
 
 set<string> IFilterEndAnalyzer::extensions;
 
+std::string wchartoutf8(const wchar_t* p, const wchar_t* e);
+
 #ifndef ICONV_CONST
      //we try to guess whether the iconv function requires
      //a const char. We have no way of automatically figuring
@@ -34,26 +35,6 @@ set<string> IFilterEndAnalyzer::extensions;
 #endif
 
 IFilterEndAnalyzer::IFilterEndAnalyzer(){
-
-#ifdef _LIBICONV_H
-	if (sizeof(wchar_t) == 4) {
-		converter = iconv_open("UTF-8//IGNORE", "UCS-4-INTERNAL");
-	} if (sizeof(wchar_t) == 2) {
-		converter = iconv_open("UTF-8//IGNORE", "UCS-2-INTERNAL");
-#else
-	if (sizeof(wchar_t) > 1) {
-		converter = iconv_open("UTF-8//IGNORE", "WCHAR_T");
-#endif
-	} else {
-		converter = iconv_open("UTF-8//IGNORE", "ASCII");
-	}
-
-
-		// check if the converter is valid
-    if (converter == (iconv_t) -1) {
-        return;
-    }
-
 	if ( extensions.size() == 0 ){
 		HKEY pKey, kKey;
 		if (RegOpenKeyEx(HKEY_CLASSES_ROOT, "\\", 0, KEY_READ, &pKey) != ERROR_SUCCESS)
@@ -80,9 +61,6 @@ IFilterEndAnalyzer::IFilterEndAnalyzer(){
 	}
 }
 IFilterEndAnalyzer::~IFilterEndAnalyzer(){
-	if (converter != (iconv_t) -1) {
-        iconv_close(converter);
-    }
 }
 
 
@@ -142,13 +120,8 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 				return -1;
 			}
 
-			ICONV_CONST char *inbuf;
-			size_t inbytesleft;
-			size_t outbytesleft=0;
-			char *outbuf;
-			wchar_t sbBuffer[1024];
-			char asbBuffer[4096];
-
+            const int sbBufferLen = 1024;
+			wchar_t sbBuffer[sbBufferLen];
 
 			STAT_CHUNK ps;
 			hr = filter->GetChunk(&ps);
@@ -160,42 +133,12 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 
 					while ( resultText >= 0 )
 					{
-						ULONG sizeBuffer=1024;
+						ULONG sizeBuffer=sbBufferLen;
 						resultText = filter->GetText(&sizeBuffer, sbBuffer);
 						if (sizeBuffer > 0 )
 						{
-							inbuf = (ICONV_CONST char *)sbBuffer;
-							inbytesleft = sizeof(wchar_t)*sizeBuffer;
-							outbuf = (char*)asbBuffer;
-							outbytesleft = 4096;
-							size_t r = iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-
-							if ( r >= 0 && ((size_t)r) != -1 ){
-								idx.addText(asbBuffer,4096-outbytesleft);
-							}else{
-								switch (errno) {
-								case EILSEQ: //invalid multibyte sequence
-									printf("%s\n", "Invalid multibyte sequence.");
-								    if (!fileisondisk){
-										filter->Release();
-								        printf("unklinking %s: %d\n", filepath.c_str(), unlink(filepath.c_str()));
-                                    }
-									return -1;
-								case EINVAL: // last character is incomplete
-									idx.addText(asbBuffer,4096-outbytesleft);
-									break;
-								case E2BIG: // output buffer is full
-									break;
-								default:
-									char tmp[10];
-									itoa(errno,tmp,10);
-									this->error = "inputstreamreader error: ";
-									this->error.append(tmp);
-									//this->status = Error;
-									printf("ifilterendanalyzer::error %d\n", errno);
-									return -1;
-								}
-							}
+							string str = wchartoutf8(sbBuffer,sbBuffer+sizeBuffer);
+                            idx.addText(str.c_str(),str.length());
 						}
 					}
 				}else if ( ps.flags == CHUNK_VALUE ){
@@ -207,17 +150,8 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 							 ps.attribute.psProperty.ulKind == 1 &&
 							 pVar->vt == VT_LPWSTR ){
 
-
-							inbuf = (ICONV_CONST char *)pVar->pwszVal;
-							inbytesleft = sizeof(wchar_t)*wcslen(pVar->pwszVal);
-							outbuf = (char*)asbBuffer;
-							outbytesleft = 4096;
-							size_t r = iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-							if ( r >= 0 && ((size_t)r) != -1 ){
-								idx.setField("title", string(asbBuffer,4096-outbytesleft) );
-
-								//printf("title: %s\n", string(asbBuffer,4096-outbytesleft).c_str());
-							}
+							string str = wchartoutf8(pVar->pwszVal,pVar->pwszVal+wcslen(pVar->pwszVal));
+							idx.setField("title", str );
 						}
 						PropVariantClear( pVar );
 						CoTaskMemFree( pVar );
@@ -306,8 +240,3 @@ IFilterEndAnalyzer::checkForFile(int depth, const std::string& filename) {
 
 long IFilterEndAnalyzer::initd = CoInitialize(NULL);
 
-
-//define all the available analyzers in this plugin
-STRIGI_END_PLUGINS_START
-STRIGI_END_PLUGINS_REGISTER(IFilterEndAnalyzer)
-STRIGI_END_PLUGINS_END
