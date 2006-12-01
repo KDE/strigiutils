@@ -39,6 +39,9 @@
 #include "indexerconfiguration.h"
 #include "textutils.h"
 #include <sys/stat.h>
+#ifdef WIN32
+ #include "ifilterendanalyzer.h"
+#endif
 
 using namespace std;
 using namespace jstreams;
@@ -49,14 +52,14 @@ StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
     moduleLoader.loadPlugins("/usr/local/lib/strigi");
     moduleLoader.loadPlugins("/usr/lib/strigi");
     moduleLoader.loadPlugins("/lib/strigi");
-
-    // todo: remove this
+    
+        // todo: remove this
     moduleLoader.loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
-    if ( getenv("HOME") != NULL ){
-        string homedir = getenv("HOME");
-        homedir += "/testinstall/lib/strigi";
+        if ( getenv("HOME") != NULL ){
+            string homedir = getenv("HOME");
+            homedir += "/testinstall/lib/strigi";
         moduleLoader.loadPlugins(homedir.c_str());
-    }
+        }
     initializeThroughFactories();
     initializeEndFactories();
 }
@@ -152,7 +155,12 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new RpmEndAnalyzerFactory());
     addFactory(new PngEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
-    addFactory(new SaxEndAnalyzerFactory());
+#ifdef WIN32
+    addFactory(new IFilterEndAnalyzerFactory());
+#else
+	//temporary only, i just haven't got expat.h working yet
+	addFactory(new SaxEndAnalyzerFactory());
+#endif
     addFactory(new HelperEndAnalyzerFactory());
     addFactory(new TextEndAnalyzerFactory());
 }
