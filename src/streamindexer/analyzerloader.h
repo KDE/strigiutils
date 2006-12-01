@@ -30,9 +30,9 @@ private:
         std::map<std::string, Module*> modules;
     };
     static ModuleList modulelist;
-    void loadModule(const char* lib);
+    static void loadModule(const char* lib);
 public:
-    void loadPlugins(const char* dir);
+    static void loadPlugins(const char* dir);
     std::list<StreamEndAnalyzerFactory*> getStreamEndAnalyzerFactories();
     std::list<StreamThroughAnalyzerFactory*>
         getStreamThroughAnalyzerFactories();
