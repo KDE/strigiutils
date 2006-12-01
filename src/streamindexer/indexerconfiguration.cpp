@@ -19,7 +19,7 @@
  */
 #include "indexerconfiguration.h"
 #include "jstreamsconfig.h"
-#include <fnmatch.h>
+#include "strigi_fnmatch.h"
 using namespace std;
 using namespace jstreams;
 
