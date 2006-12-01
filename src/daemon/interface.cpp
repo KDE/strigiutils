@@ -32,6 +32,8 @@
 #include "indexerconfiguration.h"
 #include <sstream>
 #include <vector>
+#include <sys/types.h>
+#include <signal.h>
 using namespace std;
 using namespace jstreams;
 
@@ -87,7 +89,7 @@ Interface::getStatus() {
 string
 Interface::stopDaemon() {
     active = false;
-    scheduler.stop();
+    kill(getpid(), SIGINT);
     return "";
 }
 string
