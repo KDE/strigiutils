@@ -75,7 +75,6 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
     if (file == 0) return -1;
     // read into the buffer
     int32_t nwritten = fread(start, 1, space, file);
-    //printf("nwritten %i\n", nwritten);
     // check the file stream status
     if (ferror(file)) {
         error = "Could not read from file '" + filepath + "'.";

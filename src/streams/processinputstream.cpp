@@ -37,10 +37,10 @@ ProcessInputStream::ProcessInputStream(const vector<string>& a,
     this->input = input;
     fdin = fdout = pid = -1;
 
+    // create an arguments structure
     char** ar = new char*[a.size()+1];
-    for (uint i=0; i<a.size(); ++i) {
-        ar[i] = new char[a[i].length()+1];
-        strcpy(ar[i], a[i].c_str());
+    for (uint i = 0; i < a.size(); ++i) {
+        ar[i] = strndup(a[i].c_str(), a[i].length());
     }
     ar[a.size()] = 0;
     args = ar;
@@ -60,7 +60,7 @@ ProcessInputStream::~ProcessInputStream() {
     }
     const char* const* p = args;
     while (*p) {
-        delete [] *p++;
+        free((void*)*p++);
     }
     delete [] args;
 }
@@ -71,28 +71,25 @@ ProcessInputStream::writeToPipe() {
     const char* b;
     int32_t n = input->read(b, 1, 0);
     if (n <= 0 || input->getStatus() == Eof) {
-        if (n < 0) {
+        if (input->getStatus() == Error) {
             status = Error;
             error = input->getError();
             n = 0;
         }
+        // close the pipe if no more output is available
         input = 0;
-    }
-
-    // write into the pipe
-    int32_t m = write(fdin, b, n);
-    if (m < 0) {
-        error = strerror(errno);
-        status = Error;
-        input = 0;
-    } else if (m != n) {
-        input->reset(pos+n);
-    }
-
-    // close the pipe if no more output is available
-    if (!input) {
         close(fdin);
         fdin = -1;
+    } else {
+        // write into the pipe
+        int32_t m = write(fdin, b, n);
+        if (m < 0) {
+            error = strerror(errno);
+            status = Error;
+            input = 0;
+        } else if (input && m != n) {
+            input->reset(pos+n);
+        }
     }
 }
 int32_t
