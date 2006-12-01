@@ -28,19 +28,27 @@ template <class T>
 void
 inputStreamTest1(StreamBase<T>* s) {
     int64_t size = s->getSize();
-    const T* ptr;
+    VERIFY(size >= -1);
+    const T* ptr = 0;
     int32_t n;
     if (size == -1) {
         n = 0;
         int32_t n2 = s->read(ptr, 1, 0);
+        if (s->getStatus() == Error) fprintf(stderr, "%s\n", s->getError());
+        VERIFY(n2 > -2);
+        VERIFY(ptr);
         while (n2 > 0) {
             n += n2;
             n2 = s->read(ptr, 1, 0);
+            if (s->getStatus() == Error) fprintf(stderr, "%s\n", s->getError());
+            VERIFY(n2 > -2);
+            VERIFY(ptr);
         }
         size = s->getSize();
     } else {
         // read past the end
         n = s->read(ptr, size+1, size+1);
+        VERIFY(ptr);
     }
     VERIFY(size == n);
     VERIFY(s->getPosition() == n);
