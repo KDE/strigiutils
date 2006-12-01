@@ -23,6 +23,7 @@
 #include <CLucene.h>
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
+#include "timeofday.h"
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
 #include <sstream>

@@ -105,7 +105,7 @@ public:
     char getDepth() const;
     int64_t getId() const;
     void setId(int64_t i);
-    void setEncoding(const char* enc);
+    virtual void setEncoding(const char* enc);
     const std::string& getEncoding() const;
     /**
      * Retrieve the IndexWriter specific object associated with this Indexable.
@@ -122,7 +122,7 @@ public:
      * IndexWriter::getWriterData() for more details.
      **/
     void setWriterData(void* wd);
-    void setMimeType(const std::string& mt);
+    virtual void setMimeType(const std::string& mt);
     const std::string& getMimeType() const;
     std::string getExtension() const;
     IndexerConfiguration& config() const;

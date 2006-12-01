@@ -22,7 +22,6 @@
 
 #include "indexreader.h"
 #include <map>
-#include <sys/time.h>
 #include <time.h>
 namespace lucene {
     namespace index {

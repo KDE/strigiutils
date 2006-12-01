@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
+#include <stgdirent.h>
 
 #ifdef HAVE_DLFCN_H
 #include <dlfcn.h>

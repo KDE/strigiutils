@@ -49,7 +49,7 @@ private:
     StrigiMutex writelock;
     StrigiMutex lock;
     std::string dbdir;
-    std::map<pthread_t, CLuceneIndexReader*> readers;
+    std::map<STRIGI_THREAD_TYPE, CLuceneIndexReader*> readers;
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
     //jstreams::QueryBitsetCache bitsets;

@@ -25,7 +25,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <unistd.h>
 using namespace jstreams;
 using namespace std;
 
@@ -37,6 +36,8 @@ using namespace std;
        mktemp(tmpl);
        return open(tmpl,O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
     }
+#else
+    #include <unistd.h>
 #endif
 
 class HelperProgramConfig::HelperRecord {

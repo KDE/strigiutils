@@ -23,8 +23,8 @@
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include <sys/types.h>
-#include <sys/time.h>
 #include <time.h>
+#include "timeofday.h"
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 
 using namespace lucene::index;
@@ -55,7 +55,7 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
 CLuceneIndexManager::~CLuceneIndexManager() {
     // close the writer and analyzer
     delete writer;
-    std::map<pthread_t, CLuceneIndexReader*>::iterator r;
+    std::map<STRIGI_THREAD_TYPE, CLuceneIndexReader*>::iterator r;
     for (r = readers.begin(); r != readers.end(); ++r) {
         delete r->second;
     }
@@ -73,7 +73,7 @@ CLuceneIndexManager::getIndexReader() {
 CLuceneIndexReader*
 CLuceneIndexManager::getReader() {
     // TODO check if we should update/reopen the reader
-    pthread_t self = pthread_self();
+    STRIGI_THREAD_TYPE self = STRIGI_THREAD_SELF();
     CLuceneIndexReader* r;
     STRIGI_MUTEX_LOCK(&lock.lock);
     r = readers[self];
