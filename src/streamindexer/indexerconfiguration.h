@@ -51,6 +51,8 @@ public:
     virtual ~IndexerConfiguration() {}
     /**
      * A path fragment is e.g. a.txt for folder/a.txt
+     * @param path should be for example /folder/a.txt
+     * @param filename should be for example a.txt
      **/
     virtual bool indexFile(const char* path, const char* filename) const;
     virtual bool indexDir(const char* path, const char* filename) const;
