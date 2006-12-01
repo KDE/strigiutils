@@ -76,7 +76,7 @@ GZipCompressInputStream::fillBuffer(char* start, int32_t space) {
         }else if ( zstream->avail_in == 0 ){
 			if (deflate(zstream, Z_FINISH) != Z_STREAM_END) {
 				fprintf(stderr, "deflate should report Z_STREAM_END\n");
-				exit(1);
+				return -1;
 			}
 			int32_t nwritten = space - zstream->avail_out;
 			dealloc();
