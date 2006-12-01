@@ -37,6 +37,7 @@
 #cmakedefine HAVE_WINDOWS_H
 #cmakedefine HAVE_DLFCN_H
 #cmakedefine HAVE_DIRECT_H
+#cmakedefine HAVE_STDINT_H
 
 #cmakedefine CMAKE_ANSI_FOR_SCOPE
 

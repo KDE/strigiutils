@@ -22,8 +22,9 @@
 
 #include <map>
 #include <string>
-#include <stdint.h>
-#include "jstreamsconfig.h"
+#ifdef HAVE_STDINT_H
+ #include <stdint.h>
+#endif
 
 namespace jstreams {
 
