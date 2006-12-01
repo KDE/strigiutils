@@ -1,4 +1,4 @@
-include_directories( ../streamindexer ../streams
+include_directories( ../streamindexer ../streams ../streams/compat
 	${strigi_BINARY_DIR}/src/streams/compat)
 
 add_library(indexertests indexwritertests.cpp indexreadertests.cpp

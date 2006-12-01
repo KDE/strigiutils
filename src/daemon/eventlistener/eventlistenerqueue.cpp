@@ -20,7 +20,7 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "../../streamindexer/strigi_thread.h"
+#include "strigi_thread.h"
 
 #include <algorithm>
 #include <iostream>

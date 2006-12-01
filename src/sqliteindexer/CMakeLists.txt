@@ -1,4 +1,4 @@
-include_directories( ../streamindexer ../streams
+include_directories( ../streamindexer ../streams ../streams/compat
 	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat)
 

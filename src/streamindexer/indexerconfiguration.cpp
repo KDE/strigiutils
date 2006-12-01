@@ -111,7 +111,6 @@ IndexerConfiguration::setFilters(
                         p.matchfullpath = sp != string::npos;
                         p.pattern = s.substr(0, s.length()-1);
                         dirpatterns.push_back(p);
-                        printf("excludedir:'%s'\n", p.pattern.c_str());
                         continue;
                     }
                     if (s.length() == 1 || s[s.length()-2] != '*') {

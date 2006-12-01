@@ -25,6 +25,7 @@
 #ifdef HAVE_STDINT_H
  #include <stdint.h>
 #endif
+#include "jstreamsconfig.h"
 
 namespace jstreams {
 
