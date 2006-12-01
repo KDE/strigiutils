@@ -38,6 +38,7 @@
     #define STRIGI_THREAD_FUNCTION(functionName, param) void* functionName(void *param)
     #define STRIGI_THREAD_JOIN(object) pthread_join(object,0)
     #define STRIGI_THREAD_EXIT(ret) pthread_exit(ret)
+    #define STRIGI_THREAD_SELF() pthread_self()
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     #define STRIGI_MUTEX_DEFINE(x) CRITICAL_SECTION x
     #define STRIGI_MUTEX_INIT(x) InitializeCriticalSection(x)
@@ -52,6 +53,7 @@
     #define STRIGI_THREAD_FUNCTION(functionName, param) DWORD WINAPI functionName(LPVOID param)
     #define STRIGI_THREAD_JOIN(object) WaitForSingleObject (object, INFINITE)
     #define STRIGI_THREAD_EXIT(ret) ExitThread(ret)
+    #define STRIGI_THREAD_SELF() GetCurrentThread()
 #else
     #error A valid thread library was not found
 #endif //mutex types

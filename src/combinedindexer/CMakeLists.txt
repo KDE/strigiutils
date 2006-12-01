@@ -1,7 +1,8 @@
 #subdirs(tests)
 
 include_directories( ../streamindexer ../streams ../filters
-	${strigi_BINARY_DIR}/src/streams)
+	${strigi_BINARY_DIR}/src/streams/compat
+	${strigi_SOURCE_DIR}/src/streams/compat)
 
 if (CLucene_FOUND)
     add_definitions(-DHAVE_CLUCENE)

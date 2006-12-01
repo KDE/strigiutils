@@ -1,5 +1,5 @@
 include_directories(../streamindexer ../htmlgui ../streams ../daemon
-	qtdbus ${strigi_BINARY_DIR}/src/streams filterwidget)
+	qtdbus ${strigi_BINARY_DIR}/src/streams/compat filterwidget)
 add_subdirectory(qtdbus)
 add_subdirectory(filterwidget)
 

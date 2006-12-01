@@ -3,6 +3,8 @@ IF(ENABLE_INOTIFY)
     set (inotify_SRC inotifylistener.cpp)
 ENDIF(ENABLE_INOTIFY)
 
-INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../streamindexer/ .. )
+INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../streamindexer/ .. 
+	${strigi_BINARY_DIR}/src/streams/compat
+	${strigi_SOURCE_DIR}/src/streams/compat)
 
 ADD_LIBRARY(eventlistener eventlistener.cpp event.cpp  eventlistenerqueue.cpp  pollinglistener.cpp ${inotify_SRC})

@@ -7,7 +7,7 @@ ENDIF(ENABLE_DBUS)
 subdirs(${DIRS})
 
 include_directories( ../streamindexer ../combinedindexer ../streams xsd dbus
-	${strigi_BINARY_DIR}/src/streams)
+	${strigi_BINARY_DIR}/src/streams/compat)
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)

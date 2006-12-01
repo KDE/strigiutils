@@ -27,6 +27,7 @@
 #cmakedefine HAVE_FCHDIR
 #cmakedefine HAVE_NANOSLEEP
 #cmakedefine HAVE_STRLWR
+#cmakedefine HAVE_GETTIMEOFDAY
 
 #cmakedefine HAVE_UNISTD_H
 #cmakedefine HAVE_SYS_NDIR_H
