@@ -17,6 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "jstreamsconfig.h"
 #include "query.h"
 #include "jstreamsconfig.h"
 #include "indexreader.h"
@@ -68,7 +69,6 @@ Query::Query(const string& query, int max, int offset) {
             hador = true;
             Query q;
             q.addTerm(lastterm);
-            alternatives.insert(q);
         } else {
             addTerm(lastterm);
             lastterm = term;

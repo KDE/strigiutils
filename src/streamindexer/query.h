@@ -36,13 +36,6 @@ private:
     std::map<std::string, std::set<std::string> > includes;
     std::map<std::string, std::set<std::string> > excludes;
 
-    struct queryltstr {
-        bool operator()(const Query& a, const Query& b) const {
-            return a.includes < b.includes && a.excludes < b.excludes;
-        }
-    };
-    std::set<jstreams::Query, queryltstr> alternatives;
-
     void addTerm(const Term& term);
     const char* parseTerm(const char*, Term& term);
 public:
