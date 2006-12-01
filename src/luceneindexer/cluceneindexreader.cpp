@@ -110,7 +110,7 @@ CLuceneIndexReader::checkReader(bool enforceCurrent) {
     if (reader == 0) {
         openReader();
     }
-    return reader;
+    return reader != NULL;
 }
 
 #ifdef _UCS2
