@@ -89,7 +89,7 @@ Interface::getStatus() {
 string
 Interface::stopDaemon() {
     active = false;
-    kill(getpid(), SIGINT);
+    raise(SIGINT);
     return "";
 }
 string
