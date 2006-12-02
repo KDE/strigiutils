@@ -23,12 +23,12 @@ public:
     QString stopIndexing();
     QString stopDaemon();
     QStringList getIndexedFiles();
+    void indexFile(const QString &path, qulonglong mtime,
+        const QByteArray &content);
 /* Functions that are in the DBus interface but are not exposed over this class:
     QStringList getBackEnds();
     QMultiMap<int,QString> > getFilteringRules();
     QList<StrigiHit> getHits(const QString &query, int max, int offset);
-    void indexFile(const QString &path, qulonglong mtime,
-        const QByteArray &content);
     bool isActive();
     QString startIndexing();
     QString stopIndexing();

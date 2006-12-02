@@ -75,3 +75,8 @@ QStringList
 StrigiClient::getIndexedFiles() {
     return p->strigi.getIndexedFiles();
 }
+void
+StrigiClient::indexFile(const QString &path, qulonglong mtime,
+        const QByteArray &content) {
+    p->strigi.indexFile(path, mtime, content);
+}
