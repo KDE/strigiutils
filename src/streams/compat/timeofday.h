@@ -26,8 +26,8 @@
 
 #ifndef HAVE_GETTIMEOFDAY
 __inline int gettimeofday(struct timeval *tv, struct timezone *tz)
-#ifdef _WINDOWS
 {
+#ifdef _WINDOWS
     FILETIME        ft;
     LARGE_INTEGER   li;
     __int64         t;
