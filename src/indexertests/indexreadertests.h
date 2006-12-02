@@ -1,6 +1,8 @@
 #ifndef INDEXREADERTESTS_H
 #define INDEXREADERTESTS_H
 
+#include "verify.h"
+
 namespace jstreams {
     class IndexReader;
 }

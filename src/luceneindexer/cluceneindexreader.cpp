@@ -102,7 +102,6 @@ CLuceneIndexReader::checkReader(bool enforceCurrent) {
         struct timeval t;
         gettimeofday(&t, 0);
         if (enforceCurrent || t.tv_sec-otime > 60) {
-            fprintf(stderr, "reopening reader.\n");
             otime = t.tv_sec;
             closeReader();
         }

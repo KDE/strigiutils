@@ -1,6 +1,8 @@
 #ifndef INDEXWRITERTESTS_H
 #define INDEXWRITERTESTS_H
 
+#include "verify.h"
+
 namespace jstreams {
     class IndexWriter;
     class IndexerConfiguration;

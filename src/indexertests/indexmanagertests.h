@@ -1,6 +1,8 @@
 #ifndef INDEXMANAGERTESTS_H
 #define INDEXMANAGERTESTS_H
 
+#include "verify.h"
+
 namespace jstreams {
     class IndexManager;
     class IndexerConfiguration;
@@ -14,10 +16,10 @@ public:
     IndexManagerTests(jstreams::IndexManager* w,
         jstreams::IndexerConfiguration& ic);
     ~IndexManagerTests();
-    int testAllInThreads(int n);
-    int testAll();
-    int runUnthreadedTests();
-    int runThreadedTests();
+    void testAllInThreads(int n);
+    void testAll();
+    void runUnthreadedTests();
+    void runThreadedTests();
 };
 
 #endif
