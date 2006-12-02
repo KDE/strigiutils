@@ -186,8 +186,8 @@ void PollingListener::pool ()
     m_toIndex.clear();
 }
 
-bool PollingListener::addWatch (const string& path)
-{
+bool
+PollingListener::addWatch (const string& path) {
     STRIGI_MUTEX_LOCK (&m_mutex);
 
     m_watches.insert (path);
@@ -253,14 +253,13 @@ void PollingListener::setIndexedDirectories (const set<string>& dirs)
 
     addWatches (dirs);
 }
-
-bool PollingListener::fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
+void
+PollingListener::fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
-    if (strstr(path, "/.")) return true;
+    if (strstr(path, "/.")) return;
 
     string file (path,len);
 
     (workingPoller->m_toIndex).insert (make_pair(file, mtime));
 
-    return true;
 }

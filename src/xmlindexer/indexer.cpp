@@ -65,11 +65,10 @@ Indexer::index(const char *dir) {
     }
     out << "</metadata>\n";
 }
-bool
+void
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
     workingIndexer->doFile(path);
-    return true;
 }
 void
 Indexer::doFile(const char* filepath) {

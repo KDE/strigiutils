@@ -1,4 +1,4 @@
-set(DIRS eventlistener xsd)
+set(DIRS eventlistener xsd events)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)

@@ -56,7 +56,7 @@ class PollingListener : public EventListener
 
         void* run(void*);
 
-        static bool fileCallback(const char* path, uint dirlen, uint len, time_t mtime);
+        static void fileCallback(const char* path, uint dirlen, uint len, time_t mtime);
     private:
         void pool ();
         void clearWatches();

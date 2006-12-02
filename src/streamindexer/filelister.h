@@ -44,12 +44,12 @@ private:
     char* path;
     uint length;
     time_t m_oldestdate;
-    bool (*m_fileCallback)(const char* fullpath, uint dirlen, uint len,
+    void (*m_fileCallback)(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
     void (*m_dirCallback)(const char* fullpath,  uint len);
 
     char* resize(uint len);
-    bool walk_directory(uint len);
+    void walk_directory(uint len);
 
     jstreams::IndexerConfiguration& m_config;
 public:
@@ -58,13 +58,14 @@ public:
     /**
      * Specify the callback function that reports the files found.
          **/
-    void setFileCallbackFunction(bool (*callback)(const char* fullpath,
+    void setFileCallbackFunction(void (*callback)(const char* fullpath,
             uint dirlen, uint len, time_t mtime)) {
         m_fileCallback = callback;
     }
 
-    void setDirCallbackFunction(void (*callback)(const char* fullpath , uint len)) {
-                                 m_dirCallback = callback;
+    void setDirCallbackFunction(
+            void (*callback)(const char* fullpath, uint len)) {
+        m_dirCallback = callback;
     }
 
     /**

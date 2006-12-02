@@ -49,7 +49,7 @@ private:
     void* run(void*);
     void index();
 public:
-    static bool addFileCallback(const char* path, uint dirlen, uint len,
+    static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
     IndexScheduler();
     void addDirToIndex(const std::string& d) {

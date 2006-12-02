@@ -36,13 +36,10 @@ using namespace jstreams;
 vector<string> files;
 vector<string> dirs;
 
-bool fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
-{
+void fileCallback(const char* path, uint dirlen, uint len, time_t mtime) {
     // stupid callback, used to test a situation similar to inotify's memory leak
     string file (path, len);
     files.push_back(file);
-
-    return true;
 }
 
 void dirCallback(const char* path, uint len)
@@ -58,12 +55,7 @@ main(int argc, char** argv) {
         return -1;
     }
 
-/* TODO add the rules to the indexerconfiguration
-    multimap <int, string> rules;*/
-//    rules.insert (make_pair((int)PathFilter::RTTI, string("*/.svn")));
-/*
-    FilterManager filtermanager;
-    filtermanager.setFilteringRules( rules); */
+//  TODO add the rules to the indexerconfiguration
 
     IndexerConfiguration ic;
     FileLister lister (ic);

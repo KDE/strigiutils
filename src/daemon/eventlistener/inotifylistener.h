@@ -49,7 +49,6 @@ class InotifyListener : public EventListener
 
             public:
                 explicit ReindexDirsThread (const char* name, const std::set<std::string> &newdirs, const std::set<std::string> &olddirs) : StrigiThread (name) {
-                    m_pFilterManager = NULL;
                     m_pIndexReader = NULL;
                     m_newDirs = newdirs;
                     m_oldDirs = olddirs;
@@ -61,10 +60,6 @@ class InotifyListener : public EventListener
                 ~ReindexDirsThread();
 
                 void* run(void*);
-
-                void setFilterManager (FilterManager* filterManager) {
-                    m_pFilterManager = filterManager;
-                }
 
                 void setIndexReader (jstreams::IndexReader* ireader) {
                     m_pIndexReader = ireader;
@@ -89,7 +84,6 @@ class InotifyListener : public EventListener
                 */
                 static void watchDirCallback(const char* path, uint len);
 
-                FilterManager* m_pFilterManager;
                 jstreams::IndexReader* m_pIndexReader;
                 std::map<std::string, time_t> m_toIndex; //!< new files to index
                 std::set<std::string> m_toWatch; //!< new directories to watch

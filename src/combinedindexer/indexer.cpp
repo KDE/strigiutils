@@ -22,7 +22,6 @@
 #include <Combined.h>
 #include "filelister.h"
 #include "filereader.h"
-#include "filtermanager.h"
 #include "combinedindexmanager.h"
 
 using lucene::index::IndexWriter;
@@ -30,10 +29,10 @@ using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, FilterManager* filtermanager) :m_indexdir(indexdir),
+Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
         m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer)
 {
-    m_lister = new FileLister (filtermanager);
+    m_lister = new FileLister();
 }
 Indexer::~Indexer() {
     delete m_lister;

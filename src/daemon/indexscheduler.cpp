@@ -45,12 +45,11 @@ IndexScheduler::IndexScheduler() :StrigiThread("IndexScheduler") {
 }
 IndexScheduler::~IndexScheduler() {
 }
-bool
+void
 IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
-    if (sched->getState() != Working) return false;
     // only read files that do not start with '.'
-    if (path[dirlen] == '.') return true;
+    if (path[dirlen] == '.') return;
 
     std::string filepath(path, len);
 
@@ -62,7 +61,6 @@ IndexScheduler::addFileCallback(const char* path, uint dirlen, uint len,
     } else {
         sched->dbfiles.erase(i);
     }
-    return true;
 }
 std::string
 IndexScheduler::getStateString() {

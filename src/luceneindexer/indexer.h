@@ -34,7 +34,7 @@ private:
     CLuceneIndexWriter m_writer;
     jstreams::StreamIndexer m_indexer;
 
-    static bool addFileCallback(const char* path, uint dirlen, uint len,
+    static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);

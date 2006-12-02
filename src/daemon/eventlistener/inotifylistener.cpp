@@ -22,7 +22,6 @@
 
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filtermanager.h"
 #include "filelister.h"
 #include "indexreader.h"
 #include "../strigilogging.h"
@@ -291,7 +290,7 @@ void InotifyListener::watch ()
                     m_toIndex.clear();
                     m_toWatch.clear();
 
-                    FileLister lister (m_pFilterManager);
+                    FileLister lister();
 
                     lister.setFileCallbackFunction(&indexFileCallback);
                     lister.setDirCallbackFunction(&watchDirCallback);
@@ -342,7 +341,8 @@ void InotifyListener::watch ()
     fflush( NULL );
 }
 
-bool InotifyListener::isEventInteresting (struct inotify_event * event)
+bool
+InotifyListener::isEventInteresting (struct inotify_event * event)
 {
     // ignore files starting with '.'
     if (((IN_ISDIR & event->mask) == 0) && (event->len > 0) && ((event->name)[0] == '.'))

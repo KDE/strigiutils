@@ -101,18 +101,12 @@ FileLister::resize(uint len) {
 /**
  * Walk through a directory. The directory name must end in a '/'.
  **/
-bool
+void
 FileLister::walk_directory(uint len) {
     //bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
     struct stat dirstat;
-
-/*    if ((m_filterManager != NULL) && (m_filterManager->findMatch( path, len)))
-        return true;
-    else if (m_filterManager == NULL)
-        printf ("m_filtermanager is NULL!!\n");
-*/
 
 #ifdef WIN32
     // windows opendir expects no trailing slash on the end of directories...
@@ -133,7 +127,7 @@ FileLister::walk_directory(uint len) {
     // open the directory
     dir = opendir(path);
     if (dir == 0) {
-        return true;
+        return;
     }
 #ifdef WIN32
     //add the trailing slash back on
@@ -161,21 +155,16 @@ FileLister::walk_directory(uint len) {
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
         if (lstat(path, &dirstat) == 0) {
-            bool c = true;
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if (m_config.indexFile(path, path+len)) {
-                    c = m_fileCallback(path, len, l, dirstat.st_mtime);
+                    m_fileCallback(path, len, l, dirstat.st_mtime);
                 }
             } else if (dirstat.st_mode & S_IFDIR
                     && m_config.indexDir(path, path+len)) {
                 // append a '/' to the path
                 strcpy(path+l, "/");
-                c = walk_directory(l+1);
+                walk_directory(l+1);
             }
-            if (!c) break;
-/*        } else {
-            fprintf(stderr, "Could not stat '%s': %s\n", cwd,
-                strerror(errno));*/
         }
 
         subdir = readdir(dir);
@@ -185,5 +174,4 @@ FileLister::walk_directory(uint len) {
     closedir(dir);
     // go back to where we came from
     //chdir("..");
-    return true;
 }
