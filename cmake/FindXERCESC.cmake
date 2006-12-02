@@ -22,9 +22,9 @@ FIND_LIBRARY(XERCESC_LIBRARIES
   PATHS
     "[HKEY_CURRENT_USER\\software\\xerces-c\\lib]"
     "[HKEY_CURRENT_USER\\xerces-c\\lib]"
-    $ENV{XERCESCROOT}${LIB_DESTINATION}
-    /usr/local${LIB_DESTINATION}
-    /usr${LIB_DESTINATION}
+    $ENV{XERCESCROOT}/${LIB_DESTINATION}
+    /usr/local/${LIB_DESTINATION}
+    /usr/${LIB_DESTINATION}
 )
 
 # if the include a the library are found then we have it
