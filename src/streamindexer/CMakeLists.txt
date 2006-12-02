@@ -28,12 +28,12 @@ endif(Expat_FOUND)
 IF(WIN32)
 	#not enough api exposed to make this a dll
 	add_library(streamindexer ifilterendanalyzer.cpp ${streamindexer_SRCS})
-    install(TARGETS streamindexer ARCHIVE DESTINATION lib)
+    install(TARGETS streamindexer ARCHIVE DESTINATION ${LIB_DESTINATION})
     #add ifilter library
 	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
 ELSE(WIN32)
 	add_library(streamindexer SHARED ${streamindexer_SRCS})
-	install(TARGETS streamindexer LIBRARY DESTINATION lib)
+	install(TARGETS streamindexer LIBRARY DESTINATION ${LIB_DESTINATION})
 ENDIF(WIN32)
 set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}

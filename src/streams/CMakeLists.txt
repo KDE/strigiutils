@@ -19,10 +19,10 @@ set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stg
 
 IF(WIN32)
 	add_library(streams ${streams_SRCS})
-	install(TARGETS streams ARCHIVE DESTINATION lib)
+	install(TARGETS streams ARCHIVE DESTINATION ${LIB_DESTINATION})
 ELSE(WIN32)
 	add_library(streams SHARED ${streams_SRCS})
-	install(TARGETS streams LIBRARY DESTINATION lib)
+	install(TARGETS streams LIBRARY DESTINATION ${LIB_DESTINATION})
 ENDIF(WIN32)
 
 set_target_properties(streams PROPERTIES

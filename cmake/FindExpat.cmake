@@ -18,10 +18,10 @@ IF(Expat_INCLUDE_DIRS)
 ELSE(Expat_INCLUDE_DIRS)
 
   SET(TRIAL_LIBRARY_PATHS
-    $ENV{EXPAT_HOME}/lib
-    /usr/lib
-    /usr/local/lib
-    /sw/lib
+    $ENV{EXPAT_HOME}${LIB_DESTINATION}
+    /usr${LIB_DESTINATION}
+    /usr/local${LIB_DESTINATION}
+    /sw${LIB_DESTINATION}
   ) 
   SET(TRIAL_INCLUDE_PATHS
     $ENV{EXPAT_HOME}/include

@@ -59,7 +59,7 @@ set_target_properties(searchclient PROPERTIES
 
 install(TARGETS strigidaemon searchclient #strigiconfupdater
 	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+	LIBRARY DESTINATION ${LIB_DESTINATION})
 install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h
 	DESTINATION include)
 

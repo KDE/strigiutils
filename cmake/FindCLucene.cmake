@@ -14,11 +14,11 @@ IF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
 ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
 
   SET(TRIAL_LIBRARY_PATHS
-    $ENV{CLUCENE_HOME}/lib
-    $ENV{HOME}/testinstall/lib
-    /usr/lib
-    /usr/local/lib
-    /sw/lib
+    $ENV{CLUCENE_HOME}${LIB_DESTINATION}
+    $ENV{HOME}/testinstall${LIB_DESTINATION}
+    /usr${LIB_DESTINATION}
+    /usr/local${LIB_DESTINATION}
+    /sw${LIB_DESTINATION}
   ) 
   SET(TRIAL_INCLUDE_PATHS
     $ENV{CLUCENE_HOME}/include
