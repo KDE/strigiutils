@@ -171,7 +171,7 @@ getStream(const char*start, const char* end) {
     // find the start of the preceding dictionary
     const char* d = findDictStart(start, s);
     d++;
-    printf("%i %.*s\n", count, s-d, d);
+    printf("%i %.*s\n", count, (int)(s-d), d);
 
     // find the end of the stream
     int32_t l = -1;

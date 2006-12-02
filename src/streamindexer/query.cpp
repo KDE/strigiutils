@@ -191,13 +191,13 @@ Query::highlight(const string& text) const {
     }
     string out;
     int pos = 0;
-    int last1 = string::npos;
+    string::size_type last1 = string::npos;
     //int last2 = string::npos;
     //int last3 = string::npos;
-    int last4 = string::npos;
+    string::size_type last4 = string::npos;
     vector<string>::const_iterator k;
     while (pos >= 0 && (int)(out.length()+last1-last4) < maxlen) {
-        uint rep = string::npos;
+        string::size_type rep = string::npos;
         int len;
         for (k = re.begin(); k != re.end(); ++k) {
             uint p = lt.find(*k, pos);
@@ -207,9 +207,9 @@ Query::highlight(const string& text) const {
             }
         }
         if (rep >= 0) {
-            uint p1 = t.find(" ", rep-pre);
+            string::size_type p1 = t.find(" ", rep-pre);
             if (p1 == string::npos) p1 = (rep-pre < 0) ?0 : rep-pre;
-            uint p4 = t.find(" ", rep+len+post);
+            string::size_type p4 = t.find(" ", rep+len+post);
             if (p4 == string::npos) p4 = t.length();
             out += t.substr(p1, rep-p1);
             out += "<b>";

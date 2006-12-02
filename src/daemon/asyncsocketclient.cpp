@@ -148,7 +148,7 @@ AsyncSocketClient::handleGetDaemonStatusResponse() {
     vector<string> response = splitResponse();
     for (uint i=0; i<response.size(); ++i) {
         string s = response[i];
-        uint p = s.find(":");
+        string::size_type p = s.find(":");
         if (p == string::npos) {
             daemonStatus.clear();
             daemonStatus["error"] = "Communication error.";

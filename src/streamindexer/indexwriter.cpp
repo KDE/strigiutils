@@ -25,8 +25,8 @@ using namespace jstreams;
 using namespace std;
 string
 Indexable::getExtension() const {
-    uint p1 = name.rfind('.');
-    uint p2 = name.rfind('/');
+    string::size_type p1 = name.rfind('.');
+    string::size_type p2 = name.rfind('/');
     if (p1 != string::npos && (p2 == string::npos || p1 > p2)) {
         return name.substr(p1+1);
     }

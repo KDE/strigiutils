@@ -31,8 +31,8 @@ SqliteIndexReader::~SqliteIndexReader() {
 set<string>
 split(const std::string& q) {
     set<string> terms;
-    uint pos = q.find(' ');
-    uint offset = 0;
+    string::size_type pos = q.find(' ');
+    string::size_type offset = 0;
     while (pos != string::npos) {
         if (pos-offset > 0) {
             terms.insert(q.substr(offset, pos-offset));

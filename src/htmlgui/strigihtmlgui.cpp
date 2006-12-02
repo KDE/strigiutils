@@ -437,7 +437,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     path = highlightTerms(path, query, fields);
 
     out << "<div class='path'>";
-    uint p = path.find('/');
+    string::size_type p = path.find('/');
     int pp = 0;
     string subpath;
     while (p != string::npos) {
