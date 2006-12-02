@@ -160,7 +160,7 @@ FileLister::walk_directory(uint len) {
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
-        if (stat(path, &dirstat) == 0) {
+        if (lstat(path, &dirstat) == 0) {
             bool c = true;
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if (m_config.indexFile(path, path+len)) {
