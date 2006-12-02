@@ -36,36 +36,31 @@ class Event;
 * @sa Filter
 */
 
-class PollingListener : public EventListener
-{
-    public:
-        PollingListener();
-        PollingListener(std::set<std::string>& dirs);
+class PollingListener : public EventListener {
+public:
+    PollingListener();
+    PollingListener(std::set<std::string>& dirs);
 
-        ~PollingListener();
+    ~PollingListener();
 
-        /*!
-        * Useless method, provided for compatibility with EventListener
-        */
-        bool init () { return true; }
-        bool addWatch (const std::string& path);
-        void rmWatch (const std::string& path);
-        void addWatches (const std::set<std::string>& watches);
-        void setIndexedDirectories (const std::set<std::string>& dirs);
+    bool addWatch (const std::string& path);
+    void rmWatch (const std::string& path);
+    void addWatches (const std::set<std::string>& watches);
+    void setIndexedDirectories (const std::set<std::string>& dirs);
 
+    void* run(void*);
 
-        void* run(void*);
+    static void fileCallback(const char* path, uint dirlen, uint len,
+        time_t mtime);
+private:
+    void pool ();
+    void clearWatches();
 
-        static void fileCallback(const char* path, uint dirlen, uint len, time_t mtime);
-    private:
-        void pool ();
-        void clearWatches();
-
-        bool m_firstTime;
-        std::set<std::string> m_watches;
-        std::map<std::string, time_t> m_toIndex;
-        pthread_mutex_t m_mutex; //!< mutex on m_watches
-        static PollingListener* workingPoller; //!<pointer to current PollingListener instance, used with FileLister's callbacks
+    bool m_firstTime;
+    std::set<std::string> m_watches;
+    std::map<std::string, time_t> m_toIndex;
+    pthread_mutex_t m_mutex; //!< mutex on m_watches
+    static PollingListener* workingPoller; //!<pointer to current PollingListener instance, used with FileLister's callbacks
 };
 
 #endif
