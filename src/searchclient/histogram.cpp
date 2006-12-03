@@ -21,16 +21,17 @@ Histogram::paintEvent(QPaintEvent *) {
     foreach (const StringUIntPair& p, data) {
         if (p.second > max) max = p.second;
     }
+    if (max <= 0) return;
     QPainter painter(this);
-    painter.setPen(palette().highlightedText().color());
+//    painter.setPen(palette().highlightedText().color());
     qreal offset = 0;
     painter.rotate(-90);
     painter.translate(-h, 0);
     foreach (const StringUIntPair& p, data) {
         qreal bh = p.second*h/(qreal)max;
         painter.fillRect(QRectF(0, offset, bh, bw), palette().highlight());
-        painter.drawText(QRectF(m, offset, bh-m, bw), Qt::AlignVCenter,
-            p.first);
+        painter.drawText(QRectF(m, offset, w, bw), Qt::AlignVCenter,
+            p.first+": "+QString::number(p.second));
         offset += bw + m;
     }
 }

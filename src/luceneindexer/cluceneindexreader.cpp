@@ -294,12 +294,12 @@ CLuceneIndexReader::countHits(const Query& q) {
 }
 std::vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {
-    BooleanQuery bq;
-    Private::createBooleanQuery(q, bq);
     std::vector<IndexedDocument> results;
     if (!checkReader()) {
         return results;
     }
+    BooleanQuery bq;
+    Private::createBooleanQuery(q, bq);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int s = 0;
@@ -424,4 +424,73 @@ CLuceneIndexReader::getMTime(int64_t docid) {
         delete d;
     }
     return mtime;
+}
+class Histogram {
+public:
+    std::vector<std::pair<std::string,uint32_t> > h;
+    std::vector<int> values;
+};
+#include <time.h>
+#include <sstream>
+std::vector<std::pair<std::string,uint32_t> >
+makeHistogram(const std::vector<int>& v, int32_t min, int32_t max) {
+    const int cats = 10;
+    map<int32_t, int32_t> m;
+    vector<int32_t>::const_iterator i;
+    int32_t d = max-min+1;
+    struct tm t;
+    for (i = v.begin(); i < v.end(); ++i) {
+         time_t ti = *i;
+         localtime_r(&ti, &t);
+         int32_t c = 10000*t.tm_year + 100*t.tm_mon + t.tm_mday;
+         m[c]++;
+    }
+    std::vector<std::pair<std::string,uint32_t> > h;
+    ostringstream str;
+    map<int32_t,int32_t>::const_iterator j;
+    for (j = m.begin(); j != m.end(); ++j) {
+        str << j->first + 19000100;
+        h.push_back(make_pair(str.str(), j->second));
+        str.str("");
+    }
+    return h;
+}
+std::vector<std::pair<std::string,uint32_t> >
+CLuceneIndexReader::getHistogram(const std::string& query,
+        const std::string& fieldname) {
+    std::vector<std::pair<std::string,uint32_t> > h;
+    if (!checkReader()) {
+        return h;
+    }
+    Query q(query, 0, 0);
+    BooleanQuery bq;
+    Private::createBooleanQuery(q, bq);
+    IndexSearcher searcher(reader);
+    Hits* hits = 0;
+    int s = 0;
+    try {
+        hits = searcher.search(&bq);
+        s = hits->length();
+    } catch (CLuceneError& err) {
+        printf("could not query: %s\n", err.what());
+    }
+    char cstr[CL_MAX_DIR];
+    const TCHAR* mt = mapId(_T("mtime"));
+    int32_t max = INT_MIN;
+    int32_t min = INT_MAX;
+    std::vector<int32_t> values;
+    for (int i = 0; i < s; ++i) {
+        Document *d = &hits->doc(i);
+        const TCHAR* v = d->get(mt);
+        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+        time_t mtime = atoi(cstr);
+        values.push_back(mtime);
+        max = (max>mtime) ?max :mtime;
+        min = (min<mtime) ?min :mtime;
+    }
+    if (hits) {
+        _CLDELETE(hits);
+    }
+    searcher.close();
+    return makeHistogram(values, min, max);
 }

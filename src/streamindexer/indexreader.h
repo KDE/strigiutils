@@ -100,6 +100,14 @@ public:
      *         document in the index, 0 is returned.
      **/
     virtual time_t getMTime(int64_t docid) = 0;
+    /**
+     *
+     **/
+    virtual std::vector<std::pair<std::string,uint32_t> > getHistogram(
+            const std::string& query, const std::string& fieldname) {
+        std::vector<std::pair<std::string,uint32_t> > h;
+        return h;
+    }
 };
 
 }

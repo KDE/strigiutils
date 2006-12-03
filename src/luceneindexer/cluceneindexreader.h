@@ -60,6 +60,8 @@ public:
     time_t getMTime(int64_t docid);
     static void addMapping(const TCHAR* from, const TCHAR* to);
     lucene::index::IndexReader* reader;
+    std::vector<std::pair<std::string,uint32_t> > getHistogram(
+            const std::string& query, const std::string& fieldname);
 };
 
 #endif

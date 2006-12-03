@@ -156,9 +156,5 @@ Interface::getFieldNames() {
 }
 std::vector<std::pair<std::string, uint32_t> >
 Interface::getHistogram(const std::string& query, const std::string& field) {
-    std::vector<std::pair<std::string, uint32_t> > h;
-    h.push_back(make_pair("1", 10));
-    h.push_back(make_pair("2", 20));
-    h.push_back(make_pair("4", 30));
-    return h;
+    return manager.getIndexReader()->getHistogram(query, field);
 }
