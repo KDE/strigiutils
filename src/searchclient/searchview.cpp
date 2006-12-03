@@ -98,6 +98,7 @@ SearchViewHtmlHelper::highlight(const std::string& text,
     int pos = 0;
     int lasts = -1;
     int laste = -1;
+    QRegExp nonword("\\W");
     while (pos >= 0 && out.length()+laste-lasts < maxlen) {
         int rep = -1;
         int len = 0;
@@ -110,9 +111,9 @@ SearchViewHtmlHelper::highlight(const std::string& text,
         }
         if (rep >= 0) {
             int s = (rep-pre > 0) ?rep-pre :0;
-            s = t.lastIndexOf(" ", s);
+            s = t.lastIndexOf(nonword, s);
             if (s == -1) s = (rep-pre < 0) ?0 : rep-pre;
-            int e = t.indexOf(" ", rep+len+post);
+            int e = t.indexOf(nonword, rep+len+post);
             if (e == -1) e = t.length();
             if (lasts == -1) {
                 lasts = s;
