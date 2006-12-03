@@ -23,13 +23,13 @@ Histogram::paintEvent(QPaintEvent *) {
     }
     QPainter painter(this);
     painter.setPen(palette().highlightedText().color());
-    int offset = 0;
+    qreal offset = 0;
     painter.rotate(-90);
     painter.translate(-h, 0);
     foreach (const StringUIntPair& p, data) {
-        int bh = p.second*h/max;
-        painter.fillRect(0, offset, bh, bw, palette().highlight());
-        painter.drawText(QRect(m, offset, bh-m, bw), Qt::AlignVCenter,
+        qreal bh = p.second*h/(qreal)max;
+        painter.fillRect(QRectF(0, offset, bh, bw), palette().highlight());
+        painter.drawText(QRectF(m, offset, bh-m, bw), Qt::AlignVCenter,
             p.first);
         offset += bw + m;
     }
