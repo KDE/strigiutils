@@ -203,7 +203,7 @@ DBusMessageWriter::operator<<(const std::vector<std::pair<bool, std::string> >& 
 DBusMessageWriter&
 DBusMessageWriter::operator<<(const std::vector<std::pair<std::string, uint32_t> >& s) {
     DBusMessageIter sub, ssub;
-    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY, "(bs)", &sub);
+    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY, "(su)", &sub);
     vector<pair<string,uint32_t> >::const_iterator i;
     for (i = s.begin(); i != s.end(); ++i) {
         dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
