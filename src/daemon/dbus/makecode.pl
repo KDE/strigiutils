@@ -17,7 +17,8 @@ my $classname;
 my %typemapping = (
 	"void" => "ignore",
 	"std::string" => "s",
-	"int" => "i",
+	"int32_t" => "i",
+	"uint32_t" => "u",
 	"bool" => "b",
 	"std::vector<std::string>" => "as",
 	"std::set<std::string>" => "as",
@@ -26,6 +27,7 @@ my %typemapping = (
 	"std::vector<char>" => "ay",
 	"std::multimap<int, std::string>" => "a(is)",
 	"std::vector<std::pair<bool,std::string> >" => "a(bs)",
+	"std::vector<std::pair<std::string, uint32_t> >" => "a(su)",
 	"uint64_t" => "t"
 );
 

@@ -22,7 +22,7 @@ void
 StrigiAsyncClient::addCountQuery(const QString& query) {
     Request r;
     r.query = query;
-    r.offset = -1;
+    r.max = 0;
     appendRequest(r);
 }
 void
@@ -38,7 +38,7 @@ StrigiAsyncClient::clearCountQueries() {
     queuelock.lock();
     QList<Request>::iterator i = queue.begin();
     while (i != queue.end()) {
-        if (!i->query.isNull() && i->offset == -1) {
+        if (!i->query.isNull() && i->max == 0) {
             i = queue.erase(i);
         } else {
             i++;
@@ -51,7 +51,7 @@ StrigiAsyncClient::clearGetQueries() {
     queuelock.lock();
     QList<Request>::iterator i = queue.begin();
     while (i != queue.end()) {
-        if (!i->query.isNull() && i->offset != -1) {
+        if (!i->query.isNull() && i->max > 0) {
             i = queue.erase(i);
         } else {
             i++;
@@ -84,6 +84,8 @@ StrigiAsyncClient::handleGet(const QDBusMessage& msg) {
     if (r.isValid()) {
         QList<StrigiHit> hits = r;
         emit gotHits(lastRequest.query, lastRequest.offset, hits);
+    } else {
+        qDebug() << r.error().message();
     }
     sendNextRequest();
 }
@@ -123,7 +125,7 @@ StrigiAsyncClient::sendNextRequest(const Request& r) {
     if (r.query.isNull()) {
         method = QLatin1String("getStatus");
         slot = SLOT(handleStatus(QDBusMessage));
-    } else if (r.offset == -1) {
+    } else if (r.max == 0) {
         method = QLatin1String("countHits");
         argumentList << qVariantFromValue(r.query);
         slot = SLOT(handleCount(const QDBusMessage&));

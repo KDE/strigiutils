@@ -12,9 +12,11 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
     handlers["isActive"] = &DBusClientInterface::isActive;
     handlers["getIndexedFiles"] = &DBusClientInterface::getIndexedFiles;
     handlers["setIndexedDirectories"] = &DBusClientInterface::setIndexedDirectories;
+    handlers["getFieldNames"] = &DBusClientInterface::getFieldNames;
     handlers["getBackEnds"] = &DBusClientInterface::getBackEnds;
     handlers["setFilters"] = &DBusClientInterface::setFilters;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
+    handlers["getHistogram"] = &DBusClientInterface::getHistogram;
     handlers["stopIndexing"] = &DBusClientInterface::stopIndexing;
     handlers["getHits"] = &DBusClientInterface::getHits;
     handlers["startIndexing"] = &DBusClientInterface::startIndexing;
@@ -58,6 +60,9 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='d' type='as' direction='in'/>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
     << "    </method>\n"
+    << "    <method name='getFieldNames'>\n"
+    << "      <arg name='out' type='as' direction='out'/>\n"
+    << "    </method>\n"
     << "    <method name='getBackEnds'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
@@ -67,13 +72,18 @@ DBusClientInterface::getIntrospectionXML() {
     << "    <method name='getIndexedDirectories'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
+    << "    <method name='getHistogram'>\n"
+    << "      <arg name='query' type='s' direction='in'/>\n"
+    << "      <arg name='field' type='s' direction='in'/>\n"
+    << "      <arg name='out' type='a(su)' direction='out'/>\n"
+    << "    </method>\n"
     << "    <method name='stopIndexing'>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getHits'>\n"
     << "      <arg name='query' type='s' direction='in'/>\n"
-    << "      <arg name='max' type='i' direction='in'/>\n"
-    << "      <arg name='offset' type='i' direction='in'/>\n"
+    << "      <arg name='max' type='u' direction='in'/>\n"
+    << "      <arg name='offset' type='u' direction='in'/>\n"
     << "      <arg name='out' type='a(sdsssxxa{sas})' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='startIndexing'>\n"
@@ -144,6 +154,14 @@ DBusClientInterface::setIndexedDirectories(DBusMessage* msg, DBusConnection* con
     }
 }
 void
+DBusClientInterface::getFieldNames(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    if (reader.isOk()) {
+        writer << impl->getFieldNames();
+    }
+}
+void
 DBusClientInterface::getBackEnds(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
@@ -170,6 +188,17 @@ DBusClientInterface::getIndexedDirectories(DBusMessage* msg, DBusConnection* con
     }
 }
 void
+DBusClientInterface::getHistogram(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string query;
+    std::string field;
+    reader >> query >> field;
+    if (reader.isOk()) {
+        writer << impl->getHistogram(query,field);
+    }
+}
+void
 DBusClientInterface::stopIndexing(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
@@ -182,11 +211,13 @@ DBusClientInterface::getHits(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
     std::string query;
-    int max;
-    int offset;
+    uint32_t max;
+    uint32_t offset;
     reader >> query >> max >> offset;
     if (reader.isOk()) {
         writer << impl->getHits(query,max,offset);
+    } else {
+        fprintf(stderr, "error parsing input message");
     }
 }
 void

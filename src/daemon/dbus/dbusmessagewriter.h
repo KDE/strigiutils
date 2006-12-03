@@ -50,5 +50,6 @@ public:
     DBusMessageWriter& operator<<(const std::vector<std::pair<bool, std::string> >& s);
     DBusMessageWriter& operator<<(const ClientInterface::Hits& s);
     DBusMessageWriter& operator<<(const std::multimap<int, std::string>&);
+    DBusMessageWriter& operator<<(const std::vector<std::pair<std::string, uint32_t> >&);
 };
 #endif

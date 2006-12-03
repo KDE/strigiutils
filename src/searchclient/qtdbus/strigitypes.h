@@ -13,6 +13,9 @@ Q_DECLARE_METATYPE(IntegerStringMultiMap)
 typedef QPair<bool, QString> BoolStringPair;
 Q_DECLARE_METATYPE(BoolStringPair)
 Q_DECLARE_METATYPE(QList<BoolStringPair>)
+typedef QPair<QString, quint32> StringUIntPair;
+Q_DECLARE_METATYPE(StringUIntPair)
+Q_DECLARE_METATYPE(QList<StringUIntPair>)
 
 // sdsssxxa{sas}
 struct StrigiHit {

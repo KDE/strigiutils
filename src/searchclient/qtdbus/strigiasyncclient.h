@@ -12,8 +12,8 @@ private:
     class Request {
     public:
         QString query; // "" means: getStatus
-        int max; // -1 means: countHits
-        int offset;
+        quint32 max; // -1 means: countHits
+        quint32 offset;
     };
     bool activeRequest;
     Request lastRequest;

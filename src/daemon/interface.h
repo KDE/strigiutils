@@ -41,7 +41,7 @@ private:
 public:
     Interface(CombinedIndexManager& m, IndexScheduler& s);
     int countHits(const std::string& query);
-    Hits getHits(const std::string& query, int max, int offset);
+    Hits getHits(const std::string& query, uint32_t max, uint32_t offset);
     std::map<std::string, std::string> getStatus();
     std::string stopDaemon();
     std::string startIndexing();
@@ -55,6 +55,8 @@ public:
     std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);
+    std::vector<std::string> getFieldNames();
+    std::vector<std::pair<std::string, uint32_t> > getHistogram(const std::string& query, const std::string& field);
 
     std::vector<std::string> getBackEnds();
     void setEventListener(EventListener* eListener);

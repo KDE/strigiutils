@@ -140,7 +140,7 @@ SocketClient::countHits(const string &query) {
     return count;
 }
 ClientInterface::Hits
-SocketClient::getHits(const string &query, int max, int off) {
+SocketClient::getHits(const string &query, uint32_t max, uint32_t off) {
     response.clear();
     request.clear();
     request.push_back("query");
@@ -337,4 +337,13 @@ SocketClient::indexFile(const std::string &path, uint64_t mtime,
     request.push_back(out.str());
     request.push_back(&content[0]);
 }
-
+std::vector<std::string>
+SocketClient::getFieldNames() {
+    fprintf(stderr, "SocketClient::getFieldNames is not implemented yet\n");
+    return std::vector<std::string>();
+}
+std::vector<std::pair<std::string, uint32_t> >
+SocketClient::getHistogram(const std::string& query, const std::string& field) {
+    fprintf(stderr, "SocketClient::getHistogram is not implemented yet\n");
+    return std::vector<std::pair<std::string, uint32_t> >();
+}

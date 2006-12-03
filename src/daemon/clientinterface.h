@@ -37,8 +37,8 @@ public:
 
     ClientInterface() :active(true) {}
     virtual ~ClientInterface() {}
-    virtual int countHits(const std::string& query) = 0;
-    virtual Hits getHits(const std::string& query, int max, int offset) = 0;
+    virtual int32_t countHits(const std::string& query) = 0;
+    virtual Hits getHits(const std::string& query, uint32_t max, uint32_t offset) = 0;
     virtual std::map<std::string, std::string> getStatus() = 0;
     virtual std::string stopDaemon() = 0;
     virtual std::string startIndexing() = 0;
@@ -51,6 +51,9 @@ public:
     bool isActive() { return active; }
     virtual std::vector<std::string> getBackEnds() = 0;
     virtual void indexFile(const std::string& path, uint64_t mtime, const std::vector<char>& content) = 0;
+
+    virtual std::vector<std::string> getFieldNames() = 0;
+    virtual std::vector<std::pair<std::string, uint32_t> > getHistogram(const std::string& query, const std::string& field) = 0;
 };
 
 #endif

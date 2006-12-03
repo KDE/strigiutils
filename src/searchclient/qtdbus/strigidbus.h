@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef STRIGIDBUS_H_1164808951
-#define STRIGIDBUS_H_1164808951
+#ifndef STRIGIDBUS_H_1165144677
+#define STRIGIDBUS_H_1165144677
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -50,13 +50,26 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("getBackEnds"), argumentList);
     }
 
+    inline QDBusReply<QStringList> getFieldNames()
+    {
+        QList<QVariant> argumentList;
+        return callWithArgumentList(QDBus::Block, QLatin1String("getFieldNames"), argumentList);
+    }
+
     inline QDBusReply<QList<QPair<bool,QString> > > getFilters()
     {
         QList<QVariant> argumentList;
         return callWithArgumentList(QDBus::Block, QLatin1String("getFilters"), argumentList);
     }
 
-    inline QDBusReply<QList<StrigiHit> > getHits(const QString &query, int max, int offset)
+    inline QDBusReply<QList<QPair<QString,quint32> > > getHistogram(const QString &query, const QString &field)
+    {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue(query) << qVariantFromValue(field);
+        return callWithArgumentList(QDBus::Block, QLatin1String("getHistogram"), argumentList);
+    }
+
+    inline QDBusReply<QList<StrigiHit> > getHits(const QString &query, uint max, uint offset)
     {
         QList<QVariant> argumentList;
         argumentList << qVariantFromValue(query) << qVariantFromValue(max) << qVariantFromValue(offset);

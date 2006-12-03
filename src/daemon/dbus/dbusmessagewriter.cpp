@@ -200,3 +200,20 @@ DBusMessageWriter::operator<<(const std::vector<std::pair<bool, std::string> >& 
     dbus_message_iter_close_container(&it, &sub);
     return *this;
 }
+DBusMessageWriter&
+DBusMessageWriter::operator<<(const std::vector<std::pair<std::string, uint32_t> >& s) {
+    DBusMessageIter sub, ssub;
+    dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY, "(bs)", &sub);
+    vector<pair<string,uint32_t> >::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
+        const char* s = i->first.c_str();
+        dbus_uint32_t n = i->second;
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &s);
+        dbus_message_iter_append_basic(&ssub, DBUS_TYPE_UINT32, &n);
+        dbus_message_iter_close_container(&sub, &ssub);
+    }
+    dbus_message_iter_close_container(&it, &sub);
+    
+    return *this;
+}

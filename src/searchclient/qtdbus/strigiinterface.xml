@@ -16,6 +16,13 @@
     <method name='getIndexedFiles'>
       <arg name='out' type='as' direction='out'/>
     </method>
+    <method name='getHistogram'>
+     <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
+      value="QList&lt;QPair&lt;QString,quint32> >"/>
+      <arg name='query' type='s' direction='in'/>
+      <arg name='field' type='s' direction='in'/>
+      <arg name='out' type='a(su)' direction='out'/>
+    </method>
     <method name='getFilters'>
      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
       value="QList&lt;QPair&lt;bool,QString> >"/>
@@ -30,6 +37,9 @@
       <arg name='d' type='as' direction='in'/>
       <arg name='out' type='s' direction='out'/>
     </method>
+    <method name='getFieldNames'>
+      <arg name='out' type='as' direction='out'/>
+    </method>
     <method name='getBackEnds'>
       <arg name='out' type='as' direction='out'/>
     </method>
@@ -43,8 +53,8 @@
      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0"
       value="QList&lt;StrigiHit>"/>
       <arg name='query' type='s' direction='in'/>
-      <arg name='max' type='i' direction='in'/>
-      <arg name='offset' type='i' direction='in'/>
+      <arg name='max' type='u' direction='in'/>
+      <arg name='offset' type='u' direction='in'/>
       <arg name='out' type='a(sdsssxxa{sas})' direction='out'/>
     </method>
     <method name='startIndexing'>

@@ -52,7 +52,7 @@ Interface::countHits(const string& query) {
     return count;
 }
 ClientInterface::Hits
-Interface::getHits(const string& query, int max, int off) {
+Interface::getHits(const string& query, uint32_t max, uint32_t off) {
     Query q(query, max, off);
     Hits hits;
     hits.hits = manager.getIndexReader()->query(q);
@@ -145,4 +145,20 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     StringReader<char> sr(&content[0], content.size(), false);
     Indexable idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
+}
+std::vector<std::string>
+Interface::getFieldNames() {
+    std::vector<std::string> names;
+    names.push_back("content");
+    names.push_back("size");
+    names.push_back("mtime");
+    return names;
+}
+std::vector<std::pair<std::string, uint32_t> >
+Interface::getHistogram(const std::string& query, const std::string& field) {
+    std::vector<std::pair<std::string, uint32_t> > h;
+    h.push_back(make_pair("1", 10));
+    h.push_back(make_pair("2", 20));
+    h.push_back(make_pair("4", 30));
+    return h;
 }
