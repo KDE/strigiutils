@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef STRIGIDBUS_H_1165144677
-#define STRIGIDBUS_H_1165144677
+#ifndef STRIGIDBUS_H_1165155505
+#define STRIGIDBUS_H_1165155505
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>

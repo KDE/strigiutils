@@ -25,14 +25,11 @@ public:
     QStringList getIndexedFiles();
     void indexFile(const QString &path, qulonglong mtime,
         const QByteArray &content);
+    QList<QPair<QString,quint32> > getHistogram(const QString &query,
+        const QString &field);
 /* Functions that are in the DBus interface but are not exposed over this class:
     QStringList getBackEnds();
-    QMultiMap<int,QString> > getFilteringRules();
-    QList<StrigiHit> getHits(const QString &query, int max, int offset);
-    bool isActive();
-    QString startIndexing();
-    QString stopIndexing();
-    QString stopDaemon();*/
+    bool isActive();*/
 };
 
 #endif

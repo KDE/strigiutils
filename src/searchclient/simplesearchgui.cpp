@@ -21,6 +21,7 @@
 #include "dlglistindexedfiles.h"
 #include "simplesearchgui.h"
 #include "searchtabs.h"
+#include "histogram.h"
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
@@ -66,6 +67,9 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     hlayout->addWidget(toggledaemon);
     hlayout->addWidget(toggleindexing);
     statuslayout->addLayout(hlayout);
+
+    histogram = new Histogram();
+    histogram->setMinimumSize(200, 200);
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
@@ -102,6 +106,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
+    layout->addWidget(histogram);
 
     centralview = new QWidget();
     centralview->setLayout(layout);
@@ -157,15 +162,15 @@ SimpleSearchGui::createActions() {
 }
 void
 SimpleSearchGui::query(const QString& item) {
-    if (item.length()) {
-        tabs->setQuery(item);
-    }
     QString query = item.trimmed();
     if (query.length() == 0) {
+        tabs->setQuery(QString());
         asyncstrigi.updateStatus();
         mainview->setCurrentIndex(1);
     } else {
         mainview->setCurrentIndex(0);
+        tabs->setQuery(query);
+        histogram->setData(strigi.getHistogram(query, "mtime"));
     }
 }
 void

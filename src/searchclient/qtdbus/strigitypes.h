@@ -35,5 +35,7 @@ QDBusArgument& operator<<(QDBusArgument &a, const StrigiHit &hit);
 const QDBusArgument& operator>>(const QDBusArgument &a, StrigiHit& hit);
 QDBusArgument& operator<<(QDBusArgument &a, const BoolStringPair &pair);
 const QDBusArgument& operator>>(const QDBusArgument &a, BoolStringPair& pair);
+QDBusArgument& operator<<(QDBusArgument &a, const StringUIntPair &pair);
+const QDBusArgument& operator>>(const QDBusArgument &a, StringUIntPair& pair);
 
 #endif

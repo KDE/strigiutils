@@ -30,3 +30,16 @@ operator>>(const QDBusArgument &a, BoolStringPair& pair) {
    a.endStructure();
    return a;
 }
+QDBusArgument&
+operator<<(QDBusArgument &a, const StringUIntPair &pair) {
+    a.beginStructure();
+    a << pair.first << pair.second;
+    a.endStructure();
+    return a;
+}
+const QDBusArgument& operator>>(const QDBusArgument &a, StringUIntPair& pair) {
+    a.beginStructure();
+    a >> pair.first >> pair.second;
+    a.endStructure();
+    return a;
+}

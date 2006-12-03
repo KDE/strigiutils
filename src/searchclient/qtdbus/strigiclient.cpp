@@ -15,6 +15,8 @@ StrigiClient::StrigiClient() {
     qDBusRegisterMetaType<StrigiHit>();
     qDBusRegisterMetaType<QList<BoolStringPair> >();
     qDBusRegisterMetaType<BoolStringPair>();
+    qDBusRegisterMetaType<StringUIntPair>();
+    qDBusRegisterMetaType<QList<StringUIntPair> >();
     p = new Private();
 }
 StrigiClient::~StrigiClient() {
@@ -79,4 +81,9 @@ void
 StrigiClient::indexFile(const QString &path, qulonglong mtime,
         const QByteArray &content) {
     p->strigi.indexFile(path, mtime, content);
+}
+QList<QPair<QString,quint32> >
+StrigiClient::getHistogram(const QString &query,
+        const QString &field) {
+    return p->strigi.getHistogram(query, field);
 }

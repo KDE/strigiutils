@@ -35,6 +35,7 @@ class QWidget;
 class QMenu;
 class QAction;
 class SearchTabs;
+class Histogram;
 
 class SimpleSearchGui : public QMainWindow {
 Q_OBJECT
@@ -60,6 +61,7 @@ private:
     QAction *editListIndexedFilesAct;
     StrigiAsyncClient asyncstrigi;
     StrigiClient strigi;
+    Histogram* histogram;
 
     void startDaemon();
     void setDirectories();

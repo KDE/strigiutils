@@ -8,7 +8,7 @@ if (QT4_FOUND)
 
   # strigiclient
   set(strigiclient_SRCS strigiclient.cpp simplesearchgui.cpp searchtabs.cpp
-    searchview.cpp  dlglistindexedfiles.cpp dlgfilters.cpp)
+    searchview.cpp  dlglistindexedfiles.cpp dlgfilters.cpp histogram.cpp)
   set(strigiclient_MOC_HDRS searchtabs.h searchview.h simplesearchgui.h
     dlglistindexedfiles.h dlgfilters.h)
 
