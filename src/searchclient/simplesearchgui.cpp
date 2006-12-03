@@ -38,7 +38,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QProcess>
-#include <QTimer>
+#include <QtCore/QTimer>
 #include <string>
 #include <map>
 #include <vector>
@@ -69,7 +69,6 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     statuslayout->addLayout(hlayout);
 
     histogram = new Histogram();
-    histogram->setMinimumSize(200, 200);
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
@@ -167,6 +166,7 @@ SimpleSearchGui::query(const QString& item) {
         tabs->setQuery(QString());
         asyncstrigi.updateStatus();
         mainview->setCurrentIndex(1);
+        histogram->clear();
     } else {
         mainview->setCurrentIndex(0);
         tabs->setQuery(query);

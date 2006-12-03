@@ -1,15 +1,22 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include <QWidget>
+#include <QScrollArea>
 
-class Histogram : public QWidget {
+class HistogramArea;
+class Histogram : public QScrollArea {
 private:
-    QList<QPair<QString,quint32> > data;
+    HistogramArea* area;
+    int barlength;
+    Qt::Orientation orientation;
 public:
     Histogram(QWidget* q=0);
-    void paintEvent(QPaintEvent *);
     void setData(const QList<QPair<QString,quint32> >& d);
+    Qt::Orientation getOrientation() const { return orientation; }
+    void setOrientation(Qt::Orientation orientation);
+    void setBarLength(int b);
+    int getBarLength() const { return barlength; }
+    void clear();
 };
 
 #endif
