@@ -7,10 +7,12 @@ target_link_libraries(xmlstream expat)
 # java is required to compile the xsd parser
 find_package(Java REQUIRED)
 
-# loop over all xsd files
-file(GLOB XSDFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.xsd)
+# loop over all xsd files, the next line does not work everywhere,
+# so we dont use it currently
+# file(GLOB XSDFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.xsd)
 # if the previous line does not work, try this:
-# set(XSDFILES "strigidaemonconfiguration.xsd")
+set(XSDFILES "strigidaemonconfiguration.xsd")
+
 foreach (XSDFILE ${XSDFILES})
   string(REPLACE ".xsd" "" XSDNAME ${XSDFILE})
 
