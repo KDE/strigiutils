@@ -22,6 +22,7 @@
 #include "simplesearchgui.h"
 #include "searchtabs.h"
 #include "histogram.h"
+#include "searchview.h"
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
@@ -71,6 +72,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     histogram = new Histogram();
     fieldnames = new QComboBox();
     fieldnames->addItems(strigi.getFieldNames());
+    fieldnames->setCurrentIndex(fieldnames->findText("mtime"));
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
@@ -134,7 +136,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     connect(&asyncstrigi,
         SIGNAL(gotHistogram(const QString&,const QList<StringUIntPair>&)),
         this, SLOT(getHistogram(const QString&,const QList<StringUIntPair>&)));
-//    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
+    connect (tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
+        this, SLOT(callHistogram(const QString&)));
     connect(fieldnames, SIGNAL(currentIndexChanged(const QString&)),
         this, SLOT(setHistogramField(const QString&)));
 
@@ -174,13 +177,12 @@ SimpleSearchGui::query(const QString& item) {
         tabs->setQuery(QString());
         asyncstrigi.updateStatus();
         mainview->setCurrentIndex(1);
-        histogram->clear();
     } else {
         mainview->setCurrentIndex(0);
         tabs->setQuery(query);
         asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
-        asyncstrigi.addGetHistogramRequest(query, fieldnames->currentText(),"");
     }
+    histogram->clear();
 }
 void
 SimpleSearchGui::updateStatus() {
@@ -339,9 +341,18 @@ SimpleSearchGui::setHistogramField(const QString& fieldname) {
         asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
         asyncstrigi.addGetHistogramRequest(query, fieldname, "");
     }
+    histogram->clear();
 }
 void
 SimpleSearchGui::getHistogram(const QString& query,
         const QList<StringUIntPair>& h) {
     histogram->setData(h);
+}
+void
+SimpleSearchGui::callHistogram(const QString& query) {
+    if (query.length() && mainview->currentIndex() == 0) {
+        asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
+        histogram->clear();
+        asyncstrigi.addGetHistogramRequest(query, fieldnames->currentText(),"");
+    }
 }

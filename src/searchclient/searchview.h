@@ -46,6 +46,8 @@ public:
 public slots:
     void handleHits(const QString& q, int offset, const QList<StrigiHit>& hits);
     void setQuery(const QString&);
+signals:
+    void gotHits(const QString& query);
 };
 
 #endif

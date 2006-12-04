@@ -41,6 +41,7 @@ private slots:
 public:
     SearchTabs();
     void addTab(const QString& name, const QString& query);
+    SearchView* getSearchView() { return view; }
 public slots:
     void setQuery(const QString& slot);
 signals:

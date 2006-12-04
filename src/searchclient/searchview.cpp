@@ -195,6 +195,7 @@ SearchView::handleHits(const QString& q, int offset,
         htmlgui->printSearchResults(str, shits, (const char*)q.toUtf8());
         QString html(QString::fromUtf8(str.str().c_str()));
         view->setHtml(html);
+        emit gotHits(q);
     } else {
         view->append("no results");
     }
