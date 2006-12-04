@@ -434,7 +434,7 @@ public:
 #include <time.h>
 #include <sstream>
 std::vector<std::pair<std::string,uint32_t> >
-makeHistogram(const std::vector<int>& v, int32_t min, int32_t max) {
+makeTimeHistogram(const std::vector<int>& v) {
     map<int32_t, int32_t> m;
     vector<int32_t>::const_iterator i;
     struct tm t;
@@ -449,6 +449,23 @@ makeHistogram(const std::vector<int>& v, int32_t min, int32_t max) {
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
         str << j->first + 19000100;
+        h.push_back(make_pair(str.str(), j->second));
+        str.str("");
+    }
+    return h;
+}
+std::vector<std::pair<std::string,uint32_t> >
+makeHistogram(const std::vector<int>& v, int min, int max) {
+    map<int32_t, int32_t> m;
+    vector<int32_t>::const_iterator i;
+    for (i = v.begin(); i < v.end(); ++i) {
+        m[*i]++;
+    }
+    std::vector<std::pair<std::string,uint32_t> > h;
+    ostringstream str;
+    map<int32_t,int32_t>::const_iterator j;
+    for (j = m.begin(); j != m.end(); ++j) {
+        str << j->first;
         h.push_back(make_pair(str.str(), j->second));
         str.str("");
     }
@@ -485,18 +502,24 @@ CLuceneIndexReader::getHistogram(const std::string& query,
         if (v) {
             STRCPY_TtoA(cstr, v, CL_MAX_DIR);
             int val = (int)strtol(cstr, &end, 10);
-            if (end != cstr && *end == 0) {
-                values.push_back(val);
-                max = (max>val) ?max :val;
-                min = (min<val) ?min :val;
+            if (end == cstr || *end != 0) {
+                _CLDELETE(hits);
+                return h;
             }
+            values.push_back(val);
+            max = (max>val) ?max :val;
+            min = (min<val) ?min :val;
         }
     }
     if (hits) {
         _CLDELETE(hits);
     }
     searcher.close();
-    return makeHistogram(values, min, max);
+    if (fieldname == "mtime" || labeltype == "time") {
+        return makeTimeHistogram(values);
+    } else {
+        return makeHistogram(values, min, max);
+    }
 }
 vector<string>
 CLuceneIndexReader::getFieldNames() {
