@@ -50,11 +50,10 @@ Indexer::index(const char *dir) {
         m_lister->listFiles(dir);
     }
 }
-bool
+void
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
     workingIndexer->doFile(path);
-    return true;
 }
 void
 Indexer::doFile(const std::string &filepath) {
