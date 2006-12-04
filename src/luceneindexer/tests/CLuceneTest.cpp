@@ -38,5 +38,5 @@ CLuceneTest(int argc, char**argv) {
     cmd += path;
     system(cmd.c_str());
 
-    return 0;//errors;
+    return founderrors;
 }

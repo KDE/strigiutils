@@ -34,7 +34,7 @@ private:
     EstraierIndexManager m_manager;
     jstreams::StreamIndexer m_indexer;
 
-    static bool addFileCallback(const char* fullpath, uint dirlen, uint len,
+    static void addFileCallback(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
