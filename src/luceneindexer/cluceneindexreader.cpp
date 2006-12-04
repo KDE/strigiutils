@@ -346,10 +346,11 @@ CLuceneIndexReader::getFiles(char depth) {
 
     Term term(mapId(_T("depth")), tstr);
     TermDocs* docs = reader->termDocs(&term);
+    const TCHAR* mtime = mapId(_T("mtime"));
     while ( docs->next() ){
         Document *d = reader->document(docs->doc());
 
-        const TCHAR* v = d->get(mapId(_T("mtime")));
+        const TCHAR* v = d->get(mtime);
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         time_t mtime = atoi(cstr);
         v = d->get(_T("path"));
