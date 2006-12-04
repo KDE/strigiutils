@@ -69,6 +69,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     statuslayout->addLayout(hlayout);
 
     histogram = new Histogram();
+    fieldnames = new QComboBox();
+    fieldnames->addItems(strigi.getFieldNames());
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
@@ -106,6 +108,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
     layout->addWidget(histogram);
+    layout->addWidget(fieldnames);
 
     centralview = new QWidget();
     centralview->setLayout(layout);
@@ -129,6 +132,8 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     connect (&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
         this, SLOT(updateStatus(const QMap<QString, QString>& )));
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
+    connect(fieldnames, SIGNAL(currentIndexChanged(const QString&)),
+        this, SLOT(setHistogramField(const QString&)));
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
@@ -170,7 +175,8 @@ SimpleSearchGui::query(const QString& item) {
     } else {
         mainview->setCurrentIndex(0);
         tabs->setQuery(query);
-        histogram->setData(strigi.getHistogram(query, "mtime"));
+        histogram->setData(strigi.getHistogram(query,
+            fieldnames->currentText()));
     }
 }
 void
@@ -323,4 +329,10 @@ SimpleSearchGui::editListIndexedFiles() {
     DlgListIndexedFiles dlg(files);
     dlg.exec();
 }
-
+void
+SimpleSearchGui::setHistogramField(const QString& fieldname) {
+    QString query = queryfield->text().trimmed();
+    if (query.length()) {
+        histogram->setData(strigi.getHistogram(query, fieldname));
+    }
+}

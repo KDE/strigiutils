@@ -53,6 +53,7 @@ private:
     QPushButton* toggleindexing;
     QPushButton* toggledaemon;
     QComboBox* backendsList;
+    QComboBox* fieldnames;
     QWidget* centralview;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -78,6 +79,7 @@ private slots:
     void removeDirectory();
     void editFilters();
     void editListIndexedFiles();
+    void setHistogramField(const QString&);
 
 public:
     SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);

@@ -148,11 +148,7 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
 }
 std::vector<std::string>
 Interface::getFieldNames() {
-    std::vector<std::string> names;
-    names.push_back("content");
-    names.push_back("size");
-    names.push_back("mtime");
-    return names;
+    return manager.getIndexReader()->getFieldNames();
 }
 std::vector<std::pair<std::string, uint32_t> >
 Interface::getHistogram(const std::string& query, const std::string& field) {

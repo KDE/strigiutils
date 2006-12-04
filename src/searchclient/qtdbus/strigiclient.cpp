@@ -38,6 +38,10 @@ QString
 StrigiClient::setIndexedDirectories(const QStringList& d) {
     return p->strigi.setIndexedDirectories(d);
 }
+QStringList
+StrigiClient::getFieldNames() {
+    return p->strigi.getFieldNames();
+}
 QMap<QString,QString>
 StrigiClient::getStatus() const {
     QDBusReply<QMap<QString,QString> > r = p->strigi.getStatus();

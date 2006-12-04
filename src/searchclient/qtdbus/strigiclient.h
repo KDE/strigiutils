@@ -27,6 +27,7 @@ public:
         const QByteArray &content);
     QList<QPair<QString,quint32> > getHistogram(const QString &query,
         const QString &field);
+    QStringList getFieldNames();
 /* Functions that are in the DBus interface but are not exposed over this class:
     QStringList getBackEnds();
     bool isActive();*/

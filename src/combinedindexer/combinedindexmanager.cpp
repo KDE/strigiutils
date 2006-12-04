@@ -86,6 +86,7 @@ public:
     time_t getMTime(int64_t docid);
     vector<pair<string,uint32_t> > getHistogram(
             const string& query, const string& fieldname);
+    vector<string> getFieldNames();
 };
 
 class CombinedIndexManager::Private {
@@ -237,4 +238,8 @@ CombinedIndexReader::getDocumentId(const string& uri) {
 time_t
 CombinedIndexReader::getMTime(int64_t docid) {
     return m->p->writermanager->getIndexReader()->getMTime(docid);
+}
+vector<string>
+CombinedIndexReader::getFieldNames() {
+    return m->p->writermanager->getIndexReader()->getFieldNames();
 }

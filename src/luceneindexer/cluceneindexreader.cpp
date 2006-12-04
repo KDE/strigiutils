@@ -434,10 +434,8 @@ public:
 #include <sstream>
 std::vector<std::pair<std::string,uint32_t> >
 makeHistogram(const std::vector<int>& v, int32_t min, int32_t max) {
-    const int cats = 10;
     map<int32_t, int32_t> m;
     vector<int32_t>::const_iterator i;
-    int32_t d = max-min+1;
     struct tm t;
     for (i = v.begin(); i < v.end(); ++i) {
          time_t ti = *i;
@@ -475,22 +473,44 @@ CLuceneIndexReader::getHistogram(const std::string& query,
         printf("could not query: %s\n", err.what());
     }
     char cstr[CL_MAX_DIR];
-    const TCHAR* mt = mapId(_T("mtime"));
+    wstring field = utf8toucs2(fieldname);
     int32_t max = INT_MIN;
     int32_t min = INT_MAX;
     std::vector<int32_t> values;
+    char* end;
     for (int i = 0; i < s; ++i) {
         Document *d = &hits->doc(i);
-        const TCHAR* v = d->get(mt);
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        time_t mtime = atoi(cstr);
-        values.push_back(mtime);
-        max = (max>mtime) ?max :mtime;
-        min = (min<mtime) ?min :mtime;
+        const TCHAR* v = d->get(field.c_str());
+        if (v) {
+            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+            int val = (int)strtol(cstr, &end, 10);
+            if (end != cstr && *end == 0) {
+                values.push_back(val);
+                max = (max>val) ?max :val;
+                min = (min<val) ?min :val;
+            }
+        }
     }
     if (hits) {
         _CLDELETE(hits);
     }
     searcher.close();
     return makeHistogram(values, min, max);
+}
+vector<string>
+CLuceneIndexReader::getFieldNames() {
+    vector<string> s;
+    if (!checkReader()) {
+        return s;
+    }
+    TCHAR** names = reader->getFieldNames();
+    TCHAR** n = names;
+    while (*n) {
+        string str(wchartoutf8(*n));
+        s.push_back(str);
+        n++;
+    }
+    // TODO: how do we clean up names?
+    // _CLDELETE(names);
+    return s;
 }

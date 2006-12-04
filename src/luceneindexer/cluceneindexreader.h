@@ -62,6 +62,7 @@ public:
     lucene::index::IndexReader* reader;
     std::vector<std::pair<std::string,uint32_t> > getHistogram(
             const std::string& query, const std::string& fieldname);
+    std::vector<std::string> getFieldNames();
 };
 
 #endif
