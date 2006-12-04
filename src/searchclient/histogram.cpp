@@ -135,17 +135,21 @@ HistogramArea::paintEvent(QPaintEvent *) {
     if (max <= 0) return;
     QPainter painter(this);
     qreal offset = 0;
+    int barheight;
     if (this->h->getOrientation() == Qt::Horizontal) {
         painter.rotate(-90);
         painter.translate(-h, 0);
+        barheight = h;
+    } else {
+        barheight = w;
     }
     int i = 0;
     foreach (const StringUIntPair& p, data) {
         qreal bh;
         if (activeEntry == i++) {
-            bh = h;
+            bh = barheight;
         } else {
-            bh = p.second*h/(qreal)max;
+            bh = p.second*barheight/(qreal)max;
         }
         painter.fillRect(QRectF(0, offset, bh, barwidth),
             palette().highlight());
