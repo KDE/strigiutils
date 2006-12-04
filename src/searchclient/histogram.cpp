@@ -11,8 +11,8 @@ private:
     QList<QPair<QString,quint32> > data;
     Histogram* h;
     int activeEntry;
-    qreal margin;
-    qreal barwidth;
+    int margin;
+    int barwidth;
 protected:
     void paintEvent(QPaintEvent *);
     void mouseDoubleClickEvent(QMouseEvent* event);
@@ -61,7 +61,7 @@ HistogramArea::HistogramArea(Histogram* h) :QWidget(h) {
     this->h = h;
     margin = 5;
     QFontMetrics f(font());
-    barwidth = 1.3*f.height();
+    barwidth = (int)(1.3*f.height());
     setMouseTracking(true);
     activeEntry = -1;
 }
@@ -102,7 +102,9 @@ HistogramArea::mouseMoveEvent(QMouseEvent* event) {
     } else {
         item = event->x();
     }
-    int pos = item % (int)(barwidth+margin);
+    qreal n = item / (barwidth + margin);
+    int pos = item - (int)((int)n) * (barwidth + margin);
+    //int pos = item % (int)(barwidth+margin);
     if (pos >= barwidth) {
         item = -1;
     } else {

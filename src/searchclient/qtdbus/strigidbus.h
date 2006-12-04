@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef STRIGIDBUS_H_1165155505
-#define STRIGIDBUS_H_1165155505
+#ifndef STRIGIDBUS_H_1165266067
+#define STRIGIDBUS_H_1165266067
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -62,10 +62,10 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("getFilters"), argumentList);
     }
 
-    inline QDBusReply<QList<QPair<QString,quint32> > > getHistogram(const QString &query, const QString &field)
+    inline QDBusReply<QList<QPair<QString,quint32> > > getHistogram(const QString &query, const QString &field, const QString &labeltype)
     {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue(query) << qVariantFromValue(field);
+        argumentList << qVariantFromValue(query) << qVariantFromValue(field) << qVariantFromValue(labeltype);
         return callWithArgumentList(QDBus::Block, QLatin1String("getHistogram"), argumentList);
     }
 

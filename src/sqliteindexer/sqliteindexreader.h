@@ -39,6 +39,10 @@ public:
     int32_t countDocuments();
     int64_t getDocumentId(const std::string& uri);
     time_t getMTime(int64_t docid);
+    std::vector<std::pair<std::string,uint32_t> > getHistogram(
+            const std::string& query, const std::string& fieldname,
+            const std::string& labeltype);
+    std::vector<std::string> getFieldNames();
 };
 
 #endif

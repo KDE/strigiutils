@@ -26,7 +26,7 @@ public:
     void indexFile(const QString &path, qulonglong mtime,
         const QByteArray &content);
     QList<QPair<QString,quint32> > getHistogram(const QString &query,
-        const QString &field);
+        const QString &field, const QString& labeltype);
     QStringList getFieldNames();
 /* Functions that are in the DBus interface but are not exposed over this class:
     QStringList getBackEnds();

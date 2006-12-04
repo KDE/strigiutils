@@ -16,42 +16,41 @@ StrigiAsyncClient::~StrigiAsyncClient() {
 void
 StrigiAsyncClient::updateStatus() {
     Request r;
+    r.type = Status;
     appendRequest(r);
 }
 void
 StrigiAsyncClient::addCountQuery(const QString& query) {
     Request r;
+    r.type = Count;
     r.query = query;
-    r.max = 0;
     appendRequest(r);
 }
 void
 StrigiAsyncClient::addGetQuery(const QString& query, int max, int offset) {
     Request r;
+    r.type = Query;
     r.query = query;
     r.max = max;
     r.offset = offset;
     appendRequest(r);
 }
 void
-StrigiAsyncClient::clearCountQueries() {
-    queuelock.lock();
-    QList<Request>::iterator i = queue.begin();
-    while (i != queue.end()) {
-        if (!i->query.isNull() && i->max == 0) {
-            i = queue.erase(i);
-        } else {
-            i++;
-        }
-    }
-    queuelock.unlock();
+StrigiAsyncClient::addGetHistogramRequest(const QString& query, const QString&
+       fieldname, const QString& labeltype) {
+    Request r;
+    r.type = Histogram;
+    r.query = query;
+    r.fieldname = fieldname;
+    r.labeltype = labeltype;
+    appendRequest(r);
 }
 void
-StrigiAsyncClient::clearGetQueries() {
+StrigiAsyncClient::clearRequests(RequestType type) {
     queuelock.lock();
     QList<Request>::iterator i = queue.begin();
     while (i != queue.end()) {
-        if (!i->query.isNull() && i->max > 0) {
+        if (i->type == type) {
             i = queue.erase(i);
         } else {
             i++;
@@ -90,6 +89,22 @@ StrigiAsyncClient::handleGet(const QDBusMessage& msg) {
     sendNextRequest();
 }
 void
+StrigiAsyncClient::handleHistogram(const QDBusMessage& msg) {
+    QDBusReply<QList<StringUIntPair> > r = msg;
+    if (r.isValid()) {
+        QList<StringUIntPair> h = r;
+        emit gotHistogram(lastRequest.query, h);
+    } else {
+        qDebug() << r.error().message();
+    }
+    sendNextRequest();
+}
+int
+RequestCmp(const StrigiAsyncClient::Request& a,
+        const StrigiAsyncClient::Request& b) {
+    return a.type < b.type;
+}
+void
 StrigiAsyncClient::appendRequest(const Request& r) {
     queuelock.lock();
     queue.append(r);
@@ -122,18 +137,29 @@ StrigiAsyncClient::sendNextRequest(const Request& r) {
 
     QString method;
     const char* slot;
-    if (r.query.isNull()) {
+    switch(r.type) {
+    case Status:
+    default:
         method = QLatin1String("getStatus");
         slot = SLOT(handleStatus(QDBusMessage));
-    } else if (r.max == 0) {
+        break;
+    case Count:
         method = QLatin1String("countHits");
         argumentList << qVariantFromValue(r.query);
         slot = SLOT(handleCount(const QDBusMessage&));
-    } else {
+        break;
+    case Query:
         method = QLatin1String("getHits");
         argumentList << qVariantFromValue(r.query) << qVariantFromValue(r.max)
             << qVariantFromValue(r.offset);
         slot = SLOT(handleGet(const QDBusMessage&));
+        break;
+    case Histogram:
+        method = QLatin1String("getHistogram");
+        argumentList << qVariantFromValue(r.query)
+            << qVariantFromValue(r.fieldname)
+            << qVariantFromValue(r.labeltype);
+        slot = SLOT(handleHistogram(const QDBusMessage&));
     }
     QDBusMessage msg = QDBusMessage::createMethodCall("vandenoever.strigi",
         "/search", "vandenoever.strigi", method);

@@ -50,7 +50,7 @@ SearchTabs::setQuery(const QString& query) {
     // remove all tabs
     while (tabs->count()) tabs->removeTab(0);
     // run queries for each name
-    strigi.clearCountQueries();
+    strigi.clearRequests(StrigiAsyncClient::Count);
     QMapIterator<QString, QString> i(querynames);
     while (i.hasNext()) {
         i.next();

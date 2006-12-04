@@ -455,7 +455,7 @@ makeHistogram(const std::vector<int>& v, int32_t min, int32_t max) {
 }
 std::vector<std::pair<std::string,uint32_t> >
 CLuceneIndexReader::getHistogram(const std::string& query,
-        const std::string& fieldname) {
+        const std::string& fieldname, const std::string& labeltype) {
     std::vector<std::pair<std::string,uint32_t> > h;
     if (!checkReader()) {
         return h;

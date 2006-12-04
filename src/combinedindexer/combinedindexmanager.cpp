@@ -85,7 +85,8 @@ public:
     int64_t getDocumentId(const string& uri);
     time_t getMTime(int64_t docid);
     vector<pair<string,uint32_t> > getHistogram(
-            const string& query, const string& fieldname);
+            const string& query, const string& fieldname,
+            const string& labeltype);
     vector<string> getFieldNames();
 };
 
@@ -228,8 +229,10 @@ CombinedIndexReader::getIndexSize() {
     return c;
 }
 vector<pair<string,uint32_t> >
-CombinedIndexReader::getHistogram(const string& query, const string& fieldname){
-    return m->p->writermanager->getIndexReader()->getHistogram(query,fieldname);
+CombinedIndexReader::getHistogram(const string& query, const string& fieldname,
+        const string& labeltype){
+    return m->p->writermanager->getIndexReader()->getHistogram(query,
+        fieldname, labeltype);
 }
 int64_t
 CombinedIndexReader::getDocumentId(const string& uri) {

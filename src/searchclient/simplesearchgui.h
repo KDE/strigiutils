@@ -80,7 +80,7 @@ private slots:
     void editFilters();
     void editListIndexedFiles();
     void setHistogramField(const QString&);
-
+    void getHistogram(const QString& query, const QList<StringUIntPair>& h);
 public:
     SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };

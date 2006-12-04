@@ -103,20 +103,13 @@ public:
     /**
      *
      **/
-    virtual std::vector<std::string> getFieldNames() {
-        std::vector<std::string> names;
-        names.push_back("mtime");
-        names.push_back("size");
-        return names;
-    }
+    virtual std::vector<std::string> getFieldNames() = 0;
     /**
      *
      **/
     virtual std::vector<std::pair<std::string,uint32_t> > getHistogram(
-            const std::string& query, const std::string& fieldname) {
-        std::vector<std::pair<std::string,uint32_t> > h;
-        return h;
-    }
+            const std::string& query, const std::string& fieldname,
+            const std::string& labeltype) = 0;
 };
 
 }

@@ -206,7 +206,7 @@ SearchView::setHTML(const QString& html) {
 void
 SearchView::setQuery(const QString& q) {
     query = q;
-    asyncstrigi.clearGetQueries();
+    asyncstrigi.clearRequests(StrigiAsyncClient::Query);
     asyncstrigi.addGetQuery(query, 10, 0);
 }
 void

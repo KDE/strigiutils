@@ -87,7 +87,7 @@ StrigiClient::indexFile(const QString &path, qulonglong mtime,
     p->strigi.indexFile(path, mtime, content);
 }
 QList<QPair<QString,quint32> >
-StrigiClient::getHistogram(const QString &query,
-        const QString &field) {
-    return p->strigi.getHistogram(query, field);
+StrigiClient::getHistogram(const QString &query, const QString &field,
+        const QString& labeltype) {
+    return p->strigi.getHistogram(query, field, labeltype);
 }

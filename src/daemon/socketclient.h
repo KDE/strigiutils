@@ -49,7 +49,9 @@ public:
     void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);
     std::vector<std::string> getFieldNames();
-    std::vector<std::pair<std::string, uint32_t> > getHistogram(const std::string& query, const std::string& field);
+    std::vector<std::pair<std::string, uint32_t> > getHistogram(
+        const std::string& query, const std::string& field,
+        const std::string& labeltype);
     std::vector<std::string> getBackEnds();
 };
 

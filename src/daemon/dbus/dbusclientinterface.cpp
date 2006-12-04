@@ -75,6 +75,7 @@ DBusClientInterface::getIntrospectionXML() {
     << "    <method name='getHistogram'>\n"
     << "      <arg name='query' type='s' direction='in'/>\n"
     << "      <arg name='field' type='s' direction='in'/>\n"
+    << "      <arg name='labeltype' type='s' direction='in'/>\n"
     << "      <arg name='out' type='a(su)' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='stopIndexing'>\n"
@@ -193,9 +194,10 @@ DBusClientInterface::getHistogram(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     std::string query;
     std::string field;
-    reader >> query >> field;
+    std::string labeltype;
+    reader >> query >> field >> labeltype;
     if (reader.isOk()) {
-        writer << impl->getHistogram(query,field);
+        writer << impl->getHistogram(query,field,labeltype);
     }
 }
 void
@@ -216,8 +218,6 @@ DBusClientInterface::getHits(DBusMessage* msg, DBusConnection* conn) {
     reader >> query >> max >> offset;
     if (reader.isOk()) {
         writer << impl->getHits(query,max,offset);
-    } else {
-        fprintf(stderr, "error parsing input message");
     }
 }
 void

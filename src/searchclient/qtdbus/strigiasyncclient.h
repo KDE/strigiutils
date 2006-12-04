@@ -8,13 +8,18 @@
  **/
 class StrigiAsyncClient : public QObject {
 Q_OBJECT
-private:
+public:
+    enum RequestType { Status, Count, Query, Histogram };
     class Request {
     public:
-        QString query; // "" means: getStatus
+        QString query;
+        QString fieldname;
+        QString labeltype;
         quint32 max; // -1 means: countHits
         quint32 offset;
+        RequestType type;
     };
+private:
     bool activeRequest;
     Request lastRequest;
     QList<Request> queue;
@@ -27,6 +32,7 @@ private slots:
     void handleStatus(const QDBusMessage&);
     void handleCount(const QDBusMessage&);
     void handleGet(const QDBusMessage&);
+    void handleHistogram(const QDBusMessage&);
 
 public:
     StrigiAsyncClient();
@@ -35,14 +41,16 @@ public slots:
     void updateStatus();
     void addCountQuery(const QString& query);
     void addGetQuery(const QString& query, int max, int offset);
-    void clearCountQueries();
-    void clearGetQueries();
+    void addGetHistogramRequest(const QString& query, const QString&
+       fieldname, const QString& labeltype);
+    void clearRequests(RequestType type);
 
 signals:
     void statusUpdated(const QMap<QString,QString>& status);
     void countedQuery(const QString& query, int count);
     void gotHits(const QString& query, int offset,
         const QList<StrigiHit>& hits);
+    void gotHistogram(const QString& query, const QList<StringUIntPair>& h);
 };
 
 #endif

@@ -61,7 +61,8 @@ public:
     static void addMapping(const TCHAR* from, const TCHAR* to);
     lucene::index::IndexReader* reader;
     std::vector<std::pair<std::string,uint32_t> > getHistogram(
-            const std::string& query, const std::string& fieldname);
+            const std::string& query, const std::string& fieldname,
+            const std::string& labeltype);
     std::vector<std::string> getFieldNames();
 };
 

@@ -343,7 +343,8 @@ SocketClient::getFieldNames() {
     return std::vector<std::string>();
 }
 std::vector<std::pair<std::string, uint32_t> >
-SocketClient::getHistogram(const std::string& query, const std::string& field) {
+SocketClient::getHistogram(const std::string& query, const std::string& field,
+        const std::string& labeltype) {
     fprintf(stderr, "SocketClient::getHistogram is not implemented yet\n");
     return std::vector<std::pair<std::string, uint32_t> >();
 }

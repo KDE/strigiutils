@@ -29,7 +29,7 @@ SqliteIndexReader::SqliteIndexReader(SqliteIndexManager* m) :manager(m) {
 SqliteIndexReader::~SqliteIndexReader() {
 }
 set<string>
-split(const std::string& q) {
+split(const string& q) {
     set<string> terms;
     string::size_type pos = q.find(' ');
     string::size_type offset = 0;
@@ -115,7 +115,7 @@ SqliteIndexReader::query(const jstreams::Query& query) {
     }
     // split up in terms
     set<string> terms = split(q);
-    std::vector<IndexedDocument> results;
+    vector<IndexedDocument> results;
     if (terms.size() == 0) return results;
     string pathfilter;
     set<string>::iterator i = terms.begin();
@@ -220,10 +220,19 @@ SqliteIndexReader::countDocuments() {
     return count;
 }
 int64_t
-SqliteIndexReader::getDocumentId(const std::string& uri) {
+SqliteIndexReader::getDocumentId(const string& uri) {
     return -1;
 }
 time_t
 SqliteIndexReader::getMTime(int64_t docid) {
     return 0;
+}
+vector<pair<string,uint32_t> >
+SqliteIndexReader::getHistogram( const string& query, const string& fieldname,
+            const string& labeltype) {
+    return vector<pair<string,uint32_t> >();
+}
+vector<string>
+SqliteIndexReader::getFieldNames() {
+    return vector<string>();
 }

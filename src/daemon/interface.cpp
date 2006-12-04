@@ -151,6 +151,7 @@ Interface::getFieldNames() {
     return manager.getIndexReader()->getFieldNames();
 }
 std::vector<std::pair<std::string, uint32_t> >
-Interface::getHistogram(const std::string& query, const std::string& field) {
-    return manager.getIndexReader()->getHistogram(query, field);
+Interface::getHistogram(const std::string& query, const std::string& field,
+        const std::string& labeltype) {
+    return manager.getIndexReader()->getHistogram(query, field, labeltype);
 }

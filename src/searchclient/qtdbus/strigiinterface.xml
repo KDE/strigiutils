@@ -21,6 +21,7 @@
       value="QList&lt;QPair&lt;QString,quint32> >"/>
       <arg name='query' type='s' direction='in'/>
       <arg name='field' type='s' direction='in'/>
+      <arg name='labeltype' type='s' direction='in'/>
       <arg name='out' type='a(su)' direction='out'/>
     </method>
     <method name='getFilters'>

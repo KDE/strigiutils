@@ -131,6 +131,9 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 
     connect (&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
         this, SLOT(updateStatus(const QMap<QString, QString>& )));
+    connect(&asyncstrigi,
+        SIGNAL(gotHistogram(const QString&,const QList<StringUIntPair>&)),
+        this, SLOT(getHistogram(const QString&,const QList<StringUIntPair>&)));
 //    connect (&strigi, SIGNAL (socketError(Qt4StrigiClient::Mode)), this, SLOT (socketError(Qt4StrigiClient::Mode)));
     connect(fieldnames, SIGNAL(currentIndexChanged(const QString&)),
         this, SLOT(setHistogramField(const QString&)));
@@ -175,8 +178,8 @@ SimpleSearchGui::query(const QString& item) {
     } else {
         mainview->setCurrentIndex(0);
         tabs->setQuery(query);
-        histogram->setData(strigi.getHistogram(query,
-            fieldnames->currentText()));
+        asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
+        asyncstrigi.addGetHistogramRequest(query, fieldnames->currentText(),"");
     }
 }
 void
@@ -333,6 +336,12 @@ void
 SimpleSearchGui::setHistogramField(const QString& fieldname) {
     QString query = queryfield->text().trimmed();
     if (query.length()) {
-        histogram->setData(strigi.getHistogram(query, fieldname));
+        asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
+        asyncstrigi.addGetHistogramRequest(query, fieldname, "");
     }
+}
+void
+SimpleSearchGui::getHistogram(const QString& query,
+        const QList<StringUIntPair>& h) {
+    histogram->setData(h);
 }
