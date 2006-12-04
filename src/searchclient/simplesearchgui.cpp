@@ -29,6 +29,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QLabel>
+#include <QtGui/QDockWidget>
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QComboBox>
@@ -70,6 +71,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     statuslayout->addLayout(hlayout);
 
     histogram = new Histogram();
+    histogram->setOrientation(Qt::Vertical);
     fieldnames = new QComboBox();
     fieldnames->addItems(strigi.getFieldNames());
     fieldnames->setCurrentIndex(fieldnames->findText("mtime"));
@@ -109,8 +111,16 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
-    layout->addWidget(histogram);
-    layout->addWidget(fieldnames);
+
+    QVBoxLayout* histlayout = new QVBoxLayout();
+    QDockWidget* histwidget = new QDockWidget();
+    histwidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    QWidget* histw = new QWidget();
+    histw->setLayout(histlayout);
+    histwidget->setWidget(histw);
+    histlayout->addWidget(fieldnames);
+    histlayout->addWidget(histogram);
+    addDockWidget(Qt::LeftDockWidgetArea, histwidget);
 
     centralview = new QWidget();
     centralview->setLayout(layout);
