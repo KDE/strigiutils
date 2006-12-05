@@ -53,6 +53,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 
     QWidget* statuswidget = new QWidget();
     QVBoxLayout *statuslayout = new QVBoxLayout;
+    statuslayout->setMargin(0);
     statusview = new QLabel();
     statusview->setAlignment(Qt::AlignTop);
     statusview->setMargin(25);
