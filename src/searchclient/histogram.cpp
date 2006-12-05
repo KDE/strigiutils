@@ -13,6 +13,9 @@ private:
     int activeEntry;
     int margin;
     int barwidth;
+    uint max;
+
+    void paintBar(QPainter&p, int entry, int barheight);
 protected:
     void paintEvent(QPaintEvent *);
     void mouseDoubleClickEvent(QMouseEvent* event);
@@ -72,6 +75,7 @@ HistogramArea::clear() {
     setMinimumSize(w, w);
     update();
 }
+typedef QPair<QString, quint32> StringUIntPair;
 void
 HistogramArea::setData(const QList<QPair<QString,quint32> >& d) {
     data = d;
@@ -82,6 +86,10 @@ HistogramArea::setData(const QList<QPair<QString,quint32> >& d) {
         setMinimumSize(width, height);
     } else {
         setMinimumSize(height, width);
+    }
+    max = 0;
+    foreach (const StringUIntPair& p, data) {
+        if (p.second > max) max = p.second;
     }
     update();
 }
@@ -122,19 +130,12 @@ HistogramArea::leaveEvent(QEvent* event) {
         update();
     }
 }
-typedef QPair<QString, quint32> StringUIntPair;
 void
 HistogramArea::paintEvent(QPaintEvent *) {
-    if (data.size() == 0) return;
+    if (data.size() == 0 || max == 0) return;
     int w = width();
     int h = height();
-    uint max = 0;
-    foreach (const StringUIntPair& p, data) {
-        if (p.second > max) max = p.second;
-    }
-    if (max <= 0) return;
     QPainter painter(this);
-    qreal offset = 0;
     int barheight;
     if (this->h->getOrientation() == Qt::Horizontal) {
         painter.rotate(-90);
@@ -143,8 +144,10 @@ HistogramArea::paintEvent(QPaintEvent *) {
     } else {
         barheight = w;
     }
-    int i = 0;
-    foreach (const StringUIntPair& p, data) {
+    for (int i = 0; i < data.size(); ++i) {
+        paintBar(painter, i, barheight);
+    }
+/*    foreach (const StringUIntPair& p, data) {
         qreal bh;
         if (activeEntry == i++) {
             bh = barheight;
@@ -156,5 +159,18 @@ HistogramArea::paintEvent(QPaintEvent *) {
         painter.drawText(QRectF(margin, offset, w, barwidth), Qt::AlignVCenter,
             p.first+": "+QString::number(p.second));
         offset += barwidth + margin;
+    }*/
+}
+void
+HistogramArea::paintBar(QPainter&p, int entry, int barheight) {
+    qreal bh;
+    if (activeEntry == entry) {
+        bh = barheight;
+    } else {
+        bh = data[entry].second*barheight/(qreal)max;
     }
+    int offset = entry*(barwidth+margin);
+    p.fillRect(QRectF(0, offset, bh, barwidth), palette().highlight());
+    p.drawText(QRectF(margin, offset, barheight, barwidth), Qt::AlignVCenter,
+        data[entry].first + ":" + QString::number(data[entry].second));
 }
