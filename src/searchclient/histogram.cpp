@@ -116,11 +116,31 @@ HistogramArea::mouseMoveEvent(QMouseEvent* event) {
     if (pos >= barwidth) {
         item = -1;
     } else {
-        item = item / (int)(barwidth+margin);
+        item = item / (int)(barwidth + margin);
+        if (item >= data.size()) {
+            item = -1;
+        }
     }
     if (item != activeEntry) {
+        int min, max;
+        if (item == -1) {
+            min = activeEntry;
+            max = min;
+        } else if (activeEntry == -1) {
+            min = item;
+            max = min;
+        } else {
+            min = (item < activeEntry) ?item :activeEntry;
+            max = (item < activeEntry) ?activeEntry :item;
+        }
+        min *= barwidth + margin;
+        max = max * (barwidth + margin) + barwidth - min + 1;
         activeEntry = item;
-        update();
+        if (this->h->getOrientation() == Qt::Horizontal) {
+            update(min, 0, max, height());
+        } else {
+            update(0, min, width(), max);
+        }
     }
 }
 void
@@ -131,7 +151,7 @@ HistogramArea::leaveEvent(QEvent* event) {
     }
 }
 void
-HistogramArea::paintEvent(QPaintEvent *) {
+HistogramArea::paintEvent(QPaintEvent* e) {
     if (data.size() == 0 || max == 0) return;
     int w = width();
     int h = height();
