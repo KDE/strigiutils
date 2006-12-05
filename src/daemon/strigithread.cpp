@@ -113,6 +113,7 @@ threadstarter(void *d) {
     thread->run(0);
     STRIGI_LOG_DEBUG(string("strigi.daemon.") + thread->name + ".threadstarter", "end of thread");
     STRIGI_THREAD_EXIT(0);
+    return 0;
 }
 
 StrigiThread::StrigiThread(const char* n) :state(Idling),thread(0),  name(n) {

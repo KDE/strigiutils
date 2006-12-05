@@ -98,7 +98,7 @@ EstraierIndexReader::createCondition(const jstreams::Query& query) {
     return cond;
 }
 const char*
-EstraierIndexReader::mapId(const std::string& id) {
+EstraierIndexReader::mapId(const string& id) {
     if (id == "path") return "@uri";
     if (id == "mtime") return "@mdate";
     if (id == "title") return "@title";
@@ -145,7 +145,7 @@ EstraierIndexReader::query(const Query& query) {
     ESTDB* db = manager->ref();
     ids = est_db_search(db, cond, &n, NULL);
 
-    std::vector<IndexedDocument> results;
+    vector<IndexedDocument> results;
     for (int i=0; i<n; ++i) {
         int id = ids[i];
         IndexedDocument doc;
@@ -232,7 +232,7 @@ EstraierIndexReader::getIndexSize() {
     return count;
 }
 int64_t
-EstraierIndexReader::getDocumentId(const std::string& uri) {
+EstraierIndexReader::getDocumentId(const string& uri) {
     ESTDB* db = manager->ref();
     int64_t id = est_db_uri_to_id(db, uri.c_str());
     manager->deref();
@@ -250,4 +250,13 @@ EstraierIndexReader::getMTime(int64_t docid) {
     manager->deref();
     return mtime;
 
+}
+vector<string>
+EstraierIndexReader::getFieldNames() {
+    return vector<string>();
+}
+vector<pair<string,uint32_t> >
+EstraierIndexReader::getHistogram( const string& query, const string& fieldname,
+            const string& labeltype) {
+    return vector<pair<string,uint32_t> >();
 }

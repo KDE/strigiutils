@@ -32,6 +32,11 @@ ELSE(MSVC)
     set(CMAKE_CXX_FLAGS "-Wall -g3 -O0 -ansi")
 ENDIF(MSVC)
 
+IF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
+    remove_definitions(-fPIC)
+    set(CMAKE_CXX_FLAGS "")
+ENDIF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
+
 OPTION(ENABLE_INOTIFY
   "enable inotify support (unstable)"
   OFF)

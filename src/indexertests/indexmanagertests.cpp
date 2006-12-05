@@ -90,6 +90,7 @@ STRIGI_THREAD_FUNCTION(threadstarter,d) {
 //    IndexManagerTests* tester = static_cast<IndexManagerTests*>(d);
 //    tester->runThreadedTests();
     STRIGI_THREAD_EXIT(0);
+    return 0;
 }
 IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m,
         IndexerConfiguration& ic)

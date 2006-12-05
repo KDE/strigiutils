@@ -243,7 +243,8 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
         string size = value;
         doc.size = atoi(size.c_str());
     } else {
-        doc.properties.insert(make_pair(wchartoutf8(name), value));
+        doc.properties.insert(make_pair<const string, string>(
+            wchartoutf8(name), value));
     }
 }
 int32_t

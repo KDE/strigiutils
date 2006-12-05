@@ -180,7 +180,7 @@ SocketClient::getHits(const string &query, uint32_t max, uint32_t off) {
                 break;
             }
             string n(s, v-s);
-            h.properties.insert(make_pair(n,v+1));
+            h.properties.insert(make_pair<const string,string>(n,v+1));
             ++i;
         }
         hits.hits.push_back(h);

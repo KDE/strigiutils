@@ -245,7 +245,7 @@ DaemonConfigurator::loadFilteringRules(IndexerConfiguration& config) {
     vector<pair<bool,string> > filters;
     list<Filter>::const_iterator i;
     for (i = e_filters.e_filter.begin(); i != e_filters.e_filter.end(); ++i) {
-        filters.push_back(make_pair(i->a_include, i->a_pattern));
+        filters.push_back(make_pair<bool,string>(i->a_include, i->a_pattern));
     }
     config.setFilters(filters);
 }
