@@ -26,6 +26,7 @@
 #include "stringreader.h"
 #include "inputstreamreader.h"
 #include "indexable.h"
+//comment this out if you have clucene 0.9.17 or later
 #include "PrefixFilter.h"
 #include <sstream>
 #include <assert.h>
@@ -33,9 +34,6 @@
 #ifdef STRIGI_USE_CLUCENE_COMPRESSEDFIELDS
 #include "gzipcompressstream.h"
 #endif
-
-//comment this out if you have clucene 0.9.17 or later
-#include "PrefixFilter.h"
 
 using lucene::document::Document;
 using lucene::document::Field;
