@@ -87,7 +87,7 @@ ProcessInputStream::writeToPipe() {
             error = strerror(errno);
             status = Error;
             input = 0;
-        } else if (input && m != n) {
+        } else if (m != n) {
             input->reset(pos+n);
         }
     }

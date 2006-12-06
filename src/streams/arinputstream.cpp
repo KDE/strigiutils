@@ -68,17 +68,18 @@ ArInputStream::readHeader() {
     // read the first 60 characters
     toread = 60;
     nread = input->read(b, toread, toread);
+    if (input->getStatus() == Error) {
+        error = "Error reading ar header: ";
+        error += input->getError();
+        status = Error;
+        return;
+    }
     if (nread <= 1) { // allow for a closing byte
         status = Eof;
         return;
     }
     if (nread != toread) {
-        error = "Error reading ar header: ";
-        if (nread == -1) {
-            error += input->getError();
-        } else {
-            error += " premature end of file.";
-        }
+        error = "Error reading ar header: premature end of file.";
         status = Error;
         return;
     }

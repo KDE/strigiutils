@@ -34,7 +34,6 @@ DigestInputStream::DigestInputStream(StreamBase<char> *input) {
 }
 int32_t
 DigestInputStream::read(const char*& start, int32_t min, int32_t max) {
-    if (min == 0) {input=0;input->getSize();}
     int32_t nread = input->read(start, min, max);
 //    printf("%p pos: %lli min %i max %i nread %i\n", this, position, min, max, nread);
     if (nread < -1) {
