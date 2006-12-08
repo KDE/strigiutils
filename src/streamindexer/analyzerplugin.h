@@ -10,10 +10,10 @@
   #error "You should add STRIGI_IMPORT_API to the top of you plugin, you should not include this header if your code is not a plugin"
 #endif
 #define STRIGI_ANALYZER_FACTORY(CLASS) extern "C" { \
-    const AnalyzerFactoryFactory* getStrigiAnalyzerFactory() { \
+    const jstreams::AnalyzerFactoryFactory* getStrigiAnalyzerFactory() { \
         return new CLASS(); \
     } \
-    void deleteStrigiAnalyzerFactory(const AnalyzerFactoryFactory* f) { \
+    void deleteStrigiAnalyzerFactory(const jstreams::AnalyzerFactoryFactory* f) { \
         delete f; \
     } \
 }
