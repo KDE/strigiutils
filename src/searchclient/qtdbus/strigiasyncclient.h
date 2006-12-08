@@ -50,7 +50,8 @@ signals:
     void countedQuery(const QString& query, int count);
     void gotHits(const QString& query, int offset,
         const QList<StrigiHit>& hits);
-    void gotHistogram(const QString& query, const QList<StringUIntPair>& h);
+    void gotHistogram(const QString& query, const QString& fieldname,
+        const QList<StringUIntPair>& h);
 };
 
 #endif

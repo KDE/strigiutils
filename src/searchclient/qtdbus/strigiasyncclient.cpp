@@ -93,7 +93,7 @@ StrigiAsyncClient::handleHistogram(const QDBusMessage& msg) {
     QDBusReply<QList<StringUIntPair> > r = msg;
     if (r.isValid()) {
         QList<StringUIntPair> h = r;
-        emit gotHistogram(lastRequest.query, h);
+        emit gotHistogram(lastRequest.query, lastRequest.fieldname, h);
     } else {
         qDebug() << r.error().message();
     }

@@ -34,6 +34,51 @@ Histogram::Histogram(QWidget* p) :QScrollArea(p) {
     setBarLength(100);
     setWidget(area);
     setWidgetResizable(true);
+    histogramIsUptodate = false;
+
+    connect(&asyncstrigi,
+        SIGNAL(gotHistogram(const QString&,const QString&,const QList<StringUIntPair>&)),
+        this, SLOT(getHistogram(const QString&,const QString&,const QList<StringUIntPair>&)));
+}
+void
+Histogram::setQuery(const QString& query) {
+    if (activeQuery == query.trimmed()) return;
+    activeQuery = query.trimmed();
+    if (activeFieldname.length() == 0 || activeQuery.length() == 0) return;
+    clear();
+    asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
+    if (isVisible()) {
+        asyncstrigi.addGetHistogramRequest(activeQuery, activeFieldname, "");
+    } else {
+        histogramIsUptodate = false;
+    }
+}
+void
+Histogram::setFieldName(const QString& fn) {
+    if (activeFieldname == fn) return;
+    activeFieldname = fn;
+    if (activeFieldname.length() == 0 || activeQuery.length() == 0) return;
+    clear();
+    asyncstrigi.clearRequests(StrigiAsyncClient::Histogram);
+    if (isVisible()) {
+        asyncstrigi.addGetHistogramRequest(activeQuery, activeFieldname, "");
+    } else {
+        histogramIsUptodate = false;
+    }
+}
+void
+Histogram::showEvent(QShowEvent&) {
+    if (!histogramIsUptodate) {
+        asyncstrigi.addGetHistogramRequest(activeQuery, activeFieldname, "");
+        histogramIsUptodate = true;
+    }
+}
+void
+Histogram::getHistogram(const QString& query, const QString& fieldname,
+        const QList<StringUIntPair>& h) {
+    if (query == activeQuery && fieldname == activeFieldname) {
+        setData(h);
+    }
 }
 void
 Histogram::setData(const QList<QPair<QString,quint32> >& d) {
@@ -112,7 +157,6 @@ HistogramArea::mouseMoveEvent(QMouseEvent* event) {
     }
     qreal n = item / (barwidth + margin);
     int pos = item - (int)((int)n) * (barwidth + margin);
-    //int pos = item % (int)(barwidth+margin);
     if (pos >= barwidth) {
         item = -1;
     } else {
@@ -167,19 +211,6 @@ HistogramArea::paintEvent(QPaintEvent* e) {
     for (int i = 0; i < data.size(); ++i) {
         paintBar(painter, i, barheight);
     }
-/*    foreach (const StringUIntPair& p, data) {
-        qreal bh;
-        if (activeEntry == i++) {
-            bh = barheight;
-        } else {
-            bh = p.second*barheight/(qreal)max;
-        }
-        painter.fillRect(QRectF(0, offset, bh, barwidth),
-            palette().highlight());
-        painter.drawText(QRectF(margin, offset, w, barwidth), Qt::AlignVCenter,
-            p.first+": "+QString::number(p.second));
-        offset += barwidth + margin;
-    }*/
 }
 void
 HistogramArea::paintBar(QPainter&p, int entry, int barheight) {

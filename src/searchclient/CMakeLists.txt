@@ -10,7 +10,7 @@ if (QT4_FOUND)
   set(strigiclient_SRCS strigiclient.cpp simplesearchgui.cpp searchtabs.cpp
     searchview.cpp  dlglistindexedfiles.cpp dlgfilters.cpp histogram.cpp)
   set(strigiclient_MOC_HDRS searchtabs.h searchview.h simplesearchgui.h
-    dlglistindexedfiles.h dlgfilters.h)
+    dlglistindexedfiles.h dlgfilters.h histogram.h)
 
   qt4_wrap_cpp(strigiclient_MOC_SRCS ${strigiclient_MOC_HDRS})
 
