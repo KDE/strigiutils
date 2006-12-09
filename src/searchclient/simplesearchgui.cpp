@@ -61,6 +61,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     running = false;
     starting = true;
     indexeddirs = new QListWidget();
+    indexeddirs->setSelectionMode(QAbstractItemView::ExtendedSelection);
     adddir = new QPushButton("add directory");
     removedir = new QPushButton("remove directory");
     toggleindexing = new QPushButton("start indexing");
@@ -305,9 +306,16 @@ SimpleSearchGui::addDirectory() {
 }
 void
 SimpleSearchGui::removeDirectory() {
-    int i = indexeddirs->currentRow();
-    if (i == -1) return;
-    indexeddirs->takeItem(i);
+    QList<QListWidgetItem*> items = indexeddirs->selectedItems();
+    
+    if (items.size() == 0)
+        return;
+
+    for (QList<QListWidgetItem*>::iterator iter = items.begin(); iter != items.end(); iter++)
+    {
+        int row = indexeddirs->row (*iter);
+        indexeddirs->takeItem (row);
+    }
     setDirectories();
 }
 void
