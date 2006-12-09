@@ -349,15 +349,13 @@ SocketClient::getHistogram(const string& query, const string& field,
     return vector<pair<string, uint32_t> >();
 }
 int
-SocketClient::countKeywords(const string& query,
-        const string& keywordmatch,
+SocketClient::countKeywords(const string& keywordmatch,
         const vector<string>& fieldnames) {
     fprintf(stderr, "SocketClient::countKeywords is not implemented yet\n");
     return 0;
 }
 vector<string>
-SocketClient::getKeywords(const string& query,
-        const string& keywordmatch,
+SocketClient::getKeywords(const string& keywordprefix,
         const vector<string>& fieldnames,
         uint32_t max, uint32_t offset) {
     fprintf(stderr, "SocketClient::getKeywords is not implemented yet\n");

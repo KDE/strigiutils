@@ -156,14 +156,12 @@ Interface::getHistogram(const string& query, const string& field,
     return manager.getIndexReader()->getHistogram(query, field, labeltype);
 }
 int32_t
-Interface::countKeywords(const string& query,
-        const string& keywordmatch,
+Interface::countKeywords(const string& keywordmatch,
         const vector<string>& fieldnames) {
     return 0;
 }
 vector<string>
-Interface::getKeywords(const string& query,
-        const string& keywordmatch,
+Interface::getKeywords(const string& keywordmatch,
         const vector<string>& fieldnames,
         uint32_t max, uint32_t offset) {
     return vector<string>();

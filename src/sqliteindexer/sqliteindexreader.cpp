@@ -236,3 +236,14 @@ vector<string>
 SqliteIndexReader::getFieldNames() {
     return vector<string>();
 }
+int32_t
+SqliteIndexReader::countKeywords(const string& keywordprefix,
+        const vector<string>& fieldnames) {
+    return -1;
+}
+vector<string>
+SqliteIndexReader::getKeywords(const string& keywordmatch,
+        const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
+    vector<string> k;
+    return k;
+}

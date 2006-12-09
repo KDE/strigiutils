@@ -72,8 +72,7 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='rules' type='a(bs)' direction='in'/>\n"
     << "    </method>\n"
     << "    <method name='countKeywords'>\n"
-    << "      <arg name='query' type='s' direction='in'/>\n"
-    << "      <arg name='keywordmatch' type='s' direction='in'/>\n"
+    << "      <arg name='keywordprefix' type='s' direction='in'/>\n"
     << "      <arg name='fieldnames' type='as' direction='in'/>\n"
     << "      <arg name='out' type='i' direction='out'/>\n"
     << "    </method>\n"
@@ -90,7 +89,6 @@ DBusClientInterface::getIntrospectionXML() {
     << "      <arg name='out' type='s' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getKeywords'>\n"
-    << "      <arg name='query' type='s' direction='in'/>\n"
     << "      <arg name='keywordmatch' type='s' direction='in'/>\n"
     << "      <arg name='fieldnames' type='as' direction='in'/>\n"
     << "      <arg name='max' type='u' direction='in'/>\n"
@@ -200,12 +198,11 @@ void
 DBusClientInterface::countKeywords(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string query;
-    std::string keywordmatch;
+    std::string keywordprefix;
     std::vector<std::string> fieldnames;
-    reader >> query >> keywordmatch >> fieldnames;
+    reader >> keywordprefix >> fieldnames;
     if (reader.isOk()) {
-        writer << impl->countKeywords(query,keywordmatch,fieldnames);
+        writer << impl->countKeywords(keywordprefix,fieldnames);
     }
 }
 void
@@ -240,14 +237,13 @@ void
 DBusClientInterface::getKeywords(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string query;
     std::string keywordmatch;
     std::vector<std::string> fieldnames;
     uint32_t max;
     uint32_t offset;
-    reader >> query >> keywordmatch >> fieldnames >> max >> offset;
+    reader >> keywordmatch >> fieldnames >> max >> offset;
     if (reader.isOk()) {
-        writer << impl->getKeywords(query,keywordmatch,fieldnames,max,offset);
+        writer << impl->getKeywords(keywordmatch,fieldnames,max,offset);
     }
 }
 void

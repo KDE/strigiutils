@@ -65,6 +65,8 @@ Some possible cmake options:
    enable log4cxx support, provides advanced logging features using log4cxx lib
  -DENABLE_DBUS:BOOL=ON
    use DBus for communication instead of the socket based communication
+ -DLIB_DESTINATION=lib64
+   if you have a 64 bit system with separate libraries for 64 bit libraries
 
 You can't enable inotify and polling at the same time, you've to choose one of them.
 If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.

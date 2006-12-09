@@ -34,6 +34,7 @@ using lucene::document::Document;
 using lucene::document::Field;
 using lucene::index::Term;
 using lucene::index::TermDocs;
+using lucene::index::TermEnum;
 using lucene::search::TermQuery;
 using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
@@ -538,4 +539,49 @@ CLuceneIndexReader::getFieldNames() {
     // TODO: how do we clean up names?
     // _CLDELETE(names);
     return s;
+}
+int32_t
+CLuceneIndexReader::countKeywords(const string& keywordprefix,
+        const vector<string>& fieldnames) {
+    return 2;
+}
+vector<string>
+CLuceneIndexReader::getKeywords(const string& keywordmatch,
+        const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
+    vector<string> fn;
+    if (fieldnames.size()) {
+        fn = fieldnames;
+    } else {
+        fn = getFieldNames();
+    }
+    set<wstring> s;
+    wstring prefix = utf8toucs2(keywordmatch);
+    const wchar_t* prefixtext = prefix.c_str();
+    uint32_t prefixLen = prefix.length();
+    vector<string>::const_iterator i;
+    Term* lastTerm = 0;
+    for (i = fn.begin(); i != fn.end() && s.size() << max; ++i) {
+         wstring fieldname(utf8toucs2(*i));
+         Term term(fieldname.c_str(), prefix.c_str());
+         TermEnum* enumerator = reader->terms(&term);
+         do {
+             lastTerm = enumerator->term(false);
+             if (lastTerm) {
+                 if (prefixLen > lastTerm->textLength()
+                         || _tcsncmp(lastTerm->text(), prefixtext, prefixLen)
+                             != 0) {
+                     break;
+                 }
+                 s.insert(lastTerm->text());
+             }
+         } while (enumerator->next() && s.size() < max);
+    }
+
+    vector<string> k;
+    k.resize(s.size());
+    set<wstring>::const_iterator j;
+    for (j = s.begin(); j != s.end(); ++j) {
+        k.push_back(wchartoutf8(*j));
+    }
+    return k;
 }

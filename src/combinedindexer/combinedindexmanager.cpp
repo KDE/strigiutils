@@ -88,6 +88,11 @@ public:
             const string& query, const string& fieldname,
             const string& labeltype);
     vector<string> getFieldNames();
+    int32_t countKeywords(const string& keywordprefix,
+        const vector<string>& fieldnames);
+    vector<string> getKeywords(const string& keywordmatch,
+        const vector<string>& fieldnames,
+        uint32_t max, uint32_t offset);
 };
 
 class CombinedIndexManager::Private {
@@ -245,4 +250,16 @@ CombinedIndexReader::getMTime(int64_t docid) {
 vector<string>
 CombinedIndexReader::getFieldNames() {
     return m->p->writermanager->getIndexReader()->getFieldNames();
+}
+int32_t
+CombinedIndexReader::countKeywords(const string& keywordprefix,
+        const vector<string>& fieldnames) {
+    return m->p->writermanager->getIndexReader()->countKeywords(keywordprefix,
+        fieldnames);
+}
+vector<string>
+CombinedIndexReader::getKeywords(const string& keywordmatch,
+        const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
+    return m->p->writermanager->getIndexReader()->getKeywords(keywordmatch,
+        fieldnames, max, offset);
 }
