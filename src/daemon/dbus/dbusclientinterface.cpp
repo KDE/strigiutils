@@ -15,9 +15,11 @@ DBusClientInterface::DBusClientInterface(ClientInterface* i)
     handlers["getFieldNames"] = &DBusClientInterface::getFieldNames;
     handlers["getBackEnds"] = &DBusClientInterface::getBackEnds;
     handlers["setFilters"] = &DBusClientInterface::setFilters;
+    handlers["countKeywords"] = &DBusClientInterface::countKeywords;
     handlers["getIndexedDirectories"] = &DBusClientInterface::getIndexedDirectories;
     handlers["getHistogram"] = &DBusClientInterface::getHistogram;
     handlers["stopIndexing"] = &DBusClientInterface::stopIndexing;
+    handlers["getKeywords"] = &DBusClientInterface::getKeywords;
     handlers["getHits"] = &DBusClientInterface::getHits;
     handlers["startIndexing"] = &DBusClientInterface::startIndexing;
     handlers["countHits"] = &DBusClientInterface::countHits;
@@ -69,6 +71,12 @@ DBusClientInterface::getIntrospectionXML() {
     << "    <method name='setFilters'>\n"
     << "      <arg name='rules' type='a(bs)' direction='in'/>\n"
     << "    </method>\n"
+    << "    <method name='countKeywords'>\n"
+    << "      <arg name='query' type='s' direction='in'/>\n"
+    << "      <arg name='keywordmatch' type='s' direction='in'/>\n"
+    << "      <arg name='fieldnames' type='as' direction='in'/>\n"
+    << "      <arg name='out' type='i' direction='out'/>\n"
+    << "    </method>\n"
     << "    <method name='getIndexedDirectories'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
@@ -80,6 +88,14 @@ DBusClientInterface::getIntrospectionXML() {
     << "    </method>\n"
     << "    <method name='stopIndexing'>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='getKeywords'>\n"
+    << "      <arg name='query' type='s' direction='in'/>\n"
+    << "      <arg name='keywordmatch' type='s' direction='in'/>\n"
+    << "      <arg name='fieldnames' type='as' direction='in'/>\n"
+    << "      <arg name='max' type='u' direction='in'/>\n"
+    << "      <arg name='offset' type='u' direction='in'/>\n"
+    << "      <arg name='out' type='as' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='getHits'>\n"
     << "      <arg name='query' type='s' direction='in'/>\n"
@@ -181,6 +197,18 @@ DBusClientInterface::setFilters(DBusMessage* msg, DBusConnection* conn) {
     }
 }
 void
+DBusClientInterface::countKeywords(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string query;
+    std::string keywordmatch;
+    std::vector<std::string> fieldnames;
+    reader >> query >> keywordmatch >> fieldnames;
+    if (reader.isOk()) {
+        writer << impl->countKeywords(query,keywordmatch,fieldnames);
+    }
+}
+void
 DBusClientInterface::getIndexedDirectories(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
@@ -206,6 +234,20 @@ DBusClientInterface::stopIndexing(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl->stopIndexing();
+    }
+}
+void
+DBusClientInterface::getKeywords(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string query;
+    std::string keywordmatch;
+    std::vector<std::string> fieldnames;
+    uint32_t max;
+    uint32_t offset;
+    reader >> query >> keywordmatch >> fieldnames >> max >> offset;
+    if (reader.isOk()) {
+        writer << impl->getKeywords(query,keywordmatch,fieldnames,max,offset);
     }
 }
 void

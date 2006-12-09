@@ -20,9 +20,11 @@ private:
     void getFieldNames(DBusMessage* msg, DBusConnection* conn);
     void getBackEnds(DBusMessage* msg, DBusConnection* conn);
     void setFilters(DBusMessage* msg, DBusConnection* conn);
+    void countKeywords(DBusMessage* msg, DBusConnection* conn);
     void getIndexedDirectories(DBusMessage* msg, DBusConnection* conn);
     void getHistogram(DBusMessage* msg, DBusConnection* conn);
     void stopIndexing(DBusMessage* msg, DBusConnection* conn);
+    void getKeywords(DBusMessage* msg, DBusConnection* conn);
     void getHits(DBusMessage* msg, DBusConnection* conn);
     void startIndexing(DBusMessage* msg, DBusConnection* conn);
     void countHits(DBusMessage* msg, DBusConnection* conn);

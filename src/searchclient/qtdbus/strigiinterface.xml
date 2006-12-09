@@ -65,8 +65,22 @@
       <arg name='query' type='s' direction='in'/>
       <arg name='out' type='i' direction='out'/>
     </method>
+    <method name='countKeywords'>
+      <arg name='query' type='s' direction='in'/>
+      <arg name='keywordmatch' type='s' direction='in'/>
+      <arg name='fieldnames' type='as' direction='in'/>
+      <arg name='out' type='i' direction='out'/>
+    </method>
     <method name='stopDaemon'>
       <arg name='out' type='s' direction='out'/>
+    </method>
+    <method name='getKeywords'>
+      <arg name='query' type='s' direction='in'/>
+      <arg name='keywordmatch' type='s' direction='in'/>
+      <arg name='fieldnames' type='as' direction='in'/>
+      <arg name='max' type='u' direction='in'/>
+      <arg name='offset' type='u' direction='in'/>
+      <arg name='out' type='as' direction='out'/>
     </method>
   </interface>
 </node>

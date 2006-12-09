@@ -47,6 +47,7 @@ public:
         close();
     }
     DBusMessageReader& operator>>(std::set<std::string>& s);
+    DBusMessageReader& operator>>(std::vector<std::string>& s);
     DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::string& s);
     DBusMessageReader& operator>>(dbus_uint32_t& s);

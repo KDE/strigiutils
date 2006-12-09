@@ -63,7 +63,7 @@ Interface::getHits(const string& query, uint32_t max, uint32_t off) {
     }
     return hits;
 }
-std::vector<std::string>
+vector<string>
 Interface::getBackEnds() {
     return manager.getBackEnds();
 }
@@ -115,7 +115,7 @@ Interface::setIndexedDirectories(set<string> dirs) {
     return "";
 }
 void
-Interface::setFilters(const std::vector<std::pair<bool,std::string> >& rules) {
+Interface::setFilters(const vector<pair<bool,string> >& rules) {
     scheduler.getIndexerConfiguration().setFilters(rules);
 }
 vector<pair<bool,string> >
@@ -133,8 +133,8 @@ Interface::getIndexedFiles() {
     return r;
 }
 void
-Interface::indexFile(const std::string &path, uint64_t mtime,
-        const std::vector<char>& content) {
+Interface::indexFile(const string &path, uint64_t mtime,
+        const vector<char>& content) {
     // TODO if the file is already there, remove it first
     IndexWriter* writer = manager.getIndexWriter();
     vector<string> paths;
@@ -146,12 +146,25 @@ Interface::indexFile(const std::string &path, uint64_t mtime,
     Indexable idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
 }
-std::vector<std::string>
+vector<string>
 Interface::getFieldNames() {
     return manager.getIndexReader()->getFieldNames();
 }
-std::vector<std::pair<std::string, uint32_t> >
-Interface::getHistogram(const std::string& query, const std::string& field,
-        const std::string& labeltype) {
+vector<pair<string, uint32_t> >
+Interface::getHistogram(const string& query, const string& field,
+        const string& labeltype) {
     return manager.getIndexReader()->getHistogram(query, field, labeltype);
+}
+int32_t
+Interface::countKeywords(const string& query,
+        const string& keywordmatch,
+        const vector<string>& fieldnames) {
+    return 0;
+}
+vector<string>
+Interface::getKeywords(const string& query,
+        const string& keywordmatch,
+        const vector<string>& fieldnames,
+        uint32_t max, uint32_t offset) {
+    return vector<string>();
 }

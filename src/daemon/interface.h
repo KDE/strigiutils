@@ -60,6 +60,12 @@ public:
 
     std::vector<std::string> getBackEnds();
     void setEventListener(EventListener* eListener);
+    int countKeywords(const std::string& query, const std::string& keywordmatch,
+        const std::vector<std::string>& fieldnames);
+    std::vector<std::string> getKeywords(const std::string& query,
+        const std::string& keywordmatch,
+        const std::vector<std::string>& fieldnames,
+        uint32_t max, uint32_t offset);
 };
 
 #endif

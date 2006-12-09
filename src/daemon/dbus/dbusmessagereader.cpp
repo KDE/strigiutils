@@ -108,6 +108,28 @@ DBusMessageReader::operator>>(set<string>& s) {
     return *this;
 }
 DBusMessageReader&
+DBusMessageReader::operator>>(vector<string>& s) {
+    s.clear();
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
+        || DBUS_TYPE_STRING != dbus_message_iter_get_element_type(&it)) {
+        close();
+        return *this;
+    }
+
+    DBusMessageIter sub;
+    const char* value;
+    dbus_message_iter_recurse(&it, &sub);
+    while (dbus_message_iter_get_arg_type(&sub) == DBUS_TYPE_STRING) {
+        dbus_message_iter_get_basic(&sub, &value);
+        s.push_back(value);
+        dbus_message_iter_next(&sub);
+    }
+    dbus_message_iter_next(&it);
+
+    return *this;
+}
+DBusMessageReader&
 DBusMessageReader::operator>>(std::vector<char>& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)

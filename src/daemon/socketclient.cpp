@@ -298,7 +298,7 @@ SocketClient::setIndexedDirectories(set<string> dirs) {
     return "";
 }
 void
-SocketClient::setFilters(const std::vector<std::pair<bool,std::string> >&rules){
+SocketClient::setFilters(const vector<pair<bool,string> >&rules){
 }
 vector<pair<bool,string> >
 SocketClient::getFilters() {
@@ -325,8 +325,8 @@ SocketClient::getIndexedFiles() {
     return r;
 }
 void
-SocketClient::indexFile(const std::string &path, uint64_t mtime,
-        const std::vector<char>& content) {
+SocketClient::indexFile(const string &path, uint64_t mtime,
+        const vector<char>& content) {
     printf("so you want me to send a file to strigi?\n");
     request.clear();
     response.clear();
@@ -337,14 +337,29 @@ SocketClient::indexFile(const std::string &path, uint64_t mtime,
     request.push_back(out.str());
     request.push_back(&content[0]);
 }
-std::vector<std::string>
+vector<string>
 SocketClient::getFieldNames() {
     fprintf(stderr, "SocketClient::getFieldNames is not implemented yet\n");
-    return std::vector<std::string>();
+    return vector<string>();
 }
-std::vector<std::pair<std::string, uint32_t> >
-SocketClient::getHistogram(const std::string& query, const std::string& field,
-        const std::string& labeltype) {
+vector<pair<string, uint32_t> >
+SocketClient::getHistogram(const string& query, const string& field,
+        const string& labeltype) {
     fprintf(stderr, "SocketClient::getHistogram is not implemented yet\n");
-    return std::vector<std::pair<std::string, uint32_t> >();
+    return vector<pair<string, uint32_t> >();
+}
+int
+SocketClient::countKeywords(const string& query,
+        const string& keywordmatch,
+        const vector<string>& fieldnames) {
+    fprintf(stderr, "SocketClient::countKeywords is not implemented yet\n");
+    return 0;
+}
+vector<string>
+SocketClient::getKeywords(const string& query,
+        const string& keywordmatch,
+        const vector<string>& fieldnames,
+        uint32_t max, uint32_t offset) {
+    fprintf(stderr, "SocketClient::getKeywords is not implemented yet\n");
+    return vector<string>();
 }

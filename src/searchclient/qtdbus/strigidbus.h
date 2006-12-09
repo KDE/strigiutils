@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef STRIGIDBUS_H_1165266067
-#define STRIGIDBUS_H_1165266067
+#ifndef STRIGIDBUS_H_1165658185
+#define STRIGIDBUS_H_1165658185
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -42,6 +42,13 @@ public Q_SLOTS: // METHODS
         QList<QVariant> argumentList;
         argumentList << qVariantFromValue(query);
         return callWithArgumentList(QDBus::Block, QLatin1String("countHits"), argumentList);
+    }
+
+    inline QDBusReply<int> countKeywords(const QString &query, const QString &keywordmatch, const QStringList &fieldnames)
+    {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue(query) << qVariantFromValue(keywordmatch) << qVariantFromValue(fieldnames);
+        return callWithArgumentList(QDBus::Block, QLatin1String("countKeywords"), argumentList);
     }
 
     inline QDBusReply<QStringList> getBackEnds()
@@ -86,6 +93,13 @@ public Q_SLOTS: // METHODS
     {
         QList<QVariant> argumentList;
         return callWithArgumentList(QDBus::Block, QLatin1String("getIndexedFiles"), argumentList);
+    }
+
+    inline QDBusReply<QStringList> getKeywords(const QString &query, const QString &keywordmatch, const QStringList &fieldnames, uint max, uint offset)
+    {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue(query) << qVariantFromValue(keywordmatch) << qVariantFromValue(fieldnames) << qVariantFromValue(max) << qVariantFromValue(offset);
+        return callWithArgumentList(QDBus::Block, QLatin1String("getKeywords"), argumentList);
     }
 
     inline QDBusReply<QMap<QString,QString> > getStatus()
