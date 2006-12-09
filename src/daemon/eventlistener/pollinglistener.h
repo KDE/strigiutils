@@ -53,7 +53,7 @@ public:
     static void fileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
 private:
-    void pool ();
+    void poll ();
     void clearWatches();
 
     bool m_firstTime;

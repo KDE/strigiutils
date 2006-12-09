@@ -76,7 +76,7 @@ void* PollingListener::run(void*)
             if (!m_firstTime)
                 sleep (m_pollingInterval);
             if (getState() != Stopping) {
-                pool();
+                poll();
             }
             m_firstTime = false;
         }
@@ -90,16 +90,16 @@ void* PollingListener::run(void*)
     return 0;
 }
 
-void PollingListener::pool ()
+void PollingListener::poll ()
 {
     if (!m_pIndexReader) {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool",
+        STRIGI_LOG_ERROR ("strigi.PollingListener.poll",
             "m_pEventQueue == NULL!")
         return;
     }
     if (m_pEventQueue == NULL)
     {
-        STRIGI_LOG_ERROR ("strigi.PollingListener.pool",
+        STRIGI_LOG_ERROR ("strigi.PollingListener.poll",
             "m_pEventQueue == NULL!")
         return;
     }
@@ -119,7 +119,7 @@ void PollingListener::pool ()
     watches = m_watches;
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.pool", "going across filesystem")
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "going across filesystem")
 
     // walk through the watched dirs
     for (set<string>::const_iterator iter = watches.begin(); iter != watches.end(); iter++)
@@ -128,7 +128,7 @@ void PollingListener::pool ()
         DIR* dir = opendir(iter->c_str());
         if (dir == NULL)
         {
-            STRIGI_LOG_DEBUG ("strigi.PollingListener.pool", "error opening dir " + *iter + ": " + strerror (errno))
+            STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "error opening dir " + *iter + ": " + strerror (errno))
 
             // dir doesn't exists anymore, remove it for the watches list
             if ((errno == ENOENT) || (errno == ENOTDIR))
@@ -141,7 +141,7 @@ void PollingListener::pool ()
         }
     }
 
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.pool", "filesystem access finished")
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "filesystem access finished")
 
     // de-index files deleted since last polling
     map<string,time_t>::iterator mi = indexedFiles.begin();
