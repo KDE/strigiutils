@@ -21,20 +21,27 @@
 #define CLUCENEINDEXWRITER_H
 
 #include "indexwriter.h"
+#include "indexable.h"
+#include "indexerconfiguration.h"
 
 class CLuceneIndexManager;
 class CLuceneIndexWriter : public jstreams::IndexWriter {
 private:
     CLuceneIndexManager* manager;
     int doccount;
+
 protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
     void addText(const jstreams::Indexable*, const char* text, int32_t length);
-    void setField(const jstreams::Indexable* idx, const TCHAR* fn,
-        const std::string& value) const;
-    void setField(const jstreams::Indexable*, const std::string &fieldname,
-        const std::string &value);
+    static void setField(const jstreams::Indexable* idx,
+        jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
+        const TCHAR* value);
+    static void setField(const jstreams::Indexable* idx,
+        jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
+        const std::string& value);
+    void setField(const jstreams::Indexable*,
+        const std::string& fieldname, const std::string& value);
 public:
     CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();

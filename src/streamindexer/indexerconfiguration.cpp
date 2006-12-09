@@ -35,8 +35,7 @@ IndexerConfiguration::IndexerConfiguration() {
  **/
 IndexerConfiguration::FieldType
 IndexerConfiguration::getIndexType(const std::string& fieldname) const {
-    return (fieldname == "text") ? Tokenized|Stored|Indexed
-                                : Stored|Indexed;
+    return Tokenized|Stored|Indexed;
 }
 bool
 IndexerConfiguration::indexFile(const char* path, const char* filename) const {

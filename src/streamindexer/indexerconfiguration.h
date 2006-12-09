@@ -32,9 +32,9 @@ class StreamThroughAnalyzerFactory;
 class IndexerConfiguration {
 public:
 enum FieldType {
-    None      = 0x0001, Binary = 0x0002, Compressed = 0x0004,
-    Indexed   = 0x0010, Lazy   = 0x0020, Stored     = 0x0040,
-    Tokenized = 0x0100
+    None      = 0x0000,
+    Binary = 0x0001, Compressed = 0x0002, Indexed   = 0x0004,
+    Lazy   = 0x0010, Stored     = 0x0020, Tokenized = 0x0040
 };
 private:
     struct Pattern {

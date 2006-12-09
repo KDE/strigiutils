@@ -25,7 +25,6 @@
 #include "cluceneindexmanager.h"
 #include "stringreader.h"
 #include "inputstreamreader.h"
-#include "indexable.h"
 //comment this out if you have clucene 0.9.17 or later
 #include "PrefixFilter.h"
 #include <sstream>
@@ -55,8 +54,8 @@ struct CLuceneDocData {
 };
 
 CLuceneIndexWriter::CLuceneIndexWriter(CLuceneIndexManager* m):
-    manager(m), doccount(0)
-{
+    manager(m), doccount(0) {
+    addMapping(_T(""),_T("content"));
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
 }
@@ -68,9 +67,9 @@ CLuceneIndexWriter::addText(const Indexable* idx, const char* text,
 }
 
 #ifdef _UCS2
-typedef map<wstring,wstring> CLuceneIndexWriterFieldMapType;;
+typedef map<wstring, wstring> CLuceneIndexWriterFieldMapType;
 #else
-typedef map<string,string> CLuceneIndexWriterFieldMapType;
+typedef map<string, string> CLuceneIndexWriterFieldMapType;
 #endif
 CLuceneIndexWriterFieldMapType CLuceneIndexWriterFieldMap;
 
@@ -79,36 +78,47 @@ void CLuceneIndexWriter::addMapping(const TCHAR* from, const TCHAR* to){
 }
 const TCHAR*
 CLuceneIndexWriter::mapId(const TCHAR* id) {
-    if ( CLuceneIndexWriterFieldMap.size() == 0 ){
-        addMapping(_T(""),_T("content"));
-    }
-    if (id==0 ) id = _T("");
+    if (id == 0) id = _T("");
     CLuceneIndexWriterFieldMapType::iterator itr
         = CLuceneIndexWriterFieldMap.find(id);
-    if (itr == CLuceneIndexWriterFieldMap.end())
+    if (itr == CLuceneIndexWriterFieldMap.end()) {
         return id;
-    else
+    } else {
         return itr->second.c_str();
+    }
 }
 void
-CLuceneIndexWriter::setField(const jstreams::Indexable* idx, const TCHAR* fn,
-        const std::string& value) const {
+CLuceneIndexWriter::setField(const Indexable* idx,
+        IndexerConfiguration::FieldType type, const TCHAR* name,
+        const TCHAR* value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
+    Field* field = new Field(name, value,
+        type & IndexerConfiguration::Stored,
+        type & IndexerConfiguration::Indexed,
+        type & IndexerConfiguration::Tokenized);
+    doc->doc.add(*field);
+}
+void
+CLuceneIndexWriter::setField(const Indexable* idx,
+        IndexerConfiguration::FieldType type, const TCHAR* fn,
+        const std::string& value) {
 #if defined(_UCS2)
-    doc->doc.add( *Field::Text(CLuceneIndexWriter::mapId(fn),
-        utf8toucs2(value).c_str()));
+    setField(idx, type, CLuceneIndexWriter::mapId(fn),
+        utf8toucs2(value).c_str());
 #else
-    doc->doc.add( *Field::Text(CLuceneIndexWriter::mapId(fn),
-        value.c_str()) );
+    setField(idx, type, CLuceneIndexWriter::mapId(fn), value.c_str());
 #endif
 }
 void
 CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
         const string& value) {
+    IndexerConfiguration::FieldType type
+        = idx->config().getIndexType(fieldname);
+    if (type == IndexerConfiguration::None) return;
 #if defined(_UCS2)
-    setField(idx, utf8toucs2(fieldname).c_str(), value);
+    setField(idx, type, utf8toucs2(fieldname).c_str(), value);
 #else
-    setField(idx, fieldname.c_str(), value);
+    setField(idx, type, fieldname.c_str(), value);
 #endif
 }
 void
@@ -122,18 +132,18 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    setField(idx, _T("path"), idx->getPath());
+    setField(idx, "path", idx->getPath());
     string field = idx->getEncoding();
-    if (field.length()) setField(idx, _T("encoding"), field);
+    if (field.length()) setField(idx, "encoding", field);
     field = idx->getMimeType();
-    if (field.length()) setField(idx, _T("mimetype"), field);
+    if (field.length()) setField(idx, "mimetype", field);
     field = idx->getFileName();
-    if (field.length()) setField(idx, _T("filename"), field);
+    if (field.length()) setField(idx, "filename", field);
     field = idx->getExtension();
-    if (field.length()) setField(idx, _T("ext"), field);
+    if (field.length()) setField(idx, "ext", field);
     ostringstream o;
     o << (int)idx->getDepth();
-    setField(idx, _T("depth"), o.str());
+    setField(idx, "depth", o.str());
     o.str("");
     {
         char tmp[100];
@@ -141,7 +151,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         o << tmp;
     }
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
-    setField(idx, _T("mtime"), o.str());
+    setField(idx, "mtime", o.str());
     wstring c(utf8toucs2(doc->content));
     StringReader<char>* sr = NULL; //we use this for compressed streams
 
@@ -151,15 +161,16 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
     #ifndef STRIGI_USE_CLUCENE_COMPRESSEDFIELDS
         doc->doc.add(*Field::Text(mappedFn, c.c_str(), false));
     #else
-        //lets store the content as utf8. remember, the stream is required
-        //until the document is added, so a static construction of stringreader is not good enough
+        // lets store the content as utf8. remember, the stream is required
+        // until the document is added, so a static construction of stringreader
+        // is not good enough
         sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
 
-    //add the stored field with the zipstream
+    // add the stored field with the zipstream
     doc->doc.add(*new Field(mappedFn, new GZipCompressInputStream(sr),
         Field::STORE_YES));
 
-    //add add the tokenized/indexed field
+    // add the tokenized/indexed field
     doc->doc.add(*new Field::Text(mappedFn, c.c_str(),
             Field::STORE_NO | Field::INDEX_TOKENIZED));
     #endif
