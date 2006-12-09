@@ -21,34 +21,42 @@
 #include <map>
 #include <string>
 #include <set>
+#include <list>
 
 namespace jstreams {
-class Query;
 /**
  * Break up a string in a query.
  * Currently very simple. Currently always combines terms with AND.
  **/
 class Query {
+public:
+    enum Occur { MUST, MUST_NOT, SHOULD };
 private:
-    class Term;
+    std::string fieldname;
+    std::string expression;
+    Occur occurance;
+    std::list<Query> terms;
     int max;
     int offset;
-    std::map<std::string, std::set<std::string> > includes;
-    std::map<std::string, std::set<std::string> > excludes;
 
-    void addTerm(const Term& term);
-    const char* parseTerm(const char*, Term& term);
+    void addQuery(const Query& term);
+    const char* parseQuery(const char*, Query& term);
+    void clear();
 public:
     Query();
     Query(const std::string& q, int max, int offset);
-    const std::map<std::string, std::set<std::string> > &getIncludes() const {
+/*    const std::map<std::string, std::set<std::string> > &getIncludes() const {
         return includes;
     }
     const std::map<std::string, std::set<std::string> > &getExcludes() const {
         return excludes;
-    }
+    }*/
     int getMax() const { return max; }
     int getOffset() const { return offset; }
+    const std::string getExpression() const { return expression; }
+    const std::string getFieldName() const { return fieldname; }
+    const std::list<Query>& getTerms() const { return terms; }
+    Occur getOccurance() const { return occurance; }
     std::string highlight(const std::string& text) const;
 };
 }

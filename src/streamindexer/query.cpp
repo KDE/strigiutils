@@ -24,8 +24,8 @@
 #include <ctype.h>
 using namespace std;
 using namespace jstreams;
-
-class Query::Term {
+/*
+class Query::Query {
 public:
     string prefix;
     string term;
@@ -34,7 +34,7 @@ public:
     void clear() {
         prefix = term = "";
     }
-};
+};*/
 
 Query::Query() {
 }
@@ -59,22 +59,22 @@ Query::Query(const string& query, int max, int offset) {
     const char* q = query.c_str();
     const char* end = q+query.length();
     const char* p = q;
-    Term term;
-    Term lastterm;
+    Query term;
+    Query lastterm;
     bool hador = false;
     while (p < end) {
         term.clear();
-        p = parseTerm(p, term);
-        if (term.term == "OR") {
+        p = parseQuery(p, term);
+        if (term.expression == "OR") {
             hador = true;
             Query q;
-            q.addTerm(lastterm);
+            q.addQuery(lastterm);
         } else {
-            addTerm(lastterm);
+            addQuery(lastterm);
             lastterm = term;
         }
     }
-    addTerm(lastterm);
+    addQuery(lastterm);
 /*    map<string, set<string> >::const_iterator i;
     set<string>::const_iterator j;
     for (i = includes.begin(); i != includes.end(); ++i) {
@@ -94,16 +94,12 @@ operator<(const jstreams::Query&a,const jstreams::Query&b) {
     return &a < &b;
 }*/
 void
-Query::addTerm(const Term& term) {
-    if (term.term.size() == 0) return;
-    if (term.include) {
-        includes[term.prefix].insert(term.term);
-    } else {
-        excludes[term.prefix].insert(term.term);
-    }
+Query::addQuery(const Query& term) {
+    if (term.terms.size() == 0 && term.expression.size() == 0) return;
+    terms.push_back(term);
 }
 const char*
-Query::parseTerm(const char* s, Term& parsedterm) {
+Query::parseQuery(const char* s, Query& parsedterm) {
     bool include = true;
     const char* p = s;
     // skip whitespace
@@ -146,11 +142,11 @@ Query::parseTerm(const char* s, Term& parsedterm) {
     }
     if (*term == '\0') return term;
     if (p - term > 0) {
-        parsedterm.include = include;
+        parsedterm.occurance = (include) ?MUST :MUST_NOT;
         if (prefix != 0 && term - prefix > 1) {
-            parsedterm.prefix = string(prefix, prefend-prefix);
+            parsedterm.fieldname = string(prefix, prefend-prefix);
         }
-        parsedterm.term = string(term, p-term);
+        parsedterm.expression = string(term, p-term);
     }
     // skip the terminating character
     if (p != '\0') p++;
@@ -166,6 +162,12 @@ replaceall(string& text, const string& a, const string& b) {
         pos = text.find('<');
     }
 }
+void
+Query::clear() {
+    terms.clear();
+    occurance = MUST;
+    fieldname = expression = "";
+}
 string
 Query::highlight(const string& text) const {
     return text;
@@ -178,12 +180,11 @@ Query::highlight(const string& text) const {
         lt[i] = tolower(lt[i]);
     }
     vector<string> re;
-    map<string, set<string> >::const_iterator i;
-    for (i = includes.begin(); i != includes.end(); ++i) {
-        set<string>::const_iterator j;
-        for (j = i->second.begin(); j != i->second.end(); ++j) {
-            string s = *j;
-            for (uint k = 0; k<s.length(); ++k) {
+    list<Query>::const_iterator i;
+    for (i = terms.begin(); i != terms.end(); ++i) {
+        if (i->occurance != MUST_NOT) {
+            string s = i->expression;
+            for (uint k = 0; k < s.length(); ++k) {
                 s[k] = tolower(s[k]);
             }
             re.push_back(s);

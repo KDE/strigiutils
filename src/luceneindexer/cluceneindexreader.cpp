@@ -175,48 +175,45 @@ CLuceneIndexReader::Private::createTerm(const wchar_t* name,
     return t;
 }
 void
-CLuceneIndexReader::Private::createBooleanQuery(const Query& query, BooleanQuery& bq) {
+CLuceneIndexReader::Private::createBooleanQuery(const Query& query,
+        BooleanQuery& bq) {
     lucene::analysis::standard::StandardAnalyzer a;
     // add the attributes
-    const map<string, set<string> >& includes = query.getIncludes();
-    map<string, set<string> >::const_iterator i;
+    const list<Query>& terms = query.getTerms();
+    list<Query>::const_iterator i;
     set<string>::const_iterator j;
-    for (i = includes.begin(); i != includes.end(); ++i) {
-        wstring mappedId = mapId(i->first.c_str());
-        for (j = i->second.begin(); j != i->second.end(); ++j) {
+    for (i = terms.begin(); i != terms.end(); ++i) {
+        wstring fieldname = mapId(i->getFieldName().c_str());
+        string expr = i->getExpression();
+        if (i->getOccurance() == Query::MUST) {
             lucene::search::Query* tq;
             Term* t = 0;
-            if (j->length() > 0 && (*j)[0] == '<') {
-                t = createTerm(mappedId.c_str(), (*j).substr(1));
+            if (expr.length() > 0 && expr[0] == '<') {
+                t = createTerm(fieldname.c_str(), expr.substr(1));
                 tq = _CLNEW RangeQuery(0, t, false);
-            } else if (j->length() > 0 && (*j)[0] == '>') {
-                t = createTerm(mappedId.c_str(), (*j).substr(1));
+            } else if (expr.length() > 0 && expr[0] == '>') {
+                t = createTerm(fieldname.c_str(), expr.substr(1));
                 tq = _CLNEW RangeQuery(t, 0, false);
             } else {
-                if (strpbrk(j->c_str(), "*?")) {
-                    t = createWildCardTerm(mappedId.c_str(), *j);
+                if (strpbrk(expr.c_str(), "*?")) {
+                    t = createWildCardTerm(fieldname.c_str(), expr);
                     tq = _CLNEW WildcardQuery(t);
                 } else {
-                    t = createTerm(mappedId.c_str(), *j);
+                    t = createTerm(fieldname.c_str(), expr);
                     tq = _CLNEW TermQuery(t);
                 }
             }
             if (t) _CLDECDELETE(t);
             bq.add(tq, true, true, false);
-        }
-    }
-    const map<string, set<string> >& excludes = query.getExcludes();
-    for (i = excludes.begin(); i != excludes.end(); ++i) {
-        wstring mappedId = mapId(i->first.c_str());
-        for (j = i->second.begin(); j != i->second.end(); ++j) {
+        } else if (i->getOccurance() == Query::MUST_NOT) {
             lucene::search::Query* tq;
-            bool wildcard = strpbrk(j->c_str(), "*?")!=NULL;
+            bool wildcard = strpbrk(expr.c_str(), "*?")!=NULL;
             Term* t;
             if (wildcard) {
-                t = createWildCardTerm(mappedId.c_str(), *j);
+                t = createWildCardTerm(fieldname.c_str(), expr);
                 tq = _CLNEW WildcardQuery(t);
             } else {
-                t = createTerm(mappedId.c_str(), *j);
+                t = createTerm(fieldname.c_str(), expr);
                 tq = _CLNEW TermQuery(t);
             }
             _CLDECDELETE(t);

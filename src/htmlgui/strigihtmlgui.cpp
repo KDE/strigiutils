@@ -301,11 +301,11 @@ StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q,
     vector<string> terms;
     vector<string>::const_iterator i;
     for (i = fields.begin(); i != fields.end(); ++i) {
-        map<string, set<string> >::const_iterator j = q.getIncludes().find(*i);
-        if (j != q.getIncludes().end()) {
-            set<string>::const_iterator k;
-            for (k = j->second.begin(); k != j->second.end(); ++k) {
-                terms.push_back(*k);
+        list<Query>::const_iterator j;
+        for (j = q.getTerms().begin(); j != q.getTerms().end(); ++j) {
+             if (j->getOccurance() != Query::MUST_NOT
+                     && j->getFieldName() == *i) {
+                terms.push_back(j->getExpression());
             }
         }
     }
