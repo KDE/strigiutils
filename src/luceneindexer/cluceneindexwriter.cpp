@@ -83,29 +83,32 @@ CLuceneIndexWriter::mapId(const TCHAR* id) {
         addMapping(_T(""),_T("content"));
     }
     if (id==0 ) id = _T("");
-    CLuceneIndexWriterFieldMapType::iterator itr = CLuceneIndexWriterFieldMap.find(id);
-    if ( itr == CLuceneIndexWriterFieldMap.end() )
+    CLuceneIndexWriterFieldMapType::iterator itr
+        = CLuceneIndexWriterFieldMap.find(id);
+    if (itr == CLuceneIndexWriterFieldMap.end())
         return id;
     else
         return itr->second.c_str();
 }
 void
-setField(const jstreams::Indexable* idx, const TCHAR* fn,
-        const std::string& value) {
+CLuceneIndexWriter::setField(const jstreams::Indexable* idx, const TCHAR* fn,
+        const std::string& value) const {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
 #if defined(_UCS2)
-    doc->doc.add( *Field::Keyword(CLuceneIndexWriter::mapId(fn), utf8toucs2(value).c_str()) );
+    doc->doc.add( *Field::Text(CLuceneIndexWriter::mapId(fn),
+        utf8toucs2(value).c_str()));
 #else
-    doc->doc.add( *Field::Keyword(CLuceneIndexWriter::mapId(fn), value.c_str()) );
+    doc->doc.add( *Field::Text(CLuceneIndexWriter::mapId(fn),
+        value.c_str()) );
 #endif
 }
 void
 CLuceneIndexWriter::setField(const Indexable* idx, const string& fieldname,
         const string& value) {
 #if defined(_UCS2)
-    ::setField(idx, utf8toucs2(fieldname).c_str(), value);
+    setField(idx, utf8toucs2(fieldname).c_str(), value);
 #else
-    ::setField(idx, fieldname.c_str(), value);
+    setField(idx, fieldname.c_str(), value);
 #endif
 }
 void
@@ -119,18 +122,18 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    ::setField(idx, _T("path"), idx->getPath());
+    setField(idx, _T("path"), idx->getPath());
     string field = idx->getEncoding();
-    if (field.length()) ::setField(idx, _T("encoding"), field);
+    if (field.length()) setField(idx, _T("encoding"), field);
     field = idx->getMimeType();
-    if (field.length()) ::setField(idx, _T("mimetype"), field);
+    if (field.length()) setField(idx, _T("mimetype"), field);
     field = idx->getFileName();
-    if (field.length()) ::setField(idx, _T("filename"), field);
+    if (field.length()) setField(idx, _T("filename"), field);
     field = idx->getExtension();
-    if (field.length()) ::setField(idx, _T("ext"), field);
+    if (field.length()) setField(idx, _T("ext"), field);
     ostringstream o;
     o << (int)idx->getDepth();
-    ::setField(idx, _T("depth"), o.str());
+    setField(idx, _T("depth"), o.str());
     o.str("");
     {
         char tmp[100];
@@ -138,7 +141,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         o << tmp;
     }
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
-    ::setField(idx, _T("mtime"), o.str());
+    setField(idx, _T("mtime"), o.str());
     wstring c(utf8toucs2(doc->content));
     StringReader<char>* sr = NULL; //we use this for compressed streams
 
@@ -153,9 +156,8 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
 
     //add the stored field with the zipstream
-    doc->doc.add(*new Field(mappedFn,
-        new GZipCompressInputStream(sr),
-        Field::STORE_YES ) );
+    doc->doc.add(*new Field(mappedFn, new GZipCompressInputStream(sr),
+        Field::STORE_YES));
 
     //add add the tokenized/indexed field
     doc->doc.add(*new Field::Text(mappedFn, c.c_str(),

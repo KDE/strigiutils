@@ -31,6 +31,8 @@ protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
     void addText(const jstreams::Indexable*, const char* text, int32_t length);
+    void setField(const jstreams::Indexable* idx, const TCHAR* fn,
+        const std::string& value) const;
     void setField(const jstreams::Indexable*, const std::string &fieldname,
         const std::string &value);
 public:
