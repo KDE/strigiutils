@@ -36,11 +36,14 @@ private:
     static const unsigned char alphabet[];
     static bool inalphabet[256];
     static unsigned char decoder[133];
+    static bool initializedAlphabet;
+    static void initialize();
 
     bool moreData();
 public:
     explicit Base64InputStream(StreamBase<char>* i);
     int32_t fillBuffer(char* start, int32_t space);
+    static std::string decode(const char*c, uint32_t length);
 };
 }
 

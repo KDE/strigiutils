@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "base64inputstream.h"
 using namespace jstreams;
+using namespace std;
 
 /* code is based on public domain code at
    http://www.tug.org/ftp/vm/base64-decode.c
@@ -29,17 +30,25 @@ const unsigned char Base64InputStream::alphabet[]
     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 bool Base64InputStream::inalphabet[256];
 unsigned char Base64InputStream::decoder[133];
+bool Base64InputStream::initializedAlphabet = false;
+
+void
+Base64InputStream::initialize() {
+    if (!initializedAlphabet) {
+        initializedAlphabet = true;
+        // initialize the translation arrays
+        for (int i=64; i<256; ++i) {
+            inalphabet[i] = 0;
+        }
+        for (int i=0; i<64; ++i) {
+            inalphabet[alphabet[i]] = true;
+            decoder[alphabet[i]] = i;
+        }
+    }
+}
 
 Base64InputStream::Base64InputStream(StreamBase<char>* i) :input(i) {
-    // initialize the translation arrays
-    for (int i=64; i<256; ++i) {
-        inalphabet[i] = 0;
-    }
-    for (int i=0; i<64; ++i) {
-    inalphabet[alphabet[i]] = true;
-    decoder[alphabet[i]] = i;
-    }
-
+    initialize();
     nleft = 0;
     char_count = 0;
     bits = 0;
@@ -138,4 +147,49 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
         nwritten = -1;
     }
     return nwritten;
+}
+string
+Base64InputStream::decode(const char* in, uint32_t length) {
+    string d;
+    if (length%4) return d;
+    initialize();
+    int32_t words = length/4;
+    d.reserve(words*3);
+    const unsigned char* c = (const unsigned char*)in;
+    const unsigned char* e = c + length;
+    if (in[length-1] == '=') {
+        e -= 4;
+    }
+    char k, l, b[3];
+    for (; c < e; c += 4) {
+         if (inalphabet[c[0]]  && inalphabet[c[1]] && inalphabet[c[2]]
+             && inalphabet[c[3]]) {
+            k = decoder[c[1]];
+            l = decoder[c[2]];
+            b[0] = (decoder[c[0]] << 2) + (k >> 4);
+            b[1] = (k             << 4) + (l >> 2);
+            b[2] = (l             << 6) + (decoder[c[3]]);
+            d.append(b, 3);
+         } else {
+             return string();
+         }
+    }
+    if (in[length-2] == '=') {
+        if (inalphabet[c[0]]  && inalphabet[c[1]]) {
+            b[0] = (decoder[c[0]] << 2)+((decoder[c[1]] >> 4));
+            d.append(b, 1);
+        } else {
+            return string();
+        }
+    } else if (in[length-1] == '=') {
+        if (inalphabet[c[0]]  && inalphabet[c[1]] && inalphabet[c[2]]) {
+            k = decoder[c[1]];
+            b[0] = (decoder[c[0]] << 2) + (k >> 4);
+            b[1] = (k             << 4) + (decoder[c[2]] >> 2);
+            d.append(b, 2);
+        } else {
+            return string();
+        }
+    }
+    return d;
 }

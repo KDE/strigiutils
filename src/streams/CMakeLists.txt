@@ -39,3 +39,5 @@ install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	DESTINATION include)
 
 add_executable(testpt testpt.cpp processinputstream.cpp)
+
+add_executable(decodebase64 decodebase64.cpp base64inputstream.cpp)
