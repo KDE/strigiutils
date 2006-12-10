@@ -26,15 +26,16 @@ using namespace jstreams;
 
 bool
 PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    static const unsigned char pngmagic[] = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
+    static const unsigned char pngmagic[]
+        = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
     return headersize >= 24 &&  memcmp(header, pngmagic, 8) == 0;
 }
 char
 PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     const char* h;
     int32_t n = in->read(h, 24, 24);
-    if (n < 24) return -1;
     in->reset(0);
+    if (n < 24) return -1;
 
     // perform magic to access png dimensions
     int32_t x = (unsigned char)h[19] + ((unsigned char)h[18]<<8)
