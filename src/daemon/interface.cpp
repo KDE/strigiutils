@@ -89,7 +89,9 @@ Interface::getStatus() {
 string
 Interface::stopDaemon() {
     active = false;
-    raise(SIGINT);
+    // signal to all threads to quit. Do not use raise() here, because it will
+    // cause a hang
+    kill(getpid(), SIGINT);
     return "";
 }
 string
