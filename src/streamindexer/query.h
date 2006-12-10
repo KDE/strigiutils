@@ -29,34 +29,35 @@ namespace jstreams {
  * Currently very simple. Currently always combines terms with AND.
  **/
 class Query {
+friend class QueryParser;
 public:
-    enum Occur { MUST, MUST_NOT, SHOULD };
+    enum Occurrence { MUST, MUST_NOT, SHOULD };
 private:
     std::string fieldname;
     std::string expression;
-    Occur occurance;
+    Occurrence occurrence;
     std::list<Query> terms;
     int max;
     int offset;
 
-    void addQuery(const Query& term);
-    const char* parseQuery(const char*, Query& term);
     void clear();
+    Query(int max, int offset);
 public:
     Query();
-    Query(const std::string& q, int max, int offset);
     int getMax() const { return max; }
     int getOffset() const { return offset; }
     const std::string getExpression() const { return expression; }
     const std::string getFieldName() const { return fieldname; }
     const std::list<Query>& getTerms() const { return terms; }
-    Occur getOccurance() const { return occurance; }
+    Occurrence getOccurrence() const { return occurrence; }
     std::string highlight(const std::string& text) const;
 };
 
 class QueryParser {
 private:
     std::list<std::string> defaultFields;
+    const char* parseQuery(const char*, Query& term) const;
+    void addQuery(Query& query, const Query& subquery) const;
 public:
     QueryParser();
     void setDefaultFields(const std::list<std::string>& df) {
@@ -65,7 +66,7 @@ public:
     const std::list<std::string>& getDefaultFields() const {
         return defaultFields;
     }
-    Query buildQuery(const std::string& a);
+    Query buildQuery(const std::string& a, int32_t max, int32_t offset);
 };
 
 }

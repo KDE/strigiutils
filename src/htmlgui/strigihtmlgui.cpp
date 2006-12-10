@@ -303,7 +303,7 @@ StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q,
     for (i = fields.begin(); i != fields.end(); ++i) {
         list<Query>::const_iterator j;
         for (j = q.getTerms().begin(); j != q.getTerms().end(); ++j) {
-             if (j->getOccurance() != Query::MUST_NOT
+             if (j->getOccurrence() != Query::MUST_NOT
                      && j->getFieldName() == *i) {
                 terms.push_back(j->getExpression());
             }
@@ -470,7 +470,8 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
 void
 StrigiHtmlGui::Private::printSearchResults(ostream& out,
         const ClientInterface::Hits& hits, const string& q) const {
-    Query query(q, 0, 0);
+    QueryParser parser;
+    Query query = parser.buildQuery(q, 0, 0);
     vector<jstreams::IndexedDocument>::const_iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
         printSearchResult(out, *i, query);

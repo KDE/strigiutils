@@ -42,53 +42,75 @@ Query::Query() {
  * query ::= [term]*
  * term ::= [-][prefix]:("searchphrase"|searchphrase)
  **/
-Query::Query(const string& query, int max, int offset) {
+Query::Query(int max, int offset) {
     this->max = max;
     this->offset = offset;
-    const char* q = query.c_str();
-    const char* end = q+query.length();
+}
+QueryParser::QueryParser() {
+    defaultFields.push_back("content");
+    defaultFields.push_back("artist");
+    defaultFields.push_back("filename");
+    defaultFields.push_back("album");
+    defaultFields.push_back("title");
+}
+Query
+QueryParser::buildQuery(const string& querystring, int32_t max, int32_t offset){
+    const char* q = querystring.c_str();
+    const char* end = q + querystring.length();
     const char* p = q;
+    Query query(max, offset);
     Query term;
     Query lastterm;
-    bool hador = false;
+    bool hadOr = false;
     while (p < end) {
         term.clear();
         p = parseQuery(p, term);
         if (term.expression == "OR") {
-            hador = true;
+            hadOr = true;
             Query q;
-            q.addQuery(lastterm);
+            addQuery(q, lastterm);
         } else {
-            addQuery(lastterm);
+            addQuery(query, lastterm);
             lastterm = term;
         }
     }
-    addQuery(lastterm);
-/*    map<string, set<string> >::const_iterator i;
-    set<string>::const_iterator j;
-    for (i = includes.begin(); i != includes.end(); ++i) {
-        for (j = i->second.begin(); j != i->second.end(); ++j) {
-            printf("+ '%s':'%s'\n", i->first.c_str(), j->c_str());
-        }
-    }
-    for (i = excludes.begin(); i != excludes.end(); ++i) {
-        for (j = i->second.begin(); j != i->second.end(); ++j) {
-            printf("- '%s':'%s'\n", i->first.c_str(), j->c_str());
-        }
-    }
-    printf("--\n");*/
+    addQuery(query, lastterm);
+    return query;
 }/*
 bool
 operator<(const jstreams::Query&a,const jstreams::Query&b) {
     return &a < &b;
 }*/
 void
-Query::addQuery(const Query& term) {
-    if (term.terms.size() == 0 && term.expression.size() == 0) return;
-    terms.push_back(term);
+QueryParser::addQuery(Query& query, const Query& subquery) const {
+    // if the subquery is empty, do not add it
+    if (subquery.terms.size() == 0 && subquery.expression.size() == 0) return;
+    // if the subquery has no field name, use the default field names
+    if (subquery.expression.size() > 0 && subquery.fieldname.size() == 0
+            && defaultFields.size() > 0) {
+        if (defaultFields.size() == 1) {
+            Query sq = subquery;
+            sq.fieldname = *defaultFields.begin();
+            query.terms.push_back(sq);
+        } else {
+            list<string>::const_iterator i;
+            Query orQuery;
+            orQuery.occurrence = subquery.occurrence;
+            for (i = defaultFields.begin(); i != defaultFields.end(); ++i) {
+                Query sub;
+                sub.fieldname = *i;
+                sub.expression = subquery.expression;
+                sub.occurrence = Query::SHOULD;
+                orQuery.terms.push_back(sub);
+             }
+             query.terms.push_back(orQuery);
+        }
+    } else {
+        query.terms.push_back(subquery);
+    }
 }
 const char*
-Query::parseQuery(const char* s, Query& parsedterm) {
+QueryParser::parseQuery(const char* s, Query& parsedterm) const {
     bool include = true;
     const char* p = s;
     // skip whitespace
@@ -131,7 +153,7 @@ Query::parseQuery(const char* s, Query& parsedterm) {
     }
     if (*term == '\0') return term;
     if (p - term > 0) {
-        parsedterm.occurance = (include) ?MUST :MUST_NOT;
+        parsedterm.occurrence = (include) ?Query::MUST :Query::MUST_NOT;
         if (prefix != 0 && term - prefix > 1) {
             parsedterm.fieldname = string(prefix, prefend-prefix);
         }
@@ -154,7 +176,7 @@ replaceall(string& text, const string& a, const string& b) {
 void
 Query::clear() {
     terms.clear();
-    occurance = MUST;
+    occurrence = MUST;
     fieldname = expression = "";
 }
 string
@@ -171,7 +193,7 @@ Query::highlight(const string& text) const {
     vector<string> re;
     list<Query>::const_iterator i;
     for (i = terms.begin(); i != terms.end(); ++i) {
-        if (i->occurance != MUST_NOT) {
+        if (i->occurrence != MUST_NOT) {
             string s = i->expression;
             for (uint k = 0; k < s.length(); ++k) {
                 s[k] = tolower(s[k]);

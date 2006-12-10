@@ -80,7 +80,8 @@ IndexManagerTester::testNumberQuery() {
         str.str("");
     }
     writer->commit();
-    Query q("size:>0", -1, 0);
+    QueryParser parser;
+    Query q = parser.buildQuery("size:>0", -1, 0);
     int count = reader->countHits(q);
     if (count != m) fprintf(stderr, "%i != %i\n", count, m);
     VERIFY(count == m);

@@ -56,14 +56,10 @@ public:
 
 class CLuceneIndexReader::Private {
 public:
-    static lucene::index::Term* createTerm(const wchar_t* name,
-        const std::string& value);
-    static lucene::index::Term* createWildCardTerm(const wchar_t* name,
-        const std::string& value);
-    static void createBooleanQuery(const jstreams::Query& query,
-        lucene::search::BooleanQuery& bq);
-    static void addField(lucene::document::Field* field,
-        jstreams::IndexedDocument&);
+    static Term* createTerm(const wchar_t* name, const string& value);
+    static Term* createWildCardTerm(const wchar_t* name, const string& value);
+    static BooleanQuery* createBooleanQuery(const Query& query);
+    static void addField(lucene::document::Field* field, IndexedDocument&);
 };
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
@@ -140,7 +136,7 @@ CLuceneIndexReader::mapId(const TCHAR* id) {
     }
 }
 #ifdef _UCS2
-std::wstring
+wstring
 CLuceneIndexReader::mapId(const char* id) {
     wstring tid = utf8toucs2(id);
     return mapId(tid.c_str());
@@ -174,19 +170,21 @@ CLuceneIndexReader::Private::createTerm(const wchar_t* name,
     _CLDELETE(ts);
     return t;
 }
-void
-CLuceneIndexReader::Private::createBooleanQuery(const Query& query,
-        BooleanQuery& bq) {
+BooleanQuery*
+CLuceneIndexReader::Private::createBooleanQuery(const Query& query) {
+    BooleanQuery* bq = _CLNEW BooleanQuery();
     lucene::analysis::standard::StandardAnalyzer a;
     // add the attributes
     const list<Query>& terms = query.getTerms();
     list<Query>::const_iterator i;
     set<string>::const_iterator j;
     for (i = terms.begin(); i != terms.end(); ++i) {
-        wstring fieldname = mapId(i->getFieldName().c_str());
-        string expr = i->getExpression();
-        if (i->getOccurance() == Query::MUST) {
-            lucene::search::Query* tq;
+        lucene::search::Query* tq;
+        if (i->getTerms().size() > 0) {
+            tq = createBooleanQuery(*i);
+        } else {
+            wstring fieldname = mapId(i->getFieldName().c_str());
+            string expr = i->getExpression();
             Term* t = 0;
             if (expr.length() > 0 && expr[0] == '<') {
                 t = createTerm(fieldname.c_str(), expr.substr(1));
@@ -204,22 +202,11 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query,
                 }
             }
             if (t) _CLDECDELETE(t);
-            bq.add(tq, true, true, false);
-        } else if (i->getOccurance() == Query::MUST_NOT) {
-            lucene::search::Query* tq;
-            bool wildcard = strpbrk(expr.c_str(), "*?")!=NULL;
-            Term* t;
-            if (wildcard) {
-                t = createWildCardTerm(fieldname.c_str(), expr);
-                tq = _CLNEW WildcardQuery(t);
-            } else {
-                t = createTerm(fieldname.c_str(), expr);
-                tq = _CLNEW TermQuery(t);
-            }
-            _CLDECDELETE(t);
-            bq.add(tq, true, false, true);
         }
+        Query::Occurrence o = i->getOccurrence();
+        bq->add(tq, true, o == Query::MUST, o == Query::MUST_NOT);
     }
+    return bq;
 }
 void
 CLuceneIndexReader::Private::addField(lucene::document::Field* field,
@@ -248,17 +235,16 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
 int32_t
 CLuceneIndexReader::countHits(const Query& q) {
     if (!checkReader()) return -1;
-    BooleanQuery bq;
-    Private::createBooleanQuery(q, bq);
+    BooleanQuery* bq = Private::createBooleanQuery(q);
     if (reader == 0) {
         return 0;
     }
     IndexSearcher searcher(reader);
-    std::vector<IndexedDocument> results;
+    vector<IndexedDocument> results;
     Hits* hits = 0;
     int s = 0;
     try {
-        hits = searcher.search(&bq);
+        hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
 /*        HitCounter counter;
@@ -289,21 +275,21 @@ CLuceneIndexReader::countHits(const Query& q) {
         delete hits;
     }
     searcher.close();
+    _CLDELETE(bq);
     return s;
 }
-std::vector<IndexedDocument>
+vector<IndexedDocument>
 CLuceneIndexReader::query(const Query& q) {
-    std::vector<IndexedDocument> results;
+    vector<IndexedDocument> results;
     if (!checkReader()) {
         return results;
     }
-    BooleanQuery bq;
-    Private::createBooleanQuery(q, bq);
+    BooleanQuery* bq = Private::createBooleanQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int s = 0;
     try {
-        hits = searcher.search(&bq);
+        hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
@@ -329,11 +315,12 @@ CLuceneIndexReader::query(const Query& q) {
         _CLDELETE(hits);
     }
     searcher.close();
+    _CLDELETE(bq);
     return results;
 }
-std::map<std::string, time_t>
+map<string, time_t>
 CLuceneIndexReader::getFiles(char depth) {
-    std::map<std::string, time_t> files;
+    map<string, time_t> files;
     if (!checkReader()) {
         return files;
     }
@@ -387,7 +374,7 @@ CLuceneIndexReader::getIndexSize() {
     return manager->getIndexSize();
 }
 int64_t
-CLuceneIndexReader::getDocumentId(const std::string& uri) {
+CLuceneIndexReader::getDocumentId(const string& uri) {
     if (!checkReader()) return -1;
     int64_t id = -1;
 
@@ -427,13 +414,13 @@ CLuceneIndexReader::getMTime(int64_t docid) {
 }
 class Histogram {
 public:
-    std::vector<std::pair<std::string,uint32_t> > h;
-    std::vector<int> values;
+    vector<pair<string,uint32_t> > h;
+    vector<int> values;
 };
 #include <time.h>
 #include <sstream>
-std::vector<std::pair<std::string,uint32_t> >
-makeTimeHistogram(const std::vector<int>& v) {
+vector<pair<string,uint32_t> >
+makeTimeHistogram(const vector<int>& v) {
     map<int32_t, int32_t> m;
     vector<int32_t>::const_iterator i;
     struct tm t;
@@ -443,7 +430,7 @@ makeTimeHistogram(const std::vector<int>& v) {
          int32_t c = 10000*t.tm_year + 100*t.tm_mon + t.tm_mday;
          m[c]++;
     }
-    std::vector<std::pair<std::string,uint32_t> > h;
+    vector<pair<string,uint32_t> > h;
     ostringstream str;
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
@@ -453,14 +440,14 @@ makeTimeHistogram(const std::vector<int>& v) {
     }
     return h;
 }
-std::vector<std::pair<std::string,uint32_t> >
-makeHistogram(const std::vector<int>& v, int min, int max) {
+vector<pair<string,uint32_t> >
+makeHistogram(const vector<int>& v, int min, int max) {
     map<int32_t, int32_t> m;
     vector<int32_t>::const_iterator i;
     for (i = v.begin(); i < v.end(); ++i) {
         m[*i]++;
     }
-    std::vector<std::pair<std::string,uint32_t> > h;
+    vector<pair<string,uint32_t> > h;
     ostringstream str;
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
@@ -470,21 +457,21 @@ makeHistogram(const std::vector<int>& v, int min, int max) {
     }
     return h;
 }
-std::vector<std::pair<std::string,uint32_t> >
-CLuceneIndexReader::getHistogram(const std::string& query,
-        const std::string& fieldname, const std::string& labeltype) {
-    std::vector<std::pair<std::string,uint32_t> > h;
+vector<pair<string,uint32_t> >
+CLuceneIndexReader::getHistogram(const string& query,
+        const string& fieldname, const string& labeltype) {
+    vector<pair<string,uint32_t> > h;
     if (!checkReader()) {
         return h;
     }
-    Query q(query, 0, 0);
-    BooleanQuery bq;
-    Private::createBooleanQuery(q, bq);
+    QueryParser parser;
+    Query q = parser.buildQuery(query, 0, 0);
+    BooleanQuery* bq = Private::createBooleanQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int s = 0;
     try {
-        hits = searcher.search(&bq);
+        hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
@@ -493,7 +480,7 @@ CLuceneIndexReader::getHistogram(const std::string& query,
     wstring field = utf8toucs2(fieldname);
     int32_t max = INT_MIN;
     int32_t min = INT_MAX;
-    std::vector<int32_t> values;
+    vector<int32_t> values;
     char* end;
     for (int i = 0; i < s; ++i) {
         Document *d = &hits->doc(i);
@@ -514,6 +501,7 @@ CLuceneIndexReader::getHistogram(const std::string& query,
         _CLDELETE(hits);
     }
     searcher.close();
+    _CLDELETE(bq);
     if (fieldname == "mtime" || labeltype == "time") {
         return makeTimeHistogram(values);
     } else {

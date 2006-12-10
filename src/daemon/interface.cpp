@@ -47,13 +47,15 @@ Interface::setEventListener (EventListener* eListener) {
 }
 int
 Interface::countHits(const string& query) {
-    Query q(query, -1, 0);
+    QueryParser parser;
+    Query q = parser.buildQuery(query, -1, 0);
     int count = manager.getIndexReader()->countHits(q);
     return count;
 }
 ClientInterface::Hits
 Interface::getHits(const string& query, uint32_t max, uint32_t off) {
-    Query q(query, max, off);
+    QueryParser parser;
+    Query q = parser.buildQuery(query, max, off);
     Hits hits;
     hits.hits = manager.getIndexReader()->query(q);
     // highlight the hits in the results
