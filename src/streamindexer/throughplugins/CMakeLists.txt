@@ -1,4 +1,4 @@
-include_directories( .. )
+include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams/compat)
 
 if (XATTR_FOUND)
   include_directories(${XATTR_INCLUDE_DIR})

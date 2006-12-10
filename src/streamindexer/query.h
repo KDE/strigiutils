@@ -45,12 +45,6 @@ private:
 public:
     Query();
     Query(const std::string& q, int max, int offset);
-/*    const std::map<std::string, std::set<std::string> > &getIncludes() const {
-        return includes;
-    }
-    const std::map<std::string, std::set<std::string> > &getExcludes() const {
-        return excludes;
-    }*/
     int getMax() const { return max; }
     int getOffset() const { return offset; }
     const std::string getExpression() const { return expression; }
@@ -59,6 +53,21 @@ public:
     Occur getOccurance() const { return occurance; }
     std::string highlight(const std::string& text) const;
 };
+
+class QueryParser {
+private:
+    std::list<std::string> defaultFields;
+public:
+    QueryParser();
+    void setDefaultFields(const std::list<std::string>& df) {
+        defaultFields = df;
+    }
+    const std::list<std::string>& getDefaultFields() const {
+        return defaultFields;
+    }
+    Query buildQuery(const std::string& a);
+};
+
 }
 bool operator<(const jstreams::Query&,const jstreams::Query&);
 

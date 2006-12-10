@@ -24,17 +24,6 @@
 #include <ctype.h>
 using namespace std;
 using namespace jstreams;
-/*
-class Query::Query {
-public:
-    string prefix;
-    string term;
-    bool include;
-
-    void clear() {
-        prefix = term = "";
-    }
-};*/
 
 Query::Query() {
 }

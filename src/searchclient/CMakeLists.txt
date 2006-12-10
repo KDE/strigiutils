@@ -2,6 +2,7 @@ include_directories(../streamindexer ../htmlgui ../streams ../daemon
 	qtdbus ${strigi_BINARY_DIR}/src/streams/compat filterwidget)
 add_subdirectory(qtdbus)
 add_subdirectory(filterwidget)
+add_subdirectory(keywordcompletion)
 
 if (QT4_FOUND)
   include(${QT_USE_FILE})

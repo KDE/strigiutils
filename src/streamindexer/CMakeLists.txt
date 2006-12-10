@@ -1,4 +1,5 @@
-subdirs (throughplugins)
+add_subdirectory(throughplugins)
+add_subdirectory(tests)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
