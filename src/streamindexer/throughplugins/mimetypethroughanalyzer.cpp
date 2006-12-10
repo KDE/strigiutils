@@ -27,10 +27,9 @@ using namespace jstreams;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
-    if ( magic_load(magic, 0) == -1 )
-		if ( magic_load(magic, "magic") == -1 )
-				fprintf(stderr, "magic_load: %s\n",magic_error(magic));
-
+    if (magic_load(magic, 0) == -1 && magic_load(magic, "magic") == -1) {
+        fprintf(stderr, "magic_load: %s\n",magic_error(magic));
+    }
 }
 MimeTypeThroughAnalyzer::~MimeTypeThroughAnalyzer() {
     magic_close(magic);
@@ -41,7 +40,9 @@ MimeTypeThroughAnalyzer::connectInputStream(::InputStream *in) {
     const char* mime;
     int64_t pos = in->getPosition();
     // min == 1 and max == 0 means: 'use whatever buffer size you have already
-    int32_t n = in->read(mime, 1, 0);
+    // we set max = 1024, because otherwise the stream will fill its entire
+    // buffer which can be quite expensive
+    int32_t n = in->read(mime, 1, 1024);
     in->reset(pos);
     if (n >= 0) {
         mime = magic_buffer(magic, mime, n);
