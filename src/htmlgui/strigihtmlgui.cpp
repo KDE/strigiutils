@@ -417,6 +417,10 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         icon = "<div class='iconbox'><img class='icon' src='"+icon;
         icon += "'/></div>\n";
     }
+    for (t = doc.properties.begin(); t != doc.properties.end(); ++t) {
+        if (t->second.size() < 100) {
+        printf("%s: %s", t->first.c_str(), t->second.c_str());
+    }}
     t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
