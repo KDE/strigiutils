@@ -33,8 +33,7 @@ using namespace jstreams;
 class StrigiHtmlGui::Private {
 private:
     HtmlHelper* h;
-    string highlightTerms(const string& t, const Query& q,
-        const vector<string>& fields) const;
+    string highlightTerms(const string& t, const Query& q) const;
     void printSearchResult(ostream& out,
         const jstreams::IndexedDocument& doc, const Query& q) const;
 public:
@@ -311,13 +310,12 @@ getTerms(const Query& q) {
     return terms;
 }
 string
-StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q,
-        const vector<string>& fields) const {
-    string out = t;
+StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q) const {
     vector<string> terms;
     set<string> termset = getTerms(q);
     copy(termset.begin(), termset.end(), back_inserter(terms));
-    return h->highlight(out, terms);
+    string out = h->highlight(t, terms);
+    return out;
 }
 void
 StrigiHtmlGui::printMenu(ostream& out, const string& path,
@@ -417,10 +415,6 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         icon = "<div class='iconbox'><img class='icon' src='"+icon;
         icon += "'/></div>\n";
     }
-    for (t = doc.properties.begin(); t != doc.properties.end(); ++t) {
-        if (t->second.size() < 100) {
-        printf("%s: %s", t->first.c_str(), t->second.c_str());
-    }}
     t = doc.properties.find("title");
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
@@ -439,14 +433,9 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     out << doc.score << ", mime-type: " << doc.mimetype.c_str() << ", size: ";
     out << doc.size << ", last modified: " << h->formatDate(doc.mtime);*/
     string fragment = h->escapeString(doc.fragment);
-    vector<string> fields;
-    fields.push_back("");
-    fields.push_back("content");
-    fragment = highlightTerms(fragment, query, fields);
+    fragment = highlightTerms(fragment, query);
     out << "<div class='fragment'>" << fragment << "</div>";
-    fields.clear();
     string path = h->escapeString(doc.uri);
-    path = highlightTerms(path, query, fields);
 
     out << "<div class='path'>";
     string::size_type p = path.find('/');

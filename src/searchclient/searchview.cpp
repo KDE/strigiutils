@@ -28,6 +28,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QUrl>
 #include <QtCore/QVariant>
+#include <sstream>
 
 using namespace std;
 
@@ -162,7 +163,6 @@ SearchView::~SearchView() {
 QString str(const string&s) {
     return QString::fromUtf8(s.c_str(), s.length());
 }
-#include <sstream>
 ClientInterface::Hits
 toID(const QList<StrigiHit>& hits) {
     ClientInterface::Hits id;
@@ -175,6 +175,14 @@ toID(const QList<StrigiHit>& hits) {
         i.sha1.assign(h.sha1.toUtf8());
         i.size = h.size;
         i.mtime = h.mtime;
+        QMap<QString, QStringList>::const_iterator j;
+        for (j = h.properties.begin(); j != h.properties.end(); ++j) {
+            string name = (const char*)j.key().toUtf8();
+            for (int k = 0; k < j.value().size(); ++k) {
+                 string v = (const char*)j.value()[k].toUtf8();
+                 i.properties.insert(make_pair<string,string>(name, v));
+            }
+        }
         id.hits.push_back(i);
     }
     return id;

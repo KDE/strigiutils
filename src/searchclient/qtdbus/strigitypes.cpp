@@ -1,4 +1,5 @@
 #include "strigitypes.h"
+#include <QtCore/QDebug>
 
 QDBusArgument&
 operator<<(QDBusArgument &a, const StrigiHit &hit) {
