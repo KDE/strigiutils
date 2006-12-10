@@ -261,12 +261,36 @@ MailInputStream::scanBody() {
             break;
         }
     }
-
-//    const char* bend = strchr(bstart+1, '"');
- //   string boundary(bstart+1, bend-bstart-2);
-//    printf("%s\n", contenttype.c_str());
-//    printf("%s\n", boundary.c_str());
-//    printf("%s %i\n", boundary.c_str(), n);
+}
+/**
+ * This function can decode a mail header if it contains utf8 encoded in base64.
+ **/
+string
+getDecodedHeaderValue(const char* v, int32_t len) {
+    string decoded;
+    decoded.reserve(len*2);
+    const char* s = v;
+    const char* p = v;
+    const char* e = s + len;
+    while (s < e) {
+        if (*s == '=' && e-s >= 12 && strncasecmp("?utf-8?b?", s+1, 9) == 0) {
+            const char* ec = s + 10;
+            while (ec < e && *ec != '?') ec += 4;
+            if (ec < e - 1) {
+                decoded.append(p, s-p);
+                decoded.append(Base64InputStream::decode(s+10, ec-10-s));
+                s = p = ec + 2;
+            } else {
+                s = p = e;
+            }
+        } else {
+            s++;
+        }
+    }
+    if (p < e) {
+        decoded.append(p, e-p);
+    }
+    return decoded;
 }
 void
 MailInputStream::handleHeaderLine() {
@@ -284,7 +308,7 @@ MailInputStream::handleHeaderLine() {
     } else if (strncasecmp(linestart, subject, 8) == 0) {
         int32_t offset = 8;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->subject = std::string(linestart+offset, len-offset);
+        this->subject = getDecodedHeaderValue(linestart+offset, len-offset);
         lastHeader = &this->subject;
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
