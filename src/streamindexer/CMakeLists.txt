@@ -6,13 +6,11 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat)
 
-configure_file(streamindexer.cpp.cmake ${CMAKE_BINARY_DIR}/streamindexer.cpp)
-
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
-	tarendanalyzer.cpp ${CMAKE_BINARY_DIR}/streamindexer.cpp pngendanalyzer.cpp query.cpp
+	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
-	analyzerloader.cpp
+	analyzerloader.cpp oggthroughanalyzer.cpp
 	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp indexable.cpp
 	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp)
 

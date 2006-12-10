@@ -34,6 +34,7 @@
 #include "mailendanalyzer.h"
 #include "helperendanalyzer.h"
 #include "id3v2throughanalyzer.h"
+#include "oggthroughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexable.h"
 #include "indexerconfiguration.h"
@@ -126,6 +127,7 @@ StreamIndexer::initializeThroughFactories() {
     }
     //addFactory(new DigestThroughAnalyzerFactory());
     addFactory(new ID3V2ThroughAnalyzerFactory());
+    addFactory(new OggThroughAnalyzerFactory());
 }
 void
 StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
