@@ -39,37 +39,30 @@ readSize(const char*b) {
 jstreams::InputStream*
 OggThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
     const char* buf;
-    int32_t nreq = 85;
-    int32_t nread = in->read(buf, nreq, 0);
+    // read 1024 initially
+    int32_t nreq = 1024;
+    int32_t nread = in->read(buf, nreq, nreq);
+    in->reset(0);
     if (nread < nreq || strcmp("OggS", buf) || strcmp("vorbis", buf+29)
             || strcmp("OggS", buf+58)) {
-        in->reset(0);
         return in;
     }
     unsigned char packets = (unsigned char)buf[84];
-    nreq += packets;
-    if (nread < nreq) {
-        in->reset(0);
-        nread = in->read(buf, nreq, 0);
-        if (nread < nreq) {
-            in->reset(0);
-            return in;
-        }
+    if (85 + packets >= nread) {
+        // this cannot be a good vorbis file
+        return in;
     }
+ 
     int psize = 0;
     for (int i=0; i<packets; ++i) {
         psize += (unsigned char)buf[85+i];
     }
     nreq = psize + 85 + packets;
-    if (nread < nreq) {
-        in->reset(0);
-        nread = in->read(buf, nreq, 0);
-        if (nread < nreq) {
-            in->reset(0);
-            return in;
-        }
-    }
+    nread = in->read(buf, nreq, nreq);
     in->reset(0);
+    if (nread < nreq) {
+        return in;
+    }
     // we have now read the second Ogg Vorbis header containing the comments
     const char* p2 = buf + 85 + packets;
     const char* end = p2 + psize;
