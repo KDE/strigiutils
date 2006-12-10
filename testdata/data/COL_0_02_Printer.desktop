@@ -27,7 +27,7 @@ Name[es]=Estado de todas las impresoras
 Name[ja]=すべてのプリンタの状態
 Name[nl]=Status voor alle printers
 Name[pt]=Estado de todas as impressoras
-Name[pt_BR]=Estado de todas as impressoras
+Name[pt_BR]=Estado das impressoras
 Name[sv]=Tillstånd hos alla skrivare
 [Desktop Action Print]
 Exec=kprinter %u
@@ -40,7 +40,7 @@ Name[ga]=Priontáil comhaid
 Name[ja]=ファイルを印刷
 Name[nl]=Bestanden afdrukken
 Name[pt]=Imprimir os ficheiros
-Name[pt_BR]=Imprimir os ficheiros
+Name[pt_BR]=Imprimir arquivos
 Name[sv]=Utskriftsfiler
 
 
