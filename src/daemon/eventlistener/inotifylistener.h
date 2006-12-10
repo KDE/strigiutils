@@ -50,6 +50,7 @@ class InotifyListener : public EventListener
             public:
                 explicit ReindexDirsThread (const char* name, const std::set<std::string> &newdirs, const std::set<std::string> &olddirs) : StrigiThread (name) {
                     m_pIndexReader = NULL;
+                    m_pindexerconfiguration = NULL;
                     m_newDirs = newdirs;
                     m_oldDirs = olddirs;
                     m_bfinished = false;
@@ -64,7 +65,12 @@ class InotifyListener : public EventListener
                 void setIndexReader (jstreams::IndexReader* ireader) {
                     m_pIndexReader = ireader;
                 }
-
+                
+                void setIndexerConfiguration(jstreams::IndexerConfiguration* ic)
+                {
+                    m_pindexerconfiguration = ic;
+                }
+                
                 void setIndexedDirs (const std::set<std::string>& dirs);
 
             protected:
@@ -75,7 +81,7 @@ class InotifyListener : public EventListener
                 * Used for adding files to db
                 * @sa FileLister
                 */
-                static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
+                static void indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
 
                 /*!
                 * Method called by FileLister on every dir.
@@ -85,6 +91,7 @@ class InotifyListener : public EventListener
                 static void watchDirCallback(const char* path, uint len);
 
                 jstreams::IndexReader* m_pIndexReader;
+                jstreams::IndexerConfiguration* m_pindexerconfiguration;
                 std::map<std::string, time_t> m_toIndex; //!< new files to index
                 std::set<std::string> m_toWatch; //!< new directories to watch
                 std::vector<Event*> m_events;
@@ -116,8 +123,8 @@ class InotifyListener : public EventListener
         * Used for adding files to db
         * @sa FileLister
         */
-        static bool indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
-
+        static void indexFileCallback(const char* path, uint dirlen, uint len,
+                                 time_t mtime);
         /*!
         * Method called by FileLister on every dir.
         * Used for adding watches over dirs.

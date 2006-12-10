@@ -290,7 +290,7 @@ void InotifyListener::watch ()
                     m_toIndex.clear();
                     m_toWatch.clear();
 
-                    FileLister lister();
+                    FileLister lister(*m_pindexerconfiguration);
 
                     lister.setFileCallbackFunction(&indexFileCallback);
                     lister.setDirCallbackFunction(&watchDirCallback);
@@ -348,13 +348,14 @@ InotifyListener::isEventInteresting (struct inotify_event * event)
     if (((IN_ISDIR & event->mask) == 0) && (event->len > 0) && ((event->name)[0] == '.'))
         return false;
 
-    if (m_pFilterManager != NULL)
-    {
-        if ((event->len > 0) && m_pFilterManager->findMatch(event->name, event->len))
-            return false;
-    }
-    else
-        STRIGI_LOG_WARNING ("strigi.InotifyListener.isEventInteresting", "unable to use filters, m_pFilterManager == NULL!")
+    //TODO: FIX with IndexerConfiguration
+//     if (m_pFilterManager != NULL)
+//     {
+//         if ((event->len > 0) && m_pFilterManager->findMatch(event->name, event->len))
+//             return false;
+//     }
+//     else
+//         STRIGI_LOG_WARNING ("strigi.InotifyListener.isEventInteresting", "unable to use filters, m_pFilterManager == NULL!")
 
     return true;
 }
@@ -445,7 +446,7 @@ void InotifyListener::addWatches (const set<string> &watches)
             m_pollingListener = new PollingListener();
             m_pollingListener->setEventListenerQueue( m_pEventQueue);
             m_pollingListener->setIndexReader( m_pIndexReader);
-            m_pollingListener->setFilterManager( m_pFilterManager);
+            m_pollingListener->setIndexerConfiguration(m_pindexerconfiguration);
             //TODO: start with a low priority?
             m_pollingListener->start( );
         }
@@ -598,7 +599,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     if (m_reindexDirThread == NULL)
     {
         m_reindexDirThread = new ReindexDirsThread ("reindexDirThread", fixedDirs, m_indexedDirs);
-        m_reindexDirThread->setFilterManager( m_pFilterManager);
+        m_reindexDirThread->setIndexerConfiguration(m_pindexerconfiguration);
         m_reindexDirThread->setIndexReader( m_pIndexReader);
 
         m_reindexDirThread->start();
@@ -628,7 +629,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     vector<Event*> events;
     map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
 
-    FileLister lister (m_pFilterManager);
+    FileLister lister (*m_pindexerconfiguration);
 
     m_toWatch.clear();
     m_toIndex.clear();
@@ -685,15 +686,13 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
         m_pEventQueue->addEvents (events);
 }
 
-bool InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
+void InotifyListener::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
-    if (strstr(path, "/.")) return true;
+    if (strstr(path, "/.")) return;
 
     string file (path,len);
 
     (workingInotifyListener->m_toIndex).insert (make_pair(file, mtime));
-
-    return true;
 }
 
 void InotifyListener::watchDirCallback(const char* path, uint len)
@@ -852,7 +851,7 @@ void InotifyListener::ReindexDirsThread::reindex () {
     if (!newIndexedDirs.empty())
         STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.reindex", "new indexed dirs: " + strNewIndexedDirs);
 
-    FileLister lister (m_pFilterManager);
+    FileLister lister (*m_pindexerconfiguration);
 
     m_toWatch.clear();
     m_toIndex.clear();
@@ -880,15 +879,13 @@ void InotifyListener::ReindexDirsThread::setIndexedDirs (const set<string>& dirs
     STRIGI_MUTEX_UNLOCK (&m_nextJobLock);
 }
 
-bool InotifyListener::ReindexDirsThread::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
+void InotifyListener::ReindexDirsThread::indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
-    if (strstr(path, "/.")) return true;
+    if (strstr(path, "/.")) return;
 
     string file (path,len);
 
     (workingReindex->m_toIndex).insert (make_pair(file, mtime));
-
-    return true;
 }
 
 void InotifyListener::ReindexDirsThread::watchDirCallback(const char* path, uint len)
