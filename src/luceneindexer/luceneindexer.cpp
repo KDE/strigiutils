@@ -55,7 +55,11 @@ main(int argc, char **argv) {
 
     checkIndexdirIsEmpty(argv[1]);
 
+    vector<pair<bool,string> >filters;
+    filters.push_back(make_pair<bool,string>(false,".*/"));
+    filters.push_back(make_pair<bool,string>(false,".*"));
     jstreams::IndexerConfiguration ic;
+    ic.setFilters(filters);
     Indexer indexer(argv[1], ic);
     indexer.index(argv[2]);
     return 0;

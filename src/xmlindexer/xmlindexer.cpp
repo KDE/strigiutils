@@ -43,7 +43,11 @@ main(int argc, char **argv) {
         return -1;
     }
 
+    vector<pair<bool,string> >filters;
+    filters.push_back(make_pair<bool,string>(false,".*/"));
+    filters.push_back(make_pair<bool,string>(false,".*"));
     jstreams::IndexerConfiguration ic;
+    ic.setFilters(filters);
     Indexer indexer(cout, ic);
     indexer.index(argv[argc-1]);
     return 0;
