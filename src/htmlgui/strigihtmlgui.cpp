@@ -294,21 +294,29 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         out << "</div>";
     }
 }
+set<string>
+getTerms(const Query& q) {
+    set<string> terms;
+    if (q.getOccurrence() == Query::MUST_NOT) {
+        return terms;
+    }
+    if (q.getExpression().size() > 0) {
+        terms.insert(q.getExpression());
+    }
+    list<Query>::const_iterator j;
+    for (j = q.getTerms().begin(); j != q.getTerms().end(); ++j) {
+        set<string> t = getTerms(*j);
+        copy(t.begin(), t.end(), inserter(terms, terms.begin()));
+    }
+    return terms;
+}
 string
 StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q,
         const vector<string>& fields) const {
     string out = t;
     vector<string> terms;
-    vector<string>::const_iterator i;
-    for (i = fields.begin(); i != fields.end(); ++i) {
-        list<Query>::const_iterator j;
-        for (j = q.getTerms().begin(); j != q.getTerms().end(); ++j) {
-             if (j->getOccurrence() != Query::MUST_NOT
-                     && j->getFieldName() == *i) {
-                terms.push_back(j->getExpression());
-            }
-        }
-    }
+    set<string> termset = getTerms(q);
+    copy(termset.begin(), termset.end(), back_inserter(terms));
     return h->highlight(out, terms);
 }
 void
