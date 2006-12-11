@@ -262,6 +262,38 @@ MailInputStream::scanBody() {
         }
     }
 }
+char
+decodeHex(char h) {
+    if (h >= 'A' && h <= 'F') return 10+h-'A';
+    if (h >= 'a' && h <= 'f') return 10+h-'a';
+    return h - '0';
+}
+string
+decodeQuotedPrintable(const char* v, int32_t len) {
+    string decoded;
+    decoded.reserve(len);
+    const char* pos = v;
+    const char* end = v + len;
+    char c;
+    while (v < end) {
+        if (*v == '=' && end - v > 2 && isxdigit(v[1]) && isxdigit(v[2])) {
+            decoded.append(pos, v - pos);
+            c = decodeHex(v[1])*16 + decodeHex(v[2]);
+            decoded.append(&c, 1);
+            pos = v = v + 3;
+        } else if (*v == '_') {
+            decoded.append(pos, v - pos);
+            decoded.append(" ");
+            v++;
+        } else {
+            v++;
+        }
+    }
+    if (pos < end) {
+        decoded.append(pos, end-pos);
+    }
+    return decoded;
+}
 /**
  * This function can decode a mail header if it contains utf8 encoded in base64.
  **/
@@ -273,15 +305,29 @@ getDecodedHeaderValue(const char* v, int32_t len) {
     const char* p = v;
     const char* e = s + len;
     while (s < e) {
-        if (*s == '=' && e-s >= 12 && strncasecmp("?utf-8?b?", s+1, 9) == 0) {
-            const char* ec = s + 10;
-            while (ec < e && *ec != '?') ec += 4;
-            if (ec < e - 1) {
-                decoded.append(p, s-p);
-                decoded.append(Base64InputStream::decode(s+10, ec-10-s));
-                s = p = ec + 2;
+        if (*s == '=' && e-s >= 12 && strncasecmp("?utf-8?", s+1, 7) == 0) {
+            if (strncasecmp("b?", s+8, 2) == 0) {
+                const char* ec = s + 10;
+                while (ec < e && *ec != '?') ec += 4;
+                if (ec < e - 1) {
+                    decoded.append(p, s-p);
+                    decoded.append(Base64InputStream::decode(s+10, ec-10-s));
+                    s = p = ec + 2;
+                } else {
+                    s++;
+                }
+            } else if (strncasecmp("q?", s+8, 2) == 0) {
+                const char* ec = s + 10;
+                while (ec < e && *ec != '?') ++ec;
+                if (ec < e -1) {
+                    decoded.append(p, s-p);
+                    decoded.append(decodeQuotedPrintable(s+10, ec-10-s));
+                    s = p = ec + 2;
+                } else {
+                    s++;
+                }
             } else {
-                s = p = e;
+                s++;
             }
         } else {
             s++;
