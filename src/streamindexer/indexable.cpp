@@ -27,9 +27,9 @@
 #include <string>
 using namespace jstreams;
 
-Indexable::Indexable(const std::string& path, const char* name, time_t mt,
+Indexable::Indexable(const std::string& p, const char* name, time_t mt,
         const Indexable& parent)
-            :mtime(mt), name(name), path(parent.path+'/'+name),
+            :mtime(mt), name(name), path(p),
              writer(parent.writer), depth(parent.getDepth()+1),
              indexer(parent.indexer), indexableconfig(parent.indexableconfig) {
     writer.startIndexable(this);
