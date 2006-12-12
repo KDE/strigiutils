@@ -175,10 +175,10 @@ ZipInputStream::readHeader() {
 	// if the file is compressed with method 8 we rely on the decompression
 	// stream to signal the end of the stream properly
         if (compressionMethod != 8) {
-        	status = Error;
-        	error = "This particular zip file format is not supported for "
-			"reading as a stream.";
-	        return;
+            status = Error;
+            error = "This particular zip file format is not supported for "
+                "reading as a stream.";
+            return;
         }
         entryinfo.size = -1;
         entryCompressedSize = -1;
@@ -189,14 +189,16 @@ ZipInputStream::readHeader() {
     readFileName(filenamelen);
     if (status) {
         status = Error;
-        error = "Error reading file name.";
+        error = "Error reading file name: ";
+        error += input->getError();
         return;
     }
     // read 2 bytes into the length of the extra field
     int64_t skipped = input->skip(extralen);
     if (skipped != extralen) {
         status = Error;
-        error = "Error skipping extra field.";
+        error = "Error skipping extra field: ";
+        error += input->getError();
         return;
     }
 }
@@ -214,7 +216,7 @@ ZipInputStream::readFileName(int32_t len) {
         }
         return;
     }
-    entryinfo.filename.append(begin, nread);
+    entryinfo.filename.assign(begin, nread);
 
     // temporary hack for determining if this is a directory:
     // does the filename end in '/'?
