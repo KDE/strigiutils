@@ -43,7 +43,7 @@ private:
 public:
     explicit Base64InputStream(StreamBase<char>* i);
     int32_t fillBuffer(char* start, int32_t space);
-    static std::string decode(const char*c, uint32_t length);
+    static std::string decode(const char*c, std::string::size_type length);
 };
 }
 
