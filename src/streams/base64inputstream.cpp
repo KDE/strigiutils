@@ -149,7 +149,7 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
     return nwritten;
 }
 string
-Base64InputStream::decode(const char* in, uint32_t length) {
+Base64InputStream::decode(const char* in, string::size_type length) {
     string d;
     if (length%4) return d;
     initialize();
