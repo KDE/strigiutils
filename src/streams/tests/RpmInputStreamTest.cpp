@@ -19,20 +19,20 @@
  */
 
 #include "../fileinputstream.h"
-#include "../zipinputstream.h"
+#include "../rpminputstream.h"
 #include "inputstreamtests.h"
 using namespace jstreams;
 
 int
-ZipInputStreamTest(int argc, char** argv) {
+RpmInputStreamTest(int argc, char** argv) {
     if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
     for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("a.zip");
-        ZipInputStream zip(&file);
-        streamprovidertests[i](&zip);
+        FileInputStream file("dbus-1-java-0.62-21.6.i586.rpm");
+        RpmInputStream rpm(&file);
+        streamprovidertests[i](&rpm);
     }
 
     return founderrors;

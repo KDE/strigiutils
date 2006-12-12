@@ -78,6 +78,8 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
     while (s) {
         inputStreamTest1<char>(s);
+        printf("%s %i\n", ssp->getEntryInfo().filename.c_str(),
+            ssp->getEntryInfo().size);
         s = ssp->nextEntry();
     }
     if (ssp->getStatus() == jstreams::Error) {

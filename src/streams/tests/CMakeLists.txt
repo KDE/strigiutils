@@ -4,6 +4,7 @@ CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
 	GZipInputStreamTest.cpp
 	BZ2InputStreamTest.cpp
 	TarInputStreamTest.cpp
+	RpmInputStreamTest.cpp
 	SubInputStreamTest.cpp
 	InputStreamTest.cpp
 	StringReaderTest.cpp
