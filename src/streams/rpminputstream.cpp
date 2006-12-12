@@ -214,7 +214,15 @@ RpmInputStream::readHeader() {
     if (len > 2 && b[0] == '.' && b[1] == '/') {
         b += 2;
     }
-    entryinfo.filename = std::string((const char*)b, filenamesize-1);
+    // check if the name is not shorter than specified
+    len = 0;
+    while (len < filenamesize && b[len] != '\0') len++;
+    entryinfo.filename = std::string((const char*)b, len);
+
+    // if an rpm has an entry 'TRAILER!!!' we are at the end
+    if ("TRAILER!!!" == entryinfo.filename) {
+        status = Eof;
+    }
 }
 int32_t
 RpmInputStream::readHexField(const char *b) {
