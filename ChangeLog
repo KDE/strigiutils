@@ -1,3 +1,18 @@
+0.3.11
+ - SunOS, BSD, 64 bit and Coverity compatibility fixes
+ - Search in a set of default fields and not just in the text content of a file, if no specific field is specified.
+ - Add histogram widget to simple search client
+ - Add support for Ogg Vorbis
+ - Better decoding of email headers
+ - Expand Query object to handle nested queryies
+ - Fix highlighting and display of title in search results.
+ - Fix path for the child indexables
+ - Fix memory problems in archivereader
+ - Check for too short file names and omit the RPM trailer from the results.
+ - Add an additional unit test for the RPM stream provider.
+ - Revert raise() to kill(getpid()) because raise hangs the thread.
+ - Install qtdbus library for strigi.
+
 0.3.10
  - Convienience classes for using Strigi over Qt 4.2 DBus
  - Change buildsystem to allow building of deepfind, deepgrep and xmlindexer
