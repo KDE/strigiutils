@@ -24,20 +24,28 @@ DirLister::nextEntry(jstreams::EntryInfo& e) {
 class ArchiveEntryCache {
 public:
     class SubEntry {
+    private:
+//        SubEntry(const SubEntry&);
+//        void operator=(const SubEntry&);
     public:
         jstreams::EntryInfo entry;
-		//can't define staticly constructed object while object is being defined
-        std::map<std::string, SubEntry>* entries;
+        //can't define staticly constructed object while object is being defined
+        std::map<std::string, SubEntry> entries;
         int32_t getCount() const;
-		SubEntry(){
-			entries = new std::map<std::string, SubEntry>;
-		}
+        SubEntry() {
+//            entries = new std::map<std::string, SubEntry>;
+        }
         virtual ~SubEntry() {
-			delete entries;
-		};
+//            printf("ms %i\n", entries.size());
+//            delete entries;
+        };
     };
     class RootSubEntry : public SubEntry {
+    private:
+//        RootSubEntry(const RootSubEntry&);
+//        void operator=(const RootSubEntry&);
     public:
+        RootSubEntry() :SubEntry() {}
         bool indexed;
     };
 
@@ -56,7 +64,7 @@ ArchiveEntryCache::print() const {
     for (j=cache.begin(); j!=cache.end(); ++j) {
         printf("x %s\n", j->first.c_str());
         std::map<std::string, SubEntry>::const_iterator i;
-        for (i = j->second.entries->begin(); i != j->second.entries->end(); ++i) {
+        for (i = j->second.entries.begin(); i != j->second.entries.end(); ++i) {
             printf("- %s ", i->second.entry.filename.c_str());
         }
         printf("\n");
@@ -66,7 +74,7 @@ int32_t
 ArchiveEntryCache::SubEntry::getCount() const {
     int32_t count = 1;
     map<string, SubEntry>::const_iterator i;
-    for (i = entries->begin(); i != entries->end(); ++i) {
+    for (i = entries.begin(); i != entries.end(); ++i) {
         count += i->second.getCount();
     }
     return count;
@@ -108,8 +116,8 @@ ArchiveEntryCache::findEntry(const string& url) const {
         } else {
             name = url.substr(p+1, np-p-1);
         }
-        i = e->entries->find(name);
-        if (i == e->entries->end()) {
+        i = e->entries.find(name);
+        if (i == e->entries.end()) {
             e = 0;
         } else {
             e = &i->second;
@@ -128,6 +136,7 @@ public:
     public:
         jstreams::StreamBase<char>* stream;
         jstreams::SubStreamProvider* provider;
+        StreamPtr() :stream(0), provider(0) {}
         StreamPtr(jstreams::StreamBase<char>*s) :stream(s), provider(0) {}
         StreamPtr(jstreams::SubStreamProvider*p) :stream(0), provider(p) {}
         void free();
@@ -157,26 +166,47 @@ ArchiveReader::ArchiveReaderPrivate::StreamPtr::free() {
     if (stream) delete stream;
     if (provider) delete provider;
 }
-ArchiveReader::ArchiveReader() {
-    maxsize = 1024*1024;
-    p = new ArchiveReaderPrivate();
-}
-ArchiveReader::~ArchiveReader() {
-    delete p;
-}
 void
-ArchiveReader::addStreamOpener(StreamOpener* opener) {
-    p->openers.push_back(opener);
+addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
+    // split path into components
+    vector<string> names;
+    string name = se.entry.filename;
+    string::size_type p = name.find('/');
+    while (p != string::npos) {
+        names.push_back(name.substr(0, p));
+        name = name.substr(p + 1);
+        p = name.find('/');
+    }
+    names.push_back(name);
+    se.entry.filename = name;
+
+    // find the right entry
+    map<string, ArchiveEntryCache::SubEntry>::iterator ii;
+    ArchiveEntryCache::SubEntry* parent = &e;
+    for (uint i=0; i<names.size(); ++i) {
+        ii = parent->entries.find(names[i]);
+        if (ii == parent->entries.end()) {
+            ArchiveEntryCache::SubEntry newse;
+            newse.entry.filename = names[i];
+            newse.entry.type = EntryInfo::Dir;
+            newse.entry.size = 0;
+            parent->entries[names[i]] = newse;
+            ii = parent->entries.find(names[i]);
+        }
+        parent = &ii->second;
+    }
+    *parent = se;
 }
 ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
-	typedef std::pair<bool (*)(const char*, int32_t),
+    typedef std::pair<bool (*)(const char*, int32_t),
         jstreams::SubStreamProvider* (*)(jstreams::StreamBase<char>*)> SubsPair;
 
-	subs.insert(SubsPair(MailInputStream::checkHeader,MailInputStream::factory) );
-	subs.insert(SubsPair(RpmInputStream::checkHeader,RpmInputStream::factory) );
-	subs.insert(SubsPair(ArInputStream::checkHeader,ArInputStream::factory) );
-	subs.insert(SubsPair(ZipInputStream::checkHeader,ZipInputStream::factory) );
-	subs.insert(SubsPair(TarInputStream::checkHeader,TarInputStream::factory) );
+    subs.insert(SubsPair(MailInputStream::checkHeader,MailInputStream::factory) );
+
+    subs.insert(SubsPair(RpmInputStream::checkHeader,RpmInputStream::factory) );
+    subs.insert(SubsPair(ArInputStream::checkHeader,ArInputStream::factory) );
+    subs.insert(SubsPair(ZipInputStream::checkHeader,ZipInputStream::factory) );
+    subs.insert(SubsPair(TarInputStream::checkHeader,TarInputStream::factory) );
 }
 ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
     if (openstreams.size() > 0) {
@@ -256,29 +286,6 @@ ArchiveReader::ArchiveReaderPrivate::getPositionedProvider(const string& url,
     }
     return 0;
 }
-StreamBase<char>*
-ArchiveReader::openStream(const string& url) {
-    StreamBase<char>* stream = p->open(url);
-    if (stream) return stream;
-
-    // open the substreams until have opened the complete path
-    SubStreamProvider* provider = p->getPositionedProvider(url, true);
-    if (provider) {
-        stream = provider->currentEntry();
-    }
-    printf("%p\n", stream);
-    return stream;
-}
-void
-ArchiveReader::closeStream(jstreams::StreamBase<char>* s) {
-    ArchiveReaderPrivate::openstreamsType::iterator i = p->openstreams.find(s);
-    if (i == p->openstreams.end()) {
-        delete s;
-        return;
-    }
-    p->free(i->second);
-    p->openstreams.erase(i);
-}
 void
 ArchiveReader::ArchiveReaderPrivate::free(list<StreamPtr>& l) {
     list<StreamPtr>::iterator i;
@@ -337,6 +344,86 @@ ArchiveReader::ArchiveReaderPrivate::getSubStreamProvider(
 
     return 0;
 }
+int
+ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
+       StreamBase<char>* s) {
+    int nentries = 0;
+    list<StreamPtr> streams;
+    SubStreamProvider* p = getSubStreamProvider(s, streams);
+    if (!p) return 0;
+    do {
+        ArchiveEntryCache::SubEntry se;
+        se.entry = p->getEntryInfo();
+        int nsubentries = fillEntry(se, p->currentEntry());
+        if (se.entry.size < 0) {
+            // read entire stream to determine it's size
+            StreamBase<char> *es = p->currentEntry();
+            const char* c;
+            while (es->read(c, 1, 0) > 0) {}
+            se.entry.size = es->getSize();
+            if (se.entry.size < 0) se.entry.size = 0;
+        }
+        addEntry(e, se);
+        if (nsubentries) {
+            nentries += nsubentries;
+            e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
+        }
+    } while (p->nextEntry());
+    free(streams);
+    return nentries;
+}
+ArchiveReader::ArchiveReader() {
+    maxsize = 1024*1024;
+    p = new ArchiveReaderPrivate();
+}
+ArchiveReader::~ArchiveReader() {
+    delete p;
+}
+int
+ArchiveReader::stat(const std::string& url, jstreams::EntryInfo& e) {
+    if (localStat(url, e) == 0) return 0;
+
+    // check the cache (this assumes getDirEntries was already called)
+    const ArchiveEntryCache::SubEntry *subentry = p->cache.findEntry(url);
+    if (subentry) {
+        e = subentry->entry;
+        return 0;
+    }
+    // try reading the entries from the collection to which this file belongs
+    getDirEntries(url);
+    subentry = p->cache.findEntry(url);
+    if (subentry) {
+        e = subentry->entry;
+        return 0;
+    }
+    return -1;
+}
+StreamBase<char>*
+ArchiveReader::openStream(const string& url) {
+    StreamBase<char>* stream = p->open(url);
+    if (stream) return stream;
+
+    // open the substreams until have opened the complete path
+    SubStreamProvider* provider = p->getPositionedProvider(url, true);
+    if (provider) {
+        stream = provider->currentEntry();
+    }
+    return stream;
+}
+void
+ArchiveReader::addStreamOpener(StreamOpener* opener) {
+    p->openers.push_back(opener);
+}
+void
+ArchiveReader::closeStream(jstreams::StreamBase<char>* s) {
+    ArchiveReaderPrivate::openstreamsType::iterator i = p->openstreams.find(s);
+    if (i == p->openstreams.end()) {
+        delete s;
+        return;
+    }
+    p->free(i->second);
+    p->openstreams.erase(i);
+}
 bool
 ArchiveReader::isArchive(const std::string& url) {
     EntryInfo e;
@@ -376,91 +463,13 @@ ArchiveReader::localStat(const std::string& url, jstreams::EntryInfo& e) {
                 ArchiveEntryCache::RootSubEntry rse;
                 rse.indexed = false;
                 rse.entry = e;
-				p->cache.cache[url] = rse;
+                p->cache.cache[url] = rse;
             }
             delete s;
             return 0;
         }
     }
     return -1;
-}
-int
-ArchiveReader::stat(const std::string& url, jstreams::EntryInfo& e) {
-    if (localStat(url, e) == 0) return 0;
-
-    // check the cache (this assumes getDirEntries was already called)
-    const ArchiveEntryCache::SubEntry *subentry = p->cache.findEntry(url);
-    if (subentry) {
-        e = subentry->entry;
-        return 0;
-    }
-    // try reading the entries from the collection to which this file belongs
-    getDirEntries(url);
-    subentry = p->cache.findEntry(url);
-    if (subentry) {
-        e = subentry->entry;
-        return 0;
-    }
-    return -1;
-}
-void
-addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
-    // split path into components
-    vector<string> names;
-    string name = se.entry.filename;
-    size_t p = name.find('/');
-    while (p != string::npos) {
-        names.push_back(name.substr(0, p));
-        name = name.substr(p+1);
-        p = name.find('/');
-    }
-    names.push_back(name);
-    se.entry.filename = name;
-
-    // find the right entry
-    map<string, ArchiveEntryCache::SubEntry>::iterator ii;
-    ArchiveEntryCache::SubEntry* parent = &e;
-    for (uint i=0; i<names.size(); ++i) {
-        ii = parent->entries->find(names[i]);
-        if (ii == parent->entries->end()) {
-            ArchiveEntryCache::SubEntry newse;
-            newse.entry.filename = names[i];
-            newse.entry.type = EntryInfo::Dir;
-            newse.entry.size = 0;
-            (*parent->entries)[names[i]] = newse;
-            ii = parent->entries->find(names[i]);
-        }
-        parent = &ii->second;
-    }
-    *parent = se;
-}
-int
-ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
-       StreamBase<char>* s) {
-    int nentries = 0;
-    list<StreamPtr> streams;
-    SubStreamProvider* p = getSubStreamProvider(s, streams);
-    if (!p) return 0;
-    do {
-        ArchiveEntryCache::SubEntry se;
-        se.entry = p->getEntryInfo();
-        int nsubentries = fillEntry(se, p->currentEntry());
-        if (se.entry.size < 0) {
-            // read entire stream to determine it's size
-            StreamBase<char> *es = p->currentEntry();
-            const char* c;
-            while (es->read(c, 1, 0) > 0) {}
-            se.entry.size = es->getSize();
-            if (se.entry.size < 0) se.entry.size = 0;
-        }
-        addEntry(e, se);
-        if (nsubentries) {
-            nentries += nsubentries;
-            e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
-        }
-    } while (p->nextEntry());
-    free(streams);
-    return nentries;
 }
 DirLister
 ArchiveReader::getDirEntries(const std::string& url) {
@@ -503,7 +512,7 @@ ArchiveReader::getDirEntries(const std::string& url) {
 
     if (subentry) {
         map<string, ArchiveEntryCache::SubEntry>::const_iterator i;
-        for (i = subentry->entries->begin(); i != subentry->entries->end(); ++i) {
+        for (i = subentry->entries.begin(); i != subentry->entries.end(); ++i) {
             v.push_back(i->second.entry);
         }
     }

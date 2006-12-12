@@ -8,9 +8,10 @@
 #include "substreamprovider.h"
 
 namespace jstreams {
-    template <class T> class StreamBase;
-    class SubStreamProvider;
-    struct EntryInfo;
+
+template <class T> class StreamBase;
+class SubStreamProvider;
+struct EntryInfo;
 
 class DirLister {
 private:
