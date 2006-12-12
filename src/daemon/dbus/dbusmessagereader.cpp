@@ -73,7 +73,7 @@ DBusMessageReader::operator>>(int64_t& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(std::string& s) {
+DBusMessageReader::operator>>(string& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&it)) {
         close();
@@ -130,7 +130,7 @@ DBusMessageReader::operator>>(vector<string>& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(std::vector<char>& s) {
+DBusMessageReader::operator>>(vector<char>& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
         || DBUS_TYPE_BYTE != dbus_message_iter_get_element_type(&it)) {
@@ -149,7 +149,7 @@ DBusMessageReader::operator>>(std::vector<char>& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
+DBusMessageReader::operator>>(multimap<int, string>& m) {
     if (!isOk()) return *this;
     DBusMessageIter sub;
     DBusMessageIter ssub;
@@ -170,7 +170,7 @@ DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
                 return *this;
             }
             dbus_message_iter_get_basic(&ssub, &value);
-            m.insert(make_pair(n,value));
+            m.insert(make_pair<int,string>(n,value));
             if (!dbus_message_iter_has_next(&sub)) {
                 break;
             }
@@ -181,7 +181,7 @@ DBusMessageReader::operator>>(std::multimap<int, std::string>& m) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(std::vector<std::pair<bool, std::string> >& m) {
+DBusMessageReader::operator>>(vector<pair<bool, string> >& m) {
     if (!isOk()) return *this;
     DBusMessageIter sub;
     DBusMessageIter ssub;
@@ -202,7 +202,7 @@ DBusMessageReader::operator>>(std::vector<std::pair<bool, std::string> >& m) {
                 return *this;
             }
             dbus_message_iter_get_basic(&ssub, &value);
-            m.push_back(make_pair(n,value));
+            m.push_back(make_pair<bool,string>(n,value));
             if (!dbus_message_iter_has_next(&sub)) {
                 break;
             }

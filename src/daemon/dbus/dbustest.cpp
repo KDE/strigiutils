@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/select.h>
 #include "strigi_thread.h"
 

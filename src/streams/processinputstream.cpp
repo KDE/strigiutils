@@ -40,7 +40,8 @@ ProcessInputStream::ProcessInputStream(const vector<string>& a,
     // create an arguments structure
     char** ar = new char*[a.size()+1];
     for (uint i = 0; i < a.size(); ++i) {
-        ar[i] = strndup(a[i].c_str(), a[i].length());
+        ar[i] = (char*)malloc(a[i].length()+1);
+        memcpy(ar[i], a[i].c_str(), a[i].length()+1);
     }
     ar[a.size()] = 0;
     args = ar;

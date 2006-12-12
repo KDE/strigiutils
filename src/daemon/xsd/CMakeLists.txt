@@ -2,7 +2,7 @@
 # create a library with the shared code for parsing xml files
 include_directories(xsdparser ${EXPAT_INCLUDE_DIR})
 add_library(xmlstream xsdparser/xmlstream.cpp)
-target_link_libraries(xmlstream expat)
+target_link_libraries(xmlstream ${EXPAT_LIBRARY})
 
 # java is required to compile the xsd parser
 find_package(Java REQUIRED)

@@ -34,6 +34,7 @@
 #include <vector>
 #include <sys/types.h>
 #include <signal.h>
+#include <unistd.h>
 using namespace std;
 using namespace jstreams;
 

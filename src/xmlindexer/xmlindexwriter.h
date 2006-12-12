@@ -200,7 +200,8 @@ protected:
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value) {
         Data* d = static_cast<Data*>(idx->getWriterData());
-        d->values.insert(make_pair(fieldname, value));
+        d->values.insert(
+            std::make_pair<std::string,std::string>(fieldname, value));
     }
 public:
     XmlIndexWriter(std::ostream& o) :out(o) {

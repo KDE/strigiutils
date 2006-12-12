@@ -435,7 +435,7 @@ makeTimeHistogram(const vector<int>& v) {
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
         str << j->first + 19000100;
-        h.push_back(make_pair(str.str(), j->second));
+        h.push_back(make_pair<string,uint32_t>(str.str(), j->second));
         str.str("");
     }
     return h;
@@ -452,7 +452,7 @@ makeHistogram(const vector<int>& v, int min, int max) {
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
         str << j->first;
-        h.push_back(make_pair(str.str(), j->second));
+        h.push_back(make_pair<string,uint32_t>(str.str(), j->second));
         str.str("");
     }
     return h;

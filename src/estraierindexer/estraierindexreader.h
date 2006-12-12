@@ -48,6 +48,11 @@ public:
     std::vector<std::pair<std::string,uint32_t> > getHistogram(
             const std::string& query, const std::string& fieldname,
             const std::string& labeltype);
+    int32_t countKeywords(const std::string& keywordprefix,
+        const std::vector<std::string>& fieldnames);
+    std::vector<std::string> getKeywords(const std::string& keywordmatch,
+        const std::vector<std::string>& fieldnames,
+        uint32_t max, uint32_t offset);
 };
 
 #endif

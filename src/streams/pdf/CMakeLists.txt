@@ -1,5 +1,5 @@
 
-include_directories(..)
+include_directories(.. ${MAGIC_INCLUDE_DIR})
 
 add_library(pdfstream pdfparser.cpp pdfinputstream.cpp)
 

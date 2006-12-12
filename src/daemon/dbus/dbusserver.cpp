@@ -23,6 +23,7 @@
 #include "dbusclientinterface.h"
 #include "testinterface.h"
 #include "dbustestinterface.h"
+#include <unistd.h>
 using namespace std;
 
 void*
