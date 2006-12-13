@@ -23,7 +23,7 @@ ENDIF (ESTCONFIG)
 # print status message
 IF(HyperEstraier_FOUND)
   IF(NOT HyperEstraier_FIND_QUIETLY)
-    MESSAGE(STATUS "Found HyperEstraier: ${CLUCENE_LIBRARY}")
+    MESSAGE(STATUS "Found HyperEstraier: ${ESTCONFIG}")
   ENDIF(NOT HyperEstraier_FIND_QUIETLY)
 ELSE(HyperEstraier_FOUND)
   IF(HyperEstraier_FIND_REQUIRED)

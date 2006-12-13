@@ -7,12 +7,12 @@ include_directories( ${ZLIB_INCLUDE_DIR} ${BZIP2_INCLUDE_DIR}
 
 set(streams_SRCS bz2inputstream.cpp
 	digestinputstream.cpp fileinputstream.cpp gzipinputstream.cpp
-	gzipcompressstream.cpp inputstreamreader.cpp filereader.cpp kmpsearcher.cpp
+	gzipcompressstream.cpp inputstreamreader.cpp filereader.cpp
 	subinputstream.cpp mailinputstream.cpp stringterminatedsubstream.cpp
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp
 	dostime.cpp substreamproviderprovider.cpp arinputstream.cpp
 	rpminputstream.cpp archivereader.cpp processinputstream.cpp
-	textutils.cpp)
+	textutils.cpp kmpsearcher.cpp)
 
 #add the compatibility files
 set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
