@@ -43,6 +43,8 @@ class FileLister {
 private:
     char* path;
     uint length;
+    uid_t uid;
+    gid_t gid;
     time_t m_oldestdate;
     void (*m_fileCallback)(const char* fullpath, uint dirlen, uint len,
         time_t mtime);

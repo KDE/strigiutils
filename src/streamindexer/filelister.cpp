@@ -38,19 +38,19 @@ using namespace jstreams;
 
 string fixPath (string path)
 {
-	if ( path.c_str() == NULL || path.length() == 0 )
-		return "";
+    if ( path.c_str() == NULL || path.length() == 0 )
+        return "";
 
     string temp(path);
 
 #ifdef HAVE_WINDOWS_H
-	size_t l= temp.length();
-	char* t = (char*)temp.c_str();
-	for (size_t i=0;i<l;i++){
-		if ( t[i] == '\\' )
-			t[i] = '/';
-	}
-	temp[0] = tolower(temp.at(0));
+    size_t l= temp.length();
+    char* t = (char*)temp.c_str();
+    for (size_t i=0;i<l;i++){
+        if ( t[i] == '\\' )
+            t[i] = '/';
+    }
+    temp[0] = tolower(temp.at(0));
 #endif
 
     char separator = '/';
@@ -66,6 +66,8 @@ FileLister::FileLister(IndexerConfiguration& ic) :m_config(ic) {
     m_dirCallback = 0;
     path = 0;
     length = 0;
+    uid = geteuid();
+    gid = getegid();
 }
 FileLister::~FileLister() {
     if (length) {
@@ -154,7 +156,9 @@ FileLister::walk_directory(uint len) {
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
-        if (lstat(path, &dirstat) == 0) {
+        if (lstat(path, &dirstat) == 0 && (S_IROTH & dirstat.st_mode
+                || (uid == dirstat.st_uid && S_IRUSR & dirstat.st_mode)
+                || (gid == dirstat.st_uid && S_IRGRP & dirstat.st_mode))) {
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
                 if (m_config.indexFile(path, path+len)) {
                     m_fileCallback(path, len, l, dirstat.st_mtime);

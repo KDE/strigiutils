@@ -5,7 +5,7 @@ ADD_EXECUTABLE(streamindexertest ${Tests})
 target_link_libraries(streamindexertest streamindexer)
 
 SET (TestsToRun ${Tests})
-REMOVE (TestsToRun testrunner.cpp)
+REMOVE (TestsToRun streamindexertests.cpp)
 
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
