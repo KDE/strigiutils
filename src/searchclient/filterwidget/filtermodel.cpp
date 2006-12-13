@@ -4,8 +4,16 @@ using namespace std;
 
 void
 FilterModel::addFilter(const QModelIndex& index, bool state) {
-    int r = (index.isValid()) ?index.row() :filters.size();
-    beginInsertRows(QModelIndex(), r-1, r);
+    
+    int r = 1;
+
+    if ( index.isValid() ) {
+        r = index.row();
+    } else if ( filters.size() > 0 ) {
+        r = filters.size();
+    }
+
+    beginInsertRows(QModelIndex(),r-1, r);
     filters.insert(filters.begin()+r, qMakePair(state,
         tr("<double-click to edit>")));
     endInsertRows();
