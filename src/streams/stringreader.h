@@ -94,6 +94,7 @@ StringReader<T>::read(const T*& start, int32_t min, int32_t max) {
 template <class T>
 int64_t
 StringReader<T>::skip(int64_t ntoskip) {
+    if (ntoskip == 0) return 0;
     const T* start;
     return read(start, ntoskip, ntoskip);
 }
