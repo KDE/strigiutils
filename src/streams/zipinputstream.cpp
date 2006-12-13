@@ -197,6 +197,7 @@ ZipInputStream::readHeader() {
     int64_t skipped = input->skip(extralen);
     if (skipped != extralen) {
         status = Error;
+//	printf("skipped %li extralen %li position: %li size: %li\n", skipped, extralen, input->getPosition(), input->getSize());
         error = "Error skipping extra field: ";
         error += input->getError();
         return;

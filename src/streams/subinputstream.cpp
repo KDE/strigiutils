@@ -78,7 +78,7 @@ SubInputStream::reset(int64_t newpos) {
 //        newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
-        fprintf(stderr, "########### position %lli newpos %lli\n", position, newpos);
+        fprintf(stderr, "########### position %li newpos %li\n", position, newpos);
         status = Error;
         error = input->getError();
     } else {
@@ -94,6 +94,7 @@ SubInputStream::skip(int64_t ntoskip) {
         status = Eof;
         return -1;
     }
+    if (ntoskip == 0) return 0;
     if (size != -1) {
         const int64_t left = size - position;
         // restrict the amount of data that can be skipped

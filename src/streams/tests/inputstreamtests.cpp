@@ -28,6 +28,7 @@ template <class T>
 void
 inputStreamTest1(StreamBase<T>* s) {
     int64_t size = s->getSize();
+    VERIFY(s->skip(0) == 0);
     VERIFY(size >= -1);
     const T* ptr = 0;
     int32_t n;
