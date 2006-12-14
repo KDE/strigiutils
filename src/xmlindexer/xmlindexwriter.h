@@ -184,7 +184,8 @@ protected:
             out << "  <value name='" << i->first << "'>" << i->second
                 << "</value>\n";
         }
-        if (d->text.size()) {
+        out << "  <value name='depth'>" << (int)idx->getDepth() << "</value>\n";
+        if (d->text.size() > 0) {
             out << "  <text>";
             printText(d->text);
             out << "</text>\n";
