@@ -77,7 +77,7 @@ FileLister::~FileLister() {
 void
 FileLister::listFiles(const char *dir, time_t oldestdate) {
     if (m_fileCallback == 0) return;
-    printf("listFiles %s\n", dir);
+    fprintf(stderr, "listFiles %s\n", dir);
     m_oldestdate = oldestdate;
     int len = strlen(dir);
     resize(len+2);
