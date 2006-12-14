@@ -59,6 +59,16 @@ TarInputStream::checkHeader(const char* h, const int32_t hsize) {
         // header is too small to check
         return false;
     }
+    // the file starts with a filename of at most 100 characters. The filename
+    // is ended by a \0, after this \0 only \0 is allowed
+    int p = 0;
+    while (p < 100 && h[p] != '\0') ++p;
+    while (p < 100) {
+        if (h[p++] != '\0') {
+            return false;
+        }
+    }
+
     // check for field values that should be '\0' for the header to be a
     // tar header. Two positions are also accepted if they are ' ' because they
     return !(h[107] || h[115] || h[123] || (h[135]&&h[135]!=' ')
