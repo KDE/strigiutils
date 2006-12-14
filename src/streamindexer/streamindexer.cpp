@@ -231,8 +231,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
                         "%lli to 0 after reading with %s: %s\n",
                         idx.getPath().c_str(), input->getPosition(),
                         sea->getName(), sea->getError().c_str());
-                    removeIndexable(idx.getDepth());
-                    return -2;
+                    finished = true;
                 }
             } else {
                 finished = true;
