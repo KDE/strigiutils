@@ -27,241 +27,6 @@
 using namespace jstreams;
 using namespace std;
 
-bool
-checkHeaderKey(const char* data, int32_t left) {
-    if (left >= 9 && strncasecmp("Received:", data, 9) == 0) {
-        return true;
-    }
-    if (left >= 5 && strncasecmp("From:", data, 5) == 0) {
-        return true;
-    }
-    return false;
-}
-
-/**
- * Validate a mail header. The header format is checked, but not the presence
- * of required fields. It is recommended to use a datasize of at least 512
- * bytes.
- **/
-bool
-MailInputStream::checkHeader(const char* data, int32_t datasize) {
-    // the fileheader should contain a required header and have at least 5
-    // header lines
-    // 'Received' or 'From' (case insensitive)
-    int linecount = 1;
-    bool key = true;
-    bool slashr = false;
-    int32_t pos = 0;
-    bool reqheader = checkHeaderKey(data, datasize);
-    char prevc = 0;
-    while (pos < datasize) {
-        unsigned char c = data[pos++];
-        if (slashr) {
-            slashr = false;
-            if (c == '\n') {
-                if (!reqheader) {
-                    reqheader = checkHeaderKey(data+pos, datasize-pos);
-                }
-                continue;
-            }
-        }
-        if (key) {
-            if (c == ':' || (isblank(c) && isspace(prevc))) {
-                // ':' signals the end of the key, a line starting with space
-                // is a continuation of the previous line's value
-                key = false;
-            } else if ((c == '\n' || c == '\r') && reqheader && linecount >= 5
-                    && (prevc == '\n' || prevc == '\r')) {
-                // if at least 5 header lines were read and an empty line is
-                // encountered, the mail header is valid
-                return true;
-            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)
-			    && c != '#') {
-                // an invalid character in the key
-                return false;
-            }
-        } else {
-            // check that the text is 7-bit
-            if (c == '\n' || c == '\r') {
-                // a new line starts, so a new key
-                key = true;
-                linecount++;
-                // enable reading of \r\n line endings
-                if (c == '\r') {
-                    slashr = true;
-                } else if (!reqheader) {
-                    reqheader = checkHeaderKey(data+pos, datasize-pos);
-                }
-            }
-        }
-        prevc = c;
-    }
-    return reqheader && linecount >= 5;
-}
-MailInputStream::MailInputStream(StreamBase<char>* input)
-        : SubStreamProvider(input), substream(0) {
-//    printf("%p\n", input);
-    entrynumber = 0;
-    linenum = 0;
-    skipHeader();
-    if (bufstart == 0) {
-        fprintf(stderr, "no valid header\n");
-        return;
-    }
-
-    // get the boundary
-    boundary = getValue("boundary", contenttype);
-}
-MailInputStream::~MailInputStream() {
-    if (substream && substream != entrystream) {
-        delete substream;
-    }
-}
-void
-MailInputStream::readLine() {
-    if (bufstart == 0) return;
-    linenum++;
-    linestart = lineend;
-    bool backslashr = false;
-    if (eol) {
-        linestart++; // skip \r or \n
-        backslashr = *lineend == '\r';
-        //printf("%p %p %p %p\n", linestart, lineend, bufstart, bufend);
-//        if (backslashr && linestart != bufend) printf("%i\n", *linestart);
-        if (backslashr && linestart != bufend && *linestart == '\n') {
-            // skip \n of \r\n
-            linestart++;
-        }
-        lineend = linestart;
-    }
-    while (lineend != bufend && *lineend != '\n' && *lineend != '\r') {
-        lineend++;
-    }
-    eol = true;
-    if (lineend == bufend) {
-        rewindToLineStart();
-        fillBuffer();
-        if (bufstart == 0) {
-            // the input has been exhausted
-            return;
-        }
-        if (backslashr && *linestart == '\n') {
-            // we have to skip a \n because of a \r\n lineend across the read
-            // boundary
-            linestart++;
-            if (linestart == bufend) {
-                rewindToLineStart();
-                fillBuffer();
-                if (bufstart == 0) {
-                    // the input has been exhausted
-                    return;
-                }
-            }
-        }
-        lineend = linestart;
-        while (lineend != bufend && *lineend != '\n' && *lineend != '\r') {
-            lineend++;
-        }
-        if (lineend == bufend) {
-            string str(linestart, 10);
-            fprintf(stderr, "line %i is too long '%s' %i %i\n", linenum,
-                str.c_str(), lineend-linestart, maxlinesize);
-            eol = false;
-        }
-    }
-//    printf("%.*s\n", lineend-linestart, linestart);
-}
-string
-MailInputStream::getValue(const char* n, const string& headerline) const {
-    string name = n;
-    name += '=';
-    string value;
-    // get the value
-    const char* hl = headerline.c_str();
-    const char* v = strcasestr(hl, name.c_str());
-    if (v == 0) {
-        // so far we just scan for a value attribute
-        return value;
-    }
-    v += name.length();
-    const char* vend = strchr(v, ';');
-    if (vend == 0) {
-        vend = hl + headerline.length();
-    }
-    if (*v == '"') {
-        value = string(v+1, vend-v-2);
-    } else {
-        value = string(v, vend-v);
-    }
-    return value;
-}
-/**
- * Position the stream to the start of the active line. So in the next
- * call to this function, this line is read again.
- **/
-void
-MailInputStream::rewindToLineStart() {
-/*    int d = bufend-linestart;
-    printf("bsp: %lli position: %lli diff: %i newpos: %lli\n", bufstartpos, bufendpos, d,
-        bufendpos-d);
-    printf("'%.*s'\n", (d>10)?10:d, linestart);*/
-
-    input->reset(bufendpos-(bufend-linestart));
-    //int64_t rp = bufstartpos + (linestart-bufstart);
-    //int64_t np = input->reset(bufstartpos + (linestart-bufstart));
-    //printf("rewind %lli %lli\n", rp, np);
-}
-void
-MailInputStream::fillBuffer() {
-    bufstartpos = input->getPosition();
-    int32_t nread = input->read(bufstart, maxlinesize, 0);
-    if (nread > 0) {
-//        printf("buf: '%.*s'\n", 10, bufstart);
-        bufend = bufstart + nread;
-        bufendpos = input->getPosition();
-        linestart = bufstart;
-    } else {
-        bufstart = 0;
-    }
-}
-void
-MailInputStream::skipHeader() {
-    maxlinesize = 100;
-
-    fillBuffer();
-    lineend = bufstart;
-
-    if (bufstart == 0) {
-        // error: file too short
-        return;
-    }
-    lastHeader = 0;
-    eol = false;
-    readLine();
-    while (bufstart) {
-        readLine();
-	//printf("%i: %.*s\n", lineend-linestart, lineend-linestart, linestart);
-        if (linestart == lineend) {
-	    //printf("ok %lli\n", input->getPosition());
-            break;
-        }
-        handleHeaderLine();
-    }
-    readLine();
-    rewindToLineStart();
-}
-void
-MailInputStream::scanBody() {
-    while (bufstart) {
-        readLine();
-        if (boundary.length()+2 == size_t(lineend-linestart)
-                && strncmp(boundary.c_str(), linestart+2, boundary.length())
-                 == 0) {
-            handleBodyLine();
-            break;
-        }
-    }
-}
 char
 decodeHex(char h) {
     if (h >= 'A' && h <= 'F') return 10+h-'A';
@@ -338,6 +103,237 @@ getDecodedHeaderValue(const char* v, int32_t len) {
     }
     return decoded;
 }
+bool
+checkHeaderKey(const char* data, int32_t left) {
+    if (left >= 9 && strncasecmp("Received:", data, 9) == 0) {
+        return true;
+    }
+    if (left >= 5 && strncasecmp("From:", data, 5) == 0) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Validate a mail header. The header format is checked, but not the presence
+ * of required fields. It is recommended to use a datasize of at least 512
+ * bytes.
+ **/
+bool
+MailInputStream::checkHeader(const char* data, int32_t datasize) {
+    // the fileheader should contain a required header and have at least 5
+    // header lines
+    // 'Received' or 'From' (case insensitive)
+    int linecount = 1;
+    bool key = true;
+    bool slashr = false;
+    int32_t pos = 0;
+    bool reqheader = checkHeaderKey(data, datasize);
+    char prevc = 0;
+    while (pos < datasize) {
+        unsigned char c = data[pos++];
+        if (slashr) {
+            slashr = false;
+            if (c == '\n') {
+                if (!reqheader) {
+                    reqheader = checkHeaderKey(data+pos, datasize-pos);
+                }
+                continue;
+            }
+        }
+        if (key) {
+            if (c == ':' || (isblank(c) && isspace(prevc))) {
+                // ':' signals the end of the key, a line starting with space
+                // is a continuation of the previous line's value
+                key = false;
+            } else if ((c == '\n' || c == '\r') && reqheader && linecount >= 5
+                    && (prevc == '\n' || prevc == '\r')) {
+                // if at least 5 header lines were read and an empty line is
+                // encountered, the mail header is valid
+                return true;
+            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)
+			    && c != '#') {
+                // an invalid character in the key
+                return false;
+            }
+        } else {
+            // check that the text is 7-bit
+            if (c == '\n' || c == '\r') {
+                // a new line starts, so a new key
+                key = true;
+                linecount++;
+                // enable reading of \r\n line endings
+                if (c == '\r') {
+                    slashr = true;
+                } else if (!reqheader) {
+                    reqheader = checkHeaderKey(data+pos, datasize-pos);
+                }
+            }
+        }
+        prevc = c;
+    }
+    return reqheader && linecount >= 5;
+}
+MailInputStream::MailInputStream(StreamBase<char>* input)
+        : SubStreamProvider(input), substream(0) {
+    entrynumber = 0;
+    linenum = 0;
+    nextLineStartPosition = 0;
+    // parse the header and store the imporant header fields
+    readHeader();
+    if (status != Ok) {
+        fprintf(stderr, "no valid header\n");
+        return;
+    }
+}
+MailInputStream::~MailInputStream() {
+    if (substream && substream != entrystream) {
+        delete substream;
+    }
+}
+/**
+ * This function read the input until the end of a header line.
+ * A header line can span multiple normal lines. All normal lines after the
+ * first normal line start with a whitespace.
+ * This means a header line is ended by on of these patterns (where \S is
+ *  a non-whitespace character).
+ *   '\r\S', '\n\S', '\r\n\S', '\r\r', '\n\n', '\r\n\r'
+ **/
+void
+MailInputStream::readHeaderLine() {
+    // state: 0 -> ok, 1 -> '\r', 2 -> '\n', 3 -> '\r\n'
+    char state = 0;
+    int32_t nread;
+    int32_t linepos = 0;
+    bool completeLine = false;
+    char c = 0;
+
+    input->reset(nextLineStartPosition);
+    do {
+        nread = input->read(linestart, linepos+1, maxlinesize);
+        if (nread < linepos+1) {
+            completeLine = true;
+            lineend = linestart + nread;
+            status = Eof;
+            return;
+        }
+        input->reset(nextLineStartPosition);
+        if (input->getStatus() == Error) {
+            status = Error;
+            error = input->getError();
+            return;
+        } else if (linepos >= maxlinesize) {
+            // error line is too long
+            status = Error;
+            ostringstream str;
+            str << linenum;
+            error = "line "+str.str()+" is too long";
+            return;
+        } else {
+            while (linepos < nread) {
+                c = linestart[linepos];
+                if (state == 0) {
+                    if (c == '\r') {
+                        state = 1;
+                    } else if (c == '\n') {
+                        state = 2;
+                    }
+                } else if (state == 1) { // '\r'
+                    if (c == '\n') {
+                        state = 3;
+                    } else if (c == '\r' || !isspace(c)) { // end
+                        completeLine = true;
+                        lineend = linestart + linepos - 1;
+                        break;
+                    } else {
+                        state = 0;
+                    }
+                } else if (state == 2) { // '\n'
+                    if (c == '\n' || !isspace(c)) { // end
+                        completeLine = true;
+                        lineend = linestart + linepos - 1;
+                        break;
+                    } else {
+                        state = 0;
+                    }
+                } else { // state == 3   '\r\n'
+                    if (c == '\r' || !isspace(c)) { // end
+                        completeLine = true;
+                        lineend = linestart + linepos - 2;
+                        break;
+                    } else {
+                        state = 0;
+                    }
+                }
+                linepos++;
+            }
+        }
+    } while (!completeLine);
+    nextLineStartPosition += linepos;
+}
+string
+MailInputStream::getValue(const char* n, const string& headerline) const {
+    size_t nl = strlen(n);
+    string value;
+    // get the value
+    const char* hl = headerline.c_str();
+    const char* v = strcasestr(hl, n);
+    if (v == 0) {
+        // so far we just scan for a value attribute
+        return value;
+    }
+    v += nl;
+    v += strspn(v, "= \n\r");
+    const char* vend = strchr(v, ';');
+    if (vend == 0) {
+        vend = hl + headerline.length();
+    }
+    if (*v == '"') {
+        value = string(v+1, vend-v-2);
+    } else {
+        value = string(v, vend-v);
+    }
+    return value;
+}
+void
+MailInputStream::readHeader() {
+    maxlinesize = 1000;
+
+    readHeaderLine();
+    while (status == Ok && linestart != lineend) {
+        handleHeaderLine();
+        readHeaderLine();
+    }
+}
+/**
+ * Read lines from the email until a line contains the boundary.
+ * If a boundary is encountered, the block header is parsed.
+ **/
+void
+MailInputStream::scanBody() {
+    while (status == Ok) {
+        readHeaderLine();
+        string::size_type len = lineend - linestart;
+        if (len > 2 && strncmp("--", linestart, 2) == 0) {
+            string::size_type blen = boundary.top().length();
+            if (len == blen + 4 && strncmp(linestart + 2 + blen, "--", 2) == 0
+                    && strncmp(linestart + 2, boundary.top().c_str(), blen)
+                        == 0) { 
+                // check if this is the end of a multipart
+                boundary.pop();
+                if (boundary.size() == 0) {
+                    status = Eof;
+                }
+            } else if (len == blen + 2
+                    && strncmp(linestart + 2, boundary.top().c_str(), blen)
+                        == 0) {
+                if (handleBodyLine()) {
+                    break;
+                }
+            }
+        }
+    }
+}
 void
 MailInputStream::handleHeaderLine() {
     static const char* subject = "Subject:";
@@ -346,34 +342,30 @@ MailInputStream::handleHeaderLine() {
     static const char* contentdisposition = "Content-Disposition:";
     int32_t len = lineend - linestart;
     if (len < 2) return;
-    if (lastHeader && isspace(*linestart)) {
-        *lastHeader += string(linestart, len);
-    } else if (len < 8) {
-        lastHeader = 0;
+    if (len < 8) {
         return;
     } else if (strncasecmp(linestart, subject, 8) == 0) {
         int32_t offset = 8;
         while (offset < len && isspace(linestart[offset])) offset++;
         this->subject = getDecodedHeaderValue(linestart+offset, len-offset);
-        lastHeader = &this->subject;
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
         while (offset < len && isspace(linestart[offset])) offset++;
         this->contenttype = std::string(linestart+offset, len-offset);
-        lastHeader = &this->contenttype;
+        // get the boundary
+        string b = getValue("boundary", this->contenttype);
+        if (b.size()) {
+            boundary.push(b);
+        }
     } else if (strncasecmp(linestart, contenttransferencoding, 26) == 0) {
         this->contenttransferencoding = std::string(linestart, len);
-        lastHeader = &this->contenttransferencoding;
     } else if (strncasecmp(linestart, contentdisposition, 20) == 0) {
         this->contentdisposition = std::string(linestart, len);
-        lastHeader = &this->contentdisposition;
-    } else {
-        lastHeader = 0;
     }
 }
 bool
 MailInputStream::checkHeaderLine() const {
-    bool validheader = bufstart && linestart != lineend;
+    bool validheader = linestart != lineend;
     if (validheader) {
         const char* colpos = linestart;
         while (*colpos != ':' && ++colpos != lineend) {}
@@ -381,26 +373,31 @@ MailInputStream::checkHeaderLine() const {
     }
     return validheader;
 }
-// return true if we are at the start of a base64 encoded block
-void
+/**
+ * Handle the body part header.
+ **/
+bool
 MailInputStream::handleBodyLine() {
     clearHeaders();
-    //printf("handleBodyLine %p %s\n", linestart, boundary.c_str());
+
     // start of new block
-    // skip header
+    // read part header
     bool validheader;
+    size_t n = boundary.size();
     do {
-        readLine();
+        readHeaderLine();
         validheader = checkHeaderLine();
         if (validheader) {
             handleHeaderLine();
         }
-    } while (validheader);
-    // set the stream to the start of the content
-    readLine();
-    if (bufstart == 0) return;
-    rewindToLineStart();
-    //printf("b %p %p %.*s\n", bufstart, linestart, lineend-linestart, linestart);
+    } while (status == Ok && validheader);
+    if (boundary.size() > n) {
+        return false;
+    }
+    readHeaderLine();
+    if (status != Ok) {
+        return false;
+    }
 
     // get the filename
     entryinfo.filename = getValue("filename", contentdisposition);
@@ -409,16 +406,20 @@ MailInputStream::handleBodyLine() {
     }
 
     // create a stream that's limited to the content
-    substream = new StringTerminatedSubStream(input, "--"+boundary);
+    substream = new StringTerminatedSubStream(input, "--"+boundary.top());
     // set a reasonable buffer size
-    //substream->mark(10*boundary.length());
-    //printf("%s\n", contenttransferencoding.c_str());
     if (strcasestr(contenttransferencoding.c_str(), "base64")) {
         entrystream = new Base64InputStream(substream);
     } else {
         entrystream = substream;
     }
+    return true;
 }
+/**
+ * Not all parts of multipart emails have a name. This function keeps a running
+ * number to make sure all parts have a name so that they can be referenced
+ * later.
+ **/
 void
 MailInputStream::ensureFileName() {
     entrynumber++;
@@ -434,11 +435,11 @@ MailInputStream::nextEntry() {
     if (status != Ok) return 0;
     // if the mail does not consist of multiple parts, we give a pointer to
     // the input stream
-    if (boundary.length() == 0) {
+    if (boundary.size() == 0) {
         // signal eof because we only return eof once
         status = Eof;
         entrystream = new SubInputStream(input);
-        ensureFileName();
+        entryinfo.filename = "body";
         return entrystream;
     }
     // read anything that's left over in the previous stream
@@ -450,35 +451,8 @@ MailInputStream::nextEntry() {
         if (substream->getStatus() == Error) {
             status = Error;
         } else {
-            if (substream->getSize()<0) {
-		fprintf(stderr, "%s %i\n", boundary.c_str(),
-                    substream->getStatus());
-                fprintf(stderr, "NONDEJU size should be determined %lli\n",
-                    substream->getSize());
-                status = Eof;
-        // make sure valgrind is called
-/*                substream = 0;
-                substream->getSize();
-                exit(0);*/
-            }
-            int64_t end = substream->getOffset()+substream->getSize()
-                + boundary.length()+2;
-            //printf("weird: %lli %lli\n",substream->getOffset(),substream->getSize());
-            // skip to pass the boundary
-            int64_t np = input->reset(end);
-            if (np != end) {
-                status = Error;
-                fprintf(stderr, "error: could not reset position\n");
-            } else {
-                int32_t nr = input->read(dummy, 1, 0);
-                //printf("ohoh: %lli %lli '%.*s'\n",end,np, (nr>10)?10:nr,dummy);
-                if (nr < 1 || *dummy == '-') {
-                    // the end of the mail
-                    status = Eof;
-                }
-                input->reset(end);
-                input->read(dummy, 2, 2);
-            }
+            nextLineStartPosition = substream->getOffset()
+                + substream->getSize();
         }
         if (substream && substream != entrystream) {
             delete substream;
@@ -490,13 +464,9 @@ MailInputStream::nextEntry() {
         if (status != Ok) {
             return 0;
         }
-        // force the stream to refresh the buffer
-        fillBuffer();
-        lineend = bufstart;
-        handleBodyLine();
-    } else {
-        scanBody();
     }
+    scanBody();
+
     if (entrystream == 0) {
         status = Eof;
     }

@@ -21,9 +21,9 @@
 #define MAILINPUTSTREAM_H
 
 #include "substreamprovider.h"
-
+#include <stack>
 /**
- * This is a proof of concept implementation for handling email streams as
+ * This is an implementation for handling email streams as
  * archives. It allows one to read the email body and email attachements as
  * streams.
  **/
@@ -33,35 +33,28 @@ class SubInputStream;
 class StringTerminatedSubStream;
 class MailInputStream : public SubStreamProvider {
 private:
+    int64_t nextLineStartPosition;
     // variables that record the current read state
-    bool eol; // true if the buffer contains a line end
     int32_t entrynumber;
-    int64_t bufstartpos;
-    int64_t bufendpos;
     int linenum;
     int maxlinesize;
     const char* linestart;
     const char* lineend;
-    const char* bufstart;
-    const char* bufend;
 
     StringTerminatedSubStream* substream;
     std::string subject;
     std::string contenttype;
     std::string contenttransferencoding;
     std::string contentdisposition;
-    std::string* lastHeader;
 
-    std::string boundary;
+    std::stack<std::string> boundary;
 
-    void readLine();
-    void fillBuffer();
-    void skipHeader();
+    void readHeaderLine();
+    void readHeader();
     void scanBody();
     void handleHeaderLine();
-    void handleBodyLine();
+    bool handleBodyLine();
     bool lineIsEndOfBlock();
-    void rewindToLineStart();
     bool checkHeaderLine() const;
     void clearHeaders();
     void ensureFileName();

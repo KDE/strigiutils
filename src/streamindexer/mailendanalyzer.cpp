@@ -36,14 +36,14 @@ MailEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
         error = mail.getError();
         return -1;
     }
-    if (s == 0) {
+/*    if (s == 0) {
         error = "mail contains no body";
         return -1;
-    }
+    }*/
     idx.setField("title", mail.getSubject());
     idx.setField("contenttype", mail.getContentType());
     TextEndAnalyzer tea;
-    if (tea.analyze(idx, s) != 0) {
+    if (s != 0 && tea.analyze(idx, s) != 0) {
         error = "Error reading mail body.";
         return -1;
     }
