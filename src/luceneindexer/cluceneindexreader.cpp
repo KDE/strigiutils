@@ -72,6 +72,7 @@ CLuceneIndexReader::~CLuceneIndexReader() {
 }
 void
 CLuceneIndexReader::openReader() {
+    closeReader();
     doccount = -1;
     wordcount = -1;
     try {

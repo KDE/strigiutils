@@ -228,6 +228,10 @@ void
 CLuceneIndexWriter::deleteAllEntries() {
     manager->deleteIndex();
 }
+void
+CLuceneIndexWriter::commit() {
+    manager->closeWriter();
+}
 
 //this function is in 0.9.17, which we dont have yet...
 bool isLuceneFile(const char* filename){

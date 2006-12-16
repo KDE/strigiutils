@@ -45,7 +45,7 @@ protected:
 public:
     CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();
-    void commit() {};
+    void commit();
 
     /** cleanup clucene files. this is run when clucene starts up */
     void cleanUp();
