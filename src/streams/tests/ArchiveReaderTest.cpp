@@ -35,6 +35,10 @@ test1(const char* path) {
     ArchiveReader r;
     r.addStreamOpener(&opener);
     StreamBase<char>* s = r.openStream(path);
+    if (s == 0) {
+        fprintf(stderr, "cannot open stream to %s\n", path);
+        errors++;
+    }
     r.closeStream(s);
 }
 void
@@ -45,7 +49,13 @@ test2(const char* path) {
     DirLister dl = r.getDirEntries(path);
     EntryInfo e;
     while (dl.nextEntry(e)) {
-        printf("%s\n", e.filename.c_str());
+        string filepath(path);
+        filepath += "/";
+        filepath += e.filename;
+        if (e.type == EntryInfo::File) {
+            test1(filepath.c_str());
+        }
+        test2(filepath.c_str());
     }
 }
 
@@ -84,8 +94,10 @@ int
 ArchiveReaderTest(int argc, char** argv) {
     if (argc < 2) return 1;
     errors = 0;
-    printf("%s\n", argv[1]);
     walkdirectories(argv[1], test1);
     walkdirectories(argv[1], test2);
+    if (errors) {
+        fprintf(stderr, "%i errors\n", errors);
+    }
     return errors;
 }
