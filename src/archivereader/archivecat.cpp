@@ -21,10 +21,10 @@ main(int argc, char** argv) {
             printf("could not read %s\n", argv[i]);
             continue;
         }
-        printf("file: %s\n", e.filename.c_str());
+        printf("file: %i %s\n", e.type, e.filename.c_str());
         DirLister dl = reader.getDirEntries(argv[i]);
         while (dl.nextEntry(e)) {
-            printf("%s\n", e.filename.c_str());
+            printf("%i %s\n", e.type, e.filename.c_str());
         }
         StreamBase<char>* s = 0;
         if (e.type & EntryInfo::File) {
