@@ -354,11 +354,13 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
         addEntry(e, se);
         if (nsubentries) {
             nentries += nsubentries;
-            e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
         }
         nentries++;
     } while (p->nextEntry());
     free(streams);
+    if (nentries) {
+        e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
+    }
     return nentries;
 }
 ArchiveReader::ArchiveReader() {
