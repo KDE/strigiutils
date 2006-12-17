@@ -125,8 +125,8 @@ public:
         jstreams::StreamBase<char>* stream;
         jstreams::SubStreamProvider* provider;
         StreamPtr() :stream(0), provider(0) {}
-        StreamPtr(jstreams::StreamBase<char>*s) :stream(s), provider(0) {}
-        StreamPtr(jstreams::SubStreamProvider*p) :stream(0), provider(p) {}
+        StreamPtr(jstreams::StreamBase<char>* s) :stream(s), provider(0) {}
+        StreamPtr(jstreams::SubStreamProvider* p) :stream(0), provider(p) {}
         void free();
     };
     typedef std::map<jstreams::StreamBase<char>*,
@@ -329,7 +329,7 @@ ArchiveReader::ArchiveReaderPrivate::getSubStreamProvider(
             s->reset(0);
         }
     }
-
+    free(streams);
     return 0;
 }
 int
