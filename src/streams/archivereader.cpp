@@ -24,26 +24,15 @@ DirLister::nextEntry(jstreams::EntryInfo& e) {
 class ArchiveEntryCache {
 public:
     class SubEntry {
-    private:
-//        SubEntry(const SubEntry&);
-//        void operator=(const SubEntry&);
     public:
         jstreams::EntryInfo entry;
         //can't define staticly constructed object while object is being defined
         std::map<std::string, SubEntry> entries;
         int32_t getCount() const;
-        SubEntry() {
-//            entries = new std::map<std::string, SubEntry>;
-        }
-        virtual ~SubEntry() {
-//            printf("ms %i\n", entries.size());
-//            delete entries;
-        };
+        SubEntry() { }
+        virtual ~SubEntry() {}
     };
     class RootSubEntry : public SubEntry {
-    private:
-//        RootSubEntry(const RootSubEntry&);
-//        void operator=(const RootSubEntry&);
     public:
         RootSubEntry() :SubEntry() {}
         bool indexed;
@@ -82,7 +71,6 @@ ArchiveEntryCache::SubEntry::getCount() const {
 map<string, ArchiveEntryCache::RootSubEntry>::const_iterator
 ArchiveEntryCache::findRootEntry(const string& url) const {
     string n = url;
-    //const SubEntry* e;
     size_t p = n.size();
     do {
         map<string, RootSubEntry>::const_iterator i = cache.find(n);

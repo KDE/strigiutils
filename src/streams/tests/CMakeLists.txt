@@ -14,6 +14,7 @@ CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	DigestInputStreamTest.cpp
         ProcessInputStreamTest.cpp
+        ArchiveReaderTest.cpp
 )
 
 ADD_EXECUTABLE(testrunner ${Tests} inputstreamtests.cpp)

@@ -24,6 +24,11 @@ public:
     bool nextEntry(jstreams::EntryInfo& e);
 };
 
+/**
+ * Abstract class that defines an interface for opening streams and statting
+ * files. The class ArchiveReader uses instances of this class to access
+ * streams.
+ **/
 class StreamOpener {
 public:
     virtual ~StreamOpener() {}
@@ -48,6 +53,13 @@ public:
     DirLister getDirEntries(const std::string& url);
     bool isArchive(const std::string& url);
     bool canHandle(const std::string& url);
+};
+
+class FileStreamOpener : public StreamOpener {
+public:
+    ~FileStreamOpener() {}
+    jstreams::StreamBase<char>* openStream(const std::string& url);
+    int stat(const std::string& url, jstreams::EntryInfo& e);
 };
 
 } // end namespace jstreams
