@@ -27,13 +27,26 @@
 using namespace jstreams;
 using namespace std;
 
+int errors;
+
 void
-test1(const char* fullpath) {
+test1(const char* path) {
     FileStreamOpener opener;
     ArchiveReader r;
     r.addStreamOpener(&opener);
-    StreamBase<char>* s = r.openStream(fullpath);
+    StreamBase<char>* s = r.openStream(path);
     r.closeStream(s);
+}
+void
+test2(const char* path) {
+    FileStreamOpener opener;
+    ArchiveReader r;
+    r.addStreamOpener(&opener);
+    DirLister dl = r.getDirEntries(path);
+    EntryInfo e;
+    while (dl.nextEntry(e)) {
+        printf("%s\n", e.filename.c_str());
+    }
 }
 
 void
@@ -70,7 +83,9 @@ walkdirectories(const char* path, void (*callback)(const char*)) {
 int
 ArchiveReaderTest(int argc, char** argv) {
     if (argc < 2) return 1;
+    errors = 0;
     printf("%s\n", argv[1]);
     walkdirectories(argv[1], test1);
-    return 0;
+    walkdirectories(argv[1], test2);
+    return errors;
 }
