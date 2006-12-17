@@ -356,6 +356,7 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
             nentries += nsubentries;
             e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
         }
+        nentries++;
     } while (p->nextEntry());
     free(streams);
     return nentries;
@@ -372,7 +373,7 @@ ArchiveReader::stat(const std::string& url, jstreams::EntryInfo& e) {
     if (localStat(url, e) == 0) return 0;
 
     // check the cache (this assumes getDirEntries was already called)
-    const ArchiveEntryCache::SubEntry *subentry = p->cache.findEntry(url);
+    const ArchiveEntryCache::SubEntry* subentry = p->cache.findEntry(url);
     if (subentry) {
         e = subentry->entry;
         return 0;
