@@ -26,13 +26,12 @@
 using namespace std;
 using namespace jstreams;
 
-SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
+SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m, sqlite3* db)
         : manager(m) {
     temprows = 0;
 
     // prepare the sql statements
     const char* sql;
-    sqlite3* db = manager->ref();
     dbcheck = db;
     sql = "insert into tempidx (fileid, name, value) values(?, ?, ?)";
     prepareStmt(db, insertvaluestmt, sql, strlen(sql));
@@ -42,8 +41,7 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m)
     prepareStmt(db, updatefilestmt, sql, strlen(sql));
     sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
     prepareStmt(db, insertfilestmt, sql, strlen(sql));
-    printf("opened db %p %p\n", db, insertfilestmt);
-    manager->deref();
+    fprintf(stderr, "opened db %p %p\n", db, insertfilestmt);
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
     commit();
@@ -59,7 +57,7 @@ SqliteIndexWriter::prepareStmt(sqlite3* db, sqlite3_stmt*& stmt,
         const char* sql, int sqllength) {
     int r = sqlite3_prepare(db, sql, sqllength,& stmt, 0);
     if (r != SQLITE_OK) {
-        printf("could not prepare statement '%s': %s\n", sql,
+        fprintf(stderr, "could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
         stmt = 0;
     }
@@ -70,7 +68,8 @@ SqliteIndexWriter::finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt) {
         int r = sqlite3_finalize(stmt);
         stmt = 0;
         if (r != SQLITE_OK) {
-            printf("could not prepare statement: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "could not prepare statement: %s\n",
+                sqlite3_errmsg(db));
         }
     }
 }
@@ -123,12 +122,14 @@ SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
         SQLITE_STATIC);
     int r = sqlite3_step(insertvaluestmt);
     if (r != SQLITE_DONE) {
-        printf("could not write into database: %i %s\n", r, sqlite3_errmsg(db));
-        exit(1);
+        fprintf(stderr, "could not write into database: %i %s\n", r,
+            sqlite3_errmsg(db));
+        //exit(1);
     }
     r = sqlite3_reset(insertvaluestmt);
     if (r != SQLITE_OK) {
-        printf("could not reset statement: %i %s\n", r, sqlite3_errmsg(db));
+        fprintf(stderr, "could not reset statement: %i %s\n", r,
+            sqlite3_errmsg(db));
     }
     temprows++;
     manager->deref();
@@ -153,9 +154,9 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
 //    printf("'%s', %i, %i %p %p\n", name, idx->getMTime(), idx->getDepth(), db, insertfilestmt);
     int r = sqlite3_step(insertfilestmt);
     if (r != SQLITE_DONE) {
-        if (r == SQLITE_ERROR) printf("error!\n");
-        printf("error in adding file %i %s\n", r, sqlite3_errmsg(db));
-        exit(1);
+        if (r == SQLITE_ERROR) fprintf(stderr, "error!\n");
+        fprintf(stderr, "error in adding file %i %s\n", r, sqlite3_errmsg(db));
+        //exit(1);
     }
     id = sqlite3_last_insert_rowid(db);
     sqlite3_reset(insertfilestmt);
@@ -184,7 +185,8 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         if (idx->getDepth() == 0) {
             sqlite3_exec(db, "rollback; ", 0, 0, 0);
         }
-        printf("could not prepare temp insert sql %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "could not prepare temp insert sql %s\n",
+            sqlite3_errmsg(db));
         content.erase(m->first);
         manager->deref();
         return;
@@ -198,7 +200,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
         sqlite3_bind_int(stmt, 3, i->second);
         r = sqlite3_step(stmt);
         if (r != 21) { // what is 21?
-            printf("could not write content into database: %i %s\n", r,
+            fprintf(stderr, "could not write content into database: %i %s\n", r,
                 sqlite3_errmsg(db));
         }
         r = sqlite3_reset(stmt);
@@ -210,7 +212,7 @@ SqliteIndexWriter::finishIndexable(const Indexable* idx) {
 }
 void
 SqliteIndexWriter::commit() {
-    printf("start commit\n");
+    fprintf(stderr, "start commit\n");
     // move the data from the temp tables into the index
 
     const char* sql = "replace into words (wordid, word, count) "
@@ -229,10 +231,10 @@ SqliteIndexWriter::commit() {
     sqlite3* db = manager->ref();
     int r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not store new data: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "could not store new data: %s\n", sqlite3_errmsg(db));
     }
     manager->deref();
-    printf("end commit of %i rows\n", temprows);
+    fprintf(stderr, "end commit of %i rows\n", temprows);
     temprows = 0;
 }
 /**
@@ -253,10 +255,10 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
         sqlite3_bind_text(delstmt, 1, f.c_str(), f.length(), SQLITE_STATIC);
         int r = sqlite3_step(delstmt);
         if (r != SQLITE_DONE) {
-            printf("could not delete file %s: %s\n", i->c_str(),
+            fprintf(stderr, "could not delete file %s: %s\n", i->c_str(),
                 sqlite3_errmsg(db));
         }
-        printf("removed entry '%s'\n", f.c_str());
+        fprintf(stderr, "removed entry '%s'\n", f.c_str());
         sqlite3_reset(delstmt);
     }
     sqlite3_finalize(delstmt);
@@ -272,7 +274,7 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
         "delete from words where count is null or count = 0;"
         , 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not delete associated information: %s\n",
+        fprintf(stderr, "could not delete associated information: %s\n",
             sqlite3_errmsg(db));
     }
     manager->deref();

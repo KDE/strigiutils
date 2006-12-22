@@ -16,6 +16,12 @@ if (HyperEstraier_FOUND)
     include_directories( ../estraierindexer )
 endif (HyperEstraier_FOUND)
 
+if (SQLite_FOUND)
+    add_definitions(-DHAVE_SQLITE)
+    set(combinedindex_LIBS ${combinedindex_LIBS} sqliteindex)
+    include_directories( ../sqliteindexer )
+endif (SQLite_FOUND)
+
 add_library(combinedindex combinedindexmanager.cpp)
 
 target_link_libraries(combinedindex streamindexer ${combinedindex_LIBS})

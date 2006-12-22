@@ -51,12 +51,12 @@ SqliteIndexManager::~SqliteIndexManager() {
 }
 sqlite3*
 SqliteIndexManager::opendb(const char* path) {
-    printf("opening db\n");
+    fprintf(stderr, "opening db\n");
     sqlite3* db;
     int r = sqlite3_open(path, &db);
     // any value other than SQLITE_OK is an error
     if (r != SQLITE_OK) {
-        printf("could not open db\n");
+        fprintf(stderr, "could not open db %s: %s\n", path, sqlite3_errmsg(db));
         return 0;
     }
     // speed up by being unsafe and keeping temp tables in memory
@@ -64,7 +64,7 @@ SqliteIndexManager::opendb(const char* path) {
         "PRAGMA auto_vacuum = 1;"
         "PRAGMA temp_store = MEMORY;", 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not speed up database\n");
+        fprintf(stderr, "could not speed up database\n");
     }
     // create the tables required
     const char* sql;
@@ -86,7 +86,8 @@ SqliteIndexManager::opendb(const char* path) {
 ;
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
-        printf("could not create table %i %s\n", r, sqlite3_errmsg(db));
+        fprintf(stderr, "could not create table %i %s\n", r,
+            sqlite3_errmsg(db));
         exit(1);
     }
 
@@ -100,7 +101,8 @@ SqliteIndexManager::opendb(const char* path) {
         ;
     r = sqlite3_exec(db, sql, 0,0,0);
     if (r != SQLITE_OK) {
-        printf("could not init writer: %i %s\n", r, sqlite3_errmsg(db));
+        fprintf(stderr, "could not init writer: %i %s\n", r,
+            sqlite3_errmsg(db));
     }
     return db;
 }
@@ -111,7 +113,9 @@ SqliteIndexManager::ref() {
     sqlite3* db = dbs[self];
     if (db == 0) {
         db = opendb(dbfile.c_str());
-        dbs[self] = db;
+        if (db) {
+            dbs[self] = db;
+        }
     }
     return db;
 }
@@ -124,9 +128,11 @@ SqliteIndexManager::getIndexReader() {
     pthread_t self = pthread_self();
     SqliteIndexReader* r = readers[self];
     if (r == 0) {
-        r = new SqliteIndexReader(this);
-        ref();
-        readers[self] = r;
+        sqlite3* db = ref();
+        if (db) {
+            r = new SqliteIndexReader(this);
+            readers[self] = r;
+        }
         deref();
     }
     return r;
@@ -136,9 +142,11 @@ SqliteIndexManager::getIndexWriter() {
     pthread_t self = pthread_self();
     SqliteIndexWriter* w = writers[self];
     if (w == 0) {
-        w = new SqliteIndexWriter(this);
-        ref();
-        writers[self] = w;
+        sqlite3* db = ref();
+        if (db) {
+            w = new SqliteIndexWriter(this, db);
+            writers[self] = w;
+        }
         deref();
     }
     return w;

@@ -7,8 +7,10 @@ class IndexReaderTester {
 private:
     IndexReader* reader;
 public:
-    IndexReaderTester(IndexReader* w) :reader(w) {}
+    IndexReaderTester(IndexReader* r) :reader(r) {}
     int getFiles(char depth) {
+        VERIFY(reader);
+        if (reader == 0) return 1;
         reader->getFiles(depth);
         return 0;
     }

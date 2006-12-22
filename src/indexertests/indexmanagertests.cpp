@@ -48,6 +48,8 @@ IndexManagerTester::runThreadedTests() {
 }
 void
 IndexManagerTester::addAndCount() {
+    VERIFY(writer);
+    if (writer == 0) return;
     writer->deleteAllEntries();
     int m = 20;
     ostringstream str;
@@ -64,6 +66,8 @@ IndexManagerTester::addAndCount() {
 }
 void
 IndexManagerTester::testNumberQuery() {
+    VERIFY(writer);
+    if (writer == 0) return;
     writer->deleteAllEntries();
     // add numbers to the database
     int m = 200;

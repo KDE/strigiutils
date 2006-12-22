@@ -94,8 +94,8 @@ CLuceneIndexWriter::setField(const Indexable* idx,
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     Field* field = new Field(name, value,
         type & IndexerConfiguration::Stored,
-        type & IndexerConfiguration::Indexed,
-        type & IndexerConfiguration::Tokenized);
+        type & IndexerConfiguration::Indexed, false);
+      //  type & IndexerConfiguration::Tokenized);
     doc->doc.add(*field);
 }
 void
