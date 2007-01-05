@@ -3,7 +3,7 @@
  *      The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Guido van Rossum.
+ * Guido van Rossum <guido@python.org>.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

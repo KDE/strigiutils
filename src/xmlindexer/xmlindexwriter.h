@@ -205,7 +205,7 @@ protected:
             std::make_pair<std::string,std::string>(fieldname, value));
     }
 public:
-    XmlIndexWriter(std::ostream& o) :out(o) {
+    explicit XmlIndexWriter(std::ostream& o) :out(o) {
     }
     ~XmlIndexWriter() {}
     void commit() {}

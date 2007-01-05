@@ -144,7 +144,7 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
     if (match == e_repository.end())
     {
         STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs",
-                        "cannot find repository name: |" + repositoryName + "|")
+                        "cannot find repository name: |" + repositoryName + '|')
         return dirs;
     }
 

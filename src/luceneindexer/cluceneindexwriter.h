@@ -43,7 +43,7 @@ protected:
     void setField(const jstreams::Indexable*,
         const std::string& fieldname, const std::string& value);
 public:
-    CLuceneIndexWriter(CLuceneIndexManager* m);
+    explicit CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();
     void commit();
 

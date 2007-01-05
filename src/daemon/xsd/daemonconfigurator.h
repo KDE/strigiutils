@@ -28,7 +28,7 @@
 
 class DaemonConfigurator : public StrigiDaemonConfiguration {
 public:
-    DaemonConfigurator (const std::string& confFile);
+    explicit DaemonConfigurator (const std::string& confFile);
 
     void setIndexedDirectories(std::set<std::string>& dirs,
         const std::string& repositoryName = "localhost", bool  merge = false);

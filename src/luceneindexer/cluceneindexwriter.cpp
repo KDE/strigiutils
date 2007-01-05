@@ -233,7 +233,7 @@ CLuceneIndexWriter::commit() {
     manager->closeWriter();
 }
 
-//this function is in 0.9.17, which we dont have yet...
+//this function is in 0.9.17, which we do not have yet...
 bool isLuceneFile(const char* filename){
     if ( !filename )
         return false;

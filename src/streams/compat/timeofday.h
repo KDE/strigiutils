@@ -1,7 +1,7 @@
 /*
 * Defines gettimeofday
 *
-* Based on timeval.h by Wu Yongwei
+* Based on timeval.h by Wu Yongwei <wuyongwei@gmail.com>
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public

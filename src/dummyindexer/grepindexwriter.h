@@ -34,7 +34,7 @@ protected:
     void setField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value);
 public:
-    GrepIndexWriter(const char* re);
+    explicit GrepIndexWriter(const char* re);
     ~GrepIndexWriter();
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}

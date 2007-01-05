@@ -1,3 +1,22 @@
+/* This file is part of Strigi Desktop Search
+ *
+ * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public License
+ * along with this library; see the file COPYING.LIB.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
 #include "histogram.h"
 #include <QPainter>
 #include <QMouseEvent>
@@ -223,5 +242,5 @@ HistogramArea::paintBar(QPainter&p, int entry, int barheight) {
     int offset = entry*(barwidth+margin);
     p.fillRect(QRectF(0, offset, bh, barwidth), palette().highlight());
     p.drawText(QRectF(margin, offset, barheight, barwidth), Qt::AlignVCenter,
-        data[entry].first + ":" + QString::number(data[entry].second));
+        data[entry].first + ':' + QString::number(data[entry].second));
 }
