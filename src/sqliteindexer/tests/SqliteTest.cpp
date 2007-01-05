@@ -23,7 +23,7 @@ SqliteTest(int argc, char**argv) {
     jstreams::IndexerConfiguration ic;
     IndexManagerTests tests(manager, ic);
     tests.testAll();
-    tests.testAllInThreads(20);
+/*    tests.testAllInThreads(20);
 
     jstreams::IndexWriter* writer = manager->getIndexWriter();
     IndexWriterTests wtests(*writer, ic);
@@ -32,7 +32,7 @@ SqliteTest(int argc, char**argv) {
     jstreams::IndexReader* reader = manager->getIndexReader();
     IndexReaderTests rtests(reader);
     rtests.testAll();
-
+*/
     // close and clean up the manager
     delete manager;
 

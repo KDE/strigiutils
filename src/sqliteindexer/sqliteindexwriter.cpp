@@ -39,7 +39,7 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m, sqlite3* db)
     prepareStmt(db, getfilestmt, sql, strlen(sql));
     sql = "update files set mtime = ?;";
     prepareStmt(db, updatefilestmt, sql, strlen(sql));
-    sql = "insert into files (path, mtime, depth) values(?, ?, ?);'";
+    sql = "insert into files (path, mtime, depth) values(?, ?, ?);";
     prepareStmt(db, insertfilestmt, sql, strlen(sql));
     fprintf(stderr, "opened db %p %p\n", db, insertfilestmt);
 }
@@ -55,7 +55,7 @@ SqliteIndexWriter::~SqliteIndexWriter() {
 void
 SqliteIndexWriter::prepareStmt(sqlite3* db, sqlite3_stmt*& stmt,
         const char* sql, int sqllength) {
-    int r = sqlite3_prepare(db, sql, sqllength,& stmt, 0);
+    int r = sqlite3_prepare(db, sql, sqllength, &stmt, 0);
     if (r != SQLITE_OK) {
         fprintf(stderr, "could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
@@ -151,11 +151,12 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
     sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
-//    printf("'%s', %i, %i %p %p\n", name, idx->getMTime(), idx->getDepth(), db, insertfilestmt);
+//    printf("'%s', %i %p %p\n", name, idx->getDepth(), db, insertfilestmt);
     int r = sqlite3_step(insertfilestmt);
     if (r != SQLITE_DONE) {
         if (r == SQLITE_ERROR) fprintf(stderr, "error!\n");
-        fprintf(stderr, "error in adding file %i %s\n", r, sqlite3_errmsg(db));
+        fprintf(stderr, "error in adding file %i %s (%i)\n", r,
+            sqlite3_errmsg(db), r);
         //exit(1);
     }
     id = sqlite3_last_insert_rowid(db);
@@ -243,27 +244,23 @@ SqliteIndexWriter::commit() {
 void
 SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     sqlite3* db = manager->ref();
-    // turn on case sensitivity
-    sqlite3_exec(db, "PRAGMA case_sensitive_like = 1", 0, 0, 0);
 
     sqlite3_stmt* delstmt;
-    const char* delsql = "delete from files where path like ?;";
+    const char* delsql = "delete from files where path glob ?;";
     prepareStmt(db, delstmt, delsql, strlen(delsql));
     vector<string>::const_iterator i;
     for (i = entries.begin(); i != entries.end(); ++i) {
-        string f = *i+'%';
+        string f = *i+'*';
         sqlite3_bind_text(delstmt, 1, f.c_str(), f.length(), SQLITE_STATIC);
         int r = sqlite3_step(delstmt);
         if (r != SQLITE_DONE) {
-            fprintf(stderr, "could not delete file %s: %s\n", i->c_str(),
-                sqlite3_errmsg(db));
+            fprintf(stderr, "could not delete file %s: %s (%i)\n", i->c_str(),
+                sqlite3_errmsg(db), r);
         }
-        fprintf(stderr, "removed entry '%s'\n", f.c_str());
+//        fprintf(stderr, "removed entry '%s'\n", f.c_str());
         sqlite3_reset(delstmt);
     }
     sqlite3_finalize(delstmt);
-    // turn off case sensitivity
-    sqlite3_exec(db, "PRAGMA case_sensitive_like = 0", 0, 0, 0);
 
     // remove all information that now is orphaned
     int r = sqlite3_exec(db,

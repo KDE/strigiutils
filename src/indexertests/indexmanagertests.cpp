@@ -29,7 +29,7 @@ public:
     }
     void runUnthreadedTests();
     void runThreadedTests();
-    void addAndCount();
+    void addAndCount(int m = 20);
     void testNumberQuery();
 };
 void
@@ -47,11 +47,10 @@ IndexManagerTester::runThreadedTests() {
     testNumberQuery();
 }
 void
-IndexManagerTester::addAndCount() {
+IndexManagerTester::addAndCount(int m) {
     VERIFY(writer);
     if (writer == 0) return;
     writer->deleteAllEntries();
-    int m = 20;
     ostringstream str;
     for (int i=0; i<m; ++i) {
         str << "/" << i;
