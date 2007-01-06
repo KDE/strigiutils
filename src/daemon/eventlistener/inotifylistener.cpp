@@ -610,7 +610,7 @@ void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
     string newdirs ("|");
 
     for (set<string>::iterator iter = fixedDirs.begin(); iter != fixedDirs.end(); iter++)
-        newdirs += (*iter + "|");
+        newdirs += (*iter + '|');
 
     STRIGI_LOG_DEBUG ("strigi.InotifyListener.setIndexedDirectories", "new indexed dirs: " + newdirs)
 }
@@ -823,7 +823,7 @@ void InotifyListener::ReindexDirsThread::reindex () {
         if (it == m_oldDirs.end())
         {
             newIndexedDirs.insert (*iter);
-            strNewIndexedDirs += (*iter + "|");
+            strNewIndexedDirs += (*iter + '|');
         }
     }
 
@@ -834,7 +834,7 @@ void InotifyListener::ReindexDirsThread::reindex () {
         if (it == m_newDirs.end())
         {
             m_nomoreIndexedDirs.insert (*iter);
-            strNomoreIndexedDirs += (*iter + "|");
+            strNomoreIndexedDirs += (*iter + '|');
         }
     }
 
