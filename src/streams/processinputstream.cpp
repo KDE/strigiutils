@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "processinputstream.h"
 #include <errno.h>
+#include <sys/wait.h>
 #include <unistd.h>
 using namespace jstreams;
 using namespace std;
@@ -115,8 +116,21 @@ void
 ProcessInputStream::runCmd() {
     int p[2];
     pipe(p);
-    pid = fork();
-    if (pid == 0) {
+    
+    if( (pid=fork()) == -1) {
+        /* something went wrong */
+        fprintf(stderr,"ProcessInputStream::runCmd: fork error\n");
+        close (p[0]);
+        close (p[1]);
+        return;
+    }
+    
+    if (pid) {
+        int rv;
+        wait (&rv);
+        //fprintf(stderr,"%s process exited with a %i value\n", args[0], rv);
+    }
+    else {
         // define the output to be written into p[1]
         dup2(p[1], 1);
         // close p[0], because this process will not read from it
@@ -137,8 +151,23 @@ ProcessInputStream::runCmdWithInput() {
     int pout[2];
     pipe(pin);
     pipe(pout);
-    pid = fork();
-    if (pid == 0) {
+    
+    if( (pid=fork()) == -1) {
+        /* something went wrong */
+        fprintf(stderr,"ProcessInputStream::runCmdWithInput: fork error\n");
+        close (pin[0]);
+        close (pin[1]);
+        close (pout[0]);
+        close (pout[1]);
+        return;
+    }
+    
+    if (pid) {
+        int rv;
+        wait (&rv);
+        //fprintf(stderr,"%s process exited with a %i value\n", args[0], rv);
+    }
+    else {
         // define the output to be written into p[1]
         dup2(pin[0], 0);
         dup2(pout[1], 1);
