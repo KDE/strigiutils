@@ -45,6 +45,8 @@ OPTION(ENABLE_DBUS
   "enable dbus support"
   ON)
 
+OPTION(ENABLE_SQLITE "enable sqlite support" OFF)
+
 OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
   OFF)
@@ -63,7 +65,9 @@ find_package(CLucene)
 find_package(XERCESC)
 find_package(Magic REQUIRED)
 find_package(HyperEstraier)
-find_package(SQLite)
+if(ENABLE_SQLITE)
+  find_package(SQLite)
+endif(ENABLE_SQLITE)
 find_package(Libxml2)
 find_package(XAttr)
 set(QT_MIN_VERSION "4.2.0")
