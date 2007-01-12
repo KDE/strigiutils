@@ -18,3 +18,5 @@ quick way to parse desktop files according to dfaure:
 [17:57] <dfaure> this will get the list of services (parts and app) out of ksycoca quite fast
 [17:57] <dfaure> much faster than parsing .desktop files.
 
+- port KFilePlugin implementations to strigi analyzers:
+  http://lxr.kde.org/ident?i=KFilePlugin
