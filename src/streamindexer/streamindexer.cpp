@@ -53,9 +53,9 @@ StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
         :writer(w), conf(c) {
     moduleLoader = new AnalyzerLoader();
 
-    moduleLoader->loadPlugins("/usr/local/lib/" KDELIBSUFF "/strigi");
-    moduleLoader->loadPlugins("/usr/lib/" KDELIBSUFF "/strigi");
-    moduleLoader->loadPlugins("/lib/" KDELIBSUFF "/strigi");
+    moduleLoader->loadPlugins("/usr/local/lib" KDELIBSUFF "/strigi");
+    moduleLoader->loadPlugins("/usr/lib" KDELIBSUFF "/strigi");
+    moduleLoader->loadPlugins("/lib" KDELIBSUFF "/strigi");
     
         // todo: remove this
     moduleLoader->loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
