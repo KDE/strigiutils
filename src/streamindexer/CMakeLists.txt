@@ -42,9 +42,9 @@ set_target_properties(streamindexer PROPERTIES
 
 target_link_libraries(streamindexer streams ${streamindex_LIBS})
 
-install(FILES indexeddocument.h indexable.h analyzerplugin.h
+install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
 	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
-	DESTINATION include)
+	DESTINATION include/strigi)
 
 
 # test executable

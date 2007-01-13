@@ -39,6 +39,7 @@
 #include "indexable.h"
 #include "indexerconfiguration.h"
 #include "textutils.h"
+#include "analyzerloader.h"
 #include <sys/stat.h>
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
@@ -49,17 +50,18 @@ using namespace jstreams;
 
 StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
         :writer(w), conf(c) {
+    moduleLoader = new AnalyzerLoader();
 
-    moduleLoader.loadPlugins("/usr/local/lib/strigi");
-    moduleLoader.loadPlugins("/usr/lib/strigi");
-    moduleLoader.loadPlugins("/lib/strigi");
+    moduleLoader->loadPlugins("/usr/local/lib/strigi");
+    moduleLoader->loadPlugins("/usr/lib/strigi");
+    moduleLoader->loadPlugins("/lib/strigi");
     
         // todo: remove this
-    moduleLoader.loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
+    moduleLoader->loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
         if ( getenv("HOME") != NULL ){
             string homedir = getenv("HOME");
             homedir += "/testinstall/lib/strigi";
-        moduleLoader.loadPlugins(homedir.c_str());
+        moduleLoader->loadPlugins(homedir.c_str());
         }
     initializeThroughFactories();
     initializeEndFactories();
@@ -89,6 +91,7 @@ StreamIndexer::~StreamIndexer() {
             delete *e;
         }
     }
+    delete moduleLoader;
 }
 char
 StreamIndexer::indexFile(const char *filepath, IndexerConfiguration* ic) {
@@ -120,7 +123,7 @@ StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
 void
 StreamIndexer::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
-        = moduleLoader.getStreamThroughAnalyzerFactories();
+        = moduleLoader->getStreamThroughAnalyzerFactories();
     list<StreamThroughAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -143,7 +146,7 @@ StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
 void
 StreamIndexer::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
-        = moduleLoader.getStreamEndAnalyzerFactories();
+        = moduleLoader->getStreamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);

@@ -21,13 +21,15 @@
 #define STREAMINDEXER_H
 
 #include <vector>
-#include "analyzerloader.h"
 
 namespace jstreams {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
+class StreamThroughAnalyzerFactory;
+class StreamEndAnalyzerFactory;
 class IndexWriter;
 class Indexable;
+class AnalyzerLoader;
 class IndexerConfiguration;
 template <class T> class StreamBase;
 /**
@@ -51,7 +53,7 @@ private:
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
     std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
 
-    AnalyzerLoader moduleLoader;
+    AnalyzerLoader* moduleLoader;
     void initializeThroughFactories();
     void initializeEndFactories();
     void addFactory(StreamThroughAnalyzerFactory* f);
