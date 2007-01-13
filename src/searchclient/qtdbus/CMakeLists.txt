@@ -13,7 +13,7 @@ if (QT4_FOUND)
   add_library(strigiqtdbusclient SHARED ${strigiqtdbusclient_SRCS}
     ${strigiqtdbusclient_MOC_SRCS})
 
-  target_link_libraries(strigiqtdbusclient ${QT_QTCORE_LIBRARY} QtDBus)
+  target_link_libraries(strigiqtdbusclient ${QT_QTDBUS_LIBRARY})
 
   install(TARGETS strigiqtdbusclient LIBRARY DESTINATION ${LIB_DESTINATION})
   install(FILES strigiasyncclient.h strigiclient.h strigidbus.h strigitypes.h
