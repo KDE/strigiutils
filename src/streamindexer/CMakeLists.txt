@@ -4,7 +4,7 @@ add_subdirectory(tests)
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat)
+	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
 set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp

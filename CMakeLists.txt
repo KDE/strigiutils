@@ -26,6 +26,8 @@ SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
 set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
 SET (LIB_DESTINATION "lib${LIB_SUFFIX}" CACHE STRING "Library directory name")
 
+set( KDELIBSUFF ${LIB_SUFFIX} )
+
 IF(MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
 ELSE(MSVC)
@@ -89,6 +91,7 @@ if (ENABLE_LOG4CXX)
     find_package (Log4cxx)
 endif (ENABLE_LOG4CXX)
 
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 CONFIGURE_FILE(
   "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
