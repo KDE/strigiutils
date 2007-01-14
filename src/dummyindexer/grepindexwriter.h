@@ -31,8 +31,10 @@ protected:
     void finishIndexable(const jstreams::Indexable* idx);
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length);
-    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value);
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
+            const unsigned char* data, int32_t size) {}
 public:
     explicit GrepIndexWriter(const char* re);
     ~GrepIndexWriter();

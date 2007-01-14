@@ -198,12 +198,14 @@ protected:
         Data* d = static_cast<Data*>(idx->getWriterData());
         d->text.append(text, length);
     }
-    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value) {
         Data* d = static_cast<Data*>(idx->getWriterData());
         d->values.insert(
             std::make_pair<std::string,std::string>(fieldname, value));
     }
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
+            const unsigned char* data, int32_t size) {}
 public:
     explicit XmlIndexWriter(std::ostream& o) :out(o) {
     }

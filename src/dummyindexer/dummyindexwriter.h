@@ -51,7 +51,7 @@ protected:
                 text);
         }
     }
-    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
             const std::string& value) {
         if (verbosity > 1) {
             printf("%s: setField '%s': '%s'\n", idx->getPath().c_str(),
@@ -61,6 +61,8 @@ protected:
             *s = value;
         }
     }
+    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
+        const unsigned char* data, int32_t size) {}
 public:
     DummyIndexWriter(int v = 0) {
         verbosity = v;

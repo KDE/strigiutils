@@ -15,7 +15,7 @@ addAndCount(IndexWriter* writer, IndexReader* reader, int m) {
     if (writer == 0) return 1;
     writer->deleteAllEntries();
     IndexerConfiguration ic;
-    StreamIndexer si(*writer, ic);
+    StreamIndexer si(ic);
     ostringstream str;
     for (int i=0; i<m; ++i) {
         str << "/" << i;

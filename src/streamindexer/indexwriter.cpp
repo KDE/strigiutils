@@ -46,6 +46,6 @@ Indexable::setField(const string& _fieldname, const std::string& value) {
         return;
     }
     if (strchr(fieldname.c_str(), '/') == 0) {
-        writer.setField(this, fieldname, value);
+        writer.addField(this, fieldname, value);
     }
 }

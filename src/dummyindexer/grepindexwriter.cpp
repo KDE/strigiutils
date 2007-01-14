@@ -61,7 +61,7 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
     }
 }
 void
-GrepIndexWriter::setField(const jstreams::Indexable* idx,
+GrepIndexWriter::addField(const jstreams::Indexable* idx,
         const std::string &fieldname, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s:%s\n", idx->getPath().c_str(), fieldname.c_str(),

@@ -108,7 +108,7 @@ SqliteIndexWriter::addText(const Indexable* idx, const char* text,
     }
 }
 void
-SqliteIndexWriter::setField(const Indexable* idx, const string &fieldname,
+SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
         const string& value) {
     int64_t id = idx->getId();
     //id = -1; // debug

@@ -34,14 +34,16 @@ protected:
     void startIndexable(jstreams::Indexable*);
     void finishIndexable(const jstreams::Indexable*);
     void addText(const jstreams::Indexable*, const char* text, int32_t length);
-    static void setField(const jstreams::Indexable* idx,
+    static void addField(const jstreams::Indexable* idx,
         jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
         const TCHAR* value);
-    static void setField(const jstreams::Indexable* idx,
+    static void addField(const jstreams::Indexable* idx,
         jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
         const std::string& value);
-    void setField(const jstreams::Indexable*,
+    void addField(const jstreams::Indexable*,
         const std::string& fieldname, const std::string& value);
+    void addField(const jstreams::Indexable*, const std::string& fieldname,
+        const unsigned char* data, int32_t size) {}
 public:
     explicit CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();
