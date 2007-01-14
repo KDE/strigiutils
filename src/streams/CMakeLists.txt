@@ -36,7 +36,7 @@ install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	archivereader.h inputstreamreader.h stringreader.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
 	compat/timeofday.h compat/strigi_fnmatch.h compat/strigi_thread.h compat/stgdirent.h
-	DESTINATION include)
+	DESTINATION include/strigi)
 
 add_executable(testpt testpt.cpp processinputstream.cpp)
 
