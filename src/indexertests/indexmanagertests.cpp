@@ -41,7 +41,7 @@ private:
 public:
     IndexManagerTester(IndexManager* m, IndexerConfiguration& ic)
             : manager(m), writer(manager->getIndexWriter()),
-              si(*writer, ic) {
+              si(ic) {
         reader = manager->getIndexReader();
     }
     ~IndexManagerTester() {

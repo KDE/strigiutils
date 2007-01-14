@@ -30,7 +30,7 @@ private:
     StreamIndexer si;
 public:
     IndexWriterTester(IndexWriter& w, IndexerConfiguration& ic)
-        :writer(&w), si(w, ic) {
+        :writer(&w), si(ic) {
     }
     int optimize() {
         VERIFY(writer);

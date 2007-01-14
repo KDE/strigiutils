@@ -28,7 +28,7 @@ using namespace std;
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(jstreams::IndexWriter& w, jstreams::IndexerConfiguration& c)
-        : m_indexer(w, c) {
+        : m_writer(w), m_indexer(c) {
     m_lister = new FileLister(c);
 }
 Indexer::~Indexer() {
@@ -65,5 +65,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath);
+    m_indexer.indexFile(filepath, m_writer);
 }

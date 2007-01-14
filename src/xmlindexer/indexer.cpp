@@ -30,7 +30,7 @@ using namespace jstreams;
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(ostream& o, IndexerConfiguration& ic)
-    :out(o), writer(out), m_indexer(writer, ic) {
+    :out(o), writer(out), m_indexer(ic) {
     m_lister = new FileLister(ic);
 }
 
@@ -72,5 +72,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath);
+    m_indexer.indexFile(filepath, writer);
 }

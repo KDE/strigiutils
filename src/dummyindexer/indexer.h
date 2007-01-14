@@ -22,12 +22,14 @@
 
 #include <string>
 #include "streamindexer.h"
+//#include "indexwriter.h"
 
 class FileLister;
 
 class Indexer {
 private:
     FileLister* m_lister;
+    jstreams::IndexWriter& m_writer;
     jstreams::StreamIndexer m_indexer;
 
     static void addFileCallback(const char* fullpath, uint dirlen,

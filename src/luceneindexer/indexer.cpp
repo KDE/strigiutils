@@ -31,7 +31,7 @@ Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir, IndexerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_writer(&m_manager),
-          m_indexer(m_writer, ic)
+          m_indexer(ic)
 {
     m_lister = new FileLister(ic);
 }
@@ -63,5 +63,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath);
+    m_indexer.indexFile(filepath, m_writer);
 }

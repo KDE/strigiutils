@@ -111,8 +111,7 @@ void
 IndexScheduler::index() {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(*writer,
-        *m_indexerconfiguration);
+    StreamIndexer* streamindexer = new StreamIndexer(*m_indexerconfiguration);
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
@@ -149,7 +148,7 @@ IndexScheduler::index() {
 
     it = toindex.begin();
     while (getState() == Working && it != toindex.end()) {
-        streamindexer->indexFile(it->first);
+        streamindexer->indexFile(it->first, *writer);
         if (writer->itemsInCache() > 10000) {
             writer->commit();
         }
@@ -168,7 +167,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
     IndexerConfiguration ic;
-    StreamIndexer* streamindexer = new StreamIndexer(*writer, ic);
+    StreamIndexer* streamindexer = new StreamIndexer(ic);
 
     vector<string> toDelete;
 
@@ -209,7 +208,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     map<string, time_t>::iterator it = toindex.begin();
     while (it != toindex.end())
     {
-        streamindexer->indexFile(it->first);
+        streamindexer->indexFile(it->first, *writer);
         if (writer->itemsInCache() > 10000) {
             writer->commit();
         }

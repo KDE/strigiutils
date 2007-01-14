@@ -49,8 +49,8 @@
 using namespace std;
 using namespace jstreams;
 
-StreamIndexer::StreamIndexer(IndexWriter& w, IndexerConfiguration& c)
-        :writer(w), conf(c) {
+StreamIndexer::StreamIndexer(IndexerConfiguration& c)
+        :conf(c) {
     moduleLoader = new AnalyzerLoader();
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
@@ -93,12 +93,12 @@ StreamIndexer::~StreamIndexer() {
     delete moduleLoader;
 }
 char
-StreamIndexer::indexFile(const char *filepath, IndexerConfiguration* ic) {
+StreamIndexer::indexFile(const char *filepath, IndexWriter& writer) {
     std::string path(filepath);
-    return indexFile(path);
+    return indexFile(path, writer);
 }
 char
-StreamIndexer::indexFile(const std::string& filepath){
+StreamIndexer::indexFile(const std::string& filepath, IndexWriter& writer) {
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }

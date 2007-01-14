@@ -146,7 +146,7 @@ Interface::indexFile(const string &path, uint64_t mtime,
     paths.push_back(path);
     writer->deleteEntries(paths);
     IndexerConfiguration ic;
-    StreamIndexer streamindexer(*writer, ic);
+    StreamIndexer streamindexer(ic);
     StringReader<char> sr(&content[0], content.size(), false);
     Indexable idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
