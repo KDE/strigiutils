@@ -97,6 +97,7 @@ if (ENABLE_LOG4CXX)
 endif (ENABLE_LOG4CXX)
 
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 CONFIGURE_FILE(
   "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
