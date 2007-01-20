@@ -10,4 +10,4 @@ target_link_libraries(strigihtmlgui searchclient streamindexer)
 
 install(TARGETS strigihtmlgui DESTINATION ${LIB_DESTINATION})
 install(FILES strigihtmlgui.h
-	DESTINATION include)
+	DESTINATION include/strigi)

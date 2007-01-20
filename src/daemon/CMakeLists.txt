@@ -61,5 +61,5 @@ install(TARGETS strigidaemon searchclient #strigiconfupdater
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION ${LIB_DESTINATION})
 install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h
-	DESTINATION include)
+	DESTINATION include/strigi)
 
