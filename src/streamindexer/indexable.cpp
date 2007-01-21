@@ -29,15 +29,15 @@ using namespace jstreams;
 
 Indexable::Indexable(const std::string& p, const char* name, time_t mt,
         const Indexable& parent)
-            :mtime(mt), name(name), path(p),
+            :writerData(0), mtime(mt), name(name), path(p),
              writer(parent.writer), depth(parent.getDepth()+1),
              indexer(parent.indexer), indexableconfig(parent.indexableconfig) {
     writer.startIndexable(this);
 }
 Indexable::Indexable(const std::string& p, time_t mt, IndexWriter& w,
         StreamIndexer& indexer)
-            :mtime(mt), path(p), writer(w), depth(0), indexer(indexer),
-             indexableconfig(indexer.getConfiguration()) {
+            :writerData(0), mtime(mt), path(p), writer(w), depth(0),
+             indexer(indexer), indexableconfig(indexer.getConfiguration()) {
     size_t pos = path.rfind('/');
     if (pos == std::string::npos) {
         name = path;
