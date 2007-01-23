@@ -60,6 +60,9 @@ ProcessInputStream::~ProcessInputStream() {
     if (fdout > 0) {
         close(fdout);
     }
+    if (pid != -1) {
+        kill(SIGTERM, pid);
+    }
     const char* const* p = args;
     while (*p) {
         free((void*)*p++);
@@ -104,11 +107,11 @@ ProcessInputStream::fillBuffer(char* start, int32_t space) {
     if (n < 0) {
         error = strerror(errno);
         status = Error;
+        n = -2;
     }
     if (n <= 0) {
         close(fdout);
         fdout = 0;
-        n = -1;
     }
     return n;
 }
@@ -125,12 +128,7 @@ ProcessInputStream::runCmd() {
         return;
     }
     
-    if (pid) {
-        int rv;
-        wait (&rv);
-        //fprintf(stderr,"%s process exited with a %i value\n", args[0], rv);
-    }
-    else {
+    if (pid == 0) {
         // define the output to be written into p[1]
         dup2(p[1], 1);
         // close p[0], because this process will not read from it
@@ -161,13 +159,8 @@ ProcessInputStream::runCmdWithInput() {
         close (pout[1]);
         return;
     }
-    
-    if (pid) {
-        int rv;
-        wait (&rv);
-        //fprintf(stderr,"%s process exited with a %i value\n", args[0], rv);
-    }
-    else {
+ 
+    if (pid == 0) {
         // define the output to be written into p[1]
         dup2(pin[0], 0);
         dup2(pout[1], 1);

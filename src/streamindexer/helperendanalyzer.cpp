@@ -50,8 +50,9 @@ public:
 };
 
 HelperProgramConfig::HelperProgramConfig() {
-    static const unsigned char wordmagic[] = {0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1,
-        0,0,0,0,0,0,0,0};
+    static const unsigned char wordmagic[] = {
+        0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1,0,0,0,0,0,0,0,0
+    };
 
     // make a vector with all the paths
     const char* path =getenv("PATH");
@@ -74,6 +75,8 @@ HelperProgramConfig::HelperProgramConfig() {
         h->magic = (unsigned char*)"%PDF-1.";
         h->magicsize = 7;
         h->arguments.push_back(exepath);
+        h->arguments.push_back("-enc");
+        h->arguments.push_back("UTF-8");
         h->arguments.push_back("%s");
         h->arguments.push_back("-");
         h->readfromstdin = false;
