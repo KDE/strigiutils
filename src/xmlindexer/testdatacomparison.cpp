@@ -50,9 +50,11 @@ main(int argc, char** argv) {
         return -1;
     }
 
+    const char* mappingfile = 0;
+
     ostringstream s;
     jstreams::IndexerConfiguration ic;
-    Indexer indexer(s, ic);
+    Indexer indexer(s, ic, mappingfile);
     chdir(argv[1]);
     indexer.index(argv[2]);
     string str = s.str();

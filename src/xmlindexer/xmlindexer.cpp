@@ -25,7 +25,8 @@ using namespace std;
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s [dir-to-index]\n", argv[0]);
+    fprintf(stderr, "Usage: %s [--mappingfile <mappingfile>] "
+        "[dirs-or-files-to-index]\n", argv[0]);
 }
 bool
 containsHelp(int argc, char **argv) {
@@ -38,17 +39,36 @@ containsHelp(int argc, char **argv) {
 
 int
 main(int argc, char **argv) {
-    if (containsHelp(argc, argv) || (argc != 2 && argc != 4)) {
+    if (containsHelp(argc, argv) || argc < 2) {
         printUsage(argv);
         return -1;
     }
+
+    const char* mappingfile = 0;
+    vector<const char*> toindex;
+    for (int i = 1; i < argc; ++i) {
+        if (i < argc-1 && strcmp(argv[i], "--mappingfile") == 0) {
+            mappingfile = argv[i+1];
+            i++;
+        } else {
+            toindex.push_back(argv[i]);
+        }
+    }
+    if (toindex.size() == 0) {
+        char buf[1024];
+        getcwd(buf, 1023);
+        toindex.push_back(buf);
+    }
+    printf("mappingfile: %i %s\n", argc, mappingfile);
 
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
     filters.push_back(make_pair<bool,string>(false,".*"));
     jstreams::IndexerConfiguration ic;
     ic.setFilters(filters);
-    Indexer indexer(cout, ic);
-    indexer.index(argv[argc-1]);
+    Indexer indexer(cout, ic, mappingfile);
+    for (uint i = 0; i < toindex.size(); ++i) {
+        indexer.index(toindex[i]);
+    }
     return 0;
 }

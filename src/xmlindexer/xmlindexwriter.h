@@ -22,6 +22,7 @@
 
 #include "indexwriter.h"
 #include "indexable.h"
+#include "tagmapping.h"
 #include <iostream>
 #include <map>
 
@@ -33,6 +34,8 @@ private:
     };
 
     std::ostream& out;
+
+    const TagMapping& mapping;
 
     void printText(const std::string& text) {
         const char* p = text.c_str();
@@ -159,30 +162,38 @@ protected:
         void* m = new Data();
         idx->setWriterData(m);
     }
+    void printValue(const std::string& name, std::string& value) {
+        const std::string* s = &name;
+        const std::string& n = mapping.map(name);
+        escape(value);
+        if (s == &n) {
+            out << "  <value name='" << n << "'>" << value << "</value>\n";
+        } else {
+            out << "  <" << n << ">" << value << "</" << n << ">\n";
+        }
+    }
     void finishIndexable(const jstreams::Indexable* idx) {
         Data* d = static_cast<Data*>(idx->getWriterData());
         std::string v = idx->getPath();
         escape(v);
-        out << " <file uri='" << v << "' mtime='" << (int)idx->getMTime()
+        out << " <" << mapping.map("file") << " " << mapping.map("uri")
+            << "='" << v << "' " << mapping.map("mtime") << "='"
+            << (int)idx->getMTime()
             << "'>\n";
 
         if (idx->getMimeType().size()) {
-            v = idx->getMimeType();
-            escape(v);
-            out << " <value name='mimetype'>" << v << "</value>\n";
+            v.assign(idx->getMimeType());
+            printValue("mimetype", v);
         }
         if (idx->getEncoding().size()) {
-            v = idx->getEncoding();
-            escape(v);
-            out << " <value name='encoding'>" << v << "</value>\n";
+            v.assign(idx->getEncoding());
+            printValue("encoding", v);
         }
 
         std::multimap<std::string, std::string>::iterator i, end;
         end = d->values.end();
-        for (i=d->values.begin(); i!=end; ++i) {
-            escape(i->second);
-            out << "  <value name='" << i->first << "'>" << i->second
-                << "</value>\n";
+        for (i = d->values.begin(); i != end; ++i) {
+            printValue(i->first, i->second);
         }
         out << "  <value name='depth'>" << (int)idx->getDepth() << "</value>\n";
         if (d->text.size() > 0) {
@@ -190,7 +201,7 @@ protected:
             printText(d->text);
             out << "</text>\n";
         }
-        out << " </file>\n";
+        out << " </" << mapping.map("file") << ">\n";
         delete d;
     }
     void addText(const jstreams::Indexable* idx, const char* text,
@@ -207,7 +218,8 @@ protected:
     void addField(const jstreams::Indexable* idx, const std::string &fieldname,
             const unsigned char* data, int32_t size) {}
 public:
-    explicit XmlIndexWriter(std::ostream& o) :out(o) {
+    explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
+            :out(o), mapping(m) {
     }
     ~XmlIndexWriter() {}
     void commit() {}

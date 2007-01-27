@@ -32,13 +32,15 @@ private:
     FileLister* m_lister;
     XmlIndexWriter writer;
     jstreams::StreamIndexer m_indexer;
+    const TagMapping mapping;
 
     static void addFileCallback(const char* fullpath, uint dirlen,
         uint len, time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(std::ostream& out, jstreams::IndexerConfiguration& );
+    Indexer(std::ostream& out, jstreams::IndexerConfiguration&,
+        const char* mappingfile);
     ~Indexer();
     void index(const char *dir);
 };
