@@ -217,8 +217,13 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     }
     if (bits) {
         for (int32_t i = 0; i < bits->size(); ++i) {
-            if (bits->get(i) && !reader->isDeleted(i)) {
-                reader->deleteDocument(i);
+            try {
+                if (bits->get(i) && !reader->isDeleted(i)) {
+                    reader->deleteDocument(i);
+                }
+            } catch (CLuceneError& err) {
+                fprintf(stderr, "error deleting document %s: %s\n",
+                    entry.c_str(), err.what());
             }
         }
         _CLDELETE(bits);
