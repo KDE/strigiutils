@@ -58,7 +58,7 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
 
         // calculate size from 4 syncsafe bytes
         int32_t size = readSize((unsigned char*)buf+6, async);
-        if (size < 0) return in;
+        if (size < 0 || size > 100000) return in;
         size += 10; // add the size of the header
 
         // read the entire tag
@@ -71,8 +71,8 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
         buf += size;
         while (indexable && p < buf && *p) {
             size = readSize((unsigned char*)p+4, async);
-            if (size < 0) {
-                fprintf(stderr, "size < 0: %i\n", size);
+            if (size < 0 || size > (buf-p)-11) {
+                // fprintf(stderr, "size < 0: %i\n", size);
                 return in;
             }
             if (p[10] == 0 || p[10] == 1) { // text is ISO-8859-1 or utf8
