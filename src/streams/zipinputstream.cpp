@@ -59,6 +59,17 @@ ZipInputStream::nextEntry() {
             compressedEntryStream = 0;
             delete uncompressionStream;
             uncompressionStream = 0;
+
+            // check for a potential signature and skip it if it is there
+            const char* c;
+            int64_t p = input->getPosition();
+            int32_t n = input->read(c, 16, 16);
+            if (n == 16) {
+                n = read4bytes((const unsigned char*)c);
+                if (n != 0x08074b50) {
+                    input->reset(p);
+                }
+            }
         } else {
             int32_t size = entrystream->getSize();
             if (size < 1) {
