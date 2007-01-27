@@ -35,7 +35,6 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         ok |= strncmp(header, "IC", 2) == 0;
         ok |= strncmp(header, "PT", 2) == 0;
     }
-    fprintf(stderr, "bmp: %i\n", ok);
     return ok;
 }
 char

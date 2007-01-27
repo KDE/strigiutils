@@ -59,7 +59,6 @@ main(int argc, char **argv) {
         getcwd(buf, 1023);
         toindex.push_back(buf);
     }
-    printf("mappingfile: %i %s\n", argc, mappingfile);
 
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
