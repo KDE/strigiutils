@@ -23,6 +23,7 @@
 #include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
 #include "bz2endanalyzer.h"
+#include "bmpendanalyzer.h"
 #include "textendanalyzer.h"
 #include "saxendanalyzer.h"
 #include "tarendanalyzer.h"
@@ -158,6 +159,7 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new ZipEndAnalyzerFactory());
     addFactory(new RpmEndAnalyzerFactory());
     addFactory(new PngEndAnalyzerFactory());
+    addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
 #ifdef WIN32
     addFactory(new IFilterEndAnalyzerFactory());

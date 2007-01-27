@@ -12,7 +12,8 @@ set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
 	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
 	analyzerloader.cpp oggthroughanalyzer.cpp
 	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp indexable.cpp
-	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp)
+	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp
+	bmpendanalyzer.cpp)
 
 if (Expat_FOUND)
   set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
