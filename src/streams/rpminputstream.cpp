@@ -228,7 +228,7 @@ int32_t
 RpmInputStream::readHexField(const char *b) {
     int32_t val = 0;
     char c;
-    for (char i=0; i<8; ++i) {
+    for (unsigned char i=0; i<8; ++i) {
         val <<= 4;
         c = b[i];
         if (c > '9') {
