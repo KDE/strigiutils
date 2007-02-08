@@ -218,9 +218,9 @@ Query::highlight(const string& text) const {
                 len = k->length();
             }
         }
-        if (rep >= 0) {
+        if (rep != string::npos) {
             string::size_type p1 = t.find(" ", rep-pre);
-            if (p1 == string::npos) p1 = (rep-pre < 0) ?0 : rep-pre;
+            if (p1 == string::npos) p1 = rep-pre;
             string::size_type p4 = t.find(" ", rep+len+post);
             if (p4 == string::npos) p4 = t.length();
             out += t.substr(p1, rep-p1);
