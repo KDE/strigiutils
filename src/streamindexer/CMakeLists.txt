@@ -41,7 +41,7 @@ set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(streamindexer streams ${streamindex_LIBS})
+target_link_libraries(streamindexer streams ${streamindex_LIBS} dl)
 
 install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
 	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
