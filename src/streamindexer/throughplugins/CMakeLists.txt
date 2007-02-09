@@ -18,7 +18,7 @@ if (Magic_FOUND)
     PREFIX strigita_
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
-  target_link_libraries(magic ${MAGIC_LIBRARIES})
+  target_link_libraries(magic ${MAGIC_LIBRARIES} streamindexer)
   install(TARGETS magic LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 endif (Magic_FOUND)
 
