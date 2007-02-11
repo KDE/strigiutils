@@ -20,12 +20,20 @@
 #include "jstreamsconfig.h"
 #include "bmpendanalyzer.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 #include <sstream>
 using namespace std;
 using namespace jstreams;
 
+const cnstr BmpEndAnalyzerFactory::typeFieldName("type");
+const cnstr BmpEndAnalyzerFactory::compressionFieldName("compression");
+
 void
-BmpEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.registerField(typeFieldName, FieldRegister::stringType,
+        1, 0);
+    compressionField = reg.registerField(compressionFieldName,
+        FieldRegister::stringType, 1, 0);
 }
 
 bool
@@ -42,7 +50,7 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ok;
 }
 char
-BmpEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+BmpEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     // read BMP file type and ensure it is not damaged
     const char * bmptype_bm = "BM";
     const char * bmptype_ba = "BA";

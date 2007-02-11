@@ -36,8 +36,8 @@ public:
 class BmpEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
 friend class BmpEndAnalyzer;
 private:
-    static cnstr typeFieldName;
-    static cnstr compressionFieldName;
+    static const cnstr typeFieldName;
+    static const cnstr compressionFieldName;
     const jstreams::RegisteredField* typeField;
     const jstreams::RegisteredField* compressionField;
     const char* getName() const {
