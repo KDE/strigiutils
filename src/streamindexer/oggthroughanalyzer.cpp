@@ -21,14 +21,15 @@
 #include "jstreamsconfig.h"
 #include "oggthroughanalyzer.h"
 #include "indexable.h"
+using namespace jstreams;
 using namespace std;
 
 void
-OggThroughAnalyzerFactory::registerFields(jstreams::FieldRegister&) {
+OggThroughAnalyzerFactory::registerFields(FieldRegister&) {
 }
 
 void
-OggThroughAnalyzer::setIndexable(jstreams::Indexable* i) {
+OggThroughAnalyzer::setIndexable(Indexable* i) {
     indexable = i;
 }
 int32_t
@@ -36,8 +37,8 @@ readSize(const char*b) {
     return (int32_t)b[0] + (int32_t)(b[1]<<8) + (int32_t)(b[2]<<16)
         + (int32_t)(b[3]<<24);
 }
-jstreams::InputStream*
-OggThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
+InputStream*
+OggThroughAnalyzer::connectInputStream(InputStream* in) {
     const char* buf;
     // read 1024 initially
     int32_t nreq = 1024;
@@ -85,7 +86,7 @@ OggThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
             if (eq < size - 1) {
                 string name(p2, eq);
                 string value(p2+eq+1, size-eq-1);
-                map<string, const jstreams::RegisteredField*>::const_iterator i
+                map<string, const RegisteredField*>::const_iterator i
                     = factory->fields.find(name);
                 if (i != factory->fields.end()) {
                     indexable->setField(i->second, value);

@@ -25,7 +25,7 @@
 using namespace jstreams;
 
 void
-ArEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+ArEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -33,19 +33,19 @@ ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ArInputStream::checkHeader(header, headersize);
 }
 char
-ArEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+ArEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     return staticAnalyze(idx, in);
 }
 char
-ArEndAnalyzer::staticAnalyze(jstreams::Indexable& idx,
-        jstreams::InputStream* in) {
+ArEndAnalyzer::staticAnalyze(Indexable& idx,
+        InputStream* in) {
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {
         idx.indexChild(ar.getEntryInfo().filename, ar.getEntryInfo().mtime, *s);
         s = ar.nextEntry();
     }
-    if (ar.getStatus() == jstreams::Error) {
+    if (ar.getStatus() == Error) {
         return -1;
 //        printf("Error: %s\n", ar.getError());
     } else {

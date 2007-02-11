@@ -28,7 +28,7 @@ using namespace jstreams;
 using namespace std;
 
 void
-GZipEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+GZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -37,7 +37,7 @@ GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         && (unsigned char)header[1] == 0x8b;
 }
 char
-GZipEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+GZipEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     GZipInputStream stream(in);
     // since this is gzip file, its likely that it contains a tar file
     const char* start;

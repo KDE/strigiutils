@@ -29,7 +29,7 @@ const cnstr PngEndAnalyzerFactory::widthFieldName("width");
 const cnstr PngEndAnalyzerFactory::heightFieldName("height");
 
 void
-PngEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField
         = reg.registerField(widthFieldName, FieldRegister::integerType, 1, 0);
     heightField = reg.registerField(heightFieldName,
@@ -43,7 +43,7 @@ PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize >= 24 &&  memcmp(header, pngmagic, 8) == 0;
 }
 char
-PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+PngEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     const char* h;
     int32_t n = in->read(h, 24, 24);
     in->reset(0);

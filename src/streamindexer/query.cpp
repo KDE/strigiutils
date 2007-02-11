@@ -78,7 +78,7 @@ QueryParser::buildQuery(const string& querystring, int32_t max, int32_t offset){
     return query;
 }/*
 bool
-operator<(const jstreams::Query&a,const jstreams::Query&b) {
+operator<(const Query&a,const Query&b) {
     return &a < &b;
 }*/
 void

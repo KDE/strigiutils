@@ -25,7 +25,7 @@
 using namespace jstreams;
 
 void
-ZipEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+ZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -33,7 +33,7 @@ ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ZipInputStream::checkHeader(header, headersize);
 }
 char
-ZipEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+ZipEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
     if (zip.getStatus()) {
@@ -45,7 +45,7 @@ ZipEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
             *s);
         s = zip.nextEntry();
     }
-    if (zip.getStatus() == jstreams::Error) {
+    if (zip.getStatus() == Error) {
         error = zip.getError();
         return -1;
     } else {

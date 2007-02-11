@@ -29,7 +29,7 @@ using namespace std;
 using namespace jstreams;
 
 void
-BZ2EndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+BZ2EndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -38,7 +38,7 @@ BZ2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return v;
 }
 char
-BZ2EndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+BZ2EndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     BZ2InputStream stream(in);
 /*    char r = testStream(&stream);
     if (r) {

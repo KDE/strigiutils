@@ -30,7 +30,7 @@ using namespace std;
 const cnstr SaxEndAnalyzerFactory::titleFieldName("title");
 
 void
-SaxEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+SaxEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 class SaxEndAnalyzer::Private {
@@ -185,7 +185,7 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-SaxEndAnalyzer::analyze(std::string filename, jstreams::InputStream *in,
+SaxEndAnalyzer::analyze(std::string filename, InputStream *in,
         int depth, StreamIndexer *indexer, Indexable* i) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);

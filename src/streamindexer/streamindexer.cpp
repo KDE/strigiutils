@@ -197,7 +197,7 @@ StreamIndexer::addEndAnalyzers() {
     }
 }
 char
-StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
+StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
 //    static int count = 1;
 //    if (++count % 1000 == 0) {
 //        fprintf(stderr, "file #%i: %s\n", count, path.c_str());

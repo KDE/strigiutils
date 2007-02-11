@@ -25,7 +25,7 @@
 using namespace jstreams;
 
 void
-RpmEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+RpmEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -33,7 +33,7 @@ RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return RpmInputStream::checkHeader(header, headersize);
 }
 char
-RpmEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+RpmEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     RpmInputStream rpm(in);
     InputStream *s = rpm.nextEntry();
     if (rpm.getStatus()) {
@@ -45,7 +45,7 @@ RpmEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
             *s);
         s = rpm.nextEntry();
     }
-    if (rpm.getStatus() == jstreams::Error) {
+    if (rpm.getStatus() == Error) {
         error = rpm.getError();
         return -1;
     } else {

@@ -57,7 +57,7 @@ bool PluginEndAnalyzer::checkHeader(const char* header,
     return false;
 }
 char
-PluginEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
+PluginEndAnalyzer::analyze(Indexable& idx, InputStream* in){
     if ( selectedEndAnalyzer ){
         char ret = selectedEndAnalyzer->analyze(idx, in);
         selectedEndAnalyzer = 0;

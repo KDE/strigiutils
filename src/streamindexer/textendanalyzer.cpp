@@ -26,7 +26,7 @@
 using namespace jstreams;
 
 void
-TextEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+TextEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -58,7 +58,7 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-TextEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+TextEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     if (idx.getEncoding().length()) {
 //        fprintf(stderr, "%s\n", idx.getEncoding().c_str());
     }

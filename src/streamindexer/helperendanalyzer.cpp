@@ -30,7 +30,7 @@ using namespace jstreams;
 using namespace std;
 
 void
-HelperEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+HelperEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 #ifdef WIN32
@@ -137,7 +137,7 @@ HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return helperconfig.findHelper(header, headersize) != 0;
 }
 char
-HelperEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
+HelperEndAnalyzer::analyze(Indexable& idx, InputStream* in){
     char state = -1;
     const char* b;
     int32_t nread = in->read(b, 1024, 0);
@@ -182,7 +182,7 @@ HelperEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in){
     return state;
 }
 string
-HelperEndAnalyzer::writeToTempFile(jstreams::InputStream *in) const {
+HelperEndAnalyzer::writeToTempFile(InputStream *in) const {
     string filepath = "/tmp/strigiXXXXXX";
     char* p = (char*)filepath.c_str();
     int fd = mkstemp(p);

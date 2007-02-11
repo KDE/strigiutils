@@ -25,7 +25,7 @@
 using namespace jstreams;
 
 void
-TarEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+TarEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
@@ -33,12 +33,12 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return TarInputStream::checkHeader(header, headersize);
 }
 char
-TarEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+TarEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     return staticAnalyze(idx, in);
 }
 char
-TarEndAnalyzer::staticAnalyze(jstreams::Indexable& idx,
-        jstreams::InputStream* in) {
+TarEndAnalyzer::staticAnalyze(Indexable& idx,
+        InputStream* in) {
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
@@ -46,7 +46,7 @@ TarEndAnalyzer::staticAnalyze(jstreams::Indexable& idx,
             *s);
         s = tar.nextEntry();
     }
-    if (tar.getStatus() == jstreams::Error) {
+    if (tar.getStatus() == Error) {
         return -1;
 //        printf("Error: %s\n", tar.getError());
     } else {

@@ -47,7 +47,7 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     return stream;
 }
 void
-DigestThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
+DigestThroughAnalyzer::setIndexable(Indexable* idx) {
     if (indexable && stream) { // && stream->getStatus() == Eof) {
         indexable->setField(shafield, stream->getDigestString());
 //        printf("%s: %s\n", indexable->getName().c_str(), stream->getDigestString().c_str());

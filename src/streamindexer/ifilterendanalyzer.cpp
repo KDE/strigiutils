@@ -94,7 +94,7 @@ IFilterEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return true;
 }
 char
-IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
+IFilterEndAnalyzer::analyze(Indexable& idx, InputStream *in) {
 	const string& filename = idx.getFileName();
 	int p = filename.find_last_of('.');
 	if ( p < 0 ||  extensions.find(filename.substr(p)) == extensions.end() ){
@@ -211,7 +211,7 @@ IFilterEndAnalyzer::analyze(jstreams::Indexable& idx, InputStream *in) {
 }
 
 string
-IFilterEndAnalyzer::writeToTempFile(jstreams::InputStream *in, const char* ext) const {
+IFilterEndAnalyzer::writeToTempFile(InputStream *in, const char* ext) const {
     string filepath = getenv("TMP");
 	if ( filepath.length() == 0 )
 		filepath = getenv("TEMP");
