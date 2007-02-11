@@ -22,21 +22,31 @@
 
 #include "streamendanalyzer.h"
 
+class BmpEndAnalyzerFactory;
 class BmpEndAnalyzer : public jstreams::StreamEndAnalyzer {
+private:
+    const BmpEndAnalyzerFactory* factory;
 public:
+    BmpEndAnalyzer(const BmpEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
     const char* getName() const { return "BmpEndAnalyzer"; }
 };
 
 class BmpEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
-public:
+friend class BmpEndAnalyzer;
+private:
+    static cnstr typeFieldName;
+    static cnstr compressionFieldName;
+    const jstreams::RegisteredField* typeField;
+    const jstreams::RegisteredField* compressionField;
     const char* getName() const {
         return "BmpEndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
-        return new BmpEndAnalyzer();
+        return new BmpEndAnalyzer(this);
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

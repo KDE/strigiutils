@@ -24,6 +24,10 @@
 using namespace std;
 using namespace jstreams;
 
+void
+BmpEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     bool ok = false;
@@ -52,17 +56,17 @@ BmpEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
     in->reset(0);
 
     if (memcmp(bmp_id, bmptype_bm, 2) == 0) {
-        idx.setField("Type", "Windows Bitmap");
+        idx.setField(factory->typeField, "Windows Bitmap");
     } else if (memcmp(bmp_id, bmptype_ba, 2) == 0) {
-        idx.setField("Type", "OS/2 Bitmap Array");
+        idx.setField(factory->typeField, "OS/2 Bitmap Array");
     } else if (memcmp(bmp_id, bmptype_ci, 2) == 0) {
-        idx.setField("Type", "OS/2 Color Icon");
+        idx.setField(factory->typeField, "OS/2 Color Icon");
     } else if (memcmp(bmp_id, bmptype_cp, 2) == 0) {
-        idx.setField("Type", "OS/2 Color Pointer");
+        idx.setField(factory->typeField, "OS/2 Color Pointer");
     } else if (memcmp(bmp_id, bmptype_ic, 2) == 0) {
-        idx.setField("Type", "OS/2 Icon");
+        idx.setField(factory->typeField, "OS/2 Icon");
     } else if (memcmp(bmp_id, bmptype_pt, 2) == 0) {
-        idx.setField("Type", "OS/2 Pointer");
+        idx.setField(factory->typeField, "OS/2 Pointer");
     } else {
         return -1;
     }
@@ -78,19 +82,19 @@ BmpEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
 
     switch (bmpi_compression) {
     case 0 :
-        idx.setField("Compression", "None");
+        idx.setField(factory->compressionField, "None");
         break;
     case 1 :
-        idx.setField("Compression", "RLE 8bit/pixel");
+        idx.setField(factory->compressionField, "RLE 8bit/pixel");
         break;
     case 2 :
-        idx.setField("Compression", "RLE 4bit/pixel");
+        idx.setField(factory->compressionField, "RLE 4bit/pixel");
         break;
     case 3 :
-        idx.setField("Compression", "Bitfields");
+        idx.setField(factory->compressionField, "Bitfields");
         break;
     default :
-        idx.setField("Compression", "Unknown");
+        idx.setField(factory->compressionField, "Unknown");
     }
 
     return 0;

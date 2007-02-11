@@ -53,10 +53,10 @@ friend class Indexable;
 protected:
     virtual void startIndexable(Indexable*) = 0;
     virtual void addText(const Indexable*, const char* text, int32_t length)=0;
-    virtual void addField(const Indexable*, const std::string &fieldname,
+    virtual void addField(const Indexable*, const RegisteredField* fieldname,
         const std::string& value) = 0;
-    virtual void addField(const Indexable*, const std::string &fieldname,
-        const unsigned char* data, int32_t size)=0;
+    virtual void addField(const Indexable*, const RegisteredField* fieldname,
+        const unsigned char* data, int32_t size) = 0;
     virtual void finishIndexable(const Indexable*) = 0;
 public:
     virtual ~IndexWriter() {}

@@ -19,96 +19,70 @@
  * Each object has the size of only an iterator which is the same size as
  * pointer to a character would be.
  **/
-class cnstr
-{
-  private:
+class cnstr {
+private:
     /* comparator for determining if s1 < s2 */
-    struct ltstr
-    {
-        bool operator() (const char *s1, const char *s2) const
-        {
-            return strcmp(s1, s2) < 0;
+    struct ltstr {
+        bool operator() (const char *s1, const char *s2) const {
+            return (s1 == 0) ?s2 != 0 : s2 != 0 && strcmp(s1, s2) < 0;
         }
     };
-    static int numRefs;
     // static version of default object to avoid a lookup call when
     // creating an unintialized object
-    static std::map<const char *, int, ltstr> strings;
-    static std::map<const char *, int, ltstr>::iterator nullpos;
+    std::map<const char *, int, ltstr>& strings() {
+        static std::map<const char *, int, ltstr> s;
+        return s;
+    }
     std::map<const char *, int, ltstr>::iterator pos;
 
-    void init(const char *s)
-    {
-        if (s == 0)
-        {
-            pos = nullpos;
-        }
-        else
-        {
-            // check if this string is already in memory
-            pos = strings.find(s);
-            if (pos == strings.end())
-            {   // if not add it
-                // create a copy
+    void init(const char *s) {
+        // check if this string is already in memory
+        pos = strings().find(s);
+        if (pos == strings().end()) {
+            // create a copy
+            if (s) {
                 int l = strlen(s);
                 char *c = new char[l + 1];
                 strcpy(c, s);
-                pos = strings.insert(std::make_pair(c, 1)).first;
+                s = c;
             }
-            else
-            {   // otherwise, just link to it
-                pos->second++;
-            }
-            numRefs++;
-        }
-    }
-    void clear()
-    {
-        if (pos != nullpos)
-        {
-            // decrease reference counter
-            if (--(pos->second) == 0)
-            {
-                //printf("deleting %s\n", pos->first);
-                delete [] pos->first;
-                strings.erase(pos);
-            }
-            numRefs--;
-            //printf("numRefs: %i, numWords: %i\n", numRefs, strings.size());
-        }
-    }
-    void copy(const cnstr & c)
-    {
-        pos = c.pos;
-        if (pos != nullpos)
-        {
+            pos = strings().insert(std::make_pair<const char *, int>(s, 1))
+                .first;
+        } else {   // otherwise, just link to it
             pos->second++;
-            numRefs++;
         }
     }
-  public:
+    void clear() {
+        // decrease reference counter
+        if (--(pos->second) == 0) {
+            if (pos->first) {
+                delete [] pos->first;
+            }
+            strings().erase(pos);
+        }
+    }
+    void copy(const cnstr & c) {
+        pos = c.pos;
+        pos->second++;
+    }
+public:
     static cnstr empty;
     static cnstr null;
-    cnstr(const char* c = 0)
-    {
+    cnstr(const char* c = 0) {
         init(c);
     }
-    cnstr(const cnstr& c)
-    {
+    cnstr(const cnstr& c) {
         copy(c);
     }
-    ~cnstr()
-    {
+    ~cnstr() {
         clear();
     }
-    cnstr& operator=(const cnstr& c)
-    {
+    cnstr& operator=(const cnstr& c) {
         clear();
         copy(c);
         return* this;
     }
-    cnstr& operator=(const char* c)
-    {
+    cnstr& operator=(const char* c) {
         clear();
         init(c);
         return* this;
@@ -119,30 +93,23 @@ class cnstr
      * because we simply compare pointers. We do not compare iterators,
      * because they are bidirectional and < is expensive for them.
      */
-    bool operator<(const cnstr& c) const
-    {
-        return (c.pos == nullpos) ? false : (pos == nullpos) ? true
-            : pos->first < c.pos->first;
+    bool operator<(const cnstr& c) const {
+        return pos->first < c.pos->first;
     }
-    bool operator==(const cnstr& c) const
-    {
+    bool operator==(const cnstr& c) const {
         return pos == c.pos;
     }
-    operator const char*() const
-    {
-        return (pos == nullpos) ? 0 : pos->first;
+    operator const char*() const {
+        return pos->first;
     }
-    const char *c_str() const
-    {
-        return (pos == nullpos) ? 0 : pos->first;
+    const char *c_str() const {
+        return pos->first;
     }
-    bool isInitialized() const
-    {
-        return pos != nullpos;
+    bool isInitialized() const {
+        return pos->first;
     }
-    size_t length() const
-    {
-        return (pos == nullpos) ? 0 : strlen(pos->first);
+    size_t length() const {
+        return (pos->first) ? strlen(pos->first) :0;
     }
 };
 

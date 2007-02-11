@@ -27,6 +27,8 @@ namespace jstreams {
 class IndexWriter;
 class IndexerConfiguration;
 class StreamIndexer;
+class RegisteredField;
+
 template <class T> class StreamBase;
 /**
  * Indexed representation of a file.
@@ -92,7 +94,7 @@ public:
      * @param fieldname utf8 representation of the fieldname, the fieldname
      *
      **/
-    void setField(const std::string& fieldname, const std::string& value);
+    void setField(const RegisteredField* fieldname, const std::string& value);
     /**
      * Get the filename of this Indexble. For the full name see getPath().
      **/

@@ -50,9 +50,13 @@
 using namespace std;
 using namespace jstreams;
 
+cnstr StreamIndexer::sizefieldname("size");
+
 StreamIndexer::StreamIndexer(IndexerConfiguration& c)
         :conf(c) {
     moduleLoader = new AnalyzerLoader();
+    sizefield = c.getFieldRegister().registerField(sizefieldname,
+        FieldRegister::integerType, 1, 0);
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     
@@ -134,6 +138,7 @@ StreamIndexer::initializeThroughFactories() {
 }
 void
 StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
+    f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         endfactories.push_back(f);
     } else {
@@ -268,7 +273,7 @@ StreamIndexer::analyze(Indexable& idx, jstreams::StreamBase<char>* input) {
         //tmp scope out tmp mem
         char tmp[100];
         sprintf(tmp, "%lli", input->getSize());
-        idx.setField("size", tmp);
+        idx.setField(sizefield, tmp);
     }
 
     // remove references to the indexable before it goes out of scope

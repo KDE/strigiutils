@@ -21,12 +21,15 @@
 #define IDV32THROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
+#include "fieldtypes.h"
 
 // id3v2 according to http://www.id3.org/id3v2.4.0-structure.txt
 
+class ID3V2ThroughAnalyzerFactory;
 class ID3V2ThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     jstreams::Indexable* indexable;
+    const ID3V2ThroughAnalyzerFactory* factory;
 public:
     ID3V2ThroughAnalyzer();
     ~ID3V2ThroughAnalyzer();
@@ -37,7 +40,14 @@ public:
 
 class ID3V2ThroughAnalyzerFactory
         : public jstreams::StreamThroughAnalyzerFactory {
+friend class ID3V2ThroughAnalyzer;
 private:
+    static cnstr titleFieldName;
+    static cnstr artistFieldName;
+    static cnstr albumFieldName;
+    const jstreams::RegisteredField* titleField;
+    const jstreams::RegisteredField* artistField;
+    const jstreams::RegisteredField* albumField;
     const char* getName() const {
         return "ID3V2ThroughAnalyzer";
     }

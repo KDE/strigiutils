@@ -40,6 +40,7 @@ public:
         return new ArEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

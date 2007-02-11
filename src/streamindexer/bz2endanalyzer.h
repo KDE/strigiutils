@@ -39,6 +39,7 @@ public:
         return new BZ2EndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

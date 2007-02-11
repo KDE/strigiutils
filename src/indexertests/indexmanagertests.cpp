@@ -97,7 +97,7 @@ IndexManagerTester::testNumberQuery() {
         string name('/'+value);
         {
              Indexable idx(name, 0, *writer, si);
-             idx.setField(size, value);
+             idx.setField(idx.config().getFieldRegister().sizeField, value);
         }
         str.str("");
     }

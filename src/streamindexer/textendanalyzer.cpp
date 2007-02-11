@@ -25,6 +25,10 @@
 #include "textutils.h"
 using namespace jstreams;
 
+void
+TextEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return checkUtf8(header, headersize);

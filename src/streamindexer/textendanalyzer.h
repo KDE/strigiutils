@@ -37,6 +37,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new TextEndAnalyzer();
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

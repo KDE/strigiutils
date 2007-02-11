@@ -34,18 +34,11 @@ Indexable::getExtension() const {
 }
 
 void
-Indexable::setField(const string& _fieldname, const std::string& value) {
-	string fieldname(_fieldname);
+Indexable::setField(const RegisteredField* fieldname, const std::string& value){
     // make sure only utf8 is stored
-    if (!checkUtf8(fieldname)) {
-        fprintf(stderr, "'%s' is not a UTF8 string\n", fieldname.c_str());
-        return;
-    }
     if (!checkUtf8(value)) {
         fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
         return;
     }
-    if (strchr(fieldname.c_str(), '/') == 0) {
-        writer.addField(this, fieldname, value);
-    }
+    writer.addField(this, fieldname, value);
 }

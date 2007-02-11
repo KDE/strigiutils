@@ -38,6 +38,7 @@ public:
         return new ZipEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 

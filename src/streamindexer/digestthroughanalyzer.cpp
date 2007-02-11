@@ -22,12 +22,16 @@
 #include "digestinputstream.h"
 #include "inputstream.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 using namespace std;
 using namespace jstreams;
 
-DigestThroughAnalyzer::DigestThroughAnalyzer() {
+cnstr DigestThroughAnalyzer::shafieldname("sha1");
+
+DigestThroughAnalyzer::DigestThroughAnalyzer(FieldRegister& reg) {
     stream = 0;
     indexable = 0;
+    shafield = reg.registerField(shafieldname, FieldRegister::binaryType, 1, 0);
 }
 DigestThroughAnalyzer::~DigestThroughAnalyzer() {
     if (stream) {
@@ -44,9 +48,8 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
 }
 void
 DigestThroughAnalyzer::setIndexable(jstreams::Indexable* idx) {
-    const static string sha1("sha1");
     if (indexable && stream) { // && stream->getStatus() == Eof) {
-        indexable->setField(sha1, stream->getDigestString());
+        indexable->setField(shafield, stream->getDigestString());
 //        printf("%s: %s\n", indexable->getName().c_str(), stream->getDigestString().c_str());
     }
 

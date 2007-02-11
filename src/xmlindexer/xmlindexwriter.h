@@ -23,6 +23,7 @@
 #include "indexwriter.h"
 #include "indexable.h"
 #include "tagmapping.h"
+#include "fieldtypes.h"
 #include <iostream>
 #include <map>
 
@@ -209,14 +210,16 @@ protected:
         Data* d = static_cast<Data*>(idx->getWriterData());
         d->text.append(text, length);
     }
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
-            const std::string& value) {
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(idx->getWriterData());
+        std::string f(field->getKey());
         d->values.insert(
-            std::make_pair<std::string,std::string>(fieldname, value));
+            std::make_pair<std::string,std::string>(f, value));
     }
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
-            const unsigned char* data, int32_t size) {}
+    void addField(const jstreams::Indexable*,
+        const jstreams::RegisteredField* fieldname,
+        const unsigned char* data, int32_t size) {}
 public:
     explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
             :out(o), mapping(m) {

@@ -21,10 +21,13 @@
 #define STREAMENDANALYZER_H
 
 #include "inputstream.h"
+#include "cnstr.h"
 
 namespace jstreams {
 class StreamIndexer;
 class Indexable;
+class RegisteredField;
+class FieldRegister;
 
 class StreamEndAnalyzer {
 protected:
@@ -42,6 +45,7 @@ class StreamEndAnalyzerFactory {
 public:
     virtual ~StreamEndAnalyzerFactory(){}
     virtual const char* getName() const = 0;
+    virtual void registerFields(jstreams::FieldRegister&) = 0;
     virtual StreamEndAnalyzer* newInstance() const = 0;
     virtual bool analyzesSubStreams() const { return false; }
 };

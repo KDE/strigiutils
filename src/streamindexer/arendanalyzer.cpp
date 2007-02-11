@@ -24,6 +24,10 @@
 #include "subinputstream.h"
 using namespace jstreams;
 
+void
+ArEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ArInputStream::checkHeader(header, headersize);

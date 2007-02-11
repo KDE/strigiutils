@@ -21,6 +21,7 @@
 #define STREAMINDEXER_H
 
 #include <vector>
+#include "cnstr.h"
 
 namespace jstreams {
 class StreamEndAnalyzer;
@@ -31,6 +32,8 @@ class IndexWriter;
 class Indexable;
 class AnalyzerLoader;
 class IndexerConfiguration;
+class RegisteredField;
+
 template <class T> class StreamBase;
 /**
  * The class StreamIndexer extracts information from files or character
@@ -46,7 +49,7 @@ template <class T> class StreamBase;
  **/
 class StreamIndexer {
 private:
-    //IndexWriter& writer;
+    static cnstr sizefieldname;
     IndexerConfiguration& conf;
     std::vector<jstreams::StreamThroughAnalyzerFactory*> throughfactories;
     std::vector<jstreams::StreamEndAnalyzerFactory*> endfactories;
@@ -54,6 +57,7 @@ private:
     std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
 
     AnalyzerLoader* moduleLoader;
+    const RegisteredField* sizefield;
     void initializeThroughFactories();
     void initializeEndFactories();
     void addFactory(StreamThroughAnalyzerFactory* f);

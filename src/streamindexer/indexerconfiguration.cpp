@@ -34,7 +34,8 @@ IndexerConfiguration::IndexerConfiguration() {
  * difference for text, because it should be tokenized.
  **/
 IndexerConfiguration::FieldType
-IndexerConfiguration::getIndexType(const std::string& fieldname) const {
+IndexerConfiguration::getIndexType(const jstreams::RegisteredField* field)
+        const {
     return Tokenized|Stored|Indexed;
 }
 bool

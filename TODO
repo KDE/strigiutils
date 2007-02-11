@@ -13,6 +13,8 @@
 - add the option to not refresh status automatically
 - get out a list of field names
 
+- set the lib version numbers to 0.0.0 until we stabilize the api
+
 quick way to parse desktop files according to dfaure:
 [17:57] <dfaure> vandenoever: if you want to populate strigi with the list of installed apps, I suggest KService::allServices()
 [17:57] <dfaure> this will get the list of services (parts and app) out of ksycoca quite fast
@@ -20,3 +22,6 @@ quick way to parse desktop files according to dfaure:
 
 - port KFilePlugin implementations to strigi analyzers:
   http://lxr.kde.org/ident?i=KFilePlugin
+
+- add support for IPTC, see http://nets.ii.uam.es/neptuno/iptc/
+- think about supporting very large files with nested files, such as 1 gb mailbox files

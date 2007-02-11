@@ -38,6 +38,7 @@ public:
         return new RpmEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

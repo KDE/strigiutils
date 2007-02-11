@@ -24,12 +24,12 @@ operator<<(std::ostream& out, const Path& e) {
 XMLStream& operator>>(XMLStream&, Path&);
 XMLStream&
 operator>>(XMLStream& in, Repository& e) {
-	in.setFromAttribute(e.a_indexdir,"indexdir");
-	in.setFromAttribute(e.a_urlbase,"urlbase");
-	in.setFromAttribute(e.a_type,"type");
-	in.setFromAttribute(e.a_pollingInterval,"pollingInterval");
-	in.setFromAttribute(e.a_writeable,"writeable");
 	in.setFromAttribute(e.a_name,"name");
+	in.setFromAttribute(e.a_writeable,"writeable");
+	in.setFromAttribute(e.a_pollingInterval,"pollingInterval");
+	in.setFromAttribute(e.a_urlbase,"urlbase");
+	in.setFromAttribute(e.a_indexdir,"indexdir");
+	in.setFromAttribute(e.a_type,"type");
 	const SimpleNode* n = in.firstChild();
 	bool hasChildren = n;
 	while (n && in.getTagName() == "path") {
@@ -44,8 +44,8 @@ operator>>(XMLStream& in, Repository& e) {
 	return in;
 }
 Repository::Repository(const std::string& xml) {
-	a_pollingInterval = 0;
 	a_writeable = false;
+	a_pollingInterval = 0;
 	if (xml.length()) {
 		XMLStream stream(xml);
 		stream >> *this;
@@ -54,12 +54,12 @@ Repository::Repository(const std::string& xml) {
 std::ostream&
 operator<<(std::ostream& out, const Repository& e) {
 	out << " <repository";
-	out << " indexdir='" << e.a_indexdir << "'";
-	out << " urlbase='" << e.a_urlbase << "'";
-	out << " type='" << e.a_type << "'";
-	out << " pollingInterval='" << e.a_pollingInterval << "'";
-	out << " writeable='" << e.a_writeable << "'";
 	out << " name='" << e.a_name << "'";
+	out << " writeable='" << e.a_writeable << "'";
+	out << " pollingInterval='" << e.a_pollingInterval << "'";
+	out << " urlbase='" << e.a_urlbase << "'";
+	out << " indexdir='" << e.a_indexdir << "'";
+	out << " type='" << e.a_type << "'";
 	out << ">\n";
 	std::list<Path>::const_iterator path_it;
 	for (path_it = e.e_path.begin(); path_it != e.e_path.end(); path_it++) {
@@ -71,8 +71,8 @@ operator<<(std::ostream& out, const Repository& e) {
 }
 XMLStream&
 operator>>(XMLStream& in, Filter& e) {
-	in.setFromAttribute(e.a_include,"include");
 	in.setFromAttribute(e.a_pattern,"pattern");
+	in.setFromAttribute(e.a_include,"include");
 	return in;
 }
 Filter::Filter(const std::string& xml) {
@@ -85,8 +85,8 @@ Filter::Filter(const std::string& xml) {
 std::ostream&
 operator<<(std::ostream& out, const Filter& e) {
 	out << " <filter";
-	out << " include='" << e.a_include << "'";
 	out << " pattern='" << e.a_pattern << "'";
+	out << " include='" << e.a_include << "'";
 	out << ">\n";
 	out << " </filter>\n";
 

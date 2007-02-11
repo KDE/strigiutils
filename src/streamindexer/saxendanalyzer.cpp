@@ -27,6 +27,12 @@
 using namespace jstreams;
 using namespace std;
 
+const cnstr SaxEndAnalyzerFactory::titleFieldName("title");
+
+void
+SaxEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 class SaxEndAnalyzer::Private {
 public:
     enum FieldType { NONE, TEXT, TITLE };
@@ -164,7 +170,8 @@ SaxEndAnalyzer::Private::endElementSAXFunc(void* ctx, const xmlChar* name) {
     }
     p->fieldtype = TEXT;
 }
-SaxEndAnalyzer::SaxEndAnalyzer() {
+SaxEndAnalyzer::SaxEndAnalyzer(const SaxEndAnalyzerFactory* f)
+        : factory(f) {
     p = new Private();
 }
 SaxEndAnalyzer::~SaxEndAnalyzer() {

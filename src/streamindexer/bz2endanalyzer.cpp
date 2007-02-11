@@ -28,6 +28,10 @@
 using namespace std;
 using namespace jstreams;
 
+void
+BZ2EndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 BZ2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     bool v = BZ2InputStream::checkHeader(header, headersize);

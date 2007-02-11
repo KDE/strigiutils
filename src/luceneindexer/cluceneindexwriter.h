@@ -40,9 +40,10 @@ protected:
     static void addField(const jstreams::Indexable* idx,
         jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
         const std::string& value);
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field, const std::string& value);
     void addField(const jstreams::Indexable*,
-        const std::string& fieldname, const std::string& value);
-    void addField(const jstreams::Indexable*, const std::string& fieldname,
+        const jstreams::RegisteredField* fieldname,
         const unsigned char* data, int32_t size) {}
 public:
     explicit CLuceneIndexWriter(CLuceneIndexManager* m);

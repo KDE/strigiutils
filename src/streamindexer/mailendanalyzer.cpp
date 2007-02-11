@@ -22,17 +22,29 @@
 #include "mailinputstream.h"
 #include "indexable.h"
 #include "textendanalyzer.h"
+#include "fieldtypes.h"
 using namespace jstreams;
+
+const cnstr MailEndAnalyzerFactory::titleFieldName = "title";
+const cnstr MailEndAnalyzerFactory::contenttypeFieldName = "contenttype";
+
+void
+MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
+    titleField
+        = r.registerField(titleFieldName, FieldRegister::stringType, 1, 0);
+    contenttypeField = r.registerField(contenttypeFieldName,
+        FieldRegister::stringType, 1, 0);
+}
 
 bool
 MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return MailInputStream::checkHeader(header, headersize);
 }
 char
-MailEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
+MailEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
-    if (mail.getStatus() == jstreams::Error) {
+    if (mail.getStatus() == Error) {
         error = mail.getError();
         return -1;
     }
@@ -40,8 +52,8 @@ MailEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
         error = "mail contains no body";
         return -1;
     }*/
-    idx.setField("title", mail.getSubject());
-    idx.setField("contenttype", mail.getContentType());
+    idx.setField(factory->titleField, mail.getSubject());
+    idx.setField(factory->contenttypeField, mail.getContentType());
     TextEndAnalyzer tea;
     if (s != 0 && tea.analyze(idx, s) != 0) {
         error = "Error reading mail body.";
@@ -61,7 +73,7 @@ MailEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
         s = mail.nextEntry();
         n++;
     }
-    if (mail.getStatus() == jstreams::Error) {
+    if (mail.getStatus() == Error) {
         error = mail.getError();
         return -1;
     } else {

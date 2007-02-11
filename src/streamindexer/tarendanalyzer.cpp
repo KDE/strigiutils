@@ -24,6 +24,10 @@
 #include "indexable.h"
 using namespace jstreams;
 
+void
+TarEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return TarInputStream::checkHeader(header, headersize);

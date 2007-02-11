@@ -21,17 +21,22 @@
 #define DIGESTTHROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
+#include "cnstr.h"
 
 namespace jstreams {
     class DigestInputStream;
+    class RegisteredField;
+    class FieldRegister;
 }
 
 class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
+    static cnstr shafieldname;
     jstreams::DigestInputStream *stream;
     jstreams::Indexable* indexable;
+    const jstreams::RegisteredField* shafield;
 public:
-    DigestThroughAnalyzer();
+    DigestThroughAnalyzer(jstreams::FieldRegister& reg);
     ~DigestThroughAnalyzer();
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
@@ -44,8 +49,9 @@ private:
     const char* getName() const {
         return "DigestThroughAnalyzer";
     }
-    jstreams::StreamThroughAnalyzer* newInstance() const {
-        return new DigestThroughAnalyzer();
+    jstreams::StreamThroughAnalyzer* newInstance(jstreams::FieldRegister& reg)
+            const {
+        return new DigestThroughAnalyzer(reg);
     }
 };
 

@@ -77,11 +77,14 @@ ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
             }
             if (p[10] == 0 || p[10] == 1) { // text is ISO-8859-1 or utf8
                 if (strncmp("TIT2", p, 4) == 0) {
-                    indexable->setField("title", string(p+11, size-1));
+                    indexable->setField(factory->titleField,
+                        string(p+11, size-1));
                 } else if (strncmp("TPE1", p, 4) == 0) {
-                    indexable->setField("artist", string(p+11, size-1));
+                    indexable->setField(factory->artistField,
+                        string(p+11, size-1));
                 } else if (strncmp("TALB", p, 4) == 0) {
-                    indexable->setField("album", string(p+11, size-1));
+                    indexable->setField(factory->albumField,
+                        string(p+11, size-1));
                 }
             }
             p += size + 10;

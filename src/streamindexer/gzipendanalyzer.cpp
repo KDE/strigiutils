@@ -27,6 +27,10 @@
 using namespace jstreams;
 using namespace std;
 
+void
+GZipEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize > 2 && (unsigned char)header[0] == 0x1f

@@ -24,6 +24,10 @@
 #include "indexable.h"
 using namespace jstreams;
 
+void
+ZipEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ZipInputStream::checkHeader(header, headersize);

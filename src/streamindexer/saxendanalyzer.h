@@ -22,12 +22,13 @@
 
 #include "streamendanalyzer.h"
 
+class SaxEndAnalyzerFactory;
 class SaxEndAnalyzer : public jstreams::StreamEndAnalyzer {
 private:
     class Private;
     Private* p;
 public:
-    SaxEndAnalyzer();
+    SaxEndAnalyzer(const SaxEndAnalyzerFactory* f);
     ~SaxEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
@@ -35,13 +36,17 @@ public:
 };
 
 class SaxEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
-public:
+friend class SaxEndAnalyzer;
+private:
+    static const cnstr titleFieldName;
+    const jstreams::RegisteredField* titleField;
     const char* getName() const {
         return "SaxEndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
-        return new SaxEndAnalyzer();
+        return new SaxEndAnalyzer(this);
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

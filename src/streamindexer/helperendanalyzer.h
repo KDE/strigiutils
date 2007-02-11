@@ -37,6 +37,7 @@ public:
     HelperRecord* findHelper(const char* header, int32_t headersize) const;
 };
 
+class HelperEndAnalyzerFactory;
 class HelperEndAnalyzer : public jstreams::StreamEndAnalyzer {
 private:
     static const HelperProgramConfig helperconfig;
@@ -51,13 +52,14 @@ public:
 };
 
 class HelperEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
-public:
+private:
     const char* getName() const {
         return "HelperEndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new HelperEndAnalyzer();
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

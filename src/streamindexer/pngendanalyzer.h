@@ -23,6 +23,11 @@
 #include "streamendanalyzer.h"
 
 class PngEndAnalyzer : public jstreams::StreamEndAnalyzer {
+private:
+    static const cnstr widthfieldname;
+    static const cnstr heightfieldname;
+    jstreams::RegisteredField* widthfield;
+    jstreams::RegisteredField* heightfield;
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
@@ -37,6 +42,7 @@ public:
     jstreams::StreamEndAnalyzer* newInstance() const {
         return new PngEndAnalyzer();
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

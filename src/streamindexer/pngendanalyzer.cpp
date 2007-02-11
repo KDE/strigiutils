@@ -24,6 +24,10 @@
 using namespace std;
 using namespace jstreams;
 
+void
+PngEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     static const unsigned char pngmagic[]
@@ -44,10 +48,10 @@ PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
          + ((unsigned char)h[21]<<16) + ((unsigned char)h[20]<<24);
     ostringstream v;
     v << x;
-    idx.setField("width", v.str());
+    idx.setField(widthfield, v.str());
     v.str("");
     v << y;
-    idx.setField("height", v.str());
+    idx.setField(heightfield, v.str());
     return 0;
 }
 

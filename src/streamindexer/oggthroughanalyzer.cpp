@@ -23,8 +23,6 @@
 #include "indexable.h"
 using namespace std;
 
-OggThroughAnalyzer::OggThroughAnalyzer() :indexable(0) {
-}
 OggThroughAnalyzer::~OggThroughAnalyzer() {
 }
 void
@@ -85,7 +83,11 @@ OggThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
             if (eq < size - 1) {
                 string name(p2, eq);
                 string value(p2+eq+1, size-eq-1);
-                indexable->setField(name, value);
+                map<string, const jstreams::RegisteredField*>::const_iterator i
+                    = factory->fields.find(name);
+                if (i != factory->fields.end()) {
+                    indexable->setField(i->second, value);
+                }
             }
         }
         p2 += size;

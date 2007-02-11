@@ -21,9 +21,18 @@
 #include "saxendanalyzer.h"
 #include "inputstreamreader.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 #include <expat.h>
 using namespace jstreams;
 using namespace std;
+
+const cnstr SaxEndAnalyzerFactory::titleFieldName("title");
+
+void
+SaxEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    titleField = reg.registerField(titleFieldName, FieldRegister::stringType,
+        -1, 0);
+}
 
 class SaxEndAnalyzer::Private {
 public:
@@ -39,13 +48,14 @@ public:
     bool wellformed;
     bool html;
     string errorstring;
+    const SaxEndAnalyzerFactory* factory;
 
     static void charactersSAXFunc(void* ctx, const char * ch, int len);
     static void startElementSAXFunc(void * ctx, const char * name,
         const char ** atts);
     static void endElementSAXFunc(void * ctx, const char * name);
 
-    Private() {
+    Private(const SaxEndAnalyzerFactory* f) :factory(f) {
         idx = 0;
         parser = XML_ParserCreate(NULL);
     }
@@ -129,14 +139,14 @@ void
 SaxEndAnalyzer::Private::endElementSAXFunc(void* ctx, const char* name) {
     Private* p = (Private*)ctx;
     if (p->idx && p->fieldtype == TITLE && p->fieldvalue.size()) {
-        p->idx->setField("title", p->fieldvalue);
+        p->idx->setField(p->factory->titleField, p->fieldvalue);
         p->fieldvalue = "";
     }
     if (p->depth) p->depth--;
     p->fieldtype = TEXT;
 }
-SaxEndAnalyzer::SaxEndAnalyzer() {
-    p = new Private();
+SaxEndAnalyzer::SaxEndAnalyzer(const SaxEndAnalyzerFactory* f) {
+    p = new Private(f);
 }
 SaxEndAnalyzer::~SaxEndAnalyzer() {
     delete p;

@@ -29,6 +29,9 @@
 using namespace jstreams;
 using namespace std;
 
+void
+HelperEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
 
 #ifdef WIN32
     #include <fcntl.h>

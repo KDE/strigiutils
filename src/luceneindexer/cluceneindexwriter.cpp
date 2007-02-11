@@ -110,15 +110,15 @@ CLuceneIndexWriter::addField(const Indexable* idx,
 #endif
 }
 void
-CLuceneIndexWriter::addField(const Indexable* idx, const string& fieldname,
-        const string& value) {
+CLuceneIndexWriter::addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field, const std::string& value) {
     IndexerConfiguration::FieldType type
-        = idx->config().getIndexType(fieldname);
+        = idx->config().getIndexType(field);
     if (type == IndexerConfiguration::None) return;
 #if defined(_UCS2)
-    addField(idx, type, utf8toucs2(fieldname).c_str(), value);
+    addField(idx, type, utf8toucs2(field->getKey()).c_str(), value);
 #else
-    addField(idx, type, fieldname.c_str(), value);
+    addField(idx, type, field->getKey(), value);
 #endif
 }
 void
@@ -132,18 +132,19 @@ CLuceneIndexWriter::startIndexable(Indexable* idx) {
 */
 void
 CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
-    addField(idx, "path", idx->getPath());
+    const FieldRegister& fr = idx->config().getFieldRegister();
+    addField(idx, fr.pathField, idx->getPath());
     string field = idx->getEncoding();
-    if (field.length()) addField(idx, "encoding", field);
+    if (field.length()) addField(idx, fr.encodingField, field);
     field = idx->getMimeType();
-    if (field.length()) addField(idx, "mimetype", field);
+    if (field.length()) addField(idx, fr.mimetypeField, field);
     field = idx->getFileName();
-    if (field.length()) addField(idx, "filename", field);
+    if (field.length()) addField(idx, fr.filenameField, field);
     field = idx->getExtension();
-    if (field.length()) addField(idx, "ext", field);
+    if (field.length()) addField(idx, fr.extensionField, field);
     ostringstream o;
     o << (int)idx->getDepth();
-    addField(idx, "depth", o.str());
+    addField(idx, fr.embeddepthField, o.str());
     o.str("");
     {
         char tmp[100];
@@ -151,7 +152,7 @@ CLuceneIndexWriter::finishIndexable(const Indexable* idx) {
         o << tmp;
     }
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
-    addField(idx, "mtime", o.str());
+    addField(idx, fr.mtimeField, o.str());
     wstring c(utf8toucs2(doc->content));
     StringReader<char>* sr = NULL; //we use this for compressed streams
 

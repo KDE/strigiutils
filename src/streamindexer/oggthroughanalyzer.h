@@ -21,14 +21,18 @@
 #define OGGTHROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
+#include "fieldtypes.h"
+#include <map>
 
 // ogg according to http://tools.ietf.org/html/rfc3533
 
+class OggThroughAnalyzerFactory;
 class OggThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     jstreams::Indexable* indexable;
+    const OggThroughAnalyzerFactory* factory;
 public:
-    OggThroughAnalyzer();
+    OggThroughAnalyzer(const OggThroughAnalyzerFactory* f) :factory(f) {}
     ~OggThroughAnalyzer();
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
@@ -37,12 +41,14 @@ public:
 
 class OggThroughAnalyzerFactory
         : public jstreams::StreamThroughAnalyzerFactory {
+friend class OggThroughAnalyzer;
 private:
+    std::map<std::string, const jstreams::RegisteredField*> fields;
     const char* getName() const {
         return "OggThroughAnalyzer";
     }
     jstreams::StreamThroughAnalyzer* newInstance() const {
-        return new OggThroughAnalyzer();
+        return new OggThroughAnalyzer(this);
     }
 };
 

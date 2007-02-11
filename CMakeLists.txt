@@ -6,7 +6,7 @@ set(STRIGI_VERSION_PATCH 11)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.2 FATAL_ERROR)
 
 # include specific modules
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # include general modules
 include(UsePkgConfig)
@@ -77,7 +77,7 @@ if(ENABLE_SQLITE)
   find_package(SQLite)
 endif(ENABLE_SQLITE)
 find_package(Libxml2)
-find_package(XAttr)
+#find_package(XAttr)
 set(QT_MIN_VERSION "4.2.0")
 find_package(Qt4)
 if (NOT QT4_FOUND)

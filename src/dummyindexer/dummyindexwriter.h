@@ -22,6 +22,7 @@
 
 #include "indexable.h"
 #include "indexwriter.h"
+#include "fieldtypes.h"
 
 class DummyIndexWriter : public jstreams::IndexWriter {
 private:
@@ -51,18 +52,20 @@ protected:
                 text);
         }
     }
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
-            const std::string& value) {
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field, const std::string& value) {
         if (verbosity > 1) {
             printf("%s: setField '%s': '%s'\n", idx->getPath().c_str(),
-                fieldname.c_str(), value.c_str());
-        } else if (verbosity == -1 && fieldname == "sha1") {
+                (const char*)field->getKey(), value.c_str());
+        } else if (verbosity == -1
+                && strcmp(field->getKey(), "sha1") == 0) {
             std::string* s = static_cast<std::string*>(idx->getWriterData());
             *s = value;
         }
     }
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
-        const unsigned char* data, int32_t size) {}
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* fieldname, const unsigned char* data,
+        int32_t size) {}
 public:
     DummyIndexWriter(int v = 0) {
         verbosity = v;

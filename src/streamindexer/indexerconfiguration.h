@@ -21,6 +21,8 @@
 #define INDEXERCONFIGURATION_H
 #include <string>
 #include <vector>
+#include "fieldtypes.h"
+
 /**
  * This class allows the Indexable to determine how each field should be
  * indexed.
@@ -28,6 +30,7 @@
 namespace jstreams {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+class FieldRegister;
 
 class IndexerConfiguration {
 public:
@@ -45,6 +48,7 @@ private:
     std::vector<Pattern> patterns;
     std::vector<Pattern> dirpatterns;
     std::vector<std::pair<bool,std::string> > filters;
+    FieldRegister fieldregister;
 
 public:
     IndexerConfiguration();
@@ -61,12 +65,13 @@ public:
     virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
-    virtual FieldType getIndexType(const std::string& fieldname) const;
+    virtual FieldType getIndexType(const jstreams::RegisteredField* f) const;
 
     void setFilters(const std::vector<std::pair<bool,std::string> >& filters);
     const std::vector<std::pair<bool,std::string> >& getFilters() const {
         return filters;
     }
+    FieldRegister& getFieldRegister() { return fieldregister; }
 };
 
 /**

@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include "grepindexwriter.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 using namespace std;
 
 GrepIndexWriter::GrepIndexWriter(const char* re) {
@@ -62,9 +63,9 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
 }
 void
 GrepIndexWriter::addField(const jstreams::Indexable* idx,
-        const std::string &fieldname, const std::string& value) {
+            const jstreams::RegisteredField* field, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
-        printf("%s:%s:%s\n", idx->getPath().c_str(), fieldname.c_str(),
-            value.c_str());
+        printf("%s:%s:%s\n", idx->getPath().c_str(),
+            (const char*)field->getKey(), value.c_str());
     }
 }

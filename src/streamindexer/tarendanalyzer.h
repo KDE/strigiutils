@@ -40,6 +40,7 @@ public:
         return new TarEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

@@ -22,22 +22,33 @@
 
 #include "streamendanalyzer.h"
 
+class MailEndAnalyzerFactory;
 class MailEndAnalyzer : public jstreams::StreamEndAnalyzer {
+private:
+    const MailEndAnalyzerFactory* factory;
 public:
+    MailEndAnalyzer(const MailEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
     const char* getName() const { return "MailEndAnalyzer"; }
 };
 
 class MailEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+friend class MailEndAnalyzer;
+private:
+    const static cnstr titleFieldName;
+    const static cnstr contenttypeFieldName;
+    const jstreams::RegisteredField* titleField;
+    const jstreams::RegisteredField* contenttypeField;
 public:
     const char* getName() const {
         return "MailEndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
-        return new MailEndAnalyzer();
+        return new MailEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 #endif

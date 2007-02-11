@@ -24,6 +24,10 @@
 #include "indexable.h"
 using namespace jstreams;
 
+void
+RpmEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+}
+
 bool
 RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return RpmInputStream::checkHeader(header, headersize);
