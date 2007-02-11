@@ -22,25 +22,29 @@
 
 #include "streamendanalyzer.h"
 
+class PngEndAnalyzerFactory;
 class PngEndAnalyzer : public jstreams::StreamEndAnalyzer {
 private:
-    static const cnstr widthfieldname;
-    static const cnstr heightfieldname;
-    jstreams::RegisteredField* widthfield;
-    jstreams::RegisteredField* heightfield;
-public:
+    const PngEndAnalyzerFactory* factory;
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
     const char* getName() const { return "PngEndAnalyzer"; }
+public:
+    PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {}
 };
 
 class PngEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
-public:
+friend class PngEndAnalyzer;
+private:
+    static const cnstr widthFieldName;
+    static const cnstr heightFieldName;
+    const jstreams::RegisteredField* widthField;
+    const jstreams::RegisteredField* heightField;
     const char* getName() const {
         return "PngEndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
-        return new PngEndAnalyzer();
+        return new PngEndAnalyzer(this);
     }
     void registerFields(jstreams::FieldRegister&);
 };

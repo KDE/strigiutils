@@ -20,12 +20,20 @@
 #include "jstreamsconfig.h"
 #include "pngendanalyzer.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 #include <sstream>
 using namespace std;
 using namespace jstreams;
 
+const cnstr PngEndAnalyzerFactory::widthFieldName("width");
+const cnstr PngEndAnalyzerFactory::heightFieldName("height");
+
 void
 PngEndAnalyzerFactory::registerFields(jstreams::FieldRegister& reg) {
+    widthField
+        = reg.registerField(widthFieldName, FieldRegister::integerType, 1, 0);
+    heightField = reg.registerField(heightFieldName,
+        FieldRegister::integerType, 1, 0);
 }
 
 bool
@@ -48,10 +56,10 @@ PngEndAnalyzer::analyze(jstreams::Indexable& idx, jstreams::InputStream* in) {
          + ((unsigned char)h[21]<<16) + ((unsigned char)h[20]<<24);
     ostringstream v;
     v << x;
-    idx.setField(widthfield, v.str());
+    idx.setField(factory->widthField, v.str());
     v.str("");
     v << y;
-    idx.setField(heightfield, v.str());
+    idx.setField(factory->heightField, v.str());
     return 0;
 }
 
