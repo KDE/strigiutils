@@ -38,6 +38,7 @@
 #include "oggthroughanalyzer.h"
 #include "digestthroughanalyzer.h"
 #include "indexable.h"
+#include "indexwriter.h"
 #include "indexerconfiguration.h"
 #include "textutils.h"
 #include "analyzerloader.h"
@@ -53,7 +54,7 @@ using namespace jstreams;
 cnstr StreamIndexer::sizefieldname("size");
 
 StreamIndexer::StreamIndexer(IndexerConfiguration& c)
-        :conf(c) {
+        :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.getFieldRegister().registerField(sizefieldname,
         FieldRegister::integerType, 1, 0);
@@ -96,15 +97,29 @@ StreamIndexer::~StreamIndexer() {
         }
     }
     delete moduleLoader;
+    if (writer != 0) {
+        writer->releaseWriterData(conf.getFieldRegister());
+    }
+}
+void
+StreamIndexer::setIndexWriter(IndexWriter& w) {
+    if (writer != 0) {
+        writer->releaseWriterData(conf.getFieldRegister());
+    }
+    writer = &w;
+    writer->initWriterData(conf.getFieldRegister());
 }
 char
-StreamIndexer::indexFile(const char *filepath, IndexWriter& writer) {
+StreamIndexer::indexFile(const char *filepath) {
     std::string path(filepath);
-    return indexFile(path, writer);
+    return indexFile(path);
 }
 char
-StreamIndexer::indexFile(const std::string& filepath, IndexWriter& writer) {
+StreamIndexer::indexFile(const std::string& filepath) {
     if (!checkUtf8(filepath.c_str())) {
+        return 1;
+    }
+    if (writer == 0) {
         return 1;
     }
     struct stat s;
@@ -113,7 +128,7 @@ StreamIndexer::indexFile(const std::string& filepath, IndexWriter& writer) {
     // ensure a decent buffer size
     //file.mark(65530);
     string name;
-    Indexable indexable(filepath, s.st_mtime, writer, *this);
+    Indexable indexable(filepath, s.st_mtime, *writer, *this);
     return indexable.index(file);
 }
 void

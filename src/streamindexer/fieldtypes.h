@@ -10,13 +10,17 @@ friend class FieldRegister;
 private:
     const cnstr key;
     const cnstr type;
-    const int maxoccurs;
     const RegisteredField* parent;
+    void* writerdata;
+    const int maxoccurs;
+
     RegisteredField();
     RegisteredField(const cnstr& key, const cnstr& type, int maxoccurs,
         const RegisteredField* parent);
 public:
     const cnstr& getKey() const { return key; }
+    void* getWriterData() const { return writerdata; }
+    void setWriterData(void* d) { writerdata = d; }
 };
 
 class FieldRegister {

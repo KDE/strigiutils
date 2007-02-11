@@ -55,6 +55,7 @@ private:
     std::vector<jstreams::StreamEndAnalyzerFactory*> endfactories;
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
     std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
+    IndexWriter* writer;
 
     AnalyzerLoader* moduleLoader;
     const RegisteredField* sizefield;
@@ -68,8 +69,9 @@ private:
 public:
     StreamIndexer(IndexerConfiguration& c);
     ~StreamIndexer();
-    char indexFile(const char *filepath, IndexWriter& writer);
-    char indexFile(const std::string& filepath, IndexWriter& writer);
+    void setIndexWriter(IndexWriter& writer);
+    char indexFile(const char *filepath);
+    char indexFile(const std::string& filepath);
     char analyze(Indexable& idx, jstreams::StreamBase<char> *input);
     IndexerConfiguration& getConfiguration() const { return conf; }
 };

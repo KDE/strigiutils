@@ -28,6 +28,7 @@ namespace jstreams {
 
 template <class T>
 class StreamBase;
+class FieldRegister;
 
 /*
 - create indexwriter
@@ -84,6 +85,8 @@ public:
      * diskspace.
      **/
     virtual void optimize() {}
+    virtual void initWriterData(const jstreams::FieldRegister&) {}
+    virtual void releaseWriterData(const jstreams::FieldRegister&) {}
 };
 }
 
