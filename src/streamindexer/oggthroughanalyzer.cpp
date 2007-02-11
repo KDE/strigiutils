@@ -23,8 +23,10 @@
 #include "indexable.h"
 using namespace std;
 
-OggThroughAnalyzer::~OggThroughAnalyzer() {
+void
+OggThroughAnalyzerFactory::registerFields(jstreams::FieldRegister&) {
 }
+
 void
 OggThroughAnalyzer::setIndexable(jstreams::Indexable* i) {
     indexable = i;

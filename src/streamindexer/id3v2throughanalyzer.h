@@ -31,8 +31,8 @@ private:
     jstreams::Indexable* indexable;
     const ID3V2ThroughAnalyzerFactory* factory;
 public:
-    ID3V2ThroughAnalyzer();
-    ~ID3V2ThroughAnalyzer();
+    ID3V2ThroughAnalyzer(const ID3V2ThroughAnalyzerFactory* f)
+        :indexable(0), factory(f) {}
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
@@ -42,9 +42,9 @@ class ID3V2ThroughAnalyzerFactory
         : public jstreams::StreamThroughAnalyzerFactory {
 friend class ID3V2ThroughAnalyzer;
 private:
-    static cnstr titleFieldName;
-    static cnstr artistFieldName;
-    static cnstr albumFieldName;
+    static const cnstr titleFieldName;
+    static const cnstr artistFieldName;
+    static const cnstr albumFieldName;
     const jstreams::RegisteredField* titleField;
     const jstreams::RegisteredField* artistField;
     const jstreams::RegisteredField* albumField;
@@ -52,8 +52,9 @@ private:
         return "ID3V2ThroughAnalyzer";
     }
     jstreams::StreamThroughAnalyzer* newInstance() const {
-        return new ID3V2ThroughAnalyzer();
+        return new ID3V2ThroughAnalyzer(this);
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 

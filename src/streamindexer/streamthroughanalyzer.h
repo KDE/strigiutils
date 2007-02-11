@@ -23,6 +23,7 @@
 #include "inputstream.h"
 namespace jstreams {
 class Indexable;
+class FieldRegister;
 /**
  * This class defines an interface for analyzing streams.
  * This interface is not yet complete, it lacks good functions for retrieving
@@ -51,6 +52,7 @@ public:
     virtual ~StreamThroughAnalyzerFactory(){}
     virtual const char* getName() const = 0;
     virtual StreamThroughAnalyzer* newInstance() const = 0;
+    virtual void registerFields(jstreams::FieldRegister&) = 0;
 };
 
 }

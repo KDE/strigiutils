@@ -21,14 +21,25 @@
 #include "jstreamsconfig.h"
 #include "id3v2throughanalyzer.h"
 #include "indexable.h"
+using namespace jstreams;
 using namespace std;
 
-ID3V2ThroughAnalyzer::ID3V2ThroughAnalyzer() :indexable(0) {
-}
-ID3V2ThroughAnalyzer::~ID3V2ThroughAnalyzer() {
-}
+const cnstr ID3V2ThroughAnalyzerFactory::titleFieldName("title");
+const cnstr ID3V2ThroughAnalyzerFactory::artistFieldName("artist");
+const cnstr ID3V2ThroughAnalyzerFactory::albumFieldName("album");
+
 void
-ID3V2ThroughAnalyzer::setIndexable(jstreams::Indexable* i) {
+ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
+    titleField = r.registerField(titleFieldName, FieldRegister::stringType,
+        1, 0);
+    artistField = r.registerField(artistFieldName, FieldRegister::stringType,
+        1, 0);
+    albumField = r.registerField(albumFieldName, FieldRegister::stringType,
+        1, 0);
+}
+
+void
+ID3V2ThroughAnalyzer::setIndexable(Indexable* i) {
     indexable = i;
 }
 int32_t
@@ -44,8 +55,8 @@ readSize(const unsigned char* b, bool async) {
     return (((int32_t)b[0])<<24) + (((int32_t)b[1])<<16)
             + (((int32_t)b[2])<<8) + ((int32_t)b[3]);
 }
-jstreams::InputStream*
-ID3V2ThroughAnalyzer::connectInputStream(jstreams::InputStream* in) {
+InputStream*
+ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);

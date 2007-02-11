@@ -73,6 +73,7 @@ private:
     StreamThroughAnalyzer* newInstance() const {
         return new MimeTypeThroughAnalyzer();
     }
+    void registerFields(jstreams::FieldRegister&) {}
 };
 
 class Factory : public AnalyzerFactoryFactory {

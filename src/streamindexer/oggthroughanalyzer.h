@@ -33,7 +33,7 @@ private:
     const OggThroughAnalyzerFactory* factory;
 public:
     OggThroughAnalyzer(const OggThroughAnalyzerFactory* f) :factory(f) {}
-    ~OggThroughAnalyzer();
+    ~OggThroughAnalyzer() {}
     void setIndexable(jstreams::Indexable*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
@@ -50,6 +50,7 @@ private:
     jstreams::StreamThroughAnalyzer* newInstance() const {
         return new OggThroughAnalyzer(this);
     }
+    void registerFields(jstreams::FieldRegister&);
 };
 
 

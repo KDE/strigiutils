@@ -118,6 +118,7 @@ StreamIndexer::indexFile(const std::string& filepath, IndexWriter& writer) {
 }
 void
 StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
+    f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         throughfactories.push_back(f);
     } else {
