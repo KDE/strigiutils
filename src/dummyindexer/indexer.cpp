@@ -30,6 +30,7 @@ Indexer *Indexer::workingIndexer;
 Indexer::Indexer(jstreams::IndexWriter& w, jstreams::IndexerConfiguration& c)
         : m_writer(w), m_indexer(c) {
     m_lister = new FileLister(c);
+    m_indexer.setIndexWriter(w);
 }
 Indexer::~Indexer() {
     delete m_lister;
@@ -65,5 +66,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath, m_writer);
+    m_indexer.indexFile(filepath);
 }

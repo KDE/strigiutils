@@ -32,6 +32,7 @@ Indexer *Indexer::workingIndexer;
 Indexer::Indexer(ostream& o, IndexerConfiguration& ic, const char* mappingfile)
     :out(o), writer(out, mapping), m_indexer(ic), mapping(mappingfile) {
     m_lister = new FileLister(ic);
+    m_indexer.setIndexWriter(writer);
     out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");
     map<string, string>::const_iterator i = mapping.getNamespaces().begin();
@@ -78,5 +79,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath, writer);
+    m_indexer.indexFile(filepath);
 }
