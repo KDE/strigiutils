@@ -24,8 +24,9 @@
 
 class SaxEndAnalyzerFactory;
 class SaxEndAnalyzer : public jstreams::StreamEndAnalyzer {
-private:
+public:
     class Private;
+private:
     Private* p;
 public:
     SaxEndAnalyzer(const SaxEndAnalyzerFactory* f);
@@ -36,9 +37,10 @@ public:
 };
 
 class SaxEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
-friend class SaxEndAnalyzer;
-private:
+friend class SaxEndAnalyzer::Private;
+public:
     static const cnstr titleFieldName;
+private:
     const jstreams::RegisteredField* titleField;
     const char* getName() const {
         return "SaxEndAnalyzer";
