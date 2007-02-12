@@ -24,14 +24,20 @@
 #include "indexable.h"
 #include "tagmapping.h"
 #include "fieldtypes.h"
+#include "indexerconfiguration.h"
 #include <iostream>
+#include <sstream>
 #include <map>
 
 class XmlIndexWriter : public jstreams::IndexWriter {
 private:
     struct Data {
-         std::multimap<std::string, std::string> values;
+         std::multimap<const jstreams::RegisteredField*, std::string> values;
          std::string text;
+    };
+    struct Tag {
+         std::string open;
+         std::string close;
     };
 
     std::ostream& out;
@@ -163,18 +169,14 @@ protected:
         void* m = new Data();
         idx->setWriterData(m);
     }
-    void printValue(const std::string& name, std::string& value) {
-        const std::string* s = &name;
-        const std::string& n = mapping.map(name);
+    void printValue(const jstreams::RegisteredField* name, std::string& value) {
+        const Tag* tag = static_cast<const Tag*>(name->getWriterData());
         escape(value);
-        if (s == &n) {
-            out << "  <value name='" << n << "'>" << value << "</value>\n";
-        } else {
-            out << "  <" << n << ">" << value << "</" << n << ">\n";
-        }
+        out << tag->open << value << tag->close;
     }
     void finishIndexable(const jstreams::Indexable* idx) {
         Data* d = static_cast<Data*>(idx->getWriterData());
+        const jstreams::FieldRegister& fr = idx->config().getFieldRegister();
         std::string v = idx->getPath();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")
@@ -184,19 +186,23 @@ protected:
 
         if (idx->getMimeType().size()) {
             v.assign(idx->getMimeType());
-            printValue("mimetype", v);
+            printValue(fr.mimetypeField, v);
         }
         if (idx->getEncoding().size()) {
             v.assign(idx->getEncoding());
-            printValue("encoding", v);
+            printValue(fr.encodingField, v);
         }
 
-        std::multimap<std::string, std::string>::iterator i, end;
+        std::multimap<const jstreams::RegisteredField*, std::string>::iterator
+            i, end;
         end = d->values.end();
         for (i = d->values.begin(); i != end; ++i) {
             printValue(i->first, i->second);
         }
-        out << "  <value name='depth'>" << (int)idx->getDepth() << "</value>\n";
+        std::ostringstream oss;
+        oss << (int)idx->getDepth();
+        v = oss.str();
+        printValue(fr.embeddepthField, v);
         if (d->text.size() > 0) {
             out << "  <text>";
             printText(d->text);
@@ -213,13 +219,15 @@ protected:
     void addField(const jstreams::Indexable* idx,
         const jstreams::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(idx->getWriterData());
-        std::string f(field->getKey());
         d->values.insert(
-            std::make_pair<std::string,std::string>(f, value));
+            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            field, value));
     }
     void addField(const jstreams::Indexable*,
         const jstreams::RegisteredField* fieldname,
         const unsigned char* data, int32_t size) {}
+    void initWriterData(const jstreams::FieldRegister&);
+    void releaseWriterData(const jstreams::FieldRegister&);
 public:
     explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
             :out(o), mapping(m) {
