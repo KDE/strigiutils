@@ -46,12 +46,15 @@ protected:
     void finishIndexable(const jstreams::Indexable*);
     void addText(const jstreams::Indexable* idx, const char* text,
         int32_t length);
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
-        const std::string& value);
-    void addField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field, const std::string& value);
+    void addField(const jstreams::Indexable* idx,
+        const jstreams::RegisteredField* field,
         const unsigned char* data, int32_t size) {}
     SqliteIndexWriter(SqliteIndexManager*, sqlite3*);
     ~SqliteIndexWriter();
+    void initWriterData(const jstreams::FieldRegister& f) {}
+    void releaseWriterData(const jstreams::FieldRegister& f) {}
 public:
     void commit();
     void deleteEntries(const std::vector<std::string>& entries);

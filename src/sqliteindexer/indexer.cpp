@@ -29,6 +29,7 @@ Indexer *Indexer::workingIndexer;
 Indexer::Indexer(const char *indexdir, jstreams::IndexerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_indexer(ic)
 {
+    m_indexer.setIndexWriter(*m_manager.getIndexWriter());
     m_lister = new FileLister(ic);
 }
 Indexer::~Indexer() {
@@ -56,5 +57,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const std::string &filepath) {
-    m_indexer.indexFile(filepath.c_str(), *m_manager.getIndexWriter());
+    m_indexer.indexFile(filepath.c_str());
 }

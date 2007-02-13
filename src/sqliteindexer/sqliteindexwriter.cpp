@@ -20,6 +20,7 @@
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
 #include "indexable.h"
+#include "fieldtypes.h"
 #include <vector>
 #include <sstream>
 #include <cassert>
@@ -108,7 +109,7 @@ SqliteIndexWriter::addText(const Indexable* idx, const char* text,
     }
 }
 void
-SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
+SqliteIndexWriter::addField(const Indexable* idx, const RegisteredField* field,
         const string& value) {
     int64_t id = idx->getId();
     //id = -1; // debug
@@ -116,8 +117,8 @@ SqliteIndexWriter::addField(const Indexable* idx, const string &fieldname,
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
     sqlite3_bind_int64(insertvaluestmt, 1, idx->getId());
-    sqlite3_bind_text(insertvaluestmt, 2, fieldname.c_str(),
-        fieldname.length(), SQLITE_STATIC);
+    sqlite3_bind_text(insertvaluestmt, 2, field->getKey().c_str(),
+        field->getKey().length(), SQLITE_STATIC);
     sqlite3_bind_text(insertvaluestmt, 3, value.c_str(), value.length(),
         SQLITE_STATIC);
     int r = sqlite3_step(insertvaluestmt);
