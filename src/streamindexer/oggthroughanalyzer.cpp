@@ -25,7 +25,11 @@ using namespace jstreams;
 using namespace std;
 
 void
-OggThroughAnalyzerFactory::registerFields(FieldRegister&) {
+OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
+    fields["title"] = r.registerField("title", FieldRegister::stringType, 1, 0);
+    fields["album"] = r.registerField("album", FieldRegister::stringType, 1, 0);
+    fields["artist"] = r.registerField("artist", FieldRegister::stringType,
+        1, 0);
 }
 
 void
