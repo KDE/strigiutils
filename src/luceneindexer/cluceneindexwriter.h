@@ -45,6 +45,8 @@ protected:
     void addField(const jstreams::Indexable*,
         const jstreams::RegisteredField* fieldname,
         const unsigned char* data, int32_t size) {}
+    void initWriterData(const jstreams::FieldRegister& f);
+    void releaseWriterData(const jstreams::FieldRegister& f);
 public:
     explicit CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();

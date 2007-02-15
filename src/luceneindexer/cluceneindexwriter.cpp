@@ -366,3 +366,19 @@ CLuceneIndexWriter::cleanUp() {
 
 }
 
+void
+CLuceneIndexWriter::initWriterData(const FieldRegister& f) {
+    map<cnstr, RegisteredField*>::const_iterator i;
+    map<cnstr, RegisteredField*>::const_iterator end = f.getFields().end();
+    for (i = f.getFields().begin(); i != end; ++i) {
+        i->second->setWriterData(0);
+    }
+}
+void
+CLuceneIndexWriter::releaseWriterData(const FieldRegister& f) {
+    map<cnstr, RegisteredField*>::const_iterator i;
+    map<cnstr, RegisteredField*>::const_iterator end = f.getFields().end();
+    for (i = f.getFields().begin(); i != end; ++i) {
+        delete static_cast<int*>(i->second->getWriterData());
+    }
+}
