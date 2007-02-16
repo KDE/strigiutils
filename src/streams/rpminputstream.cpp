@@ -19,11 +19,10 @@
  */
 #include "jstreamsconfig.h"
 #include "rpminputstream.h"
+#include "cpioinputstream.h"
 #include "gzipinputstream.h"
 #include "bz2inputstream.h"
 #include "subinputstream.h"
-
-#include "dostime.h"
 
 #include <list>
 
@@ -48,7 +47,7 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
 }
 RpmInputStream::RpmInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), headerinfo(0) {
-    uncompressionStream = 0;
+    cpio = 0;
 
     // skip the header
     const char* b;
@@ -125,6 +124,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     } else {
         uncompressionStream = new GZipInputStream(input);
     }
+    cpio = new CpioInputStream(uncompressionStream);
     if (uncompressionStream->getStatus() == Error) {
         status = Error;
         return;
@@ -133,6 +133,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
 RpmInputStream::~RpmInputStream() {
     if (uncompressionStream) {
         delete uncompressionStream;
+        delete cpio;
     }
     if (headerinfo) {
         delete headerinfo;
@@ -141,101 +142,11 @@ RpmInputStream::~RpmInputStream() {
 StreamBase<char>*
 RpmInputStream::nextEntry() {
     if (status) return 0;
-    if (entrystream) {
-        while (entrystream->getStatus() == Ok) {
-            entrystream->skip(entrystream->getSize());
-        }
-        delete entrystream;
-        entrystream = 0;
-        if (padding) {
-            uncompressionStream->skip(padding);
-        }
-    }
-    readHeader();
-    if (status) return 0;
-    entrystream = new SubInputStream(uncompressionStream, entryinfo.size);
-    return entrystream;
+    StreamBase<char>* entry = cpio->nextEntry();
+    status = cpio->getStatus();
+    return entry;
 }
 int32_t
 RpmInputStream::read4bytes(const unsigned char *b) {
     return (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3];
-}
-void
-RpmInputStream::readHeader() {
-    //const unsigned char *hb;
-    const char *b;
-    int32_t toread;
-    int32_t nread;
-
-    // read the first 110 characters
-    toread = 110;
-    nread = uncompressionStream->read(b, toread, toread);
-    if (nread != toread) {
-        status = uncompressionStream->getStatus();
-        if (status == Eof) {
-            return;
-        }
-        error = "Error reading rpm entry: ";
-        if (nread == -1) {
-            error += uncompressionStream->getError();
-        } else {
-            error += " premature end of file.";
-        }
-        return;
-    }
-    // check header
-    if (memcmp(b, "070701", 6) != 0) {
-        status = Error;
-        error = "RPM Entry signature is unknown: ";
-        error.append(b, 6);
-        return;
-    }
-    entryinfo.size = readHexField(b+54);
-    entryinfo.mtime = readHexField(b+46);
-    int32_t filenamesize = readHexField(b+94);
-    if (status) {
-        error = "Error parsing entry field.";
-        return;
-    }
-    char namepadding = (filenamesize+2) % 4;
-    if (namepadding) namepadding = 4 - namepadding;
-    padding = entryinfo.size % 4;
-    if (padding) padding = 4-padding;
-
-    // read filename
-    toread = filenamesize+namepadding;
-    nread = uncompressionStream->read(b, toread, toread);
-    if (nread != toread) {
-        error = "Error reading rpm entry name.";
-        status = Error;
-        return;
-    }
-    int32_t len = filenamesize-1;
-    if (len > 2 && b[0] == '.' && b[1] == '/') {
-        b += 2;
-    }
-    // check if the name is not shorter than specified
-    len = 0;
-    while (len < filenamesize && b[len] != '\0') len++;
-    entryinfo.filename = std::string((const char*)b, len);
-
-    // if an rpm has an entry 'TRAILER!!!' we are at the end
-    if ("TRAILER!!!" == entryinfo.filename) {
-        status = Eof;
-    }
-}
-int32_t
-RpmInputStream::readHexField(const char *b) {
-    int32_t val = 0;
-    char c;
-    for (unsigned char i=0; i<8; ++i) {
-        val <<= 4;
-        c = b[i];
-        if (c > '9') {
-            val += 10+c-'a';
-        } else {
-            val += c-'0';
-        }
-    }
-    return val;
 }

@@ -30,6 +30,7 @@
 #include "arendanalyzer.h"
 #include "zipendanalyzer.h"
 #include "rpmendanalyzer.h"
+#include "cpioendanalyzer.h"
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
@@ -179,6 +180,7 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new MailEndAnalyzerFactory());
     addFactory(new ZipEndAnalyzerFactory());
     addFactory(new RpmEndAnalyzerFactory());
+    addFactory(new CpioEndAnalyzerFactory());
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());

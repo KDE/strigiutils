@@ -17,35 +17,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef RPMINPUTSTREAM_H
-#define RPMINPUTSTREAM_H
+#ifndef CPIOENDANALYZER
+#define CPIOENDANALYZER
 
-#include "substreamprovider.h"
+#include "streamendanalyzer.h"
 
-namespace jstreams {
-
-class CpioInputStream;
-class RpmInputStream : public SubStreamProvider {
-private:
-    // information relating to the current entry
-    StreamBase<char>* uncompressionStream;
-    CpioInputStream* cpio;
-    int32_t entryCompressedSize;
-    int32_t compressionMethod;
-    class RpmHeaderInfo;
-    RpmHeaderInfo *headerinfo;
-
-    static int32_t read4bytes(const unsigned char *b);
+class CpioEndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
-    explicit RpmInputStream(StreamBase<char>* input);
-    ~RpmInputStream();
-    StreamBase<char>* nextEntry();
-    static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
-        return new RpmInputStream(input);
-    }
+    bool checkHeader(const char* header, int32_t headersize) const;
+    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
+    const char* getName() const { return "CpioEndAnalyzer"; }
 };
 
-} // end namespace jstreams
+class CpioEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+public:
+    const char* getName() const {
+        return "CpioEndAnalyzer";
+    }
+    jstreams::StreamEndAnalyzer* newInstance() const {
+        return new CpioEndAnalyzer();
+    }
+    bool analyzesSubStreams() const { return true; }
+    void registerFields(jstreams::FieldRegister&);
+};
 
 #endif

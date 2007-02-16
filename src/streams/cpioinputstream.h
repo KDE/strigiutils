@@ -17,32 +17,29 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef RPMINPUTSTREAM_H
-#define RPMINPUTSTREAM_H
+#ifndef CPIOINPUTSTREAM_H
+#define CPIOINPUTSTREAM_H
 
 #include "substreamprovider.h"
+#include "gzipinputstream.h"
 
 namespace jstreams {
 
-class CpioInputStream;
-class RpmInputStream : public SubStreamProvider {
+class CpioInputStream : public SubStreamProvider {
 private:
-    // information relating to the current entry
-    StreamBase<char>* uncompressionStream;
-    CpioInputStream* cpio;
-    int32_t entryCompressedSize;
-    int32_t compressionMethod;
-    class RpmHeaderInfo;
-    RpmHeaderInfo *headerinfo;
+    static const char unsigned* magic;
+    char padding;
 
+    void readHeader();
     static int32_t read4bytes(const unsigned char *b);
+    int32_t readHexField(const char *b);
 public:
-    explicit RpmInputStream(StreamBase<char>* input);
-    ~RpmInputStream();
+    explicit CpioInputStream(StreamBase<char>* input);
+    ~CpioInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
     static SubStreamProvider* factory(StreamBase<char>* input) {
-        return new RpmInputStream(input);
+        return new CpioInputStream(input);
     }
 };
 

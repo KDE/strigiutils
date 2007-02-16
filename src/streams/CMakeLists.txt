@@ -12,7 +12,7 @@ set(streams_SRCS bz2inputstream.cpp
 	tarinputstream.cpp zipinputstream.cpp base64inputstream.cpp
 	dostime.cpp substreamproviderprovider.cpp arinputstream.cpp
 	rpminputstream.cpp archivereader.cpp processinputstream.cpp
-	textutils.cpp kmpsearcher.cpp filestreamopener.cpp)
+	textutils.cpp kmpsearcher.cpp filestreamopener.cpp cpioinputstream.cpp)
 
 #add the compatibility files
 set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
