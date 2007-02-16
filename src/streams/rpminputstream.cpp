@@ -47,6 +47,7 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
 }
 RpmInputStream::RpmInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), headerinfo(0) {
+    uncompressionStream = 0;
     cpio = 0;
 
     // skip the header
@@ -54,6 +55,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     // lead:96 bytes
     if (input->read(b, 96, 96) != 96) {
         status = Error;
+        error = "File is too small to be an RPM file.";
         return;
     }
 
@@ -124,15 +126,19 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     } else {
         uncompressionStream = new GZipInputStream(input);
     }
-    cpio = new CpioInputStream(uncompressionStream);
     if (uncompressionStream->getStatus() == Error) {
+        error = uncompressionStream->getError();
         status = Error;
         return;
     }
+    cpio = new CpioInputStream(uncompressionStream);
+    status = cpio->getStatus();
 }
 RpmInputStream::~RpmInputStream() {
     if (uncompressionStream) {
         delete uncompressionStream;
+    }
+    if (cpio) {
         delete cpio;
     }
     if (headerinfo) {
@@ -144,6 +150,9 @@ RpmInputStream::nextEntry() {
     if (status) return 0;
     StreamBase<char>* entry = cpio->nextEntry();
     status = cpio->getStatus();
+    if (status == Error) {
+        error = cpio->getError();
+    }
     return entry;
 }
 int32_t

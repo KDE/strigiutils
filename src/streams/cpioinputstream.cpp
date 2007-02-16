@@ -55,7 +55,7 @@ CpioInputStream::nextEntry() {
     }
     readHeader();
     entrystream = new SubInputStream(input, entryinfo.size);
-    return entrystream;
+    return (status) ?0 :entrystream;
 }
 int32_t
 CpioInputStream::read4bytes(const unsigned char *b) {
@@ -133,11 +133,11 @@ CpioInputStream::readHexField(const char *b) {
         val <<= 4;
         c = b[i];
         if (c > 'F') {
-            val += 10+c-'a';
+            val += c - 87;
         } else if (c > '9') {
-            val += 10+c-'A';
+            val += c - 55;
         } else {
-            val += c-'0';
+            val += c - 48;
         }
     }
     return val;
