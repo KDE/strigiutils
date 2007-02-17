@@ -267,7 +267,7 @@ StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
         }
         es++;
     }
-    // make sure the entire stream is read
+    // make sure the entire stream is read if the size is not known
     bool ready;
     tIter = through.begin() + idx.getDepth();
     do {
