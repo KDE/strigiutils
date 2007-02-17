@@ -14,7 +14,7 @@ XmlIndexWriter::initWriterData(const FieldRegister& f) {
             tag->open = "  <value name='" + n + "'>";
             tag->close = "</value>\n";
         } else {
-            tag->open = "  <" + n + ">";
+            tag->open = "  <" + n + '>';
             tag->close = "</" + n + ">\n";
         }
         i->second->setWriterData(tag);

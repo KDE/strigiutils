@@ -34,7 +34,7 @@ protected:
         parent->readEntryNames();
     }
 public:
-    ArchiveDirEngine(ArchiveEngineBase* parent,
+    explicit ArchiveDirEngine(ArchiveEngineBase* parent,
         const FileEntry* e);
     ~ArchiveDirEngine();
     StreamEngine *openEntry(const QString& filename);

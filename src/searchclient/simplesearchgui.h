@@ -80,7 +80,7 @@ private slots:
     void editFilters();
     void editListIndexedFiles();
 public:
-    SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
+    explicit SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };
 
 #endif
