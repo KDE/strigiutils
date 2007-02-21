@@ -29,7 +29,7 @@ class PdfInputStream : public SubStreamProvider,
         private PdfParser::StreamHandler {
 private:
     PdfParser parser;
-    bool handle(jstreams::StreamBase<char>*);
+    StreamStatus handle(jstreams::StreamBase<char>*);
 public:
     PdfInputStream(StreamBase<char>* input);
     ~PdfInputStream();

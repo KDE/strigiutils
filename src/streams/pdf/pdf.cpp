@@ -20,22 +20,21 @@
 #include "jstreamsconfig.h"
 #include "pdfparser.h"
 #include "fileinputstream.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+
 using namespace jstreams;
 extern int32_t streamcount;
 
-class SaveStreamHandler : public PdfParser::StreamHandler {
-private:
-    bool handle(jstreams::StreamBase<char>*) {
-        return true;
-    }
-};
-
 int
 main(int argc, char** argv) {
+    mkdir("out", 0777);
     streamcount = 0;
     PdfParser parser;
-    SaveStreamHandler saver;
-    parser.setStreamHandler(&saver);
+    PdfParser::DefaultStreamHandler streamhandler;
+    PdfParser::DefaultTextHandler texthandler;
+    parser.setStreamHandler(&streamhandler);
+    parser.setTextHandler(&texthandler);
     for (int i=1; i<argc; ++i) {
         // check if we can read the file
         FILE* f = fopen(argv[i], "rb");

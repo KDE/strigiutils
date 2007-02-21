@@ -27,12 +27,19 @@ public:
     class StreamHandler {
     public:
         virtual ~StreamHandler() {}
-        virtual bool handle(jstreams::StreamBase<char>*) = 0;
+        virtual jstreams::StreamStatus handle(jstreams::StreamBase<char>*) = 0;
+    };
+    class DefaultStreamHandler : public StreamHandler {
+    public:
+        jstreams::StreamStatus handle(jstreams::StreamBase<char>*);
     };
     class TextHandler {
     public:
         virtual ~TextHandler() {}
-        virtual bool handle(const std::string&) = 0;
+        virtual jstreams::StreamStatus handle(const std::string&) = 0;
+    };
+    class DefaultTextHandler : public TextHandler {
+        jstreams::StreamStatus handle(const std::string&);
     };
 private:
     const char* start;
@@ -63,6 +70,11 @@ private:
     jstreams::StreamStatus skipWhitespaceOrComment();
     jstreams::StreamStatus skipWhitespace();
     jstreams::StreamStatus skipKeyword(const char* str, int32_t len);
+    jstreams::StreamStatus skipXRef();
+    jstreams::StreamStatus skipTrailer();
+    jstreams::StreamStatus skipXChars();
+    jstreams::StreamStatus skipDigits();
+    jstreams::StreamStatus skipStartXRef();
     jstreams::StreamStatus parseObjectStreamObject();
     jstreams::StreamStatus parseContentStreamObject();
     jstreams::StreamStatus parseComment();

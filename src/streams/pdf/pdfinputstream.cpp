@@ -38,7 +38,7 @@ PdfInputStream::nextEntry() {
     if (status != Ok) return 0;
     return entrystream;
 }
-bool
+StreamStatus
 PdfInputStream::handle(jstreams::StreamBase<char>*) {
-    return false;
+    return Ok;
 }
