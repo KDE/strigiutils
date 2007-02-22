@@ -75,6 +75,7 @@ private:
     jstreams::StreamStatus skipXChars();
     jstreams::StreamStatus skipDigits();
     jstreams::StreamStatus skipStartXRef();
+    jstreams::StreamStatus skipNumber();
     jstreams::StreamStatus parseObjectStreamObject();
     jstreams::StreamStatus parseContentStreamObject();
     jstreams::StreamStatus parseComment();

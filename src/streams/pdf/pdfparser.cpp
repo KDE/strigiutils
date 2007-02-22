@@ -164,6 +164,18 @@ StreamStatus
 PdfParser::parseBoolean() {
     return (*pos == 't') ?skipKeyword("true", 4) :skipKeyword("false", 5);
 }
+StreamStatus
+PdfParser::skipNumber() {
+    char ch = *pos;
+    if (ch == '+' || ch == '-') pos++;
+    StreamStatus n = skipDigits();
+    if (n != Ok) return n;
+    if (pos < end && *pos == '.') {
+        pos++;
+        n = skipDigits();
+    }
+    return n;
+}
 // - number : [+-]?\d+(.\d+)?
 StreamStatus
 PdfParser::parseNumber() {
@@ -599,30 +611,30 @@ PdfParser::parse(StreamBase<char>* stream) {
 }
 jstreams::StreamStatus
 PdfParser::DefaultStreamHandler::handle(jstreams::StreamBase<char>* s) {
-    return Ok;
+    static int count = 0;
+    char name[32];
+    const char *c;
+    int32_t n = s->read(c, 1, 0);
+    if (n <= 0) {
+        return s->getStatus();
+    }
+    sprintf(name, "out/%i", ++count);
+    FILE* file = fopen(name, "wb");
+    if (file == 0) {
+        return Error;
+    }
+    do {
+        fwrite(c, 1, n, file);
+        n = s->read(c, 1, 0);
+    } while (n > 0);
+    fclose(file);
+    return s->getStatus();
 }
 jstreams::StreamStatus
 PdfParser::DefaultTextHandler::handle(const string& s) {
     printf("%s\n", s.c_str());
     return Ok;
 }
-/*#include <cstdio>
-void
-saveFile(const char* start, const char* end, const char* suf=0) {
-    if (start >= end) return;
-    static int count = 0;
-    char name[32];
-    if (suf) {
-        sprintf(name, "out/%i.%s", ++count, suf);
-    } else {
-        sprintf(name, "out/%i", ++count);
-    }
-//    fprintf(stderr, "writing %s\n", name);
-    FILE* file = fopen(name, "wb");
-    if (file == 0) return;
-    fwrite(start, 1, end-start, file);
-    fclose(file);
-}*/
 void
 PdfParser::forwardStream(StreamBase<char>* s) {
     const char* c;
@@ -650,25 +662,11 @@ PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
 StreamStatus
 PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
         int32_t offset, int32_t numberofobjects) {
-//    fprintf(stderr, "handleSubStream\n");
-    const char* c;
-    int32_t n = s->read(c, 1024, 0);
-    while (n >= 0 && s->getStatus() == Ok) {
-        s->reset(0);
-        n = s->read(c, 2*n, 0);
-    }
-    if (s->getStatus() != Eof) {
-        fprintf(stderr, "Error reading substream: %s\n", s->getError());
-        return Error;
-    }
-    s->reset(0);
-
     // try to parse as an object stream
     PdfParser parser;
     parser.texthandler = texthandler;
     parser.streamhandler = streamhandler;
     if (type == "ObjStm") {
-//        fprintf(stderr, "object stream\n");
         if (parser.parseObjectStream(s, offset, numberofobjects) == Eof) {
             return Eof;
         } else {
@@ -679,17 +677,10 @@ PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
     // try to parse as a content stream
     s->reset(0);
     if (parser.parseContentStream(s) == Eof) {
-//        fprintf(stderr, "parseContentstream\n");
         return Eof;
     }
+    // handle the stream by an external handler
     s->reset(0);
-    n = s->read(c, s->getSize()+1, 0);
-    if (s->getStatus() != Eof) {
-        fprintf(stderr, "Error reading substream: %s\n", s->getError());
-        return Error;
-    }
-//    static int count = 0;
-//    fprintf(stderr, "type: %s %i\n", type.c_str(), count++);
     if (streamhandler) {
         streamhandler->handle(s);
     }
