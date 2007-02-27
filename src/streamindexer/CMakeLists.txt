@@ -45,7 +45,7 @@ target_link_libraries(streamindexer streams ${streamindex_LIBS} dl)
 
 install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
 	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
-	indexwriter.h indexerconfiguration.h
+	indexwriter.h indexerconfiguration.h cnstr.h fieldtypes.h
 	DESTINATION include/strigi)
 
 
