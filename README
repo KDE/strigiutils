@@ -44,7 +44,7 @@ How to obtain and build Strigi from SVN?
 
 Execute these commands:
 
- svn co svn://anonsvn.kde.org/home/kde/trunk/playground/base/strigi
+ svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/strigi
  cd strigi
  mkdir build
  cd build
