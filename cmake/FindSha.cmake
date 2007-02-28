@@ -6,8 +6,8 @@ FIND_PATH(SHA_INCLUDE_DIR openssl/sha.h
 
 FIND_LIBRARY(SHA_LIBRARY NAMES crypto
 PATHS
-/usr/${LIB_DESTINATION}
-/usr/local/${LIB_DESTINATION}
+/usr/lib/
+/usr/local/lib/
 )
 
 IF(SHA_INCLUDE_DIR AND SHA_LIBRARY)

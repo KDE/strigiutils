@@ -16,8 +16,8 @@ FIND_PATH(BZIP2_INCLUDE_DIR bzlib.h
 
 FIND_LIBRARY(BZIP2_LIBRARY NAMES bz2 bzip2
   PATHS
-  /usr/${LIB_DESTINATION}
-  /usr/local/${LIB_DESTINATION}
+  /usr/lib/
+  /usr/lib/local/lib/
 )
 
 IF(BZIP2_INCLUDE_DIR AND BZIP2_LIBRARY)

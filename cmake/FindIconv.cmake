@@ -13,8 +13,8 @@ FIND_PATH(ICONV_INCLUDE_DIR iconv.h
  
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv c
   PATHS 
-  /usr/${LIB_DESTINATION}
-  /usr/local/${LIB_DESTINATION}) 
+  /usr/lib/
+  /usr/local/lib) 
  
 IF(ICONV_INCLUDE_DIR AND ICONV_LIBRARY) 
    SET(Iconv_FOUND TRUE) 
