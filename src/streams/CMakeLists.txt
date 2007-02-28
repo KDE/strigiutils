@@ -29,7 +29,7 @@ set_target_properties(streams PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARY} ${ICONV_LIBRARY})
+target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARIES} ${ICONV_LIBRARIES})
 
 install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
 	bufferedstream.h streambase.h inputstreambuffer.h inputstream.h
