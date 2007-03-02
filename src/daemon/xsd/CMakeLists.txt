@@ -17,15 +17,17 @@ foreach (XSDFILE ${XSDFILES})
   string(REPLACE ".xsd" "" XSDNAME ${XSDFILE})
 
   # generate the io code from the XML Schema file
-  add_custom_command(
-	OUTPUT ${XSDNAME}.cpp
-		${XSDNAME}test.cpp
-  	COMMAND ${JAVA_COMPILE} -d ${CMAKE_CURRENT_BINARY_DIR}
-		xsdparser/xsdparser.java
-  	COMMAND ${JAVA_RUNTIME} -cp ${CMAKE_CURRENT_BINARY_DIR}
-  		xsdparser.xsdparser ${XSDFILE}
-  	DEPENDS xsdparser/xsdparser.java ${XSDFILE}
-  	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  if (JAVA_COMPILE)
+    add_custom_command(
+      OUTPUT ${XSDNAME}.cpp
+        ${XSDNAME}test.cpp
+      COMMAND ${JAVA_COMPILE} -d ${CMAKE_CURRENT_BINARY_DIR}
+        xsdparser/xsdparser.java
+      COMMAND ${JAVA_RUNTIME} -cp ${CMAKE_CURRENT_BINARY_DIR}
+        xsdparser.xsdparser ${XSDFILE}
+    DEPENDS xsdparser/xsdparser.java ${XSDFILE}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  endif (JAVA_COMPILE)
 
   # create a library from the xml io files
   add_library(${XSDNAME} ${XSDNAME}.cpp)
