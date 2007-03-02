@@ -3,3 +3,5 @@
 #define KDELIBSUFF "${KDELIBSUFF}"
 
 #define LIBINSTALLDIR "${LIBINSTALLDIR}"
+
+#cmakedefine HAVE_SSIZE_T

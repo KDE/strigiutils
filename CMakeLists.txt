@@ -33,10 +33,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set( KDELIBSUFF ${LIB_SUFFIX} )
 set( LIBINSTALLDIR ${LIB_DESTINATION})
 
+IF(MINGW)
+set (HAVE_SSIZE_T 1)
+ENDIF(MINGW)
+
 IF(MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
 ELSE(MSVC)
-    add_definitions (-fPIC)
+    IF (NOT WIN32)
+      add_definitions (-fPIC)
+    ENDIF(NOT WIN32)
     set(CMAKE_CXX_FLAGS "-Wall -g3 -O0 -ansi")
 ENDIF(MSVC)
 
@@ -62,6 +68,9 @@ OPTION(ENABLE_LOG4CXX
 SUBDIRS (src)
 ENABLE_TESTING()
 
+if (WIN32)
+    find_package(GNUWIN32 REQUIRED)
+endif(WIN32)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Sha REQUIRED)
@@ -85,11 +94,22 @@ if (NOT QT4_FOUND)
 endif (NOT QT4_FOUND)
 
 IF(ENABLE_DBUS)
-  include(UsePkgConfig)
-  PKGCONFIG(dbus-1 DBUS_INCLUDE_DIR DBUS_LIBRARY_DIR DBUS_LDFLAGS DBUS_CFLAGS)
-  if (NOT DBUS_INCLUDE_DIR)
-    MESSAGE(FATAL_ERROR "Could not find DBus")
-  endif (NOT DBUS_INCLUDE_DIR)
+  IF(WIN32)
+    file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _program_FILES_DIR)
+    find_path(DBUS_INCLUDE_DIR dbus/dbus.h
+        ${_program_FILES_DIR}/dbus/include ${CMAKE_INSTALL_PREFIX}/include
+    )
+    set(DBUS_LIBRARY_DIR ${_program_FILES_DIR}/dbus/lib)
+    find_library(DBUS_LIBRARYS NAMES dbus
+        PATHS ${DBUS_LIBRARY_DIR} ${CMAKE_INSTALL_PREFIX}/lib
+    )
+  ELSE(WIN32)
+    include(UsePkgConfig)
+    PKGCONFIG(dbus-1 DBUS_INCLUDE_DIR DBUS_LIBRARY_DIR DBUS_LDFLAGS DBUS_CFLAGS)
+    if (NOT DBUS_INCLUDE_DIR)
+      MESSAGE(FATAL_ERROR "Could not find DBus")
+    endif (NOT DBUS_INCLUDE_DIR)
+  ENDIF(WIN32)
 ENDIF(ENABLE_DBUS)
 
 if (ENABLE_LOG4CXX)
