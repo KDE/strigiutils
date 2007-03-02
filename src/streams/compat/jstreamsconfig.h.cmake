@@ -138,8 +138,8 @@ bool isblank(char c);
 
  #include <windows.h>
  #include <io.h>
- #ifndef snprintf
- 	#define snprintf _snprintf
+ #if !defined(snprintf) && !defined(__MINGW32__)
+    #define snprintf _snprintf
  #endif
  
 //for some reason linux is not picking up HAVE_SSIZE_T properly
