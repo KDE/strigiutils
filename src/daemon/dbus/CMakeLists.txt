@@ -7,12 +7,12 @@ IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 
 add_custom_command(OUTPUT dbusclientinterface.cpp
-	COMMAND perl ARGS makecode.pl vandenoever.strigi ../clientinterface.h
+	COMMAND perl ARGS makecode.pl vandenoever.strigi.ClientInterface ../clientinterface.h
 	MAIN_DEPENDENCY ../clientinterface.h
 	WORKING_DIRECTORY ${strigi_SOURCE_DIR}/src/daemon/dbus)
 
 add_custom_command(OUTPUT dbustestinterface.cpp
-	COMMAND perl ARGS makecode.pl vandenoever.dbustest testinterface.h
+	COMMAND perl ARGS makecode.pl vandenoever.dbustest.DBusTest testinterface.h
 	MAIN_DEPENDENCY testinterface.h
 	WORKING_DIRECTORY ${strigi_SOURCE_DIR}/src/daemon/dbus)
 
