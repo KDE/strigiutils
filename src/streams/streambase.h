@@ -24,6 +24,12 @@
 
 #define INT32MAX 0x7FFFFFFFL
 
+// todo: moveme to config check
+#if _WIN32
+typedef __int64 int64_t;
+typedef int int32_t;
+#endif
+
 namespace jstreams {
 
 enum StreamStatus { Ok, Eof, Error };
