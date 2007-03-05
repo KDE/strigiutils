@@ -125,7 +125,7 @@ public:
         return pos->first;
     }
     bool isInitialized() const {
-        return pos->first;
+        return (pos->first != NULL);
     }
     size_t length() const {
         return (pos->first) ? strlen(pos->first) :0;

@@ -28,6 +28,7 @@
 #if _WIN32
 typedef __int64 int64_t;
 typedef int int32_t;
+typedef unsigned int uint;
 #endif
 
 namespace jstreams {
