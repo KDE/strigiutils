@@ -150,7 +150,9 @@ RpmInputStream::nextEntry() {
     if (status) return 0;
     StreamBase<char>* entry = cpio->nextEntry();
     status = cpio->getStatus();
-    if (status == Error) {
+    if (status == Ok) {
+        entryinfo = cpio->getEntryInfo();
+    } else if (status == Error) {
         error = cpio->getError();
     }
     return entry;
