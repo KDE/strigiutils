@@ -72,6 +72,7 @@ public:
         return filters;
     }
     FieldRegister& getFieldRegister() { return fieldregister; }
+    const FieldRegister& getFieldRegister() const { return fieldregister; }
 };
 
 /**
