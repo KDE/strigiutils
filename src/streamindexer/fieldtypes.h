@@ -40,6 +40,9 @@ public:
     const cnstr& getKey() const { return key; }
     void* getWriterData() const { return writerdata; }
     void setWriterData(void* d) { writerdata = d; }
+    const RegisteredField* getParent() const { return parent; }
+    int getMaxOccurs() const { return maxoccurs; }
+    const cnstr& getType() const { return type; }
 };
 
 class FieldRegister {
