@@ -22,6 +22,9 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "indexerconfiguration.h"
+#include <iostream>
+using namespace jstreams;
+using namespace std;
 
 void
 printUsage(char** argv) {
@@ -36,6 +39,16 @@ containsHelp(int argc, char **argv) {
     return false;
 }
 
+void
+printFields(IndexerConfiguration& conf) {
+    const map<cnstr, RegisteredField*>& fields
+        = conf.getFieldRegister().getFields();
+    map<cnstr, RegisteredField*>::const_iterator i;
+    for (i = fields.begin(); i != fields.end(); ++i) {
+        cout << i->first << endl;
+    }
+}
+
 int
 main(int argc, char** argv) {
     if (containsHelp(argc, argv) || argc < 2) {
@@ -43,7 +56,9 @@ main(int argc, char** argv) {
         return -1;
     }
     GrepIndexWriter writer(argv[1]);
-    jstreams::IndexerConfiguration ic;
+    IndexerConfiguration ic;
+    printFields(ic);
+
     Indexer indexer(writer, ic);
     if (argc > 2) {
         for (int32_t i=2; i<argc; ++i) {
