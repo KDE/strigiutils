@@ -28,15 +28,26 @@ using namespace std;
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s PATTERN [dir-or-file-to-grep]\n", argv[0]);
+    fprintf(stderr, "Usage: %s [--fields] [--help] PATTERN [dir-or-file-to-grep]\n"
+        " --fields print the list of fields\n"
+        " --help   print this help screen\n",
+        argv[0]);
+}
+bool
+containsArgument(int argc, char **argv, const char* arg, const char* a=0) {
+    for (int i=1; i<argc; ++i) {
+         if (strcmp(argv[i], arg) == 0
+             || (a && strcmp(argv[i], a) == 0)) return true;
+    }
+    return false;
 }
 bool
 containsHelp(int argc, char **argv) {
-    for (int i=1; i<argc; ++i) {
-         if (strcmp(argv[i], "--help") == 0
-             || strcmp(argv[i], "-h") == 0) return true;
-    }
-    return false;
+    return containsArgument(argc, argv, "--help", "-h");
+}
+bool
+containsFieldList(int argc, char **argv) {
+    return containsArgument(argc, argv, "--fields", "-f");
 }
 
 void
@@ -51,13 +62,16 @@ printFields(IndexerConfiguration& conf) {
 
 int
 main(int argc, char** argv) {
+    IndexerConfiguration ic;
+    if (containsFieldList(argc, argv)) {
+        printFields(ic);
+        return 0;
+    }
     if (containsHelp(argc, argv) || argc < 2) {
         printUsage(argv);
         return -1;
     }
     GrepIndexWriter writer(argv[1]);
-    IndexerConfiguration ic;
-    printFields(ic);
 
     Indexer indexer(writer, ic);
     if (argc > 2) {
