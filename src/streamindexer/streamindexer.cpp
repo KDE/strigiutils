@@ -184,8 +184,12 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
+#ifdef __GNUC__
+#warnign FIXME - IFilterEndAnalyzerFactory is pure virtual!
+#warnign FIXME - SaxEndAnalyzerFactory needs some love too
+#endif
 #ifdef WIN32
-    addFactory(new IFilterEndAnalyzerFactory());
+//    addFactory(new IFilterEndAnalyzerFactory());
 #else
 	//temporary only, i just haven't got expat.h working yet
 	addFactory(new SaxEndAnalyzerFactory());

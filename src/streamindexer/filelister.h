@@ -35,6 +35,11 @@
 #include <sys/types.h>
 #include <string>
 
+#ifdef _WIN32
+typedef unsigned int uid_t;
+typedef unsigned int gid_t;
+#endif
+
 namespace jstreams {
     class IndexerConfiguration;
 }

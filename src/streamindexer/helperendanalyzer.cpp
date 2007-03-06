@@ -148,6 +148,8 @@ HelperEndAnalyzer::analyze(Indexable& idx, InputStream* in){
         if (h) {
 //            fprintf(stderr, "calling %s on %s\n", h->arguments[0].c_str(),
 //                idx.getPath().c_str());
+#ifndef _WIN32
+#warning this does not work on windows because processinputstream does not compile!
             if (h->readfromstdin) {
                 ProcessInputStream pis(h->arguments, in);
                 TextEndAnalyzer t;
@@ -173,6 +175,7 @@ HelperEndAnalyzer::analyze(Indexable& idx, InputStream* in){
                     unlink(filepath.c_str());
                 }
             }
+#endif
         }
     }
     if (in->getStatus() == Error) {

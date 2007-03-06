@@ -427,7 +427,11 @@ makeTimeHistogram(const vector<int>& v) {
     struct tm t;
     for (i = v.begin(); i < v.end(); ++i) {
          time_t ti = *i;
+#ifdef _WIN32
+        t = *localtime( &ti );   // is thread-safe on win32
+#else
          localtime_r(&ti, &t);
+#endif
          int32_t c = 10000*t.tm_year + 100*t.tm_mon + t.tm_mday;
          m[c]++;
     }

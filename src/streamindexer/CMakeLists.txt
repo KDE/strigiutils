@@ -6,14 +6,41 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
-set(streamindexer_SRCS bz2endanalyzer.cpp digestthroughanalyzer.cpp
-	textendanalyzer.cpp streamendanalyzer.cpp zipendanalyzer.cpp
-	tarendanalyzer.cpp streamindexer.cpp pngendanalyzer.cpp query.cpp
-	mailendanalyzer.cpp gzipendanalyzer.cpp filelister.cpp
-	analyzerloader.cpp oggthroughanalyzer.cpp cpioendanalyzer.cpp
-	arendanalyzer.cpp indexwriter.cpp rpmendanalyzer.cpp indexable.cpp
-	helperendanalyzer.cpp id3v2throughanalyzer.cpp indexerconfiguration.cpp
-	bmpendanalyzer.cpp cnstr.cpp fieldtypes.cpp)
+set(streamindexer_SRCS
+        bz2endanalyzer.cpp
+        digestthroughanalyzer.cpp
+	textendanalyzer.cpp
+	streamendanalyzer.cpp
+	zipendanalyzer.cpp
+	tarendanalyzer.cpp
+	pngendanalyzer.cpp
+	query.cpp
+	mailendanalyzer.cpp
+	gzipendanalyzer.cpp
+	analyzerloader.cpp
+	oggthroughanalyzer.cpp
+	cpioendanalyzer.cpp
+	arendanalyzer.cpp
+	indexwriter.cpp
+	rpmendanalyzer.cpp
+	indexable.cpp
+	helperendanalyzer.cpp
+	id3v2throughanalyzer.cpp
+	indexerconfiguration.cpp
+	bmpendanalyzer.cpp
+	cnstr.cpp
+	fieldtypes.cpp
+	streamindexer.cpp
+)
+if(NOT WIN32)
+
+set(streamindexer_SRCS
+        ${streamindexer_SRCS}
+	filelister.cpp
+)
+
+endif(NOT WIN32)
+
 
 if (Expat_FOUND)
   set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
@@ -27,21 +54,25 @@ if (Expat_FOUND)
 #  endif (Libxml2_FOUND)
 endif(Expat_FOUND)
 
-IF(WIN32)
-	#not enough api exposed to make this a dll
-	add_library(streamindexer ifilterendanalyzer.cpp ${streamindexer_SRCS})
-    install(TARGETS streamindexer ARCHIVE DESTINATION ${LIB_DESTINATION})
-    #add ifilter library
-	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
-ELSE(WIN32)
+#IF(WIN32)
+#	#not enough api exposed to make this a dll
+#	add_library(streamindexer ifilterendanalyzer.cpp ${streamindexer_SRCS})
+#    install(TARGETS streamindexer ARCHIVE DESTINATION ${LIB_DESTINATION})
+#    #add ifilter library
+#	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
+#ELSE(WIN32)
 	add_library(streamindexer SHARED ${streamindexer_SRCS})
 	install(TARGETS streamindexer LIBRARY DESTINATION ${LIB_DESTINATION})
-ENDIF(WIN32)
+#ENDIF(WIN32)
 set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(streamindexer streams ${streamindex_LIBS} dl)
+set(streamindexer_libs streams ${streamindex_LIBS})
+if(NOT WIN32)
+        set(streamindexer_libs ${streamindexer_libs} dl)
+endif(NOT WIN32)
+target_link_libraries(streamindexer ${streamindexer_libs})
 
 install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
 	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
@@ -50,6 +81,7 @@ install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
 
 
 # test executable
-add_executable(filelister filelistertest.cpp)
-
-target_link_libraries(filelister streamindexer)
+if(NOT WIN32)
+        add_executable(filelister filelistertest.cpp)
+        target_link_libraries(filelister streamindexer)
+endif(NOT WIN32)
