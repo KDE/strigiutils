@@ -22,7 +22,9 @@
 #include "archivedirengine.h"
 #include "streamengine.h"
 #include <QtCore/QFSFileEngine>
+#if QT_VERSION < 0x040102
 #include <dirent.h>
+#endif
 
 bool
 ArchiveEngineHandler::open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const {
