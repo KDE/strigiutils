@@ -25,6 +25,9 @@
 #include "streamendanalyzer.h"
 using namespace jstreams;
 
+/**
+ * Special indexer that indexes only the filenames.
+ **/
 class FindIndexerConfiguration : public IndexerConfiguration {
 public:
     bool useFactory(StreamEndAnalyzerFactory* e) const {
@@ -33,6 +36,9 @@ public:
     bool useFactory(StreamThroughAnalyzerFactory*) const {return false;}
     bool indexMore() const {return true;}
     bool addMoreText() const {return false;}
+    FieldType getIndexType(const cnstr& fieldname) const {
+        return None;
+    }
 };
 
 void
