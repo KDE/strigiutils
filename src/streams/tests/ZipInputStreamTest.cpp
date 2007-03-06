@@ -24,7 +24,7 @@
 using namespace jstreams;
 
 int
-ZipInputStreamTest(int argc, char** argv) {
+ZipInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);

@@ -1,5 +1,7 @@
 
-CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
+set(streamtests
+	testrunner.cpp
+	FileInputStreamTest.cpp
 	ZipInputStreamTest.cpp
 	GZipInputStreamTest.cpp
 	BZ2InputStreamTest.cpp
@@ -14,8 +16,12 @@ CREATE_TEST_SOURCELIST(Tests testrunner.cpp FileInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	DigestInputStreamTest.cpp
         ProcessInputStreamTest.cpp
-        ArchiveReaderTest.cpp
 )
+if(NOT WIN32)
+        set(streamtests ${streamtests} ArchiveReaderTest.cpp)
+endif(NOT WIN32)
+
+CREATE_TEST_SOURCELIST(Tests ${streamtests})
 
 ADD_EXECUTABLE(testrunner ${Tests} inputstreamtests.cpp)
 target_link_libraries(testrunner streams)

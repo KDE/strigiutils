@@ -22,7 +22,7 @@
 using namespace jstreams;
 
 int
-FileInputStreamTest(int argc, char** argv) {
+FileInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 0;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);

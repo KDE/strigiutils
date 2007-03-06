@@ -24,7 +24,7 @@
 using namespace jstreams;
 
 int
-RpmInputStreamTest(int argc, char** argv) {
+RpmInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);

@@ -27,7 +27,7 @@ const char* testfiles[] = {"armenia", "croattx", "huseyin", "linjilu", "russmnv"
 
 
 int
-InputStreamReaderTest(int argc, char** argv) {
+InputStreamReaderTest(int argc, char* argv[]) {
     if (argc < 2) return 0;
     VERIFY(chdir(argv[1]) == 0);
 

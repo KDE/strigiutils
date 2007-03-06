@@ -23,7 +23,7 @@
 using namespace jstreams;
 
 int
-Base64InputStreamTest(int, char**) {
+Base64InputStreamTest(int, char*[]) {
     founderrors = 0;
     FileInputStream file("base64enc.txt");
     Base64InputStream b64(&file);

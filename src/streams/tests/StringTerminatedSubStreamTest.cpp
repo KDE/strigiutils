@@ -24,7 +24,7 @@
 using namespace jstreams;
 
 int
-StringTerminatedSubStreamTest(int, char**) {
+StringTerminatedSubStreamTest(int, char*[]) {
     founderrors = 0;
     StringReader<char> sr("abc");
     StringTerminatedSubStream sub(&sr, "b");

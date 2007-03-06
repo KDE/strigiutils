@@ -19,6 +19,6 @@
  */
 
 int
-InputStreamTest(int, char**) {
+InputStreamTest(int, char*[]) {
     return 0;
 }
