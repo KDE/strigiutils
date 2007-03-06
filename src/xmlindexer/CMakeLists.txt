@@ -1,8 +1,17 @@
-include_directories( ../streamindexer ../streams
-	${strigi_BINARY_DIR}/src/streams/compat)
+include_directories(
+        ../streamindexer
+        ../streams
+	${strigi_BINARY_DIR}/src/streams/compat
+	${BZIP2_INCLUDE_DIR}
+)
 
-add_executable(xmlindexer xmlindexer.cpp indexer.cpp tagmapping.cpp
-	xmlindexwriter.cpp)
+add_executable(
+        xmlindexer
+        xmlindexer.cpp
+        indexer.cpp
+        tagmapping.cpp
+	xmlindexwriter.cpp
+)
 
 target_link_libraries(xmlindexer streamindexer)
 

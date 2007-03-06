@@ -93,8 +93,9 @@ CLuceneIndexWriter::addField(const Indexable* idx,
         const TCHAR* value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->getWriterData());
     Field* field = new Field(name, value,
-        type & IndexerConfiguration::Stored,
-        type & IndexerConfiguration::Indexed, true);
+        (type & IndexerConfiguration::Stored) == IndexerConfiguration::Stored,
+        (type & IndexerConfiguration::Indexed) == IndexerConfiguration::Indexed,
+         true);
         //type & IndexerConfiguration::Tokenized);
     doc->doc.add(*field);
 }
