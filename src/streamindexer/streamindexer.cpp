@@ -185,8 +185,8 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
 #ifdef __GNUC__
-#warnign FIXME - IFilterEndAnalyzerFactory is pure virtual!
-#warnign FIXME - SaxEndAnalyzerFactory needs some love too
+#warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
+#warning FIXME - SaxEndAnalyzerFactory needs some love too
 #endif
 #ifdef WIN32
 //    addFactory(new IFilterEndAnalyzerFactory());
