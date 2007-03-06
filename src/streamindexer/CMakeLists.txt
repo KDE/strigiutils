@@ -41,18 +41,17 @@ set(streamindexer_SRCS
 
 endif(NOT WIN32)
 
-
-if (Expat_FOUND)
-  set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
-  set(streamindex_LIBS ${streamindex_LIBS} ${EXPAT_LIBRARY})
-  include_directories(${EXPAT_INCLUDE_DIR})
-#else (Expat_FOUND)
-#  if (Libxml2_FOUND)
-#    set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
-#    set(streamindex_LIBS ${streamindex_LIBS} ${LIBXML2_LIBRARY})
-#    include_directories(${LIBXML2_INCLUDE_DIR})
-#  endif (Libxml2_FOUND)
-endif(Expat_FOUND)
+if (LIBXML2_FOUND)
+  set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
+  set(streamindex_LIBS ${streamindex_LIBS} ${LIBXML2_LIBRARIES})
+  include_directories(${LIBXML2_INCLUDE_DIR})
+else (LIBXML2_FOUND)
+  if (Expat_FOUND)
+    set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
+    set(streamindex_LIBS ${streamindex_LIBS} ${EXPAT_LIBRARY})
+    include_directories(${EXPAT_INCLUDE_DIR})
+  endif(Expat_FOUND)
+endif (LIBXML2_FOUND)
 
 #IF(WIN32)
 #	#not enough api exposed to make this a dll
