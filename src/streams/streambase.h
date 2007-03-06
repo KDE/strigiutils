@@ -20,6 +20,7 @@
 #ifndef STREAMBASE_H
 #define STREAMBASE_H
 
+#include <stdio.h>
 #include <string>
 
 #define INT32MAX 0x7FFFFFFFL
@@ -62,6 +63,9 @@ public:
      * If no error has occurred, an empty string is returned.
      **/
     const char* getError() const { return error.c_str(); }
+    /**
+     * @brief  Return the status of the stream.
+     **/
     StreamStatus getStatus() const { return status; }
     /**
      * @brief Get the current position in the stream.
@@ -102,7 +106,7 @@ public:
        * @brief Repositions this stream to given requested position.
        * Reset is guaranteed to work after a successful call to read(),
        * when the new position is in the range of the data returned by read().
-       * This means that @p pos must lie between than the position
+       * This means that @p pos must lie between the the position
        * corresponding to the @p start parameter (x) of the @r read function
        * and the position corresponding to the last position in the returned
        * buffer (x + @p nread).
