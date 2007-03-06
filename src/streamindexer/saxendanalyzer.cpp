@@ -22,15 +22,25 @@
 #include "streamindexer.h"
 #include "inputstreamreader.h"
 #include "indexwriter.h"
+#include "indexable.h"
+#include "fieldtypes.h"
 #include <libxml/parser.h>
 #include <ctype.h>
 using namespace jstreams;
 using namespace std;
 
 const cnstr SaxEndAnalyzerFactory::titleFieldName("title");
+const cnstr SaxEndAnalyzerFactory::encodingFieldName("encoding");
+const cnstr SaxEndAnalyzerFactory::rootFieldName("root");
 
 void
 SaxEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    titleField = reg.registerField(titleFieldName, FieldRegister::stringType,
+        -1, 0);
+    encodingField = reg.registerField(encodingFieldName,
+        FieldRegister::stringType, 1, 0);
+    rootField = reg.registerField(rootFieldName, FieldRegister::stringType,
+        1, 0);
 }
 
 class SaxEndAnalyzer::Private {
@@ -41,6 +51,7 @@ public:
     xmlParserCtxtPtr ctxt;
     xmlSAXHandler handler;
     Indexable* idx;
+    const SaxEndAnalyzerFactory* factory;
     bool error;
     bool stop;
     string rootelement;
@@ -84,7 +95,7 @@ public:
         int initlen = (1024 > len) ?len :1024;
         idx = i;
         const char* name = 0;
-        if (i) name = i->getName().c_str();
+        if (i) name = i->getFileName().c_str();
         xmlKeepBlanksDefault(0);
         ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
         if (ctxt == 0) {
@@ -165,14 +176,14 @@ void
 SaxEndAnalyzer::Private::endElementSAXFunc(void* ctx, const xmlChar* name) {
     Private* p = (Private*)ctx;
     if (p->idx && p->fieldtype == TITLE && p->fieldvalue.size()) {
-        p->idx->setField("title", p->fieldvalue);
+        p->idx->setField(p->factory->titleField, p->fieldvalue);
         p->fieldvalue = "";
     }
     p->fieldtype = TEXT;
 }
-SaxEndAnalyzer::SaxEndAnalyzer(const SaxEndAnalyzerFactory* f)
-        : factory(f) {
+SaxEndAnalyzer::SaxEndAnalyzer(const SaxEndAnalyzerFactory* f) {
     p = new Private();
+    p->factory = f;
 }
 SaxEndAnalyzer::~SaxEndAnalyzer() {
     delete p;
@@ -185,12 +196,11 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-SaxEndAnalyzer::analyze(std::string filename, InputStream *in,
-        int depth, StreamIndexer *indexer, Indexable* i) {
+SaxEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {
-        p->init(i, b, nread);
+        p->init(&idx, b, nread);
         nread = in->read(b, 1, 0);
     }
     while (nread > 0 && !p->stop) {
@@ -199,10 +209,10 @@ SaxEndAnalyzer::analyze(std::string filename, InputStream *in,
     }
     p->finish();
     if (p->ctxt->encoding) {
-        i->setField("encoding", (const char*)p->ctxt->encoding);
+        idx.setField(p->factory->encodingField, (const char*)p->ctxt->encoding);
     }
-    i->setMimeType("text/xml");
-    i->setField("root", p->rootelement);
+    idx.setMimeType("text/xml");
+    idx.setField(p->factory->rootField, p->rootelement);
     if (in->getStatus() != Eof) {
         error = in->getError();
         return -1;

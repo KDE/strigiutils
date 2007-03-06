@@ -37,11 +37,16 @@ public:
 };
 
 class SaxEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+friend class SaxEndAnalyzer;
 friend class SaxEndAnalyzer::Private;
 public:
     static const cnstr titleFieldName;
+    static const cnstr encodingFieldName;
+    static const cnstr rootFieldName;
 private:
     const jstreams::RegisteredField* titleField;
+    const jstreams::RegisteredField* encodingField;
+    const jstreams::RegisteredField* rootField;
     const char* getName() const {
         return "SaxEndAnalyzer";
     }
