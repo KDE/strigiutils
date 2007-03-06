@@ -21,6 +21,8 @@
 #define XMLSTREAM_H
 
 #include <string>
+#include <map>
+#include <list>
 
 class SimpleNode;
 class XMLStream {
@@ -62,5 +64,21 @@ public:
 XMLStream& operator>>(XMLStream& in, bool& e);
 XMLStream& operator>>(XMLStream& in, int& e);
 XMLStream& operator>>(XMLStream& in, std::string& e);
+
+class SimpleNode {
+friend class SimpleNodeParser;
+private:
+    SimpleNode() :parent(0), next(0) {};
+public:
+    const SimpleNode* parent;
+    const SimpleNode* next;
+    std::string tagname;
+    std::map<std::string, std::string> atts;
+    std::list<SimpleNode> nodes;
+    std::string text;
+
+    SimpleNode(const std::string& xml);
+};
+
 
 #endif
