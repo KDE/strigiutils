@@ -32,7 +32,6 @@ Indexable::getExtension() const {
     }
     return "";
 }
-
 void
 Indexable::setField(const RegisteredField* fieldname, const std::string& value){
     // make sure only utf8 is stored
@@ -40,5 +39,9 @@ Indexable::setField(const RegisteredField* fieldname, const std::string& value){
         fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
         return;
     }
+    writer.addField(this, fieldname, value);
+}
+void
+Indexable::setField(const RegisteredField* fieldname, uint32_t value){
     writer.addField(this, fieldname, value);
 }

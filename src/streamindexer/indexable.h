@@ -96,6 +96,13 @@ public:
      **/
     void setField(const RegisteredField* fieldname, const std::string& value);
     /**
+     * Add a name, value pair to the index.
+     *
+     * @param fieldname utf8 representation of the fieldname, the fieldname
+     *
+     **/
+    void setField(const RegisteredField* fieldname, uint32_t value);
+    /**
      * Get the filename of this Indexble. For the full name see getPath().
      **/
     const std::string& getFileName() const;

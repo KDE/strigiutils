@@ -58,6 +58,8 @@ protected:
         const std::string& value) = 0;
     virtual void addField(const Indexable*, const RegisteredField* fieldname,
         const unsigned char* data, int32_t size) = 0;
+    virtual void addField(const Indexable*, const RegisteredField* fieldname,
+        uint32_t value) {}
     virtual void finishIndexable(const Indexable*) = 0;
 public:
     virtual ~IndexWriter() {}
