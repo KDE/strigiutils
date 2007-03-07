@@ -1,5 +1,6 @@
 #! /usr/bin/perl -w
 use strict;
+use File::Basename;
 
 die "Usage: $0 [interfacename] [headerfile.h]\n" unless @ARGV == 2;
 
@@ -200,7 +201,7 @@ print FH "// generated from $headerfile by makecode.pl\n";
 print FH "#include \"$headerfile\"\n";
 print FH "#include \"dbusmessagereader.h\"\n";
 print FH "#include \"dbusmessagewriter.h\"\n";
-print FH "#include \"$interfaceheader\"\n";
+print FH "#include <".basename($interfaceheader).">\n";
 print FH "#include <sstream>\n";
 print FH $classname."::".$classname."(".$class."* i)\n";
 print FH "        :DBusObjectInterface(\"$interfacename\"), impl(i) {\n";

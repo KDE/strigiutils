@@ -2,7 +2,7 @@
 #include "dbusclientinterface.h"
 #include "dbusmessagereader.h"
 #include "dbusmessagewriter.h"
-#include "../clientinterface.h"
+#include <clientinterface.h>
 #include <sstream>
 DBusClientInterface::DBusClientInterface(ClientInterface* i)
         :DBusObjectInterface("vandenoever.strigi.ClientInterface"), impl(i) {

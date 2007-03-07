@@ -2,10 +2,10 @@
 #include "dbustestinterface.h"
 #include "dbusmessagereader.h"
 #include "dbusmessagewriter.h"
-#include "testinterface.h"
+#include <testinterface.h>
 #include <sstream>
 DBusTestInterface::DBusTestInterface(TestInterface* i)
-        :DBusObjectInterface("vandenoever.dbustest"), impl(i) {
+        :DBusObjectInterface("vandenoever.dbustest.DBusTest"), impl(i) {
     handlers["upload"] = &DBusTestInterface::upload;
     handlers["concat"] = &DBusTestInterface::concat;
     handlers["helloWorld"] = &DBusTestInterface::helloWorld;
