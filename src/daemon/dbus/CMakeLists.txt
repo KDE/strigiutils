@@ -15,9 +15,9 @@ IF (PERL_FOUND)
         OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
         COMMAND ${PERL_EXECUTABLE}
-        ARGS    ${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl
+        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
                 vandenoever.strigi.ClientInterface
-                ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
+                "${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
         MAIN_DEPENDENCY ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
@@ -25,9 +25,9 @@ IF (PERL_FOUND)
         OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
         COMMAND ${PERL_EXECUTABLE}
-        ARGS    ${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl
+        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
                 vandenoever.dbustest.DBusTest
-                ${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h
+                "${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h"
         MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
