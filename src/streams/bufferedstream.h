@@ -33,7 +33,6 @@ private:
     InputStreamBuffer<T> buffer;
 
     void writeToBuffer(int32_t minsize, int32_t maxsize);
-    int32_t read_(const T*& start, int32_t min, int32_t max);
 protected:
     /**
      * This function must be implemented by the subclasses.
