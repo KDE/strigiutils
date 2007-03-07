@@ -66,8 +66,13 @@ FileLister::FileLister(IndexerConfiguration& ic) :m_config(ic) {
     m_dirCallback = 0;
     path = 0;
     length = 0;
+#ifdef _WIN32
+    uid = 0;
+    gid = 0;
+#else
     uid = geteuid();
     gid = getegid();
+#endif
 }
 FileLister::~FileLister() {
     if (length) {
@@ -156,10 +161,17 @@ FileLister::walk_directory(uint len) {
         path = resize(l+1);
         strcpy(path+len, subdir->d_name);
         // check if the file is a normal file (use lstat, NOT stat)
+#ifdef _WIN32
+        if (_stat(path, (struct _stat*)&dirstat) == 0 && (S_IROTH & dirstat.st_mode
+                || (uid == dirstat.st_uid && S_IRUSR & dirstat.st_mode)
+                || (gid == dirstat.st_uid && S_IRGRP & dirstat.st_mode))) {
+            if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
+#else
         if (lstat(path, &dirstat) == 0 && (S_IROTH & dirstat.st_mode
                 || (uid == dirstat.st_uid && S_IRUSR & dirstat.st_mode)
                 || (gid == dirstat.st_uid && S_IRGRP & dirstat.st_mode))) {
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
+#endif
                 if (m_config.indexFile(path, path+len)) {
                     m_fileCallback(path, len, l, dirstat.st_mtime);
                 }
