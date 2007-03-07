@@ -27,7 +27,6 @@
 using namespace jstreams;
 #include <iostream>
 using namespace std;
-#include <dirent.h>
 
 class QFileStreamOpener : public StreamOpener {
 public:
