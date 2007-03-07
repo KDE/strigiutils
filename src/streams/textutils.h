@@ -21,14 +21,15 @@
 #define TEXTUTILS_H
 
 #include <string>
+#include "streams_export.h"
 
 namespace jstreams {
 
-bool checkUtf8(const char* p, int32_t length);
+bool STREAMS_EXPORT checkUtf8(const char* p, int32_t length);
 
-bool checkUtf8(const std::string&);
+bool STREAMS_EXPORT checkUtf8(const std::string&);
 
-void convertNewLines(char* p);
+void STREAMS_EXPORT convertNewLines(char* p);
 
 }
 

@@ -20,12 +20,13 @@
 #ifndef RPMINPUTSTREAM_H
 #define RPMINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 
 namespace jstreams {
 
 class CpioInputStream;
-class RpmInputStream : public SubStreamProvider {
+class STREAMS_EXPORT RpmInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     StreamBase<char>* uncompressionStream;

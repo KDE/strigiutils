@@ -9,6 +9,7 @@
 
 #if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)
 
+#include "streams_export.h"
 #include <windows.h>
 #include <io.h>
 
@@ -68,18 +69,21 @@ struct DIR
 * Returns a pointer to a DIR structure appropriately filled in to begin
 * searching a directory.
 */
-DIR* opendir (const char* filespec);
+STREAMS_EXPORT DIR* strigi_opendir (const char* filespec);
+#define opendir strigi_opendir
 
 /**
 * Return a pointer to a dirent structure filled with the information on the
 * next entry in the directory.
 */
-struct dirent*    readdir (DIR* dir);
+STREAMS_EXPORT struct dirent* strigi_readdir (DIR* dir);
+#define readdir strigi_readdir
 
 /**
 * Frees up resources allocated by opendir.
 */
-int32_t    closedir (DIR* dir);
+STREAMS_EXPORT int32_t strigi_closedir (DIR* dir);
+#define closedir strigi_closedir
 
 
 #elif defined (HAVE_DIRENT_H)

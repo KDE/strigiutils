@@ -22,6 +22,7 @@ INCLUDE(TestForANSIForScope)
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(strcasestr HAVE_STRCASESTR)
+CHECK_FUNCTION_EXISTS(strcasecmp HAVE_STRCASECMP)
 CHECK_FUNCTION_EXISTS(strncasecmp HAVE_STRNCASECMP)
 CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)
 CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)

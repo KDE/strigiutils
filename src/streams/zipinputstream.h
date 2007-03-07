@@ -20,6 +20,7 @@
 #ifndef ZIPINPUTSTREAM_H
 #define ZIPINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"
 
@@ -36,7 +37,7 @@
 
 namespace jstreams {
 
-class ZipInputStream : public SubStreamProvider {
+class STREAMS_EXPORT ZipInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     StreamBase<char>* compressedEntryStream;

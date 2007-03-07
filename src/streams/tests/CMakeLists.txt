@@ -15,10 +15,11 @@ set(streamtests
 	Base64InputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	DigestInputStreamTest.cpp
-        ProcessInputStreamTest.cpp
 )
 if(NOT WIN32)
-        set(streamtests ${streamtests} ArchiveReaderTest.cpp)
+        set(streamtests ${streamtests} ArchiveReaderTest.cpp
+                                       ProcessInputStreamTest.cpp
+        )
 endif(NOT WIN32)
 
 CREATE_TEST_SOURCELIST(Tests ${streamtests})

@@ -20,13 +20,14 @@
 #ifndef BZ2INPUTSTREAM_H
 #define BZ2INPUTSTREAM_H
 
+#include "streams_export.h"
 #include "bufferedstream.h"
 
 #include <bzlib.h>
 
 namespace jstreams {
 
-class BZ2InputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT BZ2InputStream : public BufferedInputStream<char> {
 private:
     bool allocatedBz;
     bz_stream* bzstream;

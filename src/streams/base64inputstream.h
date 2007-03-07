@@ -20,10 +20,11 @@
 #ifndef BASE64INPUTSTREAM_H
 #define BASE64INPUTSTREAM_H
 
+#include "streams_export.h"
 #include "bufferedstream.h"
 
 namespace jstreams {
-class Base64InputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT Base64InputStream : public BufferedInputStream<char> {
 private:
     int32_t bits;
     char bytestodo;

@@ -20,13 +20,14 @@
 #ifndef GZIPINPUTSTREAM_H
 #define GZIPINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "bufferedstream.h"
 
 struct z_stream_s;
 
 namespace jstreams {
 
-class GZipInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT GZipInputStream : public BufferedInputStream<char> {
 private:
     z_stream_s* zstream;
     StreamBase<char>* input;

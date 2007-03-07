@@ -19,11 +19,12 @@
  */
 #ifndef DIGESTINPUTSTREAM_H
 #define DIGESTINPUTSTREAM_H
+#include "streams_export.h"
 #include "streambase.h"
 #include <openssl/sha.h>
 
 namespace jstreams {
-class DigestInputStream : public StreamBase<char> {
+class STREAMS_EXPORT DigestInputStream : public StreamBase<char> {
 private:
     bool finished;
 //    int32_t ignoreBytes;

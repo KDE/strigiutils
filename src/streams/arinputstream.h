@@ -20,11 +20,12 @@
 #ifndef ARINPUTSTREAM_H
 #define ARINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 
 namespace jstreams {
 
-class ArInputStream : public SubStreamProvider {
+class STREAMS_EXPORT ArInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     std::string gnufilenames;

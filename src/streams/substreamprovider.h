@@ -21,6 +21,7 @@
 #define SUBSTREAMPROVIDER
 
 #include <string>
+#include "streams_export.h"
 #include "streambase.h"
 
 namespace jstreams {
@@ -34,7 +35,7 @@ struct EntryInfo {
     EntryInfo() :size(-1), mtime(0), type(Unknown) {}
 };
 
-class SubStreamProvider {
+class STREAMS_EXPORT SubStreamProvider {
 protected:
     StreamStatus status;
     std::string error;

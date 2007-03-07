@@ -20,7 +20,8 @@
 #if defined(HAVE_FNMATCH_H)
 
 #elif !defined(STRIGI_FNMATCH_H_)
-#define STRIGI_FNMATCH_H
+#include "streams_export.h"
+    #define STRIGI_FNMATCH_H
 
 
     #define FNM_NOMATCH     1     /**< Match failed. */
@@ -32,5 +33,5 @@
                                        */
     #define SUCCESS 0
 
-    extern int fnmatch(const char *pattern, const char *string, int flags);
+    STREAMS_EXPORT extern int fnmatch(const char *pattern, const char *string, int flags);
 #endif

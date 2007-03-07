@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <string>
+#include "streams_export.h"
 
 #define INT32MAX 0x7FFFFFFFL
 
@@ -36,28 +37,23 @@ namespace jstreams {
 
 enum StreamStatus { Ok, Eof, Error };
 
-/**
- * @short Base class for stream read access to many different file types.
- *
- * This class is based on the interface java.io.InputStream. It allows
- * for uniform access to streamed resources.
- * The main difference with the java equivalent is a performance improvement.
- * When reading data, data is not copied into a buffer provided by the caller,
- * but a pointer to the read data is provided. This makes this interface
- * especially useful for deriving from it and implementing filterers or
- * transformers.
- */
 // java mapping: long=int64, int=int32, byte=uint8_t
-template <class T>
-class StreamBase {
+/**
+ * developer comment: This is needed because win32 compilation.
+ * When we want to access a function outside a lib, we have to export them
+ * but we can't export the template class because this would be somewhat
+ * stupid / does not work by design :)
+ * Because of this I've introduced this StreamBaseBase class
+ */
+class STREAMS_EXPORT StreamBaseBase {
 protected:
     int64_t size;
     int64_t position;
     std::string error;
     StreamStatus status;
 public:
-    StreamBase() :size(-1), position(0), status(Ok){ }
-    virtual ~StreamBase(){}
+    StreamBaseBase() :size(-1), position(0), status(Ok){ }
+    virtual ~StreamBaseBase() {}
     /**
      * @brief  Return a string representation of the last error.
      * If no error has occurred, an empty string is returned.
@@ -79,6 +75,24 @@ public:
      * always known.
      **/
     int64_t getSize() const { return size; }
+};
+
+/**
+ * @short Base class for stream read access to many different file types.
+ *
+ * This class is based on the interface java.io.InputStream. It allows
+ * for uniform access to streamed resources.
+ * The main difference with the java equivalent is a performance improvement.
+ * When reading data, data is not copied into a buffer provided by the caller,
+ * but a pointer to the read data is provided. This makes this interface
+ * especially useful for deriving from it and implementing filterers or
+ * transformers.
+ */
+template <class T>
+class StreamBase : public StreamBaseBase {
+public:
+    StreamBase() { }
+    virtual ~StreamBase(){}
     /**
      * @brief Reads characters from the stream and sets \a start to
      * the first character that was read.

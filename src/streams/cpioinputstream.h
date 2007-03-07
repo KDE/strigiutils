@@ -20,12 +20,13 @@
 #ifndef CPIOINPUTSTREAM_H
 #define CPIOINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"
 
 namespace jstreams {
 
-class CpioInputStream : public SubStreamProvider {
+class STREAMS_EXPORT CpioInputStream : public SubStreamProvider {
 private:
     static const char unsigned* magic;
     char padding;

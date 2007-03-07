@@ -24,6 +24,7 @@
 #include <list>
 #include <vector>
 #include <string>
+#include "streams_export.h"
 #include "substreamprovider.h"
 
 namespace jstreams {
@@ -32,7 +33,7 @@ template <class T> class StreamBase;
 class SubStreamProvider;
 struct EntryInfo;
 
-class DirLister {
+class STREAMS_EXPORT DirLister {
 private:
     int pos;
     std::vector<jstreams::EntryInfo> entries;
@@ -48,14 +49,14 @@ public:
  * files. The class ArchiveReader uses instances of this class to access
  * streams.
  **/
-class StreamOpener {
+class STREAMS_EXPORT StreamOpener {
 public:
     virtual ~StreamOpener() {}
     virtual jstreams::StreamBase<char>* openStream(const std::string& url) = 0;
     virtual int stat(const std::string& url, jstreams::EntryInfo& e) = 0;
 };
 
-class ArchiveReader : public StreamOpener {
+class STREAMS_EXPORT ArchiveReader : public StreamOpener {
 private:
     class ArchiveReaderPrivate;
     ArchiveReaderPrivate *p;
@@ -74,7 +75,7 @@ public:
     bool canHandle(const std::string& url);
 };
 
-class FileStreamOpener : public StreamOpener {
+class STREAMS_EXPORT FileStreamOpener : public StreamOpener {
 public:
     ~FileStreamOpener() {}
     jstreams::StreamBase<char>* openStream(const std::string& url);

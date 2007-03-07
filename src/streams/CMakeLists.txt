@@ -35,20 +35,21 @@ set(streams_SRCS ${streams_SRCS}
 )
 endif(NOT WIN32)
 
+if(MSVC)
+        add_definitions(-wd4251)
+endif(MSVC)
+
 #add the compatibility files
 set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
 
-IF(WIN32)
-	add_library(streams ${streams_SRCS})
-	install(TARGETS streams ARCHIVE DESTINATION ${LIB_DESTINATION})
-ELSE(WIN32)
-	add_library(streams SHARED ${streams_SRCS})
-	install(TARGETS streams LIBRARY DESTINATION ${LIB_DESTINATION})
-ENDIF(WIN32)
+add_library(streams SHARED ${streams_SRCS})
+install(TARGETS streams LIBRARY DESTINATION ${LIB_DESTINATION})
 
 set_target_properties(streams PROPERTIES
     VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
+    SOVERSION ${STRIGI_VERSION_MAJOR}
+    DEFINE_SYMBOL MAKE_STREAMS_LIB
+)
 
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARIES} ${ICONV_LIBRARIES})
 
@@ -63,4 +64,6 @@ if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)
 endif(NOT WIN32)
 
+#set_target_properties() does not work here...
+add_definitions(-DMAKE_STREAMS_LIB)
 add_executable(decodebase64 decodebase64.cpp base64inputstream.cpp)

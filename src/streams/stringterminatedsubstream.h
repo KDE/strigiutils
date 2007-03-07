@@ -20,12 +20,13 @@
 #ifndef STRINGTERMINATEDSUBSTREAM
 #define STRINGTERMINATEDSUBSTREAM
 
+#include "streams_export.h"
 #include "streambase.h"
 #include "kmpsearcher.h"
 
 namespace jstreams {
 
-class StringTerminatedSubStream : public StreamBase<char> {
+class STREAMS_EXPORT StringTerminatedSubStream : public StreamBase<char> {
 private:
     const int64_t offset;
     StreamBase<char>* input;

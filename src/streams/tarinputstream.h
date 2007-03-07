@@ -20,6 +20,7 @@
 #ifndef TARINPUTSTREAM_H
 #define TARINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 
 /**
@@ -38,7 +39,7 @@
 
 namespace jstreams {
 
-class TarInputStream : public SubStreamProvider {
+class STREAMS_EXPORT TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
     int32_t numPaddingBytes;

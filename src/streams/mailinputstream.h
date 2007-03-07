@@ -20,6 +20,7 @@
 #ifndef MAILINPUTSTREAM_H
 #define MAILINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "substreamprovider.h"
 #include <stack>
 /**
@@ -31,7 +32,7 @@
 namespace jstreams {
 class SubInputStream;
 class StringTerminatedSubStream;
-class MailInputStream : public SubStreamProvider {
+class STREAMS_EXPORT MailInputStream : public SubStreamProvider {
 private:
     int64_t nextLineStartPosition;
     // variables that record the current read state

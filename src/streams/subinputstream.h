@@ -20,11 +20,12 @@
 #ifndef SUBINPUTSTREAM_H
 #define SUBINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "streambase.h"
 
 namespace jstreams {
 
-class SubInputStream : public StreamBase<char> {
+class STREAMS_EXPORT SubInputStream : public StreamBase<char> {
 private:
     const int64_t offset;
     StreamBase<char> *input;

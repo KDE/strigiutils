@@ -20,11 +20,12 @@
 #ifndef FILEINPUTSTREAM_H
 #define FILEINPUTSTREAM_H
 
+#include "streams_export.h"
 #include "bufferedstream.h"
 
 namespace jstreams {
 
-class FileInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT FileInputStream : public BufferedInputStream<char> {
 private:
     FILE *file;
     std::string filepath;

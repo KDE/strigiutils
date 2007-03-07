@@ -21,6 +21,7 @@
  #ifndef JSTREAMSCONFIG_H
  #define JSTREAMSCONFIG_H
 
+#cmakedefine HAVE_STRCASECMP
 #cmakedefine HAVE_STRNCASECMP
 #cmakedefine HAVE_STRCASESTR
 #cmakedefine HAVE_ISBLANK
@@ -156,6 +157,27 @@ bool isblank(char c);
     #define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
 #endif
 
+#ifndef S_IRWXU
+# define	S_IRWXU 	(S_IRUSR | S_IWUSR | S_IXUSR)
+# define		S_IRUSR	0000400	/* read permission, owner */
+# define		S_IWUSR	0000200	/* write permission, owner */
+# define		S_IXUSR 0000100/* execute/search permission, owner */
+#endif
+
+#ifndef S_IRWXG
+# define	S_IRWXG		(S_IRGRP | S_IWGRP | S_IXGRP)
+# define		S_IRGRP	0000040	/* read permission, group */
+# define		S_IWGRP	0000020	/* write permission, grougroup */
+# define		S_IXGRP 0000010/* execute/search permission, group */
+#endif
+
+#ifndef S_IRWXO
+# define	S_IRWXO		(S_IROTH | S_IWOTH | S_IXOTH)
+# define		S_IROTH	0000004	/* read permission, other */
+# define		S_IWOTH	0000002	/* write permission, other */
+# define		S_IXOTH 0000001/* execute/search permission, other */
+#endif
+
 // set sleep time
 #ifdef HAVE_NANOSLEEP
     #define strigi_nanosleep(nanoseconds) struct timespec sleeptime; sleeptime.tv_sec = 0; sleeptime.tv_nsec = nanoseconds; nanosleep(&sleeptime, 0);
@@ -173,6 +195,14 @@ bool isblank(char c);
 		#pragma warning(disable: 4503) //decorated name length exceeded
 		#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
 	#endif
+#endif
+
+#ifndef HAVE_STRCASECMP
+# define strcasecmp stricmp
+#endif
+
+#ifndef HAVE_STRNCASECMP
+# define strncasecmp strnicmp
 #endif
 
 #endif //JSTREAMSCONFIG_H

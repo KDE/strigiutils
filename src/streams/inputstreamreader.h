@@ -22,6 +22,7 @@
 
 #include <string>
 #include <iconv.h>
+#include "streams_export.h"
 #include "bufferedstream.h"
 
 namespace jstreams {
@@ -31,7 +32,7 @@ namespace jstreams {
 http://www.gnu.org/software/libc/manual/html_node/iconv-Examples.html
 http://tangentsoft.net/mysql++/doc/userman/html/unicode.html
  **/
-class InputStreamReader : public BufferedInputStream<wchar_t> {
+class STREAMS_EXPORT InputStreamReader : public BufferedInputStream<wchar_t> {
 private:
     iconv_t converter;
     bool finishedDecoding;
