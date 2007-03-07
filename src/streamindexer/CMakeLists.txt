@@ -31,7 +31,7 @@ set(streamindexer_SRCS
 	cnstr.cpp
 	fieldtypes.cpp
 	streamindexer.cpp
-	indexreader.cpp
+#	indexreader.cpp
 	filelister.cpp
 )
 
