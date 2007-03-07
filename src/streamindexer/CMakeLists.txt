@@ -31,15 +31,13 @@ set(streamindexer_SRCS
 	cnstr.cpp
 	fieldtypes.cpp
 	streamindexer.cpp
-)
-if(NOT WIN32)
-
-set(streamindexer_SRCS
-        ${streamindexer_SRCS}
+	indexreader.cpp
 	filelister.cpp
 )
 
-endif(NOT WIN32)
+if(MSVC)
+        add_definitions(-wd4251)        # disable this warning
+endif(MSVC)
 
 if (LIBXML2_FOUND)
   set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
@@ -62,9 +60,12 @@ endif (LIBXML2_FOUND)
 	add_library(streamindexer SHARED ${streamindexer_SRCS})
 	install(TARGETS streamindexer LIBRARY DESTINATION ${LIB_DESTINATION})
 #ENDIF(WIN32)
+
 set_target_properties(streamindexer PROPERTIES
     VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
+    SOVERSION ${STRIGI_VERSION_MAJOR}
+    DEFINE_SYMBOL MAKE_STREAMINDEXER_LIB
+)
 
 set(streamindexer_libs streams ${streamindex_LIBS})
 if(NOT WIN32)

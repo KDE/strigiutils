@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include "streamindexer_export.h"
 #include "streamindexer.h"
 
 namespace jstreams {
@@ -49,7 +50,7 @@ class Indexable;
  * IndexManager::getIndexWriter() and should not be used from threads other
  * than the thread that called IndexManager::getIndexWriter().
  **/
-class IndexWriter {
+class STREAMINDEXER_EXPORT IndexWriter {
 friend class Indexable;
 protected:
     virtual void startIndexable(Indexable*) = 0;

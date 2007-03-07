@@ -21,6 +21,8 @@
 #define INDEXERCONFIGURATION_H
 #include <string>
 #include <vector>
+
+#include "streamindexer_export.h"
 #include "fieldtypes.h"
 
 /**
@@ -32,7 +34,7 @@ class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 class FieldRegister;
 
-class IndexerConfiguration {
+class STREAMINDEXER_EXPORT IndexerConfiguration {
 public:
 enum FieldType {
     None      = 0x0000,

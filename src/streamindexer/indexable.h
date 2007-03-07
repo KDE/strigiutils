@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "streamindexer_export.h"
+
 namespace jstreams {
 
 class IndexWriter;
@@ -37,7 +39,7 @@ template <class T> class StreamBase;
  * write data associated with a document to the index. The data is
  * automatically written do the index when ~Indexable() is called.
  **/
-class Indexable {
+class STREAMINDEXER_EXPORT Indexable {
 friend class IndexWriter;
 private:
     int64_t id;

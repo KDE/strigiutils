@@ -22,6 +22,7 @@
 
 #include <vector>
 #include "cnstr.h"
+#include "streamindexer_export.h"
 
 namespace jstreams {
 class StreamEndAnalyzer;
@@ -47,7 +48,7 @@ template <class T> class StreamBase;
  * Especially the last task is important when working with archive streams
  * such as zip or tar files that contain other files.
  **/
-class StreamIndexer {
+class STREAMINDEXER_EXPORT StreamIndexer {
 private:
     static cnstr sizefieldname;
     IndexerConfiguration& conf;

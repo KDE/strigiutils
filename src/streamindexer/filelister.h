@@ -35,6 +35,8 @@
 #include <sys/types.h>
 #include <string>
 
+#include "streamindexer_export.h"
+
 #ifdef _WIN32
 typedef unsigned int uid_t;
 typedef unsigned int gid_t;
@@ -44,7 +46,7 @@ namespace jstreams {
     class IndexerConfiguration;
 }
 
-class FileLister {
+class STREAMINDEXER_EXPORT FileLister {
 private:
     char* path;
     uint length;
