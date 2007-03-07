@@ -6,15 +6,22 @@
 #include "indexerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 
 StrigiMutex errorlock;
 int founderrors = 0;
 int
-CLuceneTest(int argc, char**argv) {
+CLuceneTest(int argc, char*argv[]) {
     const char* path = "testcluceneindex";
 
     // initialize a directory for writing and an indexmanager
+#ifdef _WIN32
+    mkdir(path);
+#else
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
+#endif
     jstreams::IndexManager* manager = createCLuceneIndexManager(path);
 
     jstreams::IndexerConfiguration ic;

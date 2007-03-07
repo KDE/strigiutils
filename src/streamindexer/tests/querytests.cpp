@@ -2,6 +2,6 @@
 using namespace jstreams;
 
 int
-querytests(int argc, char** argv) {
+querytests(int argc, char* argv[]) {
     return 0;
 }
