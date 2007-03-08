@@ -25,6 +25,10 @@ IF(ENABLE_DBUS)
   set(strigidaemon_LIBS ${strigidaemon_LIBS} dbusserver)
 ENDIF(ENABLE_DBUS)
 
+IF (Iconv_FOUND)
+  add_definitions(-DLIBXML_ICONV_ENABLED)
+ENDIF (Iconv_FOUND)
+
 IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
