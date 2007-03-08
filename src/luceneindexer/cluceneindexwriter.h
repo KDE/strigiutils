@@ -20,12 +20,13 @@
 #ifndef CLUCENEINDEXWRITER_H
 #define CLUCENEINDEXWRITER_H
 
+#include "cluceneindexer_export.h"
 #include "indexwriter.h"
 #include "indexable.h"
 #include "indexerconfiguration.h"
 
 class CLuceneIndexManager;
-class CLuceneIndexWriter : public jstreams::IndexWriter {
+class CLUCENEINDEXER_EXPORT CLuceneIndexWriter : public jstreams::IndexWriter {
 private:
     CLuceneIndexManager* manager;
     int doccount;

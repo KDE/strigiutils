@@ -20,7 +20,9 @@
 #ifndef CLUCENEINDEXREADER_H
 #define CLUCENEINDEXREADER_H
 
+#include "cluceneindexer_export.h"
 #include "indexreader.h"
+
 #include <map>
 #include <time.h>
 namespace lucene {
@@ -30,7 +32,7 @@ namespace lucene {
 }
 
 class CLuceneIndexManager;
-class CLuceneIndexReader : public jstreams::IndexReader {
+class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public jstreams::IndexReader {
 friend class CLuceneIndexManager;
 private:
     CLuceneIndexManager* manager;

@@ -20,6 +20,7 @@
 #ifndef CLUCENEINDEXMANAGER_H
 #define CLUCENEINDEXMANAGER_H
 
+#include "cluceneindexer_export.h"
 #include "indexmanager.h"
 //#include "querybitset.h"
 #include <strigi_thread.h>
@@ -44,7 +45,7 @@ namespace lucene {
 
 class CLuceneIndexReader;
 class CLuceneIndexWriter;
-class CLuceneIndexManager : public jstreams::IndexManager {
+class CLUCENEINDEXER_EXPORT CLuceneIndexManager : public jstreams::IndexManager {
 private:
     StrigiMutex writelock;
     StrigiMutex lock;
@@ -76,12 +77,12 @@ public:
     void setIndexMTime();
 };
 
-jstreams::IndexManager*
+CLUCENEINDEXER_EXPORT jstreams::IndexManager*
 createCLuceneIndexManager(const char* path);
 
-std::string wchartoutf8(const wchar_t*);
-std::wstring utf8toucs2(const char*);
-std::string wchartoutf8(const std::wstring&);
-std::wstring utf8toucs2(const std::string&);
+CLUCENEINDEXER_EXPORT std::string wchartoutf8(const wchar_t*);
+CLUCENEINDEXER_EXPORT std::wstring utf8toucs2(const char*);
+CLUCENEINDEXER_EXPORT std::string wchartoutf8(const std::wstring&);
+CLUCENEINDEXER_EXPORT std::wstring utf8toucs2(const std::string&);
 
 #endif
