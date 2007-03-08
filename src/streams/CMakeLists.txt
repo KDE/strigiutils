@@ -53,12 +53,26 @@ set_target_properties(streams PROPERTIES
 
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARIES} ${ICONV_LIBRARIES})
 
-install(FILES fileinputstream.h substreamprovider.h substreamproviderprovider.h
-	bufferedstream.h streambase.h inputstreambuffer.h inputstream.h
-	archivereader.h inputstreamreader.h stringreader.h
+install(FILES
+	fileinputstream.h
+	substreamprovider.h
+	substreamproviderprovider.h
+	bufferedstream.h
+	streambase.h
+	inputstreambuffer.h
+	inputstream.h
+	archivereader.h
+	inputstreamreader.h
+	stringreader.h
+	stringreader.h
+	streams_export.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
-	compat/timeofday.h compat/strigi_fnmatch.h compat/strigi_thread.h compat/stgdirent.h
-	DESTINATION include/strigi)
+	compat/timeofday.h
+	compat/strigi_fnmatch.h
+	compat/strigi_thread.h
+	compat/stgdirent.h
+	DESTINATION include/strigi
+)
 
 if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)

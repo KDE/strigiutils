@@ -7,8 +7,8 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
 set(streamindexer_SRCS
-        bz2endanalyzer.cpp
-        digestthroughanalyzer.cpp
+	bz2endanalyzer.cpp
+	digestthroughanalyzer.cpp
 	textendanalyzer.cpp
 	streamendanalyzer.cpp
 	zipendanalyzer.cpp
@@ -73,10 +73,21 @@ if(NOT WIN32)
 endif(NOT WIN32)
 target_link_libraries(streamindexer ${streamindexer_libs})
 
-install(FILES indexeddocument.h indexable.h analyzerplugin.h streamindexer.h
-	streamthroughanalyzer.h streamendanalyzer.h analyzerfactoryfactory.h
-	indexwriter.h indexerconfiguration.h cnstr.h fieldtypes.h
-	DESTINATION include/strigi)
+install(FILES
+	indexeddocument.h
+	indexable.h
+	analyzerplugin.h
+	streamindexer.h
+	streamthroughanalyzer.h
+	streamendanalyzer.h
+	analyzerfactoryfactory.h
+	indexwriter.h
+	indexerconfiguration.h
+	cnstr.h
+	fieldtypes.h
+	streamindexer_export.h
+	DESTINATION include/strigi
+)
 
 
 # test executable
