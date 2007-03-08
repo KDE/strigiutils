@@ -68,9 +68,9 @@ set_target_properties(streamindexer PROPERTIES
 )
 
 set(streamindexer_libs streams ${streamindex_LIBS})
-if(NOT WIN32)
+if(LINUX)
         set(streamindexer_libs ${streamindexer_libs} dl)
-endif(NOT WIN32)
+endif(LINUX)
 target_link_libraries(streamindexer ${streamindexer_libs})
 
 install(FILES
