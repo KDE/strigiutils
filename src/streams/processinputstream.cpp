@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <signal.h>
 using namespace jstreams;
 using namespace std;
 
