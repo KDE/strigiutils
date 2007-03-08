@@ -25,6 +25,10 @@
 
 namespace jstreams {
 
+const char* STREAMS_EXPORT checkUtf8(const char* p, int32_t length, char& nb);
+ 
+const char* STREAMS_EXPORT checkUtf8(const std::string&, char& nb);
+
 bool STREAMS_EXPORT checkUtf8(const char* p, int32_t length);
 
 bool STREAMS_EXPORT checkUtf8(const std::string&);

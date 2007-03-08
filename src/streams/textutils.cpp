@@ -20,8 +20,12 @@
 #include "jstreamsconfig.h"
 #include "textutils.h"
 
-
-// http://www.w3.org/TR/REC-xml/#charsets
+/**
+ * Return the position of the first byte that is not valid
+ * utf8. Return value of 0 means that the entire string is valid.
+ * If the last character is incomplete the returned value points to the start
+ * of that character and nb is set to the number of characters that is missing.
+ **/
 bool
 jstreams::checkUtf8(const char* p, int32_t length) {
     const char* end = p + length;
@@ -40,10 +44,7 @@ jstreams::checkUtf8(const char* p, int32_t length) {
             nb = 2;
         } else if ((0xF8 & c) == 0xF0) {
             nb = 3;
-        // NOTE: we allow 0xC even though it is NOT UTF8 text, this is
-        // because pdftotext outputs it
-        // If we are rid of pdfto text, we may remove 0xC here
-        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD || c == 0xC)){
+        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
             return false;
         }
         p++;
@@ -51,10 +52,52 @@ jstreams::checkUtf8(const char* p, int32_t length) {
     // the string is only valid utf8 if it contains only complete characters
     return nb == 0;
 }
-
 bool
 jstreams::checkUtf8(const std::string& p) {
     return checkUtf8(p.c_str(), p.size());
+}
+
+// http://www.w3.org/TR/REC-xml/#charsets
+/**
+ * Return the position of the first byte that is not valid
+ * utf8. Return value of 0 means that the entire string is valid.
+ * If the last character is incomplete the returned value points to the start
+ * of that character and nb is set to the number of characters that is missing.
+ **/
+const char*
+jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
+    const char* end = p + length;
+    const char* cs = p;
+    // check if the text is valid UTF-8
+    nb = 0;
+    while (p < end) {
+        char c = *p;
+        if (nb) {
+            if ((0xC0 & c) != 0x80) {
+                nb = 0;
+                return p;
+            }
+            nb--;
+        } else if ((0xE0 & c) == 0xC0) {
+            cs = p;
+            nb = 1;
+        } else if ((0xF0 & c) == 0xE0) {
+            cs = p;
+            nb = 2;
+        } else if ((0xF8 & c) == 0xF0) {
+            cs = p;
+            nb = 3;
+        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
+            return p;
+        }
+        p++;
+    }
+    // the string is only valid utf8 if it contains only complete characters
+    return (nb) ?cs :0;
+}
+const char*
+jstreams::checkUtf8(const std::string& p, char& nb) {
+    return checkUtf8(p.c_str(), p.size(), nb);
 }
 
 /**
