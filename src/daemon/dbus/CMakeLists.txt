@@ -95,4 +95,9 @@ add_custom_target( copy-generated
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbustestinterface.cpp"
+
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
 )
