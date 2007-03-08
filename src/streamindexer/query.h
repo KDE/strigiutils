@@ -23,12 +23,18 @@
 #include <set>
 #include <list>
 
+#include "streamindexer_export.h"
+
+#ifdef _WIN32
+typedef int int32_t;
+#endif
+
 namespace jstreams {
 /**
  * Break up a string in a query.
  * Currently very simple. Currently always combines terms with AND.
  **/
-class Query {
+class STREAMINDEXER_EXPORT Query {
 friend class QueryParser;
 public:
     enum Occurrence { MUST, MUST_NOT, SHOULD };
@@ -53,7 +59,7 @@ public:
     std::string highlight(const std::string& text) const;
 };
 
-class QueryParser {
+class STREAMINDEXER_EXPORT QueryParser {
 private:
     std::list<std::string> defaultFields;
     const char* parseQuery(const char*, Query& term) const;

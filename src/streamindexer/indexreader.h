@@ -20,6 +20,7 @@
 #ifndef INDEXREADER_H
 #define INDEXREADER_H
 
+#include "streamindexer_export.h"
 #include "indexeddocument.h"
 #include <vector>
 
@@ -33,7 +34,7 @@ class Query;
  * IndexManager::getIndexReader() and should not be used from threads other
  * than the thread that called IndexManager::getIndexReader().
  **/
-class IndexReader {
+class STREAMINDEXER_EXPORT IndexReader {
 public:
     virtual ~IndexReader() {}
     /**
