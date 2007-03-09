@@ -22,13 +22,20 @@
 #include "fileinputstream.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 
 using namespace jstreams;
 extern int32_t streamcount;
 
 int
 main(int argc, char** argv) {
+#ifdef _WIN32
+    mkdir("out");
+#else
     mkdir("out", 0777);
+#endif
     streamcount = 0;
     PdfParser parser;
     PdfParser::DefaultStreamHandler streamhandler;

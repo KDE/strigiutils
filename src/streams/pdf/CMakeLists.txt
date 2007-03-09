@@ -1,6 +1,7 @@
 
+include_directories(..)
 if (Magic_FOUND)
-include_directories(.. ${MAGIC_INCLUDE_DIR})
+include_directories(${MAGIC_INCLUDE_DIR})
 
 add_executable(pdftest pdftest.cpp)
 
