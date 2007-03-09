@@ -22,14 +22,37 @@
 namespace jstreams {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+
+/** An AnalyzerFactoryFactory returns lists of AnalyzerFactory instances
+    for StreamThroughAnalyzers and StreamEndAnalyzers.
+
+    Each loadable plugin has one AnalyzerFactoryFactory. This factory
+    can pass the available factories to the application that loads the plugin.
+ */
 class AnalyzerFactoryFactory {
 public:
+    /** Destructor */
     virtual ~AnalyzerFactoryFactory() {}
+
+    /** Return instances of the StreamEndAnalyzerFactories available in this
+        plugin.
+
+        The default implementation returns an empty list. A particular plugin
+        should subclass the AnalyzerFactoryFactory and overload this function
+        if it implements any StreamEndAnalyzers.
+     */
     virtual std::list<StreamEndAnalyzerFactory*>
             getStreamEndAnalyzerFactories() const {
         std::list<StreamEndAnalyzerFactory*> af;
         return af;
     }
+    /** Return instances of the StreamThroughAnalyzerFactories available in this
+        plugin.
+
+        The default implementation returns an empty list. A particular plugin
+        should subclass the AnalyzerFactoryFactory and overload this function
+        if it implements any StreamThroughAnalyzers.
+     */
     virtual std::list<StreamThroughAnalyzerFactory*>
             getStreamThroughAnalyzerFactories() const {
         std::list<StreamThroughAnalyzerFactory*> af;

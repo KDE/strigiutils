@@ -521,15 +521,15 @@ StreamStatus
 PdfParser::skipXRef() {
     // skip header
     if (skipKeyword("xref", 4) != Ok || skipWhitespaceOrComment() != Ok
-            || parseNumber() != Ok || skipWhitespaceOrComment() != Ok
+            || skipNumber() != Ok || skipWhitespaceOrComment() != Ok
             || parseNumber() != Ok || skipWhitespaceOrComment() != Ok) {
         return Error;
     }
     // parse number of entreis
     int entries = (int)lastNumber;
     for (int i = 0; i != entries; ++i) {
-        if (parseNumber() != Ok || skipWhitespaceOrComment() != Ok
-            || parseNumber() != Ok || skipWhitespaceOrComment() != Ok
+        if (skipNumber() != Ok || skipWhitespaceOrComment() != Ok
+            || skipNumber() != Ok || skipWhitespaceOrComment() != Ok
             || skipFromString("fn", 2) != Ok
             || skipWhitespaceOrComment() != Ok) {
                 return Error;
@@ -548,7 +548,7 @@ PdfParser::skipTrailer() {
 StreamStatus
 PdfParser::skipStartXRef() {
     if (skipKeyword("startxref", 9) != Ok || skipWhitespaceOrComment() != Ok
-            || parseNumber() != Ok) {
+            || skipNumber() != Ok) {
         fprintf(stderr, "error in startxref 1\n");
         return Error;
     }
@@ -577,15 +577,9 @@ StreamStatus
 PdfParser::parse(StreamBase<char>* stream) {
     // for now we need to load the entire stream in memory :(
     // this is due to a sneaky bug somewhere, not a design issue
-    const char* c;
-    //warning:use limited to sized streams
-    stream->read(c, 1+stream->getSize(), 0);
+    forwardStream(stream);
     stream->reset(0);
-    StreamStatus r = stream->getStatus();
-    if (r != Ok) {
-        fprintf(stderr, "Error: %s\n", stream->getError());
-        return r;
-    }
+    StreamStatus r;
 
     // initialize the stream status
     this->stream = stream;
@@ -640,7 +634,8 @@ PdfParser::forwardStream(StreamBase<char>* s) {
     const char* c;
     int32_t n = s->read(c, 1024, 0);
     while (n >= 0 && s->getStatus() == Ok) {
-        n = s->read(c, n, 0);
+        s->reset(0);
+        n = s->read(c, 2*n, 0);
     }
 }
 StreamStatus
@@ -684,5 +679,6 @@ PdfParser::handleSubStream(StreamBase<char>* s, const std::string& type,
     if (streamhandler) {
         streamhandler->handle(s);
     }
+    forwardStream(s);
     return s->getStatus();
 }
