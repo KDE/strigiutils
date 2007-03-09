@@ -35,10 +35,6 @@ set(streams_SRCS ${streams_SRCS}
 )
 endif(NOT WIN32)
 
-if(MSVC)
-        add_definitions(-wd4251)
-endif(MSVC)
-
 #add the compatibility files
 set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
 

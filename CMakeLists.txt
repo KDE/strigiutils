@@ -38,7 +38,10 @@ set (HAVE_SSIZE_T 1)
 ENDIF(MINGW)
 
 IF(MSVC)
-    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+    # msvc2005 deprecated warnings
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
+    # some export related warnings
+    ADD_DEFINITIONS(-wd4251 -wd4275)
 ELSE(MSVC)
     IF (NOT WIN32)
       add_definitions (-fPIC)

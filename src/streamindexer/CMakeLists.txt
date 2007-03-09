@@ -35,10 +35,6 @@ set(streamindexer_SRCS
 	filelister.cpp
 )
 
-if(MSVC)
-        add_definitions(-wd4251)        # disable this warning
-endif(MSVC)
-
 if (LIBXML2_FOUND)
   set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
   set(streamindex_LIBS ${streamindex_LIBS} ${LIBXML2_LIBRARIES})

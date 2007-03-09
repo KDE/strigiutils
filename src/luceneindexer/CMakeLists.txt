@@ -8,9 +8,9 @@ include_directories( ../streamindexer ../streams
 	${strigi_SOURCE_DIR}/src/streams/compat)
 
 IF(MSVC)
+    # why only here and not for the complete project?
     ADD_DEFINITIONS(-D_UNICODE)
     ADD_DEFINITIONS(-DUNICODE)
-    ADD_DEFINITIONS(-wd4251 -wd4275)
 ENDIF(MSVC)
 
 set(cluceneindex_SRCS
