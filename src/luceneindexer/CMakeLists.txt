@@ -32,4 +32,5 @@ add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
 target_link_libraries(luceneindexer cluceneindex)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)
+install(TARGETS cluceneindex LIBRARY DESTINATION ${LIB_DESTINATION})
 # FIXME: no need to install headers here?
