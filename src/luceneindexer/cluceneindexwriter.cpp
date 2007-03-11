@@ -41,7 +41,7 @@ using lucene::index::Term;
 using lucene::index::TermDocs;
 using lucene::search::IndexSearcher;
 using lucene::search::Hits;
-using lucene::search::PrefixFilter;
+using lucene::search::StrigiPrefixFilter;
 using lucene::util::BitSet;
 
 using lucene::util::Reader;
@@ -208,7 +208,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
 
     wstring tstr(utf8toucs2(entry));
     Term term(_T("path"), tstr.c_str());
-    PrefixFilter filter(&term);
+    StrigiPrefixFilter filter(&term);
     BitSet* bits;
     try {
         bits = filter.bits(reader);

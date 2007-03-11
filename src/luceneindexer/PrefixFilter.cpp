@@ -16,26 +16,26 @@ CL_NS_DEF(search)
 
 
 
-PrefixFilter::PrefixFilter( Term* prefix )
+StrigiPrefixFilter::StrigiPrefixFilter( Term* prefix )
 {
     this->prefix = _CL_POINTER(prefix);
 }
 
-PrefixFilter::~PrefixFilter()
+StrigiPrefixFilter::~StrigiPrefixFilter()
 {
     _CLDECDELETE(prefix);
 }
 
-PrefixFilter::PrefixFilter( const PrefixFilter& copy ) :
+StrigiPrefixFilter::StrigiPrefixFilter( const StrigiPrefixFilter& copy ) :
     prefix( _CL_POINTER(copy.prefix) )
 {
 }
 
-Filter* PrefixFilter::clone() const {
-    return _CLNEW PrefixFilter(*this );
+Filter* StrigiPrefixFilter::clone() const {
+    return _CLNEW StrigiPrefixFilter(*this );
 }
 
-TCHAR* PrefixFilter::toString()
+TCHAR* StrigiPrefixFilter::toString()
 {
     //Instantiate a stringbuffer buffer to store the readable version temporarily
     CL_NS(util)::StringBuffer buffer;
@@ -56,7 +56,7 @@ TCHAR* PrefixFilter::toString()
 
 /** Returns a BitSet with true for documents which should be permitted in
 search results, and false for those that should not. */
-BitSet* PrefixFilter::bits( IndexReader* reader )
+BitSet* StrigiPrefixFilter::bits( IndexReader* reader )
 {
     BitSet* bts = _CLNEW BitSet( reader->maxDoc() );
     TermEnum* enumerator = reader->terms(prefix);

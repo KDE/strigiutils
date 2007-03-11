@@ -5,8 +5,8 @@
 * Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
-#ifndef _lucene_search_PrefixFilter
-#define _lucene_search_PrefixFilter
+#ifndef _lucene_search_StrigiPrefixFilter
+#define _lucene_search_StrigiPrefixFilter
 #if defined(_LUCENE_PRAGMA_ONCE)
 # pragma once
 #endif
@@ -19,16 +19,16 @@
 
 CL_NS_DEF(search)
 
-    class PrefixFilter: public Filter
+    class StrigiPrefixFilter: public Filter
     {
     private:
         CL_NS(index)::Term* prefix;
     protected:
-        PrefixFilter( const PrefixFilter& copy );
+        StrigiPrefixFilter( const StrigiPrefixFilter& copy );
 
     public:
-        PrefixFilter(CL_NS(index)::Term* prefix);
-        ~PrefixFilter();
+        StrigiPrefixFilter(CL_NS(index)::Term* prefix);
+        ~StrigiPrefixFilter();
 
         /** Returns a BitSet with true for documents which should be permitted in
         search results, and false for those that should not. */
