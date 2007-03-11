@@ -217,15 +217,30 @@ protected:
         d->text.append(text, length);
     }
     void addField(const jstreams::Indexable* idx,
-        const jstreams::RegisteredField* field, const std::string& value) {
+            const jstreams::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(idx->getWriterData());
         d->values.insert(
             std::make_pair<const jstreams::RegisteredField*, std::string>(
             field, value));
     }
-    void addField(const jstreams::Indexable*,
-        const jstreams::RegisteredField* fieldname,
-        const unsigned char* data, int32_t size) {}
+    void addField(const jstreams::Indexable* idx,
+            const jstreams::RegisteredField* field,
+        const unsigned char* data, int32_t size) {
+        Data* d = static_cast<Data*>(idx->getWriterData());
+        d->values.insert(
+            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            field, std::string((const char*)data, size)));
+    }
+    void addField(const jstreams::Indexable* idx,
+            const jstreams::RegisteredField* field, uint32_t value) {
+        Data* d = static_cast<Data*>(idx->getWriterData());
+        static std::ostringstream v;
+        v.str("");
+        v << value;
+        d->values.insert(
+            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            field, v.str()));
+    }
     void initWriterData(const jstreams::FieldRegister&);
     void releaseWriterData(const jstreams::FieldRegister&);
 public:
