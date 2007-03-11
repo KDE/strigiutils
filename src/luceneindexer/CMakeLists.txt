@@ -22,9 +22,10 @@ set(cluceneindex_SRCS
 
 add_library(cluceneindex SHARED ${cluceneindex_SRCS})
 
-set_target_properties(cluceneindex PROPERTIES
+set_target_properties(cluceneindex PROPERTIES VERSION ${STRIGI_VERSION} SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
 )
+
 
 target_link_libraries(cluceneindex streamindexer ${CLUCENE_LIBRARY})
 
