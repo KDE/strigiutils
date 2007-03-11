@@ -21,7 +21,6 @@
 #include "pngendanalyzer.h"
 #include "indexable.h"
 #include "fieldtypes.h"
-#include <sstream>
 using namespace std;
 using namespace jstreams;
 
@@ -54,12 +53,8 @@ PngEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
          + ((unsigned char)h[17]<<16) + ((unsigned char)h[16]<<24);
     int32_t y = (unsigned char)h[23] + ((unsigned char)h[22]<<8)
          + ((unsigned char)h[21]<<16) + ((unsigned char)h[20]<<24);
-    ostringstream v;
-    v << x;
-    idx.setField(factory->widthField, v.str());
-    v.str("");
-    v << y;
-    idx.setField(factory->heightField, v.str());
+    idx.setField(factory->widthField, x);
+    idx.setField(factory->heightField, y);
     return 0;
 }
 
