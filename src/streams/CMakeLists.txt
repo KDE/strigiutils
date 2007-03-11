@@ -69,6 +69,7 @@ install(FILES
 	compat/stgdirent.h
 	DESTINATION include/strigi
 )
+install(TARGETS streams DESTINATION ${LIB_DESTINATION})
 
 if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)

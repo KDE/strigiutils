@@ -84,6 +84,7 @@ install(FILES
 	streamindexer_export.h
 	DESTINATION include/strigi
 )
+install(TARGETS streamindexer DESTINATION ${LIB_DESTINATION})
 
 
 # test executable
