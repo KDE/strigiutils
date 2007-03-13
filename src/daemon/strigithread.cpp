@@ -26,6 +26,8 @@
 #include <signal.h>
 #include <sys/resource.h>
 #include <vector>
+#include <stdlib.h>
+
 using namespace std;
 
 vector<StrigiThread*> threads;

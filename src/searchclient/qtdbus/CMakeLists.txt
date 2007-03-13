@@ -1,4 +1,4 @@
-include_directories(${QT_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
 if (QT4_FOUND)
   include(${QT_USE_FILE})

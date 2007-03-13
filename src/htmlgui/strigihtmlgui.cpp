@@ -27,6 +27,8 @@
 #include <sstream>
 #include <fstream>
 #include <sys/stat.h>
+#include <stdlib.h>
+
 using namespace std;
 using namespace jstreams;
 

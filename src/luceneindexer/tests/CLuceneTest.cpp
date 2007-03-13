@@ -6,6 +6,7 @@
 #include "indexerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <direct.h>
 #endif
