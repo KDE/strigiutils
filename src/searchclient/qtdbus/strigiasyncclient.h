@@ -19,7 +19,8 @@
  */
 #ifndef STRIGIASYNCCLIENT
 #define STRIGIASYNCCLIENT
-#include "strigitypes.h"
+
+#include <qtdbus/strigitypes.h>
 #include <QMutex>
 
 /**
@@ -47,7 +48,7 @@ private:
     void appendRequest(const Request& r);
     void sendNextRequest();
     void sendNextRequest(const Request& r);
-private slots:
+private Q_SLOTS:
     void handleStatus(const QDBusMessage&);
     void handleCount(const QDBusMessage&);
     void handleGet(const QDBusMessage&);
@@ -56,7 +57,7 @@ private slots:
 public:
     StrigiAsyncClient();
     ~StrigiAsyncClient();
-public slots:
+public Q_SLOTS:
     void updateStatus();
     void addCountQuery(const QString& query);
     void addGetQuery(const QString& query, int max, int offset);
@@ -64,7 +65,7 @@ public slots:
        fieldname, const QString& labeltype);
     void clearRequests(RequestType type);
 
-signals:
+Q_SIGNALS:
     void statusUpdated(const QMap<QString,QString>& status);
     void countedQuery(const QString& query, int count);
     void gotHits(const QString& query, int offset,

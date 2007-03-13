@@ -21,6 +21,7 @@
 #define STREAMINDEXER_H
 
 #include <vector>
+#include <string>
 #include "cnstr.h"
 #include "streamindexer_export.h"
 
@@ -66,7 +67,7 @@ private:
     void addFactory(StreamEndAnalyzerFactory* f);
     void addThroughAnalyzers();
     void addEndAnalyzers();
-    void removeIndexable(uint depth);
+    void removeIndexable(unsigned depth);
 public:
     StreamIndexer(IndexerConfiguration& c);
     ~StreamIndexer();

@@ -29,7 +29,7 @@ namespace jstreams {
 struct EntryInfo {
     std::string filename;
     int32_t size;
-    uint mtime;
+    unsigned mtime;
     enum Type {Unknown=0, Dir=1, File=2};
     Type type;
     EntryInfo() :size(-1), mtime(0), type(Unknown) {}

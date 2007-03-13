@@ -28,7 +28,7 @@ public:
 private:
     Status status;
     int socket;
-    uint writepos;
+    unsigned writepos;
     std::string socketpath;
     std::string error;
     std::string request;

@@ -18,6 +18,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <errno.h>
+
 #if defined(_MSC_VER) || defined(__BORLANDC__)
  #define EPOCHFILETIME (116444736000000000i64)
 #else
