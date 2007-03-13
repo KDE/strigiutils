@@ -22,6 +22,8 @@
 #include "dummyindexwriter.h"
 #include "indexerconfiguration.h"
 
+#include <stdlib.h>
+
 void
 printUsage(char** argv) {
     fprintf(stderr, "Usage: %s [-v verbosity] [dir-to-index]\n", argv[0]);

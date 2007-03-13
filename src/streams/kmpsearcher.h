@@ -21,6 +21,8 @@
 #define KMPSEARCHER_H
 
 #include <string>
+#include <stdlib.h>
+
 #include "streams_export.h"
 
 namespace jstreams {

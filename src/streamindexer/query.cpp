@@ -187,7 +187,7 @@ Query::highlight(const string& text) const {
     replaceall(t, "<", "&lt;");
     replaceall(t, ">", "&gt;");
     string lt = t;
-    for (uint i=0; i<t.length(); ++i) {
+    for (unsigned i=0; i<t.length(); ++i) {
         lt[i] = tolower(lt[i]);
     }
     vector<string> re;
@@ -195,7 +195,7 @@ Query::highlight(const string& text) const {
     for (i = terms.begin(); i != terms.end(); ++i) {
         if (i->occurrence != MUST_NOT) {
             string s = i->expression;
-            for (uint k = 0; k < s.length(); ++k) {
+            for (unsigned k = 0; k < s.length(); ++k) {
                 s[k] = tolower(s[k]);
             }
             re.push_back(s);
@@ -212,7 +212,7 @@ Query::highlight(const string& text) const {
         string::size_type rep = string::npos;
         int len;
         for (k = re.begin(); k != re.end(); ++k) {
-            uint p = lt.find(*k, pos);
+            unsigned p = lt.find(*k, pos);
             if (p > 0 && (rep == string::npos || p < rep)) {
                 rep = p;
                 len = k->length();

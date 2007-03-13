@@ -20,6 +20,7 @@
 #include "jstreamsconfig.h"
 #include <list>
 #include <map>
+#include <string>
 
 #ifdef HAVE_DLFCN_H
  typedef void* StgModuleType;

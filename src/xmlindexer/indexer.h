@@ -34,8 +34,8 @@ private:
     jstreams::StreamIndexer m_indexer;
     const TagMapping mapping;
 
-    static void addFileCallback(const char* fullpath, uint dirlen,
-        uint len, time_t mtime);
+    static void addFileCallback(const char* fullpath, unsigned dirlen,
+        unsigned len, time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:

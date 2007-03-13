@@ -66,7 +66,7 @@ main(int argc, char **argv) {
     jstreams::IndexerConfiguration ic;
     ic.setFilters(filters);
     Indexer indexer(cout, ic, mappingfile);
-    for (uint i = 0; i < toindex.size(); ++i) {
+    for (unsigned i = 0; i < toindex.size(); ++i) {
         indexer.index(toindex[i]);
     }
     return 0;

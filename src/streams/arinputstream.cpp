@@ -21,6 +21,7 @@
 #include "arinputstream.h"
 #include "subinputstream.h"
 
+#include <stdlib.h>
 
 using namespace jstreams;
 
