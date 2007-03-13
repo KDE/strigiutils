@@ -7,6 +7,10 @@
 #ifndef lucene_util_dirent_H
 #define lucene_util_dirent_H
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)
 
 #include "streams_export.h"

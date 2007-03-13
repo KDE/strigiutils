@@ -37,10 +37,6 @@ IF(APPLE)
     set(CMAKE_INSTALL_NAME_DIR ${LIBINSTALLDIR})
 ENDIF(APPLE)
 
-IF(MINGW)
-set (HAVE_SSIZE_T 1)
-ENDIF(MINGW)
-
 IF(MSVC)
     # msvc2005 deprecated warnings
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
@@ -127,7 +123,7 @@ if (ENABLE_LOG4CXX)
     find_package (Log4cxx)
 endif (ENABLE_LOG4CXX)
 
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 CONFIGURE_FILE(

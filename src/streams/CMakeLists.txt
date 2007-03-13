@@ -1,9 +1,13 @@
 subdirs(tests pdf)
 
-include_directories( ${ZLIB_INCLUDE_DIR} ${BZIP2_INCLUDE_DIR}
-	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+include_directories(
+	${ZLIB_INCLUDE_DIR}
+	${BZIP2_INCLUDE_DIR}
+	${SHA_INCLUDE_DIR}
+	${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat)
+	${strigi_SOURCE_DIR}/src/streams/compat
+)
 
 set(streams_SRCS
 	bz2inputstream.cpp
@@ -29,6 +33,7 @@ set(streams_SRCS
 	filestreamopener.cpp
 	cpioinputstream.cpp
 )
+
 if(NOT WIN32)
 set(streams_SRCS ${streams_SRCS}
 	processinputstream.cpp

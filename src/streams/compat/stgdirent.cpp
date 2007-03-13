@@ -4,7 +4,11 @@
 * Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
-#include "jstreamsconfig.h"
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "errno.h"
 
 #if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)

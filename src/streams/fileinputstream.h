@@ -31,9 +31,9 @@ private:
     std::string filepath;
 
 public:
-    static const int32_t defaultBufferSize;
+    const int32_t defaultBufferSize;
     explicit FileInputStream(const char *filepath,
-        int32_t buffersize=defaultBufferSize);
+        int32_t buffersize=1048576);
     ~FileInputStream();
     int32_t fillBuffer(char* start, int32_t space);
 };

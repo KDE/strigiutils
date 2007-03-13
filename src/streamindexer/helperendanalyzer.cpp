@@ -17,6 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "jstreamsconfig.h"
 #include "helperendanalyzer.h"
 #include "processinputstream.h"
@@ -34,7 +39,9 @@ HelperEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 #ifdef WIN32
+    // FIXME! move to compat!
     #include <fcntl.h>
+    #include <windows.h>
     int mkstemp(char *tmpl)
     {
        mktemp(tmpl);

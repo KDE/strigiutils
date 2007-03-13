@@ -17,14 +17,35 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "jstreamsconfig.h"
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
 
-#ifndef HAVE_STRCASESTR
+#ifndef HAVE_STRCASECMP
+int strcasecmp(const char* sa, const char* sb){
+    char ca,cb;
+    if (sa == sb)
+        return 0;
+    int i=0;
+
+    do{
+        ca = tolower( (*(sa++)) );
+        cb = tolower( (*(sb++)) );
+
+        i++;
+    } while ( ca != L'\0' && (ca == cb) );
+
+    return (int)(ca - cb);
+}
+#endif
+
+#ifndef HAVE_STRNCASECMP
 int strncasecmp(const char* sa, const char* sb, int l){
     char ca,cb;
     if (sa == sb)

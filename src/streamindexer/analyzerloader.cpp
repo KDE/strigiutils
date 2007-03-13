@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <stgdirent.h>
 
-#ifdef HAVE_DLFCN_H
+#ifndef _WIN32
 #include <dlfcn.h>
 #define DLSYM dlsym
 #define DLCLOSE dlclose

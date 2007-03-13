@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include "jstreamsconfig.h"
 #include "streamindexer_export.h"
 #include "streamindexer.h"
 

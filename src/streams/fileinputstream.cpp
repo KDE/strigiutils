@@ -23,8 +23,9 @@
 #include <cstring>
 using namespace jstreams;
 
-const int32_t FileInputStream::defaultBufferSize = 1048576;
-FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
+FileInputStream::FileInputStream(const char *filepath, int32_t buffersize)
+ : defaultBufferSize(1048576)
+{
     // try to open the file for reading
     file = fopen(filepath, "rb");
     this->filepath = filepath;

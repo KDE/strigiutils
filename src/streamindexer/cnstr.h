@@ -21,6 +21,7 @@
 #define CNSTR_H
 
 #include <map>
+#include "streamindexer_export.h"
 
 /**
  * This class is a memory saving, performance increasing class for working
@@ -38,7 +39,7 @@
  * Each object has the size of only an iterator which is the same size as
  * pointer to a character would be.
  **/
-class cnstr {
+class STREAMINDEXER_EXPORT cnstr {
 private:
     /* comparator for determining if s1 < s2 */
     struct ltstr {

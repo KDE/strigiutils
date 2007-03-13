@@ -21,7 +21,7 @@
 #ifndef STRIGI_THREAD_H
 #define STRIGI_THREAD_H
 
-#include "strigi_thread_config.h"
+#include "config.h"
 
 #if defined(CMAKE_HAVE_PTHREAD_CREATE)
     #include <pthread.h>
@@ -40,6 +40,7 @@
     #define STRIGI_THREAD_EXIT(ret) pthread_exit(ret)
     #define STRIGI_THREAD_SELF() pthread_self()
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
+    #include <windows.h>
     #define STRIGI_MUTEX_DEFINE(x) CRITICAL_SECTION x
     #define STRIGI_MUTEX_INIT(x) InitializeCriticalSection(x)
     #define STRIGI_MUTEX_DESTROY(x) DeleteCriticalSection(x)

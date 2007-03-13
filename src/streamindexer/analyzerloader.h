@@ -22,10 +22,11 @@
 #include <map>
 #include <string>
 
-#ifdef HAVE_DLFCN_H
- typedef void* StgModuleType;
+#ifndef _WIN32
+typedef void* StgModuleType;
 #else
- typedef HMODULE StgModuleType;
+#include <windows.h>
+typedef HMODULE StgModuleType;
 #endif
 
 namespace jstreams {
