@@ -65,7 +65,6 @@ install(FILES
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
 	compat/timeofday.h
 	compat/strigi_fnmatch.h
-	compat/stgdirent.h
 	DESTINATION include/strigi
 )
 install(TARGETS streams DESTINATION ${LIB_DESTINATION})
