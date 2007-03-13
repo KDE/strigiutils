@@ -13,7 +13,7 @@ if (QT4_FOUND)
   add_library(strigiqtdbusclient SHARED ${strigiqtdbusclient_SRCS}
     ${strigiqtdbusclient_MOC_SRCS})
 
-  target_link_libraries(strigiqtdbusclient ${QT_QTDBUS_LIBRARY})
+  target_link_libraries(strigiqtdbusclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
   set_target_properties(strigiqtdbusclient PROPERTIES VERSION ${STRIGI_VERSION} SOVERSION ${STRIGI_VERSION_MAJOR})
 
   install(TARGETS strigiqtdbusclient LIBRARY DESTINATION ${LIB_DESTINATION})
