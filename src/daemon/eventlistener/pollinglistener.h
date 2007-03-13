@@ -50,7 +50,7 @@ public:
 
     void* run(void*);
 
-    static void fileCallback(const char* path, uint dirlen, uint len,
+    static void fileCallback(const char* path, unsigned dirlen, unsigned len,
         time_t mtime);
 private:
     void poll ();

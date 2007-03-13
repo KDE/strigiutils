@@ -19,6 +19,8 @@
  */
 #include "asyncsocketclient.h"
 #include <sstream>
+#include <stdlib.h>
+
 using namespace std;
 
 bool
@@ -94,7 +96,7 @@ AsyncSocketClient::handleQueryResponse() {
         return;
     }
     vector<string> response(splitResponse());
-    uint i = 0;
+    unsigned i = 0;
     while (i+6 < response.size()) {
         jstreams::IndexedDocument h;
         h.uri = response[i++];
@@ -146,7 +148,7 @@ AsyncSocketClient::handleGetDaemonStatusResponse() {
         return;
     }
     vector<string> response = splitResponse();
-    for (uint i=0; i<response.size(); ++i) {
+    for (unsigned i=0; i<response.size(); ++i) {
         string s = response[i];
         string::size_type p = s.find(":");
         if (p == string::npos) {

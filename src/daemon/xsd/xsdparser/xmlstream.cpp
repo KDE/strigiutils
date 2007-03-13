@@ -22,6 +22,7 @@
 #include <list>
 #include <vector>
 #include <stack>
+#include <stdlib.h>
 using namespace std;
 
 class XMLStream::Private {

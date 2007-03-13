@@ -48,6 +48,7 @@
 #include <signal.h>
 #include <cstdio>
 #include <cerrno>
+#include <stdlib.h>
 
 using namespace jstreams;
 using namespace std;
