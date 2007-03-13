@@ -10,7 +10,7 @@ if (QT4_FOUND)
 
   add_library(filterwidget ${filterwidget_SRCS} ${filterwidget_MOC_SRCS})
 
-  target_link_libraries(filterwidget ${QT_QTGUI_LIBRARY})
+  target_link_libraries(filterwidget ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
   add_executable(filterwidgettest filterwidgettest.cpp)
 

@@ -28,7 +28,7 @@ if (QT4_FOUND)
   qt4_wrap_cpp(strigiasynctest_MOC_SRCS ${strigiasynctest_MOC_HDRS})
   add_executable(strigiasynctest ${strigiasynctest_SRCS}
     ${strigiasynctest_MOC_SRCS})
-  target_link_libraries(strigiasynctest strigiqtdbusclient ${QT_QTGUI_LIBRARY})
+  target_link_libraries(strigiasynctest strigiqtdbusclient ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 endif (QT4_FOUND)
 
