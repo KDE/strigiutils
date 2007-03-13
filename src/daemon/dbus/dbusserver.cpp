@@ -23,6 +23,10 @@
 #include "dbusclientinterface.h"
 #include "testinterface.h"
 #include "dbustestinterface.h"
+
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
 using namespace std;
 
