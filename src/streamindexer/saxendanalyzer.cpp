@@ -29,6 +29,7 @@
 #include "indexwriter.h"
 #include "indexable.h"
 #include "fieldtypes.h"
+#include "textutils.h"
 #include <libxml/parser.h>
 #include <ctype.h>
 using namespace jstreams;
@@ -130,7 +131,7 @@ SaxEndAnalyzer::Private::charactersSAXFunc(void* ctx, const xmlChar * ch,
     while (c < end && isspace(*c)) c++;
     if (c == end) return;
 
-    if (p->idx && p->fieldtype != NONE) {
+    if (p->idx && p->fieldtype != NONE && checkUtf8((const char*)c, end-c)) {
         if (p->fieldtype == TEXT) {
             p->idx->addText((const char*)c, end-c);
         } else {
@@ -153,7 +154,7 @@ SaxEndAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     va_start(args, msg);
     e += string(" ")+va_arg(args,char*);
     va_end(args);
-    fprintf(stderr, "%s", e.c_str());
+//    fprintf(stderr, "%s", e.c_str());
 }
 void
 SaxEndAnalyzer::Private::startElementNsSAX2Func(void * ctx,

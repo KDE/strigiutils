@@ -32,7 +32,7 @@ jstreams::checkUtf8(const char* p, int32_t length) {
     // check if the text is valid UTF-8
     char nb = 0;
     while (p < end) {
-        char c = *p;
+        unsigned char c = *p;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
                 return false;
@@ -42,9 +42,10 @@ jstreams::checkUtf8(const char* p, int32_t length) {
             nb = 1;
         } else if ((0xF0 & c) == 0xE0) {
             nb = 2;
-        } else if ((0xF8 & c) == 0xF0) {
+        } else if (c >= 0xF0 && c <= 0xF4) {
             nb = 3;
-        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
+        } else if (c > 0x7F
+                || (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD))) {
             return false;
         }
         p++;
@@ -71,7 +72,7 @@ jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
     // check if the text is valid UTF-8
     nb = 0;
     while (p < end) {
-        char c = *p;
+        unsigned char c = *p;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
                 nb = 0;
@@ -84,10 +85,11 @@ jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
         } else if ((0xF0 & c) == 0xE0) {
             cs = p;
             nb = 2;
-        } else if ((0xF8 & c) == 0xF0) {
+        } else if (c >= 0xF0 && c <= 0xF4) {
             cs = p;
             nb = 3;
-        } else if (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD)) {
+        } else if (c > 0x7F
+                || (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD))) {
             return p;
         }
         p++;
@@ -112,7 +114,7 @@ jstreams::convertNewLines(char* p) {
     const char* end = p+len;
     char nb = 0;
     while (p < end) {
-        char c = *p;
+        unsigned char c = *p;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
                 return;
@@ -122,7 +124,7 @@ jstreams::convertNewLines(char* p) {
             nb = 1;
         } else if ((0xF0 & c) == 0xE0) {
             nb = 2;
-        } else if ((0xF8 & c) == 0xF0) {
+        } else if (c >= 0xF0 && c <= 0xF4) {
             nb = 3;
         } else if (c == '\n' || c == '\r') {
             *p = ' ';
