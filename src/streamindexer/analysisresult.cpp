@@ -32,7 +32,7 @@ AnalysisResult::AnalysisResult(const std::string& p, const char* name, time_t mt
             :m_writerData(0), m_mtime(mt), m_name(name), m_path(p),
              m_writer(parent.m_writer), m_depth(parent.depth()+1),
              m_indexer(parent.m_indexer), m_indexableconfig(parent.m_indexableconfig) {
-    m_writer.startIndexable(this);
+    m_writer.startAnalysis(this);
 }
 AnalysisResult::AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
         StreamAnalyzer& indexer)
@@ -44,10 +44,10 @@ AnalysisResult::AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
     } else {
         m_name = m_path.substr(pos+1);
     }
-    m_writer.startIndexable(this);
+    m_writer.startAnalysis(this);
 }
 AnalysisResult::~AnalysisResult() {
-    m_writer.finishIndexable(this);
+    m_writer.finishAnalysis(this);
 }
 
 const std::string& AnalysisResult::fileName() const { return m_name; }

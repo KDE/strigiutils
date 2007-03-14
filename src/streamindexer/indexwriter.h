@@ -54,7 +54,7 @@ class AnalysisResult;
 class STREAMINDEXER_EXPORT IndexWriter {
 friend class AnalysisResult;
 protected:
-    virtual void startIndexable(AnalysisResult*) = 0;
+    virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void addText(const AnalysisResult*, const char* text, int32_t length)=0;
     virtual void addField(const AnalysisResult*, const RegisteredField* fieldname,
         const std::string& value) = 0;
@@ -62,7 +62,7 @@ protected:
         const unsigned char* data, int32_t size) = 0;
     virtual void addField(const AnalysisResult*, const RegisteredField* /*fielname*/,
         uint32_t /*value*/) {}
-    virtual void finishIndexable(const AnalysisResult*) = 0;
+    virtual void finishAnalysis(const AnalysisResult*) = 0;
 public:
     virtual ~IndexWriter() {}
     /**
