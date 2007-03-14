@@ -23,6 +23,7 @@
 #include "subinputstream.h"
 #include "analysisresult.h"
 using namespace jstreams;
+using namespace Strigi;
 
 void
 TarEndAnalyzerFactory::registerFields(FieldRegister& reg) {

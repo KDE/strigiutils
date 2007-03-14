@@ -24,6 +24,7 @@
 #include "textendanalyzer.h"
 #include "fieldtypes.h"
 using namespace jstreams;
+using namespace Strigi;
 
 const cnstr MailEndAnalyzerFactory::titleFieldName = "title";
 const cnstr MailEndAnalyzerFactory::contenttypeFieldName = "contenttype";

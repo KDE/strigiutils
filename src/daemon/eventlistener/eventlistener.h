@@ -26,7 +26,7 @@
 
 class EventListenerQueue;
 
-namespace jstreams {
+namespace Strigi {
     class IndexReader;
     class AnalyzerConfiguration;
 }
@@ -54,10 +54,10 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_pEventQueue = eventQueue;
     }
-    void setIndexerConfiguration(jstreams::AnalyzerConfiguration* ic) {
+    void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
         m_pindexerconfiguration = ic;
     }
-    void setIndexReader (jstreams::IndexReader* ireader) {
+    void setIndexReader (Strigi::IndexReader* ireader) {
         m_pIndexReader = ireader;
     }
     unsigned int getPollingInterval() {
@@ -73,8 +73,8 @@ public:
 
 protected:
     EventListenerQueue* m_pEventQueue;
-    jstreams::AnalyzerConfiguration* m_pindexerconfiguration;
-    jstreams::IndexReader* m_pIndexReader;
+    Strigi::AnalyzerConfiguration* m_pindexerconfiguration;
+    Strigi::IndexReader* m_pIndexReader;
     unsigned int m_pollingInterval;//!< pause time between each polling operation
 };
 

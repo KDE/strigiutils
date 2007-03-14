@@ -24,6 +24,7 @@
 #include "analysisresult.h"
 #include "textutils.h"
 using namespace jstreams;
+using namespace Strigi;
 
 void
 TextEndAnalyzerFactory::registerFields(FieldRegister& reg) {

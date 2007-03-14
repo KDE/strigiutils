@@ -38,6 +38,6 @@ public:
     bool handleStream(jstreams::StreamBase<char>*) { return true; }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

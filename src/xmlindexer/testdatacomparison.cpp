@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include <sstream>
+using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 
@@ -53,7 +54,7 @@ main(int argc, char** argv) {
     const char* mappingfile = 0;
 
     ostringstream s;
-    jstreams::AnalyzerConfiguration ic;
+    Strigi::AnalyzerConfiguration ic;
     Indexer indexer(s, ic, mappingfile);
     chdir(argv[1]);
     indexer.index(argv[2]);

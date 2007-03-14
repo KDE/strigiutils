@@ -43,6 +43,6 @@ public:
     StreamStatus reopen();
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

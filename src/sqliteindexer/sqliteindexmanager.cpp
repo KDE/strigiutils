@@ -22,11 +22,11 @@
 #include "sqliteindexwriter.h"
 #include "strigi_thread.h"
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 pthread_mutex_t SqliteIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createSqliteIndexManager(const char* path) {
     return new SqliteIndexManager(path);
 }

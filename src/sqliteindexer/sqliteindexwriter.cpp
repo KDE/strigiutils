@@ -25,7 +25,7 @@
 #include <sstream>
 #include <cassert>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m, sqlite3* db)
         : manager(m) {
@@ -136,7 +136,7 @@ SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* fi
     manager->deref();
 }
 void
-SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
+SqliteIndexWriter::startIndexable(AnalysisResult* idx) {
     // get the file name
     const char* name = idx->getPath().c_str();
     size_t namelen = idx->getPath().length();
@@ -169,7 +169,7 @@ SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
+SqliteIndexWriter::finishIndexable(const AnalysisResult* idx) {
     // store the content field
     map<int64_t, map<string, int> >::const_iterator m
         = content.find(idx->getId());

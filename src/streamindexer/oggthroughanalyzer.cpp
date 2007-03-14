@@ -21,6 +21,7 @@
 #include "jstreamsconfig.h"
 #include "oggthroughanalyzer.h"
 #include "analysisresult.h"
+using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 

@@ -39,7 +39,7 @@ InotifyListener* InotifyListener::workingInotifyListener;
 InotifyListener::ReindexDirsThread* InotifyListener::ReindexDirsThread::workingReindex;
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 InotifyListener::InotifyListener(set<string>& indexedDirs)
     :EventListener("InotifyListener")

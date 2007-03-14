@@ -22,23 +22,23 @@
 
 #include "streamendanalyzer.h"
 
-class ZipEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class ZipEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "ZipEndAnalyzer"; }
 };
 
-class ZipEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class ZipEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
         return "ZipEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new ZipEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 

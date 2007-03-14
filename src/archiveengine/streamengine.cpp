@@ -19,6 +19,7 @@
  */
 #include "streamengine.h"
 #include <QDebug>
+using namespace Strigi;
 using namespace jstreams;
 
 StreamEngine::StreamEngine(const FileEntry* e, ArchiveEngineBase* engine)

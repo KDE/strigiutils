@@ -23,7 +23,7 @@
 #include "indexer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
 void

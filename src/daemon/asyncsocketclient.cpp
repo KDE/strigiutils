@@ -98,7 +98,7 @@ AsyncSocketClient::handleQueryResponse() {
     vector<string> response(splitResponse());
     unsigned i = 0;
     while (i+6 < response.size()) {
-        jstreams::IndexedDocument h;
+        Strigi::IndexedDocument h;
         h.uri = response[i++];
         h.fragment = response[i++];
         h.mimetype = response[i++];

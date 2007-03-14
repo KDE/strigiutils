@@ -23,7 +23,7 @@
 #include <vector>
 #include <sstream>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 struct EstraierData {
     ESTDOC* doc;
@@ -57,7 +57,7 @@ EstraierIndexWriter::setField(const AnalysisResult* idx, const string& name,
     }
 }
 void
-EstraierIndexWriter::startAnalysis(AnalysisResult* idx) {
+EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
     // allocate a new estraier document
     ESTDOC* doc = est_doc_new();
     idx->setWriterData(doc);
@@ -66,7 +66,7 @@ EstraierIndexWriter::startAnalysis(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-EstraierIndexWriter::finishAnalysis(const AnalysisResult* idx) {
+EstraierIndexWriter::finishIndexable(const AnalysisResult* idx) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
     // add required url field
 

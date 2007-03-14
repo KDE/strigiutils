@@ -27,6 +27,7 @@
 #endif
 
 using namespace jstreams;
+
 extern int32_t streamcount;
 
 int

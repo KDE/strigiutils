@@ -27,11 +27,11 @@
 #include <sys/stat.h>
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 pthread_mutex_t EstraierIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createEstraierIndexManager(const char* path) {
     return new EstraierIndexManager(path);
 }

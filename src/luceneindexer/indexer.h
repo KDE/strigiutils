@@ -32,14 +32,14 @@ private:
     const std::string m_indexdir;
     CLuceneIndexManager m_manager;
     CLuceneIndexWriter m_writer;
-    jstreams::StreamAnalyzer m_indexer;
+    Strigi::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(const char *indexdir, jstreams::AnalyzerConfiguration& ic);
+    Indexer(const char *indexdir, Strigi::AnalyzerConfiguration& ic);
     ~Indexer();
     void index(const char *dir);
 };

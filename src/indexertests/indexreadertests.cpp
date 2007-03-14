@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "indexreadertests.h"
 #include "indexreader.h"
-using namespace jstreams;
+using namespace Strigi;
 
 class IndexReaderTester {
 private:
@@ -35,7 +35,7 @@ public:
     }
 };
 
-IndexReaderTests::IndexReaderTests(jstreams::IndexReader* w)
+IndexReaderTests::IndexReaderTests(Strigi::IndexReader* w)
     :tester (new IndexReaderTester(w)) {
 }
 IndexReaderTests::~IndexReaderTests() {

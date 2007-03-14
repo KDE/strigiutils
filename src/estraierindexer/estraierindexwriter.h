@@ -24,18 +24,18 @@
 #include <estraier.h>
 
 class EstraierIndexManager;
-class EstraierIndexWriter : public jstreams::IndexWriter {
+class EstraierIndexWriter : public Strigi::IndexWriter {
 friend class EstraierIndexManager;
 private:
     EstraierIndexManager* manager;
     const std::string indexpath;
 
 protected:
-    void startAnalysis(jstreams::AnalysisResult*);
-    void finishAnalysis(const jstreams::AnalysisResult*);
-    void addText(const jstreams::AnalysisResult*, const char* text,
+    void startIndexable(Strigi::AnalysisResult*);
+    void finishIndexable(const Strigi::AnalysisResult*);
+    void addText(const Strigi::AnalysisResult*, const char* text,
         int32_t length);
-    void setField(const jstreams::AnalysisResult* idx, const std::string &fieldname,
+    void setField(const Strigi::AnalysisResult* idx, const std::string &fieldname,
         const std::string& value);
     explicit EstraierIndexWriter(EstraierIndexManager*);
     ~EstraierIndexWriter();

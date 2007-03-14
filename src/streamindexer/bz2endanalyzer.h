@@ -23,23 +23,23 @@
 #include "streamendanalyzer.h"
 #include "inputstream.h"
 
-class Bz2EndAnalyzer : public jstreams::StreamEndAnalyzer {
+class Bz2EndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "Bz2EndAnalyzer"; }
 };
 
-class Bz2EndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class Bz2EndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
         return "Bz2EndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new Bz2EndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

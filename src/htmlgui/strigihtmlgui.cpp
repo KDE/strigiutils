@@ -30,14 +30,14 @@
 #include <stdlib.h>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 class StrigiHtmlGui::Private {
 private:
     HtmlHelper* h;
     string highlightTerms(const string& t, const Query& q) const;
     void printSearchResult(ostream& out,
-        const jstreams::IndexedDocument& doc, const Query& q) const;
+        const Strigi::IndexedDocument& doc, const Query& q) const;
 public:
     SocketClient strigi;
 
@@ -403,7 +403,7 @@ toSizeString(int s) {
 }
 void
 StrigiHtmlGui::Private::printSearchResult(ostream& out,
-        const jstreams::IndexedDocument& doc, const Query& query) const {
+        const Strigi::IndexedDocument& doc, const Query& query) const {
     map<string, string>::const_iterator t;
     string link, icon, name, folder;
     int depth = 0;
@@ -475,7 +475,7 @@ StrigiHtmlGui::Private::printSearchResults(ostream& out,
         const ClientInterface::Hits& hits, const string& q) const {
     QueryParser parser;
     Query query = parser.buildQuery(q, 0, 0);
-    vector<jstreams::IndexedDocument>::const_iterator i;
+    vector<Strigi::IndexedDocument>::const_iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
         printSearchResult(out, *i, query);
     }

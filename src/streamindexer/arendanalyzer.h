@@ -22,25 +22,25 @@
 
 #include "streamendanalyzer.h"
 
-class ArEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class ArEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
-    static char staticAnalyze(jstreams::AnalysisResult& idx,
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
+    static char staticAnalyze(Strigi::AnalysisResult& idx,
         jstreams::InputStream* in);
     const char* getName() const { return "ArEndAnalyzer"; }
 };
 
-class ArEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class ArEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
         return "ArEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new ArEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

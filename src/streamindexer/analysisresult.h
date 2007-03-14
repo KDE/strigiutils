@@ -23,15 +23,19 @@
 #include <string>
 
 #include "streamindexer_export.h"
+#include "streambase.h"
 
 namespace jstreams {
+    template <class T> class StreamBase;
+}
+
+namespace Strigi {
 
 class IndexWriter;
 class AnalyzerConfiguration;
 class StreamAnalyzer;
 class RegisteredField;
 
-template <class T> class StreamBase;
 /**
  * Indexed representation of a file.
  *
@@ -76,13 +80,14 @@ public:
     /**
      * Parse the given stream and index the results into this AnalysisResult object.
      **/
-    char index(StreamBase<char>& file);
+    char index(jstreams::StreamBase<char>& file);
     /**
      * Index the given stream which represents a child object of this
      * AnalysisResult under the relative name given by @name and versioned with time
      * @mtime.
      **/
-    char indexChild(const std::string& name, time_t mt, StreamBase<char>& file);
+    char indexChild(const std::string& name, time_t mt,
+        jstreams::StreamBase<char>& file);
     /**
      * Associate a fragment of text with the object.
      *
@@ -122,8 +127,8 @@ public:
      * Retrieve the IndexWriter specific object associated with this AnalysisResult.
      * This object allows the IndexWriter to store intermediate results
      * associated with this AnalysisResult. IndexWriters using this feature should
-     * initialize this value in IndexWriter::startAnalysis() and should
-     * deallocate the value in the call to IndexWriter::finishAnalysis().
+     * initialize this value in IndexWriter::startIndexable() and should
+     * deallocate the value in the call to IndexWriter::finishIndexable().
      * Each of these functions will be called once during the lifetime of each
      * AnalysisResult.
      **/

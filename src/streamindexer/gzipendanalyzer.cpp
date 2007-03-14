@@ -24,6 +24,7 @@
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
 #include "analysisresult.h"
+using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 

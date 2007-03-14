@@ -23,6 +23,7 @@
 #include "mimetypethroughanalyzer.h"
 #include "analysisresult.h"
 using namespace std;
+using namespace Strigi;
 using namespace jstreams;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
@@ -73,7 +74,7 @@ private:
     StreamThroughAnalyzer* newInstance() const {
         return new MimeTypeThroughAnalyzer();
     }
-    void registerFields(jstreams::FieldRegister&) {}
+    void registerFields(Strigi::FieldRegister&) {}
 };
 
 class Factory : public AnalyzerFactoryFactory {

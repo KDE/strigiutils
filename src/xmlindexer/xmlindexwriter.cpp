@@ -1,6 +1,6 @@
 #include "xmlindexwriter.h"
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 void
 XmlIndexWriter::initWriterData(const FieldRegister& f) {

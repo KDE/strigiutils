@@ -34,7 +34,7 @@
 #include <unistd.h>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 PollingListener* PollingListener::workingPoller;
 

@@ -20,23 +20,23 @@
 #include <pluginthroughanalyzer.h>
 
 /* test class 1 */
-class Analyzer1 : public jstreams::StreamThroughAnalyzer {
+class Analyzer1 : public Strigi::StreamThroughAnalyzer {
 private:
-    jstreams::AnalysisResult* idx;
+    Strigi::AnalysisResult* idx;
 public:
-    void setIndexable(jstreams::AnalysisResult*i) {
+    void setIndexable(Strigi::AnalysisResult*i) {
         idx = i;
     }
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in) {
 //        idx->setField("hi", "hi");
         return in;
     }
 };
 
 /* test class 2 */
-class Analyzer2 : public jstreams::StreamThroughAnalyzer {
-    void setIndexable(jstreams::AnalysisResult*) {}
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
+class Analyzer2 : public Strigi::StreamThroughAnalyzer {
+    void setIndexable(Strigi::AnalysisResult*) {}
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in) {
         return in;
     }
 };

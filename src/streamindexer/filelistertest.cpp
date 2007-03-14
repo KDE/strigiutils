@@ -26,7 +26,7 @@
 #include <vector>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 /**
  * This test file can be used to measure the performance of the filelister

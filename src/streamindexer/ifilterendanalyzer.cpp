@@ -35,7 +35,7 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odc_SP2003_ta/h
 #include <fcntl.h>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 set<string> IFilterEndAnalyzer::extensions;
 

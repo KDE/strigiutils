@@ -165,7 +165,7 @@ SocketClient::getHits(const string &query, uint32_t max, uint32_t off) {
     close(sd);
     uint i = 0;
     while (i+6 < response.size()) {
-        jstreams::IndexedDocument h;
+        Strigi::IndexedDocument h;
         h.uri = response[i++];
         h.fragment = response[i++];
         h.mimetype = response[i++];

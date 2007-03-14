@@ -27,7 +27,7 @@ struct sqlite3;
 struct sqlite3_stmt;
 class SqliteIndexManager;
 
-class SqliteIndexWriter : public jstreams::IndexWriter {
+class SqliteIndexWriter : public Strigi::IndexWriter {
 friend class SqliteIndexManager;
 private:
     sqlite3* dbcheck;
@@ -42,19 +42,19 @@ private:
         int sqllength);
     void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
-    void startAnalysis(jstreams::AnalysisResult*);
-    void finishAnalysis(const jstreams::AnalysisResult*);
-    void addText(const jstreams::AnalysisResult* idx, const char* text,
+    void startIndexable(Strigi::AnalysisResult*);
+    void finishIndexable(const Strigi::AnalysisResult*);
+    void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);
-    void addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* field,
+    void addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, const std::string& value);
+    void addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field,
         const unsigned char* data, int32_t size) {}
     SqliteIndexWriter(SqliteIndexManager*, sqlite3*);
     ~SqliteIndexWriter();
-    void initWriterData(const jstreams::FieldRegister& f) {}
-    void releaseWriterData(const jstreams::FieldRegister& f) {}
+    void initWriterData(const Strigi::FieldRegister& f) {}
+    void releaseWriterData(const Strigi::FieldRegister& f) {}
 public:
     void commit();
     void deleteEntries(const std::vector<std::string>& entries);

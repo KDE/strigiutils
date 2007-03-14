@@ -26,7 +26,7 @@
 #include <string>
 
 class CombinedIndexReader;
-class CombinedIndexManager : public jstreams::IndexManager {
+class CombinedIndexManager : public Strigi::IndexManager {
 friend class CombinedIndexReader;
 private:
     class Private;
@@ -35,13 +35,13 @@ public:
     CombinedIndexManager(const std::string& type, const std::string& dir);
     ~CombinedIndexManager();
 
-    jstreams::IndexReader* getIndexReader();
-    jstreams::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* getIndexReader();
+    Strigi::IndexWriter* getIndexWriter();
 
     void addReadonlyIndex(const std::string& indexdir, const std::string& type);
     void removeReadonlyIndex(const std::string& indexdir);
 
-    static std::map<std::string, jstreams::IndexManager*(*)(const char*)>
+    static std::map<std::string, Strigi::IndexManager*(*)(const char*)>
         getFactories();
     static std::vector<std::string> getBackEnds();
 };

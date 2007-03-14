@@ -22,12 +22,12 @@
 #include "xapianindexwriter.h"
 #include <assert.h>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 using namespace Xapian;
 
 pthread_mutex_t XapianIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createXapianIndexManager(const char* path) {
     return new XapianIndexManager(path);
 }

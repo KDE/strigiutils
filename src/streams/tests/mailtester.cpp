@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <dirent.h>
 
-using namespace jstreams;
+using namespace Strigi;
 
 void
 testMailFile2(StreamBase<char>* input) {

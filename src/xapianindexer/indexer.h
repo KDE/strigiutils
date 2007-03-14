@@ -30,7 +30,7 @@ private:
     FileLister m_lister;
     const std::string m_indexdir;
     XapianIndexManager m_manager;
-    jstreams::StreamAnalyzer m_indexer;
+    Strigi::StreamAnalyzer m_indexer;
 
     static bool addFileCallback(const std::string& path,
         const char *filename, time_t mtime);

@@ -29,7 +29,7 @@
 class Event;
 class EventListenerQueue;
 
-namespace jstreams {
+namespace Strigi {
     class IndexManager;
     class AnalyzerConfiguration;
 }
@@ -38,12 +38,12 @@ friend bool addFileCallback(const char* path, unsigned dirlen, unsigned len,
         time_t mtime);
 private:
     std::set<std::string> dirstoindex;
-    jstreams::IndexManager* indexmanager;
+    Strigi::IndexManager* indexmanager;
     std::map<std::string, time_t> dbfiles;
     std::map<std::string, time_t> toindex;
 
     EventListenerQueue* m_listenerEventQueue;
-    jstreams::AnalyzerConfiguration* m_indexerconfiguration;
+    Strigi::AnalyzerConfiguration* m_indexerconfiguration;
     void processListenerEvents(std::vector<Event*>& events);
 
     void* run(void*);
@@ -55,16 +55,16 @@ public:
     void addDirToIndex(const std::string& d) {
         dirstoindex.insert(d);
     }
-    void setIndexManager(jstreams::IndexManager* m) {
+    void setIndexManager(Strigi::IndexManager* m) {
         indexmanager = m;
     }
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_listenerEventQueue = eventQueue;
     }
-    void setIndexerConfiguration(jstreams::AnalyzerConfiguration* ic) {
+    void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
         m_indexerconfiguration = ic;
     }
-    jstreams::AnalyzerConfiguration& getIndexerConfiguration() const {
+    Strigi::AnalyzerConfiguration& getIndexerConfiguration() const {
         return *m_indexerconfiguration;
     }
     int getQueueSize();

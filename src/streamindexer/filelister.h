@@ -42,7 +42,7 @@ typedef unsigned int uid_t;
 typedef unsigned int gid_t;
 #endif
 
-namespace jstreams {
+namespace Strigi {
     class AnalyzerConfiguration;
 }
 
@@ -60,9 +60,9 @@ private:
     char* resize(uint len);
     void walk_directory(uint len);
 
-    jstreams::AnalyzerConfiguration& m_config;
+    Strigi::AnalyzerConfiguration& m_config;
 public:
-    explicit FileLister(jstreams::AnalyzerConfiguration& ic);
+    explicit FileLister(Strigi::AnalyzerConfiguration& ic);
     ~FileLister();
     /**
      * Specify the callback function that reports the files found.

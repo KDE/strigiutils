@@ -22,7 +22,7 @@
 
 #include "verify.h"
 
-namespace jstreams {
+namespace Strigi {
     class IndexReader;
 }
 
@@ -31,7 +31,7 @@ class IndexReaderTests {
 private:
     IndexReaderTester* tester;
 public:
-    IndexReaderTests(jstreams::IndexReader* w);
+    IndexReaderTests(Strigi::IndexReader* w);
     ~IndexReaderTests();
     int testAll();
 };

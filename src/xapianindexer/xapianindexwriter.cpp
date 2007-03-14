@@ -22,7 +22,7 @@
 #include <vector>
 #include <sstream>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 using namespace Xapian;
 
 XapianIndexWriter::XapianIndexWriter(XapianIndexManager *m,
@@ -40,7 +40,7 @@ XapianIndexWriter::setField(const AnalysisResult* idx, const string& name,
 }
 
 void
-XapianIndexWriter::startAnalysis(AnalysisResult* idx) {
+XapianIndexWriter::startIndexable(AnalysisResult* idx) {
     Document *doc = new Document();
     idx->setWriterData(doc);
 }
@@ -48,7 +48,7 @@ XapianIndexWriter::startAnalysis(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-XapianIndexWriter::finishAnalysis(const AnalysisResult* idx) {
+XapianIndexWriter::finishIndexable(const AnalysisResult* idx) {
     static const string path("path"), mtime("mtime"), depth("depth");
     Document* doc = static_cast<Document*>(idx->getWriterData());
     manager->ref();

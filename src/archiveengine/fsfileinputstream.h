@@ -25,9 +25,9 @@
 class QFSFileEngine;
 class QString;
 
-namespace jstreams {
+namespace Strigi {
 
-class FsFileInputStream : public BufferedInputStream<char> {
+class FsFileInputStream : public jstreams::BufferedInputStream<char> {
 private:
     bool open;
     QFSFileEngine *fse;
@@ -40,9 +40,9 @@ public:
     FsFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
     FsFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
     ~FsFileInputStream();
-    StreamStatus reopen();
+    jstreams::StreamStatus reopen();
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

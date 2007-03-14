@@ -22,7 +22,7 @@
 
 #include "cnstr.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class RegisteredField {
 friend class FieldRegister;

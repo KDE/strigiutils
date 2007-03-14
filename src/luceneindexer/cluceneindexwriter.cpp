@@ -51,7 +51,7 @@ using lucene::util::BitSet;
 
 using lucene::util::Reader;
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 struct CLuceneDocData {
     lucene::document::Document doc;
@@ -116,8 +116,8 @@ CLuceneIndexWriter::addField(const AnalysisResult* idx,
 #endif
 }
 void
-CLuceneIndexWriter::addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* field, const std::string& value) {
+CLuceneIndexWriter::addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, const std::string& value) {
     AnalyzerConfiguration::FieldType type
         = idx->config().getIndexType(field);
     if (type == AnalyzerConfiguration::None) return;

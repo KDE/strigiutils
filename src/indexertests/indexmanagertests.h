@@ -22,7 +22,7 @@
 
 #include "verify.h"
 
-namespace jstreams {
+namespace Strigi {
     class IndexManager;
     class AnalyzerConfiguration;
 }
@@ -32,8 +32,8 @@ class IndexManagerTests {
 private:
     IndexManagerTester* tester;
 public:
-    IndexManagerTests(jstreams::IndexManager* w,
-        jstreams::AnalyzerConfiguration& ic);
+    IndexManagerTests(Strigi::IndexManager* w,
+        Strigi::AnalyzerConfiguration& ic);
     ~IndexManagerTests();
     void testAllInThreads(int n);
     void testAll();

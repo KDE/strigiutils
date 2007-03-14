@@ -29,15 +29,15 @@ class FileLister;
 class Indexer {
 private:
     FileLister* m_lister;
-    jstreams::IndexWriter& m_writer;
-    jstreams::StreamAnalyzer m_indexer;
+    Strigi::IndexWriter& m_writer;
+    Strigi::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* fullpath, unsigned dirlen,
         unsigned len, time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(jstreams::IndexWriter& writer, jstreams::AnalyzerConfiguration& c);
+    Indexer(Strigi::IndexWriter& writer, Strigi::AnalyzerConfiguration& c);
     ~Indexer();
     void index(const char *dir);
 };

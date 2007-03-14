@@ -35,7 +35,7 @@
 #endif
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 AnalyzerLoader::ModuleList AnalyzerLoader::modulelist;
 

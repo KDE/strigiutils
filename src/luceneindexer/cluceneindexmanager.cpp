@@ -36,7 +36,7 @@ using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::store::FSDirectory;
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createCLuceneIndexManager(const char* path) {
     return new CLuceneIndexManager(path);
 }
@@ -71,7 +71,7 @@ CLuceneIndexManager::~CLuceneIndexManager() {
 //        _lucene_shutdown();
     }
 }
-jstreams::IndexReader*
+Strigi::IndexReader*
 CLuceneIndexManager::getIndexReader() {
     return getReader();
 }
@@ -91,11 +91,11 @@ CLuceneIndexManager::getReader() {
     }
     return r;
 }
-jstreams::IndexWriter*
+Strigi::IndexWriter*
 CLuceneIndexManager::getIndexWriter() {
     return writer;
 }
-/*jstreams::QueryBitsetCache*
+/*Strigi::QueryBitsetCache*
 CLuceneIndexManager::getBitSets() {
     return &bitsets;
 }*/

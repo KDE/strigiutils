@@ -32,7 +32,7 @@ namespace lucene {
 }
 
 class CLuceneIndexManager;
-class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public jstreams::IndexReader {
+class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public Strigi::IndexReader {
 friend class CLuceneIndexManager;
 private:
     CLuceneIndexManager* manager;
@@ -52,8 +52,8 @@ private:
 
     friend class CLuceneIndexReader::Private;
 public:
-    int32_t countHits(const jstreams::Query&);
-    std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
+    int32_t countHits(const Strigi::Query&);
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int32_t countDocuments();
     int32_t countWords();

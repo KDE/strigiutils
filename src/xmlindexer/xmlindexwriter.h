@@ -29,10 +29,10 @@
 #include <sstream>
 #include <map>
 
-class XmlIndexWriter : public jstreams::IndexWriter {
+class XmlIndexWriter : public Strigi::IndexWriter {
 private:
     struct Data {
-         std::multimap<const jstreams::RegisteredField*, std::string> values;
+         std::multimap<const Strigi::RegisteredField*, std::string> values;
          std::string text;
     };
     struct Tag {
@@ -165,18 +165,18 @@ private:
         }
     }
 protected:
-    void startAnalysis(jstreams::AnalysisResult* idx) {
+    void startAnalysis(Strigi::AnalysisResult* idx) {
         void* m = new Data();
         idx->setWriterData(m);
     }
-    void printValue(const jstreams::RegisteredField* name, std::string& value) {
+    void printValue(const Strigi::RegisteredField* name, std::string& value) {
         const Tag* tag = static_cast<const Tag*>(name->getWriterData());
         escape(value);
         out << tag->open << value << tag->close;
     }
-    void finishAnalysis(const jstreams::AnalysisResult* idx) {
+    void finishAnalysis(const Strigi::AnalysisResult* idx) {
         Data* d = static_cast<Data*>(idx->writerData());
-        const jstreams::FieldRegister& fr = idx->config().getFieldRegister();
+        const Strigi::FieldRegister& fr = idx->config().getFieldRegister();
         std::string v = idx->path();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")
@@ -193,7 +193,7 @@ protected:
             printValue(fr.encodingField, v);
         }
 
-        std::multimap<const jstreams::RegisteredField*, std::string>::iterator
+        std::multimap<const Strigi::RegisteredField*, std::string>::iterator
             i, end;
         end = d->values.end();
         for (i = d->values.begin(); i != end; ++i) {
@@ -211,38 +211,38 @@ protected:
         out << " </" << mapping.map("file") << ">\n";
         delete d;
     }
-    void addText(const jstreams::AnalysisResult* idx, const char* text,
+    void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length) {
         Data* d = static_cast<Data*>(idx->writerData());
         d->text.append(text, length);
     }
-    void addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field, const std::string& value) {
+    void addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(idx->writerData());
         d->values.insert(
-            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, value));
     }
-    void addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field,
+    void addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field,
         const unsigned char* data, int32_t size) {
         Data* d = static_cast<Data*>(idx->writerData());
         d->values.insert(
-            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, std::string((const char*)data, size)));
     }
-    void addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field, uint32_t value) {
+    void addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field, uint32_t value) {
         Data* d = static_cast<Data*>(idx->writerData());
         static std::ostringstream v;
         v.str("");
         v << value;
         d->values.insert(
-            std::make_pair<const jstreams::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, v.str()));
     }
-    void initWriterData(const jstreams::FieldRegister&);
-    void releaseWriterData(const jstreams::FieldRegister&);
+    void initWriterData(const Strigi::FieldRegister&);
+    void releaseWriterData(const Strigi::FieldRegister&);
 public:
     explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
             :out(o), mapping(m) {

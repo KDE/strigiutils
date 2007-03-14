@@ -51,6 +51,7 @@
 
 using namespace std;
 using namespace jstreams;
+using namespace Strigi;
 
 cnstr StreamAnalyzer::sizefieldname("size");
 

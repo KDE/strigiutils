@@ -1,5 +1,5 @@
 #include "query.h"
-using namespace jstreams;
+using namespace Strigi;
 
 int
 querytests(int argc, char* argv[]) {

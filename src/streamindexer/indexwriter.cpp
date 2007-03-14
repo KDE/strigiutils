@@ -21,8 +21,9 @@
 #include "analysisresult.h"
 #include "indexwriter.h"
 #include "textutils.h"
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
+using namespace jstreams;
 string
 AnalysisResult::extension() const {
     string::size_type p1 = m_name.rfind('.');

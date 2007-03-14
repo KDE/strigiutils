@@ -27,6 +27,7 @@
 #include "gzipinputstream.h"
 #include <QtCore/QFSFileEngine>
 #include <QtDebug>
+using namespace Strigi;
 using namespace jstreams;
 
 FileEntry::~FileEntry() {

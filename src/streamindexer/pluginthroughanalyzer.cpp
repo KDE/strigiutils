@@ -22,7 +22,7 @@
 #include "analyzerloader.h"
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 PluginThroughAnalyzer::PluginThroughAnalyzer(AnalyzerLoader* ml) {
     moduleLoader = ml;

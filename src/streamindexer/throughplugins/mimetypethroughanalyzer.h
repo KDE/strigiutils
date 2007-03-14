@@ -26,14 +26,14 @@ extern "C" {
     #include <magic.h>
 }
 class STRIGI_PLUGIN_API MimeTypeThroughAnalyzer
-        : public jstreams::StreamThroughAnalyzer {
+        : public Strigi::StreamThroughAnalyzer {
 private:
     magic_t magic;
-    jstreams::AnalysisResult* idx;
+    Strigi::AnalysisResult* idx;
 public:
     MimeTypeThroughAnalyzer();
     ~MimeTypeThroughAnalyzer();
-    void setIndexable(jstreams::AnalysisResult* i) { idx = i; }
+    void setIndexable(Strigi::AnalysisResult* i) { idx = i; }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };

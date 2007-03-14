@@ -22,7 +22,7 @@
 #include "indexwriter.h"
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"
-using namespace jstreams;
+using namespace Strigi;
 
 class IndexWriterTester {
 private:
@@ -51,7 +51,7 @@ public:
     }
 };
 
-IndexWriterTests::IndexWriterTests(jstreams::IndexWriter& w,
+IndexWriterTests::IndexWriterTests(Strigi::IndexWriter& w,
         AnalyzerConfiguration& ic)
     :tester (new IndexWriterTester(w, ic)) {
 }

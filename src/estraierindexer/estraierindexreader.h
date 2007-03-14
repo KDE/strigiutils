@@ -26,18 +26,18 @@
 
 class EstraierIndexManager;
 
-class EstraierIndexReader : public jstreams::IndexReader {
+class EstraierIndexReader : public Strigi::IndexReader {
 friend class EstraierIndexManager;
 private:
     EstraierIndexManager* manager;
     EstraierIndexReader(EstraierIndexManager* m);
     ~EstraierIndexReader();
-    std::string getFragment(ESTDOC* doc, const jstreams::Query& query);
-    static ESTCOND* createCondition(const jstreams::Query&);
+    std::string getFragment(ESTDOC* doc, const Strigi::Query& query);
+    static ESTCOND* createCondition(const Strigi::Query&);
     static const char* mapId(const std::string& id);
 public:
-    int32_t countHits(const jstreams::Query&);
-    std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
+    int32_t countHits(const Strigi::Query&);
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int countDocuments();
     int32_t countWords();

@@ -23,6 +23,7 @@
 #include "subinputstream.h"
 #include "analysisresult.h"
 using namespace jstreams;
+using namespace Strigi;
 
 void
 ZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {

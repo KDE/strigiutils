@@ -22,23 +22,23 @@
 
 #include "streamendanalyzer.h"
 
-class RpmEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class RpmEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "RpmEndAnalyzer"; }
 };
 
-class RpmEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class RpmEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
         return "RpmEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new RpmEndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

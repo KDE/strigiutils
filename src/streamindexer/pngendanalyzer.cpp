@@ -23,6 +23,7 @@
 #include "fieldtypes.h"
 using namespace std;
 using namespace jstreams;
+using namespace Strigi;
 
 const cnstr PngEndAnalyzerFactory::widthFieldName("width");
 const cnstr PngEndAnalyzerFactory::heightFieldName("height");

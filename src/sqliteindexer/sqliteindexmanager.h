@@ -34,7 +34,7 @@
 struct sqlite3;
 class SqliteIndexReader;
 class SqliteIndexWriter;
-class SqliteIndexManager : public jstreams::IndexManager {
+class SqliteIndexManager : public Strigi::IndexManager {
 private:
     pthread_mutex_t dblock;
     static pthread_mutex_t lock;
@@ -49,12 +49,12 @@ public:
 
     sqlite3* ref();
     void deref();
-    jstreams::IndexReader* getIndexReader();
-    jstreams::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* getIndexReader();
+    Strigi::IndexWriter* getIndexWriter();
     static std::string escapeSqlValue(const std::string& value);
     static sqlite3* opendb(const char*);
 };
-jstreams::IndexManager*
+Strigi::IndexManager*
 createSqliteIndexManager(const char* path);
 
 #endif

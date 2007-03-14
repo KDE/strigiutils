@@ -19,7 +19,7 @@
  */
 #include <list>
 
-namespace jstreams {
+namespace Strigi {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 

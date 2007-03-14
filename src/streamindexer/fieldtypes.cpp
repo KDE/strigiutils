@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "fieldtypes.h"
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
 RegisteredField::RegisteredField(const cnstr& k, const cnstr& t, int m,

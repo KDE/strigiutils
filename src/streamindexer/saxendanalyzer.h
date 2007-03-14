@@ -23,7 +23,7 @@
 #include "streamendanalyzer.h"
 
 class SaxEndAnalyzerFactory;
-class SaxEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class SaxEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     class Private;
 private:
@@ -32,11 +32,11 @@ public:
     SaxEndAnalyzer(const SaxEndAnalyzerFactory* f);
     ~SaxEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "SaxEndAnalyzer"; }
 };
 
-class SaxEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class SaxEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class SaxEndAnalyzer;
 friend class SaxEndAnalyzer::Private;
 public:
@@ -44,16 +44,16 @@ public:
     static const cnstr encodingFieldName;
     static const cnstr rootFieldName;
 private:
-    const jstreams::RegisteredField* titleField;
-    const jstreams::RegisteredField* encodingField;
-    const jstreams::RegisteredField* rootField;
+    const Strigi::RegisteredField* titleField;
+    const Strigi::RegisteredField* encodingField;
+    const Strigi::RegisteredField* rootField;
     const char* getName() const {
         return "SaxEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new SaxEndAnalyzer(this);
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

@@ -27,7 +27,7 @@
 #endif
 #include "jstreamsconfig.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class IndexedDocument {
 public:

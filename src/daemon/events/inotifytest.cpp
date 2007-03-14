@@ -46,7 +46,7 @@ public:
 #include "analyzerconfiguration.h"
 #include <errno.h>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 int INotifyWatcher::m_inotifyfd;
 const int INotifyWatcher::m_ievents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM

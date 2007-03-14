@@ -24,6 +24,7 @@
 #include <sstream>
 using namespace std;
 using namespace jstreams;
+using namespace Strigi;
 
 const cnstr BmpEndAnalyzerFactory::typeFieldName("type");
 const cnstr BmpEndAnalyzerFactory::compressionFieldName("compression");

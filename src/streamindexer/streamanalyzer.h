@@ -26,6 +26,10 @@
 #include "streamindexer_export.h"
 
 namespace jstreams {
+    template <class T> class StreamBase;
+}
+
+namespace Strigi {
 class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 class StreamThroughAnalyzerFactory;
@@ -36,7 +40,6 @@ class AnalyzerLoader;
 class AnalyzerConfiguration;
 class RegisteredField;
 
-template <class T> class StreamBase;
 /**
  * The class StreamAnalyzer extracts information from files or character
  * streams. This task is performed by two separate analyzer classes:
@@ -53,10 +56,10 @@ class STREAMINDEXER_EXPORT StreamAnalyzer {
 private:
     static cnstr sizefieldname;
     AnalyzerConfiguration& conf;
-    std::vector<jstreams::StreamThroughAnalyzerFactory*> throughfactories;
-    std::vector<jstreams::StreamEndAnalyzerFactory*> endfactories;
-    std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
-    std::vector<std::vector<jstreams::StreamThroughAnalyzer*> > through;
+    std::vector<Strigi::StreamThroughAnalyzerFactory*> throughfactories;
+    std::vector<Strigi::StreamEndAnalyzerFactory*> endfactories;
+    std::vector<std::vector<Strigi::StreamEndAnalyzer*> > end;
+    std::vector<std::vector<Strigi::StreamThroughAnalyzer*> > through;
     IndexWriter* writer;
 
     AnalyzerLoader* moduleLoader;

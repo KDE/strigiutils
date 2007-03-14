@@ -24,11 +24,11 @@
 #include "indexwriter.h"
 #include "fieldtypes.h"
 
-class DummyIndexWriter : public jstreams::IndexWriter {
+class DummyIndexWriter : public Strigi::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startAnalysis(jstreams::AnalysisResult* idx) {
+    void startAnalysis(Strigi::AnalysisResult* idx) {
         if (verbosity >= 1) {
             printf("%s\n", idx->path().c_str());
         }
@@ -37,7 +37,7 @@ protected:
             idx->setWriterData(s);
         }
     }
-    void finishAnalysis(const jstreams::AnalysisResult* idx) {
+    void finishAnalysis(const Strigi::AnalysisResult* idx) {
         if (verbosity == -1) { // sha1 mode
             const std::string* s = static_cast<const std::string*>(
                 idx->writerData());
@@ -45,15 +45,15 @@ protected:
             delete s;
         }
     }
-    void addText(const jstreams::AnalysisResult* idx, const char* text,
+    void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length) {
         if (verbosity > 2) {
             printf("%s: addText '%.*s'\n", idx->path().c_str(), length,
                 text);
         }
     }
-    void addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* field, const std::string& value) {
+    void addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, const std::string& value) {
         if (verbosity > 1) {
             printf("%s: setField '%s': '%s'\n", idx->path().c_str(),
                 (const char*)field->getKey(), value.c_str());
@@ -63,8 +63,8 @@ protected:
             *s = value;
         }
     }
-    void addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* fieldname, const unsigned char* data,
+    void addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* fieldname, const unsigned char* data,
         int32_t size) {}
 public:
     DummyIndexWriter(int v = 0) {

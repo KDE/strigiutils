@@ -25,6 +25,7 @@
 #include "streamanalyzer.h"
 #include "streambase.h"
 #include <string>
+using namespace Strigi;
 using namespace jstreams;
 
 AnalysisResult::AnalysisResult(const std::string& p, const char* name, time_t mt,
@@ -64,12 +65,12 @@ void AnalysisResult::setMimeType(const std::string& mt) { m_mimetype = mt; }
 const std::string& AnalysisResult::mimeType() const { return m_mimetype; }
 
 char
-AnalysisResult::index(StreamBase<char>& file) {
+AnalysisResult::index(jstreams::StreamBase<char>& file) {
     return m_indexer.analyze(*this, &file);
 }
 char
 AnalysisResult::indexChild(const std::string& name, time_t mt,
-        StreamBase<char>& file) {
+        jstreams::StreamBase<char>& file) {
     std::string path(this->m_path);
     path.append("/");
     path.append(name);

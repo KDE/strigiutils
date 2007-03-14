@@ -19,6 +19,7 @@
  */
 #include "fsfileinputstream.h"
 #include <QtCore/QFSFileEngine>
+using namespace Strigi;
 using namespace jstreams;
 
 const int32_t FsFileInputStream::defaultBufferSize = 64;

@@ -29,7 +29,7 @@
 typedef int int32_t;
 #endif
 
-namespace jstreams {
+namespace Strigi {
 /**
  * Break up a string in a query.
  * Currently very simple. Currently always combines terms with AND.
@@ -76,5 +76,5 @@ public:
 };
 
 }
-bool operator<(const jstreams::Query&,const jstreams::Query&);
+bool operator<(const Strigi::Query&,const Strigi::Query&);
 

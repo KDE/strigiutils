@@ -21,7 +21,7 @@
 #include "jstreamsconfig.h"
 #include "strigi_fnmatch.h"
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 AnalyzerConfiguration::FieldType
 operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b){
@@ -128,7 +128,7 @@ AnalyzerConfiguration::setFilters(
         }
     }
 }
-class jstreams::FieldPropertiesPrivate {
+class Strigi::FieldPropertiesPrivate {
 public:
     cnstr key;
     FieldPropertiesPrivate(const cnstr& k) :key(k) {}

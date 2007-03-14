@@ -27,7 +27,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 class FindRepository {
 private:

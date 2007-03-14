@@ -31,7 +31,7 @@ private:
     std::ostream& out;
     FileLister* m_lister;
     XmlIndexWriter writer;
-    jstreams::StreamAnalyzer m_indexer;
+    Strigi::StreamAnalyzer m_indexer;
     const TagMapping mapping;
 
     static void addFileCallback(const char* fullpath, unsigned dirlen,
@@ -39,7 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(std::ostream& out, jstreams::AnalyzerConfiguration&,
+    Indexer(std::ostream& out, Strigi::AnalyzerConfiguration&,
         const char* mappingfile);
     ~Indexer();
     void index(const char *dir);

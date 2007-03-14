@@ -21,6 +21,7 @@
 #include "streamendanalyzer.h"
 #include "inputstream.h"
 using namespace jstreams;
+using namespace Strigi;
 
 char
 StreamEndAnalyzer::testStream(InputStream *in) {

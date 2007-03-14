@@ -30,7 +30,7 @@ main(int argc, char **argv) {
     std::string file = argv[1];
     file += "/sqlite.db";
 
-    jstreams::AnalyzerConfiguration ic;
+    Strigi::AnalyzerConfiguration ic;
     Indexer indexer(file.c_str(), ic);
     indexer.index(argv[2]);
     return 0;

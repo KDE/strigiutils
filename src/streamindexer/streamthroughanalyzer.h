@@ -21,7 +21,7 @@
 #define STREAMTHROUGHANALYZER_H
 
 #include "inputstream.h"
-namespace jstreams {
+namespace Strigi {
 class AnalysisResult;
 class FieldRegister;
 /**
@@ -32,7 +32,7 @@ class FieldRegister;
 class StreamThroughAnalyzer {
 public:
     virtual ~StreamThroughAnalyzer() {};
-    virtual void setIndexable(jstreams::AnalysisResult*) = 0;
+    virtual void setIndexable(Strigi::AnalysisResult*) = 0;
     /**
      * This function sets up the analyzer for handling a stream.
      * The stream \p in is used in constructing a new internal
@@ -52,7 +52,7 @@ public:
     virtual ~StreamThroughAnalyzerFactory(){}
     virtual const char* getName() const = 0;
     virtual StreamThroughAnalyzer* newInstance() const = 0;
-    virtual void registerFields(jstreams::FieldRegister&) = 0;
+    virtual void registerFields(Strigi::FieldRegister&) = 0;
 };
 
 }

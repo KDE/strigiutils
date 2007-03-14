@@ -22,6 +22,7 @@
 #include "arinputstream.h"
 #include "analysisresult.h"
 #include "subinputstream.h"
+using namespace Strigi;
 using namespace jstreams;
 
 void

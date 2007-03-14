@@ -40,7 +40,7 @@
 #include <string>
 #include <map>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 map<string, IndexManager*(*)(const char*)>
 CombinedIndexManager::getFactories() {

@@ -29,7 +29,7 @@ typedef void* StgModuleType;
 typedef HMODULE StgModuleType;
 #endif
 
-namespace jstreams {
+namespace Strigi {
 class AnalyzerFactoryFactory;
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;

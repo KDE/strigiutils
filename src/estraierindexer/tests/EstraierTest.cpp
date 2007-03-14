@@ -17,16 +17,16 @@ EstraierTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     EstraierIndexManager* manager = new EstraierIndexManager(path);
 
-    jstreams::AnalyzerConfiguration ic;
+    Strigi::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
     tests.testAll();
     tests.testAllInThreads(20);
 
-    jstreams::IndexWriter* writer = manager->getIndexWriter();
+    Strigi::IndexWriter* writer = manager->getIndexWriter();
     IndexWriterTests wtests(*writer, ic);
     wtests.testAll();
 
-    jstreams::IndexReader* reader = manager->getIndexReader();
+    Strigi::IndexReader* reader = manager->getIndexReader();
     IndexReaderTests rtests(reader);
     rtests.testAll();
 

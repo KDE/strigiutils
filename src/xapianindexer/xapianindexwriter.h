@@ -24,7 +24,7 @@
 #include <xapian.h>
 
 class XapianIndexManager;
-class XapianIndexWriter : public jstreams::IndexWriter {
+class XapianIndexWriter : public Strigi::IndexWriter {
 friend class XapianIndexManager;
 private:
     XapianIndexManager* manager;
@@ -32,11 +32,11 @@ private:
     Xapian::WritableDatabase* db;
 
 protected:
-    void startAnalysis(jstreams::AnalysisResult*);
-    void finishAnalysis(const jstreams::AnalysisResult*);
-    void addText(const jstreams::AnalysisResult* idx, const char* text,
+    void startIndexable(Strigi::AnalysisResult*);
+    void finishIndexable(const Strigi::AnalysisResult*);
+    void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);
-    void setField(const jstreams::AnalysisResult* idx, const std::string &fieldname,
+    void setField(const Strigi::AnalysisResult* idx, const std::string &fieldname,
         const std::string& value);
     XapianIndexWriter(XapianIndexManager*, Xapian::WritableDatabase*);
     ~XapianIndexWriter();

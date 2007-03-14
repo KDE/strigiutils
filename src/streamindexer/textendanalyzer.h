@@ -22,22 +22,22 @@
 
 #include "streamendanalyzer.h"
 
-class TextEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class TextEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "TextEndAnalyzer"; }
 };
 
-class TextEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class TextEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
         return "TextEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new TextEndAnalyzer();
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

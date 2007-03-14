@@ -24,8 +24,8 @@
 #include <dirent.h>
 #include <unistd.h>
 
-using namespace jstreams;
 using namespace std;
+using namespace jstreams;
 
 int errors;
 

@@ -23,30 +23,30 @@
 #include "streamendanalyzer.h"
 
 class BmpEndAnalyzerFactory;
-class BmpEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class BmpEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     const BmpEndAnalyzerFactory* factory;
 public:
     BmpEndAnalyzer(const BmpEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "BmpEndAnalyzer"; }
 };
 
-class BmpEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class BmpEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class BmpEndAnalyzer;
 private:
     static const cnstr typeFieldName;
     static const cnstr compressionFieldName;
-    const jstreams::RegisteredField* typeField;
-    const jstreams::RegisteredField* compressionField;
+    const Strigi::RegisteredField* typeField;
+    const Strigi::RegisteredField* compressionField;
     const char* getName() const {
         return "BmpEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new BmpEndAnalyzer(this);
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

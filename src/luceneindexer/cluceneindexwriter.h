@@ -26,28 +26,28 @@
 #include "analyzerconfiguration.h"
 
 class CLuceneIndexManager;
-class CLUCENEINDEXER_EXPORT CLuceneIndexWriter : public jstreams::IndexWriter {
+class CLUCENEINDEXER_EXPORT CLuceneIndexWriter : public Strigi::IndexWriter {
 private:
     CLuceneIndexManager* manager;
     int doccount;
 
 protected:
-    void startAnalysis(jstreams::AnalysisResult*);
-    void finishAnalysis(const jstreams::AnalysisResult*);
-    void addText(const jstreams::AnalysisResult*, const char* text, int32_t length);
-    static void addField(const jstreams::AnalysisResult* idx,
-        jstreams::AnalyzerConfiguration::FieldType type, const TCHAR* name,
+    void startIndexable(Strigi::AnalysisResult*);
+    void finishIndexable(const Strigi::AnalysisResult*);
+    void addText(const Strigi::AnalysisResult*, const char* text, int32_t length);
+    static void addField(const Strigi::AnalysisResult* idx,
+        Strigi::AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const TCHAR* value);
-    static void addField(const jstreams::AnalysisResult* idx,
-        jstreams::AnalyzerConfiguration::FieldType type, const TCHAR* name,
+    static void addField(const Strigi::AnalysisResult* idx,
+        Strigi::AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const std::string& value);
-    void addField(const jstreams::AnalysisResult* idx,
-        const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::AnalysisResult*,
-        const jstreams::RegisteredField* fieldname,
+    void addField(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, const std::string& value);
+    void addField(const Strigi::AnalysisResult*,
+        const Strigi::RegisteredField* fieldname,
         const unsigned char* data, int32_t size) {}
-    void initWriterData(const jstreams::FieldRegister& f);
-    void releaseWriterData(const jstreams::FieldRegister& f);
+    void initWriterData(const Strigi::FieldRegister& f);
+    void releaseWriterData(const Strigi::FieldRegister& f);
 public:
     explicit CLuceneIndexWriter(CLuceneIndexManager* m);
     ~CLuceneIndexWriter();

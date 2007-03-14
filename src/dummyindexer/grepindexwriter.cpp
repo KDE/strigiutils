@@ -30,13 +30,13 @@ GrepIndexWriter::~GrepIndexWriter() {
     regfree(&regex);
 }
 void
-GrepIndexWriter::startAnalysis(jstreams::AnalysisResult* idx) {
+GrepIndexWriter::startAnalysis(Strigi::AnalysisResult* idx) {
 }
 void
-GrepIndexWriter::finishAnalysis(const jstreams::AnalysisResult* idx) {
+GrepIndexWriter::finishAnalysis(const Strigi::AnalysisResult* idx) {
 }
 void
-GrepIndexWriter::addText(const jstreams::AnalysisResult* idx, const char* text,
+GrepIndexWriter::addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length) {
     // unfortunately we have to copy the incoming stream because regexec()
     // assumes a null-terminated string and we are not allowed to modify the
@@ -62,8 +62,8 @@ GrepIndexWriter::addText(const jstreams::AnalysisResult* idx, const char* text,
     }
 }
 void
-GrepIndexWriter::addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field, const std::string& value) {
+GrepIndexWriter::addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s:%s\n", idx->path().c_str(),
             (const char*)field->getKey(), value.c_str());

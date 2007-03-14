@@ -121,7 +121,7 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
     DBusMessageIter sssssub;
     dbus_message_iter_open_container(&it, DBUS_TYPE_ARRAY,
         "(sdsssxxa{sas})", &sub);
-    vector<jstreams::IndexedDocument>::const_iterator i;
+    vector<Strigi::IndexedDocument>::const_iterator i;
     for (i=s.hits.begin(); i!=s.hits.end(); ++i) {
         dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
         const char* c = i->uri.c_str();
@@ -132,7 +132,7 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
         // the fragments as stored are sometimes not properly recoded back
         // from usc2 to utf8 which causes dbus to close the connection,
         // whereupon the strigidaemon quits
-        if (jstreams::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
+        if (Strigi::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
             c = i->fragment.c_str();
         } else {
             c = "";

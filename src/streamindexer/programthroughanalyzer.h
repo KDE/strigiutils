@@ -22,14 +22,14 @@
 
 #include "streamthroughanalyzer.h"
 
-class ProgramThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class ProgramThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
-    jstreams::DigestInputStream *stream;
-    jstreams::AnalysisResult* indexable;
+    Strigi::DigestInputStream *stream;
+    Strigi::AnalysisResult* indexable;
 public:
     ProgramThroughAnalyzer();
     ~ProgramThroughAnalyzer();
-    void setIndexable(jstreams::AnalysisResult*);
+    void setIndexable(Strigi::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
 };
 

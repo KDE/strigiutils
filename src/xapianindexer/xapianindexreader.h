@@ -26,7 +26,7 @@
 
 class XapianIndexManager;
 
-class XapianIndexReader : public jstreams::IndexReader {
+class XapianIndexReader : public Strigi::IndexReader {
 friend class XapianIndexManager;
 private:
     XapianIndexManager* manager;
@@ -34,8 +34,8 @@ private:
     XapianIndexReader(XapianIndexManager* m, Xapian::WritableDatabase* d);
     ~XapianIndexReader();
 public:
-    int32_t countHits(const jstreams::Query& query);
-    std::vector<jstreams::IndexedDocument> query(const jstreams::Query&);
+    int32_t countHits(const Strigi::Query& query);
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
     std::map<std::string, time_t> getFiles(char depth);
     int32_t countDocuments();
 };

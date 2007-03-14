@@ -158,7 +158,7 @@ SocketServer::handleRequest() {
         int off = atoi(request[3].c_str());
         ClientInterface::Hits hits = interface->getHits(request[1], max, off);
         response.clear();
-        vector<jstreams::IndexedDocument>::const_iterator i;
+        vector<Strigi::IndexedDocument>::const_iterator i;
         ostringstream oss;
         for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
             response.push_back((i->uri.length())?i->uri:" ");

@@ -23,18 +23,18 @@
 #include "indexwriter.h"
 #include <regex.h>
 
-class GrepIndexWriter : public jstreams::IndexWriter {
+class GrepIndexWriter : public Strigi::IndexWriter {
 private:
     regex_t regex;
 protected:
-    void startAnalysis(jstreams::AnalysisResult* idx);
-    void finishAnalysis(const jstreams::AnalysisResult* idx);
-    void addText(const jstreams::AnalysisResult* idx, const char* text,
+    void startAnalysis(Strigi::AnalysisResult* idx);
+    void finishAnalysis(const Strigi::AnalysisResult* idx);
+    void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);
-    void addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::AnalysisResult* idx,
-            const jstreams::RegisteredField* field,
+    void addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field, const std::string& value);
+    void addField(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field,
             const unsigned char* data, int32_t size) {}
 public:
     explicit GrepIndexWriter(const char* re);

@@ -25,7 +25,7 @@
 #include "combinedindexmanager.h"
 
 using lucene::index::IndexWriter;
-using namespace jstreams;
+using namespace Strigi;
 
 Indexer *Indexer::workingIndexer;
 

@@ -27,9 +27,11 @@
 #include "streamanalyzer.h"
 
 namespace jstreams {
+   template <class T> class StreamBase;
+}
 
-template <class T>
-class StreamBase;
+namespace Strigi {
+
 class FieldRegister;
 
 /*
@@ -89,8 +91,8 @@ public:
      * diskspace.
      **/
     virtual void optimize() {}
-    virtual void initWriterData(const jstreams::FieldRegister&) {}
-    virtual void releaseWriterData(const jstreams::FieldRegister&) {}
+    virtual void initWriterData(const Strigi::FieldRegister&) {}
+    virtual void releaseWriterData(const Strigi::FieldRegister&) {}
 };
 }
 

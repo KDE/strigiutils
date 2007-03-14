@@ -26,8 +26,7 @@
 #endif
 
 namespace jstreams {
-    template <class T>
-    class StreamBase;
+    template <class T> class StreamBase;
     class SubStreamProvider;
 }
 

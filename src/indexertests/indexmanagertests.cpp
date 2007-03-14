@@ -29,7 +29,7 @@
 #include <sstream>
 #include <iostream>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 class IndexManagerTester {
 private:
@@ -115,7 +115,7 @@ STRIGI_THREAD_FUNCTION(threadstarter,d) {
     STRIGI_THREAD_EXIT(0);
     return 0;
 }
-IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m,
+IndexManagerTests::IndexManagerTests(Strigi::IndexManager* m,
         AnalyzerConfiguration& ic)
     :tester (new IndexManagerTester(m, ic)) {
 }

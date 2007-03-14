@@ -63,7 +63,7 @@ main(int argc, char **argv) {
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
     filters.push_back(make_pair<bool,string>(false,".*"));
-    jstreams::AnalyzerConfiguration ic;
+    Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
     Indexer indexer(cout, ic, mappingfile);
     for (unsigned i = 0; i < toindex.size(); ++i) {

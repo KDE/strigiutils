@@ -33,7 +33,7 @@
 
 class XapianIndexReader;
 class XapianIndexWriter;
-class XapianIndexManager : public jstreams::IndexManager {
+class XapianIndexManager : public Strigi::IndexManager {
 private:
     pthread_mutex_t dblock;
     static pthread_mutex_t lock;
@@ -48,13 +48,13 @@ public:
     explicit XapianIndexManager(const char* path);
     ~XapianIndexManager();
 
-    jstreams::IndexReader* getIndexReader();
-    jstreams::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* getIndexReader();
+    Strigi::IndexWriter* getIndexWriter();
     void ref();
     void deref();
 };
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createXapianIndexManager(const char* path);
 
 #endif

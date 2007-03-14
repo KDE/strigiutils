@@ -23,32 +23,32 @@
 #include "streamendanalyzer.h"
 
 class MailEndAnalyzerFactory;
-class MailEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class MailEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     const MailEndAnalyzerFactory* factory;
 public:
     MailEndAnalyzer(const MailEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "MailEndAnalyzer"; }
 };
 
-class MailEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class MailEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class MailEndAnalyzer;
 private:
     const static cnstr titleFieldName;
     const static cnstr contenttypeFieldName;
-    const jstreams::RegisteredField* titleField;
-    const jstreams::RegisteredField* contenttypeField;
+    const Strigi::RegisteredField* titleField;
+    const Strigi::RegisteredField* contenttypeField;
 public:
     const char* getName() const {
         return "MailEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new MailEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

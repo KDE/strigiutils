@@ -24,7 +24,7 @@
 #include "indexeddocument.h"
 #include <vector>
 
-namespace jstreams {
+namespace Strigi {
 class Query;
 
 /**

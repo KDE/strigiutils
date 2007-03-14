@@ -24,20 +24,20 @@
 #include <map>
 
 class AnalyzerLoader;
-class PluginEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class PluginEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
 private:
     //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
-    std::multimap<void*, jstreams::StreamEndAnalyzer*> analyzers;
+    std::multimap<void*, Strigi::StreamEndAnalyzer*> analyzers;
     AnalyzerLoader* moduleLoader;
 
-    mutable jstreams::StreamEndAnalyzer* selectedEndAnalyzer;
+    mutable Strigi::StreamEndAnalyzer* selectedEndAnalyzer;
 public:
     explicit PluginEndAnalyzer(AnalyzerLoader* moduleLoader);
     ~PluginEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "PluginEndAnalyzer"; }
     static void loadPlugins(const char* dir);
 };

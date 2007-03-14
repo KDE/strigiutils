@@ -29,7 +29,7 @@
  * This class allows the AnalysisResult to determine how each field should be
  * indexed.
  **/
-namespace jstreams {
+namespace Strigi {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 class FieldRegister;
@@ -82,7 +82,7 @@ public:
     virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
-    virtual FieldType getIndexType(const jstreams::RegisteredField* f) const;
+    virtual FieldType getIndexType(const Strigi::RegisteredField* f) const;
 
     void setFilters(const std::vector<std::pair<bool,std::string> >& filters);
     const std::vector<std::pair<bool,std::string> >& getFilters() const {

@@ -22,7 +22,7 @@
 #include <set>
 #include <sstream>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 SqliteIndexReader::SqliteIndexReader(SqliteIndexManager* m) :manager(m) {
 }
@@ -93,13 +93,13 @@ createQuery(int n, bool filterpath) {
     return q.str();
 }
 int
-SqliteIndexReader::countHits(const jstreams::Query& q) {
+SqliteIndexReader::countHits(const Strigi::Query& q) {
     // very inefficient: needs refactoring
     vector<IndexedDocument> r = query(q);
     return r.size();
 }
 vector<IndexedDocument>
-SqliteIndexReader::query(const jstreams::Query& query) {
+SqliteIndexReader::query(const Strigi::Query& query) {
     string q;
     // replace * by %
     size_t p = q.find('*');

@@ -33,7 +33,7 @@
 
 class EstraierIndexReader;
 class EstraierIndexWriter;
-class EstraierIndexManager : public jstreams::IndexManager {
+class EstraierIndexManager : public Strigi::IndexManager {
 private:
     pthread_mutex_t dblock;
     static pthread_mutex_t lock;
@@ -48,15 +48,15 @@ public:
     explicit EstraierIndexManager(const char* path);
     ~EstraierIndexManager();
 
-    jstreams::IndexReader* getIndexReader();
-    jstreams::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* getIndexReader();
+    Strigi::IndexWriter* getIndexWriter();
     ESTDB* ref();
     void deref();
 
     void deleteIndex();
 };
 
-jstreams::IndexManager*
+Strigi::IndexManager*
 createEstraierIndexManager(const char* path);
 
 #endif

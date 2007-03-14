@@ -33,6 +33,7 @@
 #include <libxml/parser.h>
 #include <ctype.h>
 using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
 const cnstr SaxEndAnalyzerFactory::titleFieldName("title");

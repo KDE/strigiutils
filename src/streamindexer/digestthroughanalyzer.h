@@ -25,31 +25,33 @@
 
 namespace jstreams {
     class DigestInputStream;
+}
+namespace Strigi {
     class RegisteredField;
     class FieldRegister;
 }
 
-class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class DigestThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
     static cnstr shafieldname;
     jstreams::DigestInputStream *stream;
-    jstreams::AnalysisResult* indexable;
-    const jstreams::RegisteredField* shafield;
+    Strigi::AnalysisResult* indexable;
+    const Strigi::RegisteredField* shafield;
 public:
-    DigestThroughAnalyzer(jstreams::FieldRegister& reg);
+    DigestThroughAnalyzer(Strigi::FieldRegister& reg);
     ~DigestThroughAnalyzer();
-    void setIndexable(jstreams::AnalysisResult*);
+    void setIndexable(Strigi::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };
 
 class DigestThroughAnalyzerFactory
-        : public jstreams::StreamThroughAnalyzerFactory {
+        : public Strigi::StreamThroughAnalyzerFactory {
 private:
     const char* getName() const {
         return "DigestThroughAnalyzer";
     }
-    jstreams::StreamThroughAnalyzer* newInstance(jstreams::FieldRegister& reg)
+    Strigi::StreamThroughAnalyzer* newInstance(Strigi::FieldRegister& reg)
             const {
         return new DigestThroughAnalyzer(reg);
     }

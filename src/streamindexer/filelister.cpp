@@ -39,7 +39,7 @@
 #endif
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 string fixPath (string path)
 {

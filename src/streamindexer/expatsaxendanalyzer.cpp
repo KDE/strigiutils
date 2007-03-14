@@ -23,7 +23,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include <expat.h>
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
 const cnstr SaxEndAnalyzerFactory::titleFieldName("title");

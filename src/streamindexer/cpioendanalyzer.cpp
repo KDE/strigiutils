@@ -22,6 +22,7 @@
 #include "cpioinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+using namespace Strigi;
 using namespace jstreams;
 
 void

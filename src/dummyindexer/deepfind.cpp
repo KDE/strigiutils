@@ -23,7 +23,7 @@
 #include "streamanalyzer.h"
 #include "analyzerconfiguration.h"
 #include "streamendanalyzer.h"
-using namespace jstreams;
+using namespace Strigi;
 
 /**
  * Special indexer that indexes only the filenames.

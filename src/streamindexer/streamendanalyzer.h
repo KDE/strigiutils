@@ -23,7 +23,7 @@
 #include "inputstream.h"
 #include "cnstr.h"
 
-namespace jstreams {
+namespace Strigi {
 class StreamAnalyzer;
 class AnalysisResult;
 class RegisteredField;
@@ -36,7 +36,7 @@ protected:
 public:
     virtual ~StreamEndAnalyzer() {};
     virtual bool checkHeader(const char* header, int32_t headersize) const = 0;
-    virtual char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in)=0;
+    virtual char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in)=0;
     const std::string& getError() const { return error; }
     virtual const char* getName() const = 0;
 };
@@ -45,7 +45,7 @@ class StreamEndAnalyzerFactory {
 public:
     virtual ~StreamEndAnalyzerFactory(){}
     virtual const char* getName() const = 0;
-    virtual void registerFields(jstreams::FieldRegister&) = 0;
+    virtual void registerFields(Strigi::FieldRegister&) = 0;
     virtual StreamEndAnalyzer* newInstance() const = 0;
     virtual bool analyzesSubStreams() const { return false; }
 };

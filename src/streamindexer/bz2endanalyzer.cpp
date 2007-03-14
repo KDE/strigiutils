@@ -27,6 +27,7 @@
 #include "analysisresult.h"
 using namespace std;
 using namespace jstreams;
+using namespace Strigi;
 
 void
 Bz2EndAnalyzerFactory::registerFields(FieldRegister& reg) {

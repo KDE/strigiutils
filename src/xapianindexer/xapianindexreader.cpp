@@ -24,7 +24,7 @@
 #include <sstream>
 #include <assert.h>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 using namespace Xapian;
 
 XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
@@ -33,11 +33,11 @@ XapianIndexReader::XapianIndexReader(XapianIndexManager* m, WritableDatabase* d)
 XapianIndexReader::~XapianIndexReader() {
 }
 int
-XapianIndexReader::countHits(const jstreams::Query& query) {
+XapianIndexReader::countHits(const Strigi::Query& query) {
     return -1;
 }
 vector<IndexedDocument>
-XapianIndexReader::query(const jstreams::Query& query) {
+XapianIndexReader::query(const Strigi::Query& query) {
     std::vector<IndexedDocument> results;
     return results;
 }

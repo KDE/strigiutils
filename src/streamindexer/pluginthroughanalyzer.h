@@ -24,17 +24,17 @@
 #include <map>
 
 class AnalyzerLoader;
-class PluginThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class PluginThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
     //a map of analyzers that this plugin has created, and their corresponding modules
     //for cleanup purposes.
-    std::multimap<void*, jstreams::StreamThroughAnalyzer*> analyzers;
+    std::multimap<void*, Strigi::StreamThroughAnalyzer*> analyzers;
     //std::list<AnalyzerLoader::ThroughPair> analyzers;
     AnalyzerLoader* moduleLoader;
 public:
     explicit PluginThroughAnalyzer(AnalyzerLoader* moduleLoader);
     ~PluginThroughAnalyzer();
-    void setIndexable(jstreams::AnalysisResult* i);
+    void setIndexable(Strigi::AnalysisResult* i);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
     static void loadPlugins(const char* dir);

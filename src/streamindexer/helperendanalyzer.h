@@ -38,28 +38,28 @@ public:
 };
 
 class HelperEndAnalyzerFactory;
-class HelperEndAnalyzer : public jstreams::StreamEndAnalyzer {
+class HelperEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     static const HelperProgramConfig helperconfig;
 
     std::string writeToTempFile(jstreams::InputStream *in) const;
-    bool checkForFile(const jstreams::AnalysisResult& idx) const;
+    bool checkForFile(const Strigi::AnalysisResult& idx) const;
 public:
     HelperEndAnalyzer() {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "HelperEndAnalyzer"; }
 };
 
-class HelperEndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class HelperEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 private:
     const char* getName() const {
         return "HelperEndAnalyzer";
     }
-    jstreams::StreamEndAnalyzer* newInstance() const {
+    Strigi::StreamEndAnalyzer* newInstance() const {
         return new HelperEndAnalyzer();
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 #endif

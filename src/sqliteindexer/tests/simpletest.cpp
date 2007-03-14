@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 int
 addAndCount(IndexWriter* writer, IndexReader* reader, int m) {

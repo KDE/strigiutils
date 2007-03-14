@@ -25,7 +25,7 @@
 #include <sstream>
 #include <assert.h>
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m)
     : manager(m) {
@@ -33,7 +33,7 @@ EstraierIndexReader::EstraierIndexReader(EstraierIndexManager* m)
 EstraierIndexReader::~EstraierIndexReader() {
 }
 ESTCOND*
-EstraierIndexReader::createCondition(const jstreams::Query& query) {
+EstraierIndexReader::createCondition(const Strigi::Query& query) {
     // build the phrase string
 
     // write the part of the query that matches the document context
@@ -119,7 +119,7 @@ EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
     return fragment;
 }
 int32_t
-EstraierIndexReader::countHits(const jstreams::Query& query) {
+EstraierIndexReader::countHits(const Strigi::Query& query) {
     ESTCOND* cond = createCondition(query);
     int n;
     int* ids;

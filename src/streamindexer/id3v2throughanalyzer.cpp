@@ -21,6 +21,7 @@
 #include "jstreamsconfig.h"
 #include "id3v2throughanalyzer.h"
 #include "analysisresult.h"
+using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 
@@ -55,7 +56,7 @@ readSize(const unsigned char* b, bool async) {
     return (((int32_t)b[0])<<24) + (((int32_t)b[1])<<16)
             + (((int32_t)b[2])<<8) + ((int32_t)b[3]);
 }
-InputStream*
+jstreams::InputStream*
 ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     // read 10 byte header
     const char* buf;

@@ -27,30 +27,30 @@
 // ogg according to http://tools.ietf.org/html/rfc3533
 
 class OggThroughAnalyzerFactory;
-class OggThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class OggThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
-    jstreams::AnalysisResult* indexable;
+    Strigi::AnalysisResult* indexable;
     const OggThroughAnalyzerFactory* factory;
 public:
     OggThroughAnalyzer(const OggThroughAnalyzerFactory* f) :factory(f) {}
     ~OggThroughAnalyzer() {}
-    void setIndexable(jstreams::AnalysisResult*);
+    void setIndexable(Strigi::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };
 
 class OggThroughAnalyzerFactory
-        : public jstreams::StreamThroughAnalyzerFactory {
+        : public Strigi::StreamThroughAnalyzerFactory {
 friend class OggThroughAnalyzer;
 private:
-    std::map<std::string, const jstreams::RegisteredField*> fields;
+    std::map<std::string, const Strigi::RegisteredField*> fields;
     const char* getName() const {
         return "OggThroughAnalyzer";
     }
-    jstreams::StreamThroughAnalyzer* newInstance() const {
+    Strigi::StreamThroughAnalyzer* newInstance() const {
         return new OggThroughAnalyzer(this);
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 

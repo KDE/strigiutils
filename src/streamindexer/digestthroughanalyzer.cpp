@@ -25,6 +25,7 @@
 #include "fieldtypes.h"
 using namespace std;
 using namespace jstreams;
+using namespace Strigi;
 
 cnstr DigestThroughAnalyzer::shafieldname("sha1");
 

@@ -48,7 +48,7 @@ using lucene::search::QueryFilter;
 using lucene::search::HitCollector;
 using lucene::util::BitSet;
 using lucene::document::DocumentFieldEnumeration;
-using namespace jstreams;
+using namespace Strigi;
 
 class HitCounter : public HitCollector {
 private:

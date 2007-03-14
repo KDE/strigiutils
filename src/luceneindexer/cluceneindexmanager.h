@@ -45,7 +45,7 @@ namespace lucene {
 
 class CLuceneIndexReader;
 class CLuceneIndexWriter;
-class CLUCENEINDEXER_EXPORT CLuceneIndexManager : public jstreams::IndexManager {
+class CLUCENEINDEXER_EXPORT CLuceneIndexManager : public Strigi::IndexManager {
 private:
     StrigiMutex writelock;
     StrigiMutex lock;
@@ -53,7 +53,7 @@ private:
     std::map<STRIGI_THREAD_TYPE, CLuceneIndexReader*> readers;
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
-    //jstreams::QueryBitsetCache bitsets;
+    //Strigi::QueryBitsetCache bitsets;
     lucene::analysis::Analyzer* analyzer;
     time_t mtime;
     static int numberOfManagers;
@@ -65,10 +65,10 @@ public:
 
     lucene::index::IndexWriter* refWriter();
     void derefWriter();
-    jstreams::IndexReader* getIndexReader();
-    jstreams::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* getIndexReader();
+    Strigi::IndexWriter* getIndexWriter();
     CLuceneIndexReader* getReader();
-//    jstreams::QueryBitsetCache* getBitSets();
+//    Strigi::QueryBitsetCache* getBitSets();
     int32_t docCount();
     int64_t getIndexSize();
     void deleteIndex();
@@ -77,7 +77,7 @@ public:
     void setIndexMTime();
 };
 
-CLUCENEINDEXER_EXPORT jstreams::IndexManager*
+CLUCENEINDEXER_EXPORT Strigi::IndexManager*
 createCLuceneIndexManager(const char* path);
 
 CLUCENEINDEXER_EXPORT std::string wchartoutf8(const wchar_t*);

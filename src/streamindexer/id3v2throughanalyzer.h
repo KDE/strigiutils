@@ -26,35 +26,35 @@
 // id3v2 according to http://www.id3.org/id3v2.4.0-structure.txt
 
 class ID3V2ThroughAnalyzerFactory;
-class ID3V2ThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
+class ID3V2ThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
-    jstreams::AnalysisResult* indexable;
+    Strigi::AnalysisResult* indexable;
     const ID3V2ThroughAnalyzerFactory* factory;
 public:
     ID3V2ThroughAnalyzer(const ID3V2ThroughAnalyzerFactory* f)
         :indexable(0), factory(f) {}
-    void setIndexable(jstreams::AnalysisResult*);
+    void setIndexable(Strigi::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };
 
 class ID3V2ThroughAnalyzerFactory
-        : public jstreams::StreamThroughAnalyzerFactory {
+        : public Strigi::StreamThroughAnalyzerFactory {
 friend class ID3V2ThroughAnalyzer;
 private:
     static const cnstr titleFieldName;
     static const cnstr artistFieldName;
     static const cnstr albumFieldName;
-    const jstreams::RegisteredField* titleField;
-    const jstreams::RegisteredField* artistField;
-    const jstreams::RegisteredField* albumField;
+    const Strigi::RegisteredField* titleField;
+    const Strigi::RegisteredField* artistField;
+    const Strigi::RegisteredField* albumField;
     const char* getName() const {
         return "ID3V2ThroughAnalyzer";
     }
-    jstreams::StreamThroughAnalyzer* newInstance() const {
+    Strigi::StreamThroughAnalyzer* newInstance() const {
         return new ID3V2ThroughAnalyzer(this);
     }
-    void registerFields(jstreams::FieldRegister&);
+    void registerFields(Strigi::FieldRegister&);
 };
 
 

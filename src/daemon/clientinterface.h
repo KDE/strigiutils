@@ -31,7 +31,7 @@ protected:
 public:
     class Hits {
     public:
-        std::vector<jstreams::IndexedDocument> hits;
+        std::vector<Strigi::IndexedDocument> hits;
         std::string error;
     };
 

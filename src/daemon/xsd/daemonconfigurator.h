@@ -35,7 +35,7 @@ public:
     std::set<std::string> getIndexedDirectories(
             const std::string& repositoryName = "localhost");
     bool useDBus() { return a_useDBus; }
-    void loadFilteringRules(jstreams::AnalyzerConfiguration& config);
+    void loadFilteringRules(Strigi::AnalyzerConfiguration& config);
     void saveFilteringRules(const std::vector<std::pair<bool,std::string> >& f);
     void setPollingInterval (unsigned int value,
         const std::string& repositoryName = "localhost");

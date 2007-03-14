@@ -31,14 +31,14 @@ private:
     FileLister* m_lister;
     const std::string m_indexdir;
     SqliteIndexManager m_manager;
-    jstreams::StreamAnalyzer m_indexer;
+    Strigi::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const std::string &filepath);
 public:
-    Indexer(const char *indexdir, jstreams::AnalyzerConfiguration&);
+    Indexer(const char *indexdir, Strigi::AnalyzerConfiguration&);
     ~Indexer();
     void index(const char *dir);
 };

@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
+using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 

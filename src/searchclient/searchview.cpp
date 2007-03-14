@@ -167,7 +167,7 @@ ClientInterface::Hits
 toID(const QList<StrigiHit>& hits) {
     ClientInterface::Hits id;
     foreach (const StrigiHit&h, hits) {
-        jstreams::IndexedDocument i;
+        Strigi::IndexedDocument i;
         i.uri.assign(h.uri.toUtf8());
         i.score = h.score;
         i.fragment.assign(h.fragment.toUtf8());

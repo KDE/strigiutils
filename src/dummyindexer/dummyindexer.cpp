@@ -45,7 +45,7 @@ main(int argc, char **argv) {
     }
 
     DummyIndexWriter writer(verbosity);
-    jstreams::AnalyzerConfiguration ic;
+    Strigi::AnalyzerConfiguration ic;
     Indexer indexer(writer, ic);
     indexer.index(argv[argc-1]);
     return 0;

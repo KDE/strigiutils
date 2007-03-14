@@ -50,7 +50,7 @@
 #include <cerrno>
 #include <stdlib.h>
 
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
 /**

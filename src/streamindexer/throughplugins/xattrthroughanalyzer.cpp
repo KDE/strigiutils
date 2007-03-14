@@ -25,10 +25,10 @@
 #include <sys/types.h>
 #include <attr/xattr.h>
 #include <errno.h>
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 
-class XattrAnalyzer : public jstreams::StreamThroughAnalyzer {
+class XattrAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
     static const int maxnamesize = 262144;
     int namesize;
@@ -36,7 +36,7 @@ private:
     static const int maxvalsize = 262144;
     int valsize;
     char* valbuffer;
-    jstreams::AnalysisResult* idx;
+    Strigi::AnalysisResult* idx;
 
     const char* retrieveAttribute(const char*);
 public:
@@ -50,15 +50,15 @@ public:
         free(namebuffer);
         free(valbuffer);
     }
-    void setIndexable(jstreams::AnalysisResult*i) {
+    void setIndexable(Strigi::AnalysisResult*i) {
         idx = i;
     }
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream() { return true; }
 };
 
-jstreams::InputStream *
-XattrAnalyzer::connectInputStream(jstreams::InputStream *in) {
+Strigi::InputStream *
+XattrAnalyzer::connectInputStream(Strigi::InputStream *in) {
     if (idx->getDepth() != 0) return in;
     ssize_t s;
     errno = 0;

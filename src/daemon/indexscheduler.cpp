@@ -35,7 +35,7 @@
 #include "strigilogging.h"
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 IndexScheduler* sched;
 

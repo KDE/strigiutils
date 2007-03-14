@@ -20,7 +20,7 @@
 #ifndef INDEXMANAGER_H
 #define INDEXMANAGER_H
 
-namespace jstreams {
+namespace Strigi {
 class IndexReader;
 class IndexWriter;
 class QueryBitsetCache;

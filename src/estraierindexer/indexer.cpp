@@ -22,7 +22,7 @@
 #include "filereader.h"
 #include "filelister.h"
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 Indexer *Indexer::workingIndexer;
 
