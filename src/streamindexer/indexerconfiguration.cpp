@@ -98,7 +98,7 @@ IndexerConfiguration::setFilters(
     for (i = filters.begin(); i != filters.end(); ++i) {
         string s = i->second;
         if (s.length()) {
-            hadinclude |= i->first;
+            hadinclude = hadinclude || i->first;
             Pattern p;
             p.include = i->first;
             size_t sp = s.rfind('/');

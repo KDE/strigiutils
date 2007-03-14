@@ -40,12 +40,12 @@ bool
 BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     bool ok = false;
     if (headersize > 2) {
-        ok |= strncmp(header, "BM", 2) == 0;
-        ok |= strncmp(header, "BA", 2) == 0;
-        ok |= strncmp(header, "CI", 2) == 0;
-        ok |= strncmp(header, "CP", 2) == 0;
-        ok |= strncmp(header, "IC", 2) == 0;
-        ok |= strncmp(header, "PT", 2) == 0;
+        ok = strncmp(header, "BM", 2) == 0
+            || strncmp(header, "BA", 2) == 0
+            || strncmp(header, "CI", 2) == 0
+            || strncmp(header, "CP", 2) == 0
+            || strncmp(header, "IC", 2) == 0
+            || strncmp(header, "PT", 2) == 0;
     }
     return ok;
 }
