@@ -31,14 +31,14 @@ class StreamThroughAnalyzer;
 class StreamThroughAnalyzerFactory;
 class StreamEndAnalyzerFactory;
 class IndexWriter;
-class Indexable;
+class AnalysisResult;
 class AnalyzerLoader;
-class IndexerConfiguration;
+class AnalyzerConfiguration;
 class RegisteredField;
 
 template <class T> class StreamBase;
 /**
- * The class StreamIndexer extracts information from files or character
+ * The class StreamAnalyzer extracts information from files or character
  * streams. This task is performed by two separate analyzer classes:
  * - EndAnalyzer     pulls the data through the stream
  * - ThroughAnalyzer analyzes the data as it comes along
@@ -49,10 +49,10 @@ template <class T> class StreamBase;
  * Especially the last task is important when working with archive streams
  * such as zip or tar files that contain other files.
  **/
-class STREAMINDEXER_EXPORT StreamIndexer {
+class STREAMINDEXER_EXPORT StreamAnalyzer {
 private:
     static cnstr sizefieldname;
-    IndexerConfiguration& conf;
+    AnalyzerConfiguration& conf;
     std::vector<jstreams::StreamThroughAnalyzerFactory*> throughfactories;
     std::vector<jstreams::StreamEndAnalyzerFactory*> endfactories;
     std::vector<std::vector<jstreams::StreamEndAnalyzer*> > end;
@@ -69,13 +69,13 @@ private:
     void addEndAnalyzers();
     void removeIndexable(unsigned depth);
 public:
-    StreamIndexer(IndexerConfiguration& c);
-    ~StreamIndexer();
+    StreamAnalyzer(AnalyzerConfiguration& c);
+    ~StreamAnalyzer();
     void setIndexWriter(IndexWriter& writer);
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);
-    char analyze(Indexable& idx, jstreams::StreamBase<char> *input);
-    IndexerConfiguration& getConfiguration() const { return conf; }
+    char analyze(AnalysisResult& idx, jstreams::StreamBase<char> *input);
+    AnalyzerConfiguration& getConfiguration() const { return conf; }
 };
 }
 

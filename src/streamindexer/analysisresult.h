@@ -27,8 +27,8 @@
 namespace jstreams {
 
 class IndexWriter;
-class IndexerConfiguration;
-class StreamIndexer;
+class AnalyzerConfiguration;
+class StreamAnalyzer;
 class RegisteredField;
 
 template <class T> class StreamBase;
@@ -37,25 +37,25 @@ template <class T> class StreamBase;
  *
  * This object allows StreamEndAnalyzer and StreamThroughAnalyer instances to
  * write data associated with a document to the index. The data is
- * automatically written do the index when ~Indexable() is called.
+ * automatically written do the index when ~AnalysisResult() is called.
  **/
-class STREAMINDEXER_EXPORT Indexable {
+class STREAMINDEXER_EXPORT AnalysisResult {
 friend class IndexWriter;
 private:
-    int64_t id;
-    void* writerData;
-    const time_t mtime;
-    std::string name;
-    const std::string path;
-    std::string encoding;
-    std::string mimetype;
-    IndexWriter& writer;
-    const int depth;
-    StreamIndexer& indexer;
-    IndexerConfiguration& indexableconfig;
+    int64_t m_id;
+    void* m_writerData;
+    const time_t m_mtime;
+    std::string m_name;
+    const std::string m_path;
+    std::string m_encoding;
+    std::string m_mimetype;
+    IndexWriter& m_writer;
+    const int m_depth;
+    StreamAnalyzer& m_indexer;
+    AnalyzerConfiguration& m_indexableconfig;
 
     /**
-     * Create a new Indexable object that will be written to the index.
+     * Create a new AnalysisResult object that will be written to the index.
      *
      * @param path the path of the file
      * @param mt the modification time of the file
@@ -64,22 +64,22 @@ private:
      * @param d the depth at which a document is embedded in other documents.
      *        a depth of 0 means a document is not embedded in another document.
      **/
-    Indexable(const std::string& path, const char* name, time_t mt,
-        const Indexable& parent);
+    AnalysisResult(const std::string& path, const char* name, time_t mt,
+        const AnalysisResult& parent);
 public:
-    Indexable(const std::string& p, time_t mt, IndexWriter& w,
-            StreamIndexer& indexer);
+    AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
+            StreamAnalyzer& indexer);
     /**
      * Write the indexable to the index and release the allocated resources.
      **/
-    ~Indexable();
+    ~AnalysisResult();
     /**
-     * Parse the given stream and index the results into this Indexable object.
+     * Parse the given stream and index the results into this AnalysisResult object.
      **/
     char index(StreamBase<char>& file);
     /**
      * Index the given stream which represents a child object of this
-     * Indexable under the relative name given by @name and versioned with time
+     * AnalysisResult under the relative name given by @name and versioned with time
      * @mtime.
      **/
     char indexChild(const std::string& name, time_t mt, StreamBase<char>& file);
@@ -107,36 +107,36 @@ public:
     /**
      * Get the filename of this Indexble. For the full name see getPath().
      **/
-    const std::string& getFileName() const;
+    const std::string& fileName() const;
     /**
-     * Retrieve the full name of this Indexable.
+     * Retrieve the full name of this AnalysisResult.
      **/
-    const std::string& getPath() const;
-    time_t getMTime() const;
-    char getDepth() const;
-    int64_t getId() const;
+    const std::string& path() const;
+    time_t mTime() const;
+    char depth() const;
+    int64_t id() const;
     void setId(int64_t i);
     void setEncoding(const char* enc);
-    const std::string& getEncoding() const;
+    const std::string& encoding() const;
     /**
-     * Retrieve the IndexWriter specific object associated with this Indexable.
+     * Retrieve the IndexWriter specific object associated with this AnalysisResult.
      * This object allows the IndexWriter to store intermediate results
-     * associated with this Indexable. IndexWriters using this feature should
+     * associated with this AnalysisResult. IndexWriters using this feature should
      * initialize this value in IndexWriter::startIndexable() and should
      * deallocate the value in the call to IndexWriter::finishIndexable().
      * Each of these functions will be called once during the lifetime of each
-     * Indexable.
+     * AnalysisResult.
      **/
-    void* getWriterData() const;
+    void* writerData() const;
     /**
      * Set the value for the IndexWriter specific data. See
      * IndexWriter::getWriterData() for more details.
      **/
     void setWriterData(void* wd);
     void setMimeType(const std::string& mt);
-    const std::string& getMimeType() const;
-    std::string getExtension() const;
-    IndexerConfiguration& config() const;
+    const std::string& mimeType() const;
+    std::string extension() const;
+    AnalyzerConfiguration& config() const;
 };
 
 }

@@ -18,30 +18,30 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "indexwriter.h"
 #include "textutils.h"
 using namespace jstreams;
 using namespace std;
 string
-Indexable::getExtension() const {
-    string::size_type p1 = name.rfind('.');
-    string::size_type p2 = name.rfind('/');
+AnalysisResult::extension() const {
+    string::size_type p1 = m_name.rfind('.');
+    string::size_type p2 = m_name.rfind('/');
     if (p1 != string::npos && (p2 == string::npos || p1 > p2)) {
-        return name.substr(p1+1);
+        return m_name.substr(p1+1);
     }
     return "";
 }
 void
-Indexable::setField(const RegisteredField* fieldname, const std::string& value){
+AnalysisResult::setField(const RegisteredField* fieldname, const std::string& value){
     // make sure only utf8 is stored
     if (!checkUtf8(value)) {
         fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
         return;
     }
-    writer.addField(this, fieldname, value);
+    m_writer.addField(this, fieldname, value);
 }
 void
-Indexable::setField(const RegisteredField* fieldname, uint32_t value){
-    writer.addField(this, fieldname, value);
+AnalysisResult::setField(const RegisteredField* fieldname, uint32_t value){
+    m_writer.addField(this, fieldname, value);
 }

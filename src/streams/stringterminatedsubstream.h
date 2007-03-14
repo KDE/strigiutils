@@ -30,7 +30,7 @@ class STREAMS_EXPORT StringTerminatedSubStream : public StreamBase<char> {
 private:
     const int64_t offset;
     StreamBase<char>* input;
-    KMPSearcher searcher;
+    KmpSearcher searcher;
 public:
     StringTerminatedSubStream(StreamBase<char>* i, const std::string& terminator)
         : offset(i->getPosition()), input(i) {

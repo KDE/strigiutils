@@ -21,8 +21,8 @@
 #include <QtCore/QFSFileEngine>
 using namespace jstreams;
 
-const int32_t FSFileInputStream::defaultBufferSize = 64;
-FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize) {
+const int32_t FsFileInputStream::defaultBufferSize = 64;
+FsFileInputStream::FsFileInputStream(const QString &filename, int32_t buffersize) {
     // initialize values that signal state
     status = Ok;
     fse = new QFSFileEngine(filename);
@@ -39,18 +39,18 @@ FSFileInputStream::FSFileInputStream(const QString &filename, int32_t buffersize
     // allocate memory in the buffer
     //mark(buffersize);
 }
-FSFileInputStream::FSFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
+FsFileInputStream::FsFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
     status = Ok;
     open = true; // fse must be have been opened
     this->fse = fse;
     // allocate memory in the buffer
     //mark(buffersize);
 }
-FSFileInputStream::~FSFileInputStream() {
+FsFileInputStream::~FsFileInputStream() {
     delete fse;
 }
 StreamStatus
-FSFileInputStream::reopen() {
+FsFileInputStream::reopen() {
     if (open) {
         if (!fse->seek(0)) {
             error = (const char*)fse->errorString().toUtf8();
@@ -66,7 +66,7 @@ FSFileInputStream::reopen() {
     return status;
 }
 int32_t
-FSFileInputStream::fillBuffer(char* start, int32_t space) {
+FsFileInputStream::fillBuffer(char* start, int32_t space) {
     // prepare the buffer for writing
     // read into the buffer
     int32_t nwritten = (int32_t)fse->read(start, space);

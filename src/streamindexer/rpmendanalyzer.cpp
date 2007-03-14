@@ -21,7 +21,7 @@
 #include "rpmendanalyzer.h"
 #include "rpminputstream.h"
 #include "subinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 
 void
@@ -33,7 +33,7 @@ RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return RpmInputStream::checkHeader(header, headersize);
 }
 char
-RpmEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     RpmInputStream rpm(in);
     InputStream *s = rpm.nextEntry();
     if (rpm.getStatus()) {

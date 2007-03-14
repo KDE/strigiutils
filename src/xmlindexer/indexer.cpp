@@ -29,7 +29,7 @@ using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(ostream& o, IndexerConfiguration& ic, const char* mappingfile)
+Indexer::Indexer(ostream& o, AnalyzerConfiguration& ic, const char* mappingfile)
     :out(o), writer(out, mapping), m_indexer(ic), mapping(mappingfile) {
     m_lister = new FileLister(ic);
     m_indexer.setIndexWriter(writer);

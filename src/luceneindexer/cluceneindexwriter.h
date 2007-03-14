@@ -22,8 +22,8 @@
 
 #include "cluceneindexer_export.h"
 #include "indexwriter.h"
-#include "indexable.h"
-#include "indexerconfiguration.h"
+#include "analysisresult.h"
+#include "analyzerconfiguration.h"
 
 class CLuceneIndexManager;
 class CLUCENEINDEXER_EXPORT CLuceneIndexWriter : public jstreams::IndexWriter {
@@ -32,18 +32,18 @@ private:
     int doccount;
 
 protected:
-    void startIndexable(jstreams::Indexable*);
-    void finishIndexable(const jstreams::Indexable*);
-    void addText(const jstreams::Indexable*, const char* text, int32_t length);
-    static void addField(const jstreams::Indexable* idx,
-        jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
+    void startIndexable(jstreams::AnalysisResult*);
+    void finishIndexable(const jstreams::AnalysisResult*);
+    void addText(const jstreams::AnalysisResult*, const char* text, int32_t length);
+    static void addField(const jstreams::AnalysisResult* idx,
+        jstreams::AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const TCHAR* value);
-    static void addField(const jstreams::Indexable* idx,
-        jstreams::IndexerConfiguration::FieldType type, const TCHAR* name,
+    static void addField(const jstreams::AnalysisResult* idx,
+        jstreams::AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const std::string& value);
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
         const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::Indexable*,
+    void addField(const jstreams::AnalysisResult*,
         const jstreams::RegisteredField* fieldname,
         const unsigned char* data, int32_t size) {}
     void initWriterData(const jstreams::FieldRegister& f);

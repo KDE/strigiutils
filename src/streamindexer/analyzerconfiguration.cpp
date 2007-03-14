@@ -17,29 +17,29 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include "jstreamsconfig.h"
 #include "strigi_fnmatch.h"
 using namespace std;
 using namespace jstreams;
 
-IndexerConfiguration::FieldType
-operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b){
-    return static_cast<IndexerConfiguration::FieldType>((int)a|(int)b);
+AnalyzerConfiguration::FieldType
+operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b){
+    return static_cast<AnalyzerConfiguration::FieldType>((int)a|(int)b);
 }
-IndexerConfiguration::IndexerConfiguration() {
+AnalyzerConfiguration::AnalyzerConfiguration() {
 }
 /**
  * Placeholder implementation that agrees to everything and only makes a
  * difference for text, because it should be tokenized.
  **/
-IndexerConfiguration::FieldType
-IndexerConfiguration::getIndexType(const RegisteredField* field)
+AnalyzerConfiguration::FieldType
+AnalyzerConfiguration::getIndexType(const RegisteredField* field)
         const {
     return Tokenized|Stored|Indexed;
 }
 bool
-IndexerConfiguration::indexFile(const char* path, const char* filename) const {
+AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
     vector<Pattern>::const_iterator i;
     for (i = patterns.begin(); i != patterns.end(); ++i) {
         bool match;
@@ -57,7 +57,7 @@ IndexerConfiguration::indexFile(const char* path, const char* filename) const {
     return true;
 }
 bool
-IndexerConfiguration::indexDir(const char* path, const char* filename) const {
+AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
     vector<Pattern>::const_iterator i;
     for (i = dirpatterns.begin(); i != dirpatterns.end(); ++i) {
         bool match;
@@ -75,7 +75,7 @@ IndexerConfiguration::indexDir(const char* path, const char* filename) const {
     return true;
 }
 void
-IndexerConfiguration::printFilters() const {
+AnalyzerConfiguration::printFilters() const {
     vector<Pattern>::const_iterator i;
     for (i = patterns.begin(); i != patterns.end(); ++i) {
     }
@@ -88,7 +88,7 @@ IndexerConfiguration::printFilters() const {
  //  a/  -> */a/*
  //  .*/ -> */.*
 void
-IndexerConfiguration::setFilters(
+AnalyzerConfiguration::setFilters(
         const std::vector<std::pair<bool,std::string> >& f) {
     filters = f;
     vector<pair<bool,string> >::const_iterator i;

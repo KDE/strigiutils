@@ -24,12 +24,12 @@
 #include "indexwriter.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
-#include "streamindexer.h"
-#include "indexable.h"
-#include "indexerconfiguration.h"
+#include "streamanalyzer.h"
+#include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "stringreader.h"
 #include "query.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sstream>
 #include <vector>
 #include <sys/types.h>
@@ -145,10 +145,10 @@ Interface::indexFile(const string &path, uint64_t mtime,
     vector<string> paths;
     paths.push_back(path);
     writer->deleteEntries(paths);
-    IndexerConfiguration ic;
-    StreamIndexer streamindexer(ic);
+    AnalyzerConfiguration ic;
+    StreamAnalyzer streamindexer(ic);
     StringReader<char> sr(&content[0], content.size(), false);
-    Indexable idx(path, mtime, *writer, streamindexer);
+    AnalysisResult idx(path, mtime, *writer, streamindexer);
     idx.index(sr);
 }
 vector<string>

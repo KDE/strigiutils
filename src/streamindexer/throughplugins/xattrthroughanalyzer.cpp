@@ -21,7 +21,7 @@
 #include <jstreamsconfig.h>
 #include <streamthroughanalyzer.h>
 #include <analyzerplugin.h>
-#include <indexable.h>
+#include <analysisresult.h>
 #include <sys/types.h>
 #include <attr/xattr.h>
 #include <errno.h>
@@ -36,7 +36,7 @@ private:
     static const int maxvalsize = 262144;
     int valsize;
     char* valbuffer;
-    jstreams::Indexable* idx;
+    jstreams::AnalysisResult* idx;
 
     const char* retrieveAttribute(const char*);
 public:
@@ -50,7 +50,7 @@ public:
         free(namebuffer);
         free(valbuffer);
     }
-    void setIndexable(jstreams::Indexable*i) {
+    void setIndexable(jstreams::AnalysisResult*i) {
         idx = i;
     }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);

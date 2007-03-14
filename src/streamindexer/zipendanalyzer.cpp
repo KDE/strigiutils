@@ -21,7 +21,7 @@
 #include "zipendanalyzer.h"
 #include "zipinputstream.h"
 #include "subinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 
 void
@@ -33,7 +33,7 @@ ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ZipInputStream::checkHeader(header, headersize);
 }
 char
-ZipEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
     if (zip.getStatus()) {

@@ -31,16 +31,16 @@ XapianIndexWriter::XapianIndexWriter(XapianIndexManager *m,
 XapianIndexWriter::~XapianIndexWriter() {
 }
 void
-XapianIndexWriter::addText(const Indexable* idx, const char* text,
+XapianIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
 }
 void
-XapianIndexWriter::setField(const Indexable* idx, const string& name,
+XapianIndexWriter::setField(const AnalysisResult* idx, const string& name,
         const string& value) {
 }
 
 void
-XapianIndexWriter::startIndexable(Indexable* idx) {
+XapianIndexWriter::startIndexable(AnalysisResult* idx) {
     Document *doc = new Document();
     idx->setWriterData(doc);
 }
@@ -48,7 +48,7 @@ XapianIndexWriter::startIndexable(Indexable* idx) {
     Close all left open indexwriters for this path.
 */
 void
-XapianIndexWriter::finishIndexable(const Indexable* idx) {
+XapianIndexWriter::finishIndexable(const AnalysisResult* idx) {
     static const string path("path"), mtime("mtime"), depth("depth");
     Document* doc = static_cast<Document*>(idx->getWriterData());
     manager->ref();

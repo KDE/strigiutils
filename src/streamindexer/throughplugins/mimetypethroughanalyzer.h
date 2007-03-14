@@ -29,11 +29,11 @@ class STRIGI_PLUGIN_API MimeTypeThroughAnalyzer
         : public jstreams::StreamThroughAnalyzer {
 private:
     magic_t magic;
-    jstreams::Indexable* idx;
+    jstreams::AnalysisResult* idx;
 public:
     MimeTypeThroughAnalyzer();
     ~MimeTypeThroughAnalyzer();
-    void setIndexable(jstreams::Indexable* i) { idx = i; }
+    void setIndexable(jstreams::AnalysisResult* i) { idx = i; }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };

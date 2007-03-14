@@ -43,7 +43,7 @@ typedef unsigned int gid_t;
 #endif
 
 namespace jstreams {
-    class IndexerConfiguration;
+    class AnalyzerConfiguration;
 }
 
 class STREAMINDEXER_EXPORT FileLister {
@@ -60,9 +60,9 @@ private:
     char* resize(uint len);
     void walk_directory(uint len);
 
-    jstreams::IndexerConfiguration& m_config;
+    jstreams::AnalyzerConfiguration& m_config;
 public:
-    explicit FileLister(jstreams::IndexerConfiguration& ic);
+    explicit FileLister(jstreams::AnalyzerConfiguration& ic);
     ~FileLister();
     /**
      * Specify the callback function that reports the files found.

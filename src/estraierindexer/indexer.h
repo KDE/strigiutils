@@ -22,7 +22,7 @@
 
 #include <string>
 #include "estraierindexmanager.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 
 class FileLister;
 class FilterManager;
@@ -32,14 +32,14 @@ private:
     FileLister* m_lister;
     const std::string m_indexdir;
     EstraierIndexManager m_manager;
-    jstreams::StreamIndexer m_indexer;
+    jstreams::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* fullpath, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(const char *indexdir, jstreams::IndexerConfiguration& ic);
+    Indexer(const char *indexdir, jstreams::AnalyzerConfiguration& ic);
     ~Indexer();
     void index(const char *dir);
 };

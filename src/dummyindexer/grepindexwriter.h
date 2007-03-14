@@ -27,13 +27,13 @@ class GrepIndexWriter : public jstreams::IndexWriter {
 private:
     regex_t regex;
 protected:
-    void startIndexable(jstreams::Indexable* idx);
-    void finishIndexable(const jstreams::Indexable* idx);
-    void addText(const jstreams::Indexable* idx, const char* text,
+    void startIndexable(jstreams::AnalysisResult* idx);
+    void finishIndexable(const jstreams::AnalysisResult* idx);
+    void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length);
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field,
             const unsigned char* data, int32_t size) {}
 public:

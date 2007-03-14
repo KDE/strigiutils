@@ -26,7 +26,7 @@
 #include "fieldtypes.h"
 
 /**
- * This class allows the Indexable to determine how each field should be
+ * This class allows the AnalysisResult to determine how each field should be
  * indexed.
  **/
 namespace jstreams {
@@ -34,7 +34,7 @@ class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 class FieldRegister;
 
-class STREAMINDEXER_EXPORT IndexerConfiguration {
+class STREAMINDEXER_EXPORT AnalyzerConfiguration {
 public:
 enum FieldType {
     None      = 0x0000,
@@ -53,8 +53,8 @@ private:
     FieldRegister fieldregister;
 
 public:
-    IndexerConfiguration();
-    virtual ~IndexerConfiguration() {}
+    AnalyzerConfiguration();
+    virtual ~AnalyzerConfiguration() {}
     /**
      * A path fragment is e.g. a.txt for folder/a.txt
      * @param path should be for example /folder/a.txt
@@ -81,8 +81,8 @@ public:
  * Overloaded operator| that retains the type of the flag when |'ing two
  * field values.
  **/
-//IndexerConfiguration::FieldType
-//operator|(IndexerConfiguration::FieldType a, IndexerConfiguration::FieldType b);
+//AnalyzerConfiguration::FieldType
+//operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b);
 
 }
 #endif

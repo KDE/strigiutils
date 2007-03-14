@@ -21,7 +21,7 @@
 #include "jstreamsconfig.h"
 
 #include "mimetypethroughanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace std;
 using namespace jstreams;
 

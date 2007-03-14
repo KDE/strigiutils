@@ -23,14 +23,14 @@
 #include <string>
 #include "filelister.h"
 #include "xapianindexmanager.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 
 class Indexer {
 private:
     FileLister m_lister;
     const std::string m_indexdir;
     XapianIndexManager m_manager;
-    jstreams::StreamIndexer m_indexer;
+    jstreams::StreamAnalyzer m_indexer;
 
     static bool addFileCallback(const std::string& path,
         const char *filename, time_t mtime);

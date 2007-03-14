@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "pngendanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 using namespace std;
 using namespace jstreams;
@@ -42,7 +42,7 @@ PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize >= 24 &&  memcmp(header, pngmagic, 8) == 0;
 }
 char
-PngEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+PngEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* h;
     int32_t n = in->read(h, 24, 24);
     in->reset(0);

@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "dummyindexwriter.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 
 #include <stdlib.h>
 
@@ -45,7 +45,7 @@ main(int argc, char **argv) {
     }
 
     DummyIndexWriter writer(verbosity);
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     Indexer indexer(writer, ic);
     indexer.index(argv[argc-1]);
     return 0;

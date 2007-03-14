@@ -22,7 +22,7 @@
 
 #include "inputstream.h"
 namespace jstreams {
-class Indexable;
+class AnalysisResult;
 class FieldRegister;
 /**
  * This class defines an interface for analyzing streams.
@@ -32,7 +32,7 @@ class FieldRegister;
 class StreamThroughAnalyzer {
 public:
     virtual ~StreamThroughAnalyzer() {};
-    virtual void setIndexable(jstreams::Indexable*) = 0;
+    virtual void setIndexable(jstreams::AnalysisResult*) = 0;
     /**
      * This function sets up the analyzer for handling a stream.
      * The stream \p in is used in constructing a new internal

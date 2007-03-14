@@ -348,7 +348,7 @@ InotifyListener::isEventInteresting (struct inotify_event * event)
     if (((IN_ISDIR & event->mask) == 0) && (event->len > 0) && ((event->name)[0] == '.'))
         return false;
 
-    //TODO: FIX with IndexerConfiguration
+    //TODO: FIX with AnalyzerConfiguration
 //     if (m_pFilterManager != NULL)
 //     {
 //         if ((event->len > 0) && m_pFilterManager->findMatch(event->name, event->len))

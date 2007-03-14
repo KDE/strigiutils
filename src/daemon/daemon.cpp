@@ -23,7 +23,7 @@
 #include "combinedindexmanager.h"
 
 #include "indexscheduler.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 
 #if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
@@ -153,7 +153,7 @@ main(int argc, char** argv) {
     DaemonConfigurator config (conffile);
 
     // init filter manager
-    IndexerConfiguration ic;
+    AnalyzerConfiguration ic;
     config.loadFilteringRules(ic);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
 

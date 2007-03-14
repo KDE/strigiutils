@@ -27,7 +27,7 @@ class QString;
 
 namespace jstreams {
 
-class FSFileInputStream : public BufferedInputStream<char> {
+class FsFileInputStream : public BufferedInputStream<char> {
 private:
     bool open;
     QFSFileEngine *fse;
@@ -37,9 +37,9 @@ protected:
     int32_t fillBuffer(char* start, int32_t space);
 public:
     static const int32_t defaultBufferSize;
-    FSFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
-    FSFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
-    ~FSFileInputStream();
+    FsFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
+    FsFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
+    ~FsFileInputStream();
     StreamStatus reopen();
 };
 

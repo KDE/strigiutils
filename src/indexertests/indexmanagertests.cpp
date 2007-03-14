@@ -21,9 +21,9 @@
 #include "indexmanagertests.h"
 #include "indexreader.h"
 #include "indexwriter.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "indexmanager.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include "query.h"
 #include "strigi_thread.h"
 #include <sstream>
@@ -37,9 +37,9 @@ private:
     IndexManager* manager;
     IndexWriter* writer;
     IndexReader* reader;
-    StreamIndexer si;
+    StreamAnalyzer si;
 public:
-    IndexManagerTester(IndexManager* m, IndexerConfiguration& ic)
+    IndexManagerTester(IndexManager* m, AnalyzerConfiguration& ic)
             : manager(m), writer(manager->getIndexWriter()),
               si(ic) {
         reader = manager->getIndexReader();
@@ -74,7 +74,7 @@ IndexManagerTester::addAndCount(int m) {
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        { Indexable idx(s, 0, *writer, si); }
+        { AnalysisResult idx(s, 0, *writer, si); }
         str.str("");
     }
     writer->commit();
@@ -96,7 +96,7 @@ IndexManagerTester::testNumberQuery() {
         string value(str.str());
         string name('/'+value);
         {
-             Indexable idx(name, 0, *writer, si);
+             AnalysisResult idx(name, 0, *writer, si);
              idx.setField(idx.config().getFieldRegister().sizeField, value);
         }
         str.str("");
@@ -116,7 +116,7 @@ STRIGI_THREAD_FUNCTION(threadstarter,d) {
     return 0;
 }
 IndexManagerTests::IndexManagerTests(jstreams::IndexManager* m,
-        IndexerConfiguration& ic)
+        AnalyzerConfiguration& ic)
     :tester (new IndexManagerTester(m, ic)) {
 }
 IndexManagerTests::~IndexManagerTests() {

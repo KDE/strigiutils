@@ -21,7 +21,7 @@
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
 #include "subinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 
 void
@@ -33,11 +33,11 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return TarInputStream::checkHeader(header, headersize);
 }
 char
-TarEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+TarEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     return staticAnalyze(idx, in);
 }
 char
-TarEndAnalyzer::staticAnalyze(Indexable& idx,
+TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();

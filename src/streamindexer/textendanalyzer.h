@@ -25,7 +25,7 @@
 class TextEndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "TextEndAnalyzer"; }
 };
 

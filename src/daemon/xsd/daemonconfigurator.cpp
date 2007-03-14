@@ -241,7 +241,7 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
         return r->a_pollingInterval;
 }
 void
-DaemonConfigurator::loadFilteringRules(IndexerConfiguration& config) {
+DaemonConfigurator::loadFilteringRules(AnalyzerConfiguration& config) {
     vector<pair<bool,string> > filters;
     list<Filter>::const_iterator i;
     for (i = e_filters.e_filter.begin(); i != e_filters.e_filter.end(); ++i) {

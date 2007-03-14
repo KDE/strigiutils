@@ -21,7 +21,7 @@
 #include "grepindexwriter.h"
 #include "jstreamsconfig.h"
 #include "indexer.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <iostream>
 using namespace jstreams;
 using namespace std;
@@ -51,7 +51,7 @@ containsFieldList(int argc, char **argv) {
 }
 
 void
-printFields(IndexerConfiguration& conf) {
+printFields(AnalyzerConfiguration& conf) {
     const map<cnstr, RegisteredField*>& fields
         = conf.getFieldRegister().getFields();
     map<cnstr, RegisteredField*>::const_iterator i;
@@ -62,7 +62,7 @@ printFields(IndexerConfiguration& conf) {
 
 int
 main(int argc, char** argv) {
-    IndexerConfiguration ic;
+    AnalyzerConfiguration ic;
     if (containsFieldList(argc, argv)) {
         printFields(ic);
         return 0;

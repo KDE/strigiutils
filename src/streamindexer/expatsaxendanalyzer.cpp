@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "saxendanalyzer.h"
 #include "inputstreamreader.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 #include <expat.h>
 using namespace jstreams;
@@ -40,7 +40,7 @@ public:
     string fieldvalue;
     FieldType fieldtype;
     XML_Parser parser;
-    Indexable* idx;
+    AnalysisResult* idx;
     int chars;
     int depth;
     bool stop;
@@ -76,7 +76,7 @@ public:
         wellformed = true;
         depth = 0;
     }
-    void init(Indexable*i, const char* data, int32_t len) {
+    void init(AnalysisResult*i, const char* data, int32_t len) {
         idx = i;
         reset();
         push(data, len);
@@ -157,7 +157,7 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return !p->error;
 }
 char
-SaxEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+SaxEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {

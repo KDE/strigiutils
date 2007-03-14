@@ -28,7 +28,7 @@ class EventListenerQueue;
 
 namespace jstreams {
     class IndexReader;
-    class IndexerConfiguration;
+    class AnalyzerConfiguration;
 }
 
 /*!
@@ -54,7 +54,7 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_pEventQueue = eventQueue;
     }
-    void setIndexerConfiguration(jstreams::IndexerConfiguration* ic) {
+    void setIndexerConfiguration(jstreams::AnalyzerConfiguration* ic) {
         m_pindexerconfiguration = ic;
     }
     void setIndexReader (jstreams::IndexReader* ireader) {
@@ -73,7 +73,7 @@ public:
 
 protected:
     EventListenerQueue* m_pEventQueue;
-    jstreams::IndexerConfiguration* m_pindexerconfiguration;
+    jstreams::AnalyzerConfiguration* m_pindexerconfiguration;
     jstreams::IndexReader* m_pIndexReader;
     unsigned int m_pollingInterval;//!< pause time between each polling operation
 };

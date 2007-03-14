@@ -3,7 +3,7 @@
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>
@@ -25,7 +25,7 @@ CLuceneTest(int argc, char*argv[]) {
 #endif
     jstreams::IndexManager* manager = createCLuceneIndexManager(path);
 
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
     tests.testAll();
     tests.testAllInThreads(20);

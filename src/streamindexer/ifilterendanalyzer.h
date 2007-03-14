@@ -31,7 +31,7 @@ class IFilterEndAnalyzer : public jstreams::StreamEndAnalyzer {
 	static std::set<std::string> extensions;
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream *in);
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream *in);
     const char* getName() const { return "IFilterEndAnalyzer"; }
 
     IFilterEndAnalyzer();

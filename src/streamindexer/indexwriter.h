@@ -24,7 +24,7 @@
 #include <vector>
 #include "jstreamsconfig.h"
 #include "streamindexer_export.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 
 namespace jstreams {
 
@@ -43,7 +43,7 @@ for all streams {
 }
 - delete the indexwriter
 */
-class Indexable;
+class AnalysisResult;
 /**
  * Abstract class that provides write access to a Strigi index.
  *
@@ -52,17 +52,17 @@ class Indexable;
  * than the thread that called IndexManager::getIndexWriter().
  **/
 class STREAMINDEXER_EXPORT IndexWriter {
-friend class Indexable;
+friend class AnalysisResult;
 protected:
-    virtual void startIndexable(Indexable*) = 0;
-    virtual void addText(const Indexable*, const char* text, int32_t length)=0;
-    virtual void addField(const Indexable*, const RegisteredField* fieldname,
+    virtual void startIndexable(AnalysisResult*) = 0;
+    virtual void addText(const AnalysisResult*, const char* text, int32_t length)=0;
+    virtual void addField(const AnalysisResult*, const RegisteredField* fieldname,
         const std::string& value) = 0;
-    virtual void addField(const Indexable*, const RegisteredField* fieldname,
+    virtual void addField(const AnalysisResult*, const RegisteredField* fieldname,
         const unsigned char* data, int32_t size) = 0;
-    virtual void addField(const Indexable*, const RegisteredField* /*fielname*/,
+    virtual void addField(const AnalysisResult*, const RegisteredField* /*fielname*/,
         uint32_t /*value*/) {}
-    virtual void finishIndexable(const Indexable*) = 0;
+    virtual void finishIndexable(const AnalysisResult*) = 0;
 public:
     virtual ~IndexWriter() {}
     /**

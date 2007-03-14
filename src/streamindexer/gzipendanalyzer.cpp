@@ -23,7 +23,7 @@
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 using namespace std;
 
@@ -37,7 +37,7 @@ GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         && (unsigned char)header[1] == 0x8b;
 }
 char
-GZipEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     GZipInputStream stream(in);
     // since this is gzip file, its likely that it contains a tar file
     const char* start;
@@ -50,11 +50,11 @@ GZipEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     if (TarInputStream::checkHeader(start, nread)) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
-        std::string file = idx.getFileName();
+        std::string file = idx.fileName();
         int len = file.length();
         if (len > 3 && file.substr(len-3) == ".gz") {
             file = file.substr(0, len-3);
         }
-        return idx.indexChild(file, idx.getMTime(), stream);
+        return idx.indexChild(file, idx.mTime(), stream);
     }
 }

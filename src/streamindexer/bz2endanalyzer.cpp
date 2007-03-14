@@ -23,22 +23,22 @@
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
 #include "tarendanalyzer.h"
-#include "streamindexer.h"
-#include "indexable.h"
+#include "streamanalyzer.h"
+#include "analysisresult.h"
 using namespace std;
 using namespace jstreams;
 
 void
-BZ2EndAnalyzerFactory::registerFields(FieldRegister& reg) {
+Bz2EndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
-BZ2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
+Bz2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     bool v = BZ2InputStream::checkHeader(header, headersize);
     return v;
 }
 char
-BZ2EndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     BZ2InputStream stream(in);
 /*    char r = testStream(&stream);
     if (r) {
@@ -55,11 +55,11 @@ BZ2EndAnalyzer::analyze(Indexable& idx, InputStream* in) {
     if (TarInputStream::checkHeader(start, nread)) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
-        std::string name = idx.getFileName();
+        std::string name = idx.fileName();
         int len = name.length();
         if (len > 4 && name.substr(len-4)==".bz2") {
             name = name.substr(0, len-4);
         }
-        return idx.indexChild(name, idx.getMTime(), stream);
+        return idx.indexChild(name, idx.mTime(), stream);
     }
 }

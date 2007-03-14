@@ -50,11 +50,11 @@ isPdfDelimiter(char c) {
  * parser for files like this one:
  * http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf
  */
-KMPSearcher stream;
-KMPSearcher endstream;
-KMPSearcher length;
-KMPSearcher filter;
-KMPSearcher type;
+KmpSearcher stream;
+KmpSearcher endstream;
+KmpSearcher length;
+KmpSearcher filter;
+KmpSearcher type;
 int count;
 magic_t magic;
 

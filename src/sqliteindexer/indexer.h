@@ -22,7 +22,7 @@
 
 #include <string>
 #include "sqliteindexmanager.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 
 class FileLister;
 
@@ -31,14 +31,14 @@ private:
     FileLister* m_lister;
     const std::string m_indexdir;
     SqliteIndexManager m_manager;
-    jstreams::StreamIndexer m_indexer;
+    jstreams::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const std::string &filepath);
 public:
-    Indexer(const char *indexdir, jstreams::IndexerConfiguration&);
+    Indexer(const char *indexdir, jstreams::AnalyzerConfiguration&);
     ~Indexer();
     void index(const char *dir);
 };

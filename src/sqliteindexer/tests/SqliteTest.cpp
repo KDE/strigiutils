@@ -3,7 +3,7 @@
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 using namespace std;
@@ -20,7 +20,7 @@ SqliteTest(int argc, char**argv) {
     p += "/test.db";
     jstreams::IndexManager* manager = createSqliteIndexManager(p.c_str());
 
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
     tests.testAll();
 /*    tests.testAllInThreads(20);

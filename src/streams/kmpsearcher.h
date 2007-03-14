@@ -31,15 +31,15 @@ namespace jstreams {
  * Code based on the example on
  * http://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
  **/
-class STREAMS_EXPORT KMPSearcher {
+class STREAMS_EXPORT KmpSearcher {
 private:
     std::string query;
     int32_t* table;
     int32_t len;
     int32_t maxlen;
 public:
-    KMPSearcher() :table(0) { }
-    ~KMPSearcher() {
+    KmpSearcher() :table(0) { }
+    ~KmpSearcher() {
         if (table) {
             free(table);
         }

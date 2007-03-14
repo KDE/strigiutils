@@ -66,7 +66,7 @@ class InotifyListener : public EventListener
                     m_pIndexReader = ireader;
                 }
                 
-                void setIndexerConfiguration(jstreams::IndexerConfiguration* ic)
+                void setIndexerConfiguration(jstreams::AnalyzerConfiguration* ic)
                 {
                     m_pindexerconfiguration = ic;
                 }
@@ -91,7 +91,7 @@ class InotifyListener : public EventListener
                 static void watchDirCallback(const char* path, uint len);
 
                 jstreams::IndexReader* m_pIndexReader;
-                jstreams::IndexerConfiguration* m_pindexerconfiguration;
+                jstreams::AnalyzerConfiguration* m_pindexerconfiguration;
                 std::map<std::string, time_t> m_toIndex; //!< new files to index
                 std::set<std::string> m_toWatch; //!< new directories to watch
                 std::vector<Event*> m_events;

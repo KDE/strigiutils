@@ -24,10 +24,10 @@
 
 #include "jstreamsconfig.h"
 #include "saxendanalyzer.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 #include "inputstreamreader.h"
 #include "indexwriter.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 #include "textutils.h"
 #include <libxml/parser.h>
@@ -56,7 +56,7 @@ public:
     FieldType fieldtype;
     xmlParserCtxtPtr ctxt;
     xmlSAXHandler handler;
-    Indexable* idx;
+    AnalysisResult* idx;
     const SaxEndAnalyzerFactory* factory;
     bool error;
     bool stop;
@@ -96,12 +96,12 @@ public:
         chars = 0;
         rootelement = "";
     }
-    void init(Indexable*i, const char* data, int32_t len) {
+    void init(AnalysisResult*i, const char* data, int32_t len) {
         reset();
         int initlen = (1024 > len) ?len :1024;
         idx = i;
         const char* name = 0;
-        if (i) name = i->getFileName().c_str();
+        if (i) name = i->fileName().c_str();
         xmlKeepBlanksDefault(0);
         ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
         if (ctxt == 0) {
@@ -202,7 +202,7 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-SaxEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+SaxEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {

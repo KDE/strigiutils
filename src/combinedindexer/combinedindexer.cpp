@@ -27,7 +27,7 @@ main(int argc, char **argv) {
         return -1;
     }
 
-    IndexerConfiguration ic;
+    AnalyzerConfiguration ic;
     Indexer indexer(argv[1], ic);
     indexer.index(argv[2]);
     return 0;

@@ -27,7 +27,7 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(jstreams::IndexWriter& w, jstreams::IndexerConfiguration& c)
+Indexer::Indexer(jstreams::IndexWriter& w, jstreams::AnalyzerConfiguration& c)
         : m_writer(w), m_indexer(c) {
     m_lister = new FileLister(c);
     m_indexer.setIndexWriter(w);

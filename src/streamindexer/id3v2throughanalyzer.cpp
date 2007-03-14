@@ -20,7 +20,7 @@
 
 #include "jstreamsconfig.h"
 #include "id3v2throughanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 using namespace std;
 
@@ -39,7 +39,7 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
 }
 
 void
-ID3V2ThroughAnalyzer::setIndexable(Indexable* i) {
+ID3V2ThroughAnalyzer::setIndexable(AnalysisResult* i) {
     indexable = i;
 }
 int32_t

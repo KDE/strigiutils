@@ -21,7 +21,7 @@
 #define INDEXER_H
 
 #include <string>
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 #include "xmlindexwriter.h"
 
 class FileLister;
@@ -31,7 +31,7 @@ private:
     std::ostream& out;
     FileLister* m_lister;
     XmlIndexWriter writer;
-    jstreams::StreamIndexer m_indexer;
+    jstreams::StreamAnalyzer m_indexer;
     const TagMapping mapping;
 
     static void addFileCallback(const char* fullpath, unsigned dirlen,
@@ -39,7 +39,7 @@ private:
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(std::ostream& out, jstreams::IndexerConfiguration&,
+    Indexer(std::ostream& out, jstreams::AnalyzerConfiguration&,
         const char* mappingfile);
     ~Indexer();
     void index(const char *dir);

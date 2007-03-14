@@ -24,7 +24,7 @@
 
 #include "jstreamsconfig.h"
 #include "filelister.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -66,7 +66,7 @@ string fixPath (string path)
     return temp;
 }
 
-FileLister::FileLister(IndexerConfiguration& ic) :m_config(ic) {
+FileLister::FileLister(AnalyzerConfiguration& ic) :m_config(ic) {
     m_fileCallback = 0;
     m_dirCallback = 0;
     path = 0;

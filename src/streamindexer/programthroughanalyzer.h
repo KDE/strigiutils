@@ -25,11 +25,11 @@
 class ProgramThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     jstreams::DigestInputStream *stream;
-    jstreams::Indexable* indexable;
+    jstreams::AnalysisResult* indexable;
 public:
     ProgramThroughAnalyzer();
     ~ProgramThroughAnalyzer();
-    void setIndexable(jstreams::Indexable*);
+    void setIndexable(jstreams::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
 };
 

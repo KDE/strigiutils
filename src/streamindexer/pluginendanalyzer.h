@@ -37,7 +37,7 @@ public:
     explicit PluginEndAnalyzer(AnalyzerLoader* moduleLoader);
     ~PluginEndAnalyzer();
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "PluginEndAnalyzer"; }
     static void loadPlugins(const char* dir);
 };

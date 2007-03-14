@@ -19,7 +19,7 @@
  */
 #include "sqliteindexwriter.h"
 #include "sqliteindexmanager.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 #include <vector>
 #include <sstream>
@@ -75,7 +75,7 @@ SqliteIndexWriter::finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt) {
     }
 }
 void
-SqliteIndexWriter::addText(const Indexable* idx, const char* text,
+SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
     // very simple algorithm to get out sequences of ascii characters
     // we actually miss characters that are not on the edge between reads
@@ -109,7 +109,7 @@ SqliteIndexWriter::addText(const Indexable* idx, const char* text,
     }
 }
 void
-SqliteIndexWriter::addField(const Indexable* idx, const RegisteredField* field,
+SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* field,
         const string& value) {
     int64_t id = idx->getId();
     //id = -1; // debug
@@ -136,7 +136,7 @@ SqliteIndexWriter::addField(const Indexable* idx, const RegisteredField* field,
     manager->deref();
 }
 void
-SqliteIndexWriter::startIndexable(Indexable* idx) {
+SqliteIndexWriter::startIndexable(AnalysisResult* idx) {
     // get the file name
     const char* name = idx->getPath().c_str();
     size_t namelen = idx->getPath().length();
@@ -169,7 +169,7 @@ SqliteIndexWriter::startIndexable(Indexable* idx) {
     Close all left open indexwriters for this path.
 */
 void
-SqliteIndexWriter::finishIndexable(const Indexable* idx) {
+SqliteIndexWriter::finishIndexable(const AnalysisResult* idx) {
     // store the content field
     map<int64_t, map<string, int> >::const_iterator m
         = content.find(idx->getId());

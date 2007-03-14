@@ -20,15 +20,15 @@
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "dummyindexwriter.h"
-#include "streamindexer.h"
-#include "indexerconfiguration.h"
+#include "streamanalyzer.h"
+#include "analyzerconfiguration.h"
 #include "streamendanalyzer.h"
 using namespace jstreams;
 
 /**
  * Special indexer that indexes only the filenames.
  **/
-class FindIndexerConfiguration : public IndexerConfiguration {
+class FindIndexerConfiguration : public AnalyzerConfiguration {
 public:
     bool useFactory(StreamEndAnalyzerFactory* e) const {
         return e->analyzesSubStreams();

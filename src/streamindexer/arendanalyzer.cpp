@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "arendanalyzer.h"
 #include "arinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "subinputstream.h"
 using namespace jstreams;
 
@@ -33,11 +33,11 @@ ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ArInputStream::checkHeader(header, headersize);
 }
 char
-ArEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+ArEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     return staticAnalyze(idx, in);
 }
 char
-ArEndAnalyzer::staticAnalyze(Indexable& idx,
+ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();

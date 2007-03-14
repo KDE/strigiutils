@@ -21,7 +21,7 @@
 #include "cpioendanalyzer.h"
 #include "cpioinputstream.h"
 #include "subinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 
 void
@@ -33,7 +33,7 @@ CpioEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return CpioInputStream::checkHeader(header, headersize);
 }
 char
-CpioEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     CpioInputStream cpio(in);
     InputStream *s = cpio.nextEntry();
     if (cpio.getStatus()) {

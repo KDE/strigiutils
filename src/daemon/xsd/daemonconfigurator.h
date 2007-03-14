@@ -22,7 +22,7 @@
 #define DAEMONCONFIGURATOR_H
 
 #include "strigidaemonconfiguration.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 
 #include <set>
 
@@ -35,7 +35,7 @@ public:
     std::set<std::string> getIndexedDirectories(
             const std::string& repositoryName = "localhost");
     bool useDBus() { return a_useDBus; }
-    void loadFilteringRules(jstreams::IndexerConfiguration& config);
+    void loadFilteringRules(jstreams::AnalyzerConfiguration& config);
     void saveFilteringRules(const std::vector<std::pair<bool,std::string> >& f);
     void setPollingInterval (unsigned int value,
         const std::string& repositoryName = "localhost");

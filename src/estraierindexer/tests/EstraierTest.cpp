@@ -3,7 +3,7 @@
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -17,7 +17,7 @@ EstraierTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     EstraierIndexManager* manager = new EstraierIndexManager(path);
 
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
     tests.testAll();
     tests.testAllInThreads(20);

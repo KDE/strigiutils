@@ -29,7 +29,7 @@ using namespace jstreams;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, IndexerConfiguration& ic)
+Indexer::Indexer(const char *indexdir, AnalyzerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_writer(&m_manager),
           m_indexer(ic)
 {

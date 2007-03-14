@@ -29,12 +29,12 @@
 class OggThroughAnalyzerFactory;
 class OggThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
-    jstreams::Indexable* indexable;
+    jstreams::AnalysisResult* indexable;
     const OggThroughAnalyzerFactory* factory;
 public:
     OggThroughAnalyzer(const OggThroughAnalyzerFactory* f) :factory(f) {}
     ~OggThroughAnalyzer() {}
-    void setIndexable(jstreams::Indexable*);
+    void setIndexable(jstreams::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };

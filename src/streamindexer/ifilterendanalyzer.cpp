@@ -26,8 +26,8 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odc_SP2003_ta/h
 #include "jstreamsconfig.h"
 
 #include "IFilterEndAnalyzer.h"
-#include "streamindexer.h"
-#include "indexable.h"
+#include "streamanalyzer.h"
+#include "analysisresult.h"
 #include "indexwriter.h"
 #include <filter.h>
 #include <ntquery.h>
@@ -94,7 +94,7 @@ IFilterEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return true;
 }
 char
-IFilterEndAnalyzer::analyze(Indexable& idx, InputStream *in) {
+IFilterEndAnalyzer::analyze(AnalysisResult& idx, InputStream *in) {
 	const string& filename = idx.getFileName();
 	int p = filename.find_last_of('.');
 	if ( p < 0 ||  extensions.find(filename.substr(p)) == extensions.end() ){

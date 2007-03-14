@@ -26,7 +26,7 @@
 #include "helperendanalyzer.h"
 #include "processinputstream.h"
 #include "textendanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -144,7 +144,7 @@ HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return helperconfig.findHelper(header, headersize) != 0;
 }
 char
-HelperEndAnalyzer::analyze(Indexable& idx, InputStream* in){
+HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
     char state = -1;
     const char* b;
     int32_t nread = in->read(b, 1024, 0);
@@ -165,7 +165,7 @@ HelperEndAnalyzer::analyze(Indexable& idx, InputStream* in){
                 string filepath;
                 bool fileisondisk = checkForFile(idx);
                 if (fileisondisk) {
-                    filepath = idx.getPath();
+                    filepath = idx.path();
                 } else {
                     filepath = writeToTempFile(in);
                 }
@@ -218,9 +218,9 @@ HelperEndAnalyzer::writeToTempFile(InputStream *in) const {
     return filepath;
 }
 bool
-HelperEndAnalyzer::checkForFile(const Indexable& idx) const {
-    if (idx.getDepth() > 0) return false;
+HelperEndAnalyzer::checkForFile(const AnalysisResult& idx) const {
+    if (idx.depth() > 0) return false;
     struct stat s;
-    if (stat(idx.getPath().c_str(), &s)) return false;
+    if (stat(idx.path().c_str(), &s)) return false;
     return true;
 }

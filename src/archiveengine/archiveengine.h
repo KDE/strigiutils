@@ -113,7 +113,7 @@ private:
     QString path;
     StreamEngine *streamengine;
     jstreams::StreamBase<char>* parentstream;
-    jstreams::FSFileInputStream* filestream;
+    jstreams::FsFileInputStream* filestream;
     QList<jstreams::StreamBase<char>*> compressedstreams;
     jstreams::SubStreamProvider *zipstream;
     mutable jstreams::StreamBase<char>* entrystream;

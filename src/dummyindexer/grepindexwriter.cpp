@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "grepindexwriter.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 using namespace std;
 
@@ -30,13 +30,13 @@ GrepIndexWriter::~GrepIndexWriter() {
     regfree(&regex);
 }
 void
-GrepIndexWriter::startIndexable(jstreams::Indexable* idx) {
+GrepIndexWriter::startIndexable(jstreams::AnalysisResult* idx) {
 }
 void
-GrepIndexWriter::finishIndexable(const jstreams::Indexable* idx) {
+GrepIndexWriter::finishIndexable(const jstreams::AnalysisResult* idx) {
 }
 void
-GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
+GrepIndexWriter::addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length) {
     // unfortunately we have to copy the incoming stream because regexec()
     // assumes a null-terminated string and we are not allowed to modify the
@@ -50,7 +50,7 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
         if (*p == '\n' || *p == '\r') {
             s.assign(start, p-start);
             if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
-                printf("%s:%s\n", idx->getPath().c_str(), s.c_str());
+                printf("%s:%s\n", idx->path().c_str(), s.c_str());
             }
             start = p+1;
         }
@@ -58,14 +58,14 @@ GrepIndexWriter::addText(const jstreams::Indexable* idx, const char* text,
     }
     s.assign(start, p-start);
     if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
-        printf("%s:%s\n", idx->getPath().c_str(), s.c_str());
+        printf("%s:%s\n", idx->path().c_str(), s.c_str());
     }
 }
 void
-GrepIndexWriter::addField(const jstreams::Indexable* idx,
+GrepIndexWriter::addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
-        printf("%s:%s:%s\n", idx->getPath().c_str(),
+        printf("%s:%s:%s\n", idx->path().c_str(),
             (const char*)field->getKey(), value.c_str());
     }
 }

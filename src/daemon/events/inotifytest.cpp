@@ -43,7 +43,7 @@ public:
 };
 
 #include "filelister.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <errno.h>
 using namespace std;
 using namespace jstreams;
@@ -60,7 +60,7 @@ INotifyWatcher::INotifyWatcher() {
 }
 void
 INotifyWatcher::addDir(const std::string& dir) {
-    IndexerConfiguration ic;
+    AnalyzerConfiguration ic;
     FileLister lister(ic);
     lister.setFileCallbackFunction(&indexFileCallback);
     lister.setDirCallbackFunction(&watchDirCallback);

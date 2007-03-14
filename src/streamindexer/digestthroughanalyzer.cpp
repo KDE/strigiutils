@@ -21,7 +21,7 @@
 #include "digestthroughanalyzer.h"
 #include "digestinputstream.h"
 #include "inputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 using namespace std;
 using namespace jstreams;
@@ -47,7 +47,7 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
     return stream;
 }
 void
-DigestThroughAnalyzer::setIndexable(Indexable* idx) {
+DigestThroughAnalyzer::setIndexable(AnalysisResult* idx) {
     if (indexable && stream) { // && stream->getStatus() == Eof) {
         indexable->setField(shafield, stream->getDigestString());
 //        printf("%s: %s\n", indexable->getName().c_str(), stream->getDigestString().c_str());

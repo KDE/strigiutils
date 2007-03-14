@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "filelister.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -57,7 +57,7 @@ main(int argc, char** argv) {
 
 //  TODO add the rules to the indexerconfiguration
 
-    IndexerConfiguration ic;
+    AnalyzerConfiguration ic;
     FileLister lister (ic);
     lister.setFileCallbackFunction(&fileCallback);
     lister.setDirCallbackFunction(&dirCallback);

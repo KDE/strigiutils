@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include "mailendanalyzer.h"
 #include "mailinputstream.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "textendanalyzer.h"
 #include "fieldtypes.h"
 using namespace jstreams;
@@ -41,7 +41,7 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return MailInputStream::checkHeader(header, headersize);
 }
 char
-MailEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
     if (mail.getStatus() == Error) {
@@ -69,7 +69,7 @@ MailEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
             file = mail.getEntryInfo().filename;
         }
         // maybe use the date of sending the mail here
-        idx.indexChild(file, idx.getMTime(), *s);
+        idx.indexChild(file, idx.mTime(), *s);
         s = mail.nextEntry();
         n++;
     }

@@ -2,8 +2,8 @@
 #include "sqliteindexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"
-#include "indexerconfiguration.h"
-#include "indexable.h"
+#include "analyzerconfiguration.h"
+#include "analysisresult.h"
 #include <sstream>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -14,13 +14,13 @@ int
 addAndCount(IndexWriter* writer, IndexReader* reader, int m) {
     if (writer == 0) return 1;
     writer->deleteAllEntries();
-    IndexerConfiguration ic;
-    StreamIndexer si(ic);
+    AnalyzerConfiguration ic;
+    StreamAnalyzer si(ic);
     ostringstream str;
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        { Indexable idx(s, 0, *writer, si); }
+        { AnalysisResult idx(s, 0, *writer, si); }
         str.str("");
     }
     writer->commit();

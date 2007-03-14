@@ -28,12 +28,12 @@
 class ID3V2ThroughAnalyzerFactory;
 class ID3V2ThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
-    jstreams::Indexable* indexable;
+    jstreams::AnalysisResult* indexable;
     const ID3V2ThroughAnalyzerFactory* factory;
 public:
     ID3V2ThroughAnalyzer(const ID3V2ThroughAnalyzerFactory* f)
         :indexable(0), factory(f) {}
-    void setIndexable(jstreams::Indexable*);
+    void setIndexable(jstreams::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };

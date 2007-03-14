@@ -21,7 +21,7 @@
 #define INDEXER_H
 
 #include <string>
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 //#include "indexwriter.h"
 
 class FileLister;
@@ -30,14 +30,14 @@ class Indexer {
 private:
     FileLister* m_lister;
     jstreams::IndexWriter& m_writer;
-    jstreams::StreamIndexer m_indexer;
+    jstreams::StreamAnalyzer m_indexer;
 
     static void addFileCallback(const char* fullpath, unsigned dirlen,
         unsigned len, time_t mtime);
     static Indexer *workingIndexer;
     void doFile(const char* filepath);
 public:
-    Indexer(jstreams::IndexWriter& writer, jstreams::IndexerConfiguration& c);
+    Indexer(jstreams::IndexWriter& writer, jstreams::AnalyzerConfiguration& c);
     ~Indexer();
     void index(const char *dir);
 };

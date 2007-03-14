@@ -36,7 +36,7 @@ public:
 };
 StreamBase<char>*
 QFileStreamOpener::openStream(const string& url) {
-    StreamBase<char>* stream = new FSFileInputStream(QString(url.c_str()));
+    StreamBase<char>* stream = new FsFileInputStream(QString(url.c_str()));
     if (stream->getStatus() != Ok) {
         delete stream;
         stream = 0;

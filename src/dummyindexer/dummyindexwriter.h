@@ -20,7 +20,7 @@
 #ifndef DUMMYINDEXWRITER_H
 #define DUMMYINDEXWRITER_H
 
-#include "indexable.h"
+#include "analysisresult.h"
 #include "indexwriter.h"
 #include "fieldtypes.h"
 
@@ -28,42 +28,42 @@ class DummyIndexWriter : public jstreams::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startIndexable(jstreams::Indexable* idx) {
+    void startIndexable(jstreams::AnalysisResult* idx) {
         if (verbosity >= 1) {
-            printf("%s\n", idx->getPath().c_str());
+            printf("%s\n", idx->path().c_str());
         }
         if (verbosity == -1) { // sha1 mode
             std::string* s = new std::string();
             idx->setWriterData(s);
         }
     }
-    void finishIndexable(const jstreams::Indexable* idx) {
+    void finishIndexable(const jstreams::AnalysisResult* idx) {
         if (verbosity == -1) { // sha1 mode
             const std::string* s = static_cast<const std::string*>(
-                idx->getWriterData());
-            printf("%s\t%s\n", idx->getPath().c_str(), s->c_str());
+                idx->writerData());
+            printf("%s\t%s\n", idx->path().c_str(), s->c_str());
             delete s;
         }
     }
-    void addText(const jstreams::Indexable* idx, const char* text,
+    void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length) {
         if (verbosity > 2) {
-            printf("%s: addText '%.*s'\n", idx->getPath().c_str(), length,
+            printf("%s: addText '%.*s'\n", idx->path().c_str(), length,
                 text);
         }
     }
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
         const jstreams::RegisteredField* field, const std::string& value) {
         if (verbosity > 1) {
-            printf("%s: setField '%s': '%s'\n", idx->getPath().c_str(),
+            printf("%s: setField '%s': '%s'\n", idx->path().c_str(),
                 (const char*)field->getKey(), value.c_str());
         } else if (verbosity == -1
                 && strcmp(field->getKey(), "sha1") == 0) {
-            std::string* s = static_cast<std::string*>(idx->getWriterData());
+            std::string* s = static_cast<std::string*>(idx->writerData());
             *s = value;
         }
     }
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
         const jstreams::RegisteredField* fieldname, const unsigned char* data,
         int32_t size) {}
 public:

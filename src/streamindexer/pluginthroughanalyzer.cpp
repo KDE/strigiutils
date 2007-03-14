@@ -44,7 +44,7 @@ PluginThroughAnalyzer::connectInputStream(InputStream *in) {
     return in;
 }
 void
-PluginThroughAnalyzer::setIndexable(Indexable* idx) {
+PluginThroughAnalyzer::setIndexable(AnalysisResult* idx) {
     multimap<void*, StreamThroughAnalyzer*>::const_iterator i;
     for (i = analyzers.begin(); i!= analyzers.end(); ++i) {
         StreamThroughAnalyzer* a = i->second;

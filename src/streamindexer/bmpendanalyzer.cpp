@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "bmpendanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "fieldtypes.h"
 #include <sstream>
 using namespace std;
@@ -50,7 +50,7 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ok;
 }
 char
-BmpEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
+BmpEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     // read BMP file type and ensure it is not damaged
     const char * bmptype_bm = "BM";
     const char * bmptype_ba = "BA";

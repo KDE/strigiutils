@@ -24,7 +24,7 @@
 
 namespace jstreams {
     class IndexManager;
-    class IndexerConfiguration;
+    class AnalyzerConfiguration;
 }
 
 class IndexManagerTester;
@@ -33,7 +33,7 @@ private:
     IndexManagerTester* tester;
 public:
     IndexManagerTests(jstreams::IndexManager* w,
-        jstreams::IndexerConfiguration& ic);
+        jstreams::AnalyzerConfiguration& ic);
     ~IndexManagerTests();
     void testAllInThreads(int n);
     void testAll();

@@ -31,11 +31,11 @@ private:
     const std::string indexpath;
 
 protected:
-    void startIndexable(jstreams::Indexable*);
-    void finishIndexable(const jstreams::Indexable*);
-    void addText(const jstreams::Indexable*, const char* text,
+    void startIndexable(jstreams::AnalysisResult*);
+    void finishIndexable(const jstreams::AnalysisResult*);
+    void addText(const jstreams::AnalysisResult*, const char* text,
         int32_t length);
-    void setField(const jstreams::Indexable* idx, const std::string &fieldname,
+    void setField(const jstreams::AnalysisResult* idx, const std::string &fieldname,
         const std::string& value);
     explicit EstraierIndexWriter(EstraierIndexManager*);
     ~EstraierIndexWriter();

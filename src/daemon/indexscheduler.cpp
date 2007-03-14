@@ -25,10 +25,10 @@
 #include "jstreamsconfig.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 
 #include "filelister.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 #include <cerrno>
 #include <sys/resource.h>
 
@@ -111,7 +111,7 @@ void
 IndexScheduler::index() {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    StreamIndexer* streamindexer = new StreamIndexer(*m_indexerconfiguration);
+    StreamAnalyzer* streamindexer = new StreamAnalyzer(*m_indexerconfiguration);
     streamindexer->setIndexWriter(*writer);
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
@@ -167,8 +167,8 @@ void
 IndexScheduler::processListenerEvents(vector<Event*>& events) {
     IndexReader* reader = indexmanager->getIndexReader();
     IndexWriter* writer = indexmanager->getIndexWriter();
-    IndexerConfiguration ic;
-    StreamIndexer* streamindexer = new StreamIndexer(ic);
+    AnalyzerConfiguration ic;
+    StreamAnalyzer* streamindexer = new StreamAnalyzer(ic);
     streamindexer->setIndexWriter(*writer);
 
     vector<string> toDelete;

@@ -21,10 +21,10 @@
 #define XMLINDEXWRITER_H
 
 #include "indexwriter.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "tagmapping.h"
 #include "fieldtypes.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <iostream>
 #include <sstream>
 #include <map>
@@ -165,7 +165,7 @@ private:
         }
     }
 protected:
-    void startIndexable(jstreams::Indexable* idx) {
+    void startIndexable(jstreams::AnalysisResult* idx) {
         void* m = new Data();
         idx->setWriterData(m);
     }
@@ -174,22 +174,22 @@ protected:
         escape(value);
         out << tag->open << value << tag->close;
     }
-    void finishIndexable(const jstreams::Indexable* idx) {
-        Data* d = static_cast<Data*>(idx->getWriterData());
+    void finishIndexable(const jstreams::AnalysisResult* idx) {
+        Data* d = static_cast<Data*>(idx->writerData());
         const jstreams::FieldRegister& fr = idx->config().getFieldRegister();
-        std::string v = idx->getPath();
+        std::string v = idx->path();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")
             << "='" << v << "' " << mapping.map("mtime") << "='"
-            << (int)idx->getMTime()
+            << (int)idx->mTime()
             << "'>\n";
 
-        if (idx->getMimeType().size()) {
-            v.assign(idx->getMimeType());
+        if (idx->mimeType().size()) {
+            v.assign(idx->mimeType());
             printValue(fr.mimetypeField, v);
         }
-        if (idx->getEncoding().size()) {
-            v.assign(idx->getEncoding());
+        if (idx->encoding().size()) {
+            v.assign(idx->encoding());
             printValue(fr.encodingField, v);
         }
 
@@ -200,7 +200,7 @@ protected:
             printValue(i->first, i->second);
         }
         std::ostringstream oss;
-        oss << (int)idx->getDepth();
+        oss << (int)idx->depth();
         v = oss.str();
         printValue(fr.embeddepthField, v);
         if (d->text.size() > 0) {
@@ -211,29 +211,29 @@ protected:
         out << " </" << mapping.map("file") << ">\n";
         delete d;
     }
-    void addText(const jstreams::Indexable* idx, const char* text,
+    void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length) {
-        Data* d = static_cast<Data*>(idx->getWriterData());
+        Data* d = static_cast<Data*>(idx->writerData());
         d->text.append(text, length);
     }
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field, const std::string& value) {
-        Data* d = static_cast<Data*>(idx->getWriterData());
+        Data* d = static_cast<Data*>(idx->writerData());
         d->values.insert(
             std::make_pair<const jstreams::RegisteredField*, std::string>(
             field, value));
     }
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field,
         const unsigned char* data, int32_t size) {
-        Data* d = static_cast<Data*>(idx->getWriterData());
+        Data* d = static_cast<Data*>(idx->writerData());
         d->values.insert(
             std::make_pair<const jstreams::RegisteredField*, std::string>(
             field, std::string((const char*)data, size)));
     }
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
             const jstreams::RegisteredField* field, uint32_t value) {
-        Data* d = static_cast<Data*>(idx->getWriterData());
+        Data* d = static_cast<Data*>(idx->writerData());
         static std::ostringstream v;
         v.str("");
         v << value;

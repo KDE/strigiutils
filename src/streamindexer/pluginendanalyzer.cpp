@@ -57,7 +57,7 @@ bool PluginEndAnalyzer::checkHeader(const char* header,
     return false;
 }
 char
-PluginEndAnalyzer::analyze(Indexable& idx, InputStream* in){
+PluginEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
     if ( selectedEndAnalyzer ){
         char ret = selectedEndAnalyzer->analyze(idx, in);
         selectedEndAnalyzer = 0;

@@ -20,7 +20,7 @@
 #include "jstreamsconfig.h"
 #include <CLucene.h>
 #include "indexer.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include <sys/types.h>
 #include <stgdirent.h>
 
@@ -58,7 +58,7 @@ main(int argc, char **argv) {
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
     filters.push_back(make_pair<bool,string>(false,".*"));
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     ic.setFilters(filters);
     Indexer indexer(argv[1], ic);
     indexer.index(argv[2]);

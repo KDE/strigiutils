@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 #include "fileinputstream.h"
 #include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
@@ -38,9 +38,9 @@
 #include "id3v2throughanalyzer.h"
 #include "oggthroughanalyzer.h"
 #include "digestthroughanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "indexwriter.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 #include "textutils.h"
 #include "analyzerloader.h"
 #include <sys/stat.h>
@@ -52,9 +52,9 @@
 using namespace std;
 using namespace jstreams;
 
-cnstr StreamIndexer::sizefieldname("size");
+cnstr StreamAnalyzer::sizefieldname("size");
 
-StreamIndexer::StreamIndexer(IndexerConfiguration& c)
+StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
         :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.getFieldRegister().registerField(sizefieldname,
@@ -72,7 +72,7 @@ StreamIndexer::StreamIndexer(IndexerConfiguration& c)
     initializeThroughFactories();
     initializeEndFactories();
 }
-StreamIndexer::~StreamIndexer() {
+StreamAnalyzer::~StreamAnalyzer() {
     // delete all factories
     std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
     for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
@@ -103,7 +103,7 @@ StreamIndexer::~StreamIndexer() {
     }
 }
 void
-StreamIndexer::setIndexWriter(IndexWriter& w) {
+StreamAnalyzer::setIndexWriter(IndexWriter& w) {
     if (writer != 0) {
         writer->releaseWriterData(conf.getFieldRegister());
     }
@@ -111,12 +111,12 @@ StreamIndexer::setIndexWriter(IndexWriter& w) {
     writer->initWriterData(conf.getFieldRegister());
 }
 char
-StreamIndexer::indexFile(const char *filepath) {
+StreamAnalyzer::indexFile(const char *filepath) {
     std::string path(filepath);
     return indexFile(path);
 }
 char
-StreamIndexer::indexFile(const std::string& filepath) {
+StreamAnalyzer::indexFile(const std::string& filepath) {
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }
@@ -129,11 +129,11 @@ StreamIndexer::indexFile(const std::string& filepath) {
     // ensure a decent buffer size
     //file.mark(65530);
     string name;
-    Indexable indexable(filepath, s.st_mtime, *writer, *this);
+    AnalysisResult indexable(filepath, s.st_mtime, *writer, *this);
     return indexable.index(file);
 }
 void
-StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
+StreamAnalyzer::addFactory(StreamThroughAnalyzerFactory* f) {
     f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         throughfactories.push_back(f);
@@ -142,7 +142,7 @@ StreamIndexer::addFactory(StreamThroughAnalyzerFactory* f) {
     }
 }
 void
-StreamIndexer::initializeThroughFactories() {
+StreamAnalyzer::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
         = moduleLoader->getStreamThroughAnalyzerFactories();
     list<StreamThroughAnalyzerFactory*>::iterator i;
@@ -154,7 +154,7 @@ StreamIndexer::initializeThroughFactories() {
     addFactory(new OggThroughAnalyzerFactory());
 }
 void
-StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
+StreamAnalyzer::addFactory(StreamEndAnalyzerFactory* f) {
     f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         endfactories.push_back(f);
@@ -166,14 +166,14 @@ StreamIndexer::addFactory(StreamEndAnalyzerFactory* f) {
  * Instantiate factories for all analyzers.
  **/
 void
-StreamIndexer::initializeEndFactories() {
+StreamAnalyzer::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
         = moduleLoader->getStreamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    addFactory(new BZ2EndAnalyzerFactory());
+    addFactory(new Bz2EndAnalyzerFactory());
     addFactory(new GZipEndAnalyzerFactory());
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
@@ -198,7 +198,7 @@ StreamIndexer::initializeEndFactories() {
     addFactory(new TextEndAnalyzerFactory());
 }
 void
-StreamIndexer::addThroughAnalyzers() {
+StreamAnalyzer::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
@@ -208,7 +208,7 @@ StreamIndexer::addThroughAnalyzers() {
     }
 }
 void
-StreamIndexer::addEndAnalyzers() {
+StreamAnalyzer::addEndAnalyzers() {
     end.resize(end.size()+1);
     std::vector<std::vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
     eIter = end.rbegin();
@@ -218,7 +218,7 @@ StreamIndexer::addEndAnalyzers() {
     }
 }
 char
-StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
+StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 //    static int count = 1;
 //    if (++count % 1000 == 0) {
 //        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
@@ -228,12 +228,12 @@ StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
     // retrieve or construct the through analyzers and end analyzers
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
-    while ((int)through.size() <= idx.getDepth()) {
+    while ((int)through.size() <= idx.depth()) {
         addThroughAnalyzers();
         addEndAnalyzers();
     }
-    tIter = through.begin() + idx.getDepth();
-    eIter = end.begin() + idx.getDepth();
+    tIter = through.begin() + idx.depth();
+    eIter = end.begin() + idx.depth();
 
     // insert the through analyzers
     std::vector<StreamThroughAnalyzer*>::iterator ts;
@@ -260,20 +260,20 @@ StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
                 if (pos != 0) { // could not reset
                     fprintf(stderr, "could not reset stream of %s from pos "
                         "%lli to 0 after reading with %s: %s\n",
-                        idx.getPath().c_str(), input->getPosition(),
+                        idx.path().c_str(), input->getPosition(),
                         sea->getName(), sea->getError().c_str());
                     finished = true;
                 }
             } else {
                 finished = true;
             }
-            eIter = end.begin() + idx.getDepth();
+            eIter = end.begin() + idx.depth();
         }
         es++;
     }
     // make sure the entire stream is read if the size is not known
     bool ready;
-    tIter = through.begin() + idx.getDepth();
+    tIter = through.begin() + idx.depth();
     do {
         ready = input->getSize() != -1;
         std::vector<StreamThroughAnalyzer*>::iterator ts;
@@ -286,7 +286,7 @@ StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
     } while (!ready && input->getStatus() == Ok);
     if (input->getStatus() == Error) {
         fprintf(stderr, "Error: %s\n", input->getError());
-        removeIndexable(idx.getDepth());
+        removeIndexable(idx.depth());
         return -2;
     }
 
@@ -299,14 +299,14 @@ StreamIndexer::analyze(Indexable& idx, StreamBase<char>* input) {
     }
 
     // remove references to the indexable before it goes out of scope
-    removeIndexable(idx.getDepth());
+    removeIndexable(idx.depth());
     return 0;
 }
 /**
  * Remove references to the indexable before it goes out of scope.
  **/
 void
-StreamIndexer::removeIndexable(uint depth) {
+StreamAnalyzer::removeIndexable(uint depth) {
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     tIter = through.begin() + depth;

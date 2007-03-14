@@ -103,7 +103,7 @@ FileEntryCache::prune() {
 FileEntryCache ArchiveEngine::cache;
 ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
     : streamengine(0), rootentry(0) {
-    filestream = new FSFileInputStream(fse);
+    filestream = new FsFileInputStream(fse);
     parentstream = filestream;
 
     FileEntry* e = new FileEntry(0);

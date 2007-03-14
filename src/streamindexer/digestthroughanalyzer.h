@@ -33,12 +33,12 @@ class DigestThroughAnalyzer : public jstreams::StreamThroughAnalyzer {
 private:
     static cnstr shafieldname;
     jstreams::DigestInputStream *stream;
-    jstreams::Indexable* indexable;
+    jstreams::AnalysisResult* indexable;
     const jstreams::RegisteredField* shafield;
 public:
     DigestThroughAnalyzer(jstreams::FieldRegister& reg);
     ~DigestThroughAnalyzer();
-    void setIndexable(jstreams::Indexable*);
+    void setIndexable(jstreams::AnalysisResult*);
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
     bool isReadyWithStream();
 };

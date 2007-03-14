@@ -27,7 +27,7 @@ class PngEndAnalyzer : public jstreams::StreamEndAnalyzer {
 private:
     const PngEndAnalyzerFactory* factory;
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "PngEndAnalyzer"; }
 public:
     PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {}

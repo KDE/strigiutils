@@ -23,20 +23,20 @@
 #include "streamendanalyzer.h"
 #include "inputstream.h"
 
-class BZ2EndAnalyzer : public jstreams::StreamEndAnalyzer {
+class Bz2EndAnalyzer : public jstreams::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
-    const char* getName() const { return "BZ2EndAnalyzer"; }
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
+    const char* getName() const { return "Bz2EndAnalyzer"; }
 };
 
-class BZ2EndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
+class Bz2EndAnalyzerFactory : public jstreams::StreamEndAnalyzerFactory {
 public:
     const char* getName() const {
-        return "BZ2EndAnalyzer";
+        return "Bz2EndAnalyzer";
     }
     jstreams::StreamEndAnalyzer* newInstance() const {
-        return new BZ2EndAnalyzer();
+        return new Bz2EndAnalyzer();
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(jstreams::FieldRegister&);

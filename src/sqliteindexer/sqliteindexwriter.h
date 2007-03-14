@@ -42,13 +42,13 @@ private:
         int sqllength);
     void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
-    void startIndexable(jstreams::Indexable*);
-    void finishIndexable(const jstreams::Indexable*);
-    void addText(const jstreams::Indexable* idx, const char* text,
+    void startIndexable(jstreams::AnalysisResult*);
+    void finishIndexable(const jstreams::AnalysisResult*);
+    void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length);
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
         const jstreams::RegisteredField* field, const std::string& value);
-    void addField(const jstreams::Indexable* idx,
+    void addField(const jstreams::AnalysisResult* idx,
         const jstreams::RegisteredField* field,
         const unsigned char* data, int32_t size) {}
     SqliteIndexWriter(SqliteIndexManager*, sqlite3*);

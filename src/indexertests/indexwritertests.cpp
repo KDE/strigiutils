@@ -20,16 +20,16 @@
 #include "jstreamsconfig.h"
 #include "indexwritertests.h"
 #include "indexwriter.h"
-#include "indexable.h"
-#include "indexerconfiguration.h"
+#include "analysisresult.h"
+#include "analyzerconfiguration.h"
 using namespace jstreams;
 
 class IndexWriterTester {
 private:
     IndexWriter* writer;
-    StreamIndexer si;
+    StreamAnalyzer si;
 public:
-    IndexWriterTester(IndexWriter& w, IndexerConfiguration& ic)
+    IndexWriterTester(IndexWriter& w, AnalyzerConfiguration& ic)
         :writer(&w), si(ic) {
     }
     int optimize() {
@@ -43,7 +43,7 @@ public:
         if (writer == 0) return 1;
         std::string s("a"); // we must pass a string, not a const char*
         {
-            Indexable i(s, 0, *writer, si);
+            AnalysisResult i(s, 0, *writer, si);
         }
         writer->commit();
 
@@ -52,7 +52,7 @@ public:
 };
 
 IndexWriterTests::IndexWriterTests(jstreams::IndexWriter& w,
-        IndexerConfiguration& ic)
+        AnalyzerConfiguration& ic)
     :tester (new IndexWriterTester(w, ic)) {
 }
 IndexWriterTests::~IndexWriterTests() {

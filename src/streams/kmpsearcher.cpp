@@ -23,7 +23,7 @@ using namespace jstreams;
 using namespace std;
 
 void
-KMPSearcher::setQuery(const string& query) {
+KmpSearcher::setQuery(const string& query) {
     this->query = query;
     len = query.length();
     const char* p = query.c_str();
@@ -58,7 +58,7 @@ KMPSearcher::setQuery(const string& query) {
     }
 }
 const char*
-KMPSearcher::search(const char* haystack, int32_t haylen) const {
+KmpSearcher::search(const char* haystack, int32_t haylen) const {
     if (table == 0) return 0;
 //    printf("start search %i\n", len);
     const char* needle = query.c_str();

@@ -19,9 +19,9 @@
  */
 #include "jstreamsconfig.h"
 #include "textendanalyzer.h"
-#include "streamindexer.h"
+#include "streamanalyzer.h"
 #include "inputstreamreader.h"
-#include "indexable.h"
+#include "analysisresult.h"
 #include "textutils.h"
 using namespace jstreams;
 
@@ -58,9 +58,9 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 
 char
-TextEndAnalyzer::analyze(Indexable& idx, InputStream* in) {
-    if (idx.getEncoding().length()) {
-//        fprintf(stderr, "%s\n", idx.getEncoding().c_str());
+TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if (idx.encoding().length()) {
+//        fprintf(stderr, "%s\n", idx.encoding().c_str());
     }
     // pass a piece of text to the indexer. it's up to the indexer to break
     // it down into words

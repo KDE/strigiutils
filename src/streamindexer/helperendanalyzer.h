@@ -43,11 +43,11 @@ private:
     static const HelperProgramConfig helperconfig;
 
     std::string writeToTempFile(jstreams::InputStream *in) const;
-    bool checkForFile(const jstreams::Indexable& idx) const;
+    bool checkForFile(const jstreams::AnalysisResult& idx) const;
 public:
     HelperEndAnalyzer() {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(jstreams::Indexable& idx, jstreams::InputStream* in);
+    char analyze(jstreams::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "HelperEndAnalyzer"; }
 };
 

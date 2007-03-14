@@ -20,7 +20,7 @@
 
 #include "jstreamsconfig.h"
 #include "oggthroughanalyzer.h"
-#include "indexable.h"
+#include "analysisresult.h"
 using namespace jstreams;
 using namespace std;
 
@@ -33,7 +33,7 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
 }
 
 void
-OggThroughAnalyzer::setIndexable(Indexable* i) {
+OggThroughAnalyzer::setIndexable(AnalysisResult* i) {
     indexable = i;
 }
 int32_t

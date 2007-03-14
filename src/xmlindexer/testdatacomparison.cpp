@@ -21,7 +21,7 @@
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
 #include "indexer.h"
-#include "indexerconfiguration.h"
+#include "analyzerconfiguration.h"
 
 #include <cstdio>
 #include <cstring>
@@ -53,7 +53,7 @@ main(int argc, char** argv) {
     const char* mappingfile = 0;
 
     ostringstream s;
-    jstreams::IndexerConfiguration ic;
+    jstreams::AnalyzerConfiguration ic;
     Indexer indexer(s, ic, mappingfile);
     chdir(argv[1]);
     indexer.index(argv[2]);

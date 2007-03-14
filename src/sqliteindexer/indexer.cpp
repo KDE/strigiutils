@@ -26,7 +26,7 @@ using namespace std;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, jstreams::IndexerConfiguration& ic)
+Indexer::Indexer(const char *indexdir, jstreams::AnalyzerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_indexer(ic)
 {
     m_indexer.setIndexWriter(*m_manager.getIndexWriter());

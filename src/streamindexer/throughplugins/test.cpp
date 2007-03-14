@@ -22,9 +22,9 @@
 /* test class 1 */
 class Analyzer1 : public jstreams::StreamThroughAnalyzer {
 private:
-    jstreams::Indexable* idx;
+    jstreams::AnalysisResult* idx;
 public:
-    void setIndexable(jstreams::Indexable*i) {
+    void setIndexable(jstreams::AnalysisResult*i) {
         idx = i;
     }
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
@@ -35,7 +35,7 @@ public:
 
 /* test class 2 */
 class Analyzer2 : public jstreams::StreamThroughAnalyzer {
-    void setIndexable(jstreams::Indexable*) {}
+    void setIndexable(jstreams::AnalysisResult*) {}
     jstreams::InputStream *connectInputStream(jstreams::InputStream *in) {
         return in;
     }

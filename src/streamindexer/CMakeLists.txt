@@ -23,14 +23,14 @@ set(streamindexer_SRCS
 	arendanalyzer.cpp
 	indexwriter.cpp
 	rpmendanalyzer.cpp
-	indexable.cpp
+	analysisresult.cpp
 	helperendanalyzer.cpp
 	id3v2throughanalyzer.cpp
-	indexerconfiguration.cpp
+	analyzerconfiguration.cpp
 	bmpendanalyzer.cpp
 	cnstr.cpp
 	fieldtypes.cpp
-	streamindexer.cpp
+	streamanalyzer.cpp
 #	indexreader.cpp
 	filelister.cpp
 )
@@ -71,14 +71,14 @@ target_link_libraries(streamindexer ${streamindexer_libs})
 
 install(FILES
 	indexeddocument.h
-	indexable.h
+	analysisresult.h
 	analyzerplugin.h
-	streamindexer.h
+	streamanalyzer.h
 	streamthroughanalyzer.h
 	streamendanalyzer.h
 	analyzerfactoryfactory.h
 	indexwriter.h
-	indexerconfiguration.h
+	analyzerconfiguration.h
 	cnstr.h
 	fieldtypes.h
 	streamindexer_export.h

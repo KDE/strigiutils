@@ -24,7 +24,7 @@
 
 namespace jstreams {
     class IndexWriter;
-    class IndexerConfiguration;
+    class AnalyzerConfiguration;
 }
 
 class IndexWriterTester;
@@ -33,7 +33,7 @@ private:
     IndexWriterTester* tester;
 public:
     IndexWriterTests(jstreams::IndexWriter& w,
-        jstreams::IndexerConfiguration& ic);
+        jstreams::AnalyzerConfiguration& ic);
     ~IndexWriterTests();
     int testAll();
 };
