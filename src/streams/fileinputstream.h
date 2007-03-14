@@ -25,15 +25,18 @@
 
 namespace jstreams {
 
+#ifndef FILEINPUTSTREAM_DEFAULT_BUF_SIZE
+#define FILEINPUTSTREAM_DEFAULT_BUF_SIZE 1048576
+#endif
+
 class STREAMS_EXPORT FileInputStream : public BufferedInputStream<char> {
 private:
     FILE *file;
     std::string filepath;
 
 public:
-    const int32_t defaultBufferSize;
     explicit FileInputStream(const char *filepath,
-        int32_t buffersize=1048576);
+        int32_t buffersize=FILEINPUTSTREAM_DEFAULT_BUF_SIZE);
     ~FileInputStream();
     int32_t fillBuffer(char* start, int32_t space);
 };
