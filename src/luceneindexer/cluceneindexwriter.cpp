@@ -128,7 +128,7 @@ CLuceneIndexWriter::addField(const jstreams::AnalysisResult* idx,
 #endif
 }
 void
-CLuceneIndexWriter::startIndexable(AnalysisResult* idx) {
+CLuceneIndexWriter::startAnalysis(AnalysisResult* idx) {
     doccount++;
     CLuceneDocData*doc = new CLuceneDocData();
     idx->setWriterData(doc);
@@ -137,7 +137,7 @@ CLuceneIndexWriter::startIndexable(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-CLuceneIndexWriter::finishIndexable(const AnalysisResult* idx) {
+CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     const FieldRegister& fr = idx->config().getFieldRegister();
     addField(idx, fr.pathField, idx->path());
     string field = idx->encoding();

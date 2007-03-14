@@ -122,8 +122,8 @@ public:
      * Retrieve the IndexWriter specific object associated with this AnalysisResult.
      * This object allows the IndexWriter to store intermediate results
      * associated with this AnalysisResult. IndexWriters using this feature should
-     * initialize this value in IndexWriter::startIndexable() and should
-     * deallocate the value in the call to IndexWriter::finishIndexable().
+     * initialize this value in IndexWriter::startAnalysis() and should
+     * deallocate the value in the call to IndexWriter::finishAnalysis().
      * Each of these functions will be called once during the lifetime of each
      * AnalysisResult.
      **/

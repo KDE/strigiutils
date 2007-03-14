@@ -28,7 +28,7 @@ class DummyIndexWriter : public jstreams::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startIndexable(jstreams::AnalysisResult* idx) {
+    void startAnalysis(jstreams::AnalysisResult* idx) {
         if (verbosity >= 1) {
             printf("%s\n", idx->path().c_str());
         }
@@ -37,7 +37,7 @@ protected:
             idx->setWriterData(s);
         }
     }
-    void finishIndexable(const jstreams::AnalysisResult* idx) {
+    void finishAnalysis(const jstreams::AnalysisResult* idx) {
         if (verbosity == -1) { // sha1 mode
             const std::string* s = static_cast<const std::string*>(
                 idx->writerData());

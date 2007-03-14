@@ -57,7 +57,7 @@ EstraierIndexWriter::setField(const AnalysisResult* idx, const string& name,
     }
 }
 void
-EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
+EstraierIndexWriter::startAnalysis(AnalysisResult* idx) {
     // allocate a new estraier document
     ESTDOC* doc = est_doc_new();
     idx->setWriterData(doc);
@@ -66,7 +66,7 @@ EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-EstraierIndexWriter::finishIndexable(const AnalysisResult* idx) {
+EstraierIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
     // add required url field
 

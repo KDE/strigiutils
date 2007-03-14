@@ -31,8 +31,8 @@ private:
     const std::string indexpath;
 
 protected:
-    void startIndexable(jstreams::AnalysisResult*);
-    void finishIndexable(const jstreams::AnalysisResult*);
+    void startAnalysis(jstreams::AnalysisResult*);
+    void finishAnalysis(const jstreams::AnalysisResult*);
     void addText(const jstreams::AnalysisResult*, const char* text,
         int32_t length);
     void setField(const jstreams::AnalysisResult* idx, const std::string &fieldname,

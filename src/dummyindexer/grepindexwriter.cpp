@@ -30,10 +30,10 @@ GrepIndexWriter::~GrepIndexWriter() {
     regfree(&regex);
 }
 void
-GrepIndexWriter::startIndexable(jstreams::AnalysisResult* idx) {
+GrepIndexWriter::startAnalysis(jstreams::AnalysisResult* idx) {
 }
 void
-GrepIndexWriter::finishIndexable(const jstreams::AnalysisResult* idx) {
+GrepIndexWriter::finishAnalysis(const jstreams::AnalysisResult* idx) {
 }
 void
 GrepIndexWriter::addText(const jstreams::AnalysisResult* idx, const char* text,

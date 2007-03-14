@@ -42,8 +42,8 @@ private:
         int sqllength);
     void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
-    void startIndexable(jstreams::AnalysisResult*);
-    void finishIndexable(const jstreams::AnalysisResult*);
+    void startAnalysis(jstreams::AnalysisResult*);
+    void finishAnalysis(const jstreams::AnalysisResult*);
     void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length);
     void addField(const jstreams::AnalysisResult* idx,

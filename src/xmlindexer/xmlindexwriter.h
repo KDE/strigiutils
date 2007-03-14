@@ -165,7 +165,7 @@ private:
         }
     }
 protected:
-    void startIndexable(jstreams::AnalysisResult* idx) {
+    void startAnalysis(jstreams::AnalysisResult* idx) {
         void* m = new Data();
         idx->setWriterData(m);
     }
@@ -174,7 +174,7 @@ protected:
         escape(value);
         out << tag->open << value << tag->close;
     }
-    void finishIndexable(const jstreams::AnalysisResult* idx) {
+    void finishAnalysis(const jstreams::AnalysisResult* idx) {
         Data* d = static_cast<Data*>(idx->writerData());
         const jstreams::FieldRegister& fr = idx->config().getFieldRegister();
         std::string v = idx->path();

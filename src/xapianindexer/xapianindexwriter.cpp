@@ -40,7 +40,7 @@ XapianIndexWriter::setField(const AnalysisResult* idx, const string& name,
 }
 
 void
-XapianIndexWriter::startIndexable(AnalysisResult* idx) {
+XapianIndexWriter::startAnalysis(AnalysisResult* idx) {
     Document *doc = new Document();
     idx->setWriterData(doc);
 }
@@ -48,7 +48,7 @@ XapianIndexWriter::startIndexable(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-XapianIndexWriter::finishIndexable(const AnalysisResult* idx) {
+XapianIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     static const string path("path"), mtime("mtime"), depth("depth");
     Document* doc = static_cast<Document*>(idx->getWriterData());
     manager->ref();

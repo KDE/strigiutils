@@ -27,8 +27,8 @@ class GrepIndexWriter : public jstreams::IndexWriter {
 private:
     regex_t regex;
 protected:
-    void startIndexable(jstreams::AnalysisResult* idx);
-    void finishIndexable(const jstreams::AnalysisResult* idx);
+    void startAnalysis(jstreams::AnalysisResult* idx);
+    void finishAnalysis(const jstreams::AnalysisResult* idx);
     void addText(const jstreams::AnalysisResult* idx, const char* text,
         int32_t length);
     void addField(const jstreams::AnalysisResult* idx,
