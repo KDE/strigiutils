@@ -128,3 +128,15 @@ AnalyzerConfiguration::setFilters(
         }
     }
 }
+class jstreams::FieldPropertiesPrivate {
+public:
+    cnstr key;
+    FieldPropertiesPrivate(const cnstr& k) :key(k) {}
+};
+
+FieldProperties::FieldProperties(const cnstr& k)
+        :p(new FieldPropertiesPrivate(k)) {
+}
+FieldProperties::~FieldProperties() {
+    delete p;
+}

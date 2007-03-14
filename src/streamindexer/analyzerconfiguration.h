@@ -34,6 +34,21 @@ class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 class FieldRegister;
 
+class FieldPropertiesPrivate;
+class FieldProperties {
+private:
+    FieldPropertiesPrivate* p;
+public:
+    FieldProperties();
+    FieldProperties(const cnstr& key);
+    ~FieldProperties();
+    const cnstr& key() const;
+    const cnstr& parent() const;
+    const std::string& name() const;
+    const std::string& comment() const;
+    const std::string& type() const;
+};
+
 class STREAMINDEXER_EXPORT AnalyzerConfiguration {
 public:
 enum FieldType {
