@@ -31,7 +31,7 @@ class FieldRegister;
  */
 class StreamThroughAnalyzer {
 public:
-    virtual ~StreamThroughAnalyzer() {};
+    virtual ~StreamThroughAnalyzer() {}
     virtual void setIndexable(Strigi::AnalysisResult*) = 0;
     /**
      * This function sets up the analyzer for handling a stream.
