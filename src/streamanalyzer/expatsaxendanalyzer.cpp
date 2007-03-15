@@ -157,7 +157,7 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return !p->error;
 }
 char
-SaxEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+SaxEndAnalyzer::analyze(AnalysisResult& idx, jstreams::InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {
