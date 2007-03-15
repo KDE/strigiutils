@@ -19,7 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "interface.h"
-#include "xsd/daemonconfigurator.h"
+#include "daemonconfigurator.h"
 #include "combinedindexmanager.h"
 
 #include "indexscheduler.h"

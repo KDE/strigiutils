@@ -48,6 +48,3 @@ foreach (XSDFILE ${XSDFILES})
 
 endforeach (XSDFILE ${XSDFILES})
 
-# create a library from the xml io files
-add_library(daemonconfigurator daemonconfigurator.cpp)
-target_link_libraries( daemonconfigurator ${XSDNAME})

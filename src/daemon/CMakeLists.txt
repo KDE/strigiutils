@@ -1,4 +1,4 @@
-set(DIRS eventlistener xsd events)
+set(DIRS eventlistener events)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
@@ -6,7 +6,7 @@ ENDIF(ENABLE_DBUS)
 
 subdirs(${DIRS})
 
-include_directories( ../streamanalyzer ../combinedindexer ../streams xsd dbus
+include_directories( ../streamanalyzer ../combinedindexer ../streams ../xsd dbus
 	${strigi_BINARY_DIR}/src/streams/compat ../streams/compat)
 
 IF(ENABLE_INOTIFY)
@@ -67,3 +67,6 @@ install(TARGETS strigidaemon searchclient #strigiconfupdater
 install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h
 	DESTINATION include/strigi)
 
+# create a library from the xml io files
+add_library(daemonconfigurator daemonconfigurator.cpp)
+target_link_libraries( daemonconfigurator strigidaemonconfiguration)
