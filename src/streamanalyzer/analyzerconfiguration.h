@@ -25,10 +25,6 @@
 #include "streamanalyzer_export.h"
 #include "fieldtypes.h"
 
-/**
- * This class allows the AnalysisResult to determine how each field should be
- * indexed.
- **/
 namespace Strigi {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
@@ -49,6 +45,10 @@ public:
     const std::string& type() const;
 };
 
+/**
+ * This class allows the AnalysisResult to determine how each field should be
+ * indexed.
+ **/
 class STREAMANALYZER_EXPORT AnalyzerConfiguration {
 public:
 enum FieldType {

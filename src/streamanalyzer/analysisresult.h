@@ -29,6 +29,9 @@ namespace jstreams {
     template <class T> class StreamBase;
 }
 
+/**
+ * Strigi is the major namespace for all classes that are used in the analysis of streams.
+ */
 namespace Strigi {
 
 class IndexWriter;
