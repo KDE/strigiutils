@@ -7,7 +7,7 @@ if (XATTR_FOUND)
     PREFIX strigita_
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
-  target_link_libraries(xattr streamindexer)
+  target_link_libraries(xattr streamanalyzer)
   install(TARGETS xattr LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 endif (XATTR_FOUND)
 

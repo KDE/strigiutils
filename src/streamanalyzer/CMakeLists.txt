@@ -6,7 +6,7 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
-set(streamindexer_SRCS
+set(streamanalyzer_SRCS
 	bz2endanalyzer.cpp
 	digestthroughanalyzer.cpp
 	textendanalyzer.cpp
@@ -36,38 +36,38 @@ set(streamindexer_SRCS
 )
 
 if (LIBXML2_FOUND)
-  set(streamindexer_SRCS ${streamindexer_SRCS} saxendanalyzer.cpp)
+  set(streamanalyzer_SRCS ${streamanalyzer_SRCS} saxendanalyzer.cpp)
   set(streamindex_LIBS ${streamindex_LIBS} ${LIBXML2_LIBRARIES})
   include_directories(${LIBXML2_INCLUDE_DIR})
 else (LIBXML2_FOUND)
   # we use expat
-  set(streamindexer_SRCS ${streamindexer_SRCS} expatsaxendanalyzer.cpp)
+  set(streamanalyzer_SRCS ${streamanalyzer_SRCS} expatsaxendanalyzer.cpp)
   set(streamindex_LIBS ${streamindex_LIBS} ${EXPAT_LIBRARY})
   include_directories(${EXPAT_INCLUDE_DIR})
 endif (LIBXML2_FOUND)
 
 #IF(WIN32)
 #	#not enough api exposed to make this a dll
-#	add_library(streamindexer ifilterendanalyzer.cpp ${streamindexer_SRCS})
-#    install(TARGETS streamindexer ARCHIVE DESTINATION ${LIB_DESTINATION})
+#	add_library(streamanalyzer ifilterendanalyzer.cpp ${streamanalyzer_SRCS})
+#    install(TARGETS streamanalyzer ARCHIVE DESTINATION ${LIB_DESTINATION})
 #    #add ifilter library
 #	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
 #ELSE(WIN32)
-	add_library(streamindexer SHARED ${streamindexer_SRCS})
-	install(TARGETS streamindexer LIBRARY DESTINATION ${LIB_DESTINATION})
+	add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
+	install(TARGETS streamanalyzer LIBRARY DESTINATION ${LIB_DESTINATION})
 #ENDIF(WIN32)
 
-set_target_properties(streamindexer PROPERTIES
+set_target_properties(streamanalyzer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR}
-    DEFINE_SYMBOL MAKE_STREAMINDEXER_LIB
+    DEFINE_SYMBOL MAKE_streamanalyzer_LIB
 )
 
-set(streamindexer_libs streams ${streamindex_LIBS})
+set(streamanalyzer_libs streams ${streamindex_LIBS})
 if(UNIX)
-        set(streamindexer_libs ${streamindexer_libs} dl)
+        set(streamanalyzer_libs ${streamanalyzer_libs} dl)
 endif(UNIX)
-target_link_libraries(streamindexer ${streamindexer_libs})
+target_link_libraries(streamanalyzer ${streamanalyzer_libs})
 
 install(FILES
 	indexeddocument.h
@@ -84,11 +84,11 @@ install(FILES
 	streamindexer_export.h
 	DESTINATION include/strigi
 )
-install(TARGETS streamindexer DESTINATION ${LIB_DESTINATION})
+install(TARGETS streamanalyzer DESTINATION ${LIB_DESTINATION})
 
 
 # test executable
 if(NOT WIN32)
         add_executable(filelister filelistertest.cpp)
-        target_link_libraries(filelister streamindexer)
+        target_link_libraries(filelister streamanalyzer)
 endif(NOT WIN32)

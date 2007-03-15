@@ -6,7 +6,7 @@ ENDIF(ENABLE_DBUS)
 
 subdirs(${DIRS})
 
-include_directories( ../streamindexer ../combinedindexer ../streams xsd dbus
+include_directories( ../streamanalyzer ../combinedindexer ../streams xsd dbus
 	${strigi_BINARY_DIR}/src/streams/compat ../streams/compat)
 
 IF(ENABLE_INOTIFY)
@@ -48,12 +48,12 @@ add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
 
 #add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
 
-set(strigidaemon_LIBS streamindexer eventlistener combinedindex
+set(strigidaemon_LIBS streamanalyzer eventlistener combinedindex
 	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
 target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
 #target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters
-#                      daemonconfigurator streamindexer)
+#                      daemonconfigurator streamanalyzer)
 
 add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
 	asyncsocketclient.cpp)

@@ -1,6 +1,6 @@
 subdirs(tests indexdump simplereader)
 
-include_directories( ../streamindexer ../streams
+include_directories( ../streamanalyzer ../streams
 	${CLUCENE_LIBRARY_DIR}
 	${CLUCENE_INCLUDE_DIR}
 	${ICONV_INCLUDE_DIR}
@@ -27,7 +27,7 @@ set_target_properties(cluceneindex PROPERTIES VERSION ${STRIGI_VERSION} SOVERSIO
 )
 
 
-target_link_libraries(cluceneindex streamindexer ${CLUCENE_LIBRARY})
+target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
 
 add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
 target_link_libraries(luceneindexer cluceneindex)

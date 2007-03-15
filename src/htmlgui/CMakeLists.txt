@@ -1,4 +1,4 @@
-include_directories( ../daemon ../streamindexer ../streams
+include_directories( ../daemon ../streamanalyzer ../streams
 	${strigi_BINARY_DIR}/src/streams/compat)
 
 add_library(strigihtmlgui SHARED strigihtmlgui.cpp)
@@ -6,7 +6,7 @@ set_target_properties(strigihtmlgui PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
 
-target_link_libraries(strigihtmlgui searchclient streamindexer)
+target_link_libraries(strigihtmlgui searchclient streamanalyzer)
 
 install(TARGETS strigihtmlgui DESTINATION ${LIB_DESTINATION})
 install(FILES strigihtmlgui.h

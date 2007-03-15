@@ -1,5 +1,5 @@
 include_directories(
-        ../streamindexer
+        ../streamanalyzer
         ../streams
 	${strigi_BINARY_DIR}/src/streams/compat
 	${BZIP2_INCLUDE_DIR}
@@ -13,13 +13,13 @@ add_executable(
 	xmlindexwriter.cpp
 )
 
-target_link_libraries(xmlindexer streamindexer)
+target_link_libraries(xmlindexer streamanalyzer)
 
 install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 
 add_executable(testdatacomparison testdatacomparison.cpp indexer.cpp
     tagmapping.cpp xmlindexwriter.cpp)
-target_link_libraries(testdatacomparison streamindexer)
+target_link_libraries(testdatacomparison streamanalyzer)
 
 ADD_TEST(XmlIndexer testdatacomparison ${strigi_SOURCE_DIR}/testdata data
 	${strigi_SOURCE_DIR}/testdata/xmlindexeroutput.bz2)

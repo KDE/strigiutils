@@ -1,4 +1,4 @@
-set(DIRS streams streamindexer archivereader)
+set(DIRS streams streamanalyzer archivereader)
 
 if(NOT WIN32)
 set(DIRS ${DIRS} dummyindexer xmlindexer)
