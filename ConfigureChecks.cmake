@@ -1,8 +1,3 @@
-# fixme !
-IF(MINGW)
-set (HAVE_SSIZE_T 1)
-ENDIF(MINGW)
-
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(direct.h HAVE_DIRECT_H)          # src/streamindexer/filelister.cpp
@@ -46,6 +41,9 @@ endif(HAVE_STDINT_H)
 if(HAVE_SYS_SOCKET_H)
   set(type_check_includes ${type_check_includes} sys/socket.h)
 endif(HAVE_SYS_SOCKET_H)
+if(HAVE_SYS_TYPES_H)
+  set(type_check_includes ${type_check_includes} sys/types.h)
+endif(HAVE_SYS_TYPES_H)
 if(HAVE_UNISTD_H)
   set(type_check_includes ${type_check_includes} unistd.h)
 endif(HAVE_UNISTD_H)
@@ -59,7 +57,8 @@ CHECK_TYPE_SIZE(uint64_t UINT64_T)
 CHECK_TYPE_SIZE("long long" SIZEOF_LONGLONG)
 CHECK_TYPE_SIZE(long SIZEOF_LONG)
 CHECK_TYPE_SIZE(int SIZEOF_INT)
-CHECK_TYPE_SIZE(ssize_t SIZEOF_SSIZE_T)
+CHECK_TYPE_SIZE(size_t SIZE_T)
+CHECK_TYPE_SIZE(ssize_t SSIZE_T)
 
 CHECK_TYPE_SIZE(uint UINT)
 CHECK_TYPE_SIZE(intptr_t INTPTR_T)

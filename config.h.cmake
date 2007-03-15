@@ -44,11 +44,10 @@
 //////////////////////////////
 #cmakedefine HAVE_INT64_T 1
 #cmakedefine HAVE_INT32_T 1
-#cmakedefine HAVE_SSIZE_T 1
+#cmakedefine HAVE_SIZE_T 1
 #cmakedefine HAVE_UINT 1
-#cmakedefine HAVE___INT64 1
 #cmakedefine HAVE_INTPTR_T 1
-#cmakedefine HAVE_SSIZE_T
+#cmakedefine HAVE_SSIZE_T 1
 
 //////////////////////////////
 //missing functions
@@ -85,7 +84,9 @@ const char *strcasestr(const char *big, const char *little);
 
  //need this for ChangeNotify and TryEnterCriticalSection
  //this wont compile for win98 though, but who cares?, not me :)
- #define _WIN32_WINNT 0x400
+ #ifndef _WIN32_WINNT
+  #define _WIN32_WINNT 0x400
+ #endif
 
  #include <windows.h>
  #include <io.h>
@@ -153,6 +154,10 @@ const char *strcasestr(const char *big, const char *little);
 
 #ifndef HAVE_STRNCASECMP
 # define strncasecmp strnicmp
+#endif
+
+#ifdef _MINGW
+ #define wchar_t TCHAR
 #endif
 
 #include "jstreamsconfig.h"
