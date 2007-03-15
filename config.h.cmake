@@ -52,20 +52,25 @@
 //////////////////////////////
 //missing functions
 //////////////////////////////
+// better to move this to compat.h and
+// include export header there...
+
+#include "streams_export.h"   
+
 #ifndef HAVE_ISBLANK
-bool isblank(char c);
+STREAMS_EXPORT bool isblank(char c);
 #endif
 
 #ifndef HAVE_STRCASECMP
-int strcasecmp(const char *s1, const char *s2);
+STREAMS_EXPORT int strcasecmp(const char *s1, const char *s2);
 #endif
 
 #ifndef HAVE_STRNCASECMP
-int strncasecmp(const char *s1, const char *s2, int l);
+STREAMS_EXPORT int strncasecmp(const char *s1, const char *s2, int l);
 #endif
 
 #ifndef HAVE_STRCASESTR
-const char *strcasestr(const char *big, const char *little);
+STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
 #endif
 
 //////////////////////////////
@@ -146,14 +151,6 @@ const char *strcasestr(const char *big, const char *little);
 		#pragma warning(disable: 4503) //decorated name length exceeded
 		#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
 	#endif
-#endif
-
-#ifndef HAVE_STRCASECMP
-# define strcasecmp stricmp
-#endif
-
-#ifndef HAVE_STRNCASECMP
-# define strncasecmp strnicmp
 #endif
 
 #ifdef _MINGW

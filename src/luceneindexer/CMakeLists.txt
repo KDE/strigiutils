@@ -22,7 +22,9 @@ set(cluceneindex_SRCS
 
 add_library(cluceneindex SHARED ${cluceneindex_SRCS})
 
-set_target_properties(cluceneindex PROPERTIES VERSION ${STRIGI_VERSION} SOVERSION ${STRIGI_VERSION_MAJOR}
+set_target_properties(cluceneindex
+    PROPERTIES VERSION ${STRIGI_VERSION}
+    SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
 )
 
@@ -33,5 +35,9 @@ add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
 target_link_libraries(luceneindexer cluceneindex)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)
-install(TARGETS cluceneindex LIBRARY DESTINATION ${LIB_DESTINATION})
+install(TARGETS cluceneindex
+	LIBRARY DESTINATION ${LIB_DESTINATION}
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION  ${LIB_DESTINATION}
+)
 # FIXME: no need to install headers here?

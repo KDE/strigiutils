@@ -44,7 +44,6 @@ endif(NOT WIN32)
 set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
 
 add_library(streams SHARED ${streams_SRCS})
-install(TARGETS streams LIBRARY DESTINATION ${LIB_DESTINATION})
 
 set_target_properties(streams PROPERTIES
     VERSION ${STRIGI_VERSION}
@@ -72,7 +71,11 @@ install(FILES
 	compat/strigi_fnmatch.h
 	DESTINATION include/strigi
 )
-install(TARGETS streams DESTINATION ${LIB_DESTINATION})
+install(TARGETS streams
+	LIBRARY DESTINATION ${LIB_DESTINATION}
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION  ${LIB_DESTINATION}
+)
 
 if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)

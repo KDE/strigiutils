@@ -84,7 +84,11 @@ install(FILES
 	streamanalyzer_export.h
 	DESTINATION include/strigi
 )
-install(TARGETS streamanalyzer DESTINATION ${LIB_DESTINATION})
+install(TARGETS streamanalyzer
+	LIBRARY DESTINATION ${LIB_DESTINATION}
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION  ${LIB_DESTINATION}
+)
 
 
 # test executable
