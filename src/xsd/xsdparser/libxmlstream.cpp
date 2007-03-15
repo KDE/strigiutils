@@ -87,7 +87,7 @@ SimpleNodeParser::startElementSAXFunc(void* ctx, const xmlChar* name,
     }
 
     node->tagname = (const char*)name;
-    while (*atts) {
+    while ((atts != NULL) && (*atts)) {
         node->atts[(const char*)*atts] = (const char*)*(atts+1);
         atts += 2;
     }
