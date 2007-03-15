@@ -35,16 +35,16 @@ private:
     QMap<QString, QString> querynames;
     QString query;
     StrigiAsyncClient strigi;
-private slots:
+private Q_SLOTS:
     void handleHitsCount(const QString& query, int);
     void tabChanged(int);
 public:
     SearchTabs();
     void addTab(const QString& name, const QString& query);
     SearchView* getSearchView() { return view; }
-public slots:
+public Q_SLOTS:
     void setQuery(const QString& slot);
-signals:
+Q_SIGNALS:
     void activeQueryChanged(const QString& query);
 };
 

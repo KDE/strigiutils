@@ -34,7 +34,7 @@ private:
     QString activeFieldname;
     QString activeQuery;
     bool histogramIsUptodate;
-private slots:
+private Q_SLOTS:
     void getHistogram(const QString& query, const QString& fieldname,
         const QList<StringUIntPair>& h);
 protected:
@@ -47,7 +47,7 @@ public:
     int getBarLength() const { return barlength; }
     void clear();
     void setData(const QList<QPair<QString,quint32> >& d);
-public slots:
+public Q_SLOTS:
     void setQuery(const QString& query);
     void setFieldName(const QString& fieldname);
 };

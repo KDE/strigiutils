@@ -33,7 +33,7 @@ public:
     explicit DlgListIndexedFiles(const QStringList& files, QWidget* parent = 0);
     ~DlgListIndexedFiles () {};
 
-private slots:
+private Q_SLOTS:
     void accept();
 
 private:

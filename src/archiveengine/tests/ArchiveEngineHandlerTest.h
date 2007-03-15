@@ -26,7 +26,7 @@ class ArchiveEngineHandlerTest : public QObject {
 Q_OBJECT
 public:
     ~ArchiveEngineHandlerTest() {}
-private slots:
+private Q_SLOTS:
     void testFile();
 };
 

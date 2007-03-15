@@ -36,7 +36,7 @@ private:
     QPushButton* incl;
 
     void updateButtons();
-private slots:
+private Q_SLOTS:
     void rowChanged(const QModelIndex&,const QModelIndex&);
     void include(bool state);
     void addFilter();

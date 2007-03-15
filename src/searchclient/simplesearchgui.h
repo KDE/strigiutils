@@ -69,7 +69,7 @@ private:
     void updateDirectories();
     void createMenus();
     void createActions();
-private slots:
+private Q_SLOTS:
     void updateStatus();
     void updateStatus(const QMap<QString, QString>& s);
     void toggleDaemon();

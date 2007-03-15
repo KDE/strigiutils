@@ -36,7 +36,7 @@ private:
 public:
     FileBrowser();
     ~FileBrowser();
-public slots:
+public Q_SLOTS:
     void clicked(const QModelIndex& index);
 };
 

@@ -33,7 +33,7 @@ private:
     QListWidget* listview;
 public:
     StrigiAsyncWidget();
-private slots:
+private Q_SLOTS:
     void newQuery(const QString&);
     void handleHits(const QString&, int offset, const QList<StrigiHit>&);
 };

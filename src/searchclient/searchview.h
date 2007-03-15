@@ -37,16 +37,16 @@ private:
     SearchViewHtmlHelper* htmlguihelper;
     StrigiHtmlGui* htmlgui;
 
-private slots:
+private Q_SLOTS:
     void openItem(const QUrl& url);
 public:
     explicit SearchView();
     ~SearchView();
     void setHTML(const QString&html);
-public slots:
+public Q_SLOTS:
     void handleHits(const QString& q, int offset, const QList<StrigiHit>& hits);
     void setQuery(const QString&);
-signals:
+Q_SIGNALS:
     void gotHits(const QString& query);
 };
 
