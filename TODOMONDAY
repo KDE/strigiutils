@@ -1,2 +1,3 @@
 * remove all read[24]bytes functions, they are not required any more
   we now use readLittleEndianUInt32_t etc.
+# add KFileMetaInfo::suffix() again (dfaure)
