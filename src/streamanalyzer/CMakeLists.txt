@@ -64,9 +64,9 @@ set_target_properties(streamanalyzer PROPERTIES
 )
 
 set(streamanalyzer_libs streams ${streamindex_LIBS})
-if(UNIX)
-        set(streamanalyzer_libs ${streamanalyzer_libs} dl)
-endif(UNIX)
+if(HAVE_LIBDL)
+        set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
+endif(HAVE_LIBDL)
 target_link_libraries(streamanalyzer ${streamanalyzer_libs})
 
 install(FILES

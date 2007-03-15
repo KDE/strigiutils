@@ -123,6 +123,28 @@ if (ENABLE_LOG4CXX)
     find_package (Log4cxx)
 endif (ENABLE_LOG4CXX)
 
+#
+# AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by
+# alexander neuendorf
+#
+# on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
+check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
+check_function_exists(dlopen DLOPEN_IN_LIBC)
+set(LIBDL)
+
+if (DLOPEN_IN_LIBC)
+   set(HAVE_LIBDL TRUE)
+endif (DLOPEN_IN_LIBC)
+
+if (DLOPEN_IN_LIBDL)
+   set(LIBDL dl)
+   set(HAVE_LIBDL TRUE)
+endif (DLOPEN_IN_LIBDL)
+
+if (NOT HAVE_LIBDL)
+   MESSAGE(FATAL "dlopen support is required.")
+endif (NOT HAVE_LIBDL)
+
 include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
