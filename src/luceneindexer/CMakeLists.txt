@@ -27,10 +27,6 @@ set_target_properties(cluceneindex
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
 )
-if(MINGW)
-    set_target_properties(cluceneindex PROPERTIES PREFIX "mingw-")
-endif(MINGW)
-
 
 target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
 

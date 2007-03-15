@@ -50,9 +50,6 @@ set_target_properties(streams PROPERTIES
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_STREAMS_LIB
 )
-if(MINGW)
-    set_target_properties(streams PROPERTIES PREFIX "mingw-")
-endif(MINGW)
 
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARIES} ${ICONV_LIBRARIES})
 

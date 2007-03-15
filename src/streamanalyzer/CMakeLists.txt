@@ -62,9 +62,6 @@ set_target_properties(streamanalyzer PROPERTIES
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
-if(MINGW)
-    set_target_properties(streamanalyzer PROPERTIES PREFIX "mingw-")
-endif(MINGW)
 
 set(streamanalyzer_libs streams ${streamindex_LIBS})
 if(UNIX)
