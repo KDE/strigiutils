@@ -178,7 +178,7 @@ SaxEndAnalyzer::analyze(AnalysisResult& idx, jstreams::InputStream* in) {
         idx.setMimeType("text/xml");
     }
 //    i->setField("root", p->rootelement);
-    if (in->getStatus() != Eof) {
+    if (in->getStatus() != jstreams::Eof) {
         error = in->getError();
         return -1;
     }
