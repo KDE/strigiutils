@@ -20,7 +20,7 @@
 #ifndef STRINGREADER_H
 #define STRINGREADER_H
 
-/**
+/*
  * Author: Jos van den Oever
  *         Ben van Klinken
  **/

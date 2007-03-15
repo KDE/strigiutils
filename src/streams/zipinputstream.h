@@ -24,6 +24,8 @@
 #include "substreamprovider.h"
 #include "gzipinputstream.h"
 
+namespace jstreams {
+
 /**
  * Partial implementation of the zip file format according to
  * http://www.pkware.com/business_and_developers/developer/popups/appnote.txt
@@ -34,9 +36,6 @@
  * - files using other compression as deflated
  * - encrypted files
  **/
-
-namespace jstreams {
-
 class STREAMS_EXPORT ZipInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry

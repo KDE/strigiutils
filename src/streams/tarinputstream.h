@@ -23,6 +23,8 @@
 #include "streams_export.h"
 #include "substreamprovider.h"
 
+namespace jstreams {
+
 /**
  * Implementation of SubStreamProvider for reading the tar format. The InputStream recognizes this format:
  * - tar archive is composed of blocks of 512 bytes. Every file and every header starts at an offset
@@ -36,9 +38,6 @@
  *
  * http://www.gnu.org/software/tar/manual/html_node/Standard.html
  **/
-
-namespace jstreams {
-
 class STREAMS_EXPORT TarInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry

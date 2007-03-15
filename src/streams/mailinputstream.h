@@ -23,15 +23,16 @@
 #include "streams_export.h"
 #include "substreamprovider.h"
 #include <stack>
+
+namespace jstreams {
+class SubInputStream;
+class StringTerminatedSubStream;
+
 /**
  * This is an implementation for handling email streams as
  * archives. It allows one to read the email body and email attachements as
  * streams.
  **/
-
-namespace jstreams {
-class SubInputStream;
-class StringTerminatedSubStream;
 class STREAMS_EXPORT MailInputStream : public SubStreamProvider {
 private:
     int64_t nextLineStartPosition;

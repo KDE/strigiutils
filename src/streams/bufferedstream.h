@@ -24,6 +24,10 @@
 #include "inputstreambuffer.h"
 #include <cassert>
 
+/**
+ * The classes in this namespace are meant to support the classes in the Strigi namespace.
+ * The namespace jstreams still exists because CLucene uses the same headers.
+ */
 namespace jstreams {
 
 template <class T>
