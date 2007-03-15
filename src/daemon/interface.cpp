@@ -37,6 +37,7 @@
 #include <unistd.h>
 using namespace std;
 using namespace Strigi;
+using namespace jstreams;
 
 Interface::Interface(CombinedIndexManager& m, IndexScheduler& s)
         :manager(m), scheduler(s) {

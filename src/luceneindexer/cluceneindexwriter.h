@@ -32,8 +32,8 @@ private:
     int doccount;
 
 protected:
-    void startIndexable(Strigi::AnalysisResult*);
-    void finishIndexable(const Strigi::AnalysisResult*);
+    void startAnalysis(Strigi::AnalysisResult*);
+    void finishAnalysis(const Strigi::AnalysisResult*);
     void addText(const Strigi::AnalysisResult*, const char* text, int32_t length);
     static void addField(const Strigi::AnalysisResult* idx,
         Strigi::AnalyzerConfiguration::FieldType type, const TCHAR* name,

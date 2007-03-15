@@ -51,6 +51,7 @@ using lucene::util::BitSet;
 
 using lucene::util::Reader;
 using namespace std;
+using namespace jstreams;
 using namespace Strigi;
 
 struct CLuceneDocData {

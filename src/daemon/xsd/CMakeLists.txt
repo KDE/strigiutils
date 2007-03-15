@@ -20,7 +20,7 @@ find_package(Java REQUIRED)
 # so we dont use it currently
 # file(GLOB XSDFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.xsd)
 # if the previous line does not work, try this:
-set(XSDFILES "strigidaemonconfiguration.xsd metadataproperties.xsd")
+set(XSDFILES "strigidaemonconfiguration.xsd")
 
 foreach (XSDFILE ${XSDFILES})
   string(REPLACE ".xsd" "" XSDNAME ${XSDFILE})
