@@ -20,6 +20,7 @@
 #ifndef REGISTEREDFIELD_H
 #define REGISTEREDFIELD_H
 
+#include "streamanalyzer_export.h"
 #include "cnstr.h"
 
 namespace Strigi {
@@ -45,7 +46,7 @@ public:
     const cnstr& getType() const { return type; }
 };
 
-class FieldRegister {
+class STREAMANALYZER_EXPORT FieldRegister {
 private:
     std::map<cnstr, RegisteredField*> fields;
 public:

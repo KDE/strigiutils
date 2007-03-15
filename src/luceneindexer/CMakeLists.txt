@@ -7,11 +7,11 @@ include_directories( ../streamanalyzer ../streams
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat)
 
-IF(MSVC)
+IF(WIN32)
     # why only here and not for the complete project?
     ADD_DEFINITIONS(-D_UNICODE)
     ADD_DEFINITIONS(-DUNICODE)
-ENDIF(MSVC)
+ENDIF(WIN32)
 
 set(cluceneindex_SRCS
         cluceneindexwriter.cpp
@@ -27,6 +27,9 @@ set_target_properties(cluceneindex
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
 )
+if(MINGW)
+    set_target_properties(cluceneindex PROPERTIES PREFIX "mingw-")
+endif(MINGW)
 
 
 target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
