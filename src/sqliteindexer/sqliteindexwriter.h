@@ -42,8 +42,8 @@ private:
         int sqllength);
     void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
-    void startIndexable(Strigi::AnalysisResult*);
-    void finishIndexable(const Strigi::AnalysisResult*);
+    void startAnalysis(Strigi::AnalysisResult*);
+    void finishAnalysis(const Strigi::AnalysisResult*);
     void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);
     void addField(const Strigi::AnalysisResult* idx,

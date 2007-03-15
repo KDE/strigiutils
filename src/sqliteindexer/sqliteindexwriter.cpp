@@ -79,7 +79,7 @@ SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
     // very simple algorithm to get out sequences of ascii characters
     // we actually miss characters that are not on the edge between reads
-    int64_t id = idx->getId();
+    int64_t id = idx->id();
     map<int64_t, map<string, int> >::iterator m = content.find(id);
     if (m == content.end()) {
         content[id];
@@ -111,12 +111,12 @@ SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
 void
 SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* field,
         const string& value) {
-    int64_t id = idx->getId();
+    int64_t id = idx->id();
     //id = -1; // debug
     if (id == -1) return;
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
-    sqlite3_bind_int64(insertvaluestmt, 1, idx->getId());
+    sqlite3_bind_int64(insertvaluestmt, 1, idx->id());
     sqlite3_bind_text(insertvaluestmt, 2, field->getKey().c_str(),
         field->getKey().length(), SQLITE_STATIC);
     sqlite3_bind_text(insertvaluestmt, 3, value.c_str(), value.length(),
@@ -136,23 +136,23 @@ SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* fi
     manager->deref();
 }
 void
-SqliteIndexWriter::startIndexable(AnalysisResult* idx) {
+SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
     // get the file name
-    const char* name = idx->getPath().c_str();
-    size_t namelen = idx->getPath().length();
+    const char* name = idx->path().c_str();
+    size_t namelen = idx->path().length();
 
     // remove old entry
     vector<string> v;
-    v.push_back(idx->getPath());
+    v.push_back(idx->path());
     deleteEntries(v);
 
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
     int64_t id = -1;
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
-    sqlite3_bind_int64(insertfilestmt, 2, idx->getMTime());
-    sqlite3_bind_int(insertfilestmt, 3, idx->getDepth());
-//    printf("'%s', %i %p %p\n", name, idx->getDepth(), db, insertfilestmt);
+    sqlite3_bind_int64(insertfilestmt, 2, idx->mTime());
+    sqlite3_bind_int(insertfilestmt, 3, idx->depth());
+//    printf("'%s', %i %p %p\n", name, idx->depth(), db, insertfilestmt);
     int r = sqlite3_step(insertfilestmt);
     if (r != SQLITE_DONE) {
         if (r == SQLITE_ERROR) fprintf(stderr, "error!\n");
@@ -169,10 +169,10 @@ SqliteIndexWriter::startIndexable(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-SqliteIndexWriter::finishIndexable(const AnalysisResult* idx) {
+SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     // store the content field
     map<int64_t, map<string, int> >::const_iterator m
-        = content.find(idx->getId());
+        = content.find(idx->id());
 
     if (m == content.end()) {
         return;
@@ -184,7 +184,7 @@ SqliteIndexWriter::finishIndexable(const AnalysisResult* idx) {
         "insert into tempfilewords (fileid, word, count) values(?, ?,?);",
         0, &stmt, 0);
     if (r != SQLITE_OK) {
-        if (idx->getDepth() == 0) {
+        if (idx->depth() == 0) {
             sqlite3_exec(db, "rollback; ", 0, 0, 0);
         }
         fprintf(stderr, "could not prepare temp insert sql %s\n",
@@ -195,7 +195,7 @@ SqliteIndexWriter::finishIndexable(const AnalysisResult* idx) {
     }
     map<string, int>::const_iterator i = m->second.begin();
     map<string, int>::const_iterator e = m->second.end();
-    sqlite3_bind_int64(stmt, 1, idx->getId());
+    sqlite3_bind_int64(stmt, 1, idx->id());
     for (; i!=e; ++i) {
         sqlite3_bind_text(stmt, 2, i->first.c_str(), i->first.length(),
             SQLITE_STATIC);
