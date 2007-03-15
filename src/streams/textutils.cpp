@@ -151,52 +151,52 @@ jstreams::convertNewLines(char* p) {
 
 #ifdef __BIG_ENDIAN__
 int16_t
-readLittleEndianInt16(const char* c) {
+jstreams::readLittleEndianInt16(const char* c) {
     return swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
-readLittleEndianUInt16(const char* c) {
+jstreams::readLittleEndianUInt16(const char* c) {
     return swap16(*reinterpret_cast<const uint16_t*>(c));
 }
 int32_t
-readLittleEndianInt32(const char* c) {
+jstreams::readLittleEndianInt32(const char* c) {
     return swap32(*reinterpret_cast<const int32_t*>(c));
 }
 uint32_t
-readLittleEndianUInt32(const char* c) {
+jstreams::readLittleEndianUInt32(const char* c) {
     return swap32(*reinterpret_cast<const uint32_t*>(c));
 }
 int64_t
-readLittleEndianInt64(const char* c) {
+jstreams::readLittleEndianInt64(const char* c) {
     return swap64(*reinterpret_cast<const int64_t*>(c));
 }
 uint64_t
-readLittleEndianUInt64(const char* c) {
+jstreams::readLittleEndianUInt64(const char* c) {
     return swap64(*reinterpret_cast<const uint64_t*>(c));
 }
 #else
 int16_t
-readBigEndianInt16(const char* c) {
+jstreams::readBigEndianInt16(const char* c) {
     return swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
-readBigEndianUInt16(const char* c) {
+jstreams::readBigEndianUInt16(const char* c) {
     return swap16(*reinterpret_cast<const uint16_t*>(c));
 }
 int32_t
-readBigEndianInt32(const char* c) {
+jstreams::readBigEndianInt32(const char* c) {
     return swap32(*reinterpret_cast<const int32_t*>(c));
 }
 uint32_t
-readBigEndianUInt32(const char* c) {
+jstreams::readBigEndianUInt32(const char* c) {
     return swap32(*reinterpret_cast<const uint32_t*>(c));
 }
 int64_t
-readBigEndianInt64(const char* c) {
+jstreams::readBigEndianInt64(const char* c) {
     return swap64(*reinterpret_cast<const int64_t*>(c));
 }
 uint64_t
-readBigEndianUInt64(const char* c) {
+jstreams::readBigEndianUInt64(const char* c) {
     return swap64(*reinterpret_cast<const uint64_t*>(c));
 }
 #endif

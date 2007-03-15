@@ -23,6 +23,7 @@
 #include "subinputstream.h"
 
 #include "dostime.h"
+#include "textutils.h"
 
 using namespace jstreams;
 
@@ -65,7 +66,7 @@ ZipInputStream::nextEntry() {
             int64_t p = input->getPosition();
             int32_t n = input->read(c, 16, 16);
             if (n == 16) {
-                n = read4bytes((const unsigned char*)c);
+                n = readLittleEndianUInt32((const unsigned char*)c);
                 if (n != 0x08074b50) {
                     input->reset(p);
                 }
@@ -83,7 +84,7 @@ ZipInputStream::nextEntry() {
                 const char* c;
                 int32_t n = input->read(c, 4, 4);
                 if (n == 4) {
-                    n = read4bytes((const unsigned char*)c);
+                    n = readLittleEndianUInt32((const unsigned char*)c);
                     if (n == 0x08074b50) { // sometimes this signature appears
                         n = input->read(c, 12, 12);
                         n -= 8;
@@ -172,14 +173,14 @@ ZipInputStream::readHeader() {
         return;
     }
     // read 2 bytes into the filename size
-    int32_t filenamelen = read2bytes(hb + 26);
-    int64_t extralen = read2bytes(hb + 28);
+    int32_t filenamelen = readLittleEndianUInt16(hb + 26);
+    int64_t extralen = readLittleEndianUInt16(hb + 28);
     // read 4 bytes into the length of the uncompressed size
-    entryinfo.size = read4bytes(hb + 22);
+    entryinfo.size = readLittleEndianUInt32(hb + 22);
     // read 4 bytes into the length of the compressed size
-    entryCompressedSize = read4bytes(hb + 18);
-    compressionMethod = read2bytes(hb + 8);
-    int32_t generalBitFlags = read2bytes(hb+6);
+    entryCompressedSize = readLittleEndianUInt32(hb + 18);
+    compressionMethod = readLittleEndianUInt16(hb + 8);
+    int32_t generalBitFlags = readLittleEndianUInt16(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
         // ohoh, the file size and compressed file size are unknown at this
         // point
@@ -194,7 +195,7 @@ ZipInputStream::readHeader() {
         entryinfo.size = -1;
         entryCompressedSize = -1;
     }
-    unsigned long dost = read4bytes(hb+10);
+    unsigned long dost = readLittleEndianUInt32(hb+10);
     entryinfo.mtime = dos2unixtime(dost);
 
     readFileName(filenamelen);
