@@ -60,7 +60,7 @@ endif (LIBXML2_FOUND)
 set_target_properties(streamanalyzer PROPERTIES
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR}
-    DEFINE_SYMBOL MAKE_streamanalyzer_LIB
+    DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
 
 set(streamanalyzer_libs streams ${streamindex_LIBS})
@@ -81,7 +81,7 @@ install(FILES
 	analyzerconfiguration.h
 	cnstr.h
 	fieldtypes.h
-	streamindexer_export.h
+	streamanalyzer_export.h
 	DESTINATION include/strigi
 )
 install(TARGETS streamanalyzer DESTINATION ${LIB_DESTINATION})

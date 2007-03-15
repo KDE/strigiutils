@@ -35,7 +35,7 @@
 #include <sys/types.h>
 #include <string>
 
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 
 #ifdef _WIN32
 typedef unsigned int uid_t;
@@ -46,7 +46,7 @@ namespace Strigi {
     class AnalyzerConfiguration;
 }
 
-class STREAMINDEXER_EXPORT FileLister {
+class STREAMANALYZER_EXPORT FileLister {
 private:
     char* path;
     uint length;

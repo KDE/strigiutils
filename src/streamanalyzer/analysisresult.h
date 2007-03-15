@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 #include "streambase.h"
 
 namespace jstreams {
@@ -43,7 +43,7 @@ class RegisteredField;
  * write data associated with a document to the index. The data is
  * automatically written do the index when ~AnalysisResult() is called.
  **/
-class STREAMINDEXER_EXPORT AnalysisResult {
+class STREAMANALYZER_EXPORT AnalysisResult {
 friend class IndexWriter;
 private:
     int64_t m_id;

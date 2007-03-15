@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 #include "fieldtypes.h"
 
 /**
@@ -49,7 +49,7 @@ public:
     const std::string& type() const;
 };
 
-class STREAMINDEXER_EXPORT AnalyzerConfiguration {
+class STREAMANALYZER_EXPORT AnalyzerConfiguration {
 public:
 enum FieldType {
     None      = 0x0000,

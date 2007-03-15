@@ -23,7 +23,7 @@
 #include <set>
 #include <list>
 
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 
 #ifdef _WIN32
 typedef int int32_t;
@@ -34,7 +34,7 @@ namespace Strigi {
  * Break up a string in a query.
  * Currently very simple. Currently always combines terms with AND.
  **/
-class STREAMINDEXER_EXPORT Query {
+class STREAMANALYZER_EXPORT Query {
 friend class QueryParser;
 public:
     enum Occurrence { MUST, MUST_NOT, SHOULD };
@@ -59,7 +59,7 @@ public:
     std::string highlight(const std::string& text) const;
 };
 
-class STREAMINDEXER_EXPORT QueryParser {
+class STREAMANALYZER_EXPORT QueryParser {
 private:
     std::list<std::string> defaultFields;
     const char* parseQuery(const char*, Query& term) const;

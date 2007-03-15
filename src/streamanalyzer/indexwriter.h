@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include "jstreamsconfig.h"
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 #include "streamanalyzer.h"
 
 namespace jstreams {
@@ -53,7 +53,7 @@ class AnalysisResult;
  * IndexManager::getIndexWriter() and should not be used from threads other
  * than the thread that called IndexManager::getIndexWriter().
  **/
-class STREAMINDEXER_EXPORT IndexWriter {
+class STREAMANALYZER_EXPORT IndexWriter {
 friend class AnalysisResult;
 protected:
     virtual void startAnalysis(AnalysisResult*) = 0;

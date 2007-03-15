@@ -18,17 +18,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef STREAMINDEXER_EXPORT_H
-#define STREAMINDEXER_EXPORT_H
+#ifndef STREAMANALYZER_EXPORT_H
+#define STREAMANALYZER_EXPORT_H
 
 #ifdef _WIN32
-# ifdef MAKE_STREAMINDEXER_LIB
-#  define STREAMINDEXER_EXPORT __declspec(dllexport)
+# ifdef MAKE_STREAMANALYZER_LIB
+#  define STREAMANALYZER_EXPORT __declspec(dllexport)
 # else
-#  define STREAMINDEXER_EXPORT __declspec(dllimport)
+#  define STREAMANALYZER_EXPORT __declspec(dllimport)
 # endif
 #else
-# define STREAMINDEXER_EXPORT
+# define STREAMANALYZER_EXPORT
 #endif
 
-#endif  // STREAMINDEXER_EXPORT_H
+#endif  // STREAMANALYZER_EXPORT_H

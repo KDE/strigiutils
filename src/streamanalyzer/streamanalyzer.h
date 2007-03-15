@@ -23,7 +23,7 @@
 #include <vector>
 #include <string>
 #include "cnstr.h"
-#include "streamindexer_export.h"
+#include "streamanalyzer_export.h"
 
 namespace jstreams {
     template <class T> class StreamBase;
@@ -52,7 +52,7 @@ class RegisteredField;
  * Especially the last task is important when working with archive streams
  * such as zip or tar files that contain other files.
  **/
-class STREAMINDEXER_EXPORT StreamAnalyzer {
+class STREAMANALYZER_EXPORT StreamAnalyzer {
 private:
     static cnstr sizefieldname;
     AnalyzerConfiguration& conf;
