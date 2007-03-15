@@ -21,6 +21,7 @@
 #include "bmpendanalyzer.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
+#include "textutils.h"
 #include <sstream>
 using namespace std;
 using namespace jstreams;
@@ -28,6 +29,9 @@ using namespace Strigi;
 
 const cnstr BmpEndAnalyzerFactory::typeFieldName("type");
 const cnstr BmpEndAnalyzerFactory::compressionFieldName("compression");
+const cnstr BmpEndAnalyzerFactory::widthFieldName("width");
+const cnstr BmpEndAnalyzerFactory::heightFieldName("height");
+const cnstr BmpEndAnalyzerFactory::colorDepthFieldName("colordepth");
 
 void
 BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -35,6 +39,12 @@ BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         1, 0);
     compressionField = reg.registerField(compressionFieldName,
         FieldRegister::stringType, 1, 0);
+    widthField = reg.registerField(widthFieldName,
+        FieldRegister::integerType, 1, 0);
+    heightField = reg.registerField(heightFieldName,
+        FieldRegister::integerType, 1, 0);
+    colorDepthField = reg.registerField(colorDepthFieldName,
+        FieldRegister::integerType, 1, 0);
 }
 
 bool
@@ -51,7 +61,7 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ok;
 }
 char
-BmpEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     // read BMP file type and ensure it is not damaged
     const char * bmptype_bm = "BM";
     const char * bmptype_ba = "BA";
@@ -65,17 +75,17 @@ BmpEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     in->reset(0);
 
     if (memcmp(bmp_id, bmptype_bm, 2) == 0) {
-        idx.setField(factory->typeField, "Windows Bitmap");
+        rs.setField(factory->typeField, "Windows Bitmap");
     } else if (memcmp(bmp_id, bmptype_ba, 2) == 0) {
-        idx.setField(factory->typeField, "OS/2 Bitmap Array");
+        rs.setField(factory->typeField, "OS/2 Bitmap Array");
     } else if (memcmp(bmp_id, bmptype_ci, 2) == 0) {
-        idx.setField(factory->typeField, "OS/2 Color Icon");
+        rs.setField(factory->typeField, "OS/2 Color Icon");
     } else if (memcmp(bmp_id, bmptype_cp, 2) == 0) {
-        idx.setField(factory->typeField, "OS/2 Color Pointer");
+        rs.setField(factory->typeField, "OS/2 Color Pointer");
     } else if (memcmp(bmp_id, bmptype_ic, 2) == 0) {
-        idx.setField(factory->typeField, "OS/2 Icon");
+        rs.setField(factory->typeField, "OS/2 Icon");
     } else if (memcmp(bmp_id, bmptype_pt, 2) == 0) {
-        idx.setField(factory->typeField, "OS/2 Pointer");
+        rs.setField(factory->typeField, "OS/2 Pointer");
     } else {
         return -1;
     }
@@ -86,24 +96,28 @@ BmpEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     in->reset(0);
     if (n < 34) return -1;
 
-    uint32_t bmpi_compression = (unsigned char)h[33] + ((unsigned char)h[32]<<8)
-         + ((unsigned char)h[31]<<16) + ((unsigned char)h[30]<<24);
-
+    uint32_t width = readLittleEndianUInt32(h+18);
+    rs.setField(factory->widthField, width);
+    uint32_t height = readLittleEndianUInt32(h+22);
+    rs.setField(factory->heightField, height);
+    uint32_t colorDepth = readLittleEndianUInt16(h+28);
+    rs.setField(factory->colorDepthField, colorDepth);
+    uint32_t bmpi_compression = readLittleEndianUInt32(h+30);
     switch (bmpi_compression) {
     case 0 :
-        idx.setField(factory->compressionField, "None");
+        rs.setField(factory->compressionField, "None");
         break;
     case 1 :
-        idx.setField(factory->compressionField, "RLE 8bit/pixel");
+        rs.setField(factory->compressionField, "RLE 8bit/pixel");
         break;
     case 2 :
-        idx.setField(factory->compressionField, "RLE 4bit/pixel");
+        rs.setField(factory->compressionField, "RLE 4bit/pixel");
         break;
     case 3 :
-        idx.setField(factory->compressionField, "Bitfields");
+        rs.setField(factory->compressionField, "Bitfields");
         break;
     default :
-        idx.setField(factory->compressionField, "Unknown");
+        rs.setField(factory->compressionField, "Unknown");
     }
 
     return 0;

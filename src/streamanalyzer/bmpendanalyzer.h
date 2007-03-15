@@ -37,8 +37,14 @@ class BmpEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class BmpEndAnalyzer;
 private:
     static const cnstr typeFieldName;
+    static const cnstr widthFieldName;
+    static const cnstr heightFieldName;
+    static const cnstr colorDepthFieldName;
     static const cnstr compressionFieldName;
     const Strigi::RegisteredField* typeField;
+    const Strigi::RegisteredField* widthField;
+    const Strigi::RegisteredField* heightField;
+    const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* compressionField;
     const char* getName() const {
         return "BmpEndAnalyzer";
