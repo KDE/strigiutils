@@ -23,6 +23,7 @@
 #include <string>
 
 #include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 #include "streambase.h"
 
 namespace jstreams {
