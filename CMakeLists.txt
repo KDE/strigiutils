@@ -128,6 +128,7 @@ endif (ENABLE_LOG4CXX)
 # alexander neuendorf
 #
 # on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
+INCLUDE(CheckFunctionExists)
 check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
 check_function_exists(dlopen DLOPEN_IN_LIBC)
 set(LIBDL)
