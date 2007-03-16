@@ -160,7 +160,7 @@ QueryParser::parseQuery(const char* s, Query& parsedterm) const {
         parsedterm.expression = string(term, p-term);
     }
     // skip the terminating character
-    if (p != '\0') p++;
+    if (*p != '\0') p++;
     return p;
 }
 
