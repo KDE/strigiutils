@@ -1,5 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
+ * Copyright (C) 2001, 2002 Rolf Magnus <ramagnus@kde.org>
  * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
@@ -140,7 +141,6 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
         // TODO read http://tools.ietf.org/html/rfc2083 to handle
         // predefined text values and map them to good semantic fields
 
-        // TODO actually extract text, right now we only skip it
         if (strncmp("tEXt", c+4, 4) == 0) {
             // TODO convert latin1 to utf8 and analyze the format properly
             SubInputStream sub(in, chunksize);
