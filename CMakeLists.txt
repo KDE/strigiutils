@@ -128,23 +128,25 @@ endif (ENABLE_LOG4CXX)
 # alexander neuendorf
 #
 # on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
-INCLUDE(CheckFunctionExists)
-check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
-check_function_exists(dlopen DLOPEN_IN_LIBC)
-set(LIBDL)
+if(NOT WIN32)
+  INCLUDE(CheckFunctionExists)
+  check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
+  check_function_exists(dlopen DLOPEN_IN_LIBC)
+  set(LIBDL)
 
-if (DLOPEN_IN_LIBC)
+  if (DLOPEN_IN_LIBC)
    set(HAVE_LIBDL TRUE)
-endif (DLOPEN_IN_LIBC)
+  endif (DLOPEN_IN_LIBC)
 
-if (DLOPEN_IN_LIBDL)
+  if (DLOPEN_IN_LIBDL)
    set(LIBDL dl)
    set(HAVE_LIBDL TRUE)
-endif (DLOPEN_IN_LIBDL)
+  endif (DLOPEN_IN_LIBDL)
 
-if (NOT HAVE_LIBDL)
+  if (NOT HAVE_LIBDL)
    MESSAGE(FATAL "dlopen support is required.")
-endif (NOT HAVE_LIBDL)
+  endif (NOT HAVE_LIBDL)
+endif(NOT WIN32)
 
 include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )

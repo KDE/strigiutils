@@ -22,27 +22,21 @@
 #define JSTREAMSCONFIG_H
 
 // our needed types
-#if !@HAVE_INT64_T@
- #define HAVE_INT64_T 1
- #if ${SIZEOF_LONG}==8
-  typedef long int64_t;
- #elif ${SIZEOF_LONGLONG}==8
-  typedef long long int64_t; 
+#if !@HAVE_INT16_T@
+ #define HAVE_INT16_T 1
+ #if ${SIZEOF_SHORT}==2 //is short 2bits?
+  typedef short int16_t;
  #else
-  #error Could not determine type for int64_t!
+  #error Could not determine type for int16_t!
  #endif
 #endif
 
-#if !@HAVE_UINT64_T@
- #define HAVE_UINT64_T 1
- #if ${SIZEOF_LONG}==8
-  typedef unsigned long uint64_t;
- #elif ${SIZEOF_LONGLONG}==8
-  typedef unsigned long long uint64_t; 
- #elif defined(HAVE___INT64)
-  typedef unsigned __int64 uint64_t; 
+#if !@HAVE_UINT16_T@
+ #define HAVE_UINT16_T 1
+ #if ${SIZEOF_SHORT}==2 //is short 2bits?
+  typedef unsigned short uint16_t;
  #else
-  #error Could not determine type for uint64_t!
+  #error Could not determine type for uint16_t!
  #endif
 #endif
 
@@ -65,6 +59,30 @@
   typedef unsigned long uint32_t;
  #else
   #error Could not determine type for uint32_t!
+ #endif
+#endif
+
+#if !@HAVE_INT64_T@
+ #define HAVE_INT64_T 1
+ #if ${SIZEOF_LONG}==8
+  typedef long int64_t;
+ #elif ${SIZEOF_LONGLONG}==8
+  typedef long long int64_t; 
+ #else
+  #error Could not determine type for int64_t!
+ #endif
+#endif
+
+#if !@HAVE_UINT64_T@
+ #define HAVE_UINT64_T 1
+ #if ${SIZEOF_LONG}==8
+  typedef unsigned long uint64_t;
+ #elif ${SIZEOF_LONGLONG}==8
+  typedef unsigned long long uint64_t; 
+ #elif defined(HAVE___INT64)
+  typedef unsigned __int64 uint64_t; 
+ #else
+  #error Could not determine type for uint64_t!
  #endif
 #endif
 
