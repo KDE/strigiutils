@@ -9,7 +9,6 @@ set(streamtests
 	RpmInputStreamTest.cpp
 	SubInputStreamTest.cpp
 	InputStreamTest.cpp
-	StringReaderTest.cpp
 	InputStreamReaderTest.cpp
 	MailInputStreamTest.cpp
 	Base64InputStreamTest.cpp
@@ -17,8 +16,10 @@ set(streamtests
 	DigestInputStreamTest.cpp
 )
 if(NOT WIN32)
-        set(streamtests ${streamtests} ArchiveReaderTest.cpp
-                                       ProcessInputStreamTest.cpp
+        set(streamtests ${streamtests}
+                StringReaderTest.cpp    # this maybe works with mingw
+                ArchiveReaderTest.cpp
+                ProcessInputStreamTest.cpp
         )
 endif(NOT WIN32)
 

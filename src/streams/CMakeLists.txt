@@ -81,6 +81,5 @@ if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)
 endif(NOT WIN32)
 
-#set_target_properties() does not work here...
-add_definitions(-DMAKE_STREAMS_LIB)
 add_executable(decodebase64 decodebase64.cpp base64inputstream.cpp)
+set_target_properties(decodebase64 PROPERTIES COMPILE_FLAGS "-DMAKE_STREAMS_LIB")

@@ -26,19 +26,19 @@ RegisteredField::RegisteredField(const cnstr& k, const cnstr& t, int m,
         : key(k), type(t), maxoccurs(m), parent(p), writerdata(0) {
 }
 
-const cnstr FieldRegister::floatType = "float";
-const cnstr FieldRegister::integerType = "integer";
-const cnstr FieldRegister::binaryType = "binary";
-const cnstr FieldRegister::stringType = "string";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::floatType = "float";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::integerType = "integer";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::binaryType = "binary";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::stringType = "string";
 
-const cnstr FieldRegister::pathFieldName = "path";
-const cnstr FieldRegister::encodingFieldName = "encoding";
-const cnstr FieldRegister::mimetypeFieldName = "mimetype";
-const cnstr FieldRegister::filenameFieldName = "filename";
-const cnstr FieldRegister::extensionFieldName = "ext";
-const cnstr FieldRegister::embeddepthFieldName = "depth";
-const cnstr FieldRegister::mtimeFieldName = "mtime";
-const cnstr FieldRegister::sizeFieldName = "size";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::pathFieldName = "path";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::encodingFieldName = "encoding";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::mimetypeFieldName = "mimetype";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::filenameFieldName = "filename";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::extensionFieldName = "ext";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::embeddepthFieldName = "depth";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::mtimeFieldName = "mtime";
+STREAMANALYZER_EXPORT const cnstr FieldRegister::sizeFieldName = "size";
 
 FieldRegister::FieldRegister() {
     pathField = registerField(pathFieldName, stringType, 1, 0);
