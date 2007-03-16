@@ -29,6 +29,13 @@ private:
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "PngEndAnalyzer"; }
+    /*
+       Internal function called to analyze text embedded in the png.
+       Such text has a special format: 79 bytes of header, a \0 and content
+       until the end of the stream.
+     */
+    char analyzeText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyzeZText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
 public:
     PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {}
 };
@@ -38,8 +45,16 @@ friend class PngEndAnalyzer;
 private:
     static const cnstr widthFieldName;
     static const cnstr heightFieldName;
+    static const cnstr colorDepthFieldName;
+    static const cnstr colorModeFieldName;
+    static const cnstr compressionFieldName;
+    static const cnstr interlaceModeFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
+    const Strigi::RegisteredField* colorDepthField;
+    const Strigi::RegisteredField* colorModeField;
+    const Strigi::RegisteredField* compressionField;
+    const Strigi::RegisteredField* interlaceModeField;
     const char* getName() const {
         return "PngEndAnalyzer";
     }
