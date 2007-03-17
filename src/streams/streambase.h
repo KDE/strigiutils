@@ -78,7 +78,7 @@ public:
 };
 
 /**
- * @short Base class for stream read access to many different file types.
+ * @brief Base class for stream read access to many different file types.
  *
  * This class is based on the interface java.io.InputStream. It allows
  * for uniform access to streamed resources.
@@ -94,42 +94,63 @@ public:
     StreamBase() { }
     virtual ~StreamBase(){}
     /**
-     * @brief Reads bytes from the stream and sets \a start to
-     * the first character that was read.
+     * @brief Reads items from the stream and sets @p start to point to
+     * the first item that was read.
      *
-     * If @p ntoread is @c 0, then at least one character will be read.
+     * Take note: the pointer will only be valid until the next call to any
+     * other function, including the destructor, of this class. Exceptions to
+     * this rule are noted at the respective functions. The functions inherited
+     * from StreamBaseBase do not invalidate the pointer.
      *
      * @param start Pointer passed by reference that will be set to point to
-     *              the retrieved array of bytes. If the end of the stream
+     *              the retrieved array of items. If the end of the stream
      *              is encountered or an error occurs, the value of @p start
      *              is undefined.
-     * @param min   The minimal number of bytes to read from the stream.
-     * @param max   The maximal number of bytes to read from the stream.
+     * @param min   The minimal number of items to read from the stream. This
+     *              value should be larger than 0. If it is smaller, the result
+     *              is undefined.
+     * @param max   The maximal number of items to read from the stream.
      *              If this value is smaller than @p min, there is no limit on
-     *              the number of bytes that can be read.
-     * @return the number of bytes that were read. If -1 is returned, the
-     *         end of the stream has been reached. If -2 is returned, an error
-     *         has occurred.
+     *              the number of items that can be read.
+     * @return the number of items that were read. If @c -1 is returned, the
+     *         end of the stream has been reached. If @c -2 is returned,
+     *         an error has occurred.
      **/
     virtual int32_t read(const T*& start, int32_t min, int32_t max) = 0;
     /**
-     * Skip @param ntoskip bytes. Unless an error occurs or the end of file is
-     * encountered, this amount of bytes is skipped.
-     * This function returns new position in the stream.
+     * @brief Skip @p ntoskip items. Unless an error occurs or the end of
+     * file is encountered, this amount of items is skipped.
+     *
+     * Calling this function invalidates the data pointer that was obtained from
+     * StreamBase::read.
+     *
+     * @param ntoskip The number of items that should be skipped.
+     * @return The new position in the stream.
      **/
     virtual int64_t skip(int64_t ntoskip);
-      /**
-       * @brief Repositions this stream to given requested position.
-       * Reset is guaranteed to work after a successful call to read(),
-       * when the new position is in the range of the data returned by read().
-       * This means that @p pos must lie between the the position
-       * corresponding to the @p start parameter (x) of the @r read function
-       * and the position corresponding to the last position in the returned
-       * buffer (x + @p nread).
-       **/
+    /**
+     * @brief Repositions this stream to given requested position.
+     *
+     * Reset is guaranteed to work after a successful call to read(),
+     * when the new position is in the range of the data returned by read().
+     * This means that @p pos must lie between the the position
+     * corresponding to the @p start parameter (x) of the @r read function
+     * and the position corresponding to the last position in the returned
+     * buffer (x + @p nread).
+     *
+     * Calling this function invalidates the data pointer that was obtained from
+     * StreamBase::read unless the conditions outlined above apply.
+     * In a common scenario, you want to 
+     *
+     * @param pos The position in the stream you want to go to.
+     * @return The new position in the stream. This is guaranteed to be the
+     *         position requested under the conditions outlined above and may
+     *         be the desired position under all other circumstances.
+     **/
     virtual int64_t reset(int64_t pos) = 0;
     /**
-     * deprecated function
+     * Deprecated function, it will be removed when we break binary compatiblity
+     * with clucene. Do not use this function.
      **/
     int64_t mark(int32_t readlimit) {
         int64_t p = getPosition();
@@ -138,7 +159,10 @@ public:
         return reset(p);
     }
 };
-#define SKIPSTEP 1024
+/* The default step in which the function StreamBase::skip skips throught the
+ * stream. STRIGI_STREAMBASE_SKIPSTEP must be a valid int32_t.
+ */
+#define STRIGI_STREAMBASE_SKIPSTEP 1024
 template <class T>
 int64_t
 StreamBase<T>::skip(int64_t ntoskip) {
@@ -146,12 +170,14 @@ StreamBase<T>::skip(int64_t ntoskip) {
     int32_t nread;
     int64_t skipped = 0;
     while (ntoskip) {
-        int32_t step = (int32_t)((ntoskip > SKIPSTEP) ?SKIPSTEP :ntoskip);
+        int32_t step = (int32_t)((ntoskip > STRIGI_STREAMBASE_SKIPSTEP)
+                       ?STRIGI_STREAMBASE_SKIPSTEP :ntoskip);
         nread = read(begin, 1, step);
         if (nread < -1 ) {
             // an error occurred
             return nread;
         } else if (nread < 1) {
+            // the end of the stream was encountered
             ntoskip = 0;
         } else {
             skipped += nread;
