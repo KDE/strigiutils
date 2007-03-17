@@ -58,12 +58,16 @@ friend class AnalysisResult;
 protected:
     virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void addText(const AnalysisResult*, const char* text, int32_t length)=0;
-    virtual void addField(const AnalysisResult*, const RegisteredField* fieldname,
+    virtual void addField(const AnalysisResult*, const RegisteredField* field,
         const std::string& value) = 0;
-    virtual void addField(const AnalysisResult*, const RegisteredField* fieldname,
-        const unsigned char* data, int32_t size) = 0;
-    virtual void addField(const AnalysisResult*, const RegisteredField* /*fielname*/,
+    virtual void addField(const AnalysisResult*, const RegisteredField* field,
+        const unsigned char* data, uint32_t size) {};
+    virtual void addField(const AnalysisResult*, const RegisteredField* field,
+        int32_t value) {};
+    virtual void addField(const AnalysisResult*, const RegisteredField* /*field*/,
         uint32_t /*value*/) {}
+    virtual void addField(const AnalysisResult*, const RegisteredField* /*field*/,
+        double /*value*/) {}
     virtual void finishAnalysis(const AnalysisResult*) = 0;
 public:
     virtual ~IndexWriter() {}

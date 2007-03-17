@@ -34,15 +34,28 @@ AnalysisResult::extension() const {
     return "";
 }
 void
-AnalysisResult::setField(const RegisteredField* fieldname, const std::string& value){
+AnalysisResult::setField(const RegisteredField* field, const std::string& value){
     // make sure only utf8 is stored
     if (!checkUtf8(value)) {
         fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
         return;
     }
-    m_writer.addField(this, fieldname, value);
+    m_writer.addField(this, field, value);
 }
 void
-AnalysisResult::setField(const RegisteredField* fieldname, uint32_t value){
-    m_writer.addField(this, fieldname, value);
+AnalysisResult::setField(const RegisteredField* field,
+        const char* data, uint32_t length) {
+    m_writer.addField(this, field, (const unsigned char*)data, length);
+}
+void
+AnalysisResult::setField(const RegisteredField* field, int32_t value) {
+    m_writer.addField(this, field, value);
+}
+void
+AnalysisResult::setField(const RegisteredField* field, uint32_t value) {
+    m_writer.addField(this, field, value);
+}
+void
+AnalysisResult::setField(const RegisteredField* field, double value) {
+    m_writer.addField(this, field, value);
 }

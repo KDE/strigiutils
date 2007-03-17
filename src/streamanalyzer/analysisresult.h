@@ -95,26 +95,50 @@ public:
     /**
      * Associate a fragment of text with the object.
      *
-     * @param a pointer to a fragment of utf8 encoded text
-     * @param the length of the fragment
+     * @param text    a pointer to a fragment of utf8 encoded text
+     * @param length  the length of the fragment
      **/
     void addText(const char* text, int32_t length);
     /**
      * Add a name, value pair to the index.
      *
-     * @param fieldname utf8 representation of the fieldname, the fieldname
-     *
+     * @param field  the registered field
+     * @param value  utf8 string value
      **/
-    void setField(const RegisteredField* fieldname, const std::string& value);
+    void setField(const RegisteredField* field, const std::string& value);
     /**
      * Add a name, value pair to the index.
      *
-     * @param fieldname utf8 representation of the fieldname, the fieldname
-     *
+     * @param field   the registered field
+     * @param value   byte array
+     * @param length  the length of the array
      **/
-    void setField(const RegisteredField* fieldname, uint32_t value);
+    void setField(const RegisteredField* field, const char* data,
+        uint32_t length);
     /**
-     * Get the filename of this Indexble. For the full name see getPath().
+     * Add a name, value pair to the index.
+     *
+     * @param field  the registered field
+     * @param value  the value to add
+     **/
+    void setField(const RegisteredField* field, uint32_t value);
+    /**
+     * Add a name, value pair to the index.
+     *
+     * @param field  the registered field
+     * @param value  the value to add
+     **/
+    void setField(const RegisteredField* field, int32_t value);
+    /**
+     * Add a name, value pair to the index.
+     *
+     * @param field  the registered field
+     * @param value  the value to add
+     **/
+    void setField(const RegisteredField* field, double value);
+    /**
+     * Get the filename associated with this stream.
+     * For the full name see path().
      **/
     const std::string& fileName() const;
     /**

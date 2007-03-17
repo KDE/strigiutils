@@ -118,7 +118,7 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
             bpp = 0;
     }
 
-    rs.setField(factory->colorDepthField, bpp);
+    rs.setField(factory->colorDepthField, (uint32_t)bpp);
     rs.setField(factory->colorModeField,
         (type < sizeof(colors)/sizeof(colors[0]))
                    ? colors[type] : "Unknown");
