@@ -148,6 +148,10 @@ if(NOT WIN32)
   endif (NOT HAVE_LIBDL)
 endif(NOT WIN32)
 
+# check for visibility support
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-fvisibility=hidden __STRIGI_HAVE_GCC_VISIBILITY)
+
 include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 

@@ -29,7 +29,7 @@
   #error "You should add STRIGI_IMPORT_API to the top of you plugin, you should not include this header if your code is not a plugin"
 #endif
 #define STRIGI_ANALYZER_FACTORY(CLASS) extern "C" { \
-    const Strigi::AnalyzerFactoryFactory* getStrigiAnalyzerFactory() { \
+    const Strigi::AnalyzerFactoryFactory* STRIGI_EXPORT getStrigiAnalyzerFactory() { \
         return new CLASS(); \
     } \
     void deleteStrigiAnalyzerFactory(const Strigi::AnalyzerFactoryFactory* f) { \

@@ -121,4 +121,21 @@
  #define HAVE_SOCKLEN_T 1
 #endif
 
+#cmakedefine __STRIGI_HAVE_GCC_VISIBILITY
+
+/**
+ * @def STRIGI_EXPORT
+ *
+ * The STRIGI_EXPORT macro marks the symbol of the given variable
+ * to be visible, so it can be used from outside the resulting library.
+ *
+ */
+#ifdef __STRIGI_HAVE_GCC_VISIBILITY
+#define STRIGI_EXPORT __attribute__ ((visibility("default")))
+#elif defined(_WIN32) || defined(_WIN64)
+#define STRIGI_EXPORT __declspec(dllexport)
+#else
+#define STRIGI_EXPORT
+#endif
+
 #endif //JSTREAMSCONFIG_H

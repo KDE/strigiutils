@@ -63,13 +63,14 @@ StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     
-        // todo: remove this
+    // todo: remove this
     moduleLoader->loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
-        if ( getenv("HOME") != NULL ){
-            string homedir = getenv("HOME");
-            homedir += "/testinstall/lib/strigi";
+    if (getenv("HOME") != NULL) {
+        string homedir = getenv("HOME");
+        homedir += "/testinstall/lib/strigi";
         moduleLoader->loadPlugins(homedir.c_str());
-        }
+    }
+
     initializeThroughFactories();
     initializeEndFactories();
 }
@@ -171,7 +172,9 @@ StreamAnalyzer::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
         = moduleLoader->getStreamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
+        fprintf(stderr, "YO\n");
     for (i = plugins.begin(); i != plugins.end(); ++i) {
+        fprintf(stderr, "adding %s\n", (*i)->getName());
         addFactory(*i);
     }
     addFactory(new Bz2EndAnalyzerFactory());

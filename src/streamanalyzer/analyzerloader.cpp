@@ -109,6 +109,7 @@ AnalyzerLoader::loadModule(const char* lib) {
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())
         DLSYM(handle, "getStrigiAnalyzerFactory");
     if (!f) {
+        fprintf(stderr, "%s\n", dlerror());
         DLCLOSE(handle);
         return;
     }
