@@ -21,6 +21,11 @@
 #ifndef JSTREAMSCONFIG_H
 #define JSTREAMSCONFIG_H
 
+// either use stdint.h if available or define by our own
+#if @STRIGI_HAVE_STDINT_H@
+ #include <stdint.h>
+#endif
+
 // our needed types
 #if !@HAVE_INT16_T@
  #define HAVE_INT16_T 1

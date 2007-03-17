@@ -7,7 +7,7 @@ CHECK_INCLUDE_FILE_CXX(ndir.h HAVE_NDIR_H)              # src/streams/compat/stg
 CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # src/streamindexer/indexeddocument.h - why?
 CHECK_INCLUDE_FILE_CXX(socket.h HAVE_SOCKET_H)          # unused !
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)          # unused !
-CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, jstreamsconfig.h
 CHECK_INCLUDE_FILE_CXX(sys/dir.h HAVE_SYS_DIR_H)        # src/streams/compat/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)      # src/streams/compat/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)  # unused !
@@ -77,6 +77,7 @@ MACRO_BOOL_TO_01(HAVE_UINT64_T  HAVE_UINT64_T)
 MACRO_BOOL_TO_01(HAVE_UINT      HAVE_UINT)
 MACRO_BOOL_TO_01(HAVE_INTPTR_T  HAVE_INTPTR_T)
 MACRO_BOOL_TO_01(HAVE_SOCKLEN_T HAVE_SOCKLEN_T)
+MACRO_BOOL_TO_01(HAVE_STDINT_H  STRIGI_HAVE_STDINT_H)
 
 #now write out our configuration....
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
