@@ -78,7 +78,7 @@ SubInputStream::reset(int64_t newpos) {
 //        newpos, offset);
     position = input->reset(newpos + offset);
     if (position < offset) {
-        fprintf(stderr, "########### position %li newpos %li\n", position, newpos);
+        fprintf(stderr, "########### position %lli newpos %lli\n", position, newpos);
         status = Error;
         error = input->getError();
     } else {
