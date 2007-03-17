@@ -94,18 +94,20 @@ public:
     StreamBase() { }
     virtual ~StreamBase(){}
     /**
-     * @brief Reads characters from the stream and sets \a start to
+     * @brief Reads bytes from the stream and sets \a start to
      * the first character that was read.
      *
      * If @p ntoread is @c 0, then at least one character will be read.
      *
      * @param start Pointer passed by reference that will be set to point to
-     *              the retrieved array of characters. If the end of the stream
+     *              the retrieved array of bytes. If the end of the stream
      *              is encountered or an error occurs, the value of @p start
      *              is undefined.
-     * @param ntoread The number of characters to read from the stream. If
-     *                @p is @c 0 the stream reads at least 1 character.
-     * @return the number of characters that were read. If -1 is returned, the
+     * @param min   The minimal number of bytes to read from the stream.
+     * @param max   The maximal number of bytes to read from the stream.
+     *              If this value is smaller than @p min, there is no limit on
+     *              the number of bytes that can be read.
+     * @return the number of bytes that were read. If -1 is returned, the
      *         end of the stream has been reached. If -2 is returned, an error
      *         has occurred.
      **/
