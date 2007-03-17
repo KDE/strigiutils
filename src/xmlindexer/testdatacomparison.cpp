@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
 #include "jstreamsconfig.h"
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
@@ -25,7 +29,12 @@
 
 #include <cstdio>
 #include <cstring>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+#endif
+#ifdef HAVE_DIRECT_H
+ #include <direct.h>
+#endif
 
 #include <sstream>
 using namespace Strigi;

@@ -1,8 +1,5 @@
-set(DIRS streams streamanalyzer archivereader xsd)
+set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer)
 
-if(NOT WIN32)
-set(DIRS ${DIRS} dummyindexer xmlindexer)
-endif(NOT WIN32)
 if (CLucene_FOUND)
   set(DIRS ${DIRS} luceneindexer)
 endif (CLucene_FOUND)

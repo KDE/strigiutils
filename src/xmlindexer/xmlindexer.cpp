@@ -17,10 +17,21 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
 #include "jstreamsconfig.h"
 #include "indexer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
+#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+#endif
+#ifdef HAVE_DIRECT_H
+ #include <direct.h>
+#endif
+
 using namespace std;
 
 void

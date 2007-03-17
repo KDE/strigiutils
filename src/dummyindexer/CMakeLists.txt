@@ -6,9 +6,13 @@ target_link_libraries(dummyindexer streamanalyzer)
 
 add_executable(deepfind deepfind.cpp indexer.cpp)
 target_link_libraries(deepfind streamanalyzer)
+install(TARGETS deepfind RUNTIME DESTINATION bin)
 
-add_executable(deepgrep deepgrep.cpp grepindexwriter.cpp indexer.cpp)
-target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES})
+# no regexp.h on win32
+if(NOT WIN32)
+  add_executable(deepgrep deepgrep.cpp grepindexwriter.cpp indexer.cpp)
+  target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES})
+  install(TARGETS deepgrep RUNTIME DESTINATION bin)
+endif(NOT WIN32)
 
-install(TARGETS deepfind deepgrep RUNTIME DESTINATION bin)
 
