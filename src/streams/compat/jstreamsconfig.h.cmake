@@ -21,9 +21,24 @@
 #ifndef JSTREAMSCONFIG_H
 #define JSTREAMSCONFIG_H
 
-// either use stdint.h if available or define by our own
-#if @STRIGI_HAVE_STDINT_H@
- #include <stdint.h>
+/* use the same includes for types finding as in ConfigureChecks.cmake */
+#ifdef HAVE_SOCKET_H
+#  include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#  include <sys/socket.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
 #endif
 
 // our needed types

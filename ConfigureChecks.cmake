@@ -4,16 +4,17 @@ CHECK_INCLUDE_FILE_CXX(direct.h HAVE_DIRECT_H)          # src/streamindexer/file
 CHECK_INCLUDE_FILE_CXX(dirent.h HAVE_DIRENT_H)          # src/streams/compat/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(dlfcn.h HAVE_DLFCN_H)            # src/streamindexer/analyzerloader.cpp/.h - do we really need it in .h?
 CHECK_INCLUDE_FILE_CXX(ndir.h HAVE_NDIR_H)              # src/streams/compat/stgdirent.cpp/.h
-CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # src/streamindexer/indexeddocument.h - why?
-CHECK_INCLUDE_FILE_CXX(socket.h HAVE_SOCKET_H)          # unused !
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)          # unused !
-CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, jstreamsconfig.h
 CHECK_INCLUDE_FILE_CXX(sys/dir.h HAVE_SYS_DIR_H)        # src/streams/compat/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)      # src/streams/compat/stgdirent.cpp/.h
-CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)  # unused !
-CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)    # unused !
-CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)          # src/streamindexer/pluginendanalyzer.cpp
 CHECK_INCLUDE_FILE_CXX(windows.h HAVE_WINDOWS_H)        # src/streamindexer/filelister.cpp
+
+# files that may define the u?int{8,16,32,54}_t types
+CHECK_INCLUDE_FILE_CXX(socket.h HAVE_SOCKET_H)
+CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)
+CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)          # src/streamindexer/pluginendanalyzer.cpp
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, jstreamsconfig.h
 
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
@@ -35,9 +36,6 @@ INCLUDE(TestForANSIForScope)
 if(HAVE_SOCKET_H)
   set(type_check_includes ${type_check_includes} socket.h)
 endif(HAVE_SOCKET_H)
-if(HAVE_STDINT_H)
-  set(type_check_includes ${type_check_includes} stdint.h)
-endif(HAVE_STDINT_H)
 if(HAVE_SYS_SOCKET_H)
   set(type_check_includes ${type_check_includes} sys/socket.h)
 endif(HAVE_SYS_SOCKET_H)
@@ -47,6 +45,9 @@ endif(HAVE_SYS_TYPES_H)
 if(HAVE_UNISTD_H)
   set(type_check_includes ${type_check_includes} unistd.h)
 endif(HAVE_UNISTD_H)
+if(HAVE_STDINT_H)
+  set(type_check_includes ${type_check_includes} stdint.h)
+endif(HAVE_STDINT_H)
 
 SET(CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES} ${type_check_includes})
 CHECK_TYPE_SIZE(int16_t     INT16_T)
