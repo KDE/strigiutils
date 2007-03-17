@@ -172,7 +172,6 @@ StreamAnalyzer::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
         = moduleLoader->getStreamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
-        fprintf(stderr, "YO\n");
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         fprintf(stderr, "adding %s\n", (*i)->getName());
         addFactory(*i);
