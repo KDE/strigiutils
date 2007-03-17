@@ -44,7 +44,7 @@ InputStreamReaderTest(int argc, char* argv[]) {
     }
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("chinese_ucs2.txt");
-        InputStreamReader isr(&file, "UCS2");
+        InputStreamReader isr(&file, "UCS-2");
         wcharinputstreamtests[i](&isr);
     }
     for (int i=0; i<17; ++i) {
@@ -54,14 +54,14 @@ InputStreamReaderTest(int argc, char* argv[]) {
         filename += testfiles[i];
         filename += ".htm";
         FileInputStream file(filename.c_str());
-        InputStreamReader isr(&file, "UCS2");
+        InputStreamReader isr(&file, "UCS-2");
         int32_t nread1 = isr.read(p1, 200000, 200000);
 
         filename = "unichtm/utf8/";
         filename += testfiles[i];
         filename += ".htm";
         FileInputStream file2(filename.c_str());
-        InputStreamReader isr2(&file2, "UTF8");
+        InputStreamReader isr2(&file2, "UTF-8");
         int32_t nread2 = isr2.read(p2, 200000, 200000);
 
         VERIFY(nread1 == nread2);
