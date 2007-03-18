@@ -35,6 +35,9 @@ CpioEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if(!in)
+        return -1;
+
     CpioInputStream cpio(in);
     InputStream *s = cpio.nextEntry();
     if (cpio.getStatus()) {

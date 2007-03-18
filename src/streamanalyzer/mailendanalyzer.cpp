@@ -43,6 +43,9 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if(!in)
+        return -1;
+
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
     if (mail.getStatus() == Error) {

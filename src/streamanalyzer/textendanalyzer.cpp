@@ -60,6 +60,9 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 
 char
 TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if(!in)
+        return -1;
+
     if (idx.encoding().length()) {
 //        fprintf(stderr, "%s\n", idx.encoding().c_str());
     }

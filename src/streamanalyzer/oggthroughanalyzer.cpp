@@ -44,6 +44,9 @@ readSize(const char*b) {
 }
 InputStream*
 OggThroughAnalyzer::connectInputStream(InputStream* in) {
+    if(!in)
+        return in;
+
     const char* buf;
     // read 1024 initially
     int32_t nreq = 1024;

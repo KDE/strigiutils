@@ -40,6 +40,9 @@ Bz2EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if(!in)
+        return -1;
+
     BZ2InputStream stream(in);
 /*    char r = testStream(&stream);
     if (r) {

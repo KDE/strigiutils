@@ -40,6 +40,9 @@ TarEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 char
 TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
+    if(!in)
+        return -1;
+
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {

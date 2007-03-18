@@ -40,6 +40,9 @@ ArEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 char
 ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
+    if(!in)
+        return -1;
+
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {

@@ -41,6 +41,9 @@ DigestThroughAnalyzer::~DigestThroughAnalyzer() {
 }
 InputStream *
 DigestThroughAnalyzer::connectInputStream(InputStream *in) {
+    if(!in)
+        return in;
+
     if (stream) {
         delete stream;
     }

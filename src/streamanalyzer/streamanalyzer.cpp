@@ -247,25 +247,32 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     bool finished = false;
     int32_t headersize = 1024;
     const char* header;
-    headersize = input->read(header, headersize, headersize);
-    if (input->reset(0) != 0) {
-        fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
-            input->getPosition(), input->getStatus());
+    if (input) {
+        headersize = input->read(header, headersize, headersize);
+        if (input->reset(0) != 0) {
+            fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
+                input->getPosition(), input->getStatus());
+        }
+        if (headersize < 0) finished = true;
+    } else {
+        // indicate that we have no data in the stream
+        headersize = -1;
     }
-    if (headersize < 0) finished = true;
     int es = 0, size = eIter->size();
     while (!finished && es != size) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {
             char ar = sea->analyze(idx, input);
             if (ar) {
-                int64_t pos = input->reset(0);
-                if (pos != 0) { // could not reset
-                    fprintf(stderr, "could not reset stream of %s from pos "
-                        "%lli to 0 after reading with %s: %s\n",
-                        idx.path().c_str(), input->getPosition(),
-                        sea->getName(), sea->getError().c_str());
-                    finished = true;
+                if (input) {
+                    int64_t pos = input->reset(0);
+                    if (pos != 0) { // could not reset
+                        fprintf(stderr, "could not reset stream of %s from pos "
+                            "%lli to 0 after reading with %s: %s\n",
+                            idx.path().c_str(), input->getPosition(),
+                            sea->getName(), sea->getError().c_str());
+                        finished = true;
+                    }
                 }
             } else {
                 finished = true;
@@ -274,31 +281,31 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         }
         es++;
     }
-    // make sure the entire stream is read if the size is not known
-    bool ready;
-    tIter = through.begin() + idx.depth();
-    do {
-        ready = input->getSize() != -1;
-        std::vector<StreamThroughAnalyzer*>::iterator ts;
-        for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
-            ready = (*ts)->isReadyWithStream();
+    if (input) {
+        // make sure the entire stream is read if the size is not known
+        bool ready;
+        tIter = through.begin() + idx.depth();
+        do {
+            ready = input->getSize() != -1;
+            std::vector<StreamThroughAnalyzer*>::iterator ts;
+            for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
+                ready = (*ts)->isReadyWithStream();
+            }
+            if (!ready) {
+                input->skip(1000000);
+            }
+        } while (!ready && input->getStatus() == Ok);
+        if (input->getStatus() == Error) {
+            fprintf(stderr, "Error: %s\n", input->getError());
+            removeIndexable(idx.depth());
+            return -2;
         }
-        if (!ready) {
-            input->skip(1000000);
-        }
-    } while (!ready && input->getStatus() == Ok);
-    if (input->getStatus() == Error) {
-        fprintf(stderr, "Error: %s\n", input->getError());
-        removeIndexable(idx.depth());
-        return -2;
     }
 
     // store the size of the stream
-    {
-        //tmp scope out tmp mem
-        char tmp[100];
-        sprintf(tmp, "%lli", input->getSize());
-        idx.setField(sizefield, tmp);
+    if (input) {
+        // TODO remove cast
+        idx.setField(sizefield, (uint32_t)input->getSize());
     }
 
     // remove references to the indexable before it goes out of scope

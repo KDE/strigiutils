@@ -58,6 +58,9 @@ readSize(const unsigned char* b, bool async) {
 }
 jstreams::InputStream*
 ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
+    if(!in)
+        return in;
+
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);

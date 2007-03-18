@@ -39,6 +39,9 @@ GZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+    if(!in)
+        return -1;
+
     GZipInputStream stream(in);
     // since this is gzip file, its likely that it contains a tar file
     const char* start;

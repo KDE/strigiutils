@@ -37,6 +37,9 @@ MimeTypeThroughAnalyzer::~MimeTypeThroughAnalyzer() {
 }
 ::InputStream *
 MimeTypeThroughAnalyzer::connectInputStream(::InputStream *in) {
+    if(!in)
+        return 0;
+
     // determine the mimetype
     const char* mime;
     int64_t pos = in->getPosition();

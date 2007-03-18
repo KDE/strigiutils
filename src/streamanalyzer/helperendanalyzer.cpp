@@ -137,6 +137,9 @@ HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
+    if(!in)
+        return -1;
+
     char state = -1;
     const char* b;
     int32_t nread = in->read(b, 1024, 0);
