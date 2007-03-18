@@ -123,13 +123,23 @@
 #endif
 
 #if !@HAVE_SIZE_T@
- typedef int size_t;
- #define HAVE_SIZE_T 1
+ #ifndef _SIZE_T_DEFINED 
+  #ifndef HAVE_SIZE_T
+   typedef unsigned int size_t;
+   #define HAVE_SIZE_T 1
+  #endif
+  #define _SIZE_T_DEFINED 1     // kdewin32 define
+ #endif
 #endif
 
 #if !@HAVE_SSIZE_T@
- typedef signed int ssize_t;
- #define HAVE_SSIZE_T 1
+ #ifndef _SSIZE_T_DEFINED 
+  #ifndef HAVE_SSIZE_T
+   typedef signed int ssize_t;
+   #define HAVE_SSIZE_T 1
+  #endif
+  #define _SSIZE_T_DEFINED 1    // kdewin32 define
+ #endif
 #endif
 
 #cmakedefine __STRIGI_HAVE_GCC_VISIBILITY
