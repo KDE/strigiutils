@@ -1,3 +1,5 @@
 * remove all read[24]bytes functions, they are not required any more
   we now use readLittleEndianUInt32_t etc.
-# add KFileMetaInfo::suffix() again (dfaure)
+* remove cnstr from registeredfield
+* remove jstreams namespace
+* seek and destroy getFoo (but not in StreamBase yet)
