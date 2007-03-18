@@ -57,6 +57,7 @@ AnalyzerLoader::Module::~Module() {
     }
     DLCLOSE(mod);
 }
+
 void
 AnalyzerLoader::loadPlugins(const char* d) {
     DIR *dir = opendir(d);
@@ -109,7 +110,11 @@ AnalyzerLoader::loadModule(const char* lib) {
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())
         DLSYM(handle, "getStrigiAnalyzerFactory");
     if (!f) {
+#ifndef WIN32
         fprintf(stderr, "%s\n", dlerror());
+#else
+        fprintf(stderr, "GetLastError: %d\n", GetLastError());
+#endif
         DLCLOSE(handle);
         return;
     }

@@ -41,7 +41,10 @@ IF(MSVC)
     # msvc2005 deprecated warnings
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
     # some export related warnings
-    ADD_DEFINITIONS(-wd4251 -wd4275)
+    ADD_DEFINITIONS(-wd4251) # 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2'
+    ADD_DEFINITIONS(-wd4275) # non – DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
+    ADD_DEFINITIONS(-wd4503) # decorated name length exceeded
+    ADD_DEFINITIONS(-wd4786) # identifier was truncated to '255' characters in the debug information
 ELSE(MSVC)
     IF (NOT WIN32)
       add_definitions (-fPIC)
@@ -149,11 +152,13 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 # check for visibility support
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag(-fvisibility=hidden __STRIGI_HAVE_GCC_VISIBILITY)
+if (CMAKE_COMPILER_IS_GNUCXX)
+  include(CheckCXXCompilerFlag)
+  check_cxx_compiler_flag(-fvisibility=hidden __STRIGI_HAVE_GCC_VISIBILITY)
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
 include(ConfigureChecks.cmake)
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
 CONFIGURE_FILE(
   "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"

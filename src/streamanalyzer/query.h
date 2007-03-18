@@ -25,10 +25,6 @@
 
 #include "jstreamsconfig.h"
 
-#ifdef _WIN32
-typedef int int32_t;
-#endif
-
 namespace Strigi {
 /**
  * Break up a string in a query.

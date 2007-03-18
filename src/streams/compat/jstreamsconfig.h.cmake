@@ -122,6 +122,15 @@
  #define HAVE_SOCKLEN_T 1
 #endif
 
+#if !@HAVE_SIZE_T@
+ typedef int size_t;
+ #define HAVE_SIZE_T 1
+#endif
+
+#if !@HAVE_SSIZE_T@
+ typedef signed int ssize_t;
+ #define HAVE_SSIZE_T 1
+#endif
 
 #cmakedefine __STRIGI_HAVE_GCC_VISIBILITY
 

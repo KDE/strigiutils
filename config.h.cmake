@@ -52,22 +52,7 @@
 //////////////////////////////
 //missing functions
 //////////////////////////////
-
-#ifndef HAVE_ISBLANK
-STREAMS_EXPORT bool isblank(char c);
-#endif
-
-#ifndef HAVE_STRCASECMP
-STREAMS_EXPORT int strcasecmp(const char *s1, const char *s2);
-#endif
-
-#ifndef HAVE_STRNCASECMP
-STREAMS_EXPORT int strncasecmp(const char *s1, const char *s2, int l);
-#endif
-
-#ifndef HAVE_STRCASESTR
-STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
-#endif
+#include "src/streams/compat/compat.h"
 
 //////////////////////////////
 //misc
@@ -94,12 +79,6 @@ STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
  #if !defined(snprintf) && !defined(__MINGW32__)
     #define snprintf _snprintf
  #endif
- 
-//for some reason linux is not picking up HAVE_SSIZE_T properly
-//but windows always needs it... hack ack
-#ifndef HAVE_SSIZE_T
-    typedef size_t ssize_t;
-#endif
 #endif
 
 #ifndef S_ISREG
@@ -142,15 +121,6 @@ STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
 	#ifndef strigi_nanosleep
 	    #define strigi_nanosleep(nanoseconds) Sleep(nanoseconds/1000000)
 	#endif
-
-	#if (_MSC_VER == 1200)
-		#pragma warning(disable: 4503) //decorated name length exceeded
-		#pragma warning(disable: 4786) //identifier was truncated to '255' characters in the debug information
-	#endif
-#endif
-
-#ifdef _MINGW
- #define wchar_t TCHAR
 #endif
 
 #include "jstreamsconfig.h"

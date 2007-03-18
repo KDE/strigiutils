@@ -13,7 +13,7 @@
 
 #if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include <windows.h>
 #include <io.h>
 
