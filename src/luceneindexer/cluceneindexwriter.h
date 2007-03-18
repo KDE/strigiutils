@@ -45,7 +45,13 @@ protected:
         const Strigi::RegisteredField* field, const std::string& value);
     void addField(const Strigi::AnalysisResult*,
         const Strigi::RegisteredField* fieldname,
-        const unsigned char* data, int32_t size) {}
+        const unsigned char* data, uint32_t size) {}
+    void addField(const Strigi::AnalysisResult*,
+        const Strigi::RegisteredField* fieldname, uint32_t value) {}
+    void addField(const Strigi::AnalysisResult*,
+        const Strigi::RegisteredField* fieldname, int32_t value) {}
+    void addField(const Strigi::AnalysisResult*,
+        const Strigi::RegisteredField* fieldname, double value) {}
     void initWriterData(const Strigi::FieldRegister& f);
     void releaseWriterData(const Strigi::FieldRegister& f);
 public:

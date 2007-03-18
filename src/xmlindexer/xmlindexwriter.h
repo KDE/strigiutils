@@ -165,31 +165,31 @@ private:
         }
     }
 protected:
-    void startAnalysis(Strigi::AnalysisResult* idx) {
+    void startAnalysis(Strigi::AnalysisResult* ar) {
         void* m = new Data();
-        idx->setWriterData(m);
+        ar->setWriterData(m);
     }
     void printValue(const Strigi::RegisteredField* name, std::string& value) {
         const Tag* tag = static_cast<const Tag*>(name->getWriterData());
         escape(value);
         out << tag->open << value << tag->close;
     }
-    void finishAnalysis(const Strigi::AnalysisResult* idx) {
-        Data* d = static_cast<Data*>(idx->writerData());
-        const Strigi::FieldRegister& fr = idx->config().getFieldRegister();
-        std::string v = idx->path();
+    void finishAnalysis(const Strigi::AnalysisResult* ar) {
+        Data* d = static_cast<Data*>(ar->writerData());
+        const Strigi::FieldRegister& fr = ar->config().getFieldRegister();
+        std::string v = ar->path();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")
             << "='" << v << "' " << mapping.map("mtime") << "='"
-            << (int)idx->mTime()
+            << (int)ar->mTime()
             << "'>\n";
 
-        if (idx->mimeType().size()) {
-            v.assign(idx->mimeType());
+        if (ar->mimeType().size()) {
+            v.assign(ar->mimeType());
             printValue(fr.mimetypeField, v);
         }
-        if (idx->encoding().size()) {
-            v.assign(idx->encoding());
+        if (ar->encoding().size()) {
+            v.assign(ar->encoding());
             printValue(fr.encodingField, v);
         }
 
@@ -200,7 +200,7 @@ protected:
             printValue(i->first, i->second);
         }
         std::ostringstream oss;
-        oss << (int)idx->depth();
+        oss << (int)ar->depth();
         v = oss.str();
         printValue(fr.embeddepthField, v);
         if (d->text.size() > 0) {
@@ -211,29 +211,49 @@ protected:
         out << " </" << mapping.map("file") << ">\n";
         delete d;
     }
-    void addText(const Strigi::AnalysisResult* idx, const char* text,
+    void addText(const Strigi::AnalysisResult* ar, const char* text,
         int32_t length) {
-        Data* d = static_cast<Data*>(idx->writerData());
+        Data* d = static_cast<Data*>(ar->writerData());
         d->text.append(text, length);
     }
-    void addField(const Strigi::AnalysisResult* idx,
+    void addField(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, const std::string& value) {
-        Data* d = static_cast<Data*>(idx->writerData());
+        Data* d = static_cast<Data*>(ar->writerData());
         d->values.insert(
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, value));
     }
-    void addField(const Strigi::AnalysisResult* idx,
+    void addField(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field,
-        const unsigned char* data, int32_t size) {
-        Data* d = static_cast<Data*>(idx->writerData());
+            const unsigned char* data, uint32_t size) {
+        Data* d = static_cast<Data*>(ar->writerData());
         d->values.insert(
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, std::string((const char*)data, size)));
     }
-    void addField(const Strigi::AnalysisResult* idx,
+    void addField(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, uint32_t value) {
-        Data* d = static_cast<Data*>(idx->writerData());
+        Data* d = static_cast<Data*>(ar->writerData());
+        static std::ostringstream v;
+        v.str("");
+        v << value;
+        d->values.insert(
+            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            field, v.str()));
+    }
+    void addField(const Strigi::AnalysisResult* ar,
+            const Strigi::RegisteredField* field, int32_t value) {
+        Data* d = static_cast<Data*>(ar->writerData());
+        static std::ostringstream v;
+        v.str("");
+        v << value;
+        d->values.insert(
+            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            field, v.str()));
+    }
+    void addField(const Strigi::AnalysisResult* ar,
+            const Strigi::RegisteredField* field, double value) {
+        Data* d = static_cast<Data*>(ar->writerData());
         static std::ostringstream v;
         v.str("");
         v << value;

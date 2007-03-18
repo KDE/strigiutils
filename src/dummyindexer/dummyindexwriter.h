@@ -28,44 +28,50 @@ class DummyIndexWriter : public Strigi::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startAnalysis(Strigi::AnalysisResult* idx) {
+    void startAnalysis(Strigi::AnalysisResult* ar) {
         if (verbosity >= 1) {
-            printf("%s\n", idx->path().c_str());
+            printf("%s\n", ar->path().c_str());
         }
         if (verbosity == -1) { // sha1 mode
             std::string* s = new std::string();
-            idx->setWriterData(s);
+            ar->setWriterData(s);
         }
     }
-    void finishAnalysis(const Strigi::AnalysisResult* idx) {
+    void finishAnalysis(const Strigi::AnalysisResult* ar) {
         if (verbosity == -1) { // sha1 mode
             const std::string* s = static_cast<const std::string*>(
-                idx->writerData());
-            printf("%s\t%s\n", idx->path().c_str(), s->c_str());
+                ar->writerData());
+            printf("%s\t%s\n", ar->path().c_str(), s->c_str());
             delete s;
         }
     }
-    void addText(const Strigi::AnalysisResult* idx, const char* text,
+    void addText(const Strigi::AnalysisResult* ar, const char* text,
         int32_t length) {
         if (verbosity > 2) {
-            printf("%s: addText '%.*s'\n", idx->path().c_str(), length,
+            printf("%s: addText '%.*s'\n", ar->path().c_str(), length,
                 text);
         }
     }
-    void addField(const Strigi::AnalysisResult* idx,
+    void addField(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* field, const std::string& value) {
         if (verbosity > 1) {
-            printf("%s: setField '%s': '%s'\n", idx->path().c_str(),
+            printf("%s: setField '%s': '%s'\n", ar->path().c_str(),
                 field->getKey().c_str(), value.c_str());
         } else if (verbosity == -1
                 && strcmp(field->getKey().c_str(), "sha1") == 0) {
-            std::string* s = static_cast<std::string*>(idx->writerData());
+            std::string* s = static_cast<std::string*>(ar->writerData());
             *s = value;
         }
     }
-    void addField(const Strigi::AnalysisResult* idx,
+    void addField(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, const unsigned char* data,
-        int32_t size) {}
+        uint32_t size) {}
+    void addField(const Strigi::AnalysisResult* ar,
+        const Strigi::RegisteredField* fieldname, uint32_t value) {}
+    void addField(const Strigi::AnalysisResult* ar,
+        const Strigi::RegisteredField* fieldname, int32_t value) {}
+    void addField(const Strigi::AnalysisResult* ar,
+        const Strigi::RegisteredField* fieldname, double value) {}
 public:
     DummyIndexWriter(int v = 0) {
         verbosity = v;
