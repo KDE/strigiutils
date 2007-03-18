@@ -22,3 +22,10 @@ if (Magic_FOUND)
   install(TARGETS magic LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 endif (Magic_FOUND)
 
+add_library(xpm MODULE xpmthroughanalyzer.cpp)
+set_target_properties(xpm PROPERTIES
+  PREFIX strigita_
+  VERSION ${STRIGI_VERSION}
+  SOVERSION ${STRIGI_VERSION_MAJOR})
+target_link_libraries(xpm streamanalyzer)
+install(TARGETS xpm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
