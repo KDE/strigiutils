@@ -23,6 +23,12 @@
 #include <map>
 #include "jstreamsconfig.h"
 
+// #define NO_CNSTR
+#ifdef NO_CNSTR
+#include <string>
+typedef std::string cnstr;
+#else /*NO_CNSTR*/
+
 /**
  * This class is a memory saving, performance increasing class for working
  * with constant strings. Equal strings only take up memory
@@ -132,5 +138,5 @@ public:
         return (pos->first) ? strlen(pos->first) :0;
     }
 };
-
 #endif
+#endif /*NO_CNSTR*/
