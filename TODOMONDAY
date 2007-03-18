@@ -2,4 +2,5 @@
   we now use readLittleEndianUInt32_t etc.
 * remove cnstr from registeredfield
 * remove jstreams namespace
-* seek and destroy getFoo (but not in StreamBase yet)
+* seek and replace getFoo() functions with foo() (but not in StreamBase yet)
+* make addField functions in IndexWriter pure virtual

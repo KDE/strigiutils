@@ -59,15 +59,15 @@ protected:
     virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void addText(const AnalysisResult*, const char* text, int32_t length)=0;
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
-        const std::string& value) = 0;
+        const std::string& value) {}
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
-        const unsigned char* data, uint32_t size) = 0;
+        const unsigned char* data, uint32_t size) {}
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
-        int32_t value) = 0;
+        int32_t value) {}
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
-        uint32_t value) = 0;
+        uint32_t value) {}
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
-        double value) = 0;
+        double value) {}
     virtual void finishAnalysis(const AnalysisResult*) = 0;
 public:
     virtual ~IndexWriter() {}
