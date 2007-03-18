@@ -17,17 +17,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include "jstreamsconfig.h"
 #include "analyzerfactoryfactory.h"
 
-#ifdef STRIGI_IMPORT_API
- #ifdef WIN32
-  #define STRIGI_PLUGIN_API __declspec(dllexport)
- #else
-  #define STRIGI_PLUGIN_API
- #endif
-#else
-  #error "You should add STRIGI_IMPORT_API to the top of you plugin, you should not include this header if your code is not a plugin"
-#endif
+/* @deprecated us STRIGI_EXPORT instead */
+#define STRIGI_PLUGIN_API STRIGI_EXPORT
+
 #define STRIGI_ANALYZER_FACTORY(CLASS) extern "C" { STRIGI_EXPORT \
     const Strigi::AnalyzerFactoryFactory* getStrigiAnalyzerFactory() { \
         return new CLASS(); \

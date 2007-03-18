@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXMANAGER_H
 #define CLUCENEINDEXMANAGER_H
 
-#include "cluceneindexer_export.h"
+#include "jstreamsconfig.h"
 #include "indexmanager.h"
 //#include "querybitset.h"
 #include <strigi_thread.h>

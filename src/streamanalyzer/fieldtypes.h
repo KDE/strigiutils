@@ -20,7 +20,7 @@
 #ifndef REGISTEREDFIELD_H
 #define REGISTEREDFIELD_H
 
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 #include "cnstr.h"
 
 namespace Strigi {

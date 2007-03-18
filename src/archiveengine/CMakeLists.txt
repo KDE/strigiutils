@@ -1,6 +1,7 @@
 include(${QT_USE_FILE})
 
-include_directories( ../streams ${BZIP2_INCLUDE_DIR})
+include_directories( ../streams ${strigi_BINARY_DIR}/src/streams/compat
+	${BZIP2_INCLUDE_DIR})
 
 add_library(archiveengine fsfileinputstream.cpp streamengine.cpp
         archivedirengine.cpp archiveengine.cpp archiveenginehandler.cpp)

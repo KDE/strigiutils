@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include "jstreamsconfig.h"
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 #include "streamanalyzer.h"
 
 namespace jstreams {

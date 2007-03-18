@@ -20,7 +20,7 @@
 #ifndef FILEINPUTSTREAM_H
 #define FILEINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
 namespace jstreams {

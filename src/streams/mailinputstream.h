@@ -20,7 +20,7 @@
 #ifndef MAILINPUTSTREAM_H
 #define MAILINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "substreamprovider.h"
 #include <stack>
 

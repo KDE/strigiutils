@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXREADER_H
 #define CLUCENEINDEXREADER_H
 
-#include "cluceneindexer_export.h"
+#include "jstreamsconfig.h"
 #include "indexreader.h"
 
 #include <map>

@@ -21,7 +21,7 @@
 #define CNSTR_H
 
 #include <map>
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 
 /**
  * This class is a memory saving, performance increasing class for working

@@ -20,7 +20,7 @@
 #ifndef INDEXREADER_H
 #define INDEXREADER_H
 
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 #include "indexeddocument.h"
 #include <vector>
 

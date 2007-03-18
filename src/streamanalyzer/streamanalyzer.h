@@ -23,7 +23,7 @@
 #include <vector>
 #include <string>
 #include "cnstr.h"
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 
 namespace jstreams {
     template <class T> class StreamBase;

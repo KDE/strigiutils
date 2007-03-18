@@ -20,7 +20,7 @@
 #ifndef ARINPUTSTREAM_H
 #define ARINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "substreamprovider.h"
 
 namespace jstreams {

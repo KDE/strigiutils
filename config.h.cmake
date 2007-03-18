@@ -52,10 +52,6 @@
 //////////////////////////////
 //missing functions
 //////////////////////////////
-// better to move this to compat.h and
-// include export header there...
-
-#include "streams_export.h"   
 
 #ifndef HAVE_ISBLANK
 STREAMS_EXPORT bool isblank(char c);

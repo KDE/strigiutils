@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <string>
 
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 
 #ifdef _WIN32
 typedef unsigned int uid_t;

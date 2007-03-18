@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <string>
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 
 #define INT32MAX 0x7FFFFFFFL
 

@@ -19,7 +19,7 @@
  */
 #ifndef DIGESTINPUTSTREAM_H
 #define DIGESTINPUTSTREAM_H
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "streambase.h"
 #include <openssl/sha.h>
 

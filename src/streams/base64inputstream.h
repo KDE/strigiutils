@@ -20,7 +20,7 @@
 #ifndef BASE64INPUTSTREAM_H
 #define BASE64INPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
 namespace jstreams {

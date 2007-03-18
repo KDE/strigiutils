@@ -21,7 +21,7 @@
 #define SUBSTREAMPROVIDER
 
 #include <string>
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "streambase.h"
 
 namespace jstreams {

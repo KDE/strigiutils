@@ -20,7 +20,7 @@
 #ifndef SUBINPUTSTREAM_H
 #define SUBINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "streambase.h"
 
 namespace jstreams {

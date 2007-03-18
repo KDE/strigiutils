@@ -24,7 +24,7 @@
 #include <list>
 #include <vector>
 #include <string>
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "substreamprovider.h"
 
 namespace jstreams {

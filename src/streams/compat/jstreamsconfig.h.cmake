@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Christian Ehrlicher <ch.ehrlicher@gmx.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -121,6 +122,7 @@
  #define HAVE_SOCKLEN_T 1
 #endif
 
+
 #cmakedefine __STRIGI_HAVE_GCC_VISIBILITY
 
 /**
@@ -136,6 +138,36 @@
 #define STRIGI_EXPORT __declspec(dllexport)
 #else
 #define STRIGI_EXPORT
+#endif
+
+#ifdef _WIN32
+# ifdef MAKE_STREAMS_LIB
+#  define STREAMS_EXPORT __declspec(dllexport)
+# else
+#  define STREAMS_EXPORT __declspec(dllimport)
+# endif
+#else
+# define STREAMS_EXPORT
+#endif
+
+#ifdef _WIN32
+# ifdef MAKE_STREAMANALYZER_LIB
+#  define STREAMANALYZER_EXPORT __declspec(dllexport)
+# else
+#  define STREAMANALYZER_EXPORT __declspec(dllimport)
+# endif
+#else
+# define STREAMANALYZER_EXPORT
+#endif
+
+#ifdef _WIN32
+# ifdef MAKE_CLUCENEINDEXER_LIB
+#  define CLUCENEINDEXER_EXPORT __declspec(dllexport)
+# else
+#  define CLUCENEINDEXER_EXPORT __declspec(dllimport)
+# endif
+#else
+# define CLUCENEINDEXER_EXPORT
 #endif
 
 #endif //JSTREAMSCONFIG_H

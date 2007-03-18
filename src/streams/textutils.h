@@ -22,7 +22,7 @@
 
 #include <string>
 #include "jstreamsconfig.h"
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 
 namespace jstreams {
 

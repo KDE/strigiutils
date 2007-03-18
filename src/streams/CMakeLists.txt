@@ -65,7 +65,6 @@ install(FILES
 	inputstreamreader.h
 	stringreader.h
 	stringreader.h
-	streams_export.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
 	compat/timeofday.h
 	compat/strigi_fnmatch.h

@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXWRITER_H
 #define CLUCENEINDEXWRITER_H
 
-#include "cluceneindexer_export.h"
+#include "jstreamsconfig.h"
 #include "indexwriter.h"
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"

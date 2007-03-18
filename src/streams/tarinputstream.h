@@ -20,7 +20,7 @@
 #ifndef TARINPUTSTREAM_H
 #define TARINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "substreamprovider.h"
 
 namespace jstreams {

@@ -20,7 +20,7 @@
 #ifndef GZIPINPUTSTREAM_H
 #define GZIPINPUTSTREAM_H
 
-#include "streams_export.h"
+#include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
 struct z_stream_s;

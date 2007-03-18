@@ -23,7 +23,7 @@
 #include <set>
 #include <list>
 
-#include "streamanalyzer_export.h"
+#include "jstreamsconfig.h"
 
 #ifdef _WIN32
 typedef int int32_t;
