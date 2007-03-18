@@ -27,6 +27,7 @@
 #cmakedefine HAVE_FCHDIR 1
 #cmakedefine HAVE_GETTIMEOFDAY 1
 #cmakedefine HAVE_ISBLANK 1
+#cmakedefine HAVE_MKSTEMP 1
 #cmakedefine HAVE_NANOSLEEP 1
 #cmakedefine HAVE_STRCASECMP 1
 #cmakedefine HAVE_STRCASESTR 1
@@ -42,11 +43,12 @@
 //////////////////////////////
 //types
 //////////////////////////////
-#cmakedefine HAVE_INT64_T 1
+#cmakedefine HAVE_INT16_T 1
 #cmakedefine HAVE_INT32_T 1
-#cmakedefine HAVE_SIZE_T 1
+#cmakedefine HAVE_INT64_T 1
 #cmakedefine HAVE_UINT 1
 #cmakedefine HAVE_INTPTR_T 1
+#cmakedefine HAVE_SIZE_T 1
 #cmakedefine HAVE_SSIZE_T 1
 
 //////////////////////////////

@@ -21,8 +21,12 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+#ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+#endif
 
 #include "jstreamsconfig.h"
+#include "compat.h"
 #include "helperendanalyzer.h"
 #include "processinputstream.h"
 #include "textendanalyzer.h"
@@ -30,7 +34,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <unistd.h>
+
 using namespace Strigi;
 using namespace jstreams;
 using namespace std;
@@ -38,19 +42,6 @@ using namespace std;
 void
 HelperEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
-
-#ifdef WIN32
-    // FIXME! move to compat!
-    #include <fcntl.h>
-    #include <windows.h>
-    int mkstemp(char *tmpl)
-    {
-       mktemp(tmpl);
-       return open(tmpl,O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
-    }
-#else
-    #include <unistd.h>
-#endif
 
 class HelperProgramConfig::HelperRecord {
 public:

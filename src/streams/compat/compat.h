@@ -43,4 +43,8 @@ STREAMS_EXPORT int strncasecmp(const char *s1, const char *s2, int l);
 STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
 #endif
 
+#ifndef HAVE_MKSTEMP
+STREAMS_EXPORT int mkstemp(char *tmpl);
+#endif
+
 #endif // _STRIGI_COMPAT_H

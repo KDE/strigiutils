@@ -23,22 +23,22 @@
 #define JSTREAMSCONFIG_H
 
 /* use the same includes for types finding as in ConfigureChecks.cmake */
-#ifdef HAVE_SOCKET_H
+#if @STRIGI_HAVE_SOCKET_H@
 #  include <sys/types.h>
 #endif
-#ifdef HAVE_SYS_SOCKET_H
+#if @STRIGI_HAVE_SYS_SOCKET_H@
 #  include <sys/socket.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
+#if @STRIGI_HAVE_SYS_TYPES_H@
 #  include <sys/types.h>
 #endif
-#ifdef HAVE_UNISTD_H
+#if @STRIGI_HAVE_UNISTD_H@
 #  include <unistd.h>
 #endif
-#ifdef HAVE_STDINT_H
+#if @STRIGI_HAVE_STDINT_H@
 #  include <stdint.h>
 #endif
-#ifdef HAVE_STDDEF_H
+#if @STRIGI_HAVE_STDDEF_H@
 #  include <stddef.h>
 #endif
 
@@ -145,38 +145,39 @@
 #define STRIGI_EXPORT __attribute__ ((visibility("default")))
 #elif defined(_WIN32) || defined(_WIN64)
 #define STRIGI_EXPORT __declspec(dllexport)
+#define STRIGI_IMPORT __declspec(dllimport)
 #else
 #define STRIGI_EXPORT
 #endif
 
 #ifdef _WIN32
 # ifdef MAKE_STREAMS_LIB
-#  define STREAMS_EXPORT __declspec(dllexport)
+#  define STREAMS_EXPORT STRIGI_EXPORT
 # else
-#  define STREAMS_EXPORT __declspec(dllimport)
+#  define STREAMS_EXPORT STRIGI_IMPORT
 # endif
 #else
-# define STREAMS_EXPORT
+# define STREAMS_EXPORT STRIGI_EXPORT
 #endif
 
 #ifdef _WIN32
 # ifdef MAKE_STREAMANALYZER_LIB
-#  define STREAMANALYZER_EXPORT __declspec(dllexport)
+#  define STREAMANALYZER_EXPORT STRIGI_EXPORT
 # else
-#  define STREAMANALYZER_EXPORT __declspec(dllimport)
+#  define STREAMANALYZER_EXPORT STRIGI_IMPORT
 # endif
 #else
-# define STREAMANALYZER_EXPORT
+# define STREAMANALYZER_EXPORT STRIGI_EXPORT
 #endif
 
 #ifdef _WIN32
 # ifdef MAKE_CLUCENEINDEXER_LIB
-#  define CLUCENEINDEXER_EXPORT __declspec(dllexport)
+#  define CLUCENEINDEXER_EXPORT STRIGI_EXPORT
 # else
-#  define CLUCENEINDEXER_EXPORT __declspec(dllimport)
+#  define CLUCENEINDEXER_EXPORT STRIGI_IMPORT
 # endif
 #else
-# define CLUCENEINDEXER_EXPORT
+# define CLUCENEINDEXER_EXPORT STRIGI_EXPORT
 #endif
 
 #endif //JSTREAMSCONFIG_H

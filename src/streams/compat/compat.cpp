@@ -107,3 +107,17 @@ bool isblank(char c){
     return false;
 }
 #endif
+
+
+#ifndef HAVE_MKSTEMP
+#ifdef _WIN32
+ #include <fcntl.h>
+ #include <sys/stat.h>
+#endif
+
+int mkstemp(char *tmpl)
+{
+   mktemp(tmpl);
+   return open(tmpl,O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
+}
+#endif

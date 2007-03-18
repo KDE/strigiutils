@@ -22,7 +22,12 @@
 
 #include <string>
 #include "jstreamsconfig.h"
-#include "jstreamsconfig.h"
+
+#ifdef __MINGW32__
+ #define STREAMS_INLINE_EXPORT
+#else
+ #define STREAMS_INLINE_EXPORT STREAMS_EXPORT
+#endif
 
 namespace jstreams {
 
@@ -37,22 +42,22 @@ STREAMS_EXPORT bool checkUtf8(const std::string&);
 STREAMS_EXPORT void convertNewLines(char* p);
 
 #ifdef __BIG_ENDIAN__
-inline STREAMS_EXPORT int16_t  readBigEndianInt16(const char* c) {
+inline STREAMS_INLINE_EXPORT int16_t  readBigEndianInt16(const char* c) {
     return *reinterpret_cast<const int16_t*>(c);
 }
-inline STREAMS_EXPORT uint16_t readBigEndianUInt16(const char* c) {
+inline STREAMS_INLINE_EXPORT uint16_t readBigEndianUInt16(const char* c) {
     return *reinterpret_cast<const uint16_t*>(c);
 }
-inline STREAMS_EXPORT int32_t  readBigEndianInt32(const char* c) {
+inline STREAMS_INLINE_EXPORT int32_t  readBigEndianInt32(const char* c) {
     return *reinterpret_cast<const int32_t*>(c);
 }
-inline STREAMS_EXPORT uint32_t readBigEndianUInt32(const char* c) {
+inline STREAMS_INLINE_EXPORT uint32_t readBigEndianUInt32(const char* c) {
     return *reinterpret_cast<const uint32_t*>(c);
 }
-inline STREAMS_EXPORT int64_t  readBigEndianInt64(const char* c) {
+inline STREAMS_INLINE_EXPORT int64_t  readBigEndianInt64(const char* c) {
     return *reinterpret_cast<const int64_t*>(c);
 }
-inline STREAMS_EXPORT uint64_t readBigEndianUInt64(const char* c) {
+inline STREAMS_INLINE_EXPORT uint64_t readBigEndianUInt64(const char* c) {
     return *reinterpret_cast<const uint64_t*>(c);
 }
 STREAMS_EXPORT int16_t  readLittleEndianInt16(const char* c);
@@ -62,22 +67,22 @@ STREAMS_EXPORT uint32_t readLittleEndianUInt32(const char* c);
 STREAMS_EXPORT int64_t  readLittleEndianInt64(const char* c);
 STREAMS_EXPORT uint64_t readLittleEndianUInt64(const char* c);
 #else
-inline STREAMS_EXPORT int16_t  readLittleEndianInt16(const char* c) {
+inline STREAMS_INLINE_EXPORT int16_t  readLittleEndianInt16(const char* c) {
     return *reinterpret_cast<const int16_t*>(c);
 }
-inline STREAMS_EXPORT uint16_t readLittleEndianUInt16(const char* c) {
+inline STREAMS_INLINE_EXPORT uint16_t readLittleEndianUInt16(const char* c) {
     return *reinterpret_cast<const uint16_t*>(c);
 }
-inline STREAMS_EXPORT int32_t  readLittleEndianInt32(const char* c) {
+inline STREAMS_INLINE_EXPORT int32_t  readLittleEndianInt32(const char* c) {
     return *reinterpret_cast<const int32_t*>(c);
 }
-inline STREAMS_EXPORT uint32_t readLittleEndianUInt32(const char* c) {
+inline STREAMS_INLINE_EXPORT uint32_t readLittleEndianUInt32(const char* c) {
     return *reinterpret_cast<const uint32_t*>(c);
 }
-inline STREAMS_EXPORT int64_t  readLittleEndianInt64(const char* c) {
+inline STREAMS_INLINE_EXPORT int64_t  readLittleEndianInt64(const char* c) {
     return *reinterpret_cast<const int64_t*>(c);
 }
-inline STREAMS_EXPORT uint64_t readLittleEndianUInt64(const char* c) {
+inline STREAMS_INLINE_EXPORT uint64_t readLittleEndianUInt64(const char* c) {
     return *reinterpret_cast<const uint64_t*>(c);
 }
 STREAMS_EXPORT int16_t  readBigEndianInt16(const char* c);
@@ -88,40 +93,40 @@ STREAMS_EXPORT int64_t  readBigEndianInt64(const char* c);
 STREAMS_EXPORT uint64_t readBigEndianUInt64(const char* c);
 #endif
 
-inline STREAMS_EXPORT int16_t  readLittleEndianInt16(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int16_t  readLittleEndianInt16(const unsigned char* c) {
     return readLittleEndianInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint16_t readLittleEndianUInt16(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint16_t readLittleEndianUInt16(const unsigned char* c) {
     return readLittleEndianUInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT int32_t  readLittleEndianInt32(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int32_t  readLittleEndianInt32(const unsigned char* c) {
     return readLittleEndianInt32(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint32_t readLittleEndianUInt32(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint32_t readLittleEndianUInt32(const unsigned char* c) {
     return readLittleEndianUInt32(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT int64_t  readLittleEndianInt64(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int64_t  readLittleEndianInt64(const unsigned char* c) {
     return readLittleEndianInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint64_t readLittleEndianUInt64(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint64_t readLittleEndianUInt64(const unsigned char* c) {
     return readLittleEndianUInt64(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT int16_t  readBigEndianInt16(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int16_t  readBigEndianInt16(const unsigned char* c) {
     return readBigEndianInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint16_t readBigEndianUInt16(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint16_t readBigEndianUInt16(const unsigned char* c) {
     return readBigEndianUInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT int32_t  readBigEndianInt32(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int32_t  readBigEndianInt32(const unsigned char* c) {
     return readBigEndianInt32(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint32_t readBigEndianUInt32(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint32_t readBigEndianUInt32(const unsigned char* c) {
     return readBigEndianUInt32(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT int64_t  readBigEndianInt64(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT int64_t  readBigEndianInt64(const unsigned char* c) {
     return readBigEndianInt16(reinterpret_cast<const char*>(c));
 }
-inline STREAMS_EXPORT uint64_t readBigEndianUInt64(const unsigned char* c) {
+inline STREAMS_INLINE_EXPORT uint64_t readBigEndianUInt64(const unsigned char* c) {
     return readBigEndianUInt64(reinterpret_cast<const char*>(c));
 }
 

@@ -21,6 +21,7 @@ INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)               # unused !
 CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)   # src/luceneindexer/cluceneindexmanager.cpp, src/luceneindexer/cluceneindexreader.cpp, src/streams/compat/timeofday.h
 CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)             # src/streams/mailinputstream.cpp, src/streams/compat/compat.cpp
+CHECK_FUNCTION_EXISTS(mkstemp HAVE_MKSTEMP)             # src/streamanalyzer/helperendanalyzer.cpp
 CHECK_FUNCTION_EXISTS(nanosleep HAVE_NANOSLEEP)         # src/storage/sqlitestorage.cpp, src/daemon/indexscheduler.cpp, src/searchclient/cmdlinestrigi.cpp
 CHECK_FUNCTION_EXISTS(strcasecmp HAVE_STRCASECMP)       # src/streamindexer/expatsaxendanalyzer.cpp, src/streamindexer/saxendanalyzer.cpp
 CHECK_FUNCTION_EXISTS(strcasestr HAVE_STRCASESTR)       # src/streams/mailinputstream.cpp
@@ -78,9 +79,16 @@ MACRO_BOOL_TO_01(HAVE_UINT64_T  HAVE_UINT64_T)
 MACRO_BOOL_TO_01(HAVE_UINT      HAVE_UINT)
 MACRO_BOOL_TO_01(HAVE_INTPTR_T  HAVE_INTPTR_T)
 MACRO_BOOL_TO_01(HAVE_SOCKLEN_T HAVE_SOCKLEN_T)
-MACRO_BOOL_TO_01(HAVE_STDINT_H  STRIGI_HAVE_STDINT_H)
+MACRO_BOOL_TO_01(HAVE_STDINT_H  HAVE_STDINT_H)
 MACRO_BOOL_TO_01(HAVE_SIZE_T    HAVE_SIZE_T)
 MACRO_BOOL_TO_01(HAVE_SSIZE_T   HAVE_SSIZE_T)
+
+MACRO_BOOL_TO_01(HAVE_SOCKET_H     STRIGI_HAVE_SOCKET_H)
+MACRO_BOOL_TO_01(HAVE_SYS_SOCKET_H STRIGI_HAVE_SYS_SOCKET_H)
+MACRO_BOOL_TO_01(HAVE_SYS_TYPES_H  STRIGI_HAVE_SYS_TYPES_H)
+MACRO_BOOL_TO_01(HAVE_UNISTD_H     STRIGI_HAVE_UNISTD_H)
+MACRO_BOOL_TO_01(HAVE_STDINT_H     STRIGI_HAVE_STDINT_H)
+MACRO_BOOL_TO_01(HAVE_STDDEF_H     STRIGI_HAVE_STDDEF_H)
 
 #now write out our configuration....
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
