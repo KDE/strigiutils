@@ -29,3 +29,11 @@ set_target_properties(xpm PROPERTIES
   SOVERSION ${STRIGI_VERSION_MAJOR})
 target_link_libraries(xpm streamanalyzer)
 install(TARGETS xpm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+
+add_library(xbm MODULE xbmthroughanalyzer.cpp)
+set_target_properties(xbm PROPERTIES
+  PREFIX strigita_
+  VERSION ${STRIGI_VERSION}
+  SOVERSION ${STRIGI_VERSION_MAJOR})
+target_link_libraries(xbm streamanalyzer)
+install(TARGETS xbm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
