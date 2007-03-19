@@ -67,8 +67,6 @@ install(FILES
 	stringreader.h
 	stringreader.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
-	compat/timeofday.h
-	compat/strigi_fnmatch.h
 	DESTINATION include/strigi
 )
 install(TARGETS streams
