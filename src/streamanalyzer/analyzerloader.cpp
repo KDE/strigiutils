@@ -34,21 +34,49 @@
 #define DLCLOSE FreeLibrary
 #endif
 
+#ifndef _WIN32
+typedef void* StgModuleType;
+#else
+#include <windows.h>
+typedef HMODULE StgModuleType;
+#endif
+
 using namespace std;
 using namespace Strigi;
 
-AnalyzerLoader::ModuleList AnalyzerLoader::modulelist;
+class AnalyzerLoader::Private {
+public:
+    class Module {
+    private:
+        const StgModuleType mod;
+    public:
+        Module(StgModuleType m, const AnalyzerFactoryFactory* f)
+            :mod(m), factory(f) {}
+        ~Module();
+        const AnalyzerFactoryFactory* factory;
+    };
+    class ModuleList {
+    public:
+        ModuleList();
+        ~ModuleList();
+        std::map<std::string, Module*> modules;
+    };
+    static ModuleList modulelist;
+    static void loadModule(const char* lib);
+};
 
-AnalyzerLoader::ModuleList::ModuleList() {
+AnalyzerLoader::Private::ModuleList AnalyzerLoader::Private::modulelist;
+
+AnalyzerLoader::Private::ModuleList::ModuleList() {
 }
-AnalyzerLoader::ModuleList::~ModuleList() {
+AnalyzerLoader::Private::ModuleList::~ModuleList() {
     map<string, Module*>::iterator i;
     for (i = modules.begin(); i != modules.end(); ++i) {
         delete i->second;
     }
 }
 
-AnalyzerLoader::Module::~Module() {
+AnalyzerLoader::Private::Module::~Module() {
     void(*f)(const AnalyzerFactoryFactory*)
         = (void(*)(const AnalyzerFactoryFactory*))
         DLSYM(mod, "deleteStrigiAnalyzerFactory");
@@ -84,7 +112,7 @@ AnalyzerLoader::loadPlugins(const char* d) {
             struct stat s;
             if (stat(plugin.c_str(), &s) == 0 && (S_IFREG & s.st_mode)) {
                 fprintf(stderr, "%s\n", plugin.c_str());
-                loadModule(plugin.c_str());
+                Private::loadModule(plugin.c_str());
             }
         }
         ent = readdir(dir);
@@ -92,9 +120,9 @@ AnalyzerLoader::loadPlugins(const char* d) {
     closedir(dir);
 }
 void
-AnalyzerLoader::loadModule(const char* lib) {
-    if (AnalyzerLoader::modulelist.modules.find(lib)
-            != AnalyzerLoader::modulelist.modules.end()) {
+AnalyzerLoader::Private::loadModule(const char* lib) {
+    if (AnalyzerLoader::Private::modulelist.modules.find(lib)
+            != AnalyzerLoader::Private::modulelist.modules.end()) {
         // module was already loaded
         return;
     }
@@ -118,13 +146,14 @@ AnalyzerLoader::loadModule(const char* lib) {
         DLCLOSE(handle);
         return;
     }
-    AnalyzerLoader::modulelist.modules[lib] = new Module(handle, f());
+    AnalyzerLoader::Private::modulelist.modules[lib] = new Module(handle, f());
 }
 list<StreamEndAnalyzerFactory*>
 AnalyzerLoader::getStreamEndAnalyzerFactories() {
     list<StreamEndAnalyzerFactory*> l;
-    map<string, Module*>::iterator i;
-    for (i = modulelist.modules.begin(); i != modulelist.modules.end(); ++i) {
+    map<string, Private::Module*>::iterator i;
+    for (i = Private::modulelist.modules.begin();
+            i != Private::modulelist.modules.end(); ++i) {
         list<StreamEndAnalyzerFactory*> ml
             = i->second->factory->getStreamEndAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
@@ -134,10 +163,35 @@ AnalyzerLoader::getStreamEndAnalyzerFactories() {
 list<StreamThroughAnalyzerFactory*>
 AnalyzerLoader::getStreamThroughAnalyzerFactories() {
     list<StreamThroughAnalyzerFactory*> l;
-    map<string, Module*>::iterator i;
-    for (i = modulelist.modules.begin(); i != modulelist.modules.end(); ++i) {
+    map<string, Private::Module*>::iterator i;
+    for (i = Private::modulelist.modules.begin();
+            i != Private::modulelist.modules.end(); ++i) {
         list<StreamThroughAnalyzerFactory*> ml
             = i->second->factory->getStreamThroughAnalyzerFactories();
+        copy(ml.begin(), ml.end(), back_inserter(l));
+    }
+    return l;
+}
+list<StreamSaxAnalyzerFactory*>
+AnalyzerLoader::getStreamSaxAnalyzerFactories() {
+    list<StreamSaxAnalyzerFactory*> l;
+    map<string, Private::Module*>::iterator i;
+    for (i = Private::modulelist.modules.begin();
+            i != Private::modulelist.modules.end(); ++i) {
+        list<StreamSaxAnalyzerFactory*> ml
+            = i->second->factory->getStreamSaxAnalyzerFactories();
+        copy(ml.begin(), ml.end(), back_inserter(l));
+    }
+    return l;
+}
+list<StreamLineAnalyzerFactory*>
+AnalyzerLoader::getStreamLineAnalyzerFactories() {
+    list<StreamLineAnalyzerFactory*> l;
+    map<string, Private::Module*>::iterator i;
+    for (i = Private::modulelist.modules.begin();
+            i != Private::modulelist.modules.end(); ++i) {
+        list<StreamLineAnalyzerFactory*> ml
+            = i->second->factory->getStreamLineAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;

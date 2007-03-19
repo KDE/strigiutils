@@ -22,40 +22,24 @@
 #include <map>
 #include <string>
 
-#ifndef _WIN32
-typedef void* StgModuleType;
-#else
-#include <windows.h>
-typedef HMODULE StgModuleType;
-#endif
-
 namespace Strigi {
-class AnalyzerFactoryFactory;
+
 class StreamEndAnalyzerFactory;
+class StreamSaxAnalyzerFactory;
+class StreamLineAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+
 class AnalyzerLoader {
-private:
-    class Module {
-    private:
-        const StgModuleType mod;
-    public:
-        Module(StgModuleType m, const AnalyzerFactoryFactory* f)
-            :mod(m), factory(f) {}
-        ~Module();
-        const AnalyzerFactoryFactory* factory;
-    };
-    class ModuleList {
-    public:
-        ModuleList();
-        ~ModuleList();
-        std::map<std::string, Module*> modules;
-    };
-    static ModuleList modulelist;
-    static void loadModule(const char* lib);
+    class Private;
 public:
     static void loadPlugins(const char* dir);
+
     std::list<StreamEndAnalyzerFactory*> getStreamEndAnalyzerFactories();
     std::list<StreamThroughAnalyzerFactory*>
         getStreamThroughAnalyzerFactories();
+    std::list<StreamSaxAnalyzerFactory*>
+        getStreamSaxAnalyzerFactories();
+    std::list<StreamLineAnalyzerFactory*>
+        getStreamLineAnalyzerFactories();
 };
 }

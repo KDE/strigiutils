@@ -22,6 +22,8 @@
 namespace Strigi {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+class StreamSaxAnalyzerFactory;
+class StreamLineAnalyzerFactory;
 
 /** An AnalyzerFactoryFactory returns lists of AnalyzerFactory instances
     for StreamThroughAnalyzers and StreamEndAnalyzers.
@@ -56,6 +58,30 @@ public:
     virtual std::list<StreamThroughAnalyzerFactory*>
             getStreamThroughAnalyzerFactories() const {
         std::list<StreamThroughAnalyzerFactory*> af;
+        return af;
+    }
+    /** Return instances of the StreamSaxAnalyzerFactories available in this
+        plugin.
+
+        The default implementation returns an empty list. A particular plugin
+        should subclass the AnalyzerFactoryFactory and overload this function
+        if it implements any StreamSaxAnalyzers.
+     */
+    virtual std::list<StreamSaxAnalyzerFactory*>
+            getStreamSaxAnalyzerFactories() const {
+        std::list<StreamSaxAnalyzerFactory*> af;
+        return af;
+    }
+    /** Return instances of the StreamLineAnalyzerFactories available in this
+        plugin.
+
+        The default implementation returns an empty list. A particular plugin
+        should subclass the AnalyzerFactoryFactory and overload this function
+        if it implements any StreamLineAnalyzers.
+     */
+    virtual std::list<StreamLineAnalyzerFactory*>
+            getStreamLineAnalyzerFactories() const {
+        std::list<StreamLineAnalyzerFactory*> af;
         return af;
     }
 };
