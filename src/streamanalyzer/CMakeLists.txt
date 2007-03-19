@@ -31,7 +31,6 @@ set(streamanalyzer_SRCS
 	cnstr.cpp
 	fieldtypes.cpp
 	streamanalyzer.cpp
-#	indexreader.cpp
 	filelister.cpp
 )
 
@@ -76,6 +75,8 @@ install(FILES
 	streamanalyzer.h
 	streamthroughanalyzer.h
 	streamendanalyzer.h
+	streamsaxanalyzer.h
+	streamlineanalyzer.h
 	analyzerfactoryfactory.h
 	indexwriter.h
 	analyzerconfiguration.h

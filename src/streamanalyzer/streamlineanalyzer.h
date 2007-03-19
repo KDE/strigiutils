@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMSAXANALYZER_H
-#define STREAMSAXANALYZER_H
+#ifndef STREAMLINEANALYZER_H
+#define STREAMLINEANALYZER_H
 
 #include "inputstream.h"
 
@@ -27,26 +27,21 @@ class StreamAnalyzer;
 class RegisteredField;
 class FieldRegister;
 
-class StreamSaxAnalyzer {
+class StreamLineAnalyzer {
 public:
-    virtual ~StreamSaxAnalyzer() {}
+    virtual ~StreamLineAnalyzer() {}
     virtual const char* getName() const = 0;
     virtual void startAnalysis(AnalysisResult&) = 0;
     virtual void endAnalysis() {}
-    virtual void startElement(const char* localname, const char* prefix,
-        const char* uri, int nb_namespaces, const char** namespaces,
-        int nb_attributes, int nb_defaulted, const char** attributes) {}
-    virtual void endElement(const char* localname, const char* prefix,
-        const char* uri) {}
-    virtual void characters(const char* data, uint32_t length) {}
+    virtual void handleLine(const char* data, uint32_t length) {}
 };
 
-class StreamSaxAnalyzerFactory {
+class StreamLineAnalyzerFactory {
 public:
-    virtual ~StreamSaxAnalyzerFactory() {}
+    virtual ~StreamLineAnalyzerFactory() {}
     virtual const char* getName() const = 0;
     virtual void registerFields(Strigi::FieldRegister&) = 0;
-    virtual StreamSaxAnalyzer* newInstance() const = 0;
+    virtual StreamLineAnalyzer* newInstance() const = 0;
 };
 
 
