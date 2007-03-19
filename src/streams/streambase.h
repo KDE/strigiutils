@@ -45,7 +45,7 @@ protected:
     std::string error;
     StreamStatus status;
 public:
-    StreamBaseBase() :size(-1), position(0), status(Ok){ }
+    StreamBaseBase() :size(-1), position(0), status(Ok) {}
     virtual ~StreamBaseBase() {}
     /**
      * @brief  Return a string representation of the last error.
@@ -141,31 +141,20 @@ public:
      *         be the desired position under all other circumstances.
      **/
     virtual int64_t reset(int64_t pos) = 0;
-    /**
-     * Deprecated function, it will be removed when we break binary compatiblity
-     * with clucene. Do not use this function.
-     **/
-    int64_t mark(int32_t readlimit) {
-        int64_t p = getPosition();
-        const T* ptr;
-        read(ptr, readlimit, -1);
-        return reset(p);
-    }
 };
-/* The default step in which the function StreamBase::skip skips throught the
- * stream. STRIGI_STREAMBASE_SKIPSTEP must be a valid int32_t.
- */
-#define STRIGI_STREAMBASE_SKIPSTEP 1024
 template <class T>
 int64_t
 StreamBase<T>::skip(int64_t ntoskip) {
-    const T *begin;
+    const T* begin;
     int32_t nread;
     int64_t skipped = 0;
-    while (ntoskip) {
-        int32_t step = (int32_t)((ntoskip > STRIGI_STREAMBASE_SKIPSTEP)
-                       ?STRIGI_STREAMBASE_SKIPSTEP :ntoskip);
-        nread = read(begin, 1, step);
+    while (ntoskip > 0) {
+        // make sure we do not overflow uint32_t
+        int32_t maxstep = (int32_t)((ntoskip > 10000000)
+                       ?10000000 :ntoskip);
+        // the default implementation is to simply read the data that we want
+        // to skip
+        nread = read(begin, 1, maxstep);
         if (nread < -1 ) {
             // an error occurred
             return nread;
