@@ -52,9 +52,6 @@ GZipCompressInputStream::GZipCompressInputStream(StreamBase<char>* input, int le
 
     // signal that we need to read into the buffer
     zstream->avail_out = 1;
-
-    // initialize the buffer
-    mark(262144);
 }
 GZipCompressInputStream::~GZipCompressInputStream() {
     dealloc();
