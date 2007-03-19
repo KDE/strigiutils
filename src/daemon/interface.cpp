@@ -150,7 +150,7 @@ Interface::indexFile(const string &path, uint64_t mtime,
     StreamAnalyzer streamindexer(ic);
     StringReader<char> sr(&content[0], content.size(), false);
     AnalysisResult idx(path, mtime, *writer, streamindexer);
-    idx.index(sr);
+    idx.index(&sr);
 }
 vector<string>
 Interface::getFieldNames() {
