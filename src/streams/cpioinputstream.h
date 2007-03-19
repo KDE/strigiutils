@@ -32,7 +32,6 @@ private:
     char padding;
 
     void readHeader();
-    static int32_t read4bytes(const unsigned char *b);
     int32_t readHexField(const char *b);
 public:
     explicit CpioInputStream(StreamBase<char>* input);

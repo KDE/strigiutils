@@ -23,6 +23,7 @@
 #include "gzipinputstream.h"
 #include "bz2inputstream.h"
 #include "subinputstream.h"
+#include "textutils.h"
 
 #include <list>
 
@@ -66,8 +67,8 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
         status = Error;
         return;
     }
-    int32_t nindex = read4bytes((const unsigned char*)(b+8));
-    int32_t hsize = read4bytes((const unsigned char*)(b+12));
+    int32_t nindex = readBigEndianInt32(b+8);
+    int32_t hsize = readBigEndianInt32(b+12);
     int32_t sz = nindex*16+hsize;
     if (sz%8) {
         sz+=8-sz%8;
@@ -80,8 +81,8 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
         status = Error;
         return;
     }
-    nindex = read4bytes((const unsigned char*)(b+8));
-    hsize = read4bytes((const unsigned char*)(b+12));
+    nindex = readBigEndianInt32(b+8);
+    hsize = readBigEndianInt32(b+12);
     int32_t size = nindex*16+hsize;
     if (input->read(b, size, size) != size) {
         error = "could not read header\n";
@@ -90,16 +91,16 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     }
     for (int32_t i=0; i<nindex; ++i) {
         const unsigned char* e = (const unsigned char*)b+i*16;
-        int32_t tag = read4bytes(e);
-        int32_t type = read4bytes(e+4);
-        int32_t offset = read4bytes(e+8);
+        int32_t tag = readBigEndianInt32(e);
+        int32_t type = readBigEndianInt32(e+4);
+        int32_t offset = readBigEndianInt32(e+8);
         if (offset < 0 || offset >= hsize) {
             // error: invalid offset
         }
-        int32_t count = read4bytes(e+12);
+        int32_t count = readBigEndianInt32(e+12);
         int32_t end = hsize;
         if (i < nindex-1) {
-            end = read4bytes(e+8+16);
+            end = readBigEndianInt32(e+8+16);
         }
         if (end < offset) end = offset;
         if (end > hsize) end = hsize;
@@ -156,8 +157,4 @@ RpmInputStream::nextEntry() {
         error = cpio->getError();
     }
     return entry;
-}
-int32_t
-RpmInputStream::read4bytes(const unsigned char *b) {
-    return (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3];
 }

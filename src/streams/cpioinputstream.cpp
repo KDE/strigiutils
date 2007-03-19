@@ -57,10 +57,6 @@ CpioInputStream::nextEntry() {
     entrystream = new SubInputStream(input, entryinfo.size);
     return (status) ?0 :entrystream;
 }
-int32_t
-CpioInputStream::read4bytes(const unsigned char *b) {
-    return (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3];
-}
 void
 CpioInputStream::readHeader() {
     //const unsigned char *hb;

@@ -36,7 +36,6 @@ private:
     class RpmHeaderInfo;
     RpmHeaderInfo *headerinfo;
 
-    static int32_t read4bytes(const unsigned char *b);
 public:
     explicit RpmInputStream(StreamBase<char>* input);
     ~RpmInputStream();
