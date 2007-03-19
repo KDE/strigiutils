@@ -46,7 +46,7 @@ ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {
-        idx.indexChild(ar.getEntryInfo().filename, ar.getEntryInfo().mtime, *s);
+        idx.indexChild(ar.getEntryInfo().filename, ar.getEntryInfo().mtime, s);
         s = ar.nextEntry();
     }
     if (ar.getStatus() == Error) {

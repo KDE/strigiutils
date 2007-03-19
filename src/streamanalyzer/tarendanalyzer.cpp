@@ -47,7 +47,7 @@ TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     InputStream *s = tar.nextEntry();
     while (s) {
         idx.indexChild(tar.getEntryInfo().filename, tar.getEntryInfo().mtime,
-            *s);
+            s);
         s = tar.nextEntry();
     }
     if (tar.getStatus() == Error) {

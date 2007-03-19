@@ -60,7 +60,7 @@ private:
     IndexWriter& m_writer;
     const int m_depth;
     StreamAnalyzer& m_indexer;
-    AnalyzerConfiguration& m_indexableconfig;
+    AnalyzerConfiguration& m_analyzerconfig;
 
     /**
      * Create a new AnalysisResult object that will be written to the index.
@@ -84,14 +84,14 @@ public:
     /**
      * Parse the given stream and index the results into this AnalysisResult object.
      **/
-    char index(jstreams::StreamBase<char>& file);
+    char index(jstreams::StreamBase<char>* file);
     /**
      * Index the given stream which represents a child object of this
      * AnalysisResult under the relative name given by @name and versioned with time
      * @mtime.
      **/
     char indexChild(const std::string& name, time_t mt,
-        jstreams::StreamBase<char>& file);
+        jstreams::StreamBase<char>* file);
     /**
      * Associate a fragment of text with the object.
      *

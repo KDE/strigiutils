@@ -59,6 +59,6 @@ GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         if (len > 3 && file.substr(len-3) == ".gz") {
             file = file.substr(0, len-3);
         }
-        return idx.indexChild(file, idx.mTime(), stream);
+        return idx.indexChild(file, idx.mTime(), &stream);
     }
 }

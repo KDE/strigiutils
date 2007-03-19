@@ -35,6 +35,7 @@
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
 #include "helperendanalyzer.h"
+#include "dataeventinputstream.h"
 #include "id3v2throughanalyzer.h"
 #include "oggthroughanalyzer.h"
 #include "digestthroughanalyzer.h"
@@ -53,24 +54,14 @@ using namespace std;
 using namespace jstreams;
 using namespace Strigi;
 
-cnstr StreamAnalyzer::sizefieldname("size");
-
 StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
         :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
-    sizefield = c.getFieldRegister().registerField(sizefieldname,
+    sizefield = c.getFieldRegister().registerField("size",
         FieldRegister::integerType, 1, 0);
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     
-    // todo: remove this
-    moduleLoader->loadPlugins("D:\\clients\\strigi_svn\\win\\out\\Debug");
-    if (getenv("HOME") != NULL) {
-        string homedir = getenv("HOME");
-        homedir += "/testinstall/lib/strigi";
-        moduleLoader->loadPlugins(homedir.c_str());
-    }
-
     initializeThroughFactories();
     initializeEndFactories();
 }
@@ -127,12 +118,15 @@ StreamAnalyzer::indexFile(const std::string& filepath) {
     }
     struct stat s;
     stat(filepath.c_str(), &s);
-    FileInputStream file(filepath.c_str());
     // ensure a decent buffer size
-    //file.mark(65530);
     string name;
-    AnalysisResult indexable(filepath, s.st_mtime, *writer, *this);
-    return indexable.index(file);
+    AnalysisResult analysisresult(filepath, s.st_mtime, *writer, *this);
+    FileInputStream file(filepath.c_str());
+    if (file.getStatus() == Ok) {
+        return analysisresult.index(&file);
+    } else {
+        return analysisresult.index(0);
+    }
 }
 void
 StreamAnalyzer::addFactory(StreamThroughAnalyzerFactory* f) {
@@ -238,6 +232,8 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     tIter = through.begin() + idx.depth();
     eIter = end.begin() + idx.depth();
 
+    DataEventInputStream eventstream(input);
+
     // insert the through analyzers
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
@@ -308,12 +304,12 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         idx.setField(sizefield, (uint32_t)input->getSize());
     }
 
-    // remove references to the indexable before it goes out of scope
+    // remove references to the analysisresult before it goes out of scope
     removeIndexable(idx.depth());
     return 0;
 }
 /**
- * Remove references to the indexable before it goes out of scope.
+ * Remove references to the analysisresult before it goes out of scope.
  **/
 void
 StreamAnalyzer::removeIndexable(uint depth) {
@@ -321,7 +317,7 @@ StreamAnalyzer::removeIndexable(uint depth) {
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     tIter = through.begin() + depth;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
-        // remove references to the indexable before it goes out of scope
+        // remove references to the analysisresult before it goes out of scope
         (*ts)->setIndexable(0);
     }
 }

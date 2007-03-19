@@ -73,7 +73,7 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
             file = mail.getEntryInfo().filename;
         }
         // maybe use the date of sending the mail here
-        idx.indexChild(file, idx.mTime(), *s);
+        idx.indexChild(file, idx.mTime(), s);
         s = mail.nextEntry();
         n++;
     }

@@ -46,7 +46,7 @@ CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
     while (s) {
         idx.indexChild(cpio.getEntryInfo().filename, cpio.getEntryInfo().mtime,
-            *s);
+            s);
         s = cpio.nextEntry();
     }
     if (cpio.getStatus() == Error) {

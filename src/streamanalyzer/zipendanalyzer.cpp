@@ -46,7 +46,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
     while (s) {
         idx.indexChild(zip.getEntryInfo().filename, zip.getEntryInfo().mtime,
-            *s);
+            s);
         s = zip.nextEntry();
     }
     if (zip.getStatus() == Error) {

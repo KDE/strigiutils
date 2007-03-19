@@ -22,7 +22,6 @@
 
 #include <vector>
 #include <string>
-#include "cnstr.h"
 #include "jstreamsconfig.h"
 
 namespace jstreams {
@@ -30,9 +29,11 @@ namespace jstreams {
 }
 
 namespace Strigi {
-class StreamEndAnalyzer;
 class StreamThroughAnalyzer;
 class StreamThroughAnalyzerFactory;
+class StreamSaxAnalyzer;
+class StreamSaxAnalyzerFactory;
+class StreamEndAnalyzer;
 class StreamEndAnalyzerFactory;
 class IndexWriter;
 class AnalysisResult;
@@ -54,9 +55,9 @@ class RegisteredField;
  **/
 class STREAMANALYZER_EXPORT StreamAnalyzer {
 private:
-    static cnstr sizefieldname;
     AnalyzerConfiguration& conf;
     std::vector<Strigi::StreamThroughAnalyzerFactory*> throughfactories;
+    std::vector<Strigi::StreamSaxAnalyzerFactory*> saxfactories;
     std::vector<Strigi::StreamEndAnalyzerFactory*> endfactories;
     std::vector<std::vector<Strigi::StreamEndAnalyzer*> > end;
     std::vector<std::vector<Strigi::StreamThroughAnalyzer*> > through;

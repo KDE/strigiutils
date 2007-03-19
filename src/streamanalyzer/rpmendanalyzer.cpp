@@ -43,7 +43,7 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
     while (s) {
         idx.indexChild(rpm.getEntryInfo().filename, rpm.getEntryInfo().mtime,
-            *s);
+            s);
         s = rpm.nextEntry();
     }
     if (rpm.getStatus() == Error) {

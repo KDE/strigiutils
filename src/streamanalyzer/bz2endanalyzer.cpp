@@ -64,6 +64,6 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         if (len > 4 && name.substr(len-4)==".bz2") {
             name = name.substr(0, len-4);
         }
-        return idx.indexChild(name, idx.mTime(), stream);
+        return idx.indexChild(name, idx.mTime(), &stream);
     }
 }
