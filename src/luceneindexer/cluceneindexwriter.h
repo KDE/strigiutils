@@ -52,6 +52,8 @@ protected:
         const Strigi::RegisteredField* fieldname, int32_t value) {}
     void addField(const Strigi::AnalysisResult*,
         const Strigi::RegisteredField* fieldname, double value) {}
+    void addTriplet(const std::string& subject,
+        const std::string& predicate, const std::string& object) {}
     void initWriterData(const Strigi::FieldRegister& f);
     void releaseWriterData(const Strigi::FieldRegister& f);
 public:
