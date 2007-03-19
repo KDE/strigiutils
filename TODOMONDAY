@@ -3,4 +3,3 @@
 * remove cnstr from registeredfield
 * remove jstreams namespace
 * seek and replace getFoo() functions with foo() (but not in StreamBase yet)
-* make addField functions in IndexWriter pure virtual
