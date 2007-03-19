@@ -21,7 +21,7 @@ IF(SHA_FOUND)
    ENDIF(NOT OpenSSL_FIND_QUIETLY)
 ELSE(SHA_FOUND)
    IF(Sha_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find Sha. Please install libssl-dev")
+      MESSAGE(FATAL_ERROR "Could not find SHA1. Please install OpenSSL Development libraries")
    ENDIF(Sha_FIND_REQUIRED)
 ENDIF(SHA_FOUND)
 
