@@ -23,7 +23,7 @@
 #include <map>
 #include "jstreamsconfig.h"
 
-// #define NO_CNSTR
+#define NO_CNSTR
 #ifdef NO_CNSTR
 #include <string>
 typedef std::string cnstr;
