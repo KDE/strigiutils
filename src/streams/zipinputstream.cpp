@@ -124,14 +124,6 @@ ZipInputStream::nextEntry() {
     }
     return entrystream;
 }
-int32_t
-ZipInputStream::read2bytes(const unsigned char *b) {
-    return b[0] + (b[1]<<8);
-}
-int32_t
-ZipInputStream::read4bytes(const unsigned char *b) {
-    return b[0] + (b[1]<<8) + (b[2]<<16) + (b[3]<<24);
-}
 void
 ZipInputStream::readHeader() {
     const unsigned char *hb;

@@ -46,8 +46,6 @@ private:
 
     void readFileName(int32_t len);
     void readHeader();
-    static int32_t read2bytes(const unsigned char *b);
-    static int32_t read4bytes(const unsigned char *b);
 public:
     explicit ZipInputStream(StreamBase<char>* input);
     ~ZipInputStream();
