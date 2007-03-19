@@ -20,26 +20,18 @@
 #ifndef STREAMINDEXER_H
 #define STREAMINDEXER_H
 
-#include <vector>
-#include <string>
 #include "jstreamsconfig.h"
+#include <string>
 
 namespace jstreams {
     template <class T> class StreamBase;
 }
 
 namespace Strigi {
-class StreamThroughAnalyzer;
-class StreamThroughAnalyzerFactory;
-class StreamSaxAnalyzer;
-class StreamSaxAnalyzerFactory;
-class StreamEndAnalyzer;
-class StreamEndAnalyzerFactory;
+
+class AnalyzerConfiguration;
 class IndexWriter;
 class AnalysisResult;
-class AnalyzerLoader;
-class AnalyzerConfiguration;
-class RegisteredField;
 
 /**
  * The class StreamAnalyzer extracts information from files or character
@@ -55,23 +47,9 @@ class RegisteredField;
  **/
 class STREAMANALYZER_EXPORT StreamAnalyzer {
 private:
-    AnalyzerConfiguration& conf;
-    std::vector<Strigi::StreamThroughAnalyzerFactory*> throughfactories;
-    std::vector<Strigi::StreamSaxAnalyzerFactory*> saxfactories;
-    std::vector<Strigi::StreamEndAnalyzerFactory*> endfactories;
-    std::vector<std::vector<Strigi::StreamEndAnalyzer*> > end;
-    std::vector<std::vector<Strigi::StreamThroughAnalyzer*> > through;
-    IndexWriter* writer;
+    class Private;
+    Private* const p;
 
-    AnalyzerLoader* moduleLoader;
-    const RegisteredField* sizefield;
-    void initializeThroughFactories();
-    void initializeEndFactories();
-    void addFactory(StreamThroughAnalyzerFactory* f);
-    void addFactory(StreamEndAnalyzerFactory* f);
-    void addThroughAnalyzers();
-    void addEndAnalyzers();
-    void removeIndexable(unsigned depth);
 public:
     StreamAnalyzer(AnalyzerConfiguration& c);
     ~StreamAnalyzer();
@@ -79,7 +57,7 @@ public:
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);
     char analyze(AnalysisResult& idx, jstreams::StreamBase<char> *input);
-    AnalyzerConfiguration& getConfiguration() const { return conf; }
+    AnalyzerConfiguration& getConfiguration() const;
 };
 }
 

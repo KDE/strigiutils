@@ -44,6 +44,7 @@
 #include "analyzerconfiguration.h"
 #include "textutils.h"
 #include "analyzerloader.h"
+#include "streamsaxanalyzer.h"
 #include <sys/stat.h>
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
@@ -54,7 +55,32 @@ using namespace std;
 using namespace jstreams;
 using namespace Strigi;
 
-StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
+class StreamAnalyzer::Private {
+public:
+    AnalyzerConfiguration& conf;
+    std::vector<Strigi::StreamThroughAnalyzerFactory*> throughfactories;
+    std::vector<Strigi::StreamSaxAnalyzerFactory*> saxfactories;
+    std::vector<Strigi::StreamEndAnalyzerFactory*> endfactories;
+    std::vector<std::vector<Strigi::StreamEndAnalyzer*> > end;
+    std::vector<std::vector<Strigi::StreamThroughAnalyzer*> > through;
+    IndexWriter* writer;
+
+    AnalyzerLoader* moduleLoader;
+    const RegisteredField* sizefield;
+    void initializeThroughFactories();
+    void initializeEndFactories();
+    void addFactory(StreamThroughAnalyzerFactory* f);
+    void addFactory(StreamEndAnalyzerFactory* f);
+    void addThroughAnalyzers();
+    void addEndAnalyzers();
+    void removeIndexable(unsigned depth);
+    char analyze(AnalysisResult& idx, StreamBase<char>* input);
+
+    Private(AnalyzerConfiguration& c);
+    ~Private();
+};
+
+StreamAnalyzer::Private::Private(AnalyzerConfiguration& c)
         :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.getFieldRegister().registerField("size",
@@ -65,7 +91,7 @@ StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
     initializeThroughFactories();
     initializeEndFactories();
 }
-StreamAnalyzer::~StreamAnalyzer() {
+StreamAnalyzer::Private::~Private() {
     // delete all factories
     std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
     for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
@@ -95,13 +121,20 @@ StreamAnalyzer::~StreamAnalyzer() {
         writer->releaseWriterData(conf.getFieldRegister());
     }
 }
+
+StreamAnalyzer::StreamAnalyzer(AnalyzerConfiguration& c)
+        :p(new Private(c)) {
+}
+StreamAnalyzer::~StreamAnalyzer() {
+    delete p;
+}
 void
 StreamAnalyzer::setIndexWriter(IndexWriter& w) {
-    if (writer != 0) {
-        writer->releaseWriterData(conf.getFieldRegister());
+    if (p->writer != 0) {
+        p->writer->releaseWriterData(p->conf.getFieldRegister());
     }
-    writer = &w;
-    writer->initWriterData(conf.getFieldRegister());
+    p->writer = &w;
+    p->writer->initWriterData(p->conf.getFieldRegister());
 }
 char
 StreamAnalyzer::indexFile(const char *filepath) {
@@ -113,14 +146,14 @@ StreamAnalyzer::indexFile(const std::string& filepath) {
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }
-    if (writer == 0) {
+    if (p->writer == 0) {
         return 1;
     }
     struct stat s;
     stat(filepath.c_str(), &s);
     // ensure a decent buffer size
     string name;
-    AnalysisResult analysisresult(filepath, s.st_mtime, *writer, *this);
+    AnalysisResult analysisresult(filepath, s.st_mtime, *p->writer, *this);
     FileInputStream file(filepath.c_str());
     if (file.getStatus() == Ok) {
         return analysisresult.index(&file);
@@ -129,7 +162,7 @@ StreamAnalyzer::indexFile(const std::string& filepath) {
     }
 }
 void
-StreamAnalyzer::addFactory(StreamThroughAnalyzerFactory* f) {
+StreamAnalyzer::Private::addFactory(StreamThroughAnalyzerFactory* f) {
     f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         throughfactories.push_back(f);
@@ -138,7 +171,7 @@ StreamAnalyzer::addFactory(StreamThroughAnalyzerFactory* f) {
     }
 }
 void
-StreamAnalyzer::initializeThroughFactories() {
+StreamAnalyzer::Private::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
         = moduleLoader->getStreamThroughAnalyzerFactories();
     list<StreamThroughAnalyzerFactory*>::iterator i;
@@ -150,7 +183,7 @@ StreamAnalyzer::initializeThroughFactories() {
     addFactory(new OggThroughAnalyzerFactory());
 }
 void
-StreamAnalyzer::addFactory(StreamEndAnalyzerFactory* f) {
+StreamAnalyzer::Private::addFactory(StreamEndAnalyzerFactory* f) {
     f->registerFields(conf.getFieldRegister());
     if (conf.useFactory(f)) {
         endfactories.push_back(f);
@@ -162,7 +195,7 @@ StreamAnalyzer::addFactory(StreamEndAnalyzerFactory* f) {
  * Instantiate factories for all analyzers.
  **/
 void
-StreamAnalyzer::initializeEndFactories() {
+StreamAnalyzer::Private::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
         = moduleLoader->getStreamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
@@ -181,11 +214,8 @@ StreamAnalyzer::initializeEndFactories() {
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
-#ifdef __GNUC__
-#warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
-#warning FIXME - SaxEndAnalyzerFactory needs some love too
-#endif
 #ifdef WIN32
+#warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
 //    addFactory(new IFilterEndAnalyzerFactory());
 #else
 	//temporary only, i just haven't got expat.h working yet
@@ -195,7 +225,7 @@ StreamAnalyzer::initializeEndFactories() {
     addFactory(new TextEndAnalyzerFactory());
 }
 void
-StreamAnalyzer::addThroughAnalyzers() {
+StreamAnalyzer::Private::addThroughAnalyzers() {
     through.resize(through.size()+1);
     std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
@@ -205,7 +235,7 @@ StreamAnalyzer::addThroughAnalyzers() {
     }
 }
 void
-StreamAnalyzer::addEndAnalyzers() {
+StreamAnalyzer::Private::addEndAnalyzers() {
     end.resize(end.size()+1);
     std::vector<std::vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
     eIter = end.rbegin();
@@ -216,6 +246,10 @@ StreamAnalyzer::addEndAnalyzers() {
 }
 char
 StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
+    return p->analyze(idx, input);
+}
+char
+StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 //    static int count = 1;
 //    if (++count % 1000 == 0) {
 //        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
@@ -312,7 +346,7 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
  * Remove references to the analysisresult before it goes out of scope.
  **/
 void
-StreamAnalyzer::removeIndexable(uint depth) {
+StreamAnalyzer::Private::removeIndexable(uint depth) {
     std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
     std::vector<StreamThroughAnalyzer*>::iterator ts;
     tIter = through.begin() + depth;
@@ -320,4 +354,8 @@ StreamAnalyzer::removeIndexable(uint depth) {
         // remove references to the analysisresult before it goes out of scope
         (*ts)->setIndexable(0);
     }
+}
+AnalyzerConfiguration&
+StreamAnalyzer::getConfiguration() const {
+    return p->conf;
 }
