@@ -32,6 +32,7 @@ set(streams_SRCS
 	kmpsearcher.cpp
 	filestreamopener.cpp
 	cpioinputstream.cpp
+        dataeventinputstream.cpp
 )
 
 if(NOT WIN32)
