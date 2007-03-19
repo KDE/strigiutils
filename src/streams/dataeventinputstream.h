@@ -22,6 +22,8 @@
 #include "jstreamsconfig.h"
 #include "streambase.h"
 
+#include <list>
+
 namespace jstreams {
 
 /** Handler interface for handling data events. */
@@ -36,6 +38,8 @@ public:
                         stream
      */
     virtual bool handleData(const char* data, uint32_t size) = 0;
+    /** Handle the end of the stream. */
+    virtual void handleEnd() {};
 };
 
 /** An InputStream that makes parallel handling of incoming data easier.
@@ -49,11 +53,12 @@ class STREAMS_EXPORT DataEventInputStream : public StreamBase<char> {
 private:
     int64_t totalread;
     StreamBase<char> *input;
-    DataEventHandler* handler;
+    std::list<DataEventHandler*> handlers;
 
     void finish();
 public:
     explicit DataEventInputStream(StreamBase<char> *input);
+    void addEventHandler(DataEventHandler* );
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     int64_t reset(int64_t);

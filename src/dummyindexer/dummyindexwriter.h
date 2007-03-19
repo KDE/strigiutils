@@ -72,6 +72,8 @@ protected:
         const Strigi::RegisteredField* fieldname, int32_t value) {}
     void addField(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, double value) {}
+    void addTriplet(const std::string& subject,
+        const std::string& predicate, const std::string& object) {}
 public:
     DummyIndexWriter(int v = 0) {
         verbosity = v;

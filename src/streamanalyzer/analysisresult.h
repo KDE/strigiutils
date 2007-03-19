@@ -137,6 +137,15 @@ public:
      **/
     void setField(const RegisteredField* field, double value);
     /**
+     * Add a complete RDF triplet
+     *
+     * @param subject
+     * @param predicate
+     * @param object
+     **/
+    void addTriplet(const std::string& subject, const std::string& predicate,
+        const std::string& object);
+    /**
      * Get the filename associated with this stream.
      * For the full name see path().
      **/

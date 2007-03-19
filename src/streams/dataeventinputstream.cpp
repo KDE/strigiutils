@@ -43,7 +43,10 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     if (totalread < position) {
         int32_t amount = (int32_t)(position - totalread);
-        handler->handleData(start + nread - amount, amount);
+        list<DataEventHandler*>::iterator i;
+        for (i = handlers.begin(); i!= handlers.end(); ++i) {
+            (*i)->handleData(start + nread - amount, amount);
+        }
         totalread = position;
     }
     if (nread < min) {
@@ -58,9 +61,9 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
                 size, position, totalread);
             fprintf(stderr, "%i %s\n", input->getStatus(), input->getError());
         }
+#endif
         assert(size == position);
         assert(totalread == size);
-#endif
         finish();
     }
     return nread;
@@ -97,4 +100,8 @@ DataEventInputStream::reset(int64_t np) {
 }
 void
 DataEventInputStream::finish() {
+    list<DataEventHandler*>::iterator i;
+    for (i = handlers.begin(); i!= handlers.end(); ++i) {
+        (*i)->handleEnd();
+    }
 }

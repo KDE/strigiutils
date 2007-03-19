@@ -261,6 +261,8 @@ protected:
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, v.str()));
     }
+    void addTriplet(const std::string& subject,
+        const std::string& predicate, const std::string& object) {}
     void initWriterData(const Strigi::FieldRegister&);
     void releaseWriterData(const Strigi::FieldRegister&);
 public:

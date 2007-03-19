@@ -70,6 +70,15 @@ protected:
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
         double value) = 0;
     virtual void finishAnalysis(const AnalysisResult*) = 0;
+    /**
+     * Add a complete RDF triplet
+     *
+     * @param subject
+     * @param predicate
+     * @param object
+     **/
+    virtual void addTriplet(const std::string& subject,
+        const std::string& predicate, const std::string& object) = 0;
 public:
     virtual ~IndexWriter() {}
     /**
