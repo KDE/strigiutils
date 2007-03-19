@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMLINEANALYZER_H
-#define STREAMLINEANALYZER_H
+#ifndef STREAMSTREAMANALYZER_H
+#define STREAMSTREAMANALYZER_H
 
 #include "inputstream.h"
 
@@ -27,22 +27,22 @@ class StreamAnalyzer;
 class RegisteredField;
 class FieldRegister;
 
-class StreamLineAnalyzer {
+class StreamEventAnalyzer {
 public:
-    virtual ~StreamLineAnalyzer() {}
+    virtual ~StreamEventAnalyzer() {}
     virtual const char* getName() const = 0;
     virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void endAnalysis() {}
-    virtual void handleLine(const char* data, uint32_t length) = 0;
+    virtual void handleData(const char* data, uint32_t length) = 0;
     virtual bool isReadyWithStream() = 0;
 };
 
-class StreamLineAnalyzerFactory {
+class StreamEventAnalyzerFactory {
 public:
-    virtual ~StreamLineAnalyzerFactory() {}
+    virtual ~StreamEventAnalyzerFactory() {}
     virtual const char* getName() const = 0;
     virtual void registerFields(Strigi::FieldRegister&) = 0;
-    virtual StreamLineAnalyzer* newInstance() const = 0;
+    virtual StreamEventAnalyzer* newInstance() const = 0;
 };
 
 

@@ -77,6 +77,7 @@ install(FILES
 	streamendanalyzer.h
 	streamsaxanalyzer.h
 	streamlineanalyzer.h
+	streameventanalyzer.h
 	analyzerfactoryfactory.h
 	indexwriter.h
 	analyzerconfiguration.h

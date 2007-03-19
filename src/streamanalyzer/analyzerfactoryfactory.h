@@ -24,6 +24,7 @@ class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
 class StreamSaxAnalyzerFactory;
 class StreamLineAnalyzerFactory;
+class StreamEventAnalyzerFactory;
 
 /** An AnalyzerFactoryFactory returns lists of AnalyzerFactory instances
     for StreamThroughAnalyzers and StreamEndAnalyzers.
@@ -82,6 +83,18 @@ public:
     virtual std::list<StreamLineAnalyzerFactory*>
             getStreamLineAnalyzerFactories() const {
         std::list<StreamLineAnalyzerFactory*> af;
+        return af;
+    }
+    /** Return instances of the StreamEventAnalyzerFactories available in this
+        plugin.
+
+        The default implementation returns an empty list. A particular plugin
+        should subclass the AnalyzerFactoryFactory and overload this function
+        if it implements any StreamEventAnalyzers.
+     */
+    virtual std::list<StreamEventAnalyzerFactory*>
+            getStreamEventAnalyzerFactories() const {
+        std::list<StreamEventAnalyzerFactory*> af;
         return af;
     }
 };

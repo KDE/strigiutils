@@ -31,14 +31,15 @@ class StreamSaxAnalyzer {
 public:
     virtual ~StreamSaxAnalyzer() {}
     virtual const char* getName() const = 0;
-    virtual void startAnalysis(AnalysisResult&) = 0;
+    virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void endAnalysis() {}
-    virtual void startElement(const char* localname, const char* prefix,
-        const char* uri, int nb_namespaces, const char** namespaces,
-        int nb_attributes, int nb_defaulted, const char** attributes) {}
-    virtual void endElement(const char* localname, const char* prefix,
-        const char* uri) {}
-    virtual void characters(const char* data, uint32_t length) {}
+    virtual void startElement(const char* /*localname*/, const char* /*prefix*/,
+        const char* /*uri*/, int /*nb_namespaces*/, const char** /*namespaces*/,
+        int/*nb_attributes*/,int/*nb_defaulted*/,const char** /*attributes*/) {}
+    virtual void endElement(const char* /*localname*/, const char* /*prefix*/,
+        const char* /*uri*/) {}
+    virtual void characters(const char* /*data*/, uint32_t /*length*/) {}
+    virtual bool isReadyWithStream() = 0;
 };
 
 class StreamSaxAnalyzerFactory {

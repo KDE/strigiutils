@@ -28,6 +28,7 @@ class StreamEndAnalyzerFactory;
 class StreamSaxAnalyzerFactory;
 class StreamLineAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+class StreamEventAnalyzerFactory;
 
 class AnalyzerLoader {
     class Private;
@@ -37,9 +38,8 @@ public:
     std::list<StreamEndAnalyzerFactory*> getStreamEndAnalyzerFactories();
     std::list<StreamThroughAnalyzerFactory*>
         getStreamThroughAnalyzerFactories();
-    std::list<StreamSaxAnalyzerFactory*>
-        getStreamSaxAnalyzerFactories();
-    std::list<StreamLineAnalyzerFactory*>
-        getStreamLineAnalyzerFactories();
+    std::list<StreamSaxAnalyzerFactory*> getStreamSaxAnalyzerFactories();
+    std::list<StreamLineAnalyzerFactory*> getStreamLineAnalyzerFactories();
+    std::list<StreamEventAnalyzerFactory*> getStreamEventAnalyzerFactories();
 };
 }
