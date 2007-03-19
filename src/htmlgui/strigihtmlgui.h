@@ -20,6 +20,7 @@
 #ifndef STRIGIHTMLGUI_H
 #define STRIGIHTMLGUI_H
 
+#include "jstreamsconfig.h"
 #include "clientinterface.h"
 #include <ostream>
 #include <map>
@@ -57,7 +58,7 @@ public:
     virtual std::string getPathCharacterSeparator() { return ""; }
 };
 
-class StrigiHtmlGui {
+class STRIGIHTMLGUI_EXPORT StrigiHtmlGui {
 class Private;
 private:
     HtmlHelper* helper;

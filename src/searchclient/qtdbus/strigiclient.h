@@ -19,12 +19,13 @@
  */
 #ifndef STRIGICLIENT
 #define STRIGICLIENT
+#include "jstreamsconfig.h"
 #include "strigitypes.h"
 
 /**
  * Wrapper class for accessing the Strigi search client.
  **/
-class StrigiClient {
+class STRIGI_QTDBUSCLIENT_EXPORT StrigiClient {
 private:
     class Private;
     Private* p;

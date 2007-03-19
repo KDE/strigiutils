@@ -89,6 +89,6 @@ public:
 * Appends the terminating char to path.
 * Under Windows that char is '\', '/' under *nix
 */
-std::string fixPath (std::string path);
+STREAMANALYZER_EXPORT std::string fixPath (std::string path);
 
 #endif

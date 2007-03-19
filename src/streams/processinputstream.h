@@ -25,7 +25,7 @@
 
 namespace jstreams {
 
-class ProcessInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT ProcessInputStream : public BufferedInputStream<char> {
 private:
     StreamBase<char> *input;
     const char *const *args;

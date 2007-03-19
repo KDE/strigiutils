@@ -22,11 +22,12 @@
 
 #include <qtdbus/strigitypes.h>
 #include <QMutex>
+#include "jstreamsconfig.h"
 
 /**
  * Wrapper class for accessing the Strigi search client.
  **/
-class StrigiAsyncClient : public QObject {
+class STRIGI_QTDBUSCLIENT_EXPORT StrigiAsyncClient : public QObject {
 Q_OBJECT
 public:
     enum RequestType { Status, Count, Query, Histogram };

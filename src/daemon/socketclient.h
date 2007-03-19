@@ -20,9 +20,10 @@
 #ifndef SOCKETCLIENT_H
 #define SOCKETCLIENT_H
 
+#include "jstreamsconfig.h"
 #include "clientinterface.h"
 
-class SocketClient : public ClientInterface {
+class SEARCHCLIENT_EXPORT SocketClient : public ClientInterface {
 private:
     std::string socketpath;
     std::string error;

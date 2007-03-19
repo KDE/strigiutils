@@ -59,7 +59,9 @@ add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
 	asyncsocketclient.cpp)
 set_target_properties(searchclient PROPERTIES
     VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
+    SOVERSION ${STRIGI_VERSION_MAJOR}
+    DEFINE_SYMBOL MAKE_SEARCHCLIENT_LIB
+)
 
 install(TARGETS strigidaemon searchclient #strigiconfupdater
 	RUNTIME DESTINATION bin

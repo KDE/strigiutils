@@ -14,7 +14,11 @@ if (QT4_FOUND)
     ${strigiqtdbusclient_MOC_SRCS})
 
   target_link_libraries(strigiqtdbusclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
-  set_target_properties(strigiqtdbusclient PROPERTIES VERSION ${STRIGI_VERSION} SOVERSION ${STRIGI_VERSION_MAJOR})
+  set_target_properties(strigiqtdbusclient
+                 PROPERTIES VERSION ${STRIGI_VERSION}
+                 SOVERSION ${STRIGI_VERSION_MAJOR}
+                 DEFINE_SYMBOL MAKE_STRIGI_QTDBUSCLIENT_LIB
+  )
 
   install(TARGETS strigiqtdbusclient LIBRARY DESTINATION ${LIB_DESTINATION})
   install(FILES strigiasyncclient.h strigiclient.h strigidbus.h strigitypes.h
@@ -26,8 +30,7 @@ if (QT4_FOUND)
   set(strigiasynctest_SRCS strigiasynctest.cpp strigiasyncwidget.cpp)
   set(strigiasynctest_MOC_HDRS strigiasyncwidget.h)
   qt4_wrap_cpp(strigiasynctest_MOC_SRCS ${strigiasynctest_MOC_HDRS})
-  add_executable(strigiasynctest ${strigiasynctest_SRCS}
-    ${strigiasynctest_MOC_SRCS})
+  add_executable(strigiasynctest ${strigiasynctest_SRCS} ${strigiasynctest_MOC_SRCS})
   target_link_libraries(strigiasynctest strigiqtdbusclient ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 endif (QT4_FOUND)

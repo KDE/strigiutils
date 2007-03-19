@@ -4,7 +4,9 @@ include_directories( ../daemon ../streamanalyzer ../streams
 add_library(strigihtmlgui SHARED strigihtmlgui.cpp)
 set_target_properties(strigihtmlgui PROPERTIES
     VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
+    SOVERSION ${STRIGI_VERSION_MAJOR}
+    DEFINE_SYMBOL MAKE_STRIGIHTMLGUI_LIB
+)
 
 target_link_libraries(strigihtmlgui searchclient streamanalyzer)
 
