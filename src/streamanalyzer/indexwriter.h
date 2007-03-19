@@ -46,6 +46,7 @@ for all streams {
 - delete the indexwriter
 */
 class AnalysisResult;
+class RegisteredField;
 /**
  * Abstract class that provides write access to a Strigi index.
  *
