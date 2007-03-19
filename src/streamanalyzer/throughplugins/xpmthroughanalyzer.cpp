@@ -28,15 +28,12 @@ using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
-const cnstr XpmThroughAnalyzerFactory::typeFieldName("type");
 const cnstr XpmThroughAnalyzerFactory::widthFieldName("width");
 const cnstr XpmThroughAnalyzerFactory::heightFieldName("height");
 const cnstr XpmThroughAnalyzerFactory::numberOfColorsFieldName("numberofcolors");
 
 void
 XpmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    typeField = reg.registerField(typeFieldName,
-        FieldRegister::stringType, 1, 0);
     widthField = reg.registerField(widthFieldName,
         FieldRegister::integerType, 1, 0);
     heightField = reg.registerField(heightFieldName,

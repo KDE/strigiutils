@@ -46,11 +46,9 @@ class XpmThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class XpmThroughAnalyzer;
 private:
-    static const cnstr typeFieldName;
     static const cnstr widthFieldName;
     static const cnstr heightFieldName;
     static const cnstr numberOfColorsFieldName;
-    const Strigi::RegisteredField* typeField;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* numberOfColorsField;
