@@ -215,8 +215,10 @@ StreamAnalyzer::Private::initializeEndFactories() {
     addFactory(new BmpEndAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
 #ifdef WIN32
+#ifdef __GNUC__
 #warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
 //    addFactory(new IFilterEndAnalyzerFactory());
+#endif
 #else
 	//temporary only, i just haven't got expat.h working yet
 	addFactory(new SaxEndAnalyzerFactory());
