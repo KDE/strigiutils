@@ -23,7 +23,8 @@
 using namespace std;
 using namespace jstreams;
 
-DataEventInputStream::DataEventInputStream(StreamBase<char> *i) :input(i) {
+DataEventInputStream::DataEventInputStream(StreamBase<char> *i,
+        DataEventHandler& h) :input(i), handler(h) {
     assert(input->getPosition() == 0);
     size = input->getSize();
     totalread = 0;
@@ -43,10 +44,7 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     if (totalread < position) {
         int32_t amount = (int32_t)(position - totalread);
-        list<DataEventHandler*>::iterator i;
-        for (i = handlers.begin(); i!= handlers.end(); ++i) {
-            (*i)->handleData(start + nread - amount, amount);
-        }
+        handler.handleData(start + nread - amount, amount);
         totalread = position;
     }
     if (nread < min) {
@@ -100,8 +98,5 @@ DataEventInputStream::reset(int64_t np) {
 }
 void
 DataEventInputStream::finish() {
-    list<DataEventHandler*>::iterator i;
-    for (i = handlers.begin(); i!= handlers.end(); ++i) {
-        (*i)->handleEnd();
-    }
+    handler.handleEnd();
 }

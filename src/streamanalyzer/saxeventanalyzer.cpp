@@ -17,36 +17,30 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMSTREAMANALYZER_H
-#define STREAMSTREAMANALYZER_H
+#include "saxeventanalyzer.h"
+#include "streamsaxanalyzer.h"
 
-#include "inputstream.h"
+using namespace Strigi;
+using namespace std;
 
-namespace Strigi {
-class StreamAnalyzer;
-class RegisteredField;
-class FieldRegister;
-class AnalysisResult;
-
-class StreamEventAnalyzer {
-public:
-    virtual ~StreamEventAnalyzer() {}
-    virtual const char* getName() const = 0;
-    virtual void startAnalysis(AnalysisResult*) = 0;
-    virtual void endAnalysis() {}
-    virtual void handleData(const char* data, uint32_t length) = 0;
-    virtual bool isReadyWithStream() = 0;
-};
-
-class StreamEventAnalyzerFactory {
-public:
-    virtual ~StreamEventAnalyzerFactory() {}
-    virtual const char* getName() const = 0;
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
-    virtual StreamEventAnalyzer* newInstance() const = 0;
-};
-
-
+SaxEventAnalyzer::SaxEventAnalyzer(std::vector<StreamSaxAnalyzer*>&s) :sax(s) {
 }
-
-#endif
+SaxEventAnalyzer::~SaxEventAnalyzer() {
+    vector<StreamSaxAnalyzer*>::iterator s;
+    for (s = sax.begin(); s != sax.end(); ++s) {
+        delete *s;
+    }
+}
+void
+SaxEventAnalyzer::startAnalysis(AnalysisResult*) {
+}
+void
+SaxEventAnalyzer::endAnalysis() {
+}
+void
+SaxEventAnalyzer::handleData(const char* data, uint32_t length) {
+}
+bool
+SaxEventAnalyzer::isReadyWithStream() {
+    return true;
+}

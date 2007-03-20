@@ -32,6 +32,9 @@ set(streamanalyzer_SRCS
 	fieldtypes.cpp
 	streamanalyzer.cpp
 	filelister.cpp
+	eventthroughanalyzer.cpp
+	saxeventanalyzer.cpp
+	lineeventanalyzer.cpp
 )
 
 if (LIBXML2_FOUND)

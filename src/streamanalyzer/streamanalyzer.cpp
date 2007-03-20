@@ -22,6 +22,9 @@
 #include "fileinputstream.h"
 #include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
+#include "streamlineanalyzer.h"
+#include "streameventanalyzer.h"
+#include "streamsaxanalyzer.h"
 #include "bz2endanalyzer.h"
 #include "bmpendanalyzer.h"
 #include "textendanalyzer.h"
@@ -44,7 +47,7 @@
 #include "analyzerconfiguration.h"
 #include "textutils.h"
 #include "analyzerloader.h"
-#include "streamsaxanalyzer.h"
+#include "eventthroughanalyzer.h"
 #include <sys/stat.h>
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
@@ -58,19 +61,27 @@ using namespace Strigi;
 class StreamAnalyzer::Private {
 public:
     AnalyzerConfiguration& conf;
-    std::vector<Strigi::StreamThroughAnalyzerFactory*> throughfactories;
-    std::vector<Strigi::StreamSaxAnalyzerFactory*> saxfactories;
-    std::vector<Strigi::StreamEndAnalyzerFactory*> endfactories;
-    std::vector<std::vector<Strigi::StreamEndAnalyzer*> > end;
-    std::vector<std::vector<Strigi::StreamThroughAnalyzer*> > through;
+    vector<StreamThroughAnalyzerFactory*> throughfactories;
+    vector<StreamEndAnalyzerFactory*> endfactories;
+    vector<StreamSaxAnalyzerFactory*> saxfactories;
+    vector<StreamLineAnalyzerFactory*> linefactories;
+    vector<StreamEventAnalyzerFactory*> eventfactories;
+    vector<vector<StreamEndAnalyzer*> > end;
+    vector<vector<StreamThroughAnalyzer*> > through;
     IndexWriter* writer;
 
     AnalyzerLoader* moduleLoader;
     const RegisteredField* sizefield;
     void initializeThroughFactories();
     void initializeEndFactories();
+    void initializeSaxFactories();
+    void initializeLineFactories();
+    void initializeEventFactories();
     void addFactory(StreamThroughAnalyzerFactory* f);
     void addFactory(StreamEndAnalyzerFactory* f);
+    void addFactory(StreamSaxAnalyzerFactory* f);
+    void addFactory(StreamLineAnalyzerFactory* f);
+    void addFactory(StreamEventAnalyzerFactory* f);
     void addThroughAnalyzers();
     void addEndAnalyzers();
     void removeIndexable(unsigned depth);
@@ -80,8 +91,7 @@ public:
     ~Private();
 };
 
-StreamAnalyzer::Private::Private(AnalyzerConfiguration& c)
-        :conf(c), writer(0) {
+StreamAnalyzer::Private::Private(AnalyzerConfiguration& c) :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.getFieldRegister().registerField("size",
         FieldRegister::integerType, 1, 0);
@@ -93,25 +103,37 @@ StreamAnalyzer::Private::Private(AnalyzerConfiguration& c)
 }
 StreamAnalyzer::Private::~Private() {
     // delete all factories
-    std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
+    vector<StreamThroughAnalyzerFactory*>::iterator ta;
     for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
         delete *ta;
     }
-    std::vector<StreamEndAnalyzerFactory*>::iterator ea;
+    vector<StreamEndAnalyzerFactory*>::iterator ea;
     for (ea = endfactories.begin(); ea != endfactories.end(); ++ea) {
         delete *ea;
     }
+    vector<StreamSaxAnalyzerFactory*>::iterator sa;
+    for (sa = saxfactories.begin(); sa != saxfactories.end(); ++ea) {
+        delete *sa;
+    }
+    vector<StreamLineAnalyzerFactory*>::iterator la;
+    for (la = linefactories.begin(); la != linefactories.end(); ++la) {
+        delete *la;
+    }
+    vector<StreamEventAnalyzerFactory*>::iterator da;
+    for (da = eventfactories.begin(); da != eventfactories.end(); ++da) {
+        delete *da;
+    }
     // delete the through analyzers and end analyzers
-    std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
+    vector<vector<StreamThroughAnalyzer*> >::iterator tIter;
     for (tIter = through.begin(); tIter != through.end(); ++tIter) {
-        std::vector<StreamThroughAnalyzer*>::iterator t;
+        vector<StreamThroughAnalyzer*>::iterator t;
         for (t = tIter->begin(); t != tIter->end(); ++t) {
             delete *t;
         }
     }
-    std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
+    vector<vector<StreamEndAnalyzer*> >::iterator eIter;
     for (eIter = end.begin(); eIter != end.end(); ++eIter) {
-        std::vector<StreamEndAnalyzer*>::iterator e;
+        vector<StreamEndAnalyzer*>::iterator e;
         for (e = eIter->begin(); e != eIter->end(); ++e) {
             delete *e;
         }
@@ -138,11 +160,11 @@ StreamAnalyzer::setIndexWriter(IndexWriter& w) {
 }
 char
 StreamAnalyzer::indexFile(const char *filepath) {
-    std::string path(filepath);
+    string path(filepath);
     return indexFile(path);
 }
 char
-StreamAnalyzer::indexFile(const std::string& filepath) {
+StreamAnalyzer::indexFile(const string& filepath) {
     if (!checkUtf8(filepath.c_str())) {
         return 1;
     }
@@ -181,6 +203,8 @@ StreamAnalyzer::Private::initializeThroughFactories() {
     //addFactory(new DigestThroughAnalyzerFactory());
     addFactory(new ID3V2ThroughAnalyzerFactory());
     addFactory(new OggThroughAnalyzerFactory());
+    addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,
+        eventfactories));
 }
 void
 StreamAnalyzer::Private::addFactory(StreamEndAnalyzerFactory* f) {
@@ -229,9 +253,9 @@ StreamAnalyzer::Private::initializeEndFactories() {
 void
 StreamAnalyzer::Private::addThroughAnalyzers() {
     through.resize(through.size()+1);
-    std::vector<std::vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
+    vector<vector<StreamThroughAnalyzer*> >::reverse_iterator tIter;
     tIter = through.rbegin();
-    std::vector<StreamThroughAnalyzerFactory*>::iterator ta;
+    vector<StreamThroughAnalyzerFactory*>::iterator ta;
     for (ta = throughfactories.begin(); ta != throughfactories.end(); ++ta) {
         tIter->push_back((*ta)->newInstance());
     }
@@ -239,9 +263,9 @@ StreamAnalyzer::Private::addThroughAnalyzers() {
 void
 StreamAnalyzer::Private::addEndAnalyzers() {
     end.resize(end.size()+1);
-    std::vector<std::vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
+    vector<vector<StreamEndAnalyzer*> >::reverse_iterator eIter;
     eIter = end.rbegin();
-    std::vector<StreamEndAnalyzerFactory*>::iterator ea;
+    vector<StreamEndAnalyzerFactory*>::iterator ea;
     for (ea = endfactories.begin(); ea != endfactories.end(); ++ea) {
         eIter->push_back((*ea)->newInstance());
     }
@@ -259,8 +283,8 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     //printf("depth #%i: %s\n", depth, path.c_str());
 
     // retrieve or construct the through analyzers and end analyzers
-    std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
-    std::vector<std::vector<StreamEndAnalyzer*> >::iterator eIter;
+    vector<vector<StreamThroughAnalyzer*> >::iterator tIter;
+    vector<vector<StreamEndAnalyzer*> >::iterator eIter;
     while ((int)through.size() <= idx.depth()) {
         addThroughAnalyzers();
         addEndAnalyzers();
@@ -268,10 +292,8 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     tIter = through.begin() + idx.depth();
     eIter = end.begin() + idx.depth();
 
-    DataEventInputStream eventstream(input);
-
     // insert the through analyzers
-    std::vector<StreamThroughAnalyzer*>::iterator ts;
+    vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         (*ts)->setIndexable(&idx);
         input = (*ts)->connectInputStream(input);
@@ -319,7 +341,7 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         tIter = through.begin() + idx.depth();
         do {
             ready = input->getSize() != -1;
-            std::vector<StreamThroughAnalyzer*>::iterator ts;
+            vector<StreamThroughAnalyzer*>::iterator ts;
             for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
                 ready = (*ts)->isReadyWithStream();
             }
@@ -349,8 +371,8 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
  **/
 void
 StreamAnalyzer::Private::removeIndexable(uint depth) {
-    std::vector<std::vector<StreamThroughAnalyzer*> >::iterator tIter;
-    std::vector<StreamThroughAnalyzer*>::iterator ts;
+    vector<vector<StreamThroughAnalyzer*> >::iterator tIter;
+    vector<StreamThroughAnalyzer*>::iterator ts;
     tIter = through.begin() + depth;
     for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
         // remove references to the analysisresult before it goes out of scope

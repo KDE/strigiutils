@@ -22,8 +22,6 @@
 #include "jstreamsconfig.h"
 #include "streambase.h"
 
-#include <list>
-
 namespace jstreams {
 
 /** Handler interface for handling data events. */
@@ -52,13 +50,13 @@ public:
 class STREAMS_EXPORT DataEventInputStream : public StreamBase<char> {
 private:
     int64_t totalread;
-    StreamBase<char> *input;
-    std::list<DataEventHandler*> handlers;
+    StreamBase<char>* input;
+    DataEventHandler& handler;
 
     void finish();
 public:
-    explicit DataEventInputStream(StreamBase<char> *input);
-    void addEventHandler(DataEventHandler* );
+    explicit DataEventInputStream(StreamBase<char> *input,
+        DataEventHandler& handler);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
     int64_t reset(int64_t);

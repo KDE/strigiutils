@@ -17,36 +17,27 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMSTREAMANALYZER_H
-#define STREAMSTREAMANALYZER_H
+#include "lineeventanalyzer.h"
+#include "streamlineanalyzer.h"
+using namespace Strigi;
+using namespace std;
 
-#include "inputstream.h"
-
-namespace Strigi {
-class StreamAnalyzer;
-class RegisteredField;
-class FieldRegister;
-class AnalysisResult;
-
-class StreamEventAnalyzer {
-public:
-    virtual ~StreamEventAnalyzer() {}
-    virtual const char* getName() const = 0;
-    virtual void startAnalysis(AnalysisResult*) = 0;
-    virtual void endAnalysis() {}
-    virtual void handleData(const char* data, uint32_t length) = 0;
-    virtual bool isReadyWithStream() = 0;
-};
-
-class StreamEventAnalyzerFactory {
-public:
-    virtual ~StreamEventAnalyzerFactory() {}
-    virtual const char* getName() const = 0;
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
-    virtual StreamEventAnalyzer* newInstance() const = 0;
-};
-
-
+LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l) :line(l) {}
+LineEventAnalyzer::~LineEventAnalyzer() {
+    vector<StreamLineAnalyzer*>::iterator l;
+    for (l = line.begin(); l != line.end(); ++l) {
+        delete *l;
+    }
 }
-
-#endif
+void
+LineEventAnalyzer::startAnalysis(AnalysisResult*) {
+}
+void
+LineEventAnalyzer::endAnalysis() {}
+void
+LineEventAnalyzer::handleData(const char* data, uint32_t length) {
+}
+bool
+LineEventAnalyzer::isReadyWithStream() {
+    return true;
+}

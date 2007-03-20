@@ -17,36 +17,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMSTREAMANALYZER_H
-#define STREAMSTREAMANALYZER_H
 
-#include "inputstream.h"
+#ifndef SAXEVENTANALYZER
+#define SAXEVENTANALYZER
+
+#include "jstreamsconfig.h"
+#include "streameventanalyzer.h"
+#include <vector>
 
 namespace Strigi {
-class StreamAnalyzer;
-class RegisteredField;
-class FieldRegister;
-class AnalysisResult;
-
-class StreamEventAnalyzer {
+class StreamSaxAnalyzer;
+class SaxEventAnalyzer : public StreamEventAnalyzer {
+private:
+    std::vector<StreamSaxAnalyzer*> sax;
+    const char* getName() const { return "SaxEventAnalyzer"; }
+    void startAnalysis(AnalysisResult*);
+    void endAnalysis();
+    void handleData(const char* data, uint32_t length);
+    bool isReadyWithStream();
 public:
-    virtual ~StreamEventAnalyzer() {}
-    virtual const char* getName() const = 0;
-    virtual void startAnalysis(AnalysisResult*) = 0;
-    virtual void endAnalysis() {}
-    virtual void handleData(const char* data, uint32_t length) = 0;
-    virtual bool isReadyWithStream() = 0;
+    SaxEventAnalyzer(std::vector<StreamSaxAnalyzer*>&s);
+    ~SaxEventAnalyzer();
 };
-
-class StreamEventAnalyzerFactory {
-public:
-    virtual ~StreamEventAnalyzerFactory() {}
-    virtual const char* getName() const = 0;
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
-    virtual StreamEventAnalyzer* newInstance() const = 0;
-};
-
 
 }
-
 #endif
