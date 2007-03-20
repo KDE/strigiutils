@@ -31,7 +31,7 @@ operator>>(XMLStream& in, Repository& e) {
 	in.setFromAttribute(e.a_writeable,"writeable");
 	in.setFromAttribute(e.a_name,"name");
 	const SimpleNode* n = in.firstChild();
-	bool hasChildren = (n == NULL);
+	bool hasChildren = n;
 	while (n && in.getTagName() == "path") {
 		Path v;
 		in >> v;
@@ -96,7 +96,7 @@ XMLStream& operator>>(XMLStream&, Filter&);
 XMLStream&
 operator>>(XMLStream& in, Filters& e) {
 	const SimpleNode* n = in.firstChild();
-	bool hasChildren = (n == NULL);
+	bool hasChildren = n;
 	while (n && in.getTagName() == "filter") {
 		Filter v;
 		in >> v;
@@ -132,7 +132,7 @@ XMLStream&
 operator>>(XMLStream& in, StrigiDaemonConfiguration& e) {
 	in.setFromAttribute(e.a_useDBus,"useDBus");
 	const SimpleNode* n = in.firstChild();
-	bool hasChildren = (n == NULL);
+	bool hasChildren = n;
 	while (n && in.getTagName() == "repository") {
 		Repository v;
 		in >> v;

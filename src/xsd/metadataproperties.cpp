@@ -25,7 +25,7 @@ XMLStream& operator>>(XMLStream&, Metadata&);
 XMLStream&
 operator>>(XMLStream& in, Metadataproperties& e) {
 	const SimpleNode* n = in.firstChild();
-	bool hasChildren = (n == NULL);
+	bool hasChildren = n;
 	while (n && in.getTagName() == "metadata") {
 		Metadata v;
 		in >> v;
