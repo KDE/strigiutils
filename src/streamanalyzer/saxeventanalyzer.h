@@ -29,7 +29,10 @@ namespace Strigi {
 class StreamSaxAnalyzer;
 class SaxEventAnalyzer : public StreamEventAnalyzer {
 private:
-    std::vector<StreamSaxAnalyzer*> sax;
+    class Private;
+    Private* p;
+    bool ready;
+
     const char* getName() const { return "SaxEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();

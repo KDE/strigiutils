@@ -87,7 +87,7 @@ find_package(Magic REQUIRED)
 
 # use either expat or libxml2
 find_package(Expat)
-find_package(LibXml2)
+find_package(LibXml2 REQUIRED)
 if (NOT LIBXML2_FOUND AND NOT Expat_FOUND)
   MESSAGE(FATAL You need libxml2 or libexpat)
 endif (NOT LIBXML2_FOUND AND NOT Expat_FOUND)

@@ -84,5 +84,17 @@ EventThroughAnalyzerFactory::newInstance() const {
     return sta;
 }
 void
-EventThroughAnalyzerFactory::registerFields(Strigi::FieldRegister&) {
+EventThroughAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
+    vector<StreamEventAnalyzerFactory*>::iterator ea;
+    for (ea = eventfactories.begin(); ea != eventfactories.end(); ++ea) {
+        (*ea)->registerFields(reg);
+    }
+    vector<StreamSaxAnalyzerFactory*>::iterator sa;
+    for (sa = saxfactories.begin(); sa != saxfactories.end(); ++sa) {
+        (*sa)->registerFields(reg);
+    }
+    vector<StreamLineAnalyzerFactory*>::iterator la;
+    for (la = linefactories.begin(); la != linefactories.end(); ++la) {
+        (*la)->registerFields(reg);
+    }
 }
