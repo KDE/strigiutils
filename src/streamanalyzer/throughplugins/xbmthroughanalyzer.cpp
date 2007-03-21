@@ -52,7 +52,7 @@ XbmThroughAnalyzer::setIndexable(AnalysisResult* i) {
 }
 
 /**
- * @returns the next offset, @c -1 if an error occured.
+ * @returns the next offset, @c -1 if an error occurred.
  */
 int32_t
 processLine(const char* buf, int32_t bufSize, int32_t offset, int32_t& data) {
