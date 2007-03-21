@@ -10,6 +10,7 @@ using namespace jstreams;
 using namespace Strigi;
 
 EventThroughAnalyzer::~EventThroughAnalyzer() {
+    fprintf(stderr, "~EventAnalyzer\n");
     if (datastream) {
         delete datastream;
     }
@@ -49,7 +50,7 @@ EventThroughAnalyzer::handleData(const char* data, uint32_t size) {
     bool more = true;
     for (i = event.begin(); i != event.end(); ++i) {
         (*i)->handleData(data, size);
-        more = more && (*i)->isReadyWithStream();
+        more = more || !(*i)->isReadyWithStream();
     }
     ready = !more;
     return more;

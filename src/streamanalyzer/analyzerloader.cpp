@@ -196,3 +196,15 @@ AnalyzerLoader::getStreamLineAnalyzerFactories() {
     }
     return l;
 }
+list<StreamEventAnalyzerFactory*>
+AnalyzerLoader::getStreamEventAnalyzerFactories() {
+    list<StreamEventAnalyzerFactory*> l;
+    map<string, Private::Module*>::iterator i;
+    for (i = Private::modulelist.modules.begin();
+            i != Private::modulelist.modules.end(); ++i) {
+        list<StreamEventAnalyzerFactory*> ml
+            = i->second->factory->getStreamEventAnalyzerFactories();
+        copy(ml.begin(), ml.end(), back_inserter(l));
+    }
+    return l;
+}

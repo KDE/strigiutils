@@ -32,6 +32,7 @@ private:
     class Private;
     Private* p;
     bool ready;
+    bool initialized;
 
     const char* getName() const { return "SaxEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);

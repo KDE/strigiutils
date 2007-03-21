@@ -21,25 +21,19 @@
 #include "streamsaxanalyzer.h"
 #include "analysisresult.h"
 #include "textutils.h"
-#include <libxml/parser.h>
+#include <libxml/SAX2.h>
 
 using namespace jstreams;
 using namespace Strigi;
 using namespace std;
 
-
 class SaxEventAnalyzer::Private {
 public:
-    enum FieldType { NONE, TEXT, TITLE };
     std::vector<StreamSaxAnalyzer*> sax;
-    string fieldvalue;
-    FieldType fieldtype;
     xmlParserCtxtPtr ctxt;
     xmlSAXHandler handler;
-    AnalysisResult* idx;
+    AnalysisResult* result;
     bool error;
-    bool stop;
-    int32_t chars;
 
     static void charactersSAXFunc(void* ctx, const xmlChar * ch, int len);
     static void errorSAXFunc(void* ctx, const char * msg, ...);
@@ -51,10 +45,10 @@ public:
     Private(std::vector<StreamSaxAnalyzer*>& s) :sax(s) {
         ctxt = 0;
         memset(&handler, 0, sizeof(xmlSAXHandler));
+        handler.initialized = XML_SAX2_MAGIC;
         handler.characters = charactersSAXFunc;
         handler.error = errorSAXFunc;
         handler.startElementNs = startElementNsSAX2Func;
-        fieldtype = TEXT;
     }
     ~Private() {
         reset();
@@ -69,24 +63,17 @@ public:
             ctxt = 0;
         }
         error = false;
-        stop = false;
-        chars = 0;
     }
-    void init(AnalysisResult*i, const char* data, int32_t len) {
+    void init(const char* data, int32_t len) {
         reset();
         int initlen = (1024 > len) ?len :1024;
-        idx = i;
-        const char* name = 0;
-        if (i) name = i->fileName().c_str();
+        const char* name = result->fileName().c_str();
         xmlKeepBlanksDefault(0);
         ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
         if (ctxt == 0) {
             error = true;
-            stop = true;
         } else {
-//            ctxt->sax2 = 1;
-            // we need to call push once to do validation
-            push(data+initlen, len-initlen);
+            push(data + initlen, len - initlen);
         }
     }
     void push(const char* data, int32_t len) {
@@ -97,40 +84,25 @@ public:
     }
 };
 void
-SaxEventAnalyzer::Private::charactersSAXFunc(void* ctx, const xmlChar * ch,
+SaxEventAnalyzer::Private::charactersSAXFunc(void* ctx, const xmlChar* ch,
         int len) {
     Private* p = (Private*)ctx;
-
-    // skip whitespace
-    const char* end = (const char*)ch+len;
-    const char* c = (const char*)ch;
-    while (c < end && isspace(*c)) c++;
-    if (c == end) return;
-
-    if (p->idx && p->fieldtype != NONE && checkUtf8((const char*)c, end-c)) {
-        if (p->fieldtype == TEXT) {
-            p->idx->addText((const char*)c, end-c);
-        } else {
-            p->fieldvalue += string((const char*)c, end-c);
-        }
-    }
-    p->chars += end-c;
-    if (p->chars > 1000000) {
-        p->stop = true;
+    vector<StreamSaxAnalyzer*>::iterator i;
+    for (i = p->sax.begin(); i != p->sax.end(); ++i) {
+        (*i)->characters((const char*)ch, len);
     }
 }
 #include <iostream>
 void
 SaxEventAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     Private* p = (Private*)ctx;
-    p->stop = p->error = true;
+    p->error = true;
     string e;
 
     va_list args;
     va_start(args, msg);
     e += string(" ")+va_arg(args,char*);
     va_end(args);
-//    fprintf(stderr, "%s", e.c_str());
 }
 void
 SaxEventAnalyzer::Private::startElementNsSAX2Func(void * ctx,
@@ -153,11 +125,9 @@ SaxEventAnalyzer::~SaxEventAnalyzer() {
 }
 void
 SaxEventAnalyzer::startAnalysis(AnalysisResult* result) {
+    p->result = result;
     ready = false;
-    vector<StreamSaxAnalyzer*>::iterator i;
-    for (i = p->sax.begin(); i != p->sax.end(); ++i) {
-        (*i)->startAnalysis(result);
-    }
+    initialized = false;
 }
 void
 SaxEventAnalyzer::endAnalysis() {
@@ -169,11 +139,27 @@ SaxEventAnalyzer::endAnalysis() {
 void
 SaxEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (ready) return;
-    p->push(data, length);
+    // push the data into the parser
+    if (!initialized) {
+        p->init(data, length);
+        initialized = true;
+        if (!p->error) {
+            vector<StreamSaxAnalyzer*>::iterator i;
+            for (i = p->sax.begin(); i != p->sax.end(); ++i) {
+                (*i)->startAnalysis(p->result);
+            }
+        }
+    } else {
+        p->push(data, length);
+    }
+
+    // check if we are done
     bool more = false;
-    vector<StreamSaxAnalyzer*>::iterator i;
-    for (i = p->sax.begin(); i != p->sax.end(); ++i) {
-        more = more || !(*i)->isReadyWithStream();
+    if (!p->error) {
+        vector<StreamSaxAnalyzer*>::iterator i;
+        for (i = p->sax.begin(); i != p->sax.end(); ++i) {
+            more = more || !(*i)->isReadyWithStream();
+        }
     }
     ready = !more;
 }

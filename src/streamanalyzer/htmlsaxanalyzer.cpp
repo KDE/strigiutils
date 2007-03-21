@@ -22,6 +22,7 @@ using namespace Strigi;
 
 void
 HtmlSaxAnalyzer::startAnalysis(AnalysisResult*) {
+    fprintf(stderr, "HtmlSaxAnalyzer\n");
 }
 void
 HtmlSaxAnalyzer::endAnalysis() {
@@ -40,5 +41,5 @@ HtmlSaxAnalyzer::characters(const char* data, uint32_t length) {
 }
 bool
 HtmlSaxAnalyzer::isReadyWithStream() {
-    return true;
+    return false;
 }

@@ -99,6 +99,9 @@ StreamAnalyzer::Private::Private(AnalyzerConfiguration& c) :conf(c), writer(0) {
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     
+    initializeSaxFactories();
+    initializeLineFactories();
+    initializeEventFactories();
     initializeThroughFactories();
     initializeEndFactories();
 }
@@ -113,7 +116,7 @@ StreamAnalyzer::Private::~Private() {
         delete *ea;
     }
     vector<StreamSaxAnalyzerFactory*>::iterator sa;
-    for (sa = saxfactories.begin(); sa != saxfactories.end(); ++ea) {
+    for (sa = saxfactories.begin(); sa != saxfactories.end(); ++sa) {
         delete *sa;
     }
     vector<StreamLineAnalyzerFactory*>::iterator la;
@@ -204,6 +207,24 @@ StreamAnalyzer::Private::initializeSaxFactories() {
     addFactory(new HtmlSaxAnalyzerFactory());
 }
 void
+StreamAnalyzer::Private::initializeLineFactories() {
+    list<StreamLineAnalyzerFactory*> plugins
+        = moduleLoader->getStreamLineAnalyzerFactories();
+    list<StreamLineAnalyzerFactory*>::iterator i;
+    for (i = plugins.begin(); i != plugins.end(); ++i) {
+        addFactory(*i);
+    }
+}
+void
+StreamAnalyzer::Private::initializeEventFactories() {
+    list<StreamEventAnalyzerFactory*> plugins
+        = moduleLoader->getStreamEventAnalyzerFactories();
+    list<StreamEventAnalyzerFactory*>::iterator i;
+    for (i = plugins.begin(); i != plugins.end(); ++i) {
+        addFactory(*i);
+    }
+}
+void
 StreamAnalyzer::Private::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
         = moduleLoader->getStreamThroughAnalyzerFactories();
@@ -216,6 +237,24 @@ StreamAnalyzer::Private::initializeThroughFactories() {
     addFactory(new OggThroughAnalyzerFactory());
     addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,
         eventfactories));
+}
+void
+StreamAnalyzer::Private::addFactory(StreamEventAnalyzerFactory* f) {
+    f->registerFields(conf.getFieldRegister());
+    if (conf.useFactory(f)) {
+        eventfactories.push_back(f);
+    } else {
+        delete f;
+    }
+}
+void
+StreamAnalyzer::Private::addFactory(StreamLineAnalyzerFactory* f) {
+    f->registerFields(conf.getFieldRegister());
+    if (conf.useFactory(f)) {
+        linefactories.push_back(f);
+    } else {
+        delete f;
+    }
 }
 void
 StreamAnalyzer::Private::addFactory(StreamSaxAnalyzerFactory* f) {
