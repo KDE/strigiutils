@@ -28,6 +28,9 @@
 namespace Strigi {
 class StreamEndAnalyzerFactory;
 class StreamThroughAnalyzerFactory;
+class StreamSaxAnalyzerFactory;
+class StreamLineAnalyzerFactory;
+class StreamEventAnalyzerFactory;
 class FieldRegister;
 
 class FieldPropertiesPrivate;
@@ -80,6 +83,9 @@ public:
     void printFilters() const;
     virtual bool useFactory(StreamEndAnalyzerFactory*) const { return true; }
     virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamSaxAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamEventAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamLineAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
     virtual FieldType getIndexType(const Strigi::RegisteredField* f) const;

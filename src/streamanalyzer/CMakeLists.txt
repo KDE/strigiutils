@@ -35,6 +35,7 @@ set(streamanalyzer_SRCS
 	eventthroughanalyzer.cpp
 	saxeventanalyzer.cpp
 	lineeventanalyzer.cpp
+	htmlsaxanalyzer.cpp
 )
 
 if (LIBXML2_FOUND)
@@ -61,8 +62,7 @@ endif (LIBXML2_FOUND)
 
 set_target_properties(streamanalyzer PROPERTIES
     VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR}
-    DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
+    SOVERSION ${STRIGI_VERSION_MAJOR} DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
 
 set(streamanalyzer_libs streams ${streamindex_LIBS})

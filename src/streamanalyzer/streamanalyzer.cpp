@@ -48,6 +48,7 @@
 #include "textutils.h"
 #include "analyzerloader.h"
 #include "eventthroughanalyzer.h"
+#include "htmlsaxanalyzer.h"
 #include <sys/stat.h>
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
@@ -193,6 +194,16 @@ StreamAnalyzer::Private::addFactory(StreamThroughAnalyzerFactory* f) {
     }
 }
 void
+StreamAnalyzer::Private::initializeSaxFactories() {
+    list<StreamSaxAnalyzerFactory*> plugins
+        = moduleLoader->getStreamSaxAnalyzerFactories();
+    list<StreamSaxAnalyzerFactory*>::iterator i;
+    for (i = plugins.begin(); i != plugins.end(); ++i) {
+        addFactory(*i);
+    }
+    addFactory(new HtmlSaxAnalyzerFactory());
+}
+void
 StreamAnalyzer::Private::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
         = moduleLoader->getStreamThroughAnalyzerFactories();
@@ -205,6 +216,15 @@ StreamAnalyzer::Private::initializeThroughFactories() {
     addFactory(new OggThroughAnalyzerFactory());
     addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,
         eventfactories));
+}
+void
+StreamAnalyzer::Private::addFactory(StreamSaxAnalyzerFactory* f) {
+    f->registerFields(conf.getFieldRegister());
+    if (conf.useFactory(f)) {
+        saxfactories.push_back(f);
+    } else {
+        delete f;
+    }
 }
 void
 StreamAnalyzer::Private::addFactory(StreamEndAnalyzerFactory* f) {

@@ -26,6 +26,7 @@ namespace Strigi {
 class StreamAnalyzer;
 class RegisteredField;
 class FieldRegister;
+class AnalysisResult;
 
 class StreamSaxAnalyzer {
 public:
