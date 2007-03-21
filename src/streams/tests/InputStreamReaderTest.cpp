@@ -56,6 +56,8 @@ InputStreamReaderTest(int argc, char* argv[]) {
         FileInputStream file(filename.c_str());
         InputStreamReader isr(&file, "UCS-2");
         int32_t nread1 = isr.read(p1, 200000, 200000);
+	VERIFY(nread1 > 0 );
+	VERIFY(p1 != 0);
 
         filename = "unichtm/utf8/";
         filename += testfiles[i];
@@ -63,9 +65,12 @@ InputStreamReaderTest(int argc, char* argv[]) {
         FileInputStream file2(filename.c_str());
         InputStreamReader isr2(&file2, "UTF-8");
         int32_t nread2 = isr2.read(p2, 200000, 200000);
+	VERIFY(nread2 > 0 );
+	VERIFY(p2 != 0);
 
         VERIFY(nread1 == nread2);
-        VERIFY(memcmp(p1, p2, nread1*sizeof(wchar_t))==0);
+	if ( p1 && p2 && nread1 >= 0 && nread2 >= 0 )
+        	VERIFY(memcmp(p1, p2, nread1*sizeof(wchar_t))==0);
     }
     return founderrors;
 }
