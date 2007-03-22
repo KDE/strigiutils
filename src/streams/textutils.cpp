@@ -64,6 +64,7 @@ jstreams::checkUtf8(const std::string& p) {
  * utf8. Return value of 0 means that the entire string is valid.
  * If the last character is incomplete the returned value points to the start
  * of that character and nb is set to the number of characters that is missing.
+ * If there is an error, nb == 0.
  **/
 const char*
 jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
