@@ -30,6 +30,13 @@ class StreamLineAnalyzer;
 class LineEventAnalyzer : public StreamEventAnalyzer {
 private:
     std::vector<StreamLineAnalyzer*> line;
+    std::string byteBuffer;
+    std::string lineBuffer;
+    AnalysisResult* result;
+    char missingBytes;
+    bool ready;
+    bool initialized;
+
     const char* getName() const { return "LineEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();

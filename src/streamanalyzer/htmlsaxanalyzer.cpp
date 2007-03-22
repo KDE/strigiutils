@@ -22,7 +22,6 @@ using namespace Strigi;
 
 void
 HtmlSaxAnalyzer::startAnalysis(AnalysisResult*) {
-    fprintf(stderr, "HtmlSaxAnalyzer\n");
 }
 void
 HtmlSaxAnalyzer::endAnalysis() {

@@ -10,7 +10,6 @@ using namespace jstreams;
 using namespace Strigi;
 
 EventThroughAnalyzer::~EventThroughAnalyzer() {
-    fprintf(stderr, "~EventAnalyzer\n");
     if (datastream) {
         delete datastream;
     }

@@ -19,10 +19,15 @@
  */
 #include "lineeventanalyzer.h"
 #include "streamlineanalyzer.h"
+#include "textutils.h"
+#include "string.h"
 using namespace Strigi;
+using namespace jstreams;
 using namespace std;
 
-LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l) :line(l) {}
+LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
+        :line(l), ready(true) {
+}
 LineEventAnalyzer::~LineEventAnalyzer() {
     vector<StreamLineAnalyzer*>::iterator l;
     for (l = line.begin(); l != line.end(); ++l) {
@@ -30,14 +35,85 @@ LineEventAnalyzer::~LineEventAnalyzer() {
     }
 }
 void
-LineEventAnalyzer::startAnalysis(AnalysisResult*) {
+LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
+    result = r;
+    ready = line.size() == 0;
+    missingBytes = 0;
+    lineBuffer.assign("");
+    byteBuffer.assign("");
 }
 void
-LineEventAnalyzer::endAnalysis() {}
+LineEventAnalyzer::endAnalysis() {
+    vector<StreamLineAnalyzer*>::iterator l;
+    for (l = line.begin(); l != line.end(); ++l) {
+        (*l)->endAnalysis();
+    }
+}
 void
 LineEventAnalyzer::handleData(const char* data, uint32_t length) {
+    if (ready) return;
+
+    // if we have missing characters, handle them
+    if (missingBytes) {
+        if (length > (unsigned char)missingBytes) {
+            // we have enough data to finish the character
+            byteBuffer.append(data, missingBytes);
+            if (!checkUtf8(byteBuffer)) {
+                ready = true;
+                return;
+            }
+            lineBuffer.append(byteBuffer);
+            data += missingBytes;
+            length += missingBytes;
+            // clean up the byte buffer
+            byteBuffer.assign("");
+            missingBytes = 0;
+        } else {
+            byteBuffer.append(data, length);
+            missingBytes -= length;
+            return;
+        }
+    }
+
+    // validate the utf8
+    const char* p = checkUtf8(byteBuffer.c_str(), byteBuffer.length(),
+        missingBytes);
+    if (p || missingBytes == 0) {
+        // not valid
+        ready = true;
+        return;
+    }
+
+    // find the first \n
+    p = data;
+    const char* end = data + length;
+    do {
+        if (*p == '\n') break; 
+    } while (++p != end);
+
+    if (p == end) { // no '\n' was found, we put this in the buffer
+        lineBuffer.append(data, length);
+        return;
+    }
+    lineBuffer.append(data, p-data);
+
+    // if we have an data in the linebuffer, add the rest of the line to it
+    // validate the text
+    //if (
+    if (initialized) {
+    } else {
+    }
+//    fprintf(stderr, "another line\n");
+
+    // check if we are done
+    bool more = false;
+    vector<StreamLineAnalyzer*>::iterator i;
+    for (i = line.begin(); i != line.end(); ++i) {
+        more = more || !(*i)->isReadyWithStream();
+    }
+    ready = !more;
 }
 bool
 LineEventAnalyzer::isReadyWithStream() {
-    return true;
+    return ready;
 }
