@@ -1,5 +1,5 @@
 add_subdirectory(throughplugins)
-add_subdirectory(lineanalyzers)
+add_subdirectory(lineplugins)
 add_subdirectory(tests)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
