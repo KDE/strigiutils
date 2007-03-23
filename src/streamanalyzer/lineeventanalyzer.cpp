@@ -19,6 +19,7 @@
  */
 #include "lineeventanalyzer.h"
 #include "streamlineanalyzer.h"
+#include "analysisresult.h"
 #include "textutils.h"
 #include "string.h"
 using namespace Strigi;
@@ -67,7 +68,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
             }
             lineBuffer.append(byteBuffer);
             data += missingBytes;
-            length += missingBytes;
+            length -= missingBytes;
             // clean up the byte buffer
             byteBuffer.assign("");
             missingBytes = 0;
