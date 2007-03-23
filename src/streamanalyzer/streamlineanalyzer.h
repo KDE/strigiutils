@@ -25,6 +25,7 @@
 namespace Strigi {
 class StreamAnalyzer;
 class RegisteredField;
+class AnalysisResult;
 class FieldRegister;
 
 class StreamLineAnalyzer {
