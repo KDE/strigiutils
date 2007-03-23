@@ -26,7 +26,7 @@ using namespace jstreams;
 using namespace std;
 
 LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
-        :line(l), ready(true) {
+        :line(l), ready(true), initialized(false) {
 }
 LineEventAnalyzer::~LineEventAnalyzer() {
     vector<StreamLineAnalyzer*>::iterator l;
@@ -38,6 +38,7 @@ void
 LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
     result = r;
     ready = line.size() == 0;
+    initialized = false;
     missingBytes = 0;
     lineBuffer.assign("");
     byteBuffer.assign("");
@@ -117,18 +118,18 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     }
 
     // handle the other lines
-    do {
-        data = p + 1;
+    while (++p != end) {
+        data = p;
         do {
             if (*p == '\n') break; 
         } while (++p != end);
     
         if (p == end) {
-            lineBuffer.assign(data, length);
-            return;
+            lineBuffer.assign(data, end-data);
+            break;
         }
         emit(data, p-data);
-    } while (true);
+    }
 
     // check if we are done
     bool more = false;
@@ -140,6 +141,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
 }
 void
 LineEventAnalyzer::emit(const char*data, uint32_t length) {
+    fprintf(stderr, "%i %.*s\n", length, length, data);
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {
         for (i = line.begin(); i != line.end(); ++i) {
