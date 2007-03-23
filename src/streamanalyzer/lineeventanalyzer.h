@@ -42,6 +42,7 @@ private:
     void endAnalysis();
     void handleData(const char* data, uint32_t length);
     bool isReadyWithStream();
+    void emit(const char* data, uint32_t length);
 public:
     LineEventAnalyzer(std::vector<StreamLineAnalyzer*>&s);
     ~LineEventAnalyzer();

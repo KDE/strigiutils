@@ -53,12 +53,14 @@ void
 LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (ready) return;
 
-    // if we have missing characters, handle them
-    if (missingBytes) {
+    // if we have incomplete characters left over from the last call,
+    // complete them and validate them
+    if (missingBytes > 0) {
         if (length > (unsigned char)missingBytes) {
             // we have enough data to finish the character
             byteBuffer.append(data, missingBytes);
             if (!checkUtf8(byteBuffer)) {
+                // invalid utf8, nothing more to see here
                 ready = true;
                 return;
             }
@@ -69,6 +71,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
             byteBuffer.assign("");
             missingBytes = 0;
         } else {
+            // not enough data, store it and wait for the next round
             byteBuffer.append(data, length);
             missingBytes -= length;
             return;
@@ -76,12 +79,21 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     }
 
     // validate the utf8
-    const char* p = checkUtf8(byteBuffer.c_str(), byteBuffer.length(),
-        missingBytes);
-    if (p || missingBytes == 0) {
-        // not valid
-        ready = true;
-        return;
+    const char* p = checkUtf8(data, length, missingBytes);
+    if (p) {
+        // the data ends in an incomplete character
+        if (missingBytes > 0) {
+            int32_t charStartSize = length - (p - data);
+            // store the start of the character
+            byteBuffer.assign(p, charStartSize);
+            // do not consider this incomplete character in the rest of this
+            // function
+            length -= charStartSize;
+        } else {
+            // not valid
+            ready = true;
+            return;
+        }
     }
 
     // find the first \n
@@ -90,20 +102,33 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     do {
         if (*p == '\n') break; 
     } while (++p != end);
-
     if (p == end) { // no '\n' was found, we put this in the buffer
         lineBuffer.append(data, length);
         return;
     }
-    lineBuffer.append(data, p-data);
 
-    // if we have an data in the linebuffer, add the rest of the line to it
-    // validate the text
-    //if (
-    if (initialized) {
+    // handle the first line from this call
+    if (lineBuffer.size()) {
+        lineBuffer.append(data, p-data);
+        emit(lineBuffer.c_str(), lineBuffer.size());
+        lineBuffer.assign("");
     } else {
+        emit(data, p-data);
     }
-//    fprintf(stderr, "another line\n");
+
+    // handle the other lines
+    do {
+        data = p + 1;
+        do {
+            if (*p == '\n') break; 
+        } while (++p != end);
+    
+        if (p == end) {
+            lineBuffer.assign(data, length);
+            return;
+        }
+        emit(data, p-data);
+    } while (true);
 
     // check if we are done
     bool more = false;
@@ -112,6 +137,19 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
         more = more || !(*i)->isReadyWithStream();
     }
     ready = !more;
+}
+void
+LineEventAnalyzer::emit(const char*data, uint32_t length) {
+    vector<StreamLineAnalyzer*>::iterator i;
+    if (!initialized) {
+        for (i = line.begin(); i != line.end(); ++i) {
+            (*i)->startAnalysis(result);
+        }
+        initialized = true;
+    }
+    for (i = line.begin(); i != line.end(); ++i) {
+        (*i)->handleLine(data, length);
+    }
 }
 bool
 LineEventAnalyzer::isReadyWithStream() {
