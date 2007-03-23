@@ -36,6 +36,7 @@ private:
     char missingBytes;
     bool ready;
     bool initialized;
+    bool sawCarriageReturn;
 
     const char* getName() const { return "LineEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);

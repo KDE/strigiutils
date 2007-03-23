@@ -21,10 +21,13 @@
 #include "streamlineanalyzer.h"
 #include "analysisresult.h"
 #include "textutils.h"
-#include "string.h"
+#include <cstring>
+#include <cassert>
 using namespace Strigi;
 using namespace jstreams;
 using namespace std;
+
+// end of line is \r, \n or \r\n
 
 LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
         :line(l), ready(true), initialized(false) {
@@ -40,6 +43,7 @@ LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
     result = r;
     ready = line.size() == 0;
     initialized = false;
+    sawCarriageReturn = false;
     missingBytes = 0;
     lineBuffer.assign("");
     byteBuffer.assign("");
@@ -54,6 +58,16 @@ LineEventAnalyzer::endAnalysis() {
 void
 LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (ready) return;
+    assert(!(sawCarriageReturn && missingBytes > 0));
+
+    // if the last block ended with '\r', the next '\n' can be skipped
+    if (sawCarriageReturn) {
+        if (length > 0 && data[0] == '\n') {
+            data++;
+            length--;
+        }
+        sawCarriageReturn = false;
+    }
 
     // if we have incomplete characters left over from the last call,
     // complete them and validate them
@@ -102,11 +116,21 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     p = data;
     const char* end = data + length;
     do {
-        if (*p == '\n') break; 
+        if (*p == '\n' || *p == '\r') break; 
     } while (++p != end);
     if (p == end) { // no '\n' was found, we put this in the buffer
         lineBuffer.append(data, length);
         return;
+    }
+    if (*p == '\r') {
+        // if \r is followed by \n, we can ignore \n
+        if (p + 1 != end) {
+            if (p[1] == '\n') {
+                p++;
+            }
+        } else {
+            sawCarriageReturn = true;
+        }
     }
 
     // handle the first line from this call
@@ -123,12 +147,21 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     while (++p != end) {
         data = p;
         do {
-            if (*p == '\n') break; 
+            if (*p == '\n' || *p == '\r') break; 
         } while (++p != end);
-    
         if (p == end) {
             lineBuffer.assign(data, end-data);
             break;
+        }
+        if (*p == '\r') {
+            // if \r is followed by \n, we can ignore \n
+            if (p + 1 != end) {
+                if (p[1] == '\n') {
+                    p++;
+                }
+            } else {
+                sawCarriageReturn = true;
+            }
         }
         emit(data, p-data);
         if (ready) return;
@@ -136,6 +169,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
 }
 void
 LineEventAnalyzer::emit(const char*data, uint32_t length) {
+//    fprintf(stderr, "%.*s\n", length, data);
     bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {
