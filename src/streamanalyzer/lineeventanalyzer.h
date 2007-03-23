@@ -24,6 +24,7 @@
 #include "jstreamsconfig.h"
 #include "streameventanalyzer.h"
 #include <vector>
+#include <iconv.h>
 
 namespace Strigi {
 class StreamLineAnalyzer;
@@ -31,19 +32,27 @@ class LineEventAnalyzer : public StreamEventAnalyzer {
 private:
     std::vector<StreamLineAnalyzer*> line;
     std::string byteBuffer;
+    std::string ibyteBuffer;
     std::string lineBuffer;
+    std::string encoding;
     AnalysisResult* result;
+    iconv_t converter;
+    char* const convBuffer;
+    unsigned char iMissingBytes;
     char missingBytes;
     bool ready;
     bool initialized;
     bool sawCarriageReturn;
+    bool otherEncoding;
 
     const char* getName() const { return "LineEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();
     void handleData(const char* data, uint32_t length);
+    void handleUtf8Data(const char* data, uint32_t length);
     bool isReadyWithStream();
     void emit(const char* data, uint32_t length);
+    void initEncoding(std::string encoding);
 public:
     LineEventAnalyzer(std::vector<StreamLineAnalyzer*>&s);
     ~LineEventAnalyzer();

@@ -23,20 +23,39 @@
 #include "textutils.h"
 #include <cstring>
 #include <cassert>
+#include <cerrno>
 using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 
+#ifndef ICONV_CONST
+     //we try to guess whether the iconv function requires
+     //a const char. We have no way of automatically figuring
+     //this out if we did not use autoconf, so we guess based
+     //on certain parameters:
+     #if defined (_LIBICONV_H)
+          #define ICONV_CONST const
+     #else
+          #define ICONV_CONST
+     #endif
+#endif
+
 // end of line is \r, \n or \r\n
+#define CONVBUFSIZE 65536
 
 LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
-        :line(l), ready(true), initialized(false) {
+        :line(l), converter((iconv_t)-1), convBuffer(new char[CONVBUFSIZE]),
+         ready(true), initialized(false) {
 }
 LineEventAnalyzer::~LineEventAnalyzer() {
     vector<StreamLineAnalyzer*>::iterator l;
     for (l = line.begin(); l != line.end(); ++l) {
         delete *l;
     }
+    if (converter != (iconv_t)-1) {
+        iconv_close(converter);
+    }
+    delete [] convBuffer;
 }
 void
 LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
@@ -45,8 +64,30 @@ LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
     initialized = false;
     sawCarriageReturn = false;
     missingBytes = 0;
+    iMissingBytes = 0;
     lineBuffer.assign("");
     byteBuffer.assign("");
+    ibyteBuffer.assign("");
+    initEncoding(r->encoding());
+}
+void
+LineEventAnalyzer::initEncoding(std::string enc) {
+    if (enc.size() == 0 || enc == "UTF-8") {
+        encoding.assign("UTF-8");
+        if (converter != (iconv_t)-1) {
+            iconv_close(converter);
+            converter = (iconv_t)-1;
+        }
+    } else if (converter != (iconv_t)-1 && encoding == enc) {
+        // reset the converter
+        iconv(converter, 0, 0, 0, 0);
+    } else {
+        encoding = enc;
+        if (converter != (iconv_t)-1) {
+            iconv_close(converter);
+        }
+        converter = iconv_open(encoding.c_str(), "UTF-8");
+    }
 }
 void
 LineEventAnalyzer::endAnalysis() {
@@ -58,6 +99,70 @@ LineEventAnalyzer::endAnalysis() {
 void
 LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (ready) return;
+    if (converter == (iconv_t)-1) {
+        handleUtf8Data(data, length);
+        return;
+    }
+    size_t r;
+    ICONV_CONST char *inbuf;
+    char* outbuf;
+    size_t inbytesleft;
+    size_t outbytesleft;
+    if (iMissingBytes) {
+        if (iMissingBytes > length) {
+            ibyteBuffer.append(data, length);
+            iMissingBytes -= length;
+            return;
+        } else {
+            ibyteBuffer.append(data, iMissingBytes);
+            data += iMissingBytes;
+            length -= iMissingBytes;
+            inbuf = (char*)ibyteBuffer.c_str();
+            inbytesleft = ibyteBuffer.length();
+            outbytesleft = CONVBUFSIZE;
+            outbuf = convBuffer;
+            r = iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+            if (r == (size_t)-1) { // must be an error
+                ready = true;
+                return;
+            }
+            handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+        }
+    }
+    do {
+        inbuf = (char*)data;
+        inbytesleft = length;
+        outbuf = convBuffer;
+        outbytesleft = CONVBUFSIZE;
+        r = iconv(converter, &inbuf, &inbytesleft, &outbuf,
+            &outbytesleft);
+        if (r == (size_t)-1) {
+            uint32_t read;
+            switch (errno) {
+            case EINVAL: // last character is incomplete
+                handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+                ibyteBuffer.assign(inbuf, inbytesleft);
+                iMissingBytes = length - (inbuf-data);
+                return;
+            case E2BIG: // output buffer is full
+                handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+                read = inbuf-data;
+                data += read;
+                length -= read;
+                break;
+            case EILSEQ: //invalid multibyte sequence
+            default:
+                ready = true;
+                return;
+            }
+        } else { //input sequence was completely converted
+            handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+            return;
+        }
+    } while (true);
+}
+void
+LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
     assert(!(sawCarriageReturn && missingBytes > 0));
 
     // if the last block ended with '\r', the next '\n' can be skipped
@@ -169,7 +274,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
 }
 void
 LineEventAnalyzer::emit(const char*data, uint32_t length) {
-//    fprintf(stderr, "%.*s\n", length, data);
+    fprintf(stderr, "%.*s\n", length, data);
     bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {

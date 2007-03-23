@@ -24,7 +24,6 @@
 
 #include "jstreamsconfig.h"
 #include "inputstreamreader.h"
-#include "jstreamsconfig.h"
 #include <cerrno>
 using namespace jstreams;
 
