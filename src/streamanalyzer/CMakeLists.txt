@@ -3,7 +3,7 @@ add_subdirectory(lineplugins)
 add_subdirectory(tests)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
-	${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+	${LIBXML2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
