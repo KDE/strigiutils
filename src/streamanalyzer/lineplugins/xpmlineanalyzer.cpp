@@ -19,7 +19,7 @@
  */
 
 #include "jstreamsconfig.h"
-#include "xpmthroughanalyzer.h"
+#include "xpmlineanalyzer.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
 
