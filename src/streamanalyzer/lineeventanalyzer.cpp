@@ -274,7 +274,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
 }
 void
 LineEventAnalyzer::emit(const char*data, uint32_t length) {
-    fprintf(stderr, "%.*s\n", length, data);
+//    fprintf(stderr, "%.*s\n", length, data);
     bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {
