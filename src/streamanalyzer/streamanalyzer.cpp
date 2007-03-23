@@ -28,7 +28,6 @@
 #include "bz2endanalyzer.h"
 #include "bmpendanalyzer.h"
 #include "textendanalyzer.h"
-#include "saxendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "arendanalyzer.h"
 #include "zipendanalyzer.h"
@@ -302,9 +301,6 @@ StreamAnalyzer::Private::initializeEndFactories() {
 #warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
 //    addFactory(new IFilterEndAnalyzerFactory());
 #endif
-#else
-	//temporary only, i just haven't got expat.h working yet
-	addFactory(new SaxEndAnalyzerFactory());
 #endif
     addFactory(new HelperEndAnalyzerFactory());
     addFactory(new TextEndAnalyzerFactory());

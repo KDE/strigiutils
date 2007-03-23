@@ -39,19 +39,6 @@ set(streamanalyzer_SRCS
 	endanalyzers/bmpendanalyzer.cpp
 )
 
-if (LIBXML2_FOUND)
-  set(streamanalyzer_SRCS ${streamanalyzer_SRCS}
-    endanalyzers/saxendanalyzer.cpp)
-  set(streamindex_LIBS ${streamindex_LIBS} ${LIBXML2_LIBRARIES})
-  include_directories(${LIBXML2_INCLUDE_DIR})
-else (LIBXML2_FOUND)
-  # we use expat
-  set(streamanalyzer_SRCS ${streamanalyzer_SRCS}
-    endanalyzers/expatsaxendanalyzer.cpp)
-  set(streamindex_LIBS ${streamindex_LIBS} ${EXPAT_LIBRARY})
-  include_directories(${EXPAT_INCLUDE_DIR})
-endif (LIBXML2_FOUND)
-
 #IF(WIN32)
 #	#not enough api exposed to make this a dll
 #	add_library(streamanalyzer ifilterendanalyzer.cpp ${streamanalyzer_SRCS})
@@ -68,7 +55,7 @@ set_target_properties(streamanalyzer PROPERTIES
     SOVERSION ${STRIGI_VERSION_MAJOR} DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
 
-set(streamanalyzer_libs streams ${streamindex_LIBS})
+set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES})
 if(HAVE_LIBDL)
         set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
 endif(HAVE_LIBDL)
