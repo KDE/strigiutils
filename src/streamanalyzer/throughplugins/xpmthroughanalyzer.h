@@ -20,43 +20,42 @@
 #ifndef XPMTHROUGHANALYZER
 #define XPMTHROUGHANALYZER
 
-#include "streamthroughanalyzer.h"
+#include "streamlineanalyzer.h"
 #include "analyzerplugin.h"
-#include "cnstr.h"
 
 namespace Strigi {
     class RegisteredField;
 }
-class XpmThroughAnalyzerFactory;
+class XpmLineAnalyzerFactory;
 
-class STRIGI_PLUGIN_API XpmThroughAnalyzer
-    : public Strigi::StreamThroughAnalyzer {
+class STRIGI_PLUGIN_API XpmLineAnalyzer
+    : public Strigi::StreamLineAnalyzer {
 private:
     Strigi::AnalysisResult* analysisResult;
-    const XpmThroughAnalyzerFactory* factory;
+    const XpmLineAnalyzerFactory* factory;
+    int32_t line;
+    bool ready;
 public:
-    XpmThroughAnalyzer(const XpmThroughAnalyzerFactory* f) :factory(f) {}
-    ~XpmThroughAnalyzer() {}
-    void setIndexable(Strigi::AnalysisResult* i);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    XpmLineAnalyzer(const XpmLineAnalyzerFactory* f) :factory(f) {}
+    ~XpmLineAnalyzer() {}
+    const char* getName() const { return "XpmLineAnalyzer"; }
+    void startAnalysis(Strigi::AnalysisResult*);
+    void handleLine(const char* data, uint32_t length);
     bool isReadyWithStream();
 };
 
-class XpmThroughAnalyzerFactory
-    : public Strigi::StreamThroughAnalyzerFactory {
-friend class XpmThroughAnalyzer;
+class XpmLineAnalyzerFactory
+    : public Strigi::StreamLineAnalyzerFactory {
+friend class XpmLineAnalyzer;
 private:
-    static const cnstr widthFieldName;
-    static const cnstr heightFieldName;
-    static const cnstr numberOfColorsFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* numberOfColorsField;
     const char* getName() const {
-        return "XpmThroughAnalyzer";
+        return "XpmLineAnalyzer";
     }
-    Strigi::StreamThroughAnalyzer* newInstance() const {
-        return new XpmThroughAnalyzer(this);
+    Strigi::StreamLineAnalyzer* newInstance() const {
+        return new XpmLineAnalyzer(this);
     }
     void registerFields(Strigi::FieldRegister&);
 };

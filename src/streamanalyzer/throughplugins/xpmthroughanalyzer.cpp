@@ -28,100 +28,86 @@ using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
-const cnstr XpmThroughAnalyzerFactory::widthFieldName("width");
-const cnstr XpmThroughAnalyzerFactory::heightFieldName("height");
-const cnstr XpmThroughAnalyzerFactory::numberOfColorsFieldName("numberofcolors");
-
 void
-XpmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
-    numberOfColorsField = reg.registerField(numberOfColorsFieldName,
+XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
+    widthField = reg.registerField("width", FieldRegister::integerType, 1, 0);
+    heightField = reg.registerField("height", FieldRegister::integerType, 1, 0);
+    numberOfColorsField = reg.registerField("numberofcolors",
         FieldRegister::integerType, 1, 0);
 }
 
 // Analyzer
 void
-XpmThroughAnalyzer::setIndexable(AnalysisResult* i) {
+XpmLineAnalyzer::startAnalysis(AnalysisResult* i) {
     analysisResult = i;
+    ready = false;
+    line = 0;
 }
-
-InputStream*
-XpmThroughAnalyzer::connectInputStream(InputStream* in) {
-    const int32_t nreq = 9;
-    const char* buf;
-
-    int32_t nread = in->read(buf, nreq, -1);
-    in->reset(0);
-
-    if (nread < nreq || strncmp(buf, "/* XPM */", 9)) {
-        return in;
+void
+XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
+    if (ready) return;
+    ++line;
+    if (line == 1 && (length < 9 || strncmp(data, "/* XPM */", 9))) {
+        // this is not an xpm file
+        ready = true;
+        return;
+    } else if (length == 0 || data[0] != '"') {
+        return;
     }
-
-    int32_t i = 0;
-    while (i < nread) {
-        if (buf[i] == '"') {
-            // read the height
-            uint32_t propertyValue = 0;
-            i++;
-            while (i < nread && isdigit(buf[i])) {
-                propertyValue = (propertyValue * 10) + buf[i] - '0';
-                i++;
-            }
-
-            if (i >= nread || buf[i] != ' ')
-                return in;
-
-            analysisResult->setField(factory->heightField, propertyValue);
-
-            // read the width
-            propertyValue = 0;
-            i++;
-            while (i < nread && isdigit(buf[i])) {
-                propertyValue = (propertyValue * 10) + buf[i] - '0';
-                i++;
-            }
-
-            if (i >= nread || buf[i] != ' ')
-                return in;
-
-            analysisResult->setField(factory->widthField, propertyValue);
-
-            // read the number of colors
-            propertyValue = 0;
-            i++;
-            while (i < nread && isdigit(buf[i])) {
-                propertyValue = (propertyValue * 10) + buf[i] - '0';
-                i++;
-            }
-
-            if (i >= nread || buf[i] != ' ')
-                return in;
-
-            analysisResult->setField(factory->numberOfColorsField, propertyValue);
-            break;
-        }
+    uint32_t i = 0;
+    // we have found the line which should contain the information we want
+    ready = true;
+    // read the height
+    uint32_t propertyValue = 0;
+    i++;
+    while (i < length && isdigit(data[i])) {
+        propertyValue = (propertyValue * 10) + data[i] - '0';
         i++;
     }
 
-    return in;
-}
+    if (i >= length || data[i] != ' ')
+        return;
 
+    analysisResult->setField(factory->heightField, propertyValue);
+
+    // read the width
+    propertyValue = 0;
+    i++;
+    while (i < length && isdigit(data[i])) {
+        propertyValue = (propertyValue * 10) + data[i] - '0';
+        i++;
+    }
+
+    if (i >= length || data[i] != ' ')
+        return;
+
+    analysisResult->setField(factory->widthField, propertyValue);
+
+    // read the number of colors
+    propertyValue = 0;
+    i++;
+    while (i < length && isdigit(data[i])) {
+        propertyValue = (propertyValue * 10) + data[i] - '0';
+        i++;
+    }
+
+    if (i >= length || data[i] != ' ')
+        return;
+
+    analysisResult->setField(factory->numberOfColorsField, propertyValue);
+}
 bool
-XpmThroughAnalyzer::isReadyWithStream() {
-    return true;
+XpmLineAnalyzer::isReadyWithStream() {
+    return ready;
 }
-
 
 //Factory
 class Factory : public AnalyzerFactoryFactory {
 public:
-    list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
-        list<StreamThroughAnalyzerFactory*> af;
-        af.push_back(new XpmThroughAnalyzerFactory());
+    list<StreamLineAnalyzerFactory*>
+    getStreamLineAnalyzerFactories() const {
+        list<StreamLineAnalyzerFactory*> af;
+        af.push_back(new XpmLineAnalyzerFactory());
         return af;
     }
 };
