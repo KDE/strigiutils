@@ -116,6 +116,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     } else {
         emit(data, p-data);
     }
+    if (ready) return;
 
     // handle the other lines
     while (++p != end) {
@@ -129,29 +130,32 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
             break;
         }
         emit(data, p-data);
+        if (ready) return;
     }
-
-    // check if we are done
-    bool more = false;
-    vector<StreamLineAnalyzer*>::iterator i;
-    for (i = line.begin(); i != line.end(); ++i) {
-        more = more || !(*i)->isReadyWithStream();
-    }
-    ready = !more;
 }
 void
 LineEventAnalyzer::emit(const char*data, uint32_t length) {
-    fprintf(stderr, "%i %.*s\n", length, length, data);
+    bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {
         for (i = line.begin(); i != line.end(); ++i) {
             (*i)->startAnalysis(result);
+            more = more || !(*i)->isReadyWithStream();
         }
         initialized = true;
+        ready = !more;
+        if (ready) {
+            return;
+        }
+        more = false;
     }
     for (i = line.begin(); i != line.end(); ++i) {
-        (*i)->handleLine(data, length);
+        if (!(*i)->isReadyWithStream()) {
+            (*i)->handleLine(data, length);
+        }
+        more = more || !(*i)->isReadyWithStream();
     }
+    ready = !more;
 }
 bool
 LineEventAnalyzer::isReadyWithStream() {
