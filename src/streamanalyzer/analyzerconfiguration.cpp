@@ -20,6 +20,8 @@
 #include "analyzerconfiguration.h"
 #include "jstreamsconfig.h"
 #include "strigi_fnmatch.h"
+#include "fieldproperties.h"
+#include "fieldpropertiesdb.h"
 using namespace std;
 using namespace Strigi;
 
@@ -28,6 +30,8 @@ operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b
     return static_cast<AnalyzerConfiguration::FieldType>((int)a|(int)b);
 }
 AnalyzerConfiguration::AnalyzerConfiguration() {
+    fprintf(stderr, "AnalyzerConfiguration\n");
+    FieldPropertiesDb::db();
 }
 /**
  * Placeholder implementation that agrees to everything and only makes a
@@ -127,16 +131,4 @@ AnalyzerConfiguration::setFilters(
             patterns.push_back(p);
         }
     }
-}
-class Strigi::FieldPropertiesPrivate {
-public:
-    string key;
-    FieldPropertiesPrivate(const string& k) :key(k) {}
-};
-
-FieldProperties::FieldProperties(const string& k)
-        :p(new FieldPropertiesPrivate(k)) {
-}
-FieldProperties::~FieldProperties() {
-    delete p;
 }

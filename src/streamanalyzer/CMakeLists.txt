@@ -17,7 +17,6 @@ set(streamanalyzer_SRCS
 	analysisresult.cpp
 	id3v2throughanalyzer.cpp
 	analyzerconfiguration.cpp
-	cnstr.cpp
 	fieldtypes.cpp
 	streamanalyzer.cpp
 	filelister.cpp
@@ -25,6 +24,8 @@ set(streamanalyzer_SRCS
 	saxeventanalyzer.cpp
 	lineeventanalyzer.cpp
 	htmlsaxanalyzer.cpp
+	fieldproperties.cpp
+	fieldpropertiesdb.cpp
 	endanalyzers/bz2endanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
@@ -74,6 +75,7 @@ install(FILES
 	analyzerfactoryfactory.h
 	indexwriter.h
 	analyzerconfiguration.h
+	fieldproperties.h
 	cnstr.h
 	fieldtypes.h
 	DESTINATION include/strigi

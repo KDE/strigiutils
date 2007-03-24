@@ -33,21 +33,6 @@ class StreamLineAnalyzerFactory;
 class StreamEventAnalyzerFactory;
 class FieldRegister;
 
-class FieldPropertiesPrivate;
-class FieldProperties {
-private:
-    FieldPropertiesPrivate* p;
-public:
-    FieldProperties();
-    FieldProperties(const std::string& key);
-    ~FieldProperties();
-    const std::string& key() const;
-    const std::string& parent() const;
-    const std::string& name() const;
-    const std::string& comment() const;
-    const std::string& type() const;
-};
-
 /**
  * This class allows the AnalysisResult to determine how each field should be
  * indexed.
