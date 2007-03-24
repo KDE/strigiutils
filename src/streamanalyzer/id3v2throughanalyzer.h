@@ -42,9 +42,9 @@ class ID3V2ThroughAnalyzerFactory
         : public Strigi::StreamThroughAnalyzerFactory {
 friend class ID3V2ThroughAnalyzer;
 private:
-    static const cnstr titleFieldName;
-    static const cnstr artistFieldName;
-    static const cnstr albumFieldName;
+    static const std::string titleFieldName;
+    static const std::string artistFieldName;
+    static const std::string albumFieldName;
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* albumField;

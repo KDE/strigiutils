@@ -24,6 +24,7 @@
 #include "analyzerconfiguration.h"
 #include "streamendanalyzer.h"
 using namespace Strigi;
+using namespace std;
 
 /**
  * Special indexer that indexes only the filenames.
@@ -36,7 +37,7 @@ public:
     bool useFactory(StreamThroughAnalyzerFactory*) const {return false;}
     bool indexMore() const {return true;}
     bool addMoreText() const {return false;}
-    FieldType getIndexType(const cnstr& fieldname) const {
+    FieldType getIndexType(const string& fieldname) const {
         return None;
     }
 };

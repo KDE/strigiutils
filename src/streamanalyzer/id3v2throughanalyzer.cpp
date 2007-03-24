@@ -25,9 +25,9 @@ using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 
-const cnstr ID3V2ThroughAnalyzerFactory::titleFieldName("title");
-const cnstr ID3V2ThroughAnalyzerFactory::artistFieldName("artist");
-const cnstr ID3V2ThroughAnalyzerFactory::albumFieldName("album");
+const string ID3V2ThroughAnalyzerFactory::titleFieldName("title");
+const string ID3V2ThroughAnalyzerFactory::artistFieldName("artist");
+const string ID3V2ThroughAnalyzerFactory::albumFieldName("album");
 
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {

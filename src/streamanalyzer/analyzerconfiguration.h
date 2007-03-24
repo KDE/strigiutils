@@ -39,10 +39,10 @@ private:
     FieldPropertiesPrivate* p;
 public:
     FieldProperties();
-    FieldProperties(const cnstr& key);
+    FieldProperties(const std::string& key);
     ~FieldProperties();
-    const cnstr& key() const;
-    const cnstr& parent() const;
+    const std::string& key() const;
+    const std::string& parent() const;
     const std::string& name() const;
     const std::string& comment() const;
     const std::string& type() const;

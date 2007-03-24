@@ -25,9 +25,10 @@
 #include "fieldtypes.h"
 using namespace jstreams;
 using namespace Strigi;
+using namespace std;
 
-const cnstr MailEndAnalyzerFactory::titleFieldName = "title";
-const cnstr MailEndAnalyzerFactory::contenttypeFieldName = "contenttype";
+const string MailEndAnalyzerFactory::titleFieldName = "title";
+const string MailEndAnalyzerFactory::contenttypeFieldName = "contenttype";
 
 void
 MailEndAnalyzerFactory::registerFields(FieldRegister& r) {

@@ -130,11 +130,11 @@ AnalyzerConfiguration::setFilters(
 }
 class Strigi::FieldPropertiesPrivate {
 public:
-    cnstr key;
-    FieldPropertiesPrivate(const cnstr& k) :key(k) {}
+    string key;
+    FieldPropertiesPrivate(const string& k) :key(k) {}
 };
 
-FieldProperties::FieldProperties(const cnstr& k)
+FieldProperties::FieldProperties(const string& k)
         :p(new FieldPropertiesPrivate(k)) {
 }
 FieldProperties::~FieldProperties() {

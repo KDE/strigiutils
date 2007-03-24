@@ -29,12 +29,12 @@ using namespace Strigi;
 using namespace jstreams;
 using namespace std;
 
-const cnstr PcxThroughAnalyzerFactory::compressionFieldName("compression");
-const cnstr PcxThroughAnalyzerFactory::widthFieldName("width");
-const cnstr PcxThroughAnalyzerFactory::heightFieldName("height");
-const cnstr PcxThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
-const cnstr PcxThroughAnalyzerFactory::hResolutionFieldName("horizontalResolution");
-const cnstr PcxThroughAnalyzerFactory::vResolutionFieldName("verticalResolution");
+const string PcxThroughAnalyzerFactory::compressionFieldName("compression");
+const string PcxThroughAnalyzerFactory::widthFieldName("width");
+const string PcxThroughAnalyzerFactory::heightFieldName("height");
+const string PcxThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
+const string PcxThroughAnalyzerFactory::hResolutionFieldName("horizontalResolution");
+const string PcxThroughAnalyzerFactory::vResolutionFieldName("verticalResolution");
 
 
 void

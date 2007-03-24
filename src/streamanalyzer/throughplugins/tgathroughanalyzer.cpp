@@ -29,11 +29,11 @@ using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
-const cnstr TgaThroughAnalyzerFactory::compressionFieldName("compression");
-const cnstr TgaThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
-const cnstr TgaThroughAnalyzerFactory::colorModeFieldName("colorMode");
-const cnstr TgaThroughAnalyzerFactory::widthFieldName("width");
-const cnstr TgaThroughAnalyzerFactory::heightFieldName("height");
+const string TgaThroughAnalyzerFactory::compressionFieldName("compression");
+const string TgaThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
+const string TgaThroughAnalyzerFactory::colorModeFieldName("colorMode");
+const string TgaThroughAnalyzerFactory::widthFieldName("width");
+const string TgaThroughAnalyzerFactory::heightFieldName("height");
 
 void
 TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

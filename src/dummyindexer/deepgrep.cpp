@@ -52,9 +52,9 @@ containsFieldList(int argc, char **argv) {
 
 void
 printFields(AnalyzerConfiguration& conf) {
-    const map<cnstr, RegisteredField*>& fields
+    const map<string, RegisteredField*>& fields
         = conf.getFieldRegister().getFields();
-    map<cnstr, RegisteredField*>::const_iterator i;
+    map<string, RegisteredField*>::const_iterator i;
     for (i = fields.begin(); i != fields.end(); ++i) {
         cout << i->first << endl;
     }

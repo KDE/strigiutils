@@ -28,10 +28,10 @@ using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
-const cnstr XbmThroughAnalyzerFactory::widthFieldName("width");
-const cnstr XbmThroughAnalyzerFactory::heightFieldName("height");
-const cnstr XbmThroughAnalyzerFactory::xHotFieldName("xhot");
-const cnstr XbmThroughAnalyzerFactory::yHotFieldName("yhot");
+const string XbmThroughAnalyzerFactory::widthFieldName("width");
+const string XbmThroughAnalyzerFactory::heightFieldName("height");
+const string XbmThroughAnalyzerFactory::xHotFieldName("xhot");
+const string XbmThroughAnalyzerFactory::yHotFieldName("yhot");
 
 void
 XbmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

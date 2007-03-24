@@ -30,12 +30,12 @@ using namespace std;
 using namespace jstreams;
 using namespace Strigi;
 
-const cnstr PngEndAnalyzerFactory::widthFieldName("width");
-const cnstr PngEndAnalyzerFactory::heightFieldName("height");
-const cnstr PngEndAnalyzerFactory::colorDepthFieldName("colorDepth");
-const cnstr PngEndAnalyzerFactory::colorModeFieldName("colorMode");
-const cnstr PngEndAnalyzerFactory::compressionFieldName("compression");
-const cnstr PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
+const string PngEndAnalyzerFactory::widthFieldName("width");
+const string PngEndAnalyzerFactory::heightFieldName("height");
+const string PngEndAnalyzerFactory::colorDepthFieldName("colorDepth");
+const string PngEndAnalyzerFactory::colorModeFieldName("colorMode");
+const string PngEndAnalyzerFactory::compressionFieldName("compression");
+const string PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
 
 // and for the colors
 static const char* colors[] = {

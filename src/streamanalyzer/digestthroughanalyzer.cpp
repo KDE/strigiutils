@@ -27,7 +27,7 @@ using namespace std;
 using namespace jstreams;
 using namespace Strigi;
 
-cnstr DigestThroughAnalyzer::shafieldname("sha1");
+string DigestThroughAnalyzer::shafieldname("sha1");
 
 DigestThroughAnalyzer::DigestThroughAnalyzer(FieldRegister& reg) {
     stream = 0;

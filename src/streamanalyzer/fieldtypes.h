@@ -28,52 +28,52 @@ namespace Strigi {
 class RegisteredField {
 friend class FieldRegister;
 private:
-    const cnstr key;
-    const cnstr type;
+    const std::string key;
+    const std::string type;
     const int maxoccurs;
     const RegisteredField* parent;
     void* writerdata;
 
     RegisteredField();
-    RegisteredField(const cnstr& key, const cnstr& type, int maxoccurs,
+    RegisteredField(const std::string& key, const std::string& type, int maxoccurs,
         const RegisteredField* parent);
 public:
-    const cnstr& getKey() const { return key; }
+    const std::string& getKey() const { return key; }
     void* getWriterData() const { return writerdata; }
     void setWriterData(void* d) { writerdata = d; }
     const RegisteredField* getParent() const { return parent; }
     int getMaxOccurs() const { return maxoccurs; }
-    const cnstr& getType() const { return type; }
+    const std::string& getType() const { return type; }
 };
 
 class STREAMANALYZER_EXPORT FieldRegister {
 private:
-    std::map<cnstr, RegisteredField*> fields;
+    std::map<std::string, RegisteredField*> fields;
 public:
     FieldRegister();
     ~FieldRegister();
-    const RegisteredField* registerField(const cnstr& fieldname,
-        const cnstr& type, int maxoccurs, const RegisteredField* parent);
-    const std::map<cnstr, RegisteredField*>& getFields() const {
+    const RegisteredField* registerField(const std::string& fieldname,
+        const std::string& type, int maxoccurs, const RegisteredField* parent);
+    const std::map<std::string, RegisteredField*>& getFields() const {
         return fields;
     }
-    std::map<cnstr, RegisteredField*>& getFields() {
+    std::map<std::string, RegisteredField*>& getFields() {
         return fields;
     }
 
-    static const cnstr floatType;
-    static const cnstr integerType;
-    static const cnstr binaryType;
-    static const cnstr stringType;
+    static const std::string floatType;
+    static const std::string integerType;
+    static const std::string binaryType;
+    static const std::string stringType;
 
-    static const cnstr pathFieldName;
-    static const cnstr encodingFieldName;
-    static const cnstr mimetypeFieldName;
-    static const cnstr filenameFieldName;
-    static const cnstr extensionFieldName;
-    static const cnstr embeddepthFieldName;
-    static const cnstr mtimeFieldName;
-    static const cnstr sizeFieldName;
+    static const std::string pathFieldName;
+    static const std::string encodingFieldName;
+    static const std::string mimetypeFieldName;
+    static const std::string filenameFieldName;
+    static const std::string extensionFieldName;
+    static const std::string embeddepthFieldName;
+    static const std::string mtimeFieldName;
+    static const std::string sizeFieldName;
 
     const RegisteredField* pathField;
     const RegisteredField* encodingField;

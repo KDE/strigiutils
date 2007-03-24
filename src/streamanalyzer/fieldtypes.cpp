@@ -21,24 +21,24 @@
 using namespace Strigi;
 using namespace std;
 
-RegisteredField::RegisteredField(const cnstr& k, const cnstr& t, int m,
+RegisteredField::RegisteredField(const string& k, const string& t, int m,
         const RegisteredField* p)
         : key(k), type(t), maxoccurs(m), parent(p), writerdata(0) {
 }
 
-STREAMANALYZER_EXPORT const cnstr FieldRegister::floatType = "float";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::integerType = "integer";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::binaryType = "binary";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::stringType = "string";
+STREAMANALYZER_EXPORT const string FieldRegister::floatType = "float";
+STREAMANALYZER_EXPORT const string FieldRegister::integerType = "integer";
+STREAMANALYZER_EXPORT const string FieldRegister::binaryType = "binary";
+STREAMANALYZER_EXPORT const string FieldRegister::stringType = "string";
 
-STREAMANALYZER_EXPORT const cnstr FieldRegister::pathFieldName = "path";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::encodingFieldName = "encoding";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::mimetypeFieldName = "mimetype";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::filenameFieldName = "filename";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::extensionFieldName = "ext";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::embeddepthFieldName = "depth";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::mtimeFieldName = "mtime";
-STREAMANALYZER_EXPORT const cnstr FieldRegister::sizeFieldName = "size";
+STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "path";
+STREAMANALYZER_EXPORT const string FieldRegister::encodingFieldName = "encoding";
+STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "mimetype";
+STREAMANALYZER_EXPORT const string FieldRegister::filenameFieldName = "filename";
+STREAMANALYZER_EXPORT const string FieldRegister::extensionFieldName = "ext";
+STREAMANALYZER_EXPORT const string FieldRegister::embeddepthFieldName = "depth";
+STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "mtime";
+STREAMANALYZER_EXPORT const string FieldRegister::sizeFieldName = "size";
 
 FieldRegister::FieldRegister() {
     pathField = registerField(pathFieldName, stringType, 1, 0);
@@ -52,15 +52,15 @@ FieldRegister::FieldRegister() {
 }
 
 FieldRegister::~FieldRegister() {
-    map<cnstr, RegisteredField*>::const_iterator i;
+    map<string, RegisteredField*>::const_iterator i;
     for (i = fields.begin(); i != fields.end(); ++i) {
         delete i->second;
     }
 }
 const RegisteredField*
-FieldRegister::registerField(const cnstr& fieldname,
-        const cnstr& type, int maxoccurs, const RegisteredField* parent) {
-    map<cnstr, RegisteredField*>::iterator i = fields.find(fieldname);
+FieldRegister::registerField(const string& fieldname,
+        const string& type, int maxoccurs, const RegisteredField* parent) {
+    map<string, RegisteredField*>::iterator i = fields.find(fieldname);
     if (i == fields.end()) {
         RegisteredField* f = new RegisteredField(fieldname, type,
             maxoccurs, parent);

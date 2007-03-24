@@ -1,6 +1,6 @@
 #include "cnstr.h"
 
 #ifndef NO_CNSTR
-cnstr cnstr::null(0);
-cnstr cnstr::empty("");
+string cnstr::null(0);
+string cnstr::empty("");
 #endif /*NO_CNSTR*/

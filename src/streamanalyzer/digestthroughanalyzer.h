@@ -33,7 +33,7 @@ namespace Strigi {
 
 class DigestThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
-    static cnstr shafieldname;
+    static std::string shafieldname;
     jstreams::DigestInputStream *stream;
     Strigi::AnalysisResult* indexable;
     const Strigi::RegisteredField* shafield;

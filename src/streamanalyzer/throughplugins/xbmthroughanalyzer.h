@@ -46,10 +46,10 @@ class XbmThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class XbmThroughAnalyzer;
 private:
-    static const cnstr widthFieldName;
-    static const cnstr heightFieldName;
-    static const cnstr xHotFieldName;
-    static const cnstr yHotFieldName;
+    static const std::string widthFieldName;
+    static const std::string heightFieldName;
+    static const std::string xHotFieldName;
+    static const std::string yHotFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* xHotField;

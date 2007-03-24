@@ -27,11 +27,11 @@ using namespace std;
 using namespace jstreams;
 using namespace Strigi;
 
-const cnstr BmpEndAnalyzerFactory::typeFieldName("type");
-const cnstr BmpEndAnalyzerFactory::compressionFieldName("compression");
-const cnstr BmpEndAnalyzerFactory::widthFieldName("width");
-const cnstr BmpEndAnalyzerFactory::heightFieldName("height");
-const cnstr BmpEndAnalyzerFactory::colorDepthFieldName("colordepth");
+const string BmpEndAnalyzerFactory::typeFieldName("type");
+const string BmpEndAnalyzerFactory::compressionFieldName("compression");
+const string BmpEndAnalyzerFactory::widthFieldName("width");
+const string BmpEndAnalyzerFactory::heightFieldName("height");
+const string BmpEndAnalyzerFactory::colorDepthFieldName("colordepth");
 
 void
 BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {

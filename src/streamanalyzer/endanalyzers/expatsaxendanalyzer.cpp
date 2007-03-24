@@ -26,7 +26,7 @@
 using namespace Strigi;
 using namespace std;
 
-const cnstr SaxEndAnalyzerFactory::titleFieldName("title");
+const string SaxEndAnalyzerFactory::titleFieldName("title");
 
 void
 SaxEndAnalyzerFactory::registerFields(FieldRegister& reg) {
