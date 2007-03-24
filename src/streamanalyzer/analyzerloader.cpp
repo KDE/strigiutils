@@ -97,7 +97,8 @@ AnalyzerLoader::loadPlugins(const char* d) {
     while(ent) {
         size_t len = strlen(ent->d_name);
         if ((strncmp(ent->d_name, "strigita_", 9) == 0
-                || strncmp(ent->d_name, "strigiea_", 9) == 0)
+                || strncmp(ent->d_name, "strigiea_", 9) == 0
+                || strncmp(ent->d_name, "strigila_", 9) == 0)
 #ifdef WIN32
                 && strcmp(ent->d_name+len-4, ".dll") == 0) {
 #else
