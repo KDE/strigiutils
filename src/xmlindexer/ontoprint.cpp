@@ -1,10 +1,12 @@
 #include <iostream>
+#include <unistd.h>
+#include <getopt.h>
 #include "fieldpropertiesdb.h"
 using namespace std;
 using namespace Strigi;
 
 void
-printDot(ostream& out) {
+printDot(ostream& out, const char* locale) {
     const map<string, FieldProperties>& p
         = FieldPropertiesDb::db().allProperties();
     map<string, FieldProperties>::const_iterator i;
@@ -62,19 +64,44 @@ printRdfs(ostream& out) {
 }
 void
 printHelp(const char* program) {
-    cerr << "Usage: " << program << " [--dot] [--rdfs]" << endl;
+    cerr << "Usage: " << program << " [--type=<type>] [--locale=<locale>]"
+        << endl;
 }
 
 int
-main(int argc, const char** argv) {
-    if (argc == 2) {
-        if (strcmp("--rdfs", argv[1]) == 0) {
-            printRdfs(cout);
-        } else if (strcmp("--dot", argv[1]) == 0) {
-            printDot(cout);
+main(int argc, char** argv) {
+    struct option long_options[] = {
+        {"help",   no_argument,       0, 0},
+        {"type",   required_argument, 0, 0},
+        {"locale", required_argument, 0, 0}
+    };
+    const char* type = 0;
+    const char* locale = 0;
+    bool help = false;
+    while (1) {
+        int optindex;
+        int c = getopt_long_only(argc, argv, "", long_options, &optindex);
+        if (c == -1) break;
+        if (c == 0) {
+            if (optindex == 1) type   = optarg;
+            if (optindex == 2) locale = optarg;
         }
-        return 0;
+        switch (c) {
+        case '?':
+            printHelp(argv[0]);
+            exit(1);
+        default:
+            break;
+        }
+    printf("%i %i %s\n", c, optindex, optarg);
     }
-    printHelp(argv[0]); 
-    return 1;
+
+    if (help) {
+        printHelp(argv[0]); 
+    } else if (type && strcmp(type, "dot") == 0) {
+        printDot(cout, locale);
+    } else {
+        printRdfs(cout);
+    }
+    return 0;
 }
