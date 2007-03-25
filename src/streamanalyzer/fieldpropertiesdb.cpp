@@ -9,12 +9,16 @@ using namespace std;
 
 class FieldPropertiesDb::Private {
 public:
+    map<string, FieldProperties::Private> properties;
+
     Private();
     vector<string> getdirs() const;
     void loadProperties(const string& dir);
     void parseProperties(char*data);
-    void handlePropertyLine(const char*name, const char* locale,
-        const char*value);
+    void handlePropertyLine(FieldProperties::Private& p, const char*name,
+        const char* locale, const char*value);
+    void storeProperties(FieldProperties::Private& props);
+    void warnIfLocale(const char* name, const char* locale);
 };
 
 FieldPropertiesDb&
@@ -85,12 +89,15 @@ FieldPropertiesDb::Private::loadProperties(const string& dir) {
 }
 void
 FieldPropertiesDb::Private::parseProperties(char* data) {
-    FieldProperties props;
+    FieldProperties::Private props;
     char* p = data;
     char* nl;
     do {
         nl = strchr(p, '\n');
         if (nl) *nl = '\0';
+        if (*p == '#' || *p == '[') {
+            storeProperties(props);
+        }
         char* eq = strchr(p, '=');
         if (eq) {
             *eq = '\0';
@@ -109,17 +116,87 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
                 sbo++;
                 *sbc = '\0';
             }
-            handlePropertyLine(p, sbo, eq+1);
+            handlePropertyLine(props, p, sbo, eq+1);
         }
         
         p = nl + 1;
     } while(nl);
-
+    if (props.uri.size()) {
+        properties[props.uri] = props;
+    }
 }
 void
-FieldPropertiesDb::Private::handlePropertyLine(const char*name,
-        const char* locale, const char*value) {
-    if (strcmp(name, "Type") == 0) {
+FieldPropertiesDb::Private::storeProperties(FieldProperties::Private& p) {
+    if (p.uri.size()) {
+        properties[p.uri] = p;
     }
-    fprintf(stderr, "%s\t%s\t%s\n", name, locale, value);
+    p.clear();
+}
+void
+FieldPropertiesDb::Private::handlePropertyLine(FieldProperties::Private& p,
+        const char*name, const char* locale, const char*value) {
+    if (strcmp(name, "Uri") == 0) {
+        warnIfLocale(name, locale);
+        if (p.uri.size()) {
+            fprintf(stderr, "Uri is already defined for %s.\n", p.uri.c_str());
+        } else {
+            p.uri.assign(value);
+        }
+    } else if (strcmp(name, "TypeUri") == 0) {
+        if (p.typeuri.size()) {
+            fprintf(stderr, "TypeUri is defined twice for %s.\n",
+                p.uri.c_str());
+        } else {
+            p.typeuri.assign(value);
+        }
+    } else if (strcmp(name, "Name") == 0) {
+        if (locale) {
+            pair<string,string> l(p.localized[locale]);
+            if (l.first.size()) {
+                fprintf(stderr, "Name[%s] is already defined for %s.\n",
+                     locale, p.uri.c_str());
+            } else {
+                l.first.assign(value);
+                p.localized[locale] = l;
+            }
+        } else if (p.name.size()) {
+            fprintf(stderr, "Name is already defined for %s.\n", p.uri.c_str());
+        } else {
+            p.name.assign(value);
+        }
+    } else if (strcmp(name, "Description") == 0) {
+        if (locale) {
+            pair<string,string> l(p.localized[locale]);
+            if (l.second.size()) {
+                fprintf(stderr, "Description[%s] is already defined for %s.\n",
+                     locale, p.uri.c_str());
+            } else {
+                l.second.assign(value);
+                p.localized[locale] = l;
+            }
+        } else if (p.name.size()) {
+            fprintf(stderr, "Description is already defined for %s.\n",
+                p.uri.c_str());
+        } else {
+            p.name.assign(value);
+        }
+    } else if (strcmp(name, "Parent") == 0) {
+        p.parentUris.push_back(value);
+    }
+}
+void
+FieldPropertiesDb::Private::warnIfLocale(const char* name, const char* locale) {
+    if (locale) {
+        fprintf(stderr, "Warning: you cannot define a locale for the field %s.",
+            name);
+    }
+}
+void
+FieldProperties::Private::clear() {
+    uri.clear();
+    name.clear();
+    description.clear();
+    localized.clear();
+    typeuri.clear();
+    parentUris.clear();
 }

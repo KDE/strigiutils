@@ -22,9 +22,11 @@
 
 #include "fieldproperties.h"
 #include <map>
+#include <list>
 
 namespace Strigi {
 
+class FieldProperties;
 class FieldProperties;
 /**
  * This class is the default implementation for getting at metadata related to
@@ -45,7 +47,6 @@ public:
     const FieldProperties* getProperties(const std::string& uri);
 };
 
-class FieldProperties;
 class FieldProperties::Private {
 friend class FieldPropertiesDb;
 public:
@@ -55,11 +56,12 @@ public:
     std::string typeuri;
     std::string description;
     std::map<std::string,std::pair<std::string,std::string> > localized;
-    std::vector<std::string> parentUris;
+    std::list<std::string> parentUris;
 
     Private() {}
     Private(const Private&p) { *this = p; }
     Private(const std::string& i) :uri(i) {}
+    void clear();
 };
 
 }

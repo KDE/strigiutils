@@ -26,6 +26,7 @@ using namespace std;
 const string FieldProperties::Private::empty;
 FieldProperties::FieldProperties() :p(new Private()) {
 }
+FieldProperties::FieldProperties(const Private& pr) :p(new Private(pr)) {}
 FieldProperties::FieldProperties(const string& k)
         :p(new Private(k)) {
     const FieldProperties* fp = FieldPropertiesDb::db().getProperties(k);
@@ -70,7 +71,7 @@ FieldProperties::localizedDescription(const std::string& locale) const {
     map<string,pair<string,string> >::iterator i = p->localized.find(locale);
     return (i == p->localized.end()) ?Private::empty :i->second.second;
 }
-const std::vector<std::string>&
+const std::list<std::string>&
 FieldProperties::parentUris() const {
     return p->parentUris;
 }

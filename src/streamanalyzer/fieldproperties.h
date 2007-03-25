@@ -20,17 +20,19 @@
 #ifndef FIELDPROPERTIES_H
 #define FIELDPROPERTIES_H
 #include <string>
-#include <vector>
+#include <list>
 
 namespace Strigi {
 
 class FieldProperties {
-private:
+public:
     class Private;
+private:
     Private* const p;
 public:
     FieldProperties();
     FieldProperties(const FieldProperties&);
+    FieldProperties(const Private&);
     FieldProperties(const std::string& key);
     ~FieldProperties();
     const FieldProperties& operator=(const FieldProperties&);
@@ -40,7 +42,7 @@ public:
     const std::string& description() const;
     const std::string& localizedName(const std::string& locale) const;
     const std::string& localizedDescription(const std::string& locale) const;
-    const std::vector<std::string>& parentUris() const;
+    const std::list<std::string>& parentUris() const;
 };
 
 }
