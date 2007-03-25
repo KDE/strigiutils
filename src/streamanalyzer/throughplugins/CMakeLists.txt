@@ -45,3 +45,11 @@ set_target_properties(tga PROPERTIES
   SOVERSION ${STRIGI_VERSION_MAJOR})
 target_link_libraries(tga streamanalyzer)
 install(TARGETS tga LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+
+add_library(au MODULE authroughanalyzer.cpp)
+set_target_properties(au PROPERTIES
+  PREFIX strigita_
+  VERSION ${STRIGI_VERSION}
+  SOVERSION ${STRIGI_VERSION_MAJOR})
+target_link_libraries(au streamanalyzer)
+install(TARGETS au LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
