@@ -305,6 +305,7 @@ CLuceneIndexReader::query(const Query& q) {
     int max = q.getMax() + off;
     if (max < 0) max = s;
     if (max > s) max = s;
+    results.reserve(max-off);
     for (int i = off; i < max; ++i) {
         Document *d = &hits->doc(i);
         IndexedDocument doc;
@@ -441,6 +442,7 @@ makeTimeHistogram(const vector<int>& v) {
          m[c]++;
     }
     vector<pair<string,uint32_t> > h;
+    h.reserve(m.size());
     ostringstream str;
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
@@ -458,6 +460,7 @@ makeHistogram(const vector<int>& v, int min, int max) {
         m[*i]++;
     }
     vector<pair<string,uint32_t> > h;
+    h.reserve(m.size());
     ostringstream str;
     map<int32_t,int32_t>::const_iterator j;
     for (j = m.begin(); j != m.end(); ++j) {
@@ -491,6 +494,7 @@ CLuceneIndexReader::getHistogram(const string& query,
     int32_t max = INT_MIN;
     int32_t min = INT_MAX;
     vector<int32_t> values;
+    values.reserve(s);
     char* end;
     for (int i = 0; i < s; ++i) {
         Document *d = &hits->doc(i);
@@ -573,7 +577,7 @@ CLuceneIndexReader::getKeywords(const string& keywordmatch,
     }
 
     vector<string> k;
-    k.resize(s.size());
+    k.reserve(s.size());
     set<wstring>::const_iterator j;
     for (j = s.begin(); j != s.end(); ++j) {
         k.push_back(wchartoutf8(*j));
