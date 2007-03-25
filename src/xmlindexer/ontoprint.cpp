@@ -20,9 +20,9 @@ printDot(ostream& out) {
 }
 void
 printRdfsProperties(ostream& out, const FieldProperties& p) {
-    out << " <rdf:Property rdf:about='" << p.uri() << ">'\n"
+    out << " <rdf:Property rdf:about='" << p.uri() << "'>\n"
         << "  <rdfs:label>" << p.name() << "</rdfs:label>\n"
-        << "  <rdfs:comment>" << p.description() << "</rdfs:label>\n";
+        << "  <rdfs:comment>" << p.description() << "</rdfs:comment>\n";
     const vector<string>& parents = p.parentUris();
     vector<string>::const_iterator j;
     for (j = parents.begin(); j != parents.end(); ++j) {
