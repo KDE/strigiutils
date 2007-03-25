@@ -60,9 +60,21 @@ printRdfs(ostream& out) {
     }
     out << "</rdf:RDF>" << endl;
 }
+void
+printHelp(const char* program) {
+    cerr << "Usage: " << program << " [--dot] [--rdfs]" << endl;
+}
 
 int
 main(int argc, const char** argv) {
-    printRdfs(cout);
-    return 0;
+    if (argc == 2) {
+        if (strcmp("--rdfs", argv[1]) == 0) {
+            printRdfs(cout);
+        } else if (strcmp("--dot", argv[1]) == 0) {
+            printDot(cout);
+        }
+        return 0;
+    }
+    printHelp(argv[0]); 
+    return 1;
 }
