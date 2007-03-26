@@ -21,7 +21,6 @@
 
 #include <cassert>
 #include <cstring>
-#include <iostream>
 
 #include "analysisresult.h"
 #include "fieldtypes.h"
@@ -47,12 +46,6 @@ OdfMimeTypeLineAnalyzer::OdfMimeTypeLineAnalyzer(const OdfMimeTypeLineAnalyzerFa
 void OdfMimeTypeLineAnalyzer::startAnalysis(AnalysisResult *result) {
     assert(result != 0);
 
-    std::cout << "OdfMimeTypeLineAnalyzer::startAnalysis() called." << std::endl;
-    std::cout << result->fileName() << std::endl;
-    if(result->parent() != 0) {
-        std::cout << "MIME type: " << result->parent()->mimeType() << std::endl;
-    }
-
     if(result->fileName() == "mimetype" &&
        result->parent() != 0 && result->parent()->mimeType() == "application/zip") {
         m_result = result->parent();
@@ -69,8 +62,6 @@ void OdfMimeTypeLineAnalyzer::endAnalysis() {
 void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
     assert(m_result != 0);
 
-    std::cout << "OdfMimeTypeLineAnalyzer::handleLine() called." << std::endl;
-
     if(length < 35 || strncmp(data, "application/vnd.oasis.opendocument.", 35) != 0) {
         m_ready = true;
         return;
@@ -78,8 +69,6 @@ void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
 
     std::string mimeType;
     mimeType.assign(data, length);
-
-    std::cout << mimeType << std::endl;
 
     m_result->setField(m_factory->mimeTypeField, mimeType);
     m_result->setMimeType(mimeType);

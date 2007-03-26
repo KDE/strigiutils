@@ -22,8 +22,6 @@
 #ifndef ODFMIMETYPELINEANALYZER_H
 #define ODFMIMETYPELINEANALYZER_H
 
-#include <string>
-
 #include "streamlineanalyzer.h"
 
 class OdfMimeTypeLineAnalyzerFactory : public Strigi::StreamLineAnalyzerFactory {
