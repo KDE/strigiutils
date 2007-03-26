@@ -72,9 +72,6 @@ OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
   OFF)
 
-SUBDIRS (src)
-ENABLE_TESTING()
-
 if (WIN32)
     find_package(GNUWIN32 REQUIRED)
 endif(WIN32)
@@ -154,6 +151,19 @@ endif(NOT WIN32)
 
 # check for visibility support
 MACRO_CHECK_GCC_VISIBILITY(__STRIGI_HAVE_GCC_VISIBILITY)
+
+SET (DIRS ${DIRS} src)
+
+find_package(CppUnit)
+if (NOT CppUnit_FOUND)
+    MESSAGE(STATUS "CppUnit was not found. No unit test will be built.")
+else (NOT CppUnit_FOUND)
+    MESSAGE(STATUS "CppUnit found. Unit testing suite will be built.")
+    SET (DIRS ${DIRS} test)
+endif (NOT CppUnit_FOUND)
+
+ENABLE_TESTING()
+SUBDIRS (${DIRS})
 
 include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
