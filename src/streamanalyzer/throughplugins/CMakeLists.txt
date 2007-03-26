@@ -38,13 +38,14 @@ set_target_properties(xbm PROPERTIES
 target_link_libraries(xbm streamanalyzer)
 install(TARGETS xbm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
-add_library(tga MODULE tgathroughanalyzer.cpp)
-set_target_properties(tga PROPERTIES
-  PREFIX strigita_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(tga streamanalyzer)
-install(TARGETS tga LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+# disabled until a good check for making sure the file is a tga
+#add_library(tga MODULE tgathroughanalyzer.cpp)
+#set_target_properties(tga PROPERTIES
+#  PREFIX strigita_
+#  VERSION ${STRIGI_VERSION}
+#  SOVERSION ${STRIGI_VERSION_MAJOR})
+#target_link_libraries(tga streamanalyzer)
+#install(TARGETS tga LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
 add_library(au MODULE authroughanalyzer.cpp)
 set_target_properties(au PROPERTIES
