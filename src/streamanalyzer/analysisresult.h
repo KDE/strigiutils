@@ -39,6 +39,7 @@ class IndexWriter;
 class AnalyzerConfiguration;
 class StreamAnalyzer;
 class RegisteredField;
+class StreamEndAnalyzer;
 
 /**
  * Indexed representation of a file.
@@ -49,6 +50,7 @@ class RegisteredField;
  **/
 class STREAMANALYZER_EXPORT AnalysisResult {
 friend class IndexWriter;
+friend class StreamAnalyzer;
 private:
     int64_t m_id;
     void* m_writerData;
@@ -62,6 +64,7 @@ private:
     StreamAnalyzer& m_indexer;
     AnalyzerConfiguration& m_analyzerconfig;
     AnalysisResult* const m_parent;
+    const StreamEndAnalyzer* m_endanalyzer;
 
     /**
      * Create a new AnalysisResult object that will be written to the index.
@@ -75,6 +78,11 @@ private:
      **/
     AnalysisResult(const std::string& path, const char* name, time_t mt,
         AnalysisResult& parent);
+    /**
+     * Retrieve the type of endanalyzer an analysisresult has. This is useful
+     * for determining the filetype of the parent.
+     */
+    void setEndAnalyzer(const StreamEndAnalyzer*);
 public:
     AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
             StreamAnalyzer& indexer);
@@ -181,6 +189,7 @@ public:
     const std::string& mimeType() const;
     std::string extension() const;
     AnalyzerConfiguration& config() const;
+    const StreamEndAnalyzer* endAnalyzer() const;
 };
 
 }

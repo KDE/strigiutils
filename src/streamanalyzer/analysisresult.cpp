@@ -33,14 +33,15 @@ AnalysisResult::AnalysisResult(const std::string& p, const char* name,
             :m_writerData(0), m_mtime(mt), m_name(name), m_path(p),
              m_writer(parent.m_writer), m_depth(parent.depth()+1),
              m_indexer(parent.m_indexer),
-             m_analyzerconfig(parent.m_analyzerconfig), m_parent(&parent) {
+             m_analyzerconfig(parent.m_analyzerconfig), m_parent(&parent),
+             m_endanalyzer(0) {
     m_writer.startAnalysis(this);
 }
 AnalysisResult::AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
         StreamAnalyzer& indexer)
             :m_writerData(0), m_mtime(mt), m_path(p), m_writer(w), m_depth(0),
              m_indexer(indexer), m_analyzerconfig(indexer.getConfiguration()),
-             m_parent(0) {
+             m_parent(0), m_endanalyzer(0) {
     size_t pos = m_path.rfind('/');
     if (pos == std::string::npos) {
         m_name = m_path;
@@ -96,3 +97,12 @@ AnalysisResult*
 AnalysisResult::parent() {
     return m_parent;
 }
+const StreamEndAnalyzer*
+AnalysisResult::endAnalyzer() const {
+    return m_endanalyzer;
+}
+void
+AnalysisResult::setEndAnalyzer(const StreamEndAnalyzer* ea) {
+    m_endanalyzer = ea;
+}
+

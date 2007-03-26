@@ -371,6 +371,7 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     while (!finished && es != size) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {
+            idx.setEndAnalyzer(sea);
             char ar = sea->analyze(idx, input);
             if (ar) {
                 if (input) {
@@ -390,6 +391,7 @@ StreamAnalyzer::Private::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         }
         es++;
     }
+    idx.setEndAnalyzer(0);
     if (input) {
         // make sure the entire stream is read if the size is not known
         bool ready;
