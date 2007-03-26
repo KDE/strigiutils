@@ -32,6 +32,7 @@ namespace Strigi {
 class AnalyzerConfiguration;
 class IndexWriter;
 class AnalysisResult;
+class StreamAnalyzerPrivate;
 
 /**
  * The class StreamAnalyzer extracts information from files or character
@@ -47,8 +48,7 @@ class AnalysisResult;
  **/
 class STREAMANALYZER_EXPORT StreamAnalyzer {
 private:
-    class Private;
-    Private* const p;
+    StreamAnalyzerPrivate* const p;
 
 public:
     StreamAnalyzer(AnalyzerConfiguration& c);

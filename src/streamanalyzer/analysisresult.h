@@ -40,6 +40,7 @@ class AnalyzerConfiguration;
 class StreamAnalyzer;
 class RegisteredField;
 class StreamEndAnalyzer;
+class StreamEndAnalyzerPrivate;
 
 /**
  * Indexed representation of a file.
@@ -51,6 +52,7 @@ class StreamEndAnalyzer;
 class STREAMANALYZER_EXPORT AnalysisResult {
 friend class IndexWriter;
 friend class StreamAnalyzer;
+friend class StreamAnalyzerPrivate;
 private:
     int64_t m_id;
     void* m_writerData;
