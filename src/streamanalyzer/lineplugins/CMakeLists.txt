@@ -8,3 +8,11 @@ set_target_properties(xpm PROPERTIES
 target_link_libraries(xpm streamanalyzer)
 install(TARGETS xpm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
+add_library(deb MODULE deblineanalyzer.cpp)
+set_target_properties(deb PROPERTIES
+  PREFIX strigila_
+  VERSION ${STRIGI_VERSION}
+  SOVERSION ${STRIGI_VERSION_MAJOR})
+target_link_libraries(deb streamanalyzer)
+install(TARGETS deb LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+
