@@ -20,9 +20,10 @@
 #ifndef FIELDPROPERIESDB_H
 #define FIELDPROPERIESDB_H
 
+#include "jstreamsconfig.h"
 #include "fieldproperties.h"
 #include <map>
-#include <list>
+#include <vector>
 
 namespace Strigi {
 
@@ -36,7 +37,7 @@ class FieldProperties;
  * The implemntation of this class might use a performance enhanced binary cache
  * of the property files.
  **/
-class FieldPropertiesDb {
+class STREAMANALYZER_EXPORT FieldPropertiesDb {
 private:
     class Private;
     Private* const p;
@@ -44,7 +45,8 @@ public:
     static FieldPropertiesDb& db();
     FieldPropertiesDb();
     ~FieldPropertiesDb();
-    const FieldProperties* getProperties(const std::string& uri);
+    const FieldProperties& properties(const std::string& uri) const;
+    const std::map<std::string, FieldProperties>& allProperties() const;
 };
 
 class FieldProperties::Private {
@@ -55,8 +57,8 @@ public:
     std::string name;
     std::string typeuri;
     std::string description;
-    std::map<std::string,std::pair<std::string,std::string> > localized;
-    std::list<std::string> parentUris;
+    std::map<std::string,FieldProperties::Localized> localized;
+    std::vector<std::string> parentUris;
 
     Private() {}
     Private(const Private&p) { *this = p; }

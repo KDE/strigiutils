@@ -1,6 +1,7 @@
 add_subdirectory(throughplugins)
 add_subdirectory(lineplugins)
 add_subdirectory(tests)
+add_subdirectory(fieldproperties)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
 	${LIBXML2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}

@@ -1,0 +1,24 @@
+[Field]
+Uri=wahtever
+Name=just a test
+Name[nl]=ok
+Name[nl]=o
+
+[Field]
+Uri=another-one-which is not a real uri
+Name=
+
+[Field]
+Uri=http://www.kde.org/fields/Title
+Name=Title
+Description=The title of a document
+Name[nl]=Titel
+Description[nl]=De titel van een bestand
+
+[Field]
+Uri=http://www.kde.org/fields/Mp3/Title
+Name=Title
+Description=The title of an mp3 file
+Name[nl]=Titel
+Description[nl]=De titel van een mp3 bestand
+ParentUri=http://www.kde.org/fields/Title

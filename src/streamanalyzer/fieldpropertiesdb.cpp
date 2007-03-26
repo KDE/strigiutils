@@ -9,7 +9,8 @@ using namespace std;
 
 class FieldPropertiesDb::Private {
 public:
-    map<string, FieldProperties::Private> properties;
+    map<string, FieldProperties> properties;
+    static FieldProperties empty;
 
     Private();
     vector<string> getdirs() const;
@@ -20,6 +21,7 @@ public:
     void storeProperties(FieldProperties::Private& props);
     void warnIfLocale(const char* name, const char* locale);
 };
+FieldProperties FieldPropertiesDb::Private::empty;
 
 FieldPropertiesDb&
 FieldPropertiesDb::db() {
@@ -31,17 +33,19 @@ FieldPropertiesDb::FieldPropertiesDb() :p(new Private()) {
 FieldPropertiesDb::~FieldPropertiesDb() {
     delete p;
 }
-const FieldProperties*
-FieldPropertiesDb::getProperties(const std::string& uri) {
-    return 0;
+const FieldProperties&
+FieldPropertiesDb::properties(const std::string& uri) const {
+    return FieldPropertiesDb::Private::empty;
+}
+const map<string, FieldProperties>&
+FieldPropertiesDb::allProperties() const {
+    return p->properties;
 }
 
 FieldPropertiesDb::Private::Private() {
     vector<string> dirs = getdirs();
     vector<string>::const_iterator i;
-    fprintf(stderr, "dirs %i\n", dirs.size());
     for (i=dirs.begin(); i!=dirs.end(); i++) {
-        fprintf(stderr, "dir %s\n", i->c_str());
         loadProperties(*i);
     }
 }
@@ -75,6 +79,7 @@ FieldPropertiesDb::Private::loadProperties(const string& dir) {
                 if (f) {
                     data = (char*)realloc(data, s.st_size+1);
                     if (fread(data, 1, s.st_size, f) == (size_t)s.st_size) {
+                        fprintf(stderr, "parsing %s\n", path.c_str());
                         data[s.st_size] = '\0';
                         parseProperties(data);
                     }
@@ -151,12 +156,12 @@ FieldPropertiesDb::Private::handlePropertyLine(FieldProperties::Private& p,
         }
     } else if (strcmp(name, "Name") == 0) {
         if (locale) {
-            pair<string,string> l(p.localized[locale]);
-            if (l.first.size()) {
+            FieldProperties::Localized l(p.localized[locale]);
+            if (l.name.size()) {
                 fprintf(stderr, "Name[%s] is already defined for %s.\n",
                      locale, p.uri.c_str());
             } else {
-                l.first.assign(value);
+                l.name.assign(value);
                 p.localized[locale] = l;
             }
         } else if (p.name.size()) {
@@ -166,21 +171,21 @@ FieldPropertiesDb::Private::handlePropertyLine(FieldProperties::Private& p,
         }
     } else if (strcmp(name, "Description") == 0) {
         if (locale) {
-            pair<string,string> l(p.localized[locale]);
-            if (l.second.size()) {
+            FieldProperties::Localized l(p.localized[locale]);
+            if (l.description.size()) {
                 fprintf(stderr, "Description[%s] is already defined for %s.\n",
                      locale, p.uri.c_str());
             } else {
-                l.second.assign(value);
+                l.description.assign(value);
                 p.localized[locale] = l;
             }
-        } else if (p.name.size()) {
+        } else if (p.description.size()) {
             fprintf(stderr, "Description is already defined for %s.\n",
                 p.uri.c_str());
         } else {
-            p.name.assign(value);
+            p.description.assign(value);
         }
-    } else if (strcmp(name, "Parent") == 0) {
+    } else if (strcmp(name, "ParentUri") == 0) {
         p.parentUris.push_back(value);
     }
 }

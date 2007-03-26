@@ -29,9 +29,9 @@ FieldProperties::FieldProperties() :p(new Private()) {
 FieldProperties::FieldProperties(const Private& pr) :p(new Private(pr)) {}
 FieldProperties::FieldProperties(const string& k)
         :p(new Private(k)) {
-    const FieldProperties* fp = FieldPropertiesDb::db().getProperties(k);
-    if (fp) {
-        *this = *fp;
+    const FieldProperties& fp = FieldPropertiesDb::db().properties(k);
+    if (fp.uri().size()) {
+        *this = fp;
     }
 }
 FieldProperties::FieldProperties(const FieldProperties& p)
@@ -45,33 +45,41 @@ FieldProperties::operator=(const FieldProperties& f) {
     *p = *f.p;
     return f;
 }
-const std::string&
+bool
+FieldProperties::valid() const {
+    return p->uri.size();
+}
+const string&
 FieldProperties::uri() const {
     return p->uri;
 }
-const std::string&
+const string&
 FieldProperties::name() const {
     return p->name;
 }
-const std::string&
+const string&
 FieldProperties::typeUri() const {
     return p->typeuri;
 }
-const std::string&
+const string&
 FieldProperties::description() const {
     return p->description;
 }
-const std::string&
-FieldProperties::localizedName(const std::string& locale) const {
-    map<string,pair<string,string> >::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.first;
+const std::map<std::string, FieldProperties::Localized>&
+FieldProperties::localized() const {
+    return p->localized;
 }
-const std::string&
-FieldProperties::localizedDescription(const std::string& locale) const {
-    map<string,pair<string,string> >::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.second;
+const string&
+FieldProperties::localizedName(const string& locale) const {
+    map<string,Localized>::iterator i = p->localized.find(locale);
+    return (i == p->localized.end()) ?Private::empty :i->second.name;
 }
-const std::list<std::string>&
+const string&
+FieldProperties::localizedDescription(const string& locale) const {
+    map<string,Localized>::iterator i = p->localized.find(locale);
+    return (i == p->localized.end()) ?Private::empty :i->second.description;
+}
+const vector<string>&
 FieldProperties::parentUris() const {
     return p->parentUris;
 }

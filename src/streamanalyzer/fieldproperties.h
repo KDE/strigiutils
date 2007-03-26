@@ -19,30 +19,38 @@
  */
 #ifndef FIELDPROPERTIES_H
 #define FIELDPROPERTIES_H
+#include "jstreamsconfig.h"
 #include <string>
-#include <list>
+#include <vector>
+#include <map>
 
 namespace Strigi {
 
-class FieldProperties {
+class STREAMANALYZER_EXPORT FieldProperties {
 public:
     class Private;
 private:
     Private* const p;
 public:
+    struct Localized {
+        std::string name;
+        std::string description;
+    };
     FieldProperties();
     FieldProperties(const FieldProperties&);
     FieldProperties(const Private&);
     FieldProperties(const std::string& key);
     ~FieldProperties();
     const FieldProperties& operator=(const FieldProperties&);
+    bool valid() const;
     const std::string& uri() const;
     const std::string& name() const;
     const std::string& typeUri() const;
     const std::string& description() const;
+    const std::map<std::string, Localized>& localized() const;
     const std::string& localizedName(const std::string& locale) const;
     const std::string& localizedDescription(const std::string& locale) const;
-    const std::list<std::string>& parentUris() const;
+    const std::vector<std::string>& parentUris() const;
 };
 
 }
