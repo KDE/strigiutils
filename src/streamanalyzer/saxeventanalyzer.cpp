@@ -41,6 +41,8 @@ public:
         const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI,
         int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
         int nb_defaulted, const xmlChar ** attributes);
+    static void endElementNsSAX2Func(void *ctx,
+        const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI);
 
     Private(std::vector<StreamSaxAnalyzer*>& s) :sax(s) {
         ctxt = 0;
@@ -49,6 +51,7 @@ public:
         handler.characters = charactersSAXFunc;
         handler.error = errorSAXFunc;
         handler.startElementNs = startElementNsSAX2Func;
+        handler.endElementNs = endElementNsSAX2Func;
     }
     ~Private() {
         reset();
@@ -117,6 +120,16 @@ SaxEventAnalyzer::Private::startElementNsSAX2Func(void * ctx,
             nb_attributes, nb_defaulted, (const char**)attributes);
     }
 }
+void
+SaxEventAnalyzer::Private::endElementNsSAX2Func(void *ctx,
+        const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {
+    Private *p = (Private *) ctx;
+    vector<StreamSaxAnalyzer *>::iterator i;
+    for (i = p->sax.begin(); i != p->sax.end(); ++i) {
+        (*i)->endElement((const char *) localname, (const char *) prefix,
+                         (const char *) URI);
+    }
+}
 SaxEventAnalyzer::SaxEventAnalyzer(std::vector<StreamSaxAnalyzer*>&s)
     :p(new Private(s)), ready(true) {
 }
@@ -128,6 +141,11 @@ SaxEventAnalyzer::startAnalysis(AnalysisResult* result) {
     p->result = result;
     ready = false;
     initialized = false;
+
+    vector<StreamSaxAnalyzer*>::iterator i;
+    for (i = p->sax.begin(); i != p->sax.end(); ++i) {
+        (*i)->startAnalysis(p->result);
+    }
 }
 void
 SaxEventAnalyzer::endAnalysis() {
@@ -143,12 +161,6 @@ SaxEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (!initialized) {
         p->init(data, length);
         initialized = true;
-        if (!p->error) {
-            vector<StreamSaxAnalyzer*>::iterator i;
-            for (i = p->sax.begin(); i != p->sax.end(); ++i) {
-                (*i)->startAnalysis(p->result);
-            }
-        }
     } else {
         p->push(data, length);
     }
