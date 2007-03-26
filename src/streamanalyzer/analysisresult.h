@@ -61,6 +61,7 @@ private:
     const int m_depth;
     StreamAnalyzer& m_indexer;
     AnalyzerConfiguration& m_analyzerconfig;
+    AnalysisResult* const m_parent;
 
     /**
      * Create a new AnalysisResult object that will be written to the index.
@@ -73,7 +74,7 @@ private:
      *        a depth of 0 means a document is not embedded in another document.
      **/
     AnalysisResult(const std::string& path, const char* name, time_t mt,
-        const AnalysisResult& parent);
+        AnalysisResult& parent);
 public:
     AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
             StreamAnalyzer& indexer);
@@ -160,6 +161,7 @@ public:
     void setId(int64_t i);
     void setEncoding(const char* enc);
     const std::string& encoding() const;
+    AnalysisResult* parent();
     /**
      * Retrieve the IndexWriter specific object associated with this AnalysisResult.
      * This object allows the IndexWriter to store intermediate results
