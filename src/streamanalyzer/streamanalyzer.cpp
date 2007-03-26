@@ -41,6 +41,8 @@
 #include "id3v2throughanalyzer.h"
 #include "oggthroughanalyzer.h"
 #include "digestthroughanalyzer.h"
+#include "odfmimetypelineanalyzer.h"
+#include "odfsaxanalyzer.h"
 #include "analysisresult.h"
 #include "indexwriter.h"
 #include "analyzerconfiguration.h"
@@ -213,6 +215,7 @@ StreamAnalyzer::Private::initializeLineFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
+    addFactory(new OdfMimeTypeLineAnalyzerFactory());
 }
 void
 StreamAnalyzer::Private::initializeEventFactories() {
@@ -295,6 +298,7 @@ StreamAnalyzer::Private::initializeEndFactories() {
     addFactory(new CpioEndAnalyzerFactory());
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
+    addFactory(new OdfSaxAnalyzerFactory());
 //    addFactory(new PdfEndAnalyzerFactory());
 #ifdef WIN32
 #ifdef __GNUC__

@@ -44,6 +44,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "error: %s\n", zip.getError());
 //        exit(1);
     }
+    idx.setMimeType("application/zip");
     while (s) {
         idx.indexChild(zip.getEntryInfo().filename, zip.getEntryInfo().mtime,
             s);

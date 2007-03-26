@@ -91,6 +91,12 @@ LineEventAnalyzer::initEncoding(std::string enc) {
 }
 void
 LineEventAnalyzer::endAnalysis() {
+    // flush the last line if it did not end with a newline character
+    if(lineBuffer.size() > 0) {
+        emit(lineBuffer.c_str(), lineBuffer.size());
+        lineBuffer.assign("");
+    }
+
     vector<StreamLineAnalyzer*>::iterator l;
     for (l = line.begin(); l != line.end(); ++l) {
         (*l)->endAnalysis();

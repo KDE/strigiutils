@@ -25,6 +25,8 @@ set(streamanalyzer_SRCS
 	saxeventanalyzer.cpp
 	lineeventanalyzer.cpp
 	htmlsaxanalyzer.cpp
+	odfmimetypelineanalyzer.cpp
+	odfsaxanalyzer.cpp
 	fieldproperties.cpp
 	fieldpropertiesdb.cpp
 	endanalyzers/bz2endanalyzer.cpp
