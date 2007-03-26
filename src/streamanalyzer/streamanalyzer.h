@@ -46,6 +46,7 @@ class StreamAnalyzerPrivate;
  * Especially the last task is important when working with archive streams
  * such as zip or tar files that contain other files.
  **/
+class StreamAnalyzerPrivate;
 class STREAMANALYZER_EXPORT StreamAnalyzer {
 private:
     StreamAnalyzerPrivate* const p;

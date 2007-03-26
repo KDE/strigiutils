@@ -59,3 +59,7 @@ void
 AnalysisResult::setField(const RegisteredField* field, double value) {
     m_writer.addField(this, field, value);
 }
+void
+AnalysisResult::addValue(RegisteredField*field, const std::string&name,
+        const std::string&value) {
+}

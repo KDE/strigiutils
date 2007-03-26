@@ -51,7 +51,6 @@ class StreamEndAnalyzerPrivate;
  **/
 class STREAMANALYZER_EXPORT AnalysisResult {
 friend class IndexWriter;
-friend class StreamAnalyzer;
 friend class StreamAnalyzerPrivate;
 private:
     int64_t m_id;
@@ -156,6 +155,8 @@ public:
      **/
     void addTriplet(const std::string& subject, const std::string& predicate,
         const std::string& object);
+    void addValue(RegisteredField*field, const std::string&name,
+        const std::string&value);
     /**
      * Get the filename associated with this stream.
      * For the full name see path().

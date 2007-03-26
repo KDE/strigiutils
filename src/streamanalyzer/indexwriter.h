@@ -68,6 +68,8 @@ protected:
         uint32_t value) = 0;
     virtual void addField(const AnalysisResult*, const RegisteredField* field,
         double value) = 0;
+    virtual void addValue(const AnalysisResult*, const RegisteredField* field,
+        const std::string& name, const std::string& value) = 0;
     virtual void finishAnalysis(const AnalysisResult*) = 0;
     /**
      * Add a complete RDF triplet
