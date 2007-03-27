@@ -13,7 +13,7 @@ public:
     static FieldProperties empty;
 
     Private();
-    vector<string> getdirs() const;
+    vector<string> getdirs(const string&) const;
     void loadProperties(const string& dir);
     void parseProperties(char*data);
     void handlePropertyLine(FieldProperties::Private& p, const char*name,
@@ -43,15 +43,31 @@ FieldPropertiesDb::allProperties() const {
 }
 
 FieldPropertiesDb::Private::Private() {
-    vector<string> dirs = getdirs();
+    const char* dirpath = getenv("XDG_DATA_HOME");
+    vector<string> dirs;
+    if (dirpath) {
+        dirs = getdirs(dirpath);
+    } else {
+        dirpath = getenv("HOME");
+        if (dirpath) {
+             dirs = getdirs(string(dirpath)+"/.local/share");
+        }
+    }
+    dirpath = getenv("XDG_DATA_DIRS");
+    vector<string> d;
+    if (dirpath) {
+        d = getdirs(dirpath);
+    } else {
+        d = getdirs("/usr/local/share:/usr/share");
+    }
+    copy(d.begin(), d.end(), dirs.end());
     vector<string>::const_iterator i;
     for (i=dirs.begin(); i!=dirs.end(); i++) {
         loadProperties(*i);
     }
 }
 vector<string>
-FieldPropertiesDb::Private::getdirs() const {
-    string direnv(getenv("KDEDIRS"));
+FieldPropertiesDb::Private::getdirs(const string& direnv) const {
     vector<string> dirs;
     string::size_type lastp = 0;
     string::size_type p = direnv.find(':');
@@ -59,13 +75,13 @@ FieldPropertiesDb::Private::getdirs() const {
         dirs.push_back(direnv.substr(lastp, p-lastp));
         lastp = p+1;
         p = direnv.find(':', lastp);
-    }
+     }
     dirs.push_back(direnv.substr(lastp));
     return dirs;
 }
 void
 FieldPropertiesDb::Private::loadProperties(const string& dir) {
-    string pdir = dir + "/share/apps/strigi/fieldproperties/";
+    string pdir = dir + "/apps/strigi/fieldproperties/";
     DIR* d = opendir(pdir.c_str());
     if (!d) return;
     struct dirent* de = readdir(d);
