@@ -5,7 +5,7 @@
 #include <clientinterface.h>
 #include <sstream>
 DBusClientInterface::DBusClientInterface(ClientInterface* i)
-        :DBusObjectInterface("vandenoever.strigi.ClientInterface"), impl(i) {
+        :DBusObjectInterface("vandenoever.strigi"), impl(i) {
     handlers["indexFile"] = &DBusClientInterface::indexFile;
     handlers["getStatus"] = &DBusClientInterface::getStatus;
     handlers["getFilters"] = &DBusClientInterface::getFilters;

@@ -16,7 +16,7 @@ IF (PERL_FOUND)
                 "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
         COMMAND ${PERL_EXECUTABLE}
         ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
-                vandenoever.strigi.ClientInterface
+                vandenoever.strigi
                 "${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
         MAIN_DEPENDENCY ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
