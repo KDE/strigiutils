@@ -60,7 +60,7 @@ FieldPropertiesDb::Private::Private() {
     } else {
         d = getdirs("/usr/local/share:/usr/share");
     }
-    copy(d.begin(), d.end(), dirs.end());
+    copy(d.begin(), d.end(), back_insert_iterator<vector<string> >(dirs));
     vector<string>::const_iterator i;
     for (i=dirs.begin(); i!=dirs.end(); i++) {
         loadProperties(*i);
