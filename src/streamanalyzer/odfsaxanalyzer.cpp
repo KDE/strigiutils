@@ -75,7 +75,7 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
                                   int nb_attributes, int nb_defaulted, const char **attributes) {
     assert(m_result != 0);
 
-    if(strcmp(uri, dcNS) == 0) {
+    if(uri && strcmp(uri, dcNS) == 0) {
         if(strcmp(localname, "creator") == 0) {
             m_currentField = m_factory->creatorField;
         } else if(strcmp(localname, "title") == 0) {
@@ -87,8 +87,7 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
         } else if(strcmp(localname, "language") == 0) {
             m_currentField = m_factory->languageField;
         }
-    }
-    else if(strcmp(uri, metaNS) == 0) {
+    } else if(uri && strcmp(uri, metaNS) == 0) {
         if(strcmp(localname, "creation-date") == 0) {
             m_currentField = m_factory->creationTimeField;
         } else if(strcmp(localname, "keyword") == 0) {
