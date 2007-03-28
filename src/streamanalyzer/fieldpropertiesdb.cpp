@@ -217,6 +217,17 @@ FieldPropertiesDb::Private::warnIfLocale(const char* name, const char* locale) {
     }
 }
 void
+FieldPropertiesDb::addField(const std::string& key, const std::string& type,
+        const std::string& parent) {
+    FieldProperties::Private props;
+    props.uri = key;
+    props.typeuri = type;
+    if (parent.size()) {
+        props.parentUris.push_back(parent);
+    }
+    p->properties[key] = props;
+}
+void
 FieldProperties::Private::clear() {
     uri.clear();
     name.clear();

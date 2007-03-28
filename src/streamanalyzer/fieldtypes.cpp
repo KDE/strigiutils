@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "fieldtypes.h"
+#include "fieldpropertiesdb.h"
 using namespace Strigi;
 using namespace std;
 
@@ -62,6 +63,21 @@ FieldRegister::registerField(const string& fieldname,
         const string& type, int maxoccurs, const RegisteredField* parent) {
     map<string, RegisteredField*>::iterator i = fields.find(fieldname);
     if (i == fields.end()) {
+        // check with the fieldpropertiesdb
+        const map<string, FieldProperties>& props = 
+            FieldPropertiesDb::db().allProperties();
+        map<std::string, FieldProperties>::const_iterator j
+            = props.find(fieldname);
+        if (j == props.end()) {
+            // register this property with the propertiesdatabase
+            string parentname;
+            if (parent) {
+                parentname.assign(parent->getKey());
+            }
+            FieldPropertiesDb::db().addField(fieldname, type, parentname);
+        } else {
+            // check that this field is compatible with what's in the database
+        }
         RegisteredField* f = new RegisteredField(fieldname, type,
             maxoccurs, parent);
         fields[fieldname] = f;

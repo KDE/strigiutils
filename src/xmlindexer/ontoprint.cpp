@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <getopt.h>
 #include "fieldpropertiesdb.h"
+#include "streamanalyzer.h"
+#include "analyzerconfiguration.h"
 using namespace std;
 using namespace Strigi;
 
@@ -93,8 +95,12 @@ main(int argc, char** argv) {
         default:
             break;
         }
-    printf("%i %i %s\n", c, optindex, optarg);
+        printf("%i %i %s\n", c, optindex, optarg);
     }
+
+    // load the plugins
+    AnalyzerConfiguration ac;
+    StreamAnalyzer s(ac);
 
     if (help) {
         printHelp(argv[0]); 

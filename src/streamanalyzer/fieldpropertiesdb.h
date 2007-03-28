@@ -43,10 +43,23 @@ private:
     Private* const p;
 public:
     static FieldPropertiesDb& db();
+
     FieldPropertiesDb();
     ~FieldPropertiesDb();
     const FieldProperties& properties(const std::string& uri) const;
     const std::map<std::string, FieldProperties>& allProperties() const;
+
+    /**
+     * This is a simple method for adding fields programatically instead of
+     * via read files. This is useful for introspecting fields for which no
+     * addfield has yet been written.
+     * At a later stage we might remove this function and demand that all fields
+     * be registered over fieldproperties files. Right now, this helps in
+     * building the ontologies without demanding too much of the analyzer
+     * writers.
+     **/
+    void addField(const std::string& key, const std::string& type,
+        const std::string& parent);
 };
 
 class FieldProperties::Private {
