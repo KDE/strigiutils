@@ -29,7 +29,7 @@ class FieldRegister;
  * This interface is not yet complete, it lacks good functions for retrieving
  * the results in other ways than just printing them.
  */
-class StreamThroughAnalyzer {
+class STREAMANALYZER_EXPORT StreamThroughAnalyzer {
 public:
     virtual ~StreamThroughAnalyzer() {}
     virtual void setIndexable(Strigi::AnalysisResult*) = 0;
@@ -47,7 +47,7 @@ public:
      **/
     virtual bool isReadyWithStream() = 0;
 };
-class StreamThroughAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory {
 public:
     virtual ~StreamThroughAnalyzerFactory(){}
     virtual const char* getName() const = 0;

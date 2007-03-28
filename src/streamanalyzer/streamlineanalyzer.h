@@ -28,7 +28,7 @@ class RegisteredField;
 class AnalysisResult;
 class FieldRegister;
 
-class StreamLineAnalyzer {
+class STREAMANALYZER_EXPORT StreamLineAnalyzer {
 public:
     virtual ~StreamLineAnalyzer() {}
     virtual const char* getName() const = 0;
@@ -38,7 +38,7 @@ public:
     virtual bool isReadyWithStream() = 0;
 };
 
-class StreamLineAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamLineAnalyzerFactory {
 public:
     virtual ~StreamLineAnalyzerFactory() {}
     virtual const char* getName() const = 0;

@@ -28,7 +28,7 @@ class RegisteredField;
 class FieldRegister;
 class AnalysisResult;
 
-class StreamSaxAnalyzer {
+class STREAMANALYZER_EXPORT StreamSaxAnalyzer {
 public:
     virtual ~StreamSaxAnalyzer() {}
     virtual const char* getName() const = 0;
@@ -43,7 +43,7 @@ public:
     virtual bool isReadyWithStream() = 0;
 };
 
-class StreamSaxAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamSaxAnalyzerFactory {
 public:
     virtual ~StreamSaxAnalyzerFactory() {}
     virtual const char* getName() const = 0;

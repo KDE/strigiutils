@@ -29,7 +29,7 @@ class AnalysisResult;
 class RegisteredField;
 class FieldRegister;
 
-class StreamEndAnalyzer {
+class STREAMANALYZER_EXPORT StreamEndAnalyzer {
 protected:
     std::string error;
     static char testStream(jstreams::InputStream *in);
@@ -41,7 +41,7 @@ public:
     virtual const char* getName() const = 0;
 };
 
-class StreamEndAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamEndAnalyzerFactory {
 public:
     virtual ~StreamEndAnalyzerFactory(){}
     virtual const char* getName() const = 0;
