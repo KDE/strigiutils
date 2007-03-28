@@ -12,10 +12,11 @@ printDot(ostream& out, const char* locale) {
     const map<string, FieldProperties>& p
         = FieldPropertiesDb::db().allProperties();
     map<string, FieldProperties>::const_iterator i;
-    out << "digraph {" << endl;
+    out << "digraph{graph[rankdir=LR];" << endl;
     for (i = p.begin(); i != p.end(); ++i) {
         const vector<string>& parents = i->second.parentUris();
         vector<string>::const_iterator j;
+        out << '"' << i->second.uri() << "\" [shape=record];" << endl;
         for (j = parents.begin(); j != parents.end(); ++j) {
             out << '"' << *j << "\"->\"" << i->second.uri() << '"' << endl;
         }
@@ -69,7 +70,6 @@ printHelp(const char* program) {
     cerr << "Usage: " << program << " [--type=<type>] [--locale=<locale>]"
         << endl;
 }
-
 int
 main(int argc, char** argv) {
     struct option long_options[] = {
@@ -85,6 +85,7 @@ main(int argc, char** argv) {
         int c = getopt_long_only(argc, argv, "", long_options, &optindex);
         if (c == -1) break;
         if (c == 0) {
+            if (optindex == 0) help = true;
             if (optindex == 1) type   = optarg;
             if (optindex == 2) locale = optarg;
         }
@@ -95,7 +96,6 @@ main(int argc, char** argv) {
         default:
             break;
         }
-        printf("%i %i %s\n", c, optindex, optarg);
     }
 
     // load the plugins
