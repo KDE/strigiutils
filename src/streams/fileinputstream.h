@@ -23,19 +23,32 @@
 #include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
+/**
+ * The classes in this namespace are meant to support the classes in the Strigi namespace.
+ * The namespace jstreams still exists because CLucene uses the same headers.
+ */
 namespace jstreams {
 
+/** Provides buffered access to a file */
 class STREAMS_EXPORT FileInputStream : public BufferedInputStream<char> {
 private:
     FILE *file;
     std::string filepath;
+    int32_t fillBuffer(char* start, int32_t space);
 
 public:
+    /** The default buffer size, only used as a default argument to the constructor */
     static const int32_t defaultBufferSize;
+    /**
+     * @brief Create an InputStream to access a file
+     *
+     * @param filepath the name of the file to open
+     * @param buffersize the size of the buffer to use
+     */
     explicit FileInputStream(const char *filepath,
         int32_t buffersize=defaultBufferSize);
+    /** Destructor */
     ~FileInputStream();
-    int32_t fillBuffer(char* start, int32_t space);
 };
 
 } // end namespace jstreams

@@ -1,0 +1,12 @@
+/** @mainpage JStreams
+ *
+ * The JStreams classes provide a way of accessing streamed
+ * resources in manner similar to the Java interface
+ * java.io.InputStream.
+ *
+ * If you are writing an analyzer, you probably want to know
+ * about the jstreams::InputStream, which is just an (abstract)
+ * instance of jstreams::StreamBase, with char as the template
+ * parameter.  This latter class is the one all Stream classes
+ * are derived from, and override the methods of.
+*/

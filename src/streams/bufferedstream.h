@@ -30,6 +30,9 @@
  */
 namespace jstreams {
 
+/**
+ * @brief Abstract class providing a buffered input stream.
+ */
 template <class T>
 class BufferedInputStream : public StreamBase<T> {
 private:
@@ -39,19 +42,39 @@ private:
     void writeToBuffer(int32_t minsize, int32_t maxsize);
 protected:
     /**
-     * This function must be implemented by the subclasses.
-     * It should write a maximum of @p space characters at the buffer
-     * position pointed to by @p start. If no more data is avaiable due to
-     * end of file, -1 should be returned. If an error occurs, the status
-     * should be set to Error, an error message should be set and the function
-     * must return -1.
+     * @brief Fill the buffer with the provided data
+     *
+     * This function should be implemented by subclasses.
+     * It should write up to @p space characters from the
+     * stream to the buffer position pointed to by @p start.
+     *
+     * If the end of the stream is encountered, -1 should be
+     * returned.
+     *
+     * If an error offurs, the status should be set to Error,
+     * an error message should be set and -1 should be returned.
+     *
+     * You should @em not call this function yourself.
+     *
+     * @param start where the data should be written to
+     * @param space the maximum amount of data to write
+     * @return Number of characters written, or -1 on error
      **/
     virtual int32_t fillBuffer(T* start, int32_t space) = 0;
-    // this function might be useful if you want to reuse a bufferedstream
+    /**
+     * @brief Resets the buffer, allowing it to be used again
+     *
+     * If imlemented, this function will reset the buffer, allowing
+     * it to be re-used.
+     */
     void resetBuffer() {printf("implement 'resetBuffer'\n");}
+    /**
+     * @brief Sets the minimum size of the buffer
+     */
     void setMinBufSize(int32_t s) {
         buffer.makeSpace(s);
     }
+    /** Default constructor just initialises members */
     BufferedInputStream<T>();
 public:
     int32_t read(const T*& start, int32_t min, int32_t max);

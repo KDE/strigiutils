@@ -22,9 +22,11 @@
 
 #include "streambase.h"
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
-typedef StreamBase<wchar_t> Reader;
+    /** Abstract class for a stream of Unicode characters */
+    typedef StreamBase<wchar_t> Reader;
 
 } // end namespace jstreams
 

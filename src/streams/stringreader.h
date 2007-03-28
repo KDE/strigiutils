@@ -28,8 +28,12 @@
 
 #include "streambase.h"
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
+/**
+ * @brief Provides access to in-memory data thorugh the StreamBase API
+ */
 template <class T>
 class StringReader : public StreamBase<T> {
 private:
@@ -39,6 +43,26 @@ private:
     StringReader(const StringReader<T>&);
     void operator=(const StringReader<T>&);
 public:
+    /**
+     * @brief Create a StringReader from a given string
+     *
+     * If the string you provide is not null-terminated, or
+     * may not be null-terminated, you need to provide a length.
+     * Note that if a length is provided, null characters have
+     * no special meaning.
+     *
+     * If the string is created on the stack and may go out of
+     * scope before the StringReader is destroyed, or if it is
+     * created with @c new and may be destroyed before the
+     * StringReader, you should set @p copy to @c true.
+     *
+     * @param value pointer to the data for this StringReader
+     * @param length the length of the data at the pointer. If length is -1,
+     * it is assumed @p value is null-terminated, and this is used to
+     * find the end of the string
+     * @param if true, the string will be copied. If false, the StringReader
+     * will simply keep a pointer to the original data
+     */
     StringReader(const T* value, int32_t length = -1, bool copy = true);
     ~StringReader();
     int32_t read(const T*& start, int32_t min, int32_t max);

@@ -65,7 +65,6 @@ install(FILES
 	archivereader.h
 	inputstreamreader.h
 	stringreader.h
-	stringreader.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
 	DESTINATION include/strigi
 )

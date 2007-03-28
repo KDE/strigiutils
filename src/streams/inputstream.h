@@ -22,9 +22,11 @@
 
 #include "streambase.h"
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
-typedef StreamBase<char> InputStream;
+    /** Abstract class for a stream of bytes */
+    typedef StreamBase<char> InputStream;
 
 } // end namespace jstreams
 

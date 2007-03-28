@@ -22,6 +22,7 @@
 
 #include "streambase.h"
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
 class FileInputStream;

@@ -20,14 +20,31 @@
 #ifndef SUBSTREAMPROVIDERPROVIDER_H
 #define SUBSTREAMPROVIDERPROVIDER_H
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
 class SubStreamProvider;
 template <class T> class StreamBase;
+
+/**
+ * @brief Creates a SubStreamProvider to extract substreams
+ * from a given input stream.
+ */
 class SubStreamProviderProvider {
 public:
-SubStreamProviderProvider();
-SubStreamProvider* getSubStreamProvider(StreamBase<char>* input);
+    /** Initializes the SubStreamProviderProvider */
+    SubStreamProviderProvider();
+    /**
+     * @brief Get a SubStreamProvider for an InputStream
+     *
+     * Analyzes the first few bytes of @p input in an attempt to
+     * find a matching SubStreamProvider.  If it does so, it will
+     * create a SubStreamProvider for @p input.
+     *
+     * @return a SubStreamProvider for @p input if a matching one
+     * was found, 0 if no matching SubStreamProvider was found
+     */
+    SubStreamProvider* getSubStreamProvider(StreamBase<char>* input);
 };
 
 }

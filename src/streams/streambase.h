@@ -26,12 +26,24 @@
 
 #define INT32MAX 0x7FFFFFFFL
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
-enum StreamStatus { Ok, Eof, Error };
+/** Used to indicate the current status of a Stream */
+enum StreamStatus {
+    Ok /**< Stream is capable of being read from */,
+    Eof /**< The end of the Stream has been reached */,
+    Error /**< An error occurred. Use getError() to find out more information */
+};
 
 // java mapping: long=int64, int=int32, byte=uint8_t
 /**
+ * The base of all Streams. Do not inherit directly from this class,
+ * but from (an instance of) StreamBase
+ *
+ * This class contains all the non-virtual StreamBase methods
+ * that don't depend on a specific Stream type
+ *
  * developer comment: This is needed because win32 compilation.
  * When we want to access a function outside a lib, we have to export them
  * but we can't export the template class because this would be somewhat
@@ -40,11 +52,21 @@ enum StreamStatus { Ok, Eof, Error };
  */
 class STREAMS_EXPORT StreamBaseBase {
 protected:
+    /** The size of the stream (-1 if unknown) */
     int64_t size;
+    /** The position of the stream */
     int64_t position;
+    /**
+     * @brief String representation of the last error, or
+     * an empty string otherwise
+     */
     std::string error;
+    /** The status of the stream - see StreamStatus */
     StreamStatus status;
 public:
+    /**
+     * @brief  Default constructor just initialises everything to sane defaults
+     */
     StreamBaseBase() :size(-1), position(0), status(Ok) {}
     virtual ~StreamBaseBase() {}
     /**
@@ -63,9 +85,13 @@ public:
     int64_t getPosition() const { return position; }
     /**
      * @brief Return the size of the stream.
-     * If the size of the stream is unknown, -1
-     * is returned. If the end of the stream has been reached the size is
-     * always known.
+     *
+     * The size of the stream is always know if the end of the stream
+     * has been reached.  In all other cases, this may return -1 to
+     * indicate the size of the stream is unknown.
+     *
+     * @return the size of the stream, if it is known. -1 is returned
+     * otherwise
      **/
     int64_t getSize() const { return size; }
 };
@@ -75,6 +101,7 @@ public:
  *
  * This class is based on the interface java.io.InputStream. It allows
  * for uniform access to streamed resources.
+ *
  * The main difference with the java equivalent is a performance improvement.
  * When reading data, data is not copied into a buffer provided by the caller,
  * but a pointer to the read data is provided. This makes this interface
@@ -84,64 +111,87 @@ public:
 template <class T>
 class StreamBase : public StreamBaseBase {
 public:
+    /** @brief Default constructor does nothing */
     StreamBase() { }
+    /** @brief Default destructor does nothing */
     virtual ~StreamBase(){}
     /**
      * @brief Reads items from the stream and sets @p start to point to
      * the first item that was read.
      *
-     * Take note: the pointer will only be valid until the next call to any
-     * other function, including the destructor, of this class. Exceptions to
-     * this rule are noted at the respective functions. The functions inherited
-     * from StreamBaseBase do not invalidate the pointer.
+     * Note: unless stated otherwise in the documentation for that method,
+     * this pointer will no longer be valid after calling another method of
+     * this class. The pointer will also no longer be valid after the class
+     * is destroyed.
      *
-     * @param start Pointer passed by reference that will be set to point to
+     * The functions inherited from StreamBaseBase do not invalidate the pointer.
+     *
+     * At least @p min items will be read from the stream, unless an error occurs
+     * or the end of the stream is reached.  Under no circumstances will more than
+     * @p max items be read.
+     *
+     * If the end of the stream is reached before @p min items are read, the
+     * read is still considered successful, and the number of items read will
+     * be returned.
+     *
+     * @param start pointer passed by reference that will be set to point to
      *              the retrieved array of items. If the end of the stream
      *              is encountered or an error occurs, the value of @p start
-     *              is undefined.
-     * @param min   The minimal number of items to read from the stream. This
-     *              value should be larger than 0. If it is smaller, the result
-     *              is undefined.
-     * @param max   The maximal number of items to read from the stream.
+     *              is undefined
+     * @param min   the minimal number of items to read from the stream. This
+     *              value should be larger than 0. If it is 0 or smaller, the
+     *              result is undefined
+     * @param max   the maximal number of items to read from the stream.
      *              If this value is smaller than @p min, there is no limit on
-     *              the number of items that can be read.
-     * @return the number of items that were read. If @c -1 is returned, the
-     *         end of the stream has been reached. If @c -2 is returned,
-     *         an error has occurred.
+     *              the number of items that can be read
+     * @return the number of items that were read. @c -1 is returned if
+     *         end of the stream has already been reached. @c -2 is returned
+     *         if an error has occurred
      **/
     virtual int32_t read(const T*& start, int32_t min, int32_t max) = 0;
     /**
-     * @brief Skip @p ntoskip items. Unless an error occurs or the end of
-     * file is encountered, this amount of items is skipped.
+     * @brief Skip @p ntoskip items.
+     *
+     * If an error occurs, or the end of the stream is encountered, fewer
+     * than @p ntoskip items may be skipped.  This can be checked by comparing
+     * the return value to @p ntoskip.
      *
      * Calling this function invalidates the data pointer that was obtained from
      * StreamBase::read.
      *
-     * @param ntoskip The number of items that should be skipped.
-     * @return The new position in the stream.
+     * @param ntoskip the number of items that should be skipped
+     * @return the number of items skipped
      **/
     virtual int64_t skip(int64_t ntoskip);
     /**
-     * @brief Repositions this stream to given requested position.
+     * @brief Repositions this stream to a given position.
      *
-     * Reset is guaranteed to work after a successful call to read(),
-     * when the new position is in the range of the data returned by read().
-     * This means that @p pos must lie between the the position
-     * corresponding to the @p start parameter (x) of the @r read function
-     * and the position corresponding to the last position in the returned
-     * buffer (x + @p nread).
+     * A call to StreamBase::reset is only guaranteed to be successful when
+     * the requested position lies within the segment of a stream
+     * corresponding to a valid pointer obtained from StreamBase::read.
+     * In this case, the pointer will not be invalidated.
      *
      * Calling this function invalidates the data pointer that was obtained from
      * StreamBase::read unless the conditions outlined above apply.
-     * In a common scenario, you want to 
      *
-     * @param pos The position in the stream you want to go to.
-     * @return The new position in the stream. This is guaranteed to be the
-     *         position requested under the conditions outlined above and may
-     *         be the desired position under all other circumstances.
+     * To read n items, leaving the stream at the same position as before, you
+     * can do the following:
+     * @code
+     * int64_t start = stream.getPosition();
+     * if ( stream.read(data, min, max) > 0 ) {
+     *     reset(start);
+     *     // The data pointer is still valid here
+     * }
+     * @endcode
+     *
+     * @param pos the position in the stream you want to go to, relative to
+     * the start of the stream
+     * @return the new position in the stream
      **/
     virtual int64_t reset(int64_t pos) = 0;
 };
+
+
 template <class T>
 int64_t
 StreamBase<T>::skip(int64_t ntoskip) {

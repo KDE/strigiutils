@@ -25,13 +25,17 @@
 #include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
 /**
- * Info on conversions:
-http://www.gnu.org/software/libc/manual/html_node/iconv-Examples.html
-http://tangentsoft.net/mysql++/doc/userman/html/unicode.html
- **/
+ * @brief Adapter to convert an InputStream (a byte stream) into a Reader
+ * (decoded Unicode character stream).
+ *
+ * For more information of conversions, see
+ * http://www.gnu.org/software/libc/manual/html_node/iconv-Examples.html and
+ * http://tangentsoft.net/mysql++/doc/userman/html/unicode.html
+ */
 class STREAMS_EXPORT InputStreamReader : public BufferedInputStream<wchar_t> {
 private:
     iconv_t converter;
@@ -42,10 +46,24 @@ private:
     InputStreamBuffer<char> charbuf;
     void readFromStream();
     int32_t decode(wchar_t* start, int32_t space);
-public:
-    explicit InputStreamReader(StreamBase<char> *i, const char *enc=0);
-    ~InputStreamReader();
     int32_t fillBuffer(wchar_t* start, int32_t space);
+public:
+    /**
+     * Create an InputStreamReader from the given InputStream.
+     *
+     * For a list of acceptable encodings, run <tt>iconv --list</tt>.
+     * Not all encodings are supported on all systems.
+     *
+     * If the requested encoding is not available, the status is set to
+     * Error and an error message is set.
+     *
+     * @param i the input stream to decode
+     * @param enc the encoding of the input stream.  UTF-8 is assumed if
+     * no encoding is given
+     */
+    explicit InputStreamReader(StreamBase<char> *i, const char *enc=0);
+    /** Destructor */
+    ~InputStreamReader();
 };
 
 } // end namespace jstreams

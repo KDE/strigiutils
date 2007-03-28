@@ -22,25 +22,70 @@
 
 #include <cstdlib>
 
+/** Namespace for the JStreams Java-style streaming api */
 namespace jstreams {
 
+/**
+ * @brief Provides a buffer for the use of InputStream
+ */
 template <class T>
 class InputStreamBuffer {
 private:
 public:
+    /** Pointer to the start of the buffer */
     T* start;
+    /**
+     * @brief Size of the buffer
+     *
+     * Size of the memory pointed to by @p start,
+     * in multiples of sizeof(T)
+     */
     int32_t size;
+    /** Pointer to the current position the buffer */
     T* readPos;
+    /**
+     * @brief The amount of data available in the buffer
+     *
+     * The size of the used memory in the buffer, starting
+     * from @p readPos.  @p readPos + @p avail must be
+     * greater than @p start + @p size.
+     */
     int32_t avail;
 
+    /** Default constructor just initialises members to 0 */
     InputStreamBuffer();
+    /** Default destructor frees the memory pointed to by @p start */
     ~InputStreamBuffer();
+    /**
+     * @brief Sets the size of the buffer, allocating the necessary memory
+     *
+     * @param size the size that the buffer should be, in multiples
+     * of sizeof(T)
+     */
     void setSize(int32_t size);
+    /**
+     * @brief Read data from the buffer
+     *
+     * Sets @p start to point to the data, starting
+     * at the item of data following the last item
+     * of data read.
+     *
+     * @param start pointer passed by reference. It will
+     * be set to point to the data read from the buffer
+     * @param max the maximum amount of data to read from
+     * the buffer
+     * @return the size of the data pointed to by @p start
+     * (always less than or equal to @p max)
+     */
     int32_t read(const T*& start, int32_t max=0);
 
     /**
-     * This function prepares the buffer for a new write.
-     * returns the number of available places.
+     * @brief Prepares the buffer for a new write.
+     *
+     * This function invalidates any pointers
+     * previously obtained from read.
+     *
+     * @return the number of available places
      **/
      int32_t makeSpace(int32_t needed);
 };
