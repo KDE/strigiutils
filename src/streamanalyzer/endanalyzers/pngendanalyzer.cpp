@@ -76,7 +76,7 @@ PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize >= 29 &&  memcmp(header, pngmagic, 8) == 0;
 }
 char
-PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
+PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     const char* c;
     int32_t nread = in->read(c, 12, 12);
     if (nread != 12) {
@@ -99,8 +99,8 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     // read the png dimensions
     uint32_t width = readBigEndianUInt32(c+4);
     uint32_t height = readBigEndianUInt32(c+8);
-    rs.setField(factory->widthField, width);
-    rs.setField(factory->heightField, height);
+    as.setField(factory->widthField, width);
+    as.setField(factory->heightField, height);
 
     uint16_t type = c[13];
     uint16_t bpp = c[12];
@@ -118,15 +118,15 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
             bpp = 0;
     }
 
-    rs.setField(factory->colorDepthField, (uint32_t)bpp);
-    rs.setField(factory->colorModeField,
+    as.setField(factory->colorDepthField, (uint32_t)bpp);
+    as.setField(factory->colorModeField,
         (type < sizeof(colors)/sizeof(colors[0]))
                    ? colors[type] : "Unknown");
 
-    rs.setField(factory->compressionField,
+    as.setField(factory->compressionField,
         (c[14] == 0) ? "Deflate" : "Unknown");
 
-    rs.setField(factory->interlaceModeField,
+    as.setField(factory->interlaceModeField,
         ((uint)c[16] < sizeof(interlaceModes)/sizeof(interlaceModes[0]))
                    ? interlaceModes[(int)c[16]] : "Unknown");
 
@@ -144,15 +144,15 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
         if (strncmp("tEXt", c+4, 4) == 0) {
             // TODO convert latin1 to utf8 and analyze the format properly
             SubInputStream sub(in, chunksize);
-            analyzeText(rs, &sub);
+            analyzeText(as, &sub);
             sub.skip(chunksize);
         } else if (strncmp("zTXt", c+4, 4) == 0) {
             SubInputStream sub(in, chunksize);
-            analyzeZText(rs, &sub);
+            analyzeZText(as, &sub);
             sub.skip(chunksize);
         } else if (strncmp("iTXt", c+4, 4) == 0) {
             SubInputStream sub(in, chunksize);
-            analyzeText(rs, &sub);
+            analyzeText(as, &sub);
             sub.skip(chunksize);
         } else {
             nread = (int32_t)in->skip(chunksize);
@@ -166,7 +166,7 @@ PngEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     }
     if (nread != 8) {
         // invalid file or error
-        fprintf(stderr, "bad end\n");
+        fprintf(stderr, "bad end in %s\n", as.path().c_str());
         return -1;
     }
 
