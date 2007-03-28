@@ -26,9 +26,11 @@ class PngEndAnalyzerFactory;
 class PngEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     const PngEndAnalyzerFactory* factory;
+    time_t timeZoneOffset;
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     const char* getName() const { return "PngEndAnalyzer"; }
+    int32_t extractTime(const char* chunck);
     /*
        Internal function called to analyze text embedded in the png.
        Such text has a special format: 79 bytes of header, a \0 and content
@@ -37,7 +39,7 @@ private:
     char analyzeText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
     char analyzeZText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
 public:
-    PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {}
+    PngEndAnalyzer(const PngEndAnalyzerFactory* f);
 };
 
 class PngEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
@@ -49,12 +51,14 @@ private:
     static const std::string colorModeFieldName;
     static const std::string compressionFieldName;
     static const std::string interlaceModeFieldName;
+    static const std::string lastModificationTimeFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* colorModeField;
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* interlaceModeField;
+    const Strigi::RegisteredField* lastModificationTimeField;
     const char* getName() const {
         return "PngEndAnalyzer";
     }

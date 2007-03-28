@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2001, 2002 Rolf Magnus <ramagnus@kde.org>
  * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Vincent Ricard <magic@magicninja.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -36,6 +37,7 @@ const string PngEndAnalyzerFactory::colorDepthFieldName("colorDepth");
 const string PngEndAnalyzerFactory::colorModeFieldName("colorMode");
 const string PngEndAnalyzerFactory::compressionFieldName("compression");
 const string PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
+const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificationTime");
 
 // and for the colors
 static const char* colors[] = {
@@ -67,13 +69,28 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         FieldRegister::integerType, 1, 0);
     interlaceModeField = reg.registerField(interlaceModeFieldName,
         FieldRegister::integerType, 1, 0);
+    lastModificationTimeField = reg.registerField(lastModificationTimeFieldName,
+        FieldRegister::integerType, 1, 0);
 }
 
+PngEndAnalyzer::PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {
+    // XXX hack to workaround mktime
+    // which takes care of the local time zone
+    struct tm timeZone;
+    timeZone.tm_sec = 0;
+    timeZone.tm_min = 0;
+    timeZone.tm_hour = 0;
+    timeZone.tm_mday = 1;
+    timeZone.tm_mon = 0;
+    timeZone.tm_year = 70;
+    timeZone.tm_isdst = 0;
+    timeZoneOffset = mktime(&timeZone);
+}
 bool
 PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     static const unsigned char pngmagic[]
         = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
-    return headersize >= 29 &&  memcmp(header, pngmagic, 8) == 0;
+    return headersize >= 29 && memcmp(header, pngmagic, 8) == 0;
 }
 char
 PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
@@ -154,6 +171,20 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
             SubInputStream sub(in, chunksize);
             analyzeText(as, &sub);
             sub.skip(chunksize);
+        } else if (strncmp("tIME", c+4, 4) == 0) {
+            // the chunck size has to be 7
+            if (chunksize != 7) {
+                return -1;
+            }
+            nread = in->read(c, chunksize, chunksize);
+            if (nread != (int32_t)chunksize) {
+                return -1;
+            }
+            int32_t time = extractTime(c);
+            if (time == -1) {
+                return -1;
+            }
+            as.setField(factory->lastModificationTimeField, (uint32_t)time);
         } else {
             nread = (int32_t)in->skip(chunksize);
             if (nread != (int32_t)chunksize) {
@@ -206,4 +237,42 @@ PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
     GZipInputStream z(in, GZipInputStream::ZLIBFORMAT);
     TextEndAnalyzer tea;
     return tea.analyze(as, &z);
+}
+int32_t
+PngEndAnalyzer::extractTime(const char* chunck) {
+    int16_t year = readBigEndianInt16(chunck);
+    int8_t month = *(chunck+2);
+    int8_t day = *(chunck+3);
+    int8_t hour = *(chunck+4);
+    int8_t minute = *(chunck+5);
+    int8_t second = *(chunck+6);
+    // check the data (the leap second is allowed)
+    if (!(1 <= month && month <= 12
+            && 1 <= day && day <= 31
+            && 0 <= hour && hour <= 23
+            && 0 <= minute && minute <= 59
+            && 0 <= second && second <= 60)) {
+        return -1;
+    }
+    // we want to store the date/time as a number of
+    // seconds since Epoch (1970-01-01T00:00:00)
+    struct tm dateTime;
+    dateTime.tm_sec = second;
+    dateTime.tm_min = minute;
+    dateTime.tm_hour = hour;
+    dateTime.tm_mday = day;
+    dateTime.tm_mon = month-1;
+    dateTime.tm_year = year-1900;
+    dateTime.tm_isdst = 0;
+
+    time_t sinceEpoch = mktime(&dateTime);
+    if (sinceEpoch == (time_t)-1) {
+        fprintf(stderr, "could not compute the date/time\n");
+        return -1;
+    }
+
+    // FIXME the chunck is UTC but mktime use the local timezone :-(
+    // so i have to add the offset of the local time zone
+    // If someone has a better solution...
+    return sinceEpoch + timeZoneOffset;
 }

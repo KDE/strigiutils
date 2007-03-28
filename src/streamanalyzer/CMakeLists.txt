@@ -4,7 +4,7 @@ add_subdirectory(tests)
 add_subdirectory(fieldproperties)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
-	${LIBXML2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+	${LIBXML2_INCLUDE_DIR} ${SHA_INCLUDE_DIR} ${ICONV_INCLUDE_DIR} ${QT_QTCORE_INCLUDE}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
@@ -59,7 +59,7 @@ set_target_properties(streamanalyzer PROPERTIES
     SOVERSION ${STRIGI_VERSION_MAJOR} DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
 
-set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES})
+set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES} ${QT_QTCORE_LIBRARY})
 if(HAVE_LIBDL)
         set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
 endif(HAVE_LIBDL)
