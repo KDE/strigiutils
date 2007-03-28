@@ -94,6 +94,7 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
     if (StreamBase<T>::status == Eof) return -1;
 
     // do we need to read data into the buffer?
+    if (min > max) max = 0;
     if (!finishedWritingToBuffer && min > buffer.avail) {
         // do we have enough space in the buffer?
         writeToBuffer(min, max);
