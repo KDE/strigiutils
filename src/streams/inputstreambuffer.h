@@ -27,6 +27,7 @@ namespace jstreams {
 
 /**
  * @brief Provides a buffer for the use of InputStream
+ * @internal
  */
 template <class T>
 class InputStreamBuffer {
