@@ -38,7 +38,6 @@ private:
     int64_t nextLineStartPosition;
     // variables that record the current read state
     int32_t entrynumber;
-    int linenum;
     int maxlinesize;
     const char* linestart;
     const char* lineend;

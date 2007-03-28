@@ -182,7 +182,6 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
 MailInputStream::MailInputStream(StreamBase<char>* input)
         : SubStreamProvider(input), substream(0) {
     entrynumber = 0;
-    linenum = 0;
     nextLineStartPosition = 0;
     // parse the header and store the imporant header fields
     readHeader();
@@ -230,9 +229,7 @@ MailInputStream::readHeaderLine() {
         } else if (linepos >= maxlinesize) {
             // error line is too long
             status = Error;
-            ostringstream str;
-            str << linenum;
-            error = "line "+str.str()+" is too long";
+            error = "mail header line is too long";
             return;
         } else {
             while (linepos < nread) {
@@ -370,7 +367,8 @@ MailInputStream::handleHeaderLine() {
 }
 bool
 MailInputStream::checkHeaderLine() const {
-    bool validheader = linestart != lineend;
+    assert(lineend - linestart >= 0);
+    bool validheader = linestart < lineend;
     if (validheader) {
         const char* colpos = linestart;
         while (*colpos != ':' && ++colpos != lineend) {}
@@ -391,7 +389,7 @@ MailInputStream::handleBodyLine() {
     size_t n = boundary.size();
     do {
         readHeaderLine();
-        validheader = checkHeaderLine();
+        validheader = status == Ok && checkHeaderLine();
         if (validheader) {
             handleHeaderLine();
         }
