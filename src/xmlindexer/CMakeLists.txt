@@ -25,5 +25,7 @@ target_link_libraries(testdatacomparison streamanalyzer)
 #ADD_TEST(XmlIndexer testdatacomparison ${strigi_SOURCE_DIR}/testdata data
 #	${strigi_SOURCE_DIR}/testdata/xmlindexeroutput.bz2)
 
-add_executable(ontoprint ontoprint.cpp)
-target_link_libraries(ontoprint streamanalyzer)
+if(NOT WIN32)
+  add_executable(ontoprint ontoprint.cpp)
+  target_link_libraries(ontoprint streamanalyzer)
+endif(NOT WIN32)

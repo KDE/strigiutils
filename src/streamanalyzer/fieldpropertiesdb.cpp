@@ -2,7 +2,11 @@
 #include "fieldproperties.h"
 #include <vector>
 #include <sys/types.h>
+#ifdef HAVE_DIRENT_H
 #include <dirent.h>
+#else
+#include "stgdirent.h"
+#endif
 #include <sys/stat.h>
 using namespace Strigi;
 using namespace std;
