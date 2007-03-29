@@ -36,7 +36,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t tlmin = min;
     int32_t tlmax = max;
     if (tlmin == 0) {
-        tlmin = 1 + tlmin;
+        tlmin = 1 + tl;
     } else {
         tlmin += tl;
     }
@@ -57,6 +57,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 
     const char* end = searcher.search(start, nread);
     if (end) {
+        // the end signature was found
         //printf("THE END %p %p %s\n", start, end, searcher.getQuery().c_str());
         //printf("TE %i '%.*s'\n", end-start, 10, end);
         nread = end - start;

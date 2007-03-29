@@ -47,6 +47,13 @@ public:
     void setQuery(const std::string& );
     int32_t getQueryLength() const { return len; }
     std::string getQuery() const { return query; }
+    /**
+     * @brief Find the needle in @haystack.
+     * @param haystack the text to search in.
+     * @param haylen   the length of the text to search in.
+     * @return         a pointer to the start of the match if a match is found
+     *                 Otherwise @c 0.
+     **/
     const char* search(const char* haystack, int32_t haylen) const;
 };
 }
