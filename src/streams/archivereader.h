@@ -99,13 +99,30 @@ public:
 
 /**
  * @brief Provides an API for accessing members of an archive.
+ *
+ * ArchiveReader doesn't know how to open streams itself.  It must
+ * be supplied with StreamOpeners.  For example, a FileStreamOpener
+ * can be passed to an ArchiveReader to tell it how to access files
+ * on the filesystem.
  */
 class STREAMS_EXPORT ArchiveReader : public StreamOpener {
 private:
     class ArchiveReaderPrivate;
     ArchiveReaderPrivate *p;
 
+    /**
+     * @brief Query known StreamOpeners about an URL.
+     *
+     * Adds the info to the cache if it was found
+     *
+     * TODO: this should be in ArchiveReaderPrivate
+     *
+     * @param url the URL to query
+     * @param e the EntryInfo structure to populate with the information
+     * @return 0 on success, -1 if the url was not found
+     */
     int localStat(const std::string& url, jstreams::EntryInfo& e);
+    /** unused ??? */
     int32_t maxsize;
 public:
     /** Constructor */
@@ -113,23 +130,36 @@ public:
     /** Destructor */
     ~ArchiveReader();
     /**
-     * @brief Opens a stream for a member of the archive.
+     * @brief Opens a stream for a member of an archive.
      *
-     * @param url path to a member of the archive, relative to the archive root
+     * This function is only able to open a stream for an URL
+     * if either a registered StreamOpener is capable of doing
+     * so (see addStreamOpener()) or the URL can be handled
+     * directly (see canHandle()).
+     *
+     * @param url path to a member of an archive, relative to the archive root
      * @return a stream representing the archive member given by @p url
      */
     jstreams::StreamBase<char>* openStream(const std::string& url);
     /**
      * @brief Cleans up after a stream is finished with
      *
-     * You should call this when you are done with a stream, so
-     * the stream can dealt with properly.
+     * Frees the memory used to handle an open stream.
+     *
+     * Note that this memory will be cleaned up on the destruction
+     * of the ArchiveReader anyway.  This just allows you to free
+     * up the memory as soon as you are done with a particular stream.
      *
      * @param stream the stream to clean up after
      */
     void closeStream(jstreams::StreamBase<char>* stream);
     /**
      * @brief Gets information about a given url
+     *
+     * This function is only able to get information about an URL
+     * if either a registered StreamOpener is capable of doing
+     * so (see addStreamOpener()) or the URL can be handled
+     * directly (see canHandle()).
      *
      * @param url path to a member of the archive, relative to the archive root
      * @param e an EntryInfo object to populate with information about
@@ -138,19 +168,70 @@ public:
      */
     int stat(const std::string& url, jstreams::EntryInfo& e);
     /**
-     * TODO...
+     * @brief Adds a StreamOpener for use by the class.
+     *
+     * ArchiveReader uses StreamOpeners to resolve URLs and get
+     * information about and open the resources they point to.
+     * For example, a FileStreamOpener may be used to open
+     * files on the local system, and another StreamOpener may
+     * be capable of accessing files over HTTP.
+     *
+     * This method provides ArchiveReader with a StreamOpener
+     * for opening URLs.  An ArchiveReader object is only
+     * capable of handling an URL if there is a StreamOpener
+     * capable of either handling the URL or handling part of the
+     * URL that points to an archive.
+     *
+     * @param opener the StreamOpener to add
      */
     void addStreamOpener(StreamOpener* opener);
     /**
-     * TODO...
+     * @brief Lists the contents of the specified directory.
+     *
+     * If the @p url is one that the ArchiveReader can handle
+     * (see canHandle()), and refers to a directory (or an
+     * archive), it will fetch a list of the contents of the
+     * directory.
+     *
+     * @param url the directory to list the contents of
+     * @return a DirLister containing information about the
+     * contents of the directory, or an empty DirLister if the
+     * file did not exist, was not a directory or could not be
+     * handled
      */
     DirLister getDirEntries(const std::string& url);
     /**
      * @brief Check if a file is an archive.
+     *
+     * Checks the StreamOpeners, in the order they were passed to
+     * addStreamOpener(), to find the file specified by @p url.
+     * It considers an archive to be a file that is also a directory
+     * (from the point of view of the StreamOpener).
+     *
+     * It will only check the first StreamOpener that recognises
+     * the given URL.
+     *
+     * @param url URL of the file to check, as recognised by a
+     * StreamOpener registered with addStreamOpener()
+     * @return true if the URL specifies an archive, false if
+     * the URL was not recognised by any StreamOpener, or the URL
+     * does not specify an archive
      */
     bool isArchive(const std::string& url);
     /**
      * @brief Check if the archivereader can handle a file.
+     *
+     * Checks to see if the object at the location described by
+     * @p url exists and is an archive, or if any parent of it
+     * is an archive.
+     *
+     * A parent is determined by examining the URL and splitting
+     * it into a path delimited by @c /.
+     *
+     * @param url the URL of the object to check for
+     * @return true if the object described by @p url or any parent
+     * of it is an archive, false if @p url and all its parents
+     * are not archives
      */
     bool canHandle(const std::string& url);
 };
