@@ -233,6 +233,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
         lineBuffer.append(data, length);
         return;
     }
+    const char* lineend = p;
     if (*p == '\r') {
         // if \r is followed by \n, we can ignore \n
         if (p + 1 != end) {
@@ -246,7 +247,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
 
     // handle the first line from this call
     if (lineBuffer.size()) {
-        lineBuffer.append(data, p-data);
+        lineBuffer.append(data, lineend-data);
         emit(lineBuffer.c_str(), lineBuffer.size());
         lineBuffer.assign("");
     } else {
@@ -264,6 +265,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
             lineBuffer.assign(data, end-data);
             break;
         }
+        lineend = p;
         if (*p == '\r') {
             // if \r is followed by \n, we can ignore \n
             if (p + 1 != end) {
@@ -274,7 +276,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
                 sawCarriageReturn = true;
             }
         }
-        emit(data, p-data);
+        emit(data, lineend-data);
         if (ready) return;
     }
 }
