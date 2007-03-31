@@ -28,16 +28,16 @@ private:
     const PngEndAnalyzerFactory* factory;
     time_t timeZoneOffset;
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "PngEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "PngEndAnalyzer"; }
     int32_t extractTime(const char* chunck);
     /*
        Internal function called to analyze text embedded in the png.
        Such text has a special format: 79 bytes of header, a \0 and content
        until the end of the stream.
      */
-    char analyzeText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    char analyzeZText(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyzeText(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    char analyzeZText(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
 public:
     PngEndAnalyzer(const PngEndAnalyzerFactory* f);
 };
@@ -59,7 +59,7 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* interlaceModeField;
     const Strigi::RegisteredField* lastModificationTimeField;
-    const char* getName() const {
+    const char* name() const {
         return "PngEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

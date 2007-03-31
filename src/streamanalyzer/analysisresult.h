@@ -17,18 +17,13 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXABLE_H
-#define INDEXABLE_H
+#ifndef ANALYSISRESULT_H
+#define ANALYSISRESULT_H
 
 #include <string>
 
 #include "jstreamsconfig.h"
-#include "jstreamsconfig.h"
 #include "streambase.h"
-
-namespace jstreams {
-    template <class T> class StreamBase;
-}
 
 /**
  * Strigi is the major namespace for all classes that are used in the analysis of streams.
@@ -94,14 +89,14 @@ public:
     /**
      * Parse the given stream and index the results into this AnalysisResult object.
      **/
-    char index(jstreams::StreamBase<char>* file);
+    char index(StreamBase<char>* file);
     /**
      * Index the given stream which represents a child object of this
      * AnalysisResult under the relative name given by @name and versioned with time
      * @mtime.
      **/
     char indexChild(const std::string& name, time_t mt,
-        jstreams::StreamBase<char>* file);
+        StreamBase<char>* file);
     /**
      * Associate a fragment of text with the object.
      *
@@ -115,7 +110,7 @@ public:
      * @param field  the registered field
      * @param value  utf8 string value
      **/
-    void setField(const RegisteredField* field, const std::string& value);
+    void addValue(const RegisteredField* field, const std::string& value);
     /**
      * Add a name, value pair to the index.
      *
@@ -123,7 +118,7 @@ public:
      * @param value   byte array
      * @param length  the length of the array
      **/
-    void setField(const RegisteredField* field, const char* data,
+    void addValue(const RegisteredField* field, const char* data,
         uint32_t length);
     /**
      * Add a name, value pair to the index.
@@ -131,21 +126,21 @@ public:
      * @param field  the registered field
      * @param value  the value to add
      **/
-    void setField(const RegisteredField* field, uint32_t value);
+    void addValue(const RegisteredField* field, uint32_t value);
     /**
      * Add a name, value pair to the index.
      *
      * @param field  the registered field
      * @param value  the value to add
      **/
-    void setField(const RegisteredField* field, int32_t value);
+    void addValue(const RegisteredField* field, int32_t value);
     /**
      * Add a name, value pair to the index.
      *
      * @param field  the registered field
      * @param value  the value to add
      **/
-    void setField(const RegisteredField* field, double value);
+    void addValue(const RegisteredField* field, double value);
     /**
      * Add a complete RDF triplet
      *
@@ -185,7 +180,7 @@ public:
     void* writerData() const;
     /**
      * Set the value for the IndexWriter specific data. See
-     * IndexWriter::getWriterData() for more details.
+     * IndexWriter::writerData() for more details.
      **/
     void setWriterData(void* wd);
     void setMimeType(const std::string& mt);
@@ -195,6 +190,6 @@ public:
     const StreamEndAnalyzer* endAnalyzer() const;
 };
 
-}
+} // end namespace Strigi
 
 #endif

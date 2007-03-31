@@ -38,14 +38,14 @@ AnalyzerConfiguration::AnalyzerConfiguration() {
  * difference for text, because it should be tokenized.
  **/
 AnalyzerConfiguration::FieldType
-AnalyzerConfiguration::getIndexType(const RegisteredField* field)
+AnalyzerConfiguration::indexType(const RegisteredField* field)
         const {
     return Tokenized|Stored|Indexed;
 }
 bool
 AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
     vector<Pattern>::const_iterator i;
-    for (i = patterns.begin(); i != patterns.end(); ++i) {
+    for (i = m_patterns.begin(); i != m_patterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
             match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
@@ -63,7 +63,7 @@ AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
 bool
 AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
     vector<Pattern>::const_iterator i;
-    for (i = dirpatterns.begin(); i != dirpatterns.end(); ++i) {
+    for (i = m_dirpatterns.begin(); i != m_dirpatterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
             match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
@@ -81,7 +81,7 @@ AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
 void
 AnalyzerConfiguration::printFilters() const {
     vector<Pattern>::const_iterator i;
-    for (i = patterns.begin(); i != patterns.end(); ++i) {
+    for (i = m_patterns.begin(); i != m_patterns.end(); ++i) {
     }
 }
 /**
@@ -94,12 +94,12 @@ AnalyzerConfiguration::printFilters() const {
 void
 AnalyzerConfiguration::setFilters(
         const std::vector<std::pair<bool,std::string> >& f) {
-    filters = f;
+    m_filters = f;
     vector<pair<bool,string> >::const_iterator i;
-    patterns.clear();
-    dirpatterns.clear();
+    m_patterns.clear();
+    m_dirpatterns.clear();
     bool hadinclude = false;
-    for (i = filters.begin(); i != filters.end(); ++i) {
+    for (i = m_filters.begin(); i != m_filters.end(); ++i) {
         string s = i->second;
         if (s.length()) {
             hadinclude = hadinclude || i->first;
@@ -114,7 +114,7 @@ AnalyzerConfiguration::setFilters(
                     if (!hadinclude) { // can exclude entire directory
                         p.matchfullpath = sp != string::npos;
                         p.pattern = s.substr(0, s.length()-1);
-                        dirpatterns.push_back(p);
+                        m_dirpatterns.push_back(p);
                         continue;
                     }
                     if (s.length() == 1 || s[s.length()-2] != '*') {
@@ -128,7 +128,7 @@ AnalyzerConfiguration::setFilters(
                 p.matchfullpath = true;
             }
             p.pattern = s;
-            patterns.push_back(p);
+            m_patterns.push_back(p);
         }
     }
 }

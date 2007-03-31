@@ -17,35 +17,42 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INPUTSTREAMBUFFER_H
-#define INPUTSTREAMBUFFER_H
+#ifndef STREAMBUFFER_H
+#define STREAMBUFFER_H
 
 #include <cstdlib>
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 /**
- * @brief Provides a buffer for the use of InputStream
  * @internal
+ * @brief Provides a buffer for the use of BufferedStream
  */
 template <class T>
-class InputStreamBuffer {
+class StreamBuffer {
 private:
 public:
-    /** Pointer to the start of the buffer */
+    /**
+     * @internal
+     * @brief Pointer to the start of the buffer.
+     */
     T* start;
     /**
-     * @brief Size of the buffer
+     * @internal
+     * @brief Size of the buffer.
      *
      * Size of the memory pointed to by @p start,
      * in multiples of sizeof(T)
      */
     int32_t size;
-    /** Pointer to the current position the buffer */
+    /**
+     * @internal
+     * @brief Pointer to the current position the buffer.
+     */
     T* readPos;
     /**
-     * @brief The amount of data available in the buffer
+     * @internal
+     * @brief The amount of data available in the buffer.
      *
      * The size of the used memory in the buffer, starting
      * from @p readPos.  @p readPos + @p avail must be
@@ -53,11 +60,18 @@ public:
      */
     int32_t avail;
 
-    /** Default constructor just initialises members to 0 */
-    InputStreamBuffer();
-    /** Default destructor frees the memory pointed to by @p start */
-    ~InputStreamBuffer();
     /**
+     * @internal
+     * @brief Constructor: initialises members to sane defaults.
+     */
+    StreamBuffer();
+    /**
+     * @internal
+     * @brief Destructor: frees the memory used by the buffer.
+     */
+    ~StreamBuffer();
+    /**
+     * @internal
      * @brief Sets the size of the buffer, allocating the necessary memory
      *
      * @param size the size that the buffer should be, in multiples
@@ -65,6 +79,7 @@ public:
      */
     void setSize(int32_t size);
     /**
+     * @internal
      * @brief Read data from the buffer
      *
      * Sets @p start to point to the data, starting
@@ -81,6 +96,7 @@ public:
     int32_t read(const T*& start, int32_t max=0);
 
     /**
+     * @internal
      * @brief Prepares the buffer for a new write.
      *
      * This function invalidates any pointers
@@ -92,17 +108,17 @@ public:
 };
 
 template <class T>
-InputStreamBuffer<T>::InputStreamBuffer() {
+StreamBuffer<T>::StreamBuffer() {
     readPos = start = 0;
     size = avail = 0;
 }
 template <class T>
-InputStreamBuffer<T>::~InputStreamBuffer() {
+StreamBuffer<T>::~StreamBuffer() {
     free(start);
 }
 template <class T>
 void
-InputStreamBuffer<T>::setSize(int32_t size) {
+StreamBuffer<T>::setSize(int32_t size) {
     // store pointer information
     int32_t offset = readPos - start;
 
@@ -115,7 +131,7 @@ InputStreamBuffer<T>::setSize(int32_t size) {
 }
 template <class T>
 int32_t
-InputStreamBuffer<T>::makeSpace(int32_t needed) {
+StreamBuffer<T>::makeSpace(int32_t needed) {
     // determine how much space is available for writing
     int32_t space = size - (readPos - start) - avail;
     if (space >= needed) {
@@ -148,7 +164,7 @@ InputStreamBuffer<T>::makeSpace(int32_t needed) {
 }
 template <class T>
 int32_t
-InputStreamBuffer<T>::read(const T*& start, int32_t max) {
+StreamBuffer<T>::read(const T*& start, int32_t max) {
     start = readPos;
     if (max <= 0 || max > avail) {
         max = avail;
@@ -158,6 +174,6 @@ InputStreamBuffer<T>::read(const T*& start, int32_t max) {
     return max;
 }
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

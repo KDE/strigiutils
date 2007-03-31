@@ -55,7 +55,7 @@ void LuceneIndexReaderTest::setUp()
 #endif
 
     manager = createCLuceneIndexManager(path.c_str());
-    reader = manager->getIndexReader();
+    reader = manager->indexReader();
 }
 
 void LuceneIndexReaderTest::tearDown()

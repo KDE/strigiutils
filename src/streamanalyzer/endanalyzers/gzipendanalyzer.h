@@ -21,18 +21,18 @@
 #define GZIPENDANALYZER
 
 #include "streamendanalyzer.h"
-#include "inputstream.h"
+#include "streambase.h"
 
 class GZipEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "GZipEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "GZipEndAnalyzer"; }
 };
 
 class GZipEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "GZipEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

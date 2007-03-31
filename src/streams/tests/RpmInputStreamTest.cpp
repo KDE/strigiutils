@@ -21,7 +21,8 @@
 #include "../fileinputstream.h"
 #include "../rpminputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 RpmInputStreamTest(int argc, char* argv[]) {

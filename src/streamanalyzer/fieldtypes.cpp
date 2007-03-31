@@ -24,7 +24,7 @@ using namespace std;
 
 RegisteredField::RegisteredField(const string& k, const string& t, int m,
         const RegisteredField* p)
-        : key(k), type(t), maxoccurs(m), parent(p), writerdata(0) {
+        : m_key(k), m_type(t), m_maxoccurs(m), m_parent(p), m_writerdata(0) {
 }
 
 STREAMANALYZER_EXPORT const string FieldRegister::floatType = "float";
@@ -54,15 +54,15 @@ FieldRegister::FieldRegister() {
 
 FieldRegister::~FieldRegister() {
     map<string, RegisteredField*>::const_iterator i;
-    for (i = fields.begin(); i != fields.end(); ++i) {
+    for (i = m_fields.begin(); i != m_fields.end(); ++i) {
         delete i->second;
     }
 }
 const RegisteredField*
 FieldRegister::registerField(const string& fieldname,
         const string& type, int maxoccurs, const RegisteredField* parent) {
-    map<string, RegisteredField*>::iterator i = fields.find(fieldname);
-    if (i == fields.end()) {
+    map<string, RegisteredField*>::iterator i = m_fields.find(fieldname);
+    if (i == m_fields.end()) {
         // check with the fieldpropertiesdb
         const map<string, FieldProperties>& props = 
             FieldPropertiesDb::db().allProperties();
@@ -72,7 +72,7 @@ FieldRegister::registerField(const string& fieldname,
             // register this property with the propertiesdatabase
             string parentname;
             if (parent) {
-                parentname.assign(parent->getKey());
+                parentname.assign(parent->key());
             }
             FieldPropertiesDb::db().addField(fieldname, type, parentname);
         } else {
@@ -80,7 +80,7 @@ FieldRegister::registerField(const string& fieldname,
         }
         RegisteredField* f = new RegisteredField(fieldname, type,
             maxoccurs, parent);
-        fields[fieldname] = f;
+        m_fields[fieldname] = f;
         return f;
     } else {
         // check that the field being registered is the same as the one that

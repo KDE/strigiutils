@@ -109,14 +109,14 @@ IndexScheduler::run(void*) {
 }
 void
 IndexScheduler::index() {
-    IndexReader* reader = indexmanager->getIndexReader();
-    IndexWriter* writer = indexmanager->getIndexWriter();
+    IndexReader* reader = indexmanager->indexReader();
+    IndexWriter* writer = indexmanager->indexWriter();
     StreamAnalyzer* streamindexer = new StreamAnalyzer(*m_indexerconfiguration);
     streamindexer->setIndexWriter(*writer);
 
     if (dbfiles.size() == 0 && toindex.size() == 0) {
         // retrieve the list of real files currently in the database
-        dbfiles = reader->getFiles(0);
+        dbfiles = reader->files(0);
 
         char buff [20];
         snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
@@ -165,8 +165,8 @@ IndexScheduler::index() {
 
 void
 IndexScheduler::processListenerEvents(vector<Event*>& events) {
-    IndexReader* reader = indexmanager->getIndexReader();
-    IndexWriter* writer = indexmanager->getIndexWriter();
+    IndexReader* reader = indexmanager->indexReader();
+    IndexWriter* writer = indexmanager->indexWriter();
     AnalyzerConfiguration ic;
     StreamAnalyzer* streamindexer = new StreamAnalyzer(ic);
     streamindexer->setIndexWriter(*writer);
@@ -188,7 +188,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
                 break;
             case Event::UPDATED:
             {
-                time_t indexTime = reader->getMTime(reader->getDocumentId(event->getPath()));
+                time_t indexTime = reader->mTime(reader->documentId(event->getPath()));
                 if (indexTime < event->getTime())
                 {
                     toindex.insert (make_pair (event->getPath(), event->getTime()));
@@ -250,6 +250,6 @@ IndexScheduler::setIndexedDirectories(const std::set<std::string> &d) {
         }
     }
     if (dirstoindex.size() == 0) {
-        indexmanager->getIndexWriter()->deleteAllEntries();
+        indexmanager->indexWriter()->deleteAllEntries();
     }
 }

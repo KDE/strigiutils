@@ -26,14 +26,13 @@
 
 #define INT32MAX 0x7FFFFFFFL
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 /** Used to indicate the current status of a Stream */
 enum StreamStatus {
     Ok /**< Stream is capable of being read from */,
     Eof /**< The end of the Stream has been reached */,
-    Error /**< An error occurred. Use getError() to find out more information */
+    Error /**< An error occurred. Use error() to find out more information */
 };
 
 // java mapping: long=int64, int=int32, byte=uint8_t
@@ -53,36 +52,36 @@ enum StreamStatus {
 class STREAMS_EXPORT StreamBaseBase {
 protected:
     /** The size of the stream (-1 if unknown) */
-    int64_t size;
+    int64_t m_size;
     /** The position of the stream */
-    int64_t position;
+    int64_t m_position;
     /**
      * @brief String representation of the last error, or
      * an empty string otherwise
      */
-    std::string error;
+    std::string m_error;
     /** The status of the stream - see StreamStatus */
-    StreamStatus status;
+    StreamStatus m_status;
 public:
     /**
      * @brief  Default constructor just initialises everything to sane defaults
      */
-    StreamBaseBase() :size(-1), position(0), status(Ok) {}
+    StreamBaseBase() :m_size(-1), m_position(0), m_status(Ok) {}
     virtual ~StreamBaseBase() {}
     /**
      * @brief  Return a string representation of the last error.
      * If no error has occurred, an empty string is returned.
      **/
-    const char* getError() const { return error.c_str(); }
+    const char* error() const { return m_error.c_str(); }
     /**
      * @brief  Return the status of the stream.
      **/
-    StreamStatus getStatus() const { return status; }
+    StreamStatus status() const { return m_status; }
     /**
      * @brief Get the current position in the stream.
      * The value obtained from this function can be used to reset the stream.
      **/
-    int64_t getPosition() const { return position; }
+    int64_t position() const { return m_position; }
     /**
      * @brief Return the size of the stream.
      *
@@ -93,7 +92,7 @@ public:
      * @return the size of the stream, if it is known. -1 is returned
      * otherwise
      **/
-    int64_t getSize() const { return size; }
+    int64_t size() const { return m_size; }
 };
 
 /**
@@ -177,7 +176,7 @@ public:
      * To read n items, leaving the stream at the same position as before, you
      * can do the following:
      * @code
-     * int64_t start = stream.getPosition();
+     * int64_t start = stream.position();
      * if ( stream.read(data, min, max) > 0 ) {
      *     reset(start);
      *     // The data pointer is still valid here
@@ -190,6 +189,13 @@ public:
      **/
     virtual int64_t reset(int64_t pos) = 0;
 };
+
+
+/** Abstract class for a stream of bytes */
+typedef StreamBase<char> InputStream;
+
+/** Abstract class for a stream of Unicode characters */
+typedef StreamBase<wchar_t> Reader;
 
 
 template <class T>
@@ -219,6 +225,6 @@ StreamBase<T>::skip(int64_t ntoskip) {
     return skipped;
 }
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

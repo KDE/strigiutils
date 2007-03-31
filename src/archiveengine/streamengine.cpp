@@ -20,7 +20,6 @@
 #include "streamengine.h"
 #include <QDebug>
 using namespace Strigi;
-using namespace jstreams;
 
 StreamEngine::StreamEngine(const FileEntry* e, ArchiveEngineBase* engine)
     : entry(e), archive(engine) {
@@ -42,9 +41,9 @@ StreamEngine::fileName(FileName file) const {
     }
 }
 InputStream *
-StreamEngine::getInputStream() {
+StreamEngine::inputStream() {
     if (stream == 0) {
-        stream = archive->getInputStream(entry);
+        stream = archive->inputStream(entry);
     }
     return stream;
 }
@@ -54,7 +53,7 @@ StreamEngine::open(QIODevice::OpenMode mode) {
         return 0;
     }
     if (stream == 0) {
-        stream = archive->getInputStream(entry);
+        stream = archive->inputStream(entry);
     }
     return stream;
 }

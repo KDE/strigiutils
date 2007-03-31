@@ -45,7 +45,7 @@ private:
     bool sawCarriageReturn;
     bool otherEncoding;
 
-    const char* getName() const { return "LineEventAnalyzer"; }
+    const char* name() const { return "LineEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();
     void handleData(const char* data, uint32_t length);

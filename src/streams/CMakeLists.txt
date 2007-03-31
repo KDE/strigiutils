@@ -55,16 +55,17 @@ set_target_properties(streams PROPERTIES
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${SHA_LIBRARIES} ${ICONV_LIBRARIES})
 
 install(FILES
+	streambase.h
+	inputstream.h
+	streambuffer.h
+	bufferedstream.h
 	fileinputstream.h
+	inputstreamreader.h
+	stringstream.h
+	stringreader.h
 	substreamprovider.h
 	substreamproviderprovider.h
-	bufferedstream.h
-	streambase.h
-	inputstreambuffer.h
-	inputstream.h
 	archivereader.h
-	inputstreamreader.h
-	stringreader.h
 	${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
 	DESTINATION include/strigi
 )

@@ -21,10 +21,12 @@
 #define MAILINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 #include <stack>
 
-namespace jstreams {
+namespace Strigi {
+
 class SubInputStream;
 class StringTerminatedSubStream;
 
@@ -43,8 +45,8 @@ private:
     const char* lineend;
 
     StringTerminatedSubStream* substream;
-    std::string subject;
-    std::string contenttype;
+    std::string m_subject;
+    std::string m_contenttype;
     std::string contenttransferencoding;
     std::string contentdisposition;
 
@@ -59,19 +61,19 @@ private:
     bool checkHeaderLine() const;
     void clearHeaders();
     void ensureFileName();
-    std::string getValue(const char* n, const std::string& headerline) const;
+    std::string value(const char* n, const std::string& headerline) const;
 public:
-    explicit MailInputStream(StreamBase<char>* input);
+    explicit MailInputStream(InputStream* input);
     ~MailInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new MailInputStream(input);
     }
-    const std::string& getSubject() { return subject; }
-    const std::string& getContentType() { return contenttype; }
+    const std::string& subject() { return m_subject; }
+    const std::string& contentType() { return m_contenttype; }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

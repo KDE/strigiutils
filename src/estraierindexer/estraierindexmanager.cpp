@@ -57,7 +57,7 @@ EstraierIndexManager::~EstraierIndexManager() {
     closedb();
 }
 IndexReader*
-EstraierIndexManager::getIndexReader() {
+EstraierIndexManager::indexReader() {
     pthread_t self = pthread_self();
     EstraierIndexReader* r = readers[self];
     if (r == 0) {
@@ -67,7 +67,7 @@ EstraierIndexManager::getIndexReader() {
     return r;
 }
 IndexWriter*
-EstraierIndexManager::getIndexWriter() {
+EstraierIndexManager::indexWriter() {
     pthread_t self = pthread_self();
     EstraierIndexWriter* w = writers[self];
     if (w == 0) {

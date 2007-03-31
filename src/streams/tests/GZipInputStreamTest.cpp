@@ -20,7 +20,8 @@
 #include "../fileinputstream.h"
 #include "../gzipinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 GZipInputStreamTest(int argc, char* argv[]) {

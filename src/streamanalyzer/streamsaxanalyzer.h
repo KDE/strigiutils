@@ -21,7 +21,7 @@
 #ifndef STREAMSAXANALYZER_H
 #define STREAMSAXANALYZER_H
 
-#include "inputstream.h"
+#include "streambase.h"
 
 namespace Strigi {
 class StreamAnalyzer;
@@ -43,7 +43,7 @@ public:
      * Returns the name of this analyzer. Taking the class name is fine
      * for this purpose.
      */
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     /**
      * Is called to signal the beginning of a stream analysis. This is the place
      * to initialize variables that need to be set again for every stream.
@@ -137,7 +137,7 @@ public:
      * Returns the name of this analyzer factory. Taking the class name is fine
      * for this purpose.
      */
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     /**
      * Here you should register all fields that the corresponding
      * StreamSaxAnalyzer is able to extract using FieldRegister::registerField().

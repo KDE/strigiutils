@@ -19,20 +19,20 @@
  */
 #include <QtCore/QAbstractFileEngineHandler>
 #include <QtCore/QDateTime>
-#include "inputstream.h"
+#include "streambase.h"
 #include "archiveengine.h"
 
 class StreamEngine : public QAbstractFileEngine {
 private:
     int32_t pos_;
-    jstreams::InputStream *stream;
+    Strigi::InputStream *stream;
     const FileEntry* entry;
     ArchiveEngineBase *archive;
 
 public:
     StreamEngine(const FileEntry* entry, ArchiveEngineBase* engine);
     ~StreamEngine();
-    jstreams::InputStream *getInputStream();
+    Strigi::InputStream *inputStream();
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         return type & (QAbstractFileEngine::FileType|QAbstractFileEngine::ExistsFlag);
     }
@@ -49,7 +49,7 @@ public:
         }
         return entry->ctime;
     }
-    const FileEntry* getFileEntry() const {
+    const FileEntry* fileEntry() const {
         return entry;
     }
 };

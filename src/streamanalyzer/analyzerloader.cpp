@@ -137,7 +137,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
         return;
     }
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())
-        DLSYM(handle, "getStrigiAnalyzerFactory");
+        DLSYM(handle, "strigiAnalyzerFactory");
     if (!f) {
 #ifndef WIN32
         fprintf(stderr, "%s\n", dlerror());
@@ -150,61 +150,61 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     AnalyzerLoader::Private::modulelist.modules[lib] = new Module(handle, f());
 }
 list<StreamEndAnalyzerFactory*>
-AnalyzerLoader::getStreamEndAnalyzerFactories() {
+AnalyzerLoader::streamEndAnalyzerFactories() {
     list<StreamEndAnalyzerFactory*> l;
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
         list<StreamEndAnalyzerFactory*> ml
-            = i->second->factory->getStreamEndAnalyzerFactories();
+            = i->second->factory->streamEndAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
 }
 list<StreamThroughAnalyzerFactory*>
-AnalyzerLoader::getStreamThroughAnalyzerFactories() {
+AnalyzerLoader::streamThroughAnalyzerFactories() {
     list<StreamThroughAnalyzerFactory*> l;
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
         list<StreamThroughAnalyzerFactory*> ml
-            = i->second->factory->getStreamThroughAnalyzerFactories();
+            = i->second->factory->streamThroughAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
 }
 list<StreamSaxAnalyzerFactory*>
-AnalyzerLoader::getStreamSaxAnalyzerFactories() {
+AnalyzerLoader::streamSaxAnalyzerFactories() {
     list<StreamSaxAnalyzerFactory*> l;
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
         list<StreamSaxAnalyzerFactory*> ml
-            = i->second->factory->getStreamSaxAnalyzerFactories();
+            = i->second->factory->streamSaxAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
 }
 list<StreamLineAnalyzerFactory*>
-AnalyzerLoader::getStreamLineAnalyzerFactories() {
+AnalyzerLoader::streamLineAnalyzerFactories() {
     list<StreamLineAnalyzerFactory*> l;
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
         list<StreamLineAnalyzerFactory*> ml
-            = i->second->factory->getStreamLineAnalyzerFactories();
+            = i->second->factory->streamLineAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
 }
 list<StreamEventAnalyzerFactory*>
-AnalyzerLoader::getStreamEventAnalyzerFactories() {
+AnalyzerLoader::streamEventAnalyzerFactories() {
     list<StreamEventAnalyzerFactory*> l;
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
         list<StreamEventAnalyzerFactory*> ml
-            = i->second->factory->getStreamEventAnalyzerFactories();
+            = i->second->factory->streamEventAnalyzerFactories();
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;

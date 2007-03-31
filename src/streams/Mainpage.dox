@@ -1,12 +1,60 @@
-/** @mainpage JStreams
- *
- * The JStreams classes provide a way of accessing streamed
- * resources in manner similar to the Java interface
- * java.io.InputStream.
- *
- * If you are writing an analyzer, you probably want to know
- * about the jstreams::InputStream, which is just an (abstract)
- * instance of jstreams::StreamBase, with char as the template
- * parameter.  This latter class is the one all Stream classes
- * are derived from, and override the methods of.
+/**
+@mainpage JStreams
+
+The JStreams classes provide a way of accessing streamed
+resources in manner similar to the Java interface
+java.io.InputStream.
+
+If you are writing an analyzer, you probably want to know
+about the InputStream, which is just an (abstract)
+instance of StreamBase, with char as the template
+parameter.  This latter class is the one all Stream classes
+are derived from and implement the methods of.
+
+In JStreams terminology (derived from the Java Streaming API
+terminology), an InputStream is a stream of raw bytes, and a
+Reader is a (Unicode) text stream.
+
+@section Using JStreams
+
+If you just want to use JStreams to read from files, there's
+very little you need to know.  The documentation for
+StreamBase should give you information on the basic
+stream-reading functionality.
+
+InputStream is the interface for reading a raw stream
+of bytes.  If you need the decoded contents of a text file,
+you should use InputStreamReader to convert an
+InputStream to a Reader, which is an interface for
+reading a stream of Unicode characters.
+
+JStreams also provides several implementations of
+InputStream that facilitate opening files.  For example,
+FileInputStream will open an InputStream to read the
+contents of a file.
+
+StringReader (and StringInputStream) allows you to
+access in-memory data as a stream.
+
+@subsection Substreams
+
+One of the most useful features of JStreams is the ability
+to split a stream into substreams.  For example, you might
+have a stream for a tar archive.  A SubStreamProvider for
+this could give you a stream for each file in the archive.
+
+
+@section Writing New Stream Providers
+
+If you want to write a new stream that allows you to, for
+example, read a file from the internet over HTTP, you need
+to derive it from StreamBase.  Almost certainly you will
+want to derive from InputStream, for a simple raw stream
+of bytes, or from BufferedInputStream, for buffered stream.
+
+If your stream returns Unicode characters, the classes you
+want are Reader and BufferedReader.  Don't forget that you
+can use InputStreamReader to decode a text InputStream.
+
+
 */

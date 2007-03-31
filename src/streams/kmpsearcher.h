@@ -25,7 +25,7 @@
 
 #include "jstreamsconfig.h"
 
-namespace jstreams {
+namespace Strigi {
 /**
  * Class for string search that uses the Knuth-Morris-Pratt algorithm.
  * Code based on the example on
@@ -33,7 +33,7 @@ namespace jstreams {
  **/
 class STREAMS_EXPORT KmpSearcher {
 private:
-    std::string query;
+    std::string m_query;
     int32_t* table;
     int32_t len;
     int32_t maxlen;
@@ -44,9 +44,9 @@ public:
             free(table);
         }
     }
-    void setQuery(const std::string& );
-    int32_t getQueryLength() const { return len; }
-    std::string getQuery() const { return query; }
+    void setQuery(const std::string& query);
+    int32_t queryLength() const { return len; }
+    std::string query() const { return m_query; }
     /**
      * @brief Find the needle in @haystack.
      * @param haystack the text to search in.
@@ -56,6 +56,7 @@ public:
      **/
     const char* search(const char* haystack, int32_t haylen) const;
 };
-}
+
+} // end namespace Strigi
 
 #endif

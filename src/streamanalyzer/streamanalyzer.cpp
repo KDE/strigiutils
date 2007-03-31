@@ -57,7 +57,6 @@
 #include <config.h>
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 namespace Strigi {
@@ -99,7 +98,7 @@ public:
 
 StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c) :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
-    sizefield = c.getFieldRegister().registerField("size",
+    sizefield = c.fieldRegister().registerField("size",
         FieldRegister::integerType, 1, 0);
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
@@ -149,7 +148,7 @@ StreamAnalyzerPrivate::~StreamAnalyzerPrivate() {
     }
     delete moduleLoader;
     if (writer != 0) {
-        writer->releaseWriterData(conf.getFieldRegister());
+        writer->releaseWriterData(conf.fieldRegister());
     }
 }
 
@@ -162,10 +161,10 @@ StreamAnalyzer::~StreamAnalyzer() {
 void
 StreamAnalyzer::setIndexWriter(IndexWriter& w) {
     if (p->writer != 0) {
-        p->writer->releaseWriterData(p->conf.getFieldRegister());
+        p->writer->releaseWriterData(p->conf.fieldRegister());
     }
     p->writer = &w;
-    p->writer->initWriterData(p->conf.getFieldRegister());
+    p->writer->initWriterData(p->conf.fieldRegister());
 }
 char
 StreamAnalyzer::indexFile(const char *filepath) {
@@ -186,7 +185,7 @@ StreamAnalyzer::indexFile(const string& filepath) {
     string name;
     AnalysisResult analysisresult(filepath, s.st_mtime, *p->writer, *this);
     FileInputStream file(filepath.c_str());
-    if (file.getStatus() == Ok) {
+    if (file.status() == Ok) {
         return analysisresult.index(&file);
     } else {
         return analysisresult.index(0);
@@ -194,7 +193,7 @@ StreamAnalyzer::indexFile(const string& filepath) {
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamThroughAnalyzerFactory* f) {
-    f->registerFields(conf.getFieldRegister());
+    f->registerFields(conf.fieldRegister());
     if (conf.useFactory(f)) {
         throughfactories.push_back(f);
     } else {
@@ -204,7 +203,7 @@ StreamAnalyzerPrivate::addFactory(StreamThroughAnalyzerFactory* f) {
 void
 StreamAnalyzerPrivate::initializeSaxFactories() {
     list<StreamSaxAnalyzerFactory*> plugins
-        = moduleLoader->getStreamSaxAnalyzerFactories();
+        = moduleLoader->streamSaxAnalyzerFactories();
     list<StreamSaxAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -214,7 +213,7 @@ StreamAnalyzerPrivate::initializeSaxFactories() {
 void
 StreamAnalyzerPrivate::initializeLineFactories() {
     list<StreamLineAnalyzerFactory*> plugins
-        = moduleLoader->getStreamLineAnalyzerFactories();
+        = moduleLoader->streamLineAnalyzerFactories();
     list<StreamLineAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -224,7 +223,7 @@ StreamAnalyzerPrivate::initializeLineFactories() {
 void
 StreamAnalyzerPrivate::initializeEventFactories() {
     list<StreamEventAnalyzerFactory*> plugins
-        = moduleLoader->getStreamEventAnalyzerFactories();
+        = moduleLoader->streamEventAnalyzerFactories();
     list<StreamEventAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -233,7 +232,7 @@ StreamAnalyzerPrivate::initializeEventFactories() {
 void
 StreamAnalyzerPrivate::initializeThroughFactories() {
     list<StreamThroughAnalyzerFactory*> plugins
-        = moduleLoader->getStreamThroughAnalyzerFactories();
+        = moduleLoader->streamThroughAnalyzerFactories();
     list<StreamThroughAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -246,7 +245,7 @@ StreamAnalyzerPrivate::initializeThroughFactories() {
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamEventAnalyzerFactory* f) {
-    f->registerFields(conf.getFieldRegister());
+    f->registerFields(conf.fieldRegister());
     if (conf.useFactory(f)) {
         eventfactories.push_back(f);
     } else {
@@ -255,7 +254,7 @@ StreamAnalyzerPrivate::addFactory(StreamEventAnalyzerFactory* f) {
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamLineAnalyzerFactory* f) {
-    f->registerFields(conf.getFieldRegister());
+    f->registerFields(conf.fieldRegister());
     if (conf.useFactory(f)) {
         linefactories.push_back(f);
     } else {
@@ -264,7 +263,7 @@ StreamAnalyzerPrivate::addFactory(StreamLineAnalyzerFactory* f) {
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamSaxAnalyzerFactory* f) {
-    f->registerFields(conf.getFieldRegister());
+    f->registerFields(conf.fieldRegister());
     if (conf.useFactory(f)) {
         saxfactories.push_back(f);
     } else {
@@ -273,7 +272,7 @@ StreamAnalyzerPrivate::addFactory(StreamSaxAnalyzerFactory* f) {
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamEndAnalyzerFactory* f) {
-    f->registerFields(conf.getFieldRegister());
+    f->registerFields(conf.fieldRegister());
     if (conf.useFactory(f)) {
         endfactories.push_back(f);
     } else {
@@ -286,10 +285,10 @@ StreamAnalyzerPrivate::addFactory(StreamEndAnalyzerFactory* f) {
 void
 StreamAnalyzerPrivate::initializeEndFactories() {
     list<StreamEndAnalyzerFactory*> plugins
-        = moduleLoader->getStreamEndAnalyzerFactories();
+        = moduleLoader->streamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
-        fprintf(stderr, "adding %s\n", (*i)->getName());
+        fprintf(stderr, "adding %s\n", (*i)->name());
         addFactory(*i);
     }
     addFactory(new Bz2EndAnalyzerFactory());
@@ -368,7 +367,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         headersize = input->read(header, headersize, headersize);
         if (input->reset(0) != 0) {
             fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
-                input->getPosition(), input->getStatus());
+                input->position(), input->status());
         }
         if (headersize < 0) finished = true;
     } else {
@@ -387,8 +386,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
                     if (pos != 0) { // could not reset
                         fprintf(stderr, "could not reset stream of %s from pos "
                             "%lli to 0 after reading with %s: %s\n",
-                            idx.path().c_str(), input->getPosition(),
-                            sea->getName(), sea->getError().c_str());
+                            idx.path().c_str(), input->position(),
+                            sea->name(), sea->error().c_str());
                         finished = true;
                     }
                 }
@@ -405,7 +404,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         bool ready;
         tIter = through.begin() + idx.depth();
         do {
-            ready = input->getSize() != -1;
+            ready = input->size() != -1;
             vector<StreamThroughAnalyzer*>::iterator ts;
             for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
                 ready = (*ts)->isReadyWithStream();
@@ -413,9 +412,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             if (!ready) {
                 input->skip(1000000);
             }
-        } while (!ready && input->getStatus() == Ok);
-        if (input->getStatus() == Error) {
-            fprintf(stderr, "Error: %s\n", input->getError());
+        } while (!ready && input->status() == Ok);
+        if (input->status() == Error) {
+            fprintf(stderr, "Error: %s\n", input->error());
             removeIndexable(idx.depth());
             return -2;
         }
@@ -424,7 +423,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     // store the size of the stream
     if (input) {
         // TODO remove cast
-        idx.setField(sizefield, (uint32_t)input->getSize());
+        idx.addValue(sizefield, (uint32_t)input->size());
     }
 
     // remove references to the analysisresult before it goes out of scope
@@ -445,6 +444,6 @@ StreamAnalyzerPrivate::removeIndexable(uint depth) {
     }
 }
 AnalyzerConfiguration&
-StreamAnalyzer::getConfiguration() const {
+StreamAnalyzer::configuration() const {
     return p->conf;
 }

@@ -50,10 +50,10 @@ private:
         bool matchfullpath;
         bool include;
     };
-    std::vector<Pattern> patterns;
-    std::vector<Pattern> dirpatterns;
-    std::vector<std::pair<bool,std::string> > filters;
-    FieldRegister fieldregister;
+    std::vector<Pattern> m_patterns;
+    std::vector<Pattern> m_dirpatterns;
+    std::vector<std::pair<bool,std::string> > m_filters;
+    FieldRegister m_fieldregister;
 
 public:
     AnalyzerConfiguration();
@@ -73,14 +73,14 @@ public:
     virtual bool useFactory(StreamLineAnalyzerFactory*) const {return true; }
     virtual bool indexMore() const {return true;}
     virtual bool addMoreText() const {return true;}
-    virtual FieldType getIndexType(const Strigi::RegisteredField* f) const;
+    virtual FieldType indexType(const Strigi::RegisteredField* f) const;
 
     void setFilters(const std::vector<std::pair<bool,std::string> >& filters);
-    const std::vector<std::pair<bool,std::string> >& getFilters() const {
-        return filters;
+    const std::vector<std::pair<bool,std::string> >& filters() const {
+        return m_filters;
     }
-    FieldRegister& getFieldRegister() { return fieldregister; }
-    const FieldRegister& getFieldRegister() const { return fieldregister; }
+    FieldRegister& fieldRegister() { return m_fieldregister; }
+    const FieldRegister& fieldRegister() const { return m_fieldregister; }
 };
 
 /**

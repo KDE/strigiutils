@@ -20,7 +20,8 @@
 #include "../fileinputstream.h"
 #include "../mailinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 MailInputStreamTest(int argc, char* argv[]) {

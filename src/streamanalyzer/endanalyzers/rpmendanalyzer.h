@@ -25,13 +25,13 @@
 class RpmEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "RpmEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "RpmEndAnalyzer"; }
 };
 
 class RpmEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "RpmEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

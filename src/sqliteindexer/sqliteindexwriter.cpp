@@ -117,8 +117,8 @@ SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* fi
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
     sqlite3_bind_int64(insertvaluestmt, 1, idx->id());
-    sqlite3_bind_text(insertvaluestmt, 2, field->getKey().c_str(),
-        field->getKey().length(), SQLITE_STATIC);
+    sqlite3_bind_text(insertvaluestmt, 2, field->key().c_str(),
+        field->key().length(), SQLITE_STATIC);
     sqlite3_bind_text(insertvaluestmt, 3, value.c_str(), value.length(),
         SQLITE_STATIC);
     int r = sqlite3_step(insertvaluestmt);

@@ -18,15 +18,16 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "../fileinputstream.h"
-#include "../stringreader.h"
+#include "../stringstream.h"
 #include "../stringterminatedsubstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 StringTerminatedSubStreamTest(int, char*[]) {
     founderrors = 0;
-    StringReader<char> sr("abc");
+    StringInputStream sr("abc");
     StringTerminatedSubStream sub(&sr, "b");
     const char* start;
     int64_t nread = sub.read(start, 10, 10);

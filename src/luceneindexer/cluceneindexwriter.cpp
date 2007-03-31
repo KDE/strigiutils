@@ -28,15 +28,14 @@
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
-#include "stringreader.h"
-#include "inputstreamreader.h"
+#include <CLucene/util/stringreader.h>
 //comment this out if you have clucene 0.9.17 or later
 #include "PrefixFilter.h"
 #include <sstream>
 #include <assert.h>
 
 #ifdef STRIGI_USE_CLUCENE_COMPRESSEDFIELDS
-#include "gzipcompressstream.h"
+#include "jsgzipcompressstream.h"
 #endif
 
 using lucene::document::Document;
@@ -51,7 +50,6 @@ using lucene::util::BitSet;
 
 using lucene::util::Reader;
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 struct CLuceneDocData {
@@ -120,12 +118,12 @@ void
 CLuceneIndexWriter::addField(const Strigi::AnalysisResult* idx,
         const Strigi::RegisteredField* field, const std::string& value) {
     AnalyzerConfiguration::FieldType type
-        = idx->config().getIndexType(field);
+        = idx->config().indexType(field);
     if (type == AnalyzerConfiguration::None) return;
 #if defined(_UCS2)
-    addField(idx, type, utf8toucs2(field->getKey()).c_str(), value);
+    addField(idx, type, utf8toucs2(field->key()).c_str(), value);
 #else
-    addField(idx, type, field->getKey(), value);
+    addField(idx, type, field->key(), value);
 #endif
 }
 void
@@ -139,7 +137,7 @@ CLuceneIndexWriter::startAnalysis(AnalysisResult* idx) {
 */
 void
 CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
-    const FieldRegister& fr = idx->config().getFieldRegister();
+    const FieldRegister& fr = idx->config().fieldRegister();
     addField(idx, fr.pathField, idx->path());
     string field = idx->encoding();
     if (field.length()) addField(idx, fr.encodingField, field);
@@ -161,7 +159,7 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
     addField(idx, fr.mtimeField, o.str());
     wstring c(utf8toucs2(doc->content));
-    StringReader<char>* sr = NULL; //we use this for compressed streams
+    jstreams::StringReader<char>* sr = NULL; //we use this for compressed streams
 
     if (doc->content.length() > 0) {
         const TCHAR* mappedFn = mapId(_T(""));
@@ -172,10 +170,10 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
         // lets store the content as utf8. remember, the stream is required
         // until the document is added, so a static construction of stringreader
         // is not good enough
-        sr = new StringReader<char>(doc->content.c_str(), doc->content.length(), false);
+        sr = new jstreams::StringReader<char>(doc->content.c_str(), doc->content.length(), false);
 
     // add the stored field with the zipstream
-    doc->doc.add(*new Field(mappedFn, new GZipCompressInputStream(sr),
+    doc->doc.add(*new Field(mappedFn, new jstreams::GZipCompressInputStream(sr),
         Field::STORE_YES));
 
     // add the tokenized/indexed field
@@ -210,7 +208,7 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 }
 void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
-    lucene::index::IndexReader* reader = manager->getReader()->reader;
+    lucene::index::IndexReader* reader = manager->luceneReader()->reader;
 
     wstring tstr(utf8toucs2(entry));
     Term term(_T("path"), tstr.c_str());
@@ -305,7 +303,7 @@ CLuceneIndexWriter::cleanUp() {
     //remove all unused lucene file elements... unused elements are the result of unexpected shutdowns...
     //this can add up to a lot of after a while.
 
-    lucene::index::IndexReader* reader = manager->getReader()->reader;
+    lucene::index::IndexReader* reader = manager->luceneReader()->reader;
     if (!reader) {
         return;
     }
@@ -376,16 +374,16 @@ CLuceneIndexWriter::cleanUp() {
 void
 CLuceneIndexWriter::initWriterData(const FieldRegister& f) {
     map<string, RegisteredField*>::const_iterator i;
-    map<string, RegisteredField*>::const_iterator end = f.getFields().end();
-    for (i = f.getFields().begin(); i != end; ++i) {
+    map<string, RegisteredField*>::const_iterator end = f.fields().end();
+    for (i = f.fields().begin(); i != end; ++i) {
         i->second->setWriterData(0);
     }
 }
 void
 CLuceneIndexWriter::releaseWriterData(const FieldRegister& f) {
     map<string, RegisteredField*>::const_iterator i;
-    map<string, RegisteredField*>::const_iterator end = f.getFields().end();
-    for (i = f.getFields().begin(); i != end; ++i) {
-        delete static_cast<int*>(i->second->getWriterData());
+    map<string, RegisteredField*>::const_iterator end = f.fields().end();
+    for (i = f.fields().begin(); i != end; ++i) {
+        delete static_cast<int*>(i->second->writerData());
     }
 }

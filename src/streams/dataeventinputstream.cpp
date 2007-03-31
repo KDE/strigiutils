@@ -20,48 +20,49 @@
 #include "jstreamsconfig.h"
 #include "dataeventinputstream.h"
 #include <cassert>
-using namespace std;
-using namespace jstreams;
 
-DataEventInputStream::DataEventInputStream(StreamBase<char> *i,
+using namespace std;
+using namespace Strigi;
+
+DataEventInputStream::DataEventInputStream(InputStream *i,
         DataEventHandler& h) :input(i), handler(h) {
-    assert(input->getPosition() == 0);
-    size = input->getSize();
+    assert(input->position() == 0);
+    m_size = input->size();
     totalread = 0;
-    status = Ok;
+    m_status = Ok;
 }
 int32_t
 DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, min, max);
-//    printf("%p pos: %lli min %i max %i nread %i\n", this, position, min, max, nread);
+//    printf("%p pos: %lli min %i max %i nread %i\n", this, m_position, min, max, nread);
     if (nread < -1) {
-        error = input->getError();
-        status = Error;
+        m_error = input->error();
+        m_status = Error;
         return -2;
     }
     if (nread > 0) {
-        position += nread;
+        m_position += nread;
     }
-    if (totalread < position) {
-        int32_t amount = (int32_t)(position - totalread);
+    if (totalread < m_position) {
+        int32_t amount = (int32_t)(m_position - totalread);
         handler.handleData(start + nread - amount, amount);
-        totalread = position;
+        totalread = m_position;
     }
     if (nread < min) {
-        status = Eof;
-        if (size == -1) {
-//            printf("set size: %lli\n", position);
-            size = position;
+        m_status = Eof;
+        if (m_size == -1) {
+//            printf("set m_size: %lli\n", m_position);
+            m_size = m_position;
         }
 #ifndef NDEBUG
-        if (size != position || size != totalread) {
-            fprintf(stderr, "size: %lli position: %lli totalread: %lli\n",
-                size, position, totalread);
-            fprintf(stderr, "%i %s\n", input->getStatus(), input->getError());
+        if (m_size != m_position || m_size != totalread) {
+            fprintf(stderr, "m_size: %lli m_position: %lli totalread: %lli\n",
+                m_size, m_position, totalread);
+            fprintf(stderr, "%i %s\n", input->status(), input->error());
         }
 #endif
-        assert(size == position);
-        assert(totalread == size);
+        assert(m_size == m_position);
+        assert(totalread == m_size);
         finish();
     }
     return nread;
@@ -71,29 +72,29 @@ DataEventInputStream::skip(int64_t ntoskip) {
 //    printf("skipping %lli\n", ntoskip);
     // we call the default implementation because it calls
     // read() which is required for sending the signals
-    int64_t skipped = StreamBase<char>::skip(ntoskip);
+    int64_t skipped = InputStream::skip(ntoskip);
     //const char*d;
     //int32_t skipped = read(d, ntoskip, ntoskip);
     return skipped;
 }
 int64_t
 DataEventInputStream::reset(int64_t np) {
-//    printf("reset from %lli to %lli\n", position, np);
-    if (np > position) {
+//    printf("reset from %lli to %lli\n", m_position, np);
+    if (np > m_position) {
         // advance to the new position, using skip ensure we actually read
         // the files
-        skip(np - position);
-        return position;
+        skip(np - m_position);
+        return m_position;
     }
     int64_t newpos = input->reset(np);
 //    printf("np %lli newpos %lli\n", np, newpos);
     if (newpos < 0) {
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = input->error();
     } else {
-        status = (newpos == size) ?Eof :Ok;
+        m_status = (newpos == m_size) ?Eof :Ok;
     }
-    position = newpos;
+    m_position = newpos;
     return newpos;
 }
 void

@@ -25,15 +25,15 @@
 class TarEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     static char staticAnalyze(Strigi::AnalysisResult& idx,
-        jstreams::InputStream* in);
-    const char* getName() const { return "TarEndAnalyzer"; }
+        Strigi::InputStream* in);
+    const char* name() const { return "TarEndAnalyzer"; }
 };
 
 class TarEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "TarEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

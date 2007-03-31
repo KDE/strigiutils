@@ -20,18 +20,19 @@
 #include "jstreamsconfig.h"
 #include "subinputstream.h"
 #include <cassert>
-using namespace jstreams;
 
-SubInputStream::SubInputStream(StreamBase<char> *i, int64_t length)
-        : offset(i->getPosition()), input(i) {
+using namespace Strigi;
+
+SubInputStream::SubInputStream(InputStream *i, int64_t length)
+        : m_offset(i->position()), m_input(i) {
     assert(length >= -1);
-//    printf("substream offset: %lli\n", offset);
-    size = length;
+//    printf("substream m_offset: %lli\n", m_offset);
+    m_size = length;
 }
 int32_t
 SubInputStream::read(const char*& start, int32_t min, int32_t max) {
-    if (size != -1) {
-        const int64_t left = size - position;
+    if (m_size != -1) {
+        const int64_t left = m_size - m_position;
         if (left == 0) {
             return -1;
         }
@@ -42,31 +43,31 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
         if (min > max) min = max;
         if (left < min) min = (int32_t)left;
     }
-    int32_t nread = input->read(start, min, max);
+    int32_t nread = m_input->read(start, min, max);
     if (nread < -1) {
         fprintf(stderr, "substream too short.\n");
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = m_input->error();
     } else if (nread < min) {
-        if (size == -1) {
-            status = Eof;
+        if (m_size == -1) {
+            m_status = Eof;
             if (nread > 0) {
-                position += nread;
-                size = position;
+                m_position += nread;
+                m_size = m_position;
             }
         } else {
-//            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i size %lli\n", nread, min, max, size);
-//            fprintf(stderr, "pos %lli parentpos %lli\n", position, input->getPosition());
-//            fprintf(stderr, "status: %i error: %s\n", input->getStatus(), input->getError());
+//            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i m_size %lli\n", nread, min, max, m_size);
+//            fprintf(stderr, "pos %lli parentpos %lli\n", m_position, m_input->position());
+//            fprintf(stderr, "status: %i error: %s\n", m_input->status(), m_input->error());
             // we expected data but didn't get enough so that's an error
-            status = Error;
-            error = "Premature end of stream\n";
+            m_status = Error;
+            m_error = "Premature end of stream\n";
             nread = -2;
         }
     } else {
-        position += nread;
-        if (position == size) {
-            status = Eof;
+        m_position += nread;
+        if (m_position == m_size) {
+            m_status = Eof;
         }
     }
     return nread;
@@ -74,45 +75,45 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
 int64_t
 SubInputStream::reset(int64_t newpos) {
     assert(newpos >= 0);
-//    fprintf(stderr, "subreset pos: %lli newpos: %lli offset: %lli\n", position,
-//        newpos, offset);
-    position = input->reset(newpos + offset);
-    if (position < offset) {
-        fprintf(stderr, "########### position %lli newpos %lli\n", position, newpos);
-        status = Error;
-        error = input->getError();
+//    fprintf(stderr, "subreset pos: %lli newpos: %lli m_offset: %lli\n", m_position,
+//        newpos, m_offset);
+    m_position = m_input->reset(newpos + m_offset);
+    if (m_position < m_offset) {
+        fprintf(stderr, "########### m_position %lli newpos %lli\n", m_position, newpos);
+        m_status = Error;
+        m_error = m_input->error();
     } else {
-        position -= offset;
-        status = input->getStatus();
+        m_position -= m_offset;
+        m_status = m_input->status();
     }
-    return position;
+    return m_position;
 }
 int64_t
 SubInputStream::skip(int64_t ntoskip) {
-//    printf("subskip pos: %lli ntoskip: %lli offset: %lli\n", position, ntoskip, offset);
-    if (size == position) {
-        status = Eof;
+//    printf("subskip pos: %lli ntoskip: %lli m_offset: %lli\n", m_position, ntoskip, m_offset);
+    if (m_size == m_position) {
+        m_status = Eof;
         return -1;
     }
     if (ntoskip == 0) return 0;
-    if (size != -1) {
-        const int64_t left = size - position;
+    if (m_size != -1) {
+        const int64_t left = m_size - m_position;
         // restrict the amount of data that can be skipped
         if (ntoskip > left) {
             ntoskip = left;
         }
     }
-    int64_t skipped = input->skip(ntoskip);
-    if (input->getStatus() == Error) {
-        status = Error;
-        error = input->getError();
+    int64_t skipped = m_input->skip(ntoskip);
+    if (m_input->status() == Error) {
+        m_status = Error;
+        m_error = m_input->error();
     } else {
-        position += skipped;
-        if (position == size) {
-            status = Eof;
+        m_position += skipped;
+        if (m_position == m_size) {
+            m_status = Eof;
         } else if (skipped <= 0) {
-            status = Error;
-            error = "Premature end of stream\n";
+            m_status = Error;
+            m_error = "Premature end of stream\n";
             skipped = -2;
         }
     }

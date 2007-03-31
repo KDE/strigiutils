@@ -48,7 +48,7 @@ XapianIndexManager::~XapianIndexManager() {
     closedb();
 }
 IndexReader*
-XapianIndexManager::getIndexReader() {
+XapianIndexManager::indexReader() {
     pthread_t self = pthread_self();
     XapianIndexReader* r = readers[self];
     if (r == 0) {
@@ -58,7 +58,7 @@ XapianIndexManager::getIndexReader() {
     return r;
 }
 IndexWriter*
-XapianIndexManager::getIndexWriter() {
+XapianIndexManager::indexWriter() {
     pthread_t self = pthread_self();
     XapianIndexWriter* w = writers[self];
     if (w == 0) {

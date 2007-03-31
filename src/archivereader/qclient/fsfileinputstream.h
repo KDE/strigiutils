@@ -25,9 +25,9 @@
 class QFSFileEngine;
 class QString;
 
-namespace jstreams {
+namespace Strigi {
 
-class FsFileInputStream : public BufferedInputStream<char> {
+class FsFileInputStream : public BufferedInputStream {
 private:
     bool open;
     QFSFileEngine *fse;

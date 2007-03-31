@@ -27,10 +27,10 @@ private:
     IndexReader* reader;
 public:
     IndexReaderTester(IndexReader* r) :reader(r) {}
-    int getFiles(char depth) {
+    int files(char depth) {
         VERIFY(reader);
         if (reader == 0) return 1;
-        reader->getFiles(depth);
+        reader->files(depth);
         return 0;
     }
 };
@@ -45,6 +45,6 @@ IndexReaderTests::~IndexReaderTests() {
 int
 IndexReaderTests::testAll() {
     int n = 0;
-    n += tester->getFiles(0);
+    n += tester->files(0);
     return n;
 }

@@ -124,7 +124,7 @@ SqliteIndexManager::deref() {
     STRIGI_MUTEX_UNLOCK(&dblock);
 }
 IndexReader*
-SqliteIndexManager::getIndexReader() {
+SqliteIndexManager::indexReader() {
     pthread_t self = pthread_self();
     SqliteIndexReader* r = readers[self];
     if (r == 0) {
@@ -138,7 +138,7 @@ SqliteIndexManager::getIndexReader() {
     return r;
 }
 IndexWriter*
-SqliteIndexManager::getIndexWriter() {
+SqliteIndexManager::indexWriter() {
     pthread_t self = pthread_self();
     SqliteIndexWriter* w = writers[self];
     if (w == 0) {

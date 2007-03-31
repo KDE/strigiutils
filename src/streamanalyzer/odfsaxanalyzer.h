@@ -34,7 +34,7 @@ public:
     const Strigi::RegisteredField *languageField;
     const Strigi::RegisteredField *keywordField;
 
-    const char *getName() const {
+    const char *name() const {
         return "OdfSaxAnalyzerFactory";
     }
 
@@ -47,7 +47,7 @@ class OdfSaxAnalyzer : public Strigi::StreamSaxAnalyzer {
 public:
     OdfSaxAnalyzer(const OdfSaxAnalyzerFactory *factory);
 
-    const char* getName() const {
+    const char* name() const {
         return "OdfSaxAnalyzer";
     }
 

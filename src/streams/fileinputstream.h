@@ -23,14 +23,10 @@
 #include "jstreamsconfig.h"
 #include "bufferedstream.h"
 
-/**
- * The classes in this namespace are meant to support the classes in the Strigi namespace.
- * The namespace jstreams still exists because CLucene uses the same headers.
- */
-namespace jstreams {
+namespace Strigi {
 
 /** Provides buffered access to a file */
-class STREAMS_EXPORT FileInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT FileInputStream : public BufferedInputStream {
 private:
     FILE *file;
     std::string filepath;
@@ -51,7 +47,7 @@ public:
     ~FileInputStream();
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif
 

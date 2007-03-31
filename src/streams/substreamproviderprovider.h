@@ -20,11 +20,11 @@
 #ifndef SUBSTREAMPROVIDERPROVIDER_H
 #define SUBSTREAMPROVIDERPROVIDER_H
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+#include "streambase.h"
+
+namespace Strigi {
 
 class SubStreamProvider;
-template <class T> class StreamBase;
 
 /**
  * @brief Creates a SubStreamProvider to extract substreams
@@ -44,9 +44,9 @@ public:
      * @return a SubStreamProvider for @p input if a matching one
      * was found, 0 if no matching SubStreamProvider was found
      */
-    SubStreamProvider* getSubStreamProvider(StreamBase<char>* input);
+    SubStreamProvider* subStreamProvider(InputStream* input);
 };
 
-}
+} // end namespace Strigi
 
 #endif

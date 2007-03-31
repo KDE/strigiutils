@@ -22,7 +22,6 @@
 #include "oggthroughanalyzer.h"
 #include "analysisresult.h"
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 void
@@ -97,7 +96,7 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
                 map<string, const RegisteredField*>::const_iterator i
                     = factory->fields.find(name);
                 if (i != factory->fields.end()) {
-                    indexable->setField(i->second, value);
+                    indexable->addValue(i->second, value);
                 }
             }
         }

@@ -28,7 +28,7 @@ Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir, AnalyzerConfiguration& ic)
         :m_indexdir(indexdir), m_manager(indexdir),
-         m_indexer(*m_manager.getIndexWriter(), ic) {
+         m_indexer(*m_manager.indexWriter(), ic) {
 }
 Indexer::~Indexer() {
 }

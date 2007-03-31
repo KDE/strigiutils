@@ -33,7 +33,7 @@ private:
     virtual void startAnalysis(Strigi::AnalysisResult*);
     virtual void handleLine(const char* data, uint32_t length);
     virtual bool isReadyWithStream();
-    const char* getName() const { return "DebLineAnalyzer"; }
+    const char* name() const { return "DebLineAnalyzer"; }
     unsigned int finished;
     Strigi::AnalysisResult* result;
 public:
@@ -54,7 +54,7 @@ public:
     const Strigi::RegisteredField* maintainerField;
     const Strigi::RegisteredField* sectionField;
     const Strigi::RegisteredField* dependsField;
-    const char* getName() const {
+    const char* name() const {
         return "DebLineAnalyzer";
     }
     Strigi::StreamLineAnalyzer* newInstance() const {

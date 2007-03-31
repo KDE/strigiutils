@@ -19,18 +19,19 @@
  */
 #include "jstreamsconfig.h"
 #include "stringterminatedsubstream.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 // TODO add a mechanism that avoid searching for a stop point again after a
 // reset
 
 int32_t
 StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
-    if (status == Eof) return -1;
-    if (status == Error) return -2;
+    if (m_status == Eof) return -1;
+    if (m_status == Error) return -2;
 
     // convenience parameter
-    int32_t tl = searcher.getQueryLength();
+    int32_t tl = m_searcher.queryLength();
 
     // increase min and max to accommodate for the length of the terminator
     int32_t tlmin = min;
@@ -42,51 +43,51 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     }
     if (tlmax > 0 && tlmax < tlmin) tlmax = tlmin;
 
-    int64_t pos = input->getPosition();
-    int32_t nread = input->read(start, tlmin, tlmax);
-    //printf("str %i pos %lli offset %lli\n", nread, pos, offset);
+    int64_t pos = m_input->position();
+    int32_t nread = m_input->read(start, tlmin, tlmax);
+    //printf("str %i pos %lli m_offset %lli\n", nread, pos, m_offset);
     if (nread == -1) {
-        status = Eof;
+        m_status = Eof;
         return nread;
     }
     if (nread < -1) {
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = m_input->error();
         return nread;
     }
 
-    const char* end = searcher.search(start, nread);
+    const char* end = m_searcher.search(start, nread);
     if (end) {
         // the end signature was found
-        //printf("THE END %p %p %s\n", start, end, searcher.getQuery().c_str());
+        //printf("THE END %p %p %s\n", start, end, m_searcher.query().c_str());
         //printf("TE %i '%.*s'\n", end-start, 10, end);
         nread = end - start;
         // signal the end of stream at the next call
-        status = Eof;
+        m_status = Eof;
         // set input stream to point after the terminator
-        input->reset(pos + nread + tl);
+        m_input->reset(pos + nread + tl);
     } else if (nread > tlmin) {
         // we are not at or near the end and read the required amount
         // reserve the last bit of buffer for rereading to match the terminator
         // in the next call
         nread -= tl;
         // we rewind, but the pointer 'start' will stay valid nontheless
-        input->reset(pos + nread);
+        m_input->reset(pos + nread);
     } else if (max != 0 && nread > max) {
         // we are near the end of the stream but cannot pass all data
         // at once because the amount read is larger than the amount to pass
-        input->reset(pos + max);
+        m_input->reset(pos + max);
         nread = max;
     } else {
         // we are at the end of the stream, so no need to rewind
         // signal the end of stream at the next call
-        status = Eof;
+        m_status = Eof;
     }
 //    printf("stss: %i '%.*s'\n", nread, (20>nread)?nread:20, start);
-    if (nread > 0) position += nread;
-    if (status == Eof) {
-//        printf("Eof size %lli pos %lli\n", size, position);
-        size = position;
+    if (nread > 0) m_position += nread;
+    if (m_status == Eof) {
+//        printf("Eof size %lli pos %lli\n", m_size, m_position);
+        m_size = m_position;
     }
 //    printf("str2 %i\n", nread);
     return nread;
@@ -94,19 +95,19 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 /*int64_t
 StringTerminatedSubStream::mark(int32_t readlimit) {
 //    printf("mark %i\n", readlimit);
-    return input->mark(readlimit) - offset;
+    return m_input->mark(readlimit) - m_offset;
 }*/
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
 //    printf("stssreset %lli\n", newpos);
-    position = input->reset(newpos+offset);
-    if (position >= offset) {
-        position -= offset;
-        if (position != size) status = Ok;
+    m_position = m_input->reset(newpos+m_offset);
+    if (m_position >= m_offset) {
+        m_position -= m_offset;
+        if (m_position != m_size) m_status = Ok;
     } else {
-        // the stream is not positioned at a valid position
-        status = Error;
-        position = -1;
+        // the stream is not positioned at a valid m_position
+        m_status = Error;
+        m_position = -1;
     }
-    return position;
+    return m_position;
 }

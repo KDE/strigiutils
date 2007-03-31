@@ -115,7 +115,7 @@ void IndexManagerTester::testNumberQuery()
         string name('/'+value);
         {
             Strigi::AnalysisResult idx(name, 0, *writer, *si);
-            idx.setField(idx.config().getFieldRegister().sizeField, value);
+            idx.addValue(idx.config().fieldRegister().sizeField, value);
         }
         str.str("");
     }

@@ -23,10 +23,8 @@
 #include "streamthroughanalyzer.h"
 #include "cnstr.h"
 
-namespace jstreams {
-    class DigestInputStream;
-}
 namespace Strigi {
+    class DigestInputStream;
     class RegisteredField;
     class FieldRegister;
 }
@@ -34,21 +32,21 @@ namespace Strigi {
 class DigestThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
 private:
     static std::string shafieldname;
-    jstreams::DigestInputStream *stream;
+    Strigi::DigestInputStream *stream;
     Strigi::AnalysisResult* indexable;
     const Strigi::RegisteredField* shafield;
 public:
     DigestThroughAnalyzer(Strigi::FieldRegister& reg);
     ~DigestThroughAnalyzer();
     void setIndexable(Strigi::AnalysisResult*);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
 class DigestThroughAnalyzerFactory
         : public Strigi::StreamThroughAnalyzerFactory {
 private:
-    const char* getName() const {
+    const char* name() const {
         return "DigestThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance(Strigi::FieldRegister& reg)

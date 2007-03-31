@@ -45,7 +45,7 @@ public:
         if it implements any StreamEndAnalyzers.
      */
     virtual std::list<StreamEndAnalyzerFactory*>
-            getStreamEndAnalyzerFactories() const {
+            streamEndAnalyzerFactories() const {
         std::list<StreamEndAnalyzerFactory*> af;
         return af;
     }
@@ -57,7 +57,7 @@ public:
         if it implements any StreamThroughAnalyzers.
      */
     virtual std::list<StreamThroughAnalyzerFactory*>
-            getStreamThroughAnalyzerFactories() const {
+            streamThroughAnalyzerFactories() const {
         std::list<StreamThroughAnalyzerFactory*> af;
         return af;
     }
@@ -69,7 +69,7 @@ public:
         if it implements any StreamSaxAnalyzers.
      */
     virtual std::list<StreamSaxAnalyzerFactory*>
-            getStreamSaxAnalyzerFactories() const {
+            streamSaxAnalyzerFactories() const {
         std::list<StreamSaxAnalyzerFactory*> af;
         return af;
     }
@@ -81,7 +81,7 @@ public:
         if it implements any StreamLineAnalyzers.
      */
     virtual std::list<StreamLineAnalyzerFactory*>
-            getStreamLineAnalyzerFactories() const {
+            streamLineAnalyzerFactories() const {
         std::list<StreamLineAnalyzerFactory*> af;
         return af;
     }
@@ -93,7 +93,7 @@ public:
         if it implements any StreamEventAnalyzers.
      */
     virtual std::list<StreamEventAnalyzerFactory*>
-            getStreamEventAnalyzerFactories() const {
+            streamEventAnalyzerFactories() const {
         std::list<StreamEventAnalyzerFactory*> af;
         return af;
     }

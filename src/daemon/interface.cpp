@@ -27,7 +27,7 @@
 #include "streamanalyzer.h"
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"
-#include "stringreader.h"
+#include "stringstream.h"
 #include "query.h"
 #include "analyzerconfiguration.h"
 #include <sstream>
@@ -37,7 +37,6 @@
 #include <unistd.h>
 using namespace std;
 using namespace Strigi;
-using namespace jstreams;
 
 Interface::Interface(CombinedIndexManager& m, IndexScheduler& s)
         :manager(m), scheduler(s) {
@@ -51,7 +50,7 @@ int
 Interface::countHits(const string& query) {
     QueryParser parser;
     Query q = parser.buildQuery(query, -1, 0);
-    int count = manager.getIndexReader()->countHits(q);
+    int count = manager.indexReader()->countHits(q);
     return count;
 }
 ClientInterface::Hits
@@ -59,7 +58,7 @@ Interface::getHits(const string& query, uint32_t max, uint32_t off) {
     QueryParser parser;
     Query q = parser.buildQuery(query, max, off);
     Hits hits;
-    hits.hits = manager.getIndexReader()->query(q);
+    hits.hits = manager.indexReader()->query(q);
     // highlight the hits in the results
     vector<IndexedDocument>::iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
@@ -69,7 +68,7 @@ Interface::getHits(const string& query, uint32_t max, uint32_t off) {
 }
 vector<string>
 Interface::getBackEnds() {
-    return manager.getBackEnds();
+    return manager.backEnds();
 }
 map<string, string>
 Interface::getStatus() {
@@ -79,14 +78,14 @@ Interface::getStatus() {
     out << scheduler.getQueueSize();
     status["Documents in queue"]= out.str();
     out.str("");
-    IndexReader* reader = manager.getIndexReader();
+    IndexReader* reader = manager.indexReader();
     out << reader->countDocuments();
     status["Documents indexed"]= out.str();
     out.str("");
     out << reader->countWords();
     status["Unique words indexed"] = out.str();
     out.str("");
-    out << reader->getIndexSize()/1024/1024;
+    out << reader->indexSize()/1024/1024;
     status["Index size"] = out.str()+" MB";
     return status;
 }
@@ -126,11 +125,11 @@ Interface::setFilters(const vector<pair<bool,string> >& rules) {
 }
 vector<pair<bool,string> >
 Interface::getFilters() {
-    return scheduler.getIndexerConfiguration().getFilters();
+    return scheduler.getIndexerConfiguration().filters();
 }
 set<string>
 Interface::getIndexedFiles() {
-    map<string, time_t> indexedfiles = manager.getIndexReader()->getFiles(0);
+    map<string, time_t> indexedfiles = manager.indexReader()->files(0);
     set<string> r;
 
     for (map<string, time_t>::iterator iter = indexedfiles.begin(); iter != indexedfiles.end(); iter++)
@@ -142,24 +141,24 @@ void
 Interface::indexFile(const string &path, uint64_t mtime,
         const vector<char>& content) {
     // TODO if the file is already there, remove it first
-    IndexWriter* writer = manager.getIndexWriter();
+    IndexWriter* writer = manager.indexWriter();
     vector<string> paths;
     paths.push_back(path);
     writer->deleteEntries(paths);
     AnalyzerConfiguration ic;
     StreamAnalyzer streamindexer(ic);
-    StringReader<char> sr(&content[0], content.size(), false);
+    StringInputStream sr(&content[0], content.size(), false);
     AnalysisResult idx(path, mtime, *writer, streamindexer);
     idx.index(&sr);
 }
 vector<string>
 Interface::getFieldNames() {
-    return manager.getIndexReader()->getFieldNames();
+    return manager.indexReader()->fieldNames();
 }
 vector<pair<string, uint32_t> >
 Interface::getHistogram(const string& query, const string& field,
         const string& labeltype) {
-    return manager.getIndexReader()->getHistogram(query, field, labeltype);
+    return manager.indexReader()->histogram(query, field, labeltype);
 }
 int32_t
 Interface::countKeywords(const string& keywordmatch,

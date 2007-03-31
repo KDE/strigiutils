@@ -21,10 +21,11 @@
 #define ZIPINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"
 
-namespace jstreams {
+namespace Strigi {
 
 /**
  * Partial implementation of the zip file format according to
@@ -39,7 +40,7 @@ namespace jstreams {
 class STREAMS_EXPORT ZipInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    StreamBase<char>* compressedEntryStream;
+    InputStream* compressedEntryStream;
     GZipInputStream *uncompressionStream;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
@@ -47,15 +48,15 @@ private:
     void readFileName(int32_t len);
     void readHeader();
 public:
-    explicit ZipInputStream(StreamBase<char>* input);
+    explicit ZipInputStream(InputStream* input);
     ~ZipInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new ZipInputStream(input);
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

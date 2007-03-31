@@ -18,8 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "processinputstream.h"
-#include "stringreader.h"
-using namespace jstreams;
+#include "stringstream.h"
+
+using namespace Strigi;
 
 int
 main(int argc, char** argv) {

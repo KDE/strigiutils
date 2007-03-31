@@ -35,38 +35,38 @@ friend class QueryParser;
 public:
     enum Occurrence { MUST, MUST_NOT, SHOULD };
 private:
-    std::string fieldname;
-    std::string expression;
-    Occurrence occurrence;
-    std::list<Query> terms;
-    int max;
-    int offset;
+    std::string m_fieldname;
+    std::string m_expression;
+    Occurrence m_occurrence;
+    std::list<Query> m_terms;
+    int m_max;
+    int m_offset;
 
     void clear();
     Query(int max, int offset);
 public:
     Query();
-    int getMax() const { return max; }
-    int getOffset() const { return offset; }
-    const std::string getExpression() const { return expression; }
-    const std::string getFieldName() const { return fieldname; }
-    const std::list<Query>& getTerms() const { return terms; }
-    Occurrence getOccurrence() const { return occurrence; }
+    int max() const { return m_max; }
+    int offset() const { return m_offset; }
+    const std::string expression() const { return m_expression; }
+    const std::string fieldName() const { return m_fieldname; }
+    const std::list<Query>& terms() const { return m_terms; }
+    Occurrence occurrence() const { return m_occurrence; }
     std::string highlight(const std::string& text) const;
 };
 
 class STREAMANALYZER_EXPORT QueryParser {
 private:
-    std::list<std::string> defaultFields;
+    std::list<std::string> m_defaultFields;
     const char* parseQuery(const char*, Query& term) const;
     void addQuery(Query& query, const Query& subquery) const;
 public:
     QueryParser();
     void setDefaultFields(const std::list<std::string>& df) {
-        defaultFields = df;
+        m_defaultFields = df;
     }
-    const std::list<std::string>& getDefaultFields() const {
-        return defaultFields;
+    const std::list<std::string>& defaultFields() const {
+        return m_defaultFields;
     }
     Query buildQuery(const std::string& a, int32_t max, int32_t offset);
 };

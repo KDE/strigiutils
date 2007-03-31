@@ -6,7 +6,6 @@
 #include "streamlineanalyzer.h"
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 EventThroughAnalyzer::~EventThroughAnalyzer() {

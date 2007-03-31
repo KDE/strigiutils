@@ -23,7 +23,6 @@
 #include "inputstreamreader.h"
 #include "analysisresult.h"
 #include "textutils.h"
-using namespace jstreams;
 using namespace Strigi;
 
 void
@@ -74,8 +73,8 @@ TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if (nread > 0 && checkUtf8(b, nread)) {
         idx.addText(b, nread);
     }
-    if (in->getStatus() == Error) {
-        error = in->getError();
+    if (in->status() == Error) {
+        m_error = in->error();
         return -1;
     }
 //    InputStreamReader reader(in);

@@ -20,7 +20,7 @@
 #ifndef STREAMSTREAMANALYZER_H
 #define STREAMSTREAMANALYZER_H
 
-#include "inputstream.h"
+#include "streambase.h"
 
 namespace Strigi {
 class StreamAnalyzer;
@@ -31,7 +31,7 @@ class AnalysisResult;
 class STREAMANALYZER_EXPORT StreamEventAnalyzer {
 public:
     virtual ~StreamEventAnalyzer() {}
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     virtual void startAnalysis(AnalysisResult*) = 0;
     virtual void endAnalysis() {}
     virtual void handleData(const char* data, uint32_t length) = 0;
@@ -41,7 +41,7 @@ public:
 class STREAMANALYZER_EXPORT StreamEventAnalyzerFactory {
 public:
     virtual ~StreamEventAnalyzerFactory() {}
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     virtual void registerFields(Strigi::FieldRegister&) = 0;
     virtual StreamEventAnalyzer* newInstance() const = 0;
 };

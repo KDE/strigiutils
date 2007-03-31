@@ -15,6 +15,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 set(cluceneindex_SRCS
+        jsgzipcompressstream.cpp
         cluceneindexwriter.cpp
         cluceneindexmanager.cpp
         cluceneindexreader.cpp

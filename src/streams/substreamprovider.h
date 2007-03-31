@@ -24,8 +24,7 @@
 #include "jstreamsconfig.h"
 #include "streambase.h"
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 /**
  * @brief Provides information about the current substream
@@ -64,31 +63,31 @@ struct EntryInfo {
 class STREAMS_EXPORT SubStreamProvider {
 protected:
     /** The status of the SubStreamProvider */
-    StreamStatus status;
+    StreamStatus m_status;
     /**
      * @brief String representation of the last error, or
      * an empty string otherwise
      */
-    std::string error;
+    std::string m_error;
     /** The input stream to extract the substreams from */
-    StreamBase<char> *input;
+    InputStream *m_input;
     /** The current substream */
-    StreamBase<char> *entrystream;
+    InputStream *m_entrystream;
     /** Information about the current substream */
-    EntryInfo entryinfo;
+    EntryInfo m_entryinfo;
 public:
     /**
      * @brief Initialize the SubStreamProvider
      *
      * This just sets the members to sane defaults, and assigns
-     * @p i to @p input
+     * @p input to @p m_input
      *
-     * @param i the inputstream that will be split into substreams
+     * @param input the inputstream that will be split into substreams
      */
-    SubStreamProvider(StreamBase<char> *i)
-        : status(Ok)
-        , input(i)
-        , entrystream(0)
+    SubStreamProvider(InputStream *input)
+        : m_status(Ok)
+        , m_input(input)
+        , m_entrystream(0)
     {}
     /**
      * @brief Releases the memory used by entrystream, if there is one
@@ -97,16 +96,16 @@ public:
      */
     virtual ~SubStreamProvider()
     {
-        if (entrystream) {
-            delete entrystream;
+        if (m_entrystream) {
+            delete m_entrystream;
         }
     }
     /**
      * @brief  Return the status of the stream.
      **/
-    StreamStatus getStatus() const
+    StreamStatus status() const
     {
-        return status;
+        return m_status;
     }
     /**
      * Get the next substream
@@ -130,31 +129,31 @@ public:
      * @return the next substream, or 0 if there are no more substreams
      * or an error occurred
      */
-    virtual StreamBase<char>* nextEntry() = 0;
+    virtual InputStream* nextEntry() = 0;
     /**
      * @brief get the current substream
      */
-    StreamBase<char>* currentEntry()
+    InputStream* currentEntry()
     {
-        return entrystream;
+        return m_entrystream;
     }
     /**
      * @brief get information about the current substream
      */
-    const EntryInfo &getEntryInfo() const
+    const EntryInfo &entryInfo() const
     {
-        return entryinfo;
+        return m_entryinfo;
     }
     /**
      * @brief  Return a string representation of the last error.
      * If no error has occurred, an empty string is returned.
      **/
-    const char* getError() const
+    const char* error() const
     {
-        return error.c_str();
+        return m_error.c_str();
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

@@ -19,8 +19,9 @@
  */
 #include "jstreamsconfig.h"
 #include "pdfinputstream.h"
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 bool
 PdfInputStream::checkHeader(const char* data, int32_t datasize) {
@@ -35,10 +36,10 @@ PdfInputStream::~PdfInputStream() {
 }
 StreamBase<char>*
 PdfInputStream::nextEntry() {
-    if (status != Ok) return 0;
-    return entrystream;
+    if (m_status != Ok) return 0;
+    return m_entrystream;
 }
 StreamStatus
-PdfInputStream::handle(jstreams::StreamBase<char>*) {
+PdfInputStream::handle(Strigi::StreamBase<char>*) {
     return Ok;
 }

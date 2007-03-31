@@ -32,9 +32,9 @@ testMailFile2(StreamBase<char>* input) {
     MailInputStream mail(input);
     StreamBase<char>* a = mail.nextEntry();
     while (a) {
-        std::string filename = "/tmp/mailtest/"+mail.getEntryInfo().filename;
+        std::string filename = "/tmp/mailtest/"+mail.entryInfo().filename;
         FILE* file = 0;
-        if (mail.getEntryInfo().filename.length() > 0) {
+        if (mail.entryInfo().filename.length() > 0) {
             file = fopen(filename.c_str(), "w");
         }
         int32_t size = 0;
@@ -57,8 +57,8 @@ testMailFile2(StreamBase<char>* input) {
         }
         a = mail.nextEntry();
     }
-//    qDebug() << mail.getSubject().c_str();
-//    qDebug() << mail.getContentType().c_str();
+//    qDebug() << mail.subject().c_str();
+//    qDebug() << mail.contentType().c_str();
 }
 
 void

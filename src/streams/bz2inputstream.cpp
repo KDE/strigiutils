@@ -19,7 +19,8 @@
  */
 #include "jstreamsconfig.h"
 #include "bz2inputstream.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 bool
 BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
@@ -27,15 +28,15 @@ BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
     if (datasize < 5) return false;
     return memcmp(data, magic, 5) == 0;
 }
-BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
+BZ2InputStream::BZ2InputStream(InputStream* input) {
     // initialize values that signal state
     this->input = input;
 
     // TODO: check first bytes of stream before allocating buffer
     // 0x42 0x5a 0x68 0x39 0x31
     if (!checkMagic()) {
-        error = "Magic bytes are wrong.";
-        status = Error;
+        m_error = "Magic bytes are wrong.";
+        m_status = Error;
         allocatedBz = false;
         return;
     }
@@ -49,10 +50,10 @@ BZ2InputStream::BZ2InputStream(StreamBase<char>* input) {
     int r;
     r = BZ2_bzDecompressInit(bzstream, 1, 0);
     if (r != BZ_OK) {
-        error = "Error initializing BZ2InputStream.";
+        m_error = "Error initializing BZ2InputStream.";
         fprintf(stderr, "Error initializing BZ2InputStream.\n");
         dealloc();
-        status = Error;
+        m_status = Error;
         return;
     }
     allocatedBz = true;
@@ -78,7 +79,7 @@ BZ2InputStream::checkMagic() {
     const char* begin;
     int32_t nread;
 
-    int64_t pos = input->getPosition();
+    int64_t pos = input->position();
     nread = input->read(begin, 5, 5);
     input->reset(pos);
     if (nread != 5) {
@@ -94,11 +95,11 @@ BZ2InputStream::readFromStream() {
     int32_t nread;
     nread = input->read(inStart, 1, 0);
     if (nread <= -1) {
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = input->error();
     } else if (nread < 1) {
-        status = Error;
-        error = "unexpected end of stream";
+        m_status = Error;
+        m_error = "unexpected end of stream";
     } else {
         bzstream->next_in = (char*)inStart;
         bzstream->avail_in = nread;
@@ -110,7 +111,7 @@ BZ2InputStream::fillBuffer(char* start, int32_t space) {
     // make sure there is data to decompress
     if (bzstream->avail_out != 0) {
         readFromStream();
-        if (status != Ok) {
+        if (m_status != Ok) {
             // no data was read
             return -1;
         }
@@ -124,24 +125,24 @@ BZ2InputStream::fillBuffer(char* start, int32_t space) {
     int32_t nwritten = space - bzstream->avail_out;
     switch (r) {
     case BZ_PARAM_ERROR:
-        error = "BZ_PARAM_ERROR";
-        status = Error;
+        m_error = "BZ_PARAM_ERROR";
+        m_status = Error;
         return -1;
     case BZ_DATA_ERROR:
-        error = "BZ_DATA_ERROR";
-        status = Error;
+        m_error = "BZ_DATA_ERROR";
+        m_status = Error;
         return -1;
     case BZ_DATA_ERROR_MAGIC:
-        error = "BZ_DATA_ERROR_MAGIC";
-        status = Error;
+        m_error = "BZ_DATA_ERROR_MAGIC";
+        m_status = Error;
         return -1;
     case BZ_MEM_ERROR:
-        error = "BZ_MEM_ERROR";
-        status = Error;
+        m_error = "BZ_MEM_ERROR";
+        m_status = Error;
         return -1;
     case BZ_STREAM_END:
         if (bzstream->avail_in) {
-            input->reset(input->getPosition()-bzstream->avail_in);
+            input->reset(input->position()-bzstream->avail_in);
         }
         // we are finished decompressing,
         // (but this stream is not yet finished)

@@ -29,7 +29,7 @@ public:
 private:
     std::vector<HelperRecord*> helpers;
 
-    std::string getPath(const std::string& exe,
+    std::string findPath(const std::string& exe,
         const std::vector<std::string>& paths) const;
 public:
     HelperProgramConfig();
@@ -42,18 +42,18 @@ class HelperEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     static const HelperProgramConfig helperconfig;
 
-    std::string writeToTempFile(jstreams::InputStream *in) const;
+    std::string writeToTempFile(Strigi::InputStream *in) const;
     bool checkForFile(const Strigi::AnalysisResult& idx) const;
 public:
     HelperEndAnalyzer() {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "HelperEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "HelperEndAnalyzer"; }
 };
 
 class HelperEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 private:
-    const char* getName() const {
+    const char* name() const {
         return "HelperEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

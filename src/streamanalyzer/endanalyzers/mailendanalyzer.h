@@ -29,8 +29,8 @@ private:
 public:
     MailEndAnalyzer(const MailEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "MailEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "MailEndAnalyzer"; }
 };
 
 class MailEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
@@ -41,7 +41,7 @@ private:
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* contenttypeField;
 public:
-    const char* getName() const {
+    const char* name() const {
         return "MailEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

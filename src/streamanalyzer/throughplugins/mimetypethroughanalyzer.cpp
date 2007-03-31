@@ -24,7 +24,6 @@
 #include "analysisresult.h"
 using namespace std;
 using namespace Strigi;
-using namespace jstreams;
 
 MimeTypeThroughAnalyzer::MimeTypeThroughAnalyzer() {
     magic = magic_open(MAGIC_MIME);
@@ -42,7 +41,7 @@ MimeTypeThroughAnalyzer::connectInputStream(::InputStream *in) {
 
     // determine the mimetype
     const char* mime;
-    int64_t pos = in->getPosition();
+    int64_t pos = in->position();
     // min == 1 and max == 0 means: 'use whatever buffer size you have already
     // we set max = 1024, because otherwise the stream will fill its entire
     // buffer which can be quite expensive
@@ -71,7 +70,7 @@ MimeTypeThroughAnalyzer::isReadyWithStream() {
 class MimeTypeThroughAnalyzerFactory
     : public StreamThroughAnalyzerFactory {
 private:
-    const char* getName() const {
+    const char* name() const {
         return "MimeTypeThroughAnalyzer";
     }
     StreamThroughAnalyzer* newInstance() const {
@@ -83,7 +82,7 @@ private:
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new MimeTypeThroughAnalyzerFactory());
         return af;

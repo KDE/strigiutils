@@ -27,7 +27,7 @@
  * of that character and nb is set to the number of characters that is missing.
  **/
 bool
-jstreams::checkUtf8(const char* p, int32_t length) {
+Strigi::checkUtf8(const char* p, int32_t length) {
     const char* end = p + length;
     // check if the text is valid UTF-8
     char nb = 0;
@@ -54,7 +54,7 @@ jstreams::checkUtf8(const char* p, int32_t length) {
     return nb == 0;
 }
 bool
-jstreams::checkUtf8(const std::string& p) {
+Strigi::checkUtf8(const std::string& p) {
     return checkUtf8(p.c_str(), p.size());
 }
 
@@ -67,7 +67,7 @@ jstreams::checkUtf8(const std::string& p) {
  * If there is an error, nb == 0.
  **/
 const char*
-jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
+Strigi::checkUtf8(const char* p, int32_t length, char& nb) {
     const char* end = p + length;
     const char* cs = p;
     // check if the text is valid UTF-8
@@ -99,7 +99,7 @@ jstreams::checkUtf8(const char* p, int32_t length, char& nb) {
     return (nb) ?cs :0;
 }
 const char*
-jstreams::checkUtf8(const std::string& p, char& nb) {
+Strigi::checkUtf8(const std::string& p, char& nb) {
     return checkUtf8(p.c_str(), p.size(), nb);
 }
 
@@ -107,7 +107,7 @@ jstreams::checkUtf8(const std::string& p, char& nb) {
  * convert the \r and \n in utf8 strings into spaces
  **/
 void
-jstreams::convertNewLines(char* p) {
+Strigi::convertNewLines(char* p) {
     int32_t len = strlen(p);
     bool ok = checkUtf8(p, len);
     if (!ok) fprintf(stderr, "string is not valid utf8\n");
@@ -152,52 +152,52 @@ jstreams::convertNewLines(char* p) {
 
 #ifdef __BIG_ENDIAN__
 int16_t
-jstreams::readLittleEndianInt16(const char* c) {
+Strigi::readLittleEndianInt16(const char* c) {
     return swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
-jstreams::readLittleEndianUInt16(const char* c) {
+Strigi::readLittleEndianUInt16(const char* c) {
     return swap16(*reinterpret_cast<const uint16_t*>(c));
 }
 int32_t
-jstreams::readLittleEndianInt32(const char* c) {
+Strigi::readLittleEndianInt32(const char* c) {
     return swap32(*reinterpret_cast<const int32_t*>(c));
 }
 uint32_t
-jstreams::readLittleEndianUInt32(const char* c) {
+Strigi::readLittleEndianUInt32(const char* c) {
     return swap32(*reinterpret_cast<const uint32_t*>(c));
 }
 int64_t
-jstreams::readLittleEndianInt64(const char* c) {
+Strigi::readLittleEndianInt64(const char* c) {
     return swap64(*reinterpret_cast<const int64_t*>(c));
 }
 uint64_t
-jstreams::readLittleEndianUInt64(const char* c) {
+Strigi::readLittleEndianUInt64(const char* c) {
     return swap64(*reinterpret_cast<const uint64_t*>(c));
 }
 #else
 int16_t
-jstreams::readBigEndianInt16(const char* c) {
+Strigi::readBigEndianInt16(const char* c) {
     return swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
-jstreams::readBigEndianUInt16(const char* c) {
+Strigi::readBigEndianUInt16(const char* c) {
     return swap16(*reinterpret_cast<const uint16_t*>(c));
 }
 int32_t
-jstreams::readBigEndianInt32(const char* c) {
+Strigi::readBigEndianInt32(const char* c) {
     return swap32(*reinterpret_cast<const int32_t*>(c));
 }
 uint32_t
-jstreams::readBigEndianUInt32(const char* c) {
+Strigi::readBigEndianUInt32(const char* c) {
     return swap32(*reinterpret_cast<const uint32_t*>(c));
 }
 int64_t
-jstreams::readBigEndianInt64(const char* c) {
+Strigi::readBigEndianInt64(const char* c) {
     return swap64(*reinterpret_cast<const int64_t*>(c));
 }
 uint64_t
-jstreams::readBigEndianUInt64(const char* c) {
+Strigi::readBigEndianUInt64(const char* c) {
     return swap64(*reinterpret_cast<const uint64_t*>(c));
 }
 #endif

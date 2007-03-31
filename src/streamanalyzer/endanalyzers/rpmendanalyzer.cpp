@@ -23,7 +23,6 @@
 #include "subinputstream.h"
 #include "analysisresult.h"
 using namespace Strigi;
-using namespace jstreams;
 
 void
 RpmEndAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -37,20 +36,20 @@ char
 RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     RpmInputStream rpm(in);
     InputStream *s = rpm.nextEntry();
-    if (rpm.getStatus()) {
-        fprintf(stderr, "error: %s\n", rpm.getError());
+    if (rpm.status()) {
+        fprintf(stderr, "error: %s\n", rpm.error());
 //        exit(1);
     }
     while (s) {
-        idx.indexChild(rpm.getEntryInfo().filename, rpm.getEntryInfo().mtime,
+        idx.indexChild(rpm.entryInfo().filename, rpm.entryInfo().mtime,
             s);
         s = rpm.nextEntry();
     }
-    if (rpm.getStatus() == Error) {
-        error = rpm.getError();
+    if (rpm.status() == Error) {
+        m_error = rpm.error();
         return -1;
     } else {
-        error.resize(0);
+        m_error.resize(0);
     }
     return 0;
 }

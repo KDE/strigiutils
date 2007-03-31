@@ -25,7 +25,6 @@
 #include "textutils.h"
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
@@ -80,52 +79,52 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
     uint32_t sampleRate = readBigEndianUInt32(buf+16);
     uint32_t channels = readBigEndianUInt32(buf+20);
 
-    analysisResult->setField(factory->sampleRateField, sampleRate);
-    analysisResult->setField(factory->channelsField, channels);
+    analysisResult->addValue(factory->sampleRateField, sampleRate);
+    analysisResult->addValue(factory->channelsField, channels);
 
     uint16_t bytesPerSample = 0;
     switch (encoding) {
     case 1 :
-        analysisResult->setField(factory->encodingField, "8-bit ISDN u-law");
+        analysisResult->addValue(factory->encodingField, "8-bit ISDN u-law");
         bytesPerSample = 1;
         break;
     case 2 :
-        analysisResult->setField(factory->encodingField, "8-bit linear PCM [REF-PCM]");
+        analysisResult->addValue(factory->encodingField, "8-bit linear PCM [REF-PCM]");
         bytesPerSample = 1;
         break;
     case 3 :
-        analysisResult->setField(factory->encodingField, "16-bit linear PCM");
+        analysisResult->addValue(factory->encodingField, "16-bit linear PCM");
         bytesPerSample = 2;
         break;
     case 4 :
-        analysisResult->setField(factory->encodingField, "24-bit linear PCM");
+        analysisResult->addValue(factory->encodingField, "24-bit linear PCM");
         bytesPerSample = 3;
         break;
     case 5 :
-        analysisResult->setField(factory->encodingField, "32-bit linear PCM");
+        analysisResult->addValue(factory->encodingField, "32-bit linear PCM");
         bytesPerSample = 4;
         break;
     case 6 :
-        analysisResult->setField(factory->encodingField, "32-bit IEEE floating point");
+        analysisResult->addValue(factory->encodingField, "32-bit IEEE floating point");
         bytesPerSample = 4;
         break;
     case 7 :
-        analysisResult->setField(factory->encodingField, "64-bit IEEE floating point");
+        analysisResult->addValue(factory->encodingField, "64-bit IEEE floating point");
         bytesPerSample = 8;
         break;
     case 23 :
-        analysisResult->setField(factory->encodingField, "8-bit ISDN u-law compressed");
+        analysisResult->addValue(factory->encodingField, "8-bit ISDN u-law compressed");
         bytesPerSample = 1;
         break;
     default :
-        analysisResult->setField(factory->encodingField, "Unknown");
+        analysisResult->addValue(factory->encodingField, "Unknown");
         bytesPerSample = 0;
     }
 
     // work out length from bytespersample + channels + size
     if ((0 < channels) && (0 < dataSize) && (dataSize != 0xFFFFFFFF) && (0 < bytesPerSample) && (0 < sampleRate)) {
         uint32_t length = dataSize / channels / bytesPerSample / sampleRate;
-        analysisResult->setField(factory->lengthField, length);
+        analysisResult->addValue(factory->lengthField, length);
     }
 
     return in;
@@ -140,7 +139,7 @@ AuThroughAnalyzer::isReadyWithStream() {
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new AuThroughAnalyzerFactory());
         return af;

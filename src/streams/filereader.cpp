@@ -21,7 +21,8 @@
 #include "filereader.h"
 #include "fileinputstream.h"
 #include "inputstreamreader.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 FileReader::FileReader(const char* fname, const char* encoding_scheme,
         int32_t cachelen, int32_t /*cachebuff*/) {
@@ -36,21 +37,21 @@ int32_t
 FileReader::read(const wchar_t*& start, int32_t min, int32_t max) {
     int32_t nread = reader->read(start, min, max);
     if (nread < -1) {
-        error = reader->getError();
-        status = Error;
+        m_error = reader->error();
+        m_status = Error;
         return nread;
     } else if (nread == -1) {
-        status = Eof;
+        m_status = Eof;
     }
     return nread;
 }
 int64_t
 FileReader::reset(int64_t newpos) {
-    position = reader->reset(newpos);
-    if (position < -1) {
-        status = Error;
-        error = reader->getError();
+    m_position = reader->reset(newpos);
+    if (m_position < -1) {
+        m_status = Error;
+        m_error = reader->error();
     }
-    return position;
+    return m_position;
 }
 

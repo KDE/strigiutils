@@ -20,26 +20,27 @@
 #ifndef GZIPCOMPRESSSTREAM_H
 #define GZIPCOMPRESSSTREAM_H
 
+#include "streambase.h"
 #include "bufferedstream.h"
 
 struct z_stream_s;
 
-namespace jstreams {
+namespace Strigi {
 
-class GZipCompressInputStream : public BufferedInputStream<char> {
+class GZipCompressInputStream : public BufferedInputStream {
 private:
     z_stream_s* zstream;
-    StreamBase<char>* input;
+    InputStream* input;
 
     void dealloc();
     void readFromStream();
     void compressFromStream();
 public:
-    explicit GZipCompressInputStream(StreamBase<char>* input, int level=-1);
+    explicit GZipCompressInputStream(InputStream* input, int level=-1);
     ~GZipCompressInputStream();
     int32_t fillBuffer(char* start, int32_t space);
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

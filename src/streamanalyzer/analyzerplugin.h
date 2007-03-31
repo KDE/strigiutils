@@ -24,7 +24,7 @@
 #define STRIGI_PLUGIN_API STRIGI_EXPORT
 
 #define STRIGI_ANALYZER_FACTORY(CLASS) extern "C" { STRIGI_EXPORT \
-    const Strigi::AnalyzerFactoryFactory* getStrigiAnalyzerFactory() { \
+    const Strigi::AnalyzerFactoryFactory* strigiAnalyzerFactory() { \
         return new CLASS(); \
     } \
     STRIGI_EXPORT \

@@ -21,7 +21,6 @@
 #include "streamengine.h"
 #include <QDebug>
 using namespace Strigi;
-using namespace jstreams;
 
 ArchiveDirEngine::ArchiveDirEngine(ArchiveEngineBase* p, const FileEntry*e)
     : parent(p) {
@@ -48,7 +47,7 @@ ArchiveDirEngine::openEntry(const QString &filename) {
     const FileEntry *fe;
     //int n=0;
     do {
-        fe = entry->getEntry(filename);
+        fe = entry->entry(filename);
         if (fe) {
             if (fe->fileFlags & QAbstractFileEngine::FileType) {
                 StreamEngine* se = new StreamEngine(fe, this);
@@ -65,7 +64,7 @@ ArchiveDirEngine*
 ArchiveDirEngine::openDir(const QString& dirname) {
     const FileEntry *fe;
     do {
-        fe = entry->getEntry(dirname);
+        fe = entry->entry(dirname);
         if (fe) {
             if (fe->fileFlags & QAbstractFileEngine::DirectoryType) {
                 return new ArchiveDirEngine(this, fe);
@@ -97,12 +96,12 @@ ArchiveDirEngine::entryList(QDir::Filters /*filters*/,
     readEntryNames();
     // TODO: respect filters
     QStringList e;
-    foreach (FileEntry *fe, entry->getEntries()) {
+    foreach (FileEntry *fe, entry->entries()) {
         e.append(fe->name);
     }
     return e;
 }
 InputStream *
-ArchiveDirEngine::getInputStream(const FileEntry* entry) {
-    return parent->getInputStream(entry);
+ArchiveDirEngine::inputStream(const FileEntry* entry) {
+    return parent->inputStream(entry);
 }

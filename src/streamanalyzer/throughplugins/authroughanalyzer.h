@@ -38,7 +38,7 @@ public:
     AuThroughAnalyzer(const AuThroughAnalyzerFactory* f) :factory(f) {}
     ~AuThroughAnalyzer() {}
     void setIndexable(Strigi::AnalysisResult* i);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -54,7 +54,7 @@ private:
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;
     const Strigi::RegisteredField* encodingField;
-    const char* getName() const {
+    const char* name() const {
         return "AuThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

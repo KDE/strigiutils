@@ -48,8 +48,8 @@ public:
     explicit XapianIndexManager(const char* path);
     ~XapianIndexManager();
 
-    Strigi::IndexReader* getIndexReader();
-    Strigi::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* indexReader();
+    Strigi::IndexWriter* indexWriter();
     void ref();
     void deref();
 };

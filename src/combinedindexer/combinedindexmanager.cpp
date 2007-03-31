@@ -43,7 +43,7 @@ using namespace std;
 using namespace Strigi;
 
 map<string, IndexManager*(*)(const char*)>
-CombinedIndexManager::getFactories() {
+CombinedIndexManager::factories() {
     map<string, IndexManager*(*)(const char*)> factories;
 #ifdef HAVE_ESTRAIER
     factories["estraier"] = createEstraierIndexManager;
@@ -61,9 +61,9 @@ CombinedIndexManager::getFactories() {
 }
 
 vector<string>
-CombinedIndexManager::getBackEnds() {
+CombinedIndexManager::backEnds() {
     vector<string> v;
-    map<string, IndexManager*(*)(const char*)> f = getFactories();
+    map<string, IndexManager*(*)(const char*)> f = factories();
     map<string, IndexManager*(*)(const char*)>::const_iterator i;
     for (i=f.begin(); i!=f.end(); ++i) {
         v.push_back(i->first);
@@ -78,19 +78,19 @@ public:
     CombinedIndexReader(CombinedIndexManager* manager) :m(manager){}
     int32_t countHits(const Query& query);
     vector<IndexedDocument> query(const Query& q);
-    map<string, time_t> getFiles(char depth);
+    map<string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();
-    int64_t getIndexSize();
-    int64_t getDocumentId(const string& uri);
-    time_t getMTime(int64_t docid);
-    vector<pair<string,uint32_t> > getHistogram(
+    int64_t indexSize();
+    int64_t documentId(const string& uri);
+    time_t mTime(int64_t docid);
+    vector<pair<string,uint32_t> > histogram(
             const string& query, const string& fieldname,
             const string& labeltype);
-    vector<string> getFieldNames();
+    vector<string> fieldNames();
     int32_t countKeywords(const string& keywordprefix,
         const vector<string>& fieldnames);
-    vector<string> getKeywords(const string& keywordmatch,
+    vector<string> keywords(const string& keywordmatch,
         const vector<string>& fieldnames,
         uint32_t max, uint32_t offset);
 };
@@ -117,11 +117,11 @@ CombinedIndexManager::Private::~Private() {
 CombinedIndexManager::CombinedIndexManager(const string& type,
         const string& indexdir) :p(new CombinedIndexManager::Private(this)) {
     // determine the right index manager
-    map<string, IndexManager*(*)(const char*)> factories = getFactories();
+    map<string, IndexManager*(*)(const char*)> l_factories = factories();
     map<string, IndexManager*(*)(const char*)>::const_iterator f
-        = factories.find(type);
-    if (f == factories.end()) {
-        f = factories.begin();
+        = l_factories.find(type);
+    if (f == l_factories.end()) {
+        f = l_factories.begin();
     }
     p->writermanager = f->second(indexdir.c_str());
 }
@@ -129,22 +129,22 @@ CombinedIndexManager::~CombinedIndexManager() {
     delete p;
 }
 IndexReader*
-CombinedIndexManager::getIndexReader() {
+CombinedIndexManager::indexReader() {
     return &(p->reader);
 }
 IndexWriter*
-CombinedIndexManager::getIndexWriter() {
-    return p->writermanager->getIndexWriter();
+CombinedIndexManager::indexWriter() {
+    return p->writermanager->indexWriter();
 }
 void
 CombinedIndexManager::addReadonlyIndex(const string& indexdir,
         const string& type) {
     removeReadonlyIndex(indexdir);
     // determine the right index manager
-    map<string, IndexManager*(*)(const char*)> factories = getFactories();
+    map<string, IndexManager*(*)(const char*)> l_factories = factories();
     map<string, IndexManager*(*)(const char*)>::const_iterator f
-        = factories.find(type);
-    if (f == factories.end()) {
+        = l_factories.find(type);
+    if (f == l_factories.end()) {
         return;
     }
     IndexManager* im = f->second(indexdir.c_str());
@@ -160,106 +160,106 @@ CombinedIndexManager::removeReadonlyIndex(const string& indexdir) {
 }
 int32_t
 CombinedIndexReader::countHits(const Query& query) {
-    int32_t c = m->p->writermanager->getIndexReader()->countHits(query);
+    int32_t c = m->p->writermanager->indexReader()->countHits(query);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        c += i->second->getIndexReader()->countHits(query);
+        c += i->second->indexReader()->countHits(query);
     }
     return c;
 }
 vector<IndexedDocument>
 CombinedIndexReader::query(const Query& q) {
     /** TODO merge the result documents by score **/
-    vector<IndexedDocument> v = m->p->writermanager->getIndexReader()
+    vector<IndexedDocument> v = m->p->writermanager->indexReader()
         ->query(q);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        v = i->second->getIndexReader()->query(q);
+        v = i->second->indexReader()->query(q);
     }
     return v;
 }
 map<string, time_t>
-CombinedIndexReader::getFiles(char depth) {
-    map<string, time_t> files = m->p->writermanager->getIndexReader()
-        ->getFiles(depth);
+CombinedIndexReader::files(char depth) {
+    map<string, time_t> files = m->p->writermanager->indexReader()
+        ->files(depth);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        files = i->second->getIndexReader()->getFiles(depth);
+        files = i->second->indexReader()->files(depth);
     }
     return files;
 }
 int32_t
 CombinedIndexReader::countDocuments() {
-    int32_t c = m->p->writermanager->getIndexReader()->countDocuments();
+    int32_t c = m->p->writermanager->indexReader()->countDocuments();
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        c += i->second->getIndexReader()->countDocuments();
+        c += i->second->indexReader()->countDocuments();
     }
     return c;
 }
 int32_t
 CombinedIndexReader::countWords() {
-    int32_t c = m->p->writermanager->getIndexReader()->countWords();
+    int32_t c = m->p->writermanager->indexReader()->countWords();
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        c += i->second->getIndexReader()->countWords();
+        c += i->second->indexReader()->countWords();
     }
     return c;
 }
 int64_t
-CombinedIndexReader::getIndexSize() {
-    int64_t c = m->p->writermanager->getIndexReader()->getIndexSize();
+CombinedIndexReader::indexSize() {
+    int64_t c = m->p->writermanager->indexReader()->indexSize();
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        c += i->second->getIndexReader()->getIndexSize();
+        c += i->second->indexReader()->indexSize();
     }
     return c;
 }
 vector<pair<string,uint32_t> >
-CombinedIndexReader::getHistogram(const string& query, const string& fieldname,
+CombinedIndexReader::histogram(const string& query, const string& fieldname,
         const string& labeltype){
-    return m->p->writermanager->getIndexReader()->getHistogram(query,
+    return m->p->writermanager->indexReader()->histogram(query,
         fieldname, labeltype);
 }
 int64_t
-CombinedIndexReader::getDocumentId(const string& uri) {
-    return m->p->writermanager->getIndexReader()->getDocumentId(uri);
+CombinedIndexReader::documentId(const string& uri) {
+    return m->p->writermanager->indexReader()->documentId(uri);
 }
 time_t
-CombinedIndexReader::getMTime(int64_t docid) {
-    return m->p->writermanager->getIndexReader()->getMTime(docid);
+CombinedIndexReader::mTime(int64_t docid) {
+    return m->p->writermanager->indexReader()->mTime(docid);
 }
 vector<string>
-CombinedIndexReader::getFieldNames() {
-    return m->p->writermanager->getIndexReader()->getFieldNames();
+CombinedIndexReader::fieldNames() {
+    return m->p->writermanager->indexReader()->fieldNames();
 }
 int32_t
 CombinedIndexReader::countKeywords(const string& keywordprefix,
         const vector<string>& fieldnames) {
-    return m->p->writermanager->getIndexReader()->countKeywords(keywordprefix,
+    return m->p->writermanager->indexReader()->countKeywords(keywordprefix,
         fieldnames);
 }
 vector<string>
-CombinedIndexReader::getKeywords(const string& keywordmatch,
+CombinedIndexReader::keywords(const string& keywordmatch,
         const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
-    return m->p->writermanager->getIndexReader()->getKeywords(keywordmatch,
+    return m->p->writermanager->indexReader()->keywords(keywordmatch,
         fieldnames, max, offset);
 }

@@ -22,7 +22,6 @@
 #include "zipinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
-using namespace jstreams;
 using namespace Strigi;
 
 void
@@ -40,21 +39,21 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
-    if (zip.getStatus()) {
-        fprintf(stderr, "error: %s\n", zip.getError());
+    if (zip.status()) {
+        fprintf(stderr, "error: %s\n", zip.error());
 //        exit(1);
     }
     idx.setMimeType("application/zip");
     while (s) {
-        idx.indexChild(zip.getEntryInfo().filename, zip.getEntryInfo().mtime,
+        idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
             s);
         s = zip.nextEntry();
     }
-    if (zip.getStatus() == Error) {
-        error = zip.getError();
+    if (zip.status() == Error) {
+        m_error = zip.error();
         return -1;
     } else {
-        error.resize(0);
+        m_error.resize(0);
     }
     return 0;
 }

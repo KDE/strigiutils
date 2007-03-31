@@ -49,8 +49,8 @@ public:
 
     sqlite3* ref();
     void deref();
-    Strigi::IndexReader* getIndexReader();
-    Strigi::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* indexReader();
+    Strigi::IndexWriter* indexWriter();
     static std::string escapeSqlValue(const std::string& value);
     static sqlite3* opendb(const char*);
 };

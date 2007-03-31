@@ -25,7 +25,6 @@
 #include <cassert>
 #include <cerrno>
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 #ifndef ICONV_CONST

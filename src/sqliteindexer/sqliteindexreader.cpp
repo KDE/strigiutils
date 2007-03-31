@@ -166,7 +166,7 @@ SqliteIndexReader::query(const Strigi::Query& query) {
     return results;
 }
 map<string, time_t>
-SqliteIndexReader::getFiles(char depth) {
+SqliteIndexReader::files(char depth) {
     map<string, time_t> files;
     sqlite3* db = manager->ref();
     printf("%p\n", db);
@@ -220,20 +220,20 @@ SqliteIndexReader::countDocuments() {
     return count;
 }
 int64_t
-SqliteIndexReader::getDocumentId(const string& uri) {
+SqliteIndexReader::documentId(const string& uri) {
     return -1;
 }
 time_t
-SqliteIndexReader::getMTime(int64_t docid) {
+SqliteIndexReader::mTime(int64_t docid) {
     return 0;
 }
 vector<pair<string,uint32_t> >
-SqliteIndexReader::getHistogram( const string& query, const string& fieldname,
+SqliteIndexReader::histogram( const string& query, const string& fieldname,
             const string& labeltype) {
     return vector<pair<string,uint32_t> >();
 }
 vector<string>
-SqliteIndexReader::getFieldNames() {
+SqliteIndexReader::fieldNames() {
     return vector<string>();
 }
 int32_t
@@ -242,7 +242,7 @@ SqliteIndexReader::countKeywords(const string& keywordprefix,
     return -1;
 }
 vector<string>
-SqliteIndexReader::getKeywords(const string& keywordmatch,
+SqliteIndexReader::keywords(const string& keywordmatch,
         const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
     vector<string> k;
     return k;

@@ -38,7 +38,7 @@ public:
     XbmThroughAnalyzer(const XbmThroughAnalyzerFactory* f) :factory(f) {}
     ~XbmThroughAnalyzer() {}
     void setIndexable(Strigi::AnalysisResult* i);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -54,7 +54,7 @@ private:
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* xHotField;
     const Strigi::RegisteredField* yHotField;
-    const char* getName() const {
+    const char* name() const {
         return "XbmThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

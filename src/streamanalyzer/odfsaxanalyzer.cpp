@@ -105,6 +105,6 @@ void OdfSaxAnalyzer::characters(const char *data, uint32_t length) {
     assert(m_result != 0);
 
     if(m_currentField != 0) {
-        m_result->setField(m_currentField, data, length);
+        m_result->addValue(m_currentField, data, length);
     }
 }

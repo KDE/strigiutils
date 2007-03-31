@@ -27,27 +27,27 @@ public:
     class StreamHandler {
     public:
         virtual ~StreamHandler() {}
-        virtual jstreams::StreamStatus handle(jstreams::StreamBase<char>*) = 0;
+        virtual Strigi::StreamStatus handle(Strigi::StreamBase<char>* s) = 0;
     };
     class DefaultStreamHandler : public StreamHandler {
     public:
-        jstreams::StreamStatus handle(jstreams::StreamBase<char>*);
+        Strigi::StreamStatus handle(Strigi::StreamBase<char>* s);
     };
     class TextHandler {
     public:
         virtual ~TextHandler() {}
-        virtual jstreams::StreamStatus handle(const std::string&) = 0;
+        virtual Strigi::StreamStatus handle(const std::string& s) = 0;
     };
     class DefaultTextHandler : public TextHandler {
-        jstreams::StreamStatus handle(const std::string&);
+        Strigi::StreamStatus handle(const std::string& s);
     };
 private:
     const char* start;
     const char* end;
     const char* pos;
     int64_t objdefstart;
-    jstreams::StreamBase<char>* stream;
-    std::string error;
+    Strigi::StreamBase<char>* stream;
+    std::string m_error;
 
     // parsed objects
     double lastNumber;
@@ -60,49 +60,49 @@ private:
     StreamHandler* streamhandler;
     TextHandler* texthandler;
 
-    jstreams::StreamStatus read(int32_t min, int32_t max);
-    void forwardStream(jstreams::StreamBase<char>* s);
-    jstreams::StreamStatus read2(int32_t min, int32_t max);
-    jstreams::StreamStatus checkForData(int32_t m);
+    Strigi::StreamStatus read(int32_t min, int32_t max);
+    void forwardStream(Strigi::StreamBase<char>* s);
+    Strigi::StreamStatus read2(int32_t min, int32_t max);
+    Strigi::StreamStatus checkForData(int32_t m);
     bool isInString(char c, const char* s, int32_t n);
-    jstreams::StreamStatus skipFromString(const char*str, int32_t n);
-    jstreams::StreamStatus skipNotFromString(const char*str, int32_t n);
-    jstreams::StreamStatus skipWhitespaceOrComment();
-    jstreams::StreamStatus skipWhitespace();
-    jstreams::StreamStatus skipKeyword(const char* str, int32_t len);
-    jstreams::StreamStatus skipXRef();
-    jstreams::StreamStatus skipTrailer();
-    jstreams::StreamStatus skipXChars();
-    jstreams::StreamStatus skipDigits();
-    jstreams::StreamStatus skipStartXRef();
-    jstreams::StreamStatus skipNumber();
-    jstreams::StreamStatus parseObjectStreamObject();
-    jstreams::StreamStatus parseContentStreamObject();
-    jstreams::StreamStatus parseComment();
-    jstreams::StreamStatus parseBoolean();
-    jstreams::StreamStatus parseNumber();
-    jstreams::StreamStatus parseNumberOrIndirectObject();
-    jstreams::StreamStatus parseLiteralString();
-    jstreams::StreamStatus parseHexString();
-    jstreams::StreamStatus parseName();
-    jstreams::StreamStatus parseOperator();
-    jstreams::StreamStatus parseDictionaryOrStream();
-    jstreams::StreamStatus parseArray();
-    jstreams::StreamStatus parseNull();
-    jstreams::StreamStatus parseObjectStreamObjectDef();
+    Strigi::StreamStatus skipFromString(const char*str, int32_t n);
+    Strigi::StreamStatus skipNotFromString(const char*str, int32_t n);
+    Strigi::StreamStatus skipWhitespaceOrComment();
+    Strigi::StreamStatus skipWhitespace();
+    Strigi::StreamStatus skipKeyword(const char* str, int32_t len);
+    Strigi::StreamStatus skipXRef();
+    Strigi::StreamStatus skipTrailer();
+    Strigi::StreamStatus skipXChars();
+    Strigi::StreamStatus skipDigits();
+    Strigi::StreamStatus skipStartXRef();
+    Strigi::StreamStatus skipNumber();
+    Strigi::StreamStatus parseObjectStreamObject();
+    Strigi::StreamStatus parseContentStreamObject();
+    Strigi::StreamStatus parseComment();
+    Strigi::StreamStatus parseBoolean();
+    Strigi::StreamStatus parseNumber();
+    Strigi::StreamStatus parseNumberOrIndirectObject();
+    Strigi::StreamStatus parseLiteralString();
+    Strigi::StreamStatus parseHexString();
+    Strigi::StreamStatus parseName();
+    Strigi::StreamStatus parseOperator();
+    Strigi::StreamStatus parseDictionaryOrStream();
+    Strigi::StreamStatus parseArray();
+    Strigi::StreamStatus parseNull();
+    Strigi::StreamStatus parseObjectStreamObjectDef();
 
-    jstreams::StreamStatus handleSubStream(jstreams::StreamBase<char>*,
+    Strigi::StreamStatus handleSubStream(Strigi::StreamBase<char>* s,
         const std::string& type, int32_t offset, int32_t n);
-    jstreams::StreamStatus handleSubStream(jstreams::StreamBase<char>*,
+    Strigi::StreamStatus handleSubStream(Strigi::StreamBase<char>* s,
         const std::string& type, int32_t offset, int32_t n, bool hasfilter,
         const std::string& filter);
-    jstreams::StreamStatus parseObjectStream(jstreams::StreamBase<char>*,
+    Strigi::StreamStatus parseObjectStream(Strigi::StreamBase<char>*,
         int32_t offset, int32_t n);
-    jstreams::StreamStatus parseContentStream(jstreams::StreamBase<char>*);
+    Strigi::StreamStatus parseContentStream(Strigi::StreamBase<char>*);
 public:
     PdfParser();
-    jstreams::StreamStatus parse(jstreams::StreamBase<char>* s);
-    const std::string& getError() { return error; }
+    Strigi::StreamStatus parse(Strigi::StreamBase<char>* s);
+    const std::string& error() { return m_error; }
     void setStreamHandler(StreamHandler* handler) { streamhandler = handler; }
     void setTextHandler(TextHandler* handler) { texthandler = handler; }
 };

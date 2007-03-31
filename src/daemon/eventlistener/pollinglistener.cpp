@@ -105,7 +105,7 @@ void PollingListener::poll ()
     }
 
     vector<Event*> events;
-    map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
+    map <string, time_t> indexedFiles = m_pIndexReader->files(0);
     set<string> watches;
 
     assert(m_pindexerconfiguration);

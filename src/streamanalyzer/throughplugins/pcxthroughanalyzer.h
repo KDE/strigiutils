@@ -33,7 +33,7 @@ public:
     PcxThroughAnalyzer(const PcxThroughAnalyzerFactory* f) :factory(f) {}
     ~PcxThroughAnalyzer() {}
     void setIndexable(Strigi::AnalysisResult*);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -54,7 +54,7 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* hResolutionField;
     const Strigi::RegisteredField* vResolutionField;
-    const char* getName() const {
+    const char* name() const {
         return "PcxThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

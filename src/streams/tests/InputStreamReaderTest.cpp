@@ -20,8 +20,9 @@
 #include "../inputstreamreader.h"
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 const char* testfiles[] = {"armenia", "croattx", "huseyin", "linjilu", "russmnv", "ulysses", "banviet", "danish", "jpndoc", "maopoem", "sample6", "unilang", "calblur", "esperan", "kordoc", "neural", "tongtws"};
 

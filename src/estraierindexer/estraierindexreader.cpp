@@ -39,7 +39,7 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
     // write the part of the query that matches the document context
     string phrase;
     set<string> terms;
-    const map<string, set<string> >& includes = query.getIncludes();
+    const map<string, set<string> >& includes = query.includes();
     map<string, set<string> >::const_iterator i = includes.find("");
     if (i != includes.end()) terms = i->second;
     set<string>::const_iterator j;
@@ -52,7 +52,7 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
     terms.clear();
 
     // add the part of the query that excludes terms
-    const map<string, set<string> >& excludes = query.getExcludes();
+    const map<string, set<string> >& excludes = query.excludes();
     i = excludes.find("");
     if (i != excludes.end()) terms = i->second;
     for (j = terms.begin(); j != terms.end(); ++j) {
@@ -106,7 +106,7 @@ EstraierIndexReader::mapId(const string& id) {
     return id.c_str();
 }
 string
-EstraierIndexReader::getFragment(ESTDOC* doc, const Query& query) {
+EstraierIndexReader::fragment(ESTDOC* doc, const Query& query) {
     string fragment;
     const CBLIST *list = est_doc_texts(doc);
     for (int j = 0; j < cblistnum(list); ++j) {
@@ -152,7 +152,7 @@ EstraierIndexReader::query(const Query& query) {
         doc.score = est_cond_score(cond, i);
         ESTDOC* d = est_db_get_doc(db, id, ESTGDNOKWD);
         if (!d) continue;
-        doc.fragment = getFragment(d, query);
+        doc.fragment = fragment(d, query);
         CBLIST* atts = est_doc_attr_names(d);
         for (int j = 0; j < cblistnum(atts); ++j) {
             const char* name = cblistval(atts, j, 0);
@@ -183,7 +183,7 @@ EstraierIndexReader::query(const Query& query) {
     return results;
 }
 map<string, time_t>
-EstraierIndexReader::getFiles(char depth) {
+EstraierIndexReader::files(char depth) {
     map<string, time_t> files;
     ESTCOND* cond = est_cond_new();
     string q = "depth NUMEQ 0";
@@ -225,21 +225,21 @@ EstraierIndexReader::countWords() {
     return count;
 }
 int64_t
-EstraierIndexReader::getIndexSize() {
+EstraierIndexReader::indexSize() {
     ESTDB* db = manager->ref();
     int count = (int)est_db_size(db);
     manager->deref();
     return count;
 }
 int64_t
-EstraierIndexReader::getDocumentId(const string& uri) {
+EstraierIndexReader::documentId(const string& uri) {
     ESTDB* db = manager->ref();
     int64_t id = est_db_uri_to_id(db, uri.c_str());
     manager->deref();
     return id;
 }
 time_t
-EstraierIndexReader::getMTime(int64_t docid) {
+EstraierIndexReader::mTime(int64_t docid) {
     ESTDB* db = manager->ref();
     time_t mtime = -1;
     char *cstr = est_db_get_doc_attr(db, docid, "@mdate");
@@ -252,11 +252,11 @@ EstraierIndexReader::getMTime(int64_t docid) {
 
 }
 vector<string>
-EstraierIndexReader::getFieldNames() {
+EstraierIndexReader::fieldNames() {
     return vector<string>();
 }
 vector<pair<string,uint32_t> >
-EstraierIndexReader::getHistogram( const string& query, const string& fieldname,
+EstraierIndexReader::histogram( const string& query, const string& fieldname,
             const string& labeltype) {
     return vector<pair<string,uint32_t> >();
 }

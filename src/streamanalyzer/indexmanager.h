@@ -34,8 +34,8 @@ class QueryBitsetCache;
  * The functions of IndexManager are threadsafe, but the functions provided
  * by the IndexReader and IndexWriter need not be. IndexReader and IndexWriter
  * objects may not be accessed from different threads. When access to an
- * index from a particular thread is required, the functions getIndexReader()
- * and getIndexWriter() provide instances of the respective classes that may
+ * index from a particular thread is required, the functions indexReader()
+ * and indexWriter() provide instances of the respective classes that may
  * be used in the active thread.
  **/
 class IndexManager {
@@ -48,7 +48,7 @@ public:
      * @return a pointer to an IndexReader that reads from the index that is
      *         managed by this instance of IndexManager
      **/
-    virtual IndexReader* getIndexReader() = 0;
+    virtual IndexReader* indexReader() = 0;
     /**
      * Provide access to an IndexWriter object that may be used in the active
      * thread.
@@ -56,8 +56,8 @@ public:
      * @return a pointer to an IndexWriter that reads from the index that is
      *         managed by this instance of IndexManager
      **/
-    virtual IndexWriter* getIndexWriter() = 0;
-//    virtual QueryBitsetCache* getBitSets() = 0;
+    virtual IndexWriter* indexWriter() = 0;
+//    virtual QueryBitsetCache* bitSets() = 0;
 };
 }
 

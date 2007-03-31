@@ -25,7 +25,6 @@
 #include "tarendanalyzer.h"
 #include "analysisresult.h"
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 void
@@ -47,7 +46,7 @@ GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* start;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
-        printf("Error reading gzip: %s\n", stream.getError());
+        printf("Error reading gzip: %s\n", stream.error());
         return -2;
     }
     stream.reset(0);

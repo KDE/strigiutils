@@ -22,23 +22,35 @@
 
 #include "streambase.h"
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 class FileInputStream;
 class InputStreamReader;
+
+/**
+ * @brief Reads and decodes a text file into a Unicode stream
+ */
 class FileReader : public StreamBase<wchar_t> {
     FileInputStream* input;
     InputStreamReader* reader;
 public:
+    /**
+     * @brief Create a FileReader for a text file
+     *
+     * @param fname the name of the text file to decode
+     * @param encoding_scheme the encoding of the file
+     * @param cachelen the buffer size to use when reading the file
+     * @param cachebuff currently unused
+     */
     explicit FileReader(const char* fname, const char* encoding_scheme=NULL,
         const int32_t cachelen = 13,
         const int32_t cachebuff = 14 );
+    /** Destructor */
     ~FileReader();
     int32_t read(const wchar_t*& start, int32_t min, int32_t max);
-    int64_t reset(int64_t);
+    int64_t reset(int64_t pos);
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

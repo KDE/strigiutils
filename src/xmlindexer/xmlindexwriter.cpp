@@ -5,8 +5,8 @@ using namespace Strigi;
 void
 XmlIndexWriter::initWriterData(const FieldRegister& f) {
     map<string, RegisteredField*>::const_iterator i;
-    map<string, RegisteredField*>::const_iterator end = f.getFields().end();
-    for (i = f.getFields().begin(); i != end; ++i) {
+    map<string, RegisteredField*>::const_iterator end = f.fields().end();
+    for (i = f.fields().begin(); i != end; ++i) {
         Tag* tag = new Tag();
         const string s(i->first);
         const string& n = mapping.map(s);
@@ -23,8 +23,8 @@ XmlIndexWriter::initWriterData(const FieldRegister& f) {
 void
 XmlIndexWriter::releaseWriterData(const FieldRegister& f) {
     map<string, RegisteredField*>::const_iterator i;
-    map<string, RegisteredField*>::const_iterator end = f.getFields().end();
-    for (i = f.getFields().begin(); i != end; ++i) {
-        delete static_cast<Tag*>(i->second->getWriterData());
+    map<string, RegisteredField*>::const_iterator end = f.fields().end();
+    for (i = f.fields().begin(); i != end; ++i) {
+        delete static_cast<Tag*>(i->second->writerData());
     }
 }

@@ -20,7 +20,8 @@
 #include "../base64inputstream.h"
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 Base64InputStreamTest(int, char*[]) {

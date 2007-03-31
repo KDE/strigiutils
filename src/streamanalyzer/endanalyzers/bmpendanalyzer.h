@@ -29,8 +29,8 @@ private:
 public:
     BmpEndAnalyzer(const BmpEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "BmpEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "BmpEndAnalyzer"; }
 };
 
 class BmpEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
@@ -46,7 +46,7 @@ private:
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* compressionField;
-    const char* getName() const {
+    const char* name() const {
         return "BmpEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

@@ -23,12 +23,10 @@
 #include "jstreamsconfig.h"
 #include <string>
 
-namespace jstreams {
-    template <class T> class StreamBase;
-}
 
 namespace Strigi {
 
+template <class T> class StreamBase;
 class AnalyzerConfiguration;
 class IndexWriter;
 class AnalysisResult;
@@ -57,8 +55,8 @@ public:
     void setIndexWriter(IndexWriter& writer);
     char indexFile(const char *filepath);
     char indexFile(const std::string& filepath);
-    char analyze(AnalysisResult& idx, jstreams::StreamBase<char> *input);
-    AnalyzerConfiguration& getConfiguration() const;
+    char analyze(AnalysisResult& idx, StreamBase<char> *input);
+    AnalyzerConfiguration& configuration() const;
 };
 }
 

@@ -23,8 +23,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 // define 'environ' for Mac OS X
 #if defined(__APPLE__)
@@ -35,7 +36,7 @@ extern char **environ;
 #endif
 
 ProcessInputStream::ProcessInputStream(const vector<string>& a,
-        StreamBase<char>* input) {
+        InputStream* input) {
     this->input = input;
     fdin = fdout = pid = -1;
 
@@ -73,13 +74,13 @@ ProcessInputStream::~ProcessInputStream() {
 void
 ProcessInputStream::writeToPipe() {
     // read from the inputstream
-    int64_t pos = input->getPosition();
+    int64_t pos = input->position();
     const char* b;
     int32_t n = input->read(b, 1, 0);
-    if (n <= 0 || input->getStatus() == Eof) {
-        if (input->getStatus() == Error) {
-            status = Error;
-            error = input->getError();
+    if (n <= 0 || input->status() == Eof) {
+        if (input->status() == Error) {
+            m_status = Error;
+            m_error = input->error();
             n = 0;
         }
         // close the pipe if no more output is available
@@ -90,8 +91,8 @@ ProcessInputStream::writeToPipe() {
         // write into the pipe
         int32_t m = write(fdin, b, n);
         if (m < 0) {
-            error = strerror(errno);
-            status = Error;
+            m_error = strerror(errno);
+            m_status = Error;
             input = 0;
         } else if (m != n) {
             input->reset(pos+n);
@@ -101,13 +102,13 @@ ProcessInputStream::writeToPipe() {
 int32_t
 ProcessInputStream::fillBuffer(char* start, int32_t space) {
     if (fdout <= 0) return -1;
-    if (input && input->getStatus() == Ok) {
+    if (input && input->status() == Ok) {
         writeToPipe();
     }
     ssize_t n = ::read(fdout, start, space);
     if (n < 0) {
-        error = strerror(errno);
-        status = Error;
+        m_error = strerror(errno);
+        m_status = Error;
         n = -2;
     }
     if (n <= 0) {

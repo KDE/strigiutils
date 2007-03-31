@@ -34,7 +34,7 @@ public:
     ID3V2ThroughAnalyzer(const ID3V2ThroughAnalyzerFactory* f)
         :indexable(0), factory(f) {}
     void setIndexable(Strigi::AnalysisResult*);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -48,7 +48,7 @@ private:
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* albumField;
-    const char* getName() const {
+    const char* name() const {
         return "ID3V2ThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

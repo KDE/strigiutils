@@ -70,7 +70,7 @@ void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
     std::string mimeType;
     mimeType.assign(data, length);
 
-    m_result->setField(m_factory->mimeTypeField, mimeType);
+    m_result->addValue(m_factory->mimeTypeField, mimeType);
     m_result->setMimeType(mimeType);
 }
 

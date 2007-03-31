@@ -21,16 +21,17 @@
 #define GZIPINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "bufferedstream.h"
 
 struct z_stream_s;
 
-namespace jstreams {
+namespace Strigi {
 
-class STREAMS_EXPORT GZipInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT GZipInputStream : public BufferedInputStream {
 private:
     z_stream_s* zstream;
-    StreamBase<char>* input;
+    InputStream* input;
 
     void dealloc();
     void readFromStream();
@@ -38,12 +39,12 @@ private:
     bool checkMagic();
 public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
-    explicit GZipInputStream(StreamBase<char>* input,
+    explicit GZipInputStream(InputStream* input,
         ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
     int32_t fillBuffer(char* start, int32_t space);
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

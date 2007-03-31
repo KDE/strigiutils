@@ -36,15 +36,15 @@ class StreamSaxAnalyzer;
 class StreamLineAnalyzer;
 
 class EventThroughAnalyzer : public StreamThroughAnalyzer,
-        public jstreams::DataEventHandler {
+        public DataEventHandler {
 private:
     std::vector<StreamEventAnalyzer*> event;
-    jstreams::DataEventInputStream* datastream;
+    DataEventInputStream* datastream;
     AnalysisResult* result;
     bool ready;
 
     void setIndexable(AnalysisResult*);
-    jstreams::InputStream* connectInputStream(jstreams::InputStream* in);
+    InputStream* connectInputStream(InputStream* in);
     bool isReadyWithStream();
     bool handleData(const char* data, uint32_t size);
     void handleEnd();
@@ -58,7 +58,7 @@ class EventThroughAnalyzerFactory : public StreamThroughAnalyzerFactory {
     std::vector<StreamLineAnalyzerFactory*>& linefactories;
     std::vector<StreamEventAnalyzerFactory*>& eventfactories;
 
-    const char* getName() const { return "EventThroughAnalyzerFactory"; }
+    const char* name() const { return "EventThroughAnalyzerFactory"; }
     void registerFields(Strigi::FieldRegister&);
 public:
     EventThroughAnalyzerFactory(std::vector<StreamSaxAnalyzerFactory*>& s,

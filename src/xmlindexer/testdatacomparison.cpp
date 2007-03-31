@@ -38,7 +38,6 @@
 
 #include <sstream>
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 void
@@ -76,7 +75,7 @@ main(int argc, char** argv) {
     const char* c;
     n = bz2.read(c, n, n);
     if (n < 0) {
-        fprintf(stderr, "Error: %s\n", bz2.getError());
+        fprintf(stderr, "Error: %s\n", bz2.error());
         return -1;
     }
     if (n != (int32_t)s.str().length()) {

@@ -35,11 +35,11 @@ class AnalyzerLoader {
 public:
     static void loadPlugins(const char* dir);
 
-    std::list<StreamEndAnalyzerFactory*> getStreamEndAnalyzerFactories();
+    std::list<StreamEndAnalyzerFactory*> streamEndAnalyzerFactories();
     std::list<StreamThroughAnalyzerFactory*>
-        getStreamThroughAnalyzerFactories();
-    std::list<StreamSaxAnalyzerFactory*> getStreamSaxAnalyzerFactories();
-    std::list<StreamLineAnalyzerFactory*> getStreamLineAnalyzerFactories();
-    std::list<StreamEventAnalyzerFactory*> getStreamEventAnalyzerFactories();
+        streamThroughAnalyzerFactories();
+    std::list<StreamSaxAnalyzerFactory*> streamSaxAnalyzerFactories();
+    std::list<StreamLineAnalyzerFactory*> streamLineAnalyzerFactories();
+    std::list<StreamEventAnalyzerFactory*> streamEventAnalyzerFactories();
 };
 }

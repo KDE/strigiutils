@@ -20,8 +20,10 @@
 #ifndef STREAMTHROUGHANALYZER_H
 #define STREAMTHROUGHANALYZER_H
 
-#include "inputstream.h"
+#include "streambase.h"
+
 namespace Strigi {
+
 class AnalysisResult;
 class FieldRegister;
 /**
@@ -41,7 +43,7 @@ public:
      * is used in the analysis before being passed on to the
      * caller.
      **/
-    virtual jstreams::InputStream *connectInputStream(jstreams::InputStream *in) = 0;
+    virtual InputStream *connectInputStream(InputStream *in) = 0;
     /**
      *
      **/
@@ -50,11 +52,11 @@ public:
 class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory {
 public:
     virtual ~StreamThroughAnalyzerFactory(){}
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     virtual StreamThroughAnalyzer* newInstance() const = 0;
     virtual void registerFields(Strigi::FieldRegister&) = 0;
 };
 
-}
+} // end namespace Strigi
 
 #endif

@@ -54,21 +54,21 @@ private:
 public:
     int32_t countHits(const Strigi::Query&);
     std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
-    std::map<std::string, time_t> getFiles(char depth);
+    std::map<std::string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();
-    int64_t getIndexSize();
-    int64_t getDocumentId(const std::string& uri);
-    time_t getMTime(int64_t docid);
+    int64_t indexSize();
+    int64_t documentId(const std::string& uri);
+    time_t mTime(int64_t docid);
     static void addMapping(const TCHAR* from, const TCHAR* to);
     lucene::index::IndexReader* reader;
-    std::vector<std::pair<std::string,uint32_t> > getHistogram(
+    std::vector<std::pair<std::string,uint32_t> > histogram(
             const std::string& query, const std::string& fieldname,
             const std::string& labeltype);
-    std::vector<std::string> getFieldNames();
+    std::vector<std::string> fieldNames();
     int32_t countKeywords(const std::string& keywordprefix,
         const std::vector<std::string>& fieldnames);
-    std::vector<std::string> getKeywords(const std::string& keywordmatch,
+    std::vector<std::string> keywords(const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset);
 };

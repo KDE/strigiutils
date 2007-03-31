@@ -27,7 +27,7 @@
 class FileEntry;
 class FileEntry {
 private:
-    QHash<const QString, FileEntry*> entries;
+    QHash<const QString, FileEntry*> m_entries;
 public:
     QString name;
     QDateTime mtime;
@@ -39,10 +39,10 @@ public:
     explicit FileEntry(const QString &n):name(n){}
     ~FileEntry();
     FileEntry* add(const QString &name);
-    FileEntry* getEntry(const QString &name);
-    const FileEntry* getEntry(const QString &name) const;
-    const QList<FileEntry*> getEntries() const {
-        return entries.values();
+    FileEntry* entry(const QString &name);
+    const FileEntry* entry(const QString &name) const;
+    const QList<FileEntry*> entries() const {
+        return m_entries.values();
     }
 };
 
@@ -62,7 +62,7 @@ protected:
 public:
     virtual StreamEngine *openEntry(const QString& filename) = 0;
     virtual ArchiveDirEngine *openDir(const QString& filename) = 0;
-    virtual jstreams::StreamBase<char>* getInputStream(const FileEntry* entry) = 0;
+    virtual Strigi::StreamBase<char>* inputStream(const FileEntry* entry) = 0;
     // lose references to engines so that they are not deleted
     virtual void releaseEngines() {};
     bool caseSensitive () const { return true; }
@@ -102,7 +102,7 @@ public:
     FileEntryCache();
     ~FileEntryCache();
     void addEntry(const QString& key, FileEntry*e);
-    FileEntry* getEntry(const QString& key, const QDateTime &mtime);
+    FileEntry* entry(const QString& key, const QDateTime &mtime);
 };
 /**
  * @short Implementation of QAbstractFileEngine that can open archives as directories.
@@ -112,11 +112,11 @@ private:
     QString fullpath;
     QString path;
     StreamEngine *streamengine;
-    jstreams::StreamBase<char>* parentstream;
+    Strigi::StreamBase<char>* parentstream;
     Strigi::FsFileInputStream* filestream;
-    QList<jstreams::StreamBase<char>*> compressedstreams;
-    jstreams::SubStreamProvider *zipstream;
-    mutable jstreams::StreamBase<char>* entrystream;
+    QList<Strigi::StreamBase<char>*> compressedstreams;
+    Strigi::SubStreamProvider *zipstream;
+    mutable Strigi::StreamBase<char>* entrystream;
     mutable bool readAllEntryNames;
     FileEntry* rootentry;
     mutable FileEntry* current;
@@ -125,12 +125,12 @@ private:
     bool nextEntry() const;
     void openArchive();
     void readEntryNames() const;
-    jstreams::StreamBase<char>* decompress(jstreams::StreamBase<char>*,
+    Strigi::StreamBase<char>* decompress(Strigi::StreamBase<char>*,
         int32_t bufsize) const;
-    bool testStream(jstreams::StreamBase<char>* is, int32_t readsize) const;
-    void getRootEntry(const QDateTime& mtime);
+    bool testStream(Strigi::StreamBase<char>* is, int32_t readsize) const;
+    void rootEntry(const QDateTime& mtime);
 protected:
-    const QLinkedList<FileEntry>* getEntries(const QString& base);
+    const QLinkedList<FileEntry>* entries(const QString& base);
 public:
     ArchiveEngine(const QString& path, QFSFileEngine *fs);
     ArchiveEngine(StreamEngine *fs);
@@ -142,7 +142,7 @@ public:
     QString fileName ( FileName file = DefaultName ) const;
     // lose references to engines so that they are not deleted
     void releaseEngines() {    streamengine = 0;};
-    jstreams::StreamBase<char>* getInputStream(const FileEntry* entry);
+    Strigi::StreamBase<char>* inputStream(const FileEntry* entry);
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"
         FileFlags flags =

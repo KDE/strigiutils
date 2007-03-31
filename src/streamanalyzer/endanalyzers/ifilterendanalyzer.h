@@ -26,13 +26,13 @@
 class IFilterEndAnalyzer : public Strigi::StreamEndAnalyzer {
     static long initd;
 
-    std::string writeToTempFile(jstreams::InputStream *in, const char* ext) const;
+    std::string writeToTempFile(Strigi::InputStream *in, const char* ext) const;
     bool checkForFile(int depth, const std::string& filename);
 	static std::set<std::string> extensions;
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream *in);
-    const char* getName() const { return "IFilterEndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream *in);
+    const char* name() const { return "IFilterEndAnalyzer"; }
 
     IFilterEndAnalyzer();
     ~IFilterEndAnalyzer();
@@ -40,7 +40,7 @@ public:
 
 class IFilterEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "IFilterEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

@@ -40,14 +40,14 @@ EstraierIndexWriter::~EstraierIndexWriter() {
 void
 EstraierIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
-    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());;
     string value(text, length);
     est_doc_add_text(doc, value.c_str());
 }
 void
 EstraierIndexWriter::setField(const AnalysisResult* idx, const string& name,
         const string& value) {
-    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());
     if (name == "size") {
         est_doc_add_attr(doc, "@size", value.c_str());
     } else if (name == "title") {
@@ -67,14 +67,14 @@ EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
 */
 void
 EstraierIndexWriter::finishIndexable(const AnalysisResult* idx) {
-    ESTDOC* doc = static_cast<ESTDOC*>(idx->getWriterData());;
+    ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());;
     // add required url field
 
-    est_doc_add_attr(doc, "@uri", idx->getPath().c_str());
+    est_doc_add_attr(doc, "@uri", idx->path().c_str());
     char numbuf[64];
-    sprintf(numbuf, "%llu", (int64_t)idx->getMTime());
+    sprintf(numbuf, "%llu", (int64_t)idx->mTime());
     est_doc_add_attr(doc, "@mdate", numbuf);
-    sprintf(numbuf, "%i", idx->getDepth());
+    sprintf(numbuf, "%i", idx->depth());
     est_doc_add_attr(doc, "depth", numbuf);
 
     ESTDB* db = manager->ref();

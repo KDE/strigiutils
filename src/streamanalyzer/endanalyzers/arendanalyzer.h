@@ -25,15 +25,15 @@
 class ArEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     static char staticAnalyze(Strigi::AnalysisResult& idx,
-        jstreams::InputStream* in);
-    const char* getName() const { return "ArEndAnalyzer"; }
+        Strigi::InputStream* in);
+    const char* name() const { return "ArEndAnalyzer"; }
 };
 
 class ArEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "ArEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

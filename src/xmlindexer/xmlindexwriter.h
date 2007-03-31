@@ -170,13 +170,13 @@ protected:
         ar->setWriterData(m);
     }
     void printValue(const Strigi::RegisteredField* name, std::string& value) {
-        const Tag* tag = static_cast<const Tag*>(name->getWriterData());
+        const Tag* tag = static_cast<const Tag*>(name->writerData());
         escape(value);
         out << tag->open << value << tag->close;
     }
     void finishAnalysis(const Strigi::AnalysisResult* ar) {
         Data* d = static_cast<Data*>(ar->writerData());
-        const Strigi::FieldRegister& fr = ar->config().getFieldRegister();
+        const Strigi::FieldRegister& fr = ar->config().fieldRegister();
         std::string v = ar->path();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")

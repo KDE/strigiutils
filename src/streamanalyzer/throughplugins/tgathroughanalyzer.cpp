@@ -25,7 +25,6 @@
 #include "textutils.h"
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
@@ -71,49 +70,49 @@ TgaThroughAnalyzer::connectInputStream(InputStream* in) {
     case 1 :
     case 9 :
     case 32 :
-        analysisResult->setField(factory->colorModeField, "Color-Mapped");
+        analysisResult->addValue(factory->colorModeField, "Color-Mapped");
         break;
     case 2 :
     case 10 :
     case 33 :
-        analysisResult->setField(factory->colorModeField, "RGB");
+        analysisResult->addValue(factory->colorModeField, "RGB");
         break;
     case 3 :
     case 11 :
-        analysisResult->setField(factory->colorModeField, "Black and White");
+        analysisResult->addValue(factory->colorModeField, "Black and White");
         break;
     default :
-        analysisResult->setField(factory->colorModeField, "Unknown");
+        analysisResult->addValue(factory->colorModeField, "Unknown");
     }
 
     switch (imagetype) {
     case 1 :
     case 2 :
     case 3 :
-        analysisResult->setField(factory->compressionField, "None");
+        analysisResult->addValue(factory->compressionField, "None");
         break;
     case 9 :
     case 10 :
     case 11 :
-        analysisResult->setField(factory->compressionField, "RLE");
+        analysisResult->addValue(factory->compressionField, "RLE");
         break;
     case 32 :
-        analysisResult->setField(factory->compressionField, "Huffman, Delta & RLE");
+        analysisResult->addValue(factory->compressionField, "Huffman, Delta & RLE");
         break;
     case 33 :
-        analysisResult->setField(factory->compressionField, "Huffman, Delta, RLE (4-pass quadtree)");
+        analysisResult->addValue(factory->compressionField, "Huffman, Delta, RLE (4-pass quadtree)");
         break;
     default :
-        analysisResult->setField(factory->compressionField, "Unknown");
+        analysisResult->addValue(factory->compressionField, "Unknown");
     };
 
     uint16_t width = readLittleEndianUInt16(buf+12);
     uint16_t height = readLittleEndianUInt16(buf+14);
-    analysisResult->setField(factory->widthField, width);
-    analysisResult->setField(factory->heightField, height);
+    analysisResult->addValue(factory->widthField, width);
+    analysisResult->addValue(factory->heightField, height);
 
     uint8_t colorDepth = *(buf+16);
-    analysisResult->setField(factory->colorDepthField, colorDepth);
+    analysisResult->addValue(factory->colorDepthField, colorDepth);
 
     return in;
 }
@@ -127,7 +126,7 @@ TgaThroughAnalyzer::isReadyWithStream() {
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new TgaThroughAnalyzerFactory());
         return af;

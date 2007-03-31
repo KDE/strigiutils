@@ -21,10 +21,12 @@
 #define BASE64INPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "bufferedstream.h"
 
-namespace jstreams {
-class STREAMS_EXPORT Base64InputStream : public BufferedInputStream<char> {
+namespace Strigi {
+
+class STREAMS_EXPORT Base64InputStream : public BufferedInputStream {
 private:
     int32_t bits;
     char bytestodo;
@@ -32,7 +34,7 @@ private:
     const char* pos, * pend;
     int32_t nleft;
 
-    StreamBase<char>* input;
+    InputStream* input;
 
     static const unsigned char alphabet[];
     static bool inalphabet[256];
@@ -42,10 +44,11 @@ private:
 
     bool moreData();
 public:
-    explicit Base64InputStream(StreamBase<char>* i);
+    explicit Base64InputStream(InputStream* i);
     int32_t fillBuffer(char* start, int32_t space);
-    static std::string decode(const char*c, std::string::size_type length);
+    static std::string decode(const char* in, std::string::size_type length);
 };
-}
+
+} // end namespace Strigi
 
 #endif

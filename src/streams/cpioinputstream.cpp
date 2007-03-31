@@ -23,8 +23,8 @@
 
 #include <list>
 
-using namespace jstreams;
 using namespace std;
+using namespace Strigi;
 
 const char unsigned* CpioInputStream::magic = (const char unsigned *)"070701";
 
@@ -35,27 +35,27 @@ CpioInputStream::checkHeader(const char* data, int32_t datasize) {
     bool ok = memcmp(data, magic, 6) == 0;
     return ok;
 }
-CpioInputStream::CpioInputStream(StreamBase<char>* input)
+CpioInputStream::CpioInputStream(InputStream* input)
         : SubStreamProvider(input) {
 }
 CpioInputStream::~CpioInputStream() {
 }
-StreamBase<char>*
+InputStream*
 CpioInputStream::nextEntry() {
-    if (status) return 0;
-    if (entrystream) {
-        while (entrystream->getStatus() == Ok) {
-            entrystream->skip(entrystream->getSize());
+    if (m_status) return 0;
+    if (m_entrystream) {
+        while (m_entrystream->status() == Ok) {
+            m_entrystream->skip(m_entrystream->size());
         }
-        delete entrystream;
-        entrystream = 0;
+        delete m_entrystream;
+        m_entrystream = 0;
         if (padding) {
-            input->skip(padding);
+            m_input->skip(padding);
         }
     }
     readHeader();
-    entrystream = new SubInputStream(input, entryinfo.size);
-    return (status) ?0 :entrystream;
+    m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
+    return (m_status) ?0 :m_entrystream;
 }
 void
 CpioInputStream::readHeader() {
@@ -66,45 +66,45 @@ CpioInputStream::readHeader() {
 
     // read the first 110 characters
     toread = 110;
-    nread = input->read(b, toread, toread);
+    nread = m_input->read(b, toread, toread);
     if (nread != toread) {
-        status = input->getStatus();
-        if (status == Eof) {
+        m_status = m_input->status();
+        if (m_status == Eof) {
             return;
         }
-        error = "Error reading cpio entry: ";
+        m_error = "Error reading cpio entry: ";
         if (nread == -1) {
-            error += input->getError();
+            m_error += m_input->error();
         } else {
-            error += " premature end of file.";
+            m_error += " premature end of file.";
         }
         return;
     }
     // check header
     if (memcmp(b, magic, 6) != 0) {
-        status = Error;
-        error = "CPIO Entry signature is unknown: ";
-        error.append(b, 6);
+        m_status = Error;
+        m_error = "CPIO Entry signature is unknown: ";
+        m_error.append(b, 6);
         return;
     }
-    entryinfo.size = readHexField(b+54);
-    entryinfo.mtime = readHexField(b+46);
+    m_entryinfo.size = readHexField(b+54);
+    m_entryinfo.mtime = readHexField(b+46);
     int32_t filenamesize = readHexField(b+94);
-    if (status) {
-        error = "Error parsing entry field.";
+    if (m_status) {
+        m_error = "Error parsing entry field.";
         return;
     }
     char namepadding = (filenamesize+2) % 4;
     if (namepadding) namepadding = 4 - namepadding;
-    padding = entryinfo.size % 4;
+    padding = m_entryinfo.size % 4;
     if (padding) padding = 4 - padding;
 
     // read filename
     toread = filenamesize + namepadding;
-    nread = input->read(b, toread, toread);
+    nread = m_input->read(b, toread, toread);
     if (nread != toread) {
-        error = "Error reading cpio entry name.";
-        status = Error;
+        m_error = "Error reading cpio entry name.";
+        m_status = Error;
         return;
     }
     int32_t len = filenamesize - 1;
@@ -114,11 +114,11 @@ CpioInputStream::readHeader() {
     // check if the name is not shorter than specified
     len = 0;
     while (len < filenamesize && b[len] != '\0') len++;
-    entryinfo.filename = std::string((const char*)b, len);
+    m_entryinfo.filename = std::string((const char*)b, len);
 
     // if an cpio has an entry 'TRAILER!!!' we are at the end
-    if ("TRAILER!!!" == entryinfo.filename) {
-        status = Eof;
+    if ("TRAILER!!!" == m_entryinfo.filename) {
+        m_status = Eof;
     }
 }
 int32_t

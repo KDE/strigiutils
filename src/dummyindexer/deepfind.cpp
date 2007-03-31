@@ -37,7 +37,7 @@ public:
     bool useFactory(StreamThroughAnalyzerFactory*) const {return false;}
     bool indexMore() const {return true;}
     bool addMoreText() const {return false;}
-    FieldType getIndexType(const string& fieldname) const {
+    FieldType indexType(const string& fieldname) const {
         return None;
     }
 };

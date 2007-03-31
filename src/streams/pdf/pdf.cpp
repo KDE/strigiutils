@@ -26,7 +26,8 @@
 #include <direct.h>
 #endif
 
-using namespace jstreams;
+using namespace Strigi;
+
 
 extern int32_t streamcount;
 

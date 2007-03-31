@@ -19,8 +19,7 @@
  */
 #include "jstreamsconfig.h"
 #include "streamendanalyzer.h"
-#include "inputstream.h"
-using namespace jstreams;
+#include "streambase.h"
 using namespace Strigi;
 
 char
@@ -28,7 +27,7 @@ StreamEndAnalyzer::testStream(InputStream *in) {
     int32_t testsize = 1;
     const char *dummyptr;
     int32_t nread;
-    int64_t r = in->getPosition();
+    int64_t r = in->position();
     if (r < 0) {
         return -1;
     }

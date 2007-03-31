@@ -21,9 +21,10 @@
 #define TARINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 
-namespace jstreams {
+namespace Strigi {
 
 /**
  * Implementation of SubStreamProvider for reading the tar format. The InputStream recognizes this format:
@@ -32,7 +33,7 @@ namespace jstreams {
  * - each file starts with a header of size 512.
  * - up to 100 bytes of filename at offset 0 of file header
  * - file size is given in 7 bytes of octal format starting at position 124 of the file header
- * - if the filename is '././@LongLink' then this block contains the length of the file name at
+ * - if the filename is '././\@LongLink' then this block contains the length of the file name at
  *   position 124. The next blocks contain the filename. The block after that is the real header
  *   with the file size and only then does the file contents start.
  *
@@ -49,15 +50,15 @@ private:
     int32_t readOctalField(const char *b, int32_t offset);
     void readLongLink(const char *b);
 public:
-    explicit TarInputStream(StreamBase<char> *input);
+    explicit TarInputStream(InputStream *input);
     ~TarInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new TarInputStream(input);
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

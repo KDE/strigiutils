@@ -24,7 +24,6 @@
 #include "fieldtypes.h"
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
@@ -68,7 +67,7 @@ XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
     if (i >= length || data[i] != ' ')
         return;
 
-    analysisResult->setField(factory->heightField, propertyValue);
+    analysisResult->addValue(factory->heightField, propertyValue);
 
     // read the width
     propertyValue = 0;
@@ -81,7 +80,7 @@ XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
     if (i >= length || data[i] != ' ')
         return;
 
-    analysisResult->setField(factory->widthField, propertyValue);
+    analysisResult->addValue(factory->widthField, propertyValue);
 
     // read the number of colors
     propertyValue = 0;
@@ -94,7 +93,7 @@ XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
     if (i >= length || data[i] != ' ')
         return;
 
-    analysisResult->setField(factory->numberOfColorsField, propertyValue);
+    analysisResult->addValue(factory->numberOfColorsField, propertyValue);
 }
 bool
 XpmLineAnalyzer::isReadyWithStream() {
@@ -105,7 +104,7 @@ XpmLineAnalyzer::isReadyWithStream() {
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamLineAnalyzerFactory*>
-    getStreamLineAnalyzerFactories() const {
+    streamLineAnalyzerFactories() const {
         list<StreamLineAnalyzerFactory*> af;
         af.push_back(new XpmLineAnalyzerFactory());
         return af;

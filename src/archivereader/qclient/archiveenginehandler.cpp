@@ -24,9 +24,9 @@
 #include <QtCore/QFSFileEngine>
 #include <QtCore/QDateTime>
 #include <QtCore/QDebug>
-using namespace jstreams;
 #include <iostream>
 using namespace std;
+using namespace Strigi;
 
 class QFileStreamOpener : public StreamOpener {
 public:
@@ -37,7 +37,7 @@ public:
 StreamBase<char>*
 QFileStreamOpener::openStream(const string& url) {
     StreamBase<char>* stream = new FsFileInputStream(QString(url.c_str()));
-    if (stream->getStatus() != Ok) {
+    if (stream->status() != Ok) {
         delete stream;
         stream = 0;
     }
@@ -113,7 +113,7 @@ public:
     QStringList entryList(QDir::Filters filters,
         const QStringList & filterNames) const {
         QStringList l;
-        DirLister dl = reader->getDirEntries(url);
+        DirLister dl = reader->dirEntries(url);
         EntryInfo e;
         while (dl.nextEntry(e)) {
             l << e.filename.c_str();
@@ -135,7 +135,7 @@ public:
     FileFlags fileFlags(FileFlags type) const;
     qint64 read(char* data, qint64 maxlen) {
         int nread = -1;
-        if (stream && stream->getStatus() == Ok) {
+        if (stream && stream->status() == Ok) {
             if (maxlen > 0) {
                 const char* c;
                 nread = stream->read(c, maxlen, maxlen);

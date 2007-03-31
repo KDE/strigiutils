@@ -21,15 +21,16 @@
 #define RPMINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class CpioInputStream;
 class STREAMS_EXPORT RpmInputStream : public SubStreamProvider {
 private:
     // information relating to the current entry
-    StreamBase<char>* uncompressionStream;
+    InputStream* uncompressionStream;
     CpioInputStream* cpio;
     int32_t entryCompressedSize;
     int32_t compressionMethod;
@@ -37,15 +38,15 @@ private:
     RpmHeaderInfo *headerinfo;
 
 public:
-    explicit RpmInputStream(StreamBase<char>* input);
+    explicit RpmInputStream(InputStream* input);
     ~RpmInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new RpmInputStream(input);
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

@@ -20,7 +20,8 @@
 #include "../fileinputstream.h"
 #include "../digestinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 DigestInputStreamTest(int argc, char* argv[]) {

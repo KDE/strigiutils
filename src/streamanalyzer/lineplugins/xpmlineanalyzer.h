@@ -38,7 +38,7 @@ private:
 public:
     XpmLineAnalyzer(const XpmLineAnalyzerFactory* f) :factory(f) {}
     ~XpmLineAnalyzer() {}
-    const char* getName() const { return "XpmLineAnalyzer"; }
+    const char* name() const { return "XpmLineAnalyzer"; }
     void startAnalysis(Strigi::AnalysisResult*);
     void handleLine(const char* data, uint32_t length);
     bool isReadyWithStream();
@@ -51,7 +51,7 @@ private:
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* numberOfColorsField;
-    const char* getName() const {
+    const char* name() const {
         return "XpmLineAnalyzer";
     }
     Strigi::StreamLineAnalyzer* newInstance() const {

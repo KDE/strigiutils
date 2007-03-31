@@ -19,7 +19,8 @@
  */
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 FileInputStreamTest(int argc, char* argv[]) {

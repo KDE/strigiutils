@@ -26,7 +26,6 @@
 #include "streambase.h"
 #include <string>
 using namespace Strigi;
-using namespace jstreams;
 
 AnalysisResult::AnalysisResult(const std::string& p, const char* name,
         time_t mt, AnalysisResult& parent)
@@ -40,7 +39,7 @@ AnalysisResult::AnalysisResult(const std::string& p, const char* name,
 AnalysisResult::AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
         StreamAnalyzer& indexer)
             :m_writerData(0), m_mtime(mt), m_path(p), m_writer(w), m_depth(0),
-             m_indexer(indexer), m_analyzerconfig(indexer.getConfiguration()),
+             m_indexer(indexer), m_analyzerconfig(indexer.configuration()),
              m_parent(0), m_endanalyzer(0) {
     size_t pos = m_path.rfind('/');
     if (pos == std::string::npos) {
@@ -68,12 +67,12 @@ void AnalysisResult::setMimeType(const std::string& mt) { m_mimetype = mt; }
 const std::string& AnalysisResult::mimeType() const { return m_mimetype; }
 
 char
-AnalysisResult::index(jstreams::StreamBase<char>* file) {
+AnalysisResult::index(InputStream* file) {
     return m_indexer.analyze(*this, file);
 }
 char
 AnalysisResult::indexChild(const std::string& name, time_t mt,
-        jstreams::StreamBase<char>* file) {
+        InputStream* file) {
     std::string path(this->m_path);
     path.append("/");
     path.append(name);

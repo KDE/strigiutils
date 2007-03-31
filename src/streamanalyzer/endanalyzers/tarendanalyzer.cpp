@@ -22,7 +22,6 @@
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
-using namespace jstreams;
 using namespace Strigi;
 
 void
@@ -46,13 +45,13 @@ TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
-        idx.indexChild(tar.getEntryInfo().filename, tar.getEntryInfo().mtime,
+        idx.indexChild(tar.entryInfo().filename, tar.entryInfo().mtime,
             s);
         s = tar.nextEntry();
     }
-    if (tar.getStatus() == Error) {
+    if (tar.status() == Error) {
         return -1;
-//        printf("Error: %s\n", tar.getError());
+//        printf("Error: %s\n", tar.error());
     } else {
 //        printf("finished ok\n");
     }

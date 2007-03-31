@@ -28,13 +28,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-using namespace jstreams;
 using namespace std;
+using namespace Strigi;
 
-StreamBase<char>*
+InputStream*
 FileStreamOpener::openStream(const string& url) {
-    StreamBase<char>* stream = new FileInputStream(url.c_str());
-    if (stream->getStatus() != Ok) {
+    InputStream* stream = new FileInputStream(url.c_str());
+    if (stream->status() != Ok) {
         delete stream;
         stream = 0;
     }

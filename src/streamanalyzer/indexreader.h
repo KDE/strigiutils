@@ -31,8 +31,8 @@ class Query;
  * Abstract class that provides read access to a Strigi index.
  *
  * Instances of the class should be obtained by calling the function
- * IndexManager::getIndexReader() and should not be used from threads other
- * than the thread that called IndexManager::getIndexReader().
+ * IndexManager::indexReader() and should not be used from threads other
+ * than the thread that called IndexManager::indexReader().
  **/
 class STREAMANALYZER_EXPORT IndexReader {
 public:
@@ -65,7 +65,7 @@ public:
      * @return a vector with path,mtime pairs for all files with a certain
      *         depth
      **/
-    virtual std::map<std::string, time_t> getFiles(char depth) = 0;
+    virtual std::map<std::string, time_t> files(char depth) = 0;
     /**
      * Count the number of documents indexed in the index.
      *
@@ -83,7 +83,7 @@ public:
      *
      * @return the size of the index
      **/
-    virtual int64_t getIndexSize() { return -1; }
+    virtual int64_t indexSize() { return -1; }
     /**
      * Obtain the documentid for a given document path.
      *
@@ -92,7 +92,7 @@ public:
      *         that id in the index or if there are more than one documents
      *         with that id in the index
      **/
-    virtual int64_t getDocumentId(const std::string& uri) = 0;
+    virtual int64_t documentId(const std::string& uri) = 0;
     /**
      * Retrieve the mtime for given document.
      *
@@ -100,15 +100,15 @@ public:
      * @return the mtime the document with the given id. If there is no such
      *         document in the index, 0 is returned.
      **/
-    virtual time_t getMTime(int64_t docid) = 0;
+    virtual time_t mTime(int64_t docid) = 0;
     /**
      * Retrieve the fieldnames in use in this index.
      **/
-    virtual std::vector<std::string> getFieldNames() = 0;
+    virtual std::vector<std::string> fieldNames() = 0;
     /**
      * Retrieve a histogram of the different values that are in this query.
      **/
-    virtual std::vector<std::pair<std::string,uint32_t> > getHistogram(
+    virtual std::vector<std::pair<std::string,uint32_t> > histogram(
             const std::string& query, const std::string& fieldname,
             const std::string& labeltype) = 0;
     /**
@@ -119,7 +119,7 @@ public:
     /**
      *
      **/
-    virtual std::vector<std::string> getKeywords(
+    virtual std::vector<std::string> keywords(
         const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset) = 0;

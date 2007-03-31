@@ -24,7 +24,6 @@
 #include "textutils.h"
 #include <sstream>
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 const string BmpEndAnalyzerFactory::typeFieldName("type");
@@ -75,17 +74,17 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     in->reset(0);
 
     if (memcmp(bmp_id, bmptype_bm, 2) == 0) {
-        rs.setField(factory->typeField, "Windows Bitmap");
+        rs.addValue(factory->typeField, "Windows Bitmap");
     } else if (memcmp(bmp_id, bmptype_ba, 2) == 0) {
-        rs.setField(factory->typeField, "OS/2 Bitmap Array");
+        rs.addValue(factory->typeField, "OS/2 Bitmap Array");
     } else if (memcmp(bmp_id, bmptype_ci, 2) == 0) {
-        rs.setField(factory->typeField, "OS/2 Color Icon");
+        rs.addValue(factory->typeField, "OS/2 Color Icon");
     } else if (memcmp(bmp_id, bmptype_cp, 2) == 0) {
-        rs.setField(factory->typeField, "OS/2 Color Pointer");
+        rs.addValue(factory->typeField, "OS/2 Color Pointer");
     } else if (memcmp(bmp_id, bmptype_ic, 2) == 0) {
-        rs.setField(factory->typeField, "OS/2 Icon");
+        rs.addValue(factory->typeField, "OS/2 Icon");
     } else if (memcmp(bmp_id, bmptype_pt, 2) == 0) {
-        rs.setField(factory->typeField, "OS/2 Pointer");
+        rs.addValue(factory->typeField, "OS/2 Pointer");
     } else {
         return -1;
     }
@@ -97,27 +96,27 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     if (n < 34) return -1;
 
     uint32_t width = readLittleEndianUInt32(h+18);
-    rs.setField(factory->widthField, width);
+    rs.addValue(factory->widthField, width);
     uint32_t height = readLittleEndianUInt32(h+22);
-    rs.setField(factory->heightField, height);
+    rs.addValue(factory->heightField, height);
     uint32_t colorDepth = readLittleEndianUInt16(h+28);
-    rs.setField(factory->colorDepthField, colorDepth);
+    rs.addValue(factory->colorDepthField, colorDepth);
     uint32_t bmpi_compression = readLittleEndianUInt32(h+30);
     switch (bmpi_compression) {
     case 0 :
-        rs.setField(factory->compressionField, "None");
+        rs.addValue(factory->compressionField, "None");
         break;
     case 1 :
-        rs.setField(factory->compressionField, "RLE 8bit/pixel");
+        rs.addValue(factory->compressionField, "RLE 8bit/pixel");
         break;
     case 2 :
-        rs.setField(factory->compressionField, "RLE 4bit/pixel");
+        rs.addValue(factory->compressionField, "RLE 4bit/pixel");
         break;
     case 3 :
-        rs.setField(factory->compressionField, "Bitfields");
+        rs.addValue(factory->compressionField, "Bitfields");
         break;
     default :
-        rs.setField(factory->compressionField, "Unknown");
+        rs.addValue(factory->compressionField, "Unknown");
     }
 
     return 0;

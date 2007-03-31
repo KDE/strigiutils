@@ -19,14 +19,15 @@
  */
 #include "jstreamsconfig.h"
 #include "fileinputstream.h"
-#include "stringreader.h"
+#include "stringstream.h"
 #include "gzipinputstream.h"
 #include "kmpsearcher.h"
 #include <ctype.h>
-using namespace jstreams;
 extern "C" {
     #include <magic.h>
 }
+
+using namespace Strigi;
 
 /* functions missing from the stream:
    - is the next value a certain string?
@@ -145,7 +146,7 @@ void
 analyze(StreamBase<char>* s) {
     const char* c;
     int32_t n = s->read(c, 1024, 0);
-    while (n >= 0 && s->getStatus() == Ok) {
+    while (n >= 0 && s->status() == Ok) {
         n = s->read(c, 2*n, 0);
     }
     if (n <= 0) {
@@ -179,7 +180,7 @@ findDictStart(const char* start, const char* end) {
     return d;
 }
 const char*
-getStream(const char*start, const char* end) {
+nextStream(const char*start, const char* end) {
     // find the start of the next stream
     const char* s = stream.search(start, end-start);
     if (!s || end-s < 8 || s[-1] == 'd') return s;
@@ -197,7 +198,7 @@ getStream(const char*start, const char* end) {
     const char* v = length.search(d, s-d);
     char* ve;
     if (v) {
-        v += length.getQueryLength();
+        v += length.queryLength();
         l = strtol(v, &ve, 10);
         if (v != ve) {
             v = ve;
@@ -223,7 +224,7 @@ getStream(const char*start, const char* end) {
     }
 
     // now we have a stream from s to e
-    StringReader<char> ss(s, e-s, false);
+    StringInputStream ss(s, e-s, false);
     //printf("%.*s\n", s-d, d);
 
     // do we have a type?
@@ -232,7 +233,7 @@ getStream(const char*start, const char* end) {
     // is the FlatDecode filter applied ?
     v = filter.search(d, s-d);
     if (v) {
-        v+= filter.getQueryLength();
+        v+= filter.queryLength();
         while (ispdfblank(*v)) v++;
     }
     if (v && strncmp(v, "/FlateDecode", 12) == 0) {
@@ -265,11 +266,11 @@ main(int argc, char** argv) {
     for (int i=1; i<argc; ++i) {
         FileInputStream file(argv[i]);
         const char* c;
-        int32_t n = file.read(c, file.getSize(), 0);
+        int32_t n = file.read(c, file.size(), 0);
         const char* end = c+n;
-        const char* s = getStream(c, end);
+        const char* s = nextStream(c, end);
         while (s++) {
-            s = getStream(s, end);
+            s = nextStream(s, end);
         }
     }
     printf("%i\n", count);

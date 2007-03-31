@@ -66,6 +66,6 @@ GrepIndexWriter::addField(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s:%s\n", idx->path().c_str(),
-            field->getKey().c_str(), value.c_str());
+            field->key().c_str(), value.c_str());
     }
 }

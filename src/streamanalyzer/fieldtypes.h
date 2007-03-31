@@ -28,37 +28,37 @@ namespace Strigi {
 class RegisteredField {
 friend class FieldRegister;
 private:
-    const std::string key;
-    const std::string type;
-    const int maxoccurs;
-    const RegisteredField* parent;
-    void* writerdata;
+    const std::string m_key;
+    const std::string m_type;
+    const int m_maxoccurs;
+    const RegisteredField* m_parent;
+    void* m_writerdata;
 
     RegisteredField();
     RegisteredField(const std::string& key, const std::string& type, int maxoccurs,
         const RegisteredField* parent);
 public:
-    const std::string& getKey() const { return key; }
-    void* getWriterData() const { return writerdata; }
-    void setWriterData(void* d) { writerdata = d; }
-    const RegisteredField* getParent() const { return parent; }
-    int getMaxOccurs() const { return maxoccurs; }
-    const std::string& getType() const { return type; }
+    const std::string& key() const { return m_key; }
+    void* writerData() const { return m_writerdata; }
+    void setWriterData(void* data) { m_writerdata = data; }
+    const RegisteredField* parent() const { return m_parent; }
+    int maxOccurs() const { return m_maxoccurs; }
+    const std::string& type() const { return m_type; }
 };
 
 class STREAMANALYZER_EXPORT FieldRegister {
 private:
-    std::map<std::string, RegisteredField*> fields;
+    std::map<std::string, RegisteredField*> m_fields;
 public:
     FieldRegister();
     ~FieldRegister();
     const RegisteredField* registerField(const std::string& fieldname,
         const std::string& type, int maxoccurs, const RegisteredField* parent);
-    const std::map<std::string, RegisteredField*>& getFields() const {
-        return fields;
+    const std::map<std::string, RegisteredField*>& fields() const {
+        return m_fields;
     }
-    std::map<std::string, RegisteredField*>& getFields() {
-        return fields;
+    std::map<std::string, RegisteredField*>& fields() {
+        return m_fields;
     }
 
     static const std::string floatType;

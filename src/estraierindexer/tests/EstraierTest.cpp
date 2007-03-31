@@ -22,11 +22,11 @@ EstraierTest(int argc, char**argv) {
     tests.testAll();
     tests.testAllInThreads(20);
 
-    Strigi::IndexWriter* writer = manager->getIndexWriter();
+    Strigi::IndexWriter* writer = manager->indexWriter();
     IndexWriterTests wtests(*writer, ic);
     wtests.testAll();
 
-    Strigi::IndexReader* reader = manager->getIndexReader();
+    Strigi::IndexReader* reader = manager->indexReader();
     IndexReaderTests rtests(reader);
     rtests.testAll();
 

@@ -23,24 +23,27 @@
 #include "streambase.h"
 #include <openssl/sha.h>
 
-namespace jstreams {
-class STREAMS_EXPORT DigestInputStream : public StreamBase<char> {
+namespace Strigi {
+
+class STREAMS_EXPORT DigestInputStream : public InputStream {
 private:
     bool finished;
 //    int32_t ignoreBytes;
     SHA_CTX sha1;
     unsigned char digest[SHA_DIGEST_LENGTH];
-    StreamBase<char> *input;
+    InputStream *input;
     int64_t totalread;
 
     void finishDigest();
 public:
-    explicit DigestInputStream(StreamBase<char> *input);
+    explicit DigestInputStream(InputStream *input);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);
-    int64_t reset(int64_t);
+    int64_t reset(int64_t pos);
     void printDigest();
-    std::string getDigestString();
+    std::string digestString();
 };
-}
+
+} // end namespace Strigi
+
 #endif

@@ -25,12 +25,12 @@
 
 class TagMapping {
 private:
-    std::map<std::string, std::string> namespaces;
+    std::map<std::string, std::string> m_namespaces;
     std::map<std::string, std::string> mapping;
 public:
     TagMapping(const char* mappingfile);
-    const std::map<std::string, std::string>& getNamespaces() const {
-        return namespaces;
+    const std::map<std::string, std::string>& namespaces() const {
+        return m_namespaces;
     }
     const std::string& map(const std::string& key) const {
         std::map<std::string, std::string>::const_iterator i

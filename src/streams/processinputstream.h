@@ -20,14 +20,15 @@
 #ifndef PROCESSINPUTSTREAM_H
 #define PROCESSINPUTSTREAM_H
 
+#include "streambase.h"
 #include "bufferedstream.h"
 #include <vector>
 
-namespace jstreams {
+namespace Strigi {
 
-class STREAMS_EXPORT ProcessInputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT ProcessInputStream : public BufferedInputStream {
 private:
-    StreamBase<char> *input;
+    InputStream *input;
     const char *const *args;
     int pid;
     int fdin;
@@ -40,10 +41,10 @@ protected:
     int32_t fillBuffer(char* start, int32_t space);
 public:
     ProcessInputStream(const std::vector<std::string>& args,
-        StreamBase<char>* input=0);
+        InputStream* input=0);
     ~ProcessInputStream();
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

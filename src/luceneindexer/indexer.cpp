@@ -18,18 +18,15 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include <CLucene.h>
 #include "indexer.h"
 #include "filelister.h"
-#include "filereader.h"
 #include "cluceneindexmanager.h"
+#include <CLucene/StdHeader.h>
 
-using lucene::index::IndexWriter;
-using namespace Strigi;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir, AnalyzerConfiguration& ic)
+Indexer::Indexer(const char *indexdir, Strigi::AnalyzerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_writer(&m_manager),
           m_indexer(ic)
 {

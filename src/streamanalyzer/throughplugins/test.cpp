@@ -28,7 +28,7 @@ public:
         idx = i;
     }
     Strigi::InputStream *connectInputStream(Strigi::InputStream *in) {
-//        idx->setField("hi", "hi");
+//        idx->addValue("hi", "hi");
         return in;
     }
 };

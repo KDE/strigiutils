@@ -35,7 +35,7 @@ public:
     OggThroughAnalyzer(const OggThroughAnalyzerFactory* f) :factory(f) {}
     ~OggThroughAnalyzer() {}
     void setIndexable(Strigi::AnalysisResult*);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -44,7 +44,7 @@ class OggThroughAnalyzerFactory
 friend class OggThroughAnalyzer;
 private:
     std::map<std::string, const Strigi::RegisteredField*> fields;
-    const char* getName() const {
+    const char* name() const {
         return "OggThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

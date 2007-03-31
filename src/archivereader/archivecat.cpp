@@ -21,7 +21,7 @@
 #include "archivereader.h"
 #include "fileinputstream.h"
 #include "substreamprovider.h"
-using namespace jstreams;
+using namespace Strigi;
 using namespace std;
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -41,7 +41,7 @@ main(int argc, char** argv) {
             continue;
         }
         printf("file: %i %s\n", e.type, e.filename.c_str());
-        DirLister dl = reader.getDirEntries(argv[i]);
+        DirLister dl = reader.dirEntries(argv[i]);
         while (dl.nextEntry(e)) {
             printf("%i %s\n", e.type, e.filename.c_str());
         }
@@ -58,8 +58,8 @@ main(int argc, char** argv) {
                 n = s->read(c, 1, 0);
             }
             printf("read %lli bytes.\n", total);
-            if (s->getStatus() == Error) {
-                printf("Error: %s\n", s->getError());
+            if (s->status() == Error) {
+                printf("Error: %s\n", s->error());
             }
             reader.closeStream(s);
         }

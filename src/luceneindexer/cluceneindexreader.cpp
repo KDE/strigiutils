@@ -52,11 +52,11 @@ using namespace Strigi;
 
 class HitCounter : public HitCollector {
 private:
-    int32_t count;
-    void collect (const int32_t doc, const float_t score) { count++; }
+    int32_t m_count;
+    void collect (const int32_t doc, const float_t score) { m_count++; }
 public:
-    HitCounter() :count(0) {}
-    int32_t getCount() const { return count; }
+    HitCounter() :m_count(0) {}
+    int32_t count() const { return m_count; }
 };
 
 class CLuceneIndexReader::Private {
@@ -101,7 +101,7 @@ CLuceneIndexReader::closeReader() {
 }
 bool
 CLuceneIndexReader::checkReader(bool enforceCurrent) {
-    if (manager->getIndexMTime() > otime) {
+    if (manager->indexMTime() > otime) {
         struct timeval t;
         gettimeofday(&t, 0);
         if (enforceCurrent || t.tv_sec-otime > 60) {
@@ -181,16 +181,16 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query) {
     BooleanQuery* bq = _CLNEW BooleanQuery();
     lucene::analysis::standard::StandardAnalyzer a;
     // add the attributes
-    const list<Query>& terms = query.getTerms();
+    const list<Query>& terms = query.terms();
     list<Query>::const_iterator i;
     set<string>::const_iterator j;
     for (i = terms.begin(); i != terms.end(); ++i) {
         lucene::search::Query* tq;
-        if (i->getTerms().size() > 0) {
+        if (i->terms().size() > 0) {
             tq = createBooleanQuery(*i);
         } else {
-            wstring fieldname = mapId(i->getFieldName().c_str());
-            string expr = i->getExpression();
+            wstring fieldname = mapId(i->fieldName().c_str());
+            string expr = i->expression();
             Term* t = 0;
             if (expr.length() > 0 && expr[0] == '<') {
                 t = createTerm(fieldname.c_str(), expr.substr(1));
@@ -209,7 +209,7 @@ CLuceneIndexReader::Private::createBooleanQuery(const Query& query) {
             }
             if (t) _CLDECDELETE(t);
         }
-        Query::Occurrence o = i->getOccurrence();
+        Query::Occurrence o = i->occurrence();
         bq->add(tq, true, o == Query::MUST, o == Query::MUST_NOT);
     }
     return bq;
@@ -269,7 +269,7 @@ CLuceneIndexReader::countHits(const Query& q) {
         } catch (CLuceneError& err2) {
             printf("ccould not query: %s\n", err.what());
         }
-        s = counter.getCount();
+        s = counter.count();
 
         printf("counted %i hits\n", count);
         // try to do a constant score query
@@ -300,9 +300,9 @@ CLuceneIndexReader::query(const Query& q) {
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    int off = q.getOffset();
+    int off = q.offset();
     if (off < 0) off = 0;
-    int max = q.getMax() + off;
+    int max = q.max() + off;
     if (max < 0) max = s;
     if (max > s) max = s;
     results.reserve(max-off);
@@ -326,7 +326,7 @@ CLuceneIndexReader::query(const Query& q) {
     return results;
 }
 map<string, time_t>
-CLuceneIndexReader::getFiles(char depth) {
+CLuceneIndexReader::files(char depth) {
     map<string, time_t> files;
     if (!checkReader()) {
         return files;
@@ -377,11 +377,11 @@ CLuceneIndexReader::countWords() {
     return wordcount;
 }
 int64_t
-CLuceneIndexReader::getIndexSize() {
-    return manager->getIndexSize();
+CLuceneIndexReader::indexSize() {
+    return manager->indexSize();
 }
 int64_t
-CLuceneIndexReader::getDocumentId(const string& uri) {
+CLuceneIndexReader::documentId(const string& uri) {
     if (!checkReader()) return -1;
     int64_t id = -1;
 
@@ -405,7 +405,7 @@ CLuceneIndexReader::getDocumentId(const string& uri) {
  * is not in the index, the time 0 is returned.
  **/
 time_t
-CLuceneIndexReader::getMTime(int64_t docid) {
+CLuceneIndexReader::mTime(int64_t docid) {
     if (docid < 0) return 0;
     if (!checkReader(true)) return 0;
     time_t mtime = 0;
@@ -471,7 +471,7 @@ makeHistogram(const vector<int>& v, int min, int max) {
     return h;
 }
 vector<pair<string,uint32_t> >
-CLuceneIndexReader::getHistogram(const string& query,
+CLuceneIndexReader::histogram(const string& query,
         const string& fieldname, const string& labeltype) {
     vector<pair<string,uint32_t> > h;
     if (!checkReader()) {
@@ -523,7 +523,7 @@ CLuceneIndexReader::getHistogram(const string& query,
     }
 }
 vector<string>
-CLuceneIndexReader::getFieldNames() {
+CLuceneIndexReader::fieldNames() {
     vector<string> s;
     if (!checkReader()) {
         return s;
@@ -545,13 +545,13 @@ CLuceneIndexReader::countKeywords(const string& keywordprefix,
     return 2;
 }
 vector<string>
-CLuceneIndexReader::getKeywords(const string& keywordmatch,
+CLuceneIndexReader::keywords(const string& keywordmatch,
         const vector<string>& fieldnames, uint32_t max, uint32_t offset) {
     vector<string> fn;
     if (fieldnames.size()) {
         fn = fieldnames;
     } else {
-        fn = getFieldNames();
+        fn = fieldNames();
     }
     set<wstring> s;
     wstring prefix = utf8toucs2(keywordmatch);

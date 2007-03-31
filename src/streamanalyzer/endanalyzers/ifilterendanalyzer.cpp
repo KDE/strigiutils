@@ -95,14 +95,14 @@ IFilterEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 IFilterEndAnalyzer::analyze(AnalysisResult& idx, InputStream *in) {
-	const string& filename = idx.getFileName();
+	const string& filename = idx.fileName();
 	int p = filename.find_last_of('.');
 	if ( p < 0 ||  extensions.find(filename.substr(p)) == extensions.end() ){
 		return -1;
 	}
 
 	string filepath;
-    bool fileisondisk = checkForFile(idx.getDepth(), filename);
+    bool fileisondisk = checkForFile(idx.depth(), filename);
     if (fileisondisk) {
         filepath = filename;
     } else {
@@ -170,7 +170,7 @@ IFilterEndAnalyzer::analyze(AnalysisResult& idx, InputStream *in) {
 							 pVar->vt == VT_LPWSTR ){
 
 							string str = wchartoutf8(pVar->pwszVal,pVar->pwszVal+wcslen(pVar->pwszVal));
-							idx.setField("title", str );
+							idx.addValue("title", str );
 						}
 						PropVariantClear( pVar );
 						CoTaskMemFree( pVar );

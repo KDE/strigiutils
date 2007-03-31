@@ -20,21 +20,20 @@
 #include "fsfileinputstream.h"
 #include <QtCore/QFSFileEngine>
 using namespace Strigi;
-using namespace jstreams;
 
 const int32_t FsFileInputStream::defaultBufferSize = 64;
 FsFileInputStream::FsFileInputStream(const QString &filename, int32_t buffersize) {
     // initialize values that signal state
-    status = Ok;
+    m_status = Ok;
     fse = new QFSFileEngine(filename);
 
     // try to open the file for reading
     open = fse->open(QIODevice::ReadOnly);
     if (!open) {
         // handle error
-        error = (const char*)fse->errorString().toUtf8();
-    printf("error: %s %s\n",  (const char*)filename.toUtf8(), error.c_str());
-        status = Error;
+        m_error = (const char*)fse->errorString().toUtf8();
+    printf("error: %s %s\n",  (const char*)filename.toUtf8(), m_error.c_str());
+        m_status = Error;
         return;
     }
 
@@ -42,7 +41,7 @@ FsFileInputStream::FsFileInputStream(const QString &filename, int32_t buffersize
     //mark(buffersize);
 }
 FsFileInputStream::FsFileInputStream(QFSFileEngine *fse, int32_t buffersize) {
-    status = Ok;
+    m_status = Ok;
     open = true; // fse must be have been opened
     this->fse = fse;
     // allocate memory in the buffer
@@ -55,17 +54,17 @@ StreamStatus
 FsFileInputStream::reopen() {
     if (open) {
         if (!fse->seek(0)) {
-            error = (const char*)fse->errorString().toUtf8();
-            status = Error;
+            m_error = (const char*)fse->errorString().toUtf8();
+            m_status = Error;
         }
     } else if (fse->open(QIODevice::ReadOnly)) {
         open = true;
     } else {
-        error = (const char*)fse->errorString().toUtf8();
-        status = Error;
+        m_error = (const char*)fse->errorString().toUtf8();
+        m_status = Error;
     }
     resetBuffer();
-    return status;
+    return m_status;
 }
 int32_t
 FsFileInputStream::fillBuffer(char* start, int32_t space) {
@@ -74,10 +73,10 @@ FsFileInputStream::fillBuffer(char* start, int32_t space) {
     int32_t nwritten = (int32_t)fse->read(start, space);
     // check the file stream status
     if (nwritten == (int32_t)-1) {
-        error = (const char*)fse->errorString().toUtf8();
+        m_error = (const char*)fse->errorString().toUtf8();
         fse->close();
         open = false;
-        status = Error;
+        m_status = Error;
     } else if (nwritten == 0) {
         fse->close();
         open = false;

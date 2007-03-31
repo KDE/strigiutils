@@ -139,7 +139,7 @@ void
 SaxEndAnalyzer::Private::endElementSAXFunc(void* ctx, const char* name) {
     Private* p = (Private*)ctx;
     if (p->idx && p->fieldtype == TITLE && p->fieldvalue.size()) {
-        p->idx->setField(p->factory->titleField, p->fieldvalue);
+        p->idx->addValue(p->factory->titleField, p->fieldvalue);
         p->fieldvalue = "";
     }
     if (p->depth) p->depth--;
@@ -157,7 +157,7 @@ SaxEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return !p->error;
 }
 char
-SaxEndAnalyzer::analyze(AnalysisResult& idx, jstreams::InputStream* in) {
+SaxEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* b;
     int32_t nread = in->read(b, 4, 0);
     if (nread >= 4) {
@@ -170,16 +170,16 @@ SaxEndAnalyzer::analyze(AnalysisResult& idx, jstreams::InputStream* in) {
     }
     p->finish();
 /*    if (p->ctxt->encoding) {
-        i->setField("encoding", (const char*)p->ctxt->encoding);
+        i->addValue("encoding", (const char*)p->ctxt->encoding);
     }*/
     if (p->html) {
         idx.setMimeType("text/html");
     } else if (p->wellformed) {
         idx.setMimeType("text/xml");
     }
-//    i->setField("root", p->rootelement);
-    if (in->getStatus() != jstreams::Eof) {
-        error = in->getError();
+//    i->addValue("root", p->rootelement);
+    if (in->status() != Eof) {
+        m_error = in->error();
         return -1;
     }
     return 0;

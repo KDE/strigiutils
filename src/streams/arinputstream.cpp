@@ -23,7 +23,7 @@
 
 #include <stdlib.h>
 
-using namespace jstreams;
+using namespace Strigi;
 
 bool
 ArInputStream::checkHeader(const char* data, int32_t datasize) {
@@ -32,28 +32,28 @@ ArInputStream::checkHeader(const char* data, int32_t datasize) {
     bool ok = memcmp(data, magic, 8) == 0;
     return ok;
 }
-ArInputStream::ArInputStream(StreamBase<char>* input)
+ArInputStream::ArInputStream(InputStream* input)
         : SubStreamProvider(input) {
     // check header
     const char*b;
     if (input->read(b, 8, 8) != 8 || !checkHeader(b, 8)) {
-        status = Error;
+        m_status = Error;
     }
 }
 ArInputStream::~ArInputStream() {
 }
-StreamBase<char>*
+InputStream*
 ArInputStream::nextEntry() {
-    if (status) return 0;
-    if (entrystream) {
-        entrystream->skip(entrystream->getSize());
-        delete entrystream;
-        entrystream = 0;
+    if (m_status) return 0;
+    if (m_entrystream) {
+        m_entrystream->skip(m_entrystream->size());
+        delete m_entrystream;
+        m_entrystream = 0;
     }
     readHeader();
-    if (status) return 0;
-    entrystream = new SubInputStream(input, entryinfo.size);
-    return entrystream;
+    if (m_status) return 0;
+    m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
+    return m_entrystream;
 }
 void
 ArInputStream::readHeader() {
@@ -61,27 +61,27 @@ ArInputStream::readHeader() {
     int32_t toread;
     int32_t nread;
 
-    int64_t pos = input->getPosition();
+    int64_t pos = m_input->position();
     if (pos%2) {
-        input->skip(1);
+        m_input->skip(1);
     }
 
     // read the first 60 characters
     toread = 60;
-    nread = input->read(b, toread, toread);
-    if (input->getStatus() == Error) {
-        error = "Error reading ar header: ";
-        error += input->getError();
-        status = Error;
+    nread = m_input->read(b, toread, toread);
+    if (m_input->status() == Error) {
+        m_error = "Error reading ar header: ";
+        m_error += m_input->error();
+        m_status = Error;
         return;
     }
     if (nread <= 1) { // allow for a closing byte
-        status = Eof;
+        m_status = Eof;
         return;
     }
     if (nread != toread) {
-        error = "Error reading ar header: premature end of file.";
-        status = Error;
+        m_error = "Error reading ar header: premature end of file.";
+        m_status = Error;
         return;
     }
     int len;
@@ -92,27 +92,27 @@ ArInputStream::readHeader() {
         }
     }
 
-    entryinfo.size = atoi(b+48);
-    entryinfo.mtime = atoi(b+16);
+    m_entryinfo.size = atoi(b+48);
+    m_entryinfo.mtime = atoi(b+16);
     if (len == 0) {
         if (b[1] == '/') {
-            nread = input->read(b, entryinfo.size, entryinfo.size);
-            gnufilenames = std::string(b, entryinfo.size);
+            nread = m_input->read(b, m_entryinfo.size, m_entryinfo.size);
+            gnufilenames = std::string(b, m_entryinfo.size);
             readHeader();
         } else if (b[1] == ' ') {
-            input->skip(entryinfo.size);
+            m_input->skip(m_entryinfo.size);
             readHeader();
         } else {
             int p = atoi(b+1);
             const char* c = gnufilenames.c_str() + p;
             const char* e = strchr(c, '/');
             if (e) {
-                entryinfo.filename = std::string(c, e-c);
+                m_entryinfo.filename = std::string(c, e-c);
             } else {
-                entryinfo.filename = c;
+                m_entryinfo.filename = c;
             }
         }
     } else {
-        entryinfo.filename = std::string(b, len);
+        m_entryinfo.filename = std::string(b, len);
     }
 }

@@ -22,7 +22,7 @@
 
 #include <QtCore/QAbstractFileEngineHandler>
 
-namespace jstreams {
+namespace Strigi {
     class ArchiveReader;
 }
 class QFileStreamOpener;
@@ -34,7 +34,7 @@ class QFileStreamOpener;
 class ArchiveEngineHandler : public QAbstractFileEngineHandler {
 private:
     QFileStreamOpener* opener;
-    jstreams::ArchiveReader* reader;
+    Strigi::ArchiveReader* reader;
 //    bool open(StreamEngine** se, ArchiveEngineBase** ae, const QString& name) const { return false; }
 public:
     ArchiveEngineHandler();

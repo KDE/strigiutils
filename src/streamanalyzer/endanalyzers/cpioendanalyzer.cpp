@@ -23,7 +23,6 @@
 #include "subinputstream.h"
 #include "analysisresult.h"
 using namespace Strigi;
-using namespace jstreams;
 
 void
 CpioEndAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -40,21 +39,21 @@ CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     CpioInputStream cpio(in);
     InputStream *s = cpio.nextEntry();
-    if (cpio.getStatus()) {
-        fprintf(stderr, "error: %s\n", cpio.getError());
+    if (cpio.status()) {
+        fprintf(stderr, "error: %s\n", cpio.error());
 //        exit(1);
     }
     while (s) {
-        idx.indexChild(cpio.getEntryInfo().filename, cpio.getEntryInfo().mtime,
+        idx.indexChild(cpio.entryInfo().filename, cpio.entryInfo().mtime,
             s);
         s = cpio.nextEntry();
     }
-    if (cpio.getStatus() == Error) {
-        fprintf(stderr, cpio.getError());
-        error = cpio.getError();
+    if (cpio.status() == Error) {
+        fprintf(stderr, cpio.error());
+        m_error = cpio.error();
         return -1;
     } else {
-        error.resize(0);
+        m_error.resize(0);
     }
     return 0;
 }

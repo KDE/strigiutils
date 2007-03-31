@@ -65,15 +65,15 @@ public:
 
     lucene::index::IndexWriter* refWriter();
     void derefWriter();
-    Strigi::IndexReader* getIndexReader();
-    Strigi::IndexWriter* getIndexWriter();
-    CLuceneIndexReader* getReader();
-//    Strigi::QueryBitsetCache* getBitSets();
+    Strigi::IndexReader* indexReader();
+    Strigi::IndexWriter* indexWriter();
+    CLuceneIndexReader* luceneReader();
+//    Strigi::QueryBitsetCache* bitSets();
     int32_t docCount();
-    int64_t getIndexSize();
+    int64_t indexSize();
     void deleteIndex();
     void closeWriter();
-    time_t getIndexMTime();
+    time_t indexMTime();
     void setIndexMTime();
 };
 

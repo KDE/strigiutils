@@ -23,7 +23,6 @@
 #include "textutils.h"
 using namespace Strigi;
 using namespace std;
-using namespace jstreams;
 string
 AnalysisResult::extension() const {
     string::size_type p1 = m_name.rfind('.');
@@ -34,7 +33,7 @@ AnalysisResult::extension() const {
     return "";
 }
 void
-AnalysisResult::setField(const RegisteredField* field, const std::string& value){
+AnalysisResult::addValue(const RegisteredField* field, const std::string& value){
     // make sure only utf8 is stored
     if (!checkUtf8(value)) {
         fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
@@ -43,20 +42,20 @@ AnalysisResult::setField(const RegisteredField* field, const std::string& value)
     m_writer.addField(this, field, value);
 }
 void
-AnalysisResult::setField(const RegisteredField* field,
+AnalysisResult::addValue(const RegisteredField* field,
         const char* data, uint32_t length) {
     m_writer.addField(this, field, (const unsigned char*)data, length);
 }
 void
-AnalysisResult::setField(const RegisteredField* field, int32_t value) {
+AnalysisResult::addValue(const RegisteredField* field, int32_t value) {
     m_writer.addField(this, field, value);
 }
 void
-AnalysisResult::setField(const RegisteredField* field, uint32_t value) {
+AnalysisResult::addValue(const RegisteredField* field, uint32_t value) {
     m_writer.addField(this, field, value);
 }
 void
-AnalysisResult::setField(const RegisteredField* field, double value) {
+AnalysisResult::addValue(const RegisteredField* field, double value) {
     m_writer.addField(this, field, value);
 }
 void

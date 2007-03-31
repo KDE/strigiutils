@@ -20,14 +20,15 @@
 #include "jstreamsconfig.h"
 #include "inputstreamtests.h"
 #include "../substreamprovider.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int founderrors = 0;
 
 template <class T>
 void
 inputStreamTest1(StreamBase<T>* s) {
-    int64_t size = s->getSize();
+    int64_t size = s->size();
     VERIFY(s->skip(0) == 0);
     VERIFY(size >= -1);
     const T* ptr = 0;
@@ -35,34 +36,34 @@ inputStreamTest1(StreamBase<T>* s) {
     if (size == -1) {
         n = 0;
         int32_t n2 = s->read(ptr, 1, 0);
-        if (s->getStatus() == Error) fprintf(stderr, "%s\n", s->getError());
+        if (s->status() == Error) fprintf(stderr, "%s\n", s->error());
         VERIFY(n2 > -2);
         VERIFY(ptr);
         while (n2 > 0) {
             n += n2;
             n2 = s->read(ptr, 1, 0);
-            if (s->getStatus() == Error) fprintf(stderr, "%s\n", s->getError());
+            if (s->status() == Error) fprintf(stderr, "%s\n", s->error());
             VERIFY(n2 > -2);
             VERIFY(ptr);
         }
-        size = s->getSize();
+        size = s->size();
     } else {
         // read past the end
         n = s->read(ptr, size+1, size+1);
         VERIFY(ptr);
     }
     VERIFY(size == n);
-    VERIFY(s->getPosition() == n);
-    if (s->getStatus() == jstreams::Error) {
-        fprintf(stderr, "error %s\n", s->getError());
+    VERIFY(s->position() == n);
+    if (s->status() == Strigi::Error) {
+        fprintf(stderr, "error %s\n", s->error());
     }
-    VERIFY(s->getStatus() == jstreams::Eof);
+    VERIFY(s->status() == Strigi::Eof);
 }
 
 template <class T>
 void
 inputStreamTest2(StreamBase<T>* s) {
-    int64_t p = s->getPosition();
+    int64_t p = s->position();
     const T* ptr;
     int64_t n = s->read(ptr, 100, 0);
     VERIFY(n > 0);
@@ -71,7 +72,7 @@ inputStreamTest2(StreamBase<T>* s) {
     VERIFY(n > 0);
     n = s->reset(p);
     VERIFY(n == p);
-    VERIFY(s->getPosition() == p);
+    VERIFY(s->position() == p);
     inputStreamTest1(s);
 }
 void
@@ -79,14 +80,14 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
     while (s) {
         inputStreamTest1<char>(s);
-        printf("%s %i\n", ssp->getEntryInfo().filename.c_str(),
-            ssp->getEntryInfo().size);
+        printf("%s %i\n", ssp->entryInfo().filename.c_str(),
+            ssp->entryInfo().size);
         s = ssp->nextEntry();
     }
-    if (ssp->getStatus() == jstreams::Error) {
-        fprintf(stderr, "%s\n", ssp->getError());
+    if (ssp->status() == Strigi::Error) {
+        fprintf(stderr, "%s\n", ssp->error());
     }
-    VERIFY(ssp->getStatus() == jstreams::Eof);
+    VERIFY(ssp->status() == Strigi::Eof);
 }
 void
 subStreamProviderTest2(SubStreamProvider* ssp) {
@@ -95,10 +96,10 @@ subStreamProviderTest2(SubStreamProvider* ssp) {
         inputStreamTest2<char>(s);
         s = ssp->nextEntry();
     }
-    if (ssp->getStatus() == jstreams::Error) {
-        fprintf(stderr, "%s\n", ssp->getError());
+    if (ssp->status() == Strigi::Error) {
+        fprintf(stderr, "%s\n", ssp->error());
     }
-    VERIFY(ssp->getStatus() == jstreams::Eof);
+    VERIFY(ssp->status() == Strigi::Eof);
 }
 
 int ninputstreamtests = 2;

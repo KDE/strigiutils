@@ -25,10 +25,10 @@
 #include <vector>
 #include <string>
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 template <class T> class StreamBase;
 class SubStreamProvider;
@@ -40,7 +40,7 @@ struct EntryInfo;
 class STREAMS_EXPORT DirLister {
 private:
     int pos;
-    std::vector<jstreams::EntryInfo> entries;
+    std::vector<EntryInfo> entries;
 public:
     /**
      * @brief Create a DirLister
@@ -48,7 +48,7 @@ public:
      * @param e a vector containing information about each
      * item in the directory
      */
-    DirLister(const std::vector<jstreams::EntryInfo>& e)
+    DirLister(const std::vector<EntryInfo>& e)
         : pos(0)
         , entries(e)
     {}
@@ -60,7 +60,7 @@ public:
      * @return true if there was another item in the directory, false
      * if there are no further items in the directory
      */
-    bool nextEntry(jstreams::EntryInfo& e);
+    bool nextEntry(EntryInfo& e);
 };
 
 /**
@@ -81,7 +81,7 @@ public:
      * @param url unique name of or path to an item
      * @return a stream representing the item given by @p url
      */
-    virtual jstreams::StreamBase<char>* openStream(const std::string& url) = 0;
+    virtual InputStream* openStream(const std::string& url) = 0;
     /**
      * @brief Gets information about a given url
      *
@@ -94,7 +94,7 @@ public:
      * the item given by @p url
      * @return 0 if information about the item was found, -1 on error
      */
-    virtual int stat(const std::string& url, jstreams::EntryInfo& e) = 0;
+    virtual int stat(const std::string& url, EntryInfo& e) = 0;
 };
 
 /**
@@ -110,20 +110,6 @@ private:
     class ArchiveReaderPrivate;
     ArchiveReaderPrivate *p;
 
-    /**
-     * @brief Query known StreamOpeners about an URL.
-     *
-     * Adds the info to the cache if it was found
-     *
-     * TODO: this should be in ArchiveReaderPrivate
-     *
-     * @param url the URL to query
-     * @param e the EntryInfo structure to populate with the information
-     * @return 0 on success, -1 if the url was not found
-     */
-    int localStat(const std::string& url, jstreams::EntryInfo& e);
-    /** unused ??? */
-    int32_t maxsize;
 public:
     /** Constructor */
     ArchiveReader();
@@ -140,7 +126,7 @@ public:
      * @param url path to a member of an archive, relative to the archive root
      * @return a stream representing the archive member given by @p url
      */
-    jstreams::StreamBase<char>* openStream(const std::string& url);
+    InputStream* openStream(const std::string& url);
     /**
      * @brief Cleans up after a stream is finished with
      *
@@ -152,7 +138,7 @@ public:
      *
      * @param stream the stream to clean up after
      */
-    void closeStream(jstreams::StreamBase<char>* stream);
+    void closeStream(InputStream* stream);
     /**
      * @brief Gets information about a given url
      *
@@ -166,7 +152,7 @@ public:
      * the archive member given by @p url
      * @return 0 if information about the item was found, -1 on error
      */
-    int stat(const std::string& url, jstreams::EntryInfo& e);
+    int stat(const std::string& url, EntryInfo& e);
     /**
      * @brief Adds a StreamOpener for use by the class.
      *
@@ -199,7 +185,7 @@ public:
      * file did not exist, was not a directory or could not be
      * handled
      */
-    DirLister getDirEntries(const std::string& url);
+    DirLister dirEntries(const std::string& url);
     /**
      * @brief Check if a file is an archive.
      *
@@ -245,7 +231,7 @@ public:
      * @param url the path to the file
      * @return a stream representing the file given by @p url
      */
-    jstreams::StreamBase<char>* openStream(const std::string& url);
+    InputStream* openStream(const std::string& url);
     /**
      * @brief Gets information about a given file
      *
@@ -254,9 +240,9 @@ public:
      * the file given by @p url
      * @return 0 if information about the file was found, -1 on error
      */
-    int stat(const std::string& url, jstreams::EntryInfo& e);
+    int stat(const std::string& url, EntryInfo& e);
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

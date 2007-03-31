@@ -25,12 +25,9 @@
 #include "jstreamsconfig.h"
 #include "streamanalyzer.h"
 
-namespace jstreams {
-   template <class T> class StreamBase;
-}
-
 namespace Strigi {
 
+template <class T> class StreamBase;
 class FieldRegister;
 
 /*
@@ -50,8 +47,8 @@ class RegisteredField;
  * Abstract class that provides write access to a Strigi index.
  *
  * Instances of the class should be obtained by calling the function
- * IndexManager::getIndexWriter() and should not be used from threads other
- * than the thread that called IndexManager::getIndexWriter().
+ * IndexManager::indexWriter() and should not be used from threads other
+ * than the thread that called IndexManager::indexWriter().
  **/
 class STREAMANALYZER_EXPORT IndexWriter {
 friend class AnalysisResult;

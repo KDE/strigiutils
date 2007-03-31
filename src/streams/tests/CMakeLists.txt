@@ -17,7 +17,7 @@ set(streamtests
 )
 if(NOT WIN32)
         set(streamtests ${streamtests}
-                StringReaderTest.cpp    # this maybe works with mingw
+                StringStreamTest.cpp    # this maybe works with mingw
                 ArchiveReaderTest.cpp
                 ProcessInputStreamTest.cpp
         )

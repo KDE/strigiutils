@@ -59,7 +59,7 @@ public:
 
 Strigi::InputStream *
 XattrAnalyzer::connectInputStream(Strigi::InputStream *in) {
-    if (idx->getDepth() != 0) return in;
+    if (idx->depth() != 0) return in;
     ssize_t s;
     errno = 0;
     do {
@@ -67,7 +67,7 @@ XattrAnalyzer::connectInputStream(Strigi::InputStream *in) {
             namesize *= 2;
             namebuffer = (char*)realloc(namebuffer, namesize);
         }
-        s = llistxattr(idx->getPath().c_str(), namebuffer, namesize);
+        s = llistxattr(idx->path().c_str(), namebuffer, namesize);
     } while (s == -1 && errno == ERANGE && namesize < maxnamesize);
     if (s == -1) return in;
 
@@ -78,7 +78,7 @@ XattrAnalyzer::connectInputStream(Strigi::InputStream *in) {
             if (end != start) {
                 const char* val = retrieveAttribute(start);
                 if (val) {
-                    idx->setField(start, val);
+                    idx->addValue(start, val);
                 }
                 start = end+1;
             }
@@ -98,7 +98,7 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
             valsize *= 2;
             valbuffer = (char*)realloc(valbuffer, valsize);
         }
-        s = lgetxattr(idx->getPath().c_str(), name, valbuffer, valsize-1);
+        s = lgetxattr(idx->path().c_str(), name, valbuffer, valsize-1);
     } while (s == -1 && errno == ERANGE && valsize < maxvalsize);
     if (s == -1) return 0;
     valbuffer[s] = '\0';
@@ -108,7 +108,7 @@ XattrAnalyzer::retrieveAttribute(const char* name) {
 //define all the available analyzers in this plugin
 class XattrThroughAnalyzerFactory : public StreamThroughAnalyzerFactory {
 private:
-    const char* getName() const {
+    const char* name() const {
         return "XattrThroughAnalyzer";
     }
     StreamThroughAnalyzer* newInstance() const {
@@ -119,7 +119,7 @@ private:
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new XattrThroughAnalyzerFactory());
         return af;

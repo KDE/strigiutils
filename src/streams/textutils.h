@@ -29,7 +29,8 @@
  #define STREAMS_INLINE_EXPORT STREAMS_EXPORT
 #endif
 
-namespace jstreams {
+
+namespace Strigi {
 
 STREAMS_EXPORT const char* checkUtf8(const char* p, int32_t length, char& nb);
  
@@ -131,6 +132,6 @@ inline STREAMS_INLINE_EXPORT uint64_t readBigEndianUInt64(const unsigned char* c
 }
 
 
-}
+} // end namespace Strigi
 
 #endif

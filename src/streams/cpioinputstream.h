@@ -21,10 +21,11 @@
 #define CPIOINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class STREAMS_EXPORT CpioInputStream : public SubStreamProvider {
 private:
@@ -34,15 +35,15 @@ private:
     void readHeader();
     int32_t readHexField(const char *b);
 public:
-    explicit CpioInputStream(StreamBase<char>* input);
+    explicit CpioInputStream(InputStream* input);
     ~CpioInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new CpioInputStream(input);
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

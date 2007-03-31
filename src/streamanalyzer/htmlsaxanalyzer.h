@@ -29,7 +29,7 @@ namespace Strigi {
 class StreamSaxAnalyzer;
 class HtmlSaxAnalyzer : public StreamSaxAnalyzer {
 public:
-    const char* getName() const { return "HtmlSaxAnalyzer"; }
+    const char* name() const { return "HtmlSaxAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();
     void startElement(const char* localname, const char* prefix,
@@ -41,7 +41,7 @@ public:
     bool isReadyWithStream();
 };
 class HtmlSaxAnalyzerFactory : public StreamSaxAnalyzerFactory {
-    const char* getName() const {
+    const char* name() const {
         return "HtmlSaxAnalyzerFactory";
     }
     void registerFields(Strigi::FieldRegister&) {

@@ -23,7 +23,6 @@
 #include "analysisresult.h"
 #include "subinputstream.h"
 using namespace Strigi;
-using namespace jstreams;
 
 void
 ArEndAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -46,12 +45,12 @@ ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     ArInputStream ar(in);
     InputStream *s = ar.nextEntry();
     while (s) {
-        idx.indexChild(ar.getEntryInfo().filename, ar.getEntryInfo().mtime, s);
+        idx.indexChild(ar.entryInfo().filename, ar.entryInfo().mtime, s);
         s = ar.nextEntry();
     }
-    if (ar.getStatus() == Error) {
+    if (ar.status() == Error) {
         return -1;
-//        printf("Error: %s\n", ar.getError());
+//        printf("Error: %s\n", ar.error());
     } else {
 //        printf("finished ok\n");
     }

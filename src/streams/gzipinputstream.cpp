@@ -20,19 +20,20 @@
 #include "jstreamsconfig.h"
 #include "gzipinputstream.h"
 #include <zlib.h>
-using namespace jstreams;
 
-GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
+using namespace Strigi;
+
+GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format) {
     // initialize values that signal state
-    status = Ok;
+    m_status = Ok;
     zstream = 0;
 
     this->input = input;
 
     // check first bytes of stream before allocating buffer
     if (format == GZIPFORMAT && !checkMagic()) {
-        error = "Magic bytes are wrong.";
-        status = Error;
+        m_error = "Magic bytes are wrong.";
+        m_status = Error;
         return;
     }
 
@@ -59,9 +60,9 @@ GZipInputStream::GZipInputStream(StreamBase<char>* input, ZipFormat format) {
         break;
     }
     if (r != Z_OK) {
-        error = "Error initializing GZipInputStream.";
+        m_error = "Error initializing GZipInputStream.";
         dealloc();
-        status = Error;
+        m_status = Error;
         return;
     }
 
@@ -88,7 +89,7 @@ GZipInputStream::checkMagic() {
     const char* begin;
     int32_t nread;
 
-    int64_t pos = input->getPosition();
+    int64_t pos = input->position();
     nread = input->read(begin, 2, 2);
     input->reset(pos);
     if (nread != 2) {
@@ -105,11 +106,11 @@ GZipInputStream::readFromStream() {
     int32_t nread;
     nread = input->read(inStart, 1, 0);
     if (nread < -1) {
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = input->error();
     } else if (nread < 1) {
-        status = Error;
-        error = "unexpected end of stream";
+        m_status = Error;
+        m_error = "unexpected end of stream";
     } else {
         zstream->next_in = (Bytef*)inStart;
         zstream->avail_in = nread;
@@ -121,7 +122,7 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
     // make sure there is data to decompress
     if (zstream->avail_out) {
         readFromStream();
-        if (status == Error) {
+        if (m_status == Error) {
             // no data was read
             return -1;
         }
@@ -135,20 +136,20 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
     int32_t nwritten = space - zstream->avail_out;
     switch (r) {
     case Z_NEED_DICT:
-        error = "Z_NEED_DICT while inflating stream.";
-        status = Error;
+        m_error = "Z_NEED_DICT while inflating stream.";
+        m_status = Error;
         break;
     case Z_DATA_ERROR:
-        error = "Z_DATA_ERROR while inflating stream.";
-        status = Error;
+        m_error = "Z_DATA_ERROR while inflating stream.";
+        m_status = Error;
         break;
     case Z_MEM_ERROR:
-        error = "Z_MEM_ERROR while inflating stream.";
-        status = Error;
+        m_error = "Z_MEM_ERROR while inflating stream.";
+        m_status = Error;
         break;
     case Z_STREAM_END:
         if (zstream->avail_in) {
-            input->reset(input->getPosition()-zstream->avail_in);
+            input->reset(input->position()-zstream->avail_in);
         }
         // we are finished decompressing,
         // (but this stream is not yet finished)

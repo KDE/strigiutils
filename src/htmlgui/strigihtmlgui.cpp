@@ -298,14 +298,14 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
 set<string>
 getTerms(const Query& q) {
     set<string> terms;
-    if (q.getOccurrence() == Query::MUST_NOT) {
+    if (q.occurrence() == Query::MUST_NOT) {
         return terms;
     }
-    if (q.getExpression().size() > 0) {
-        terms.insert(q.getExpression());
+    if (q.expression().size() > 0) {
+        terms.insert(q.expression());
     }
     list<Query>::const_iterator j;
-    for (j = q.getTerms().begin(); j != q.getTerms().end(); ++j) {
+    for (j = q.terms().begin(); j != q.terms().end(); ++j) {
         set<string> t = getTerms(*j);
         copy(t.begin(), t.end(), inserter(terms, terms.begin()));
     }

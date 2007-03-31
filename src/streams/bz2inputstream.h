@@ -21,17 +21,18 @@
 #define BZ2INPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "bufferedstream.h"
 
 #include <bzlib.h>
 
-namespace jstreams {
+namespace Strigi {
 
-class STREAMS_EXPORT BZ2InputStream : public BufferedInputStream<char> {
+class STREAMS_EXPORT BZ2InputStream : public BufferedInputStream {
 private:
     bool allocatedBz;
     bz_stream* bzstream;
-    StreamBase<char> *input;
+    InputStream *input;
 
     void dealloc();
     void readFromStream();
@@ -39,11 +40,11 @@ private:
 protected:
     int32_t fillBuffer(char* start, int32_t space);
 public:
-    BZ2InputStream(StreamBase<char>* input);
+    BZ2InputStream(InputStream* input);
     ~BZ2InputStream();
     static bool checkHeader(const char* data, int32_t datasize);
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

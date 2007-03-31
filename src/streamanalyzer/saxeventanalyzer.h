@@ -34,7 +34,7 @@ private:
     bool ready;
     bool initialized;
 
-    const char* getName() const { return "SaxEventAnalyzer"; }
+    const char* name() const { return "SaxEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
     void endAnalysis();
     void handleData(const char* data, uint32_t length);

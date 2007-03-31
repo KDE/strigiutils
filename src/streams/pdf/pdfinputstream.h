@@ -23,19 +23,19 @@
 #include "substreamprovider.h"
 #include "pdfparser.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class PdfInputStream : public SubStreamProvider,
         private PdfParser::StreamHandler {
 private:
     PdfParser parser;
-    StreamStatus handle(jstreams::StreamBase<char>*);
+    StreamStatus handle(Strigi::StreamBase<char>*);
 public:
     PdfInputStream(StreamBase<char>* input);
     ~PdfInputStream();
     StreamBase<char>* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    bool handleStream(jstreams::StreamBase<char>*) { return true; }
+    bool handleStream(Strigi::StreamBase<char>*) { return true; }
 };
 
 } // end namespace Strigi

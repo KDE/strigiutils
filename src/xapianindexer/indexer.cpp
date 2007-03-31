@@ -24,7 +24,7 @@ using namespace std;
 Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-        m_manager(indexdir), m_indexer(m_manager.getIndexWriter()) {
+        m_manager(indexdir), m_indexer(m_manager.indexWriter()) {
 }
 Indexer::~Indexer() {
 }

@@ -27,8 +27,8 @@
 
 #include <list>
 
-using namespace jstreams;
 using namespace std;
+using namespace Strigi;
 
 class RpmInputStream::RpmHeaderInfo {
 };
@@ -46,7 +46,7 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
     bool ok = memcmp(data, magic, 6) == 0;
     return ok;
 }
-RpmInputStream::RpmInputStream(StreamBase<char>* input)
+RpmInputStream::RpmInputStream(InputStream* input)
         : SubStreamProvider(input), headerinfo(0) {
     uncompressionStream = 0;
     cpio = 0;
@@ -54,17 +54,17 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     // skip the header
     const char* b;
     // lead:96 bytes
-    if (input->read(b, 96, 96) != 96) {
-        status = Error;
-        error = "File is too small to be an RPM file.";
+    if (m_input->read(b, 96, 96) != 96) {
+        m_status = Error;
+        m_error = "File is too small to be an RPM file.";
         return;
     }
 
     // read signature
     const unsigned char headmagic[] = {0x8e,0xad,0xe8,0x01};
-    if (input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
-        error = "error in signature\n";
-        status = Error;
+    if (m_input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
+        m_error = "m_error in signature\n";
+        m_status = Error;
         return;
     }
     int32_t nindex = readBigEndianInt32(b+8);
@@ -73,20 +73,20 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
     if (sz%8) {
         sz+=8-sz%8;
     }
-    input->read(b, sz, sz);
+    m_input->read(b, sz, sz);
 
     // read header
-    if (input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
-        error = "error in header\n";
-        status = Error;
+    if (m_input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
+        m_error = "m_error in header\n";
+        m_status = Error;
         return;
     }
     nindex = readBigEndianInt32(b+8);
     hsize = readBigEndianInt32(b+12);
     int32_t size = nindex*16+hsize;
-    if (input->read(b, size, size) != size) {
-        error = "could not read header\n";
-        status = Error;
+    if (m_input->read(b, size, size) != size) {
+        m_error = "could not read header\n";
+        m_status = Error;
         return;
     }
     for (int32_t i=0; i<nindex; ++i) {
@@ -95,7 +95,7 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
         int32_t type = readBigEndianInt32(e+4);
         int32_t offset = readBigEndianInt32(e+8);
         if (offset < 0 || offset >= hsize) {
-            // error: invalid offset
+            // m_error: invalid offset
         }
         int32_t count = readBigEndianInt32(e+12);
         int32_t end = hsize;
@@ -115,25 +115,25 @@ RpmInputStream::RpmInputStream(StreamBase<char>* input)
         printf("%i\t%i\t%i\t%i\n", tag, type, offset, count);*/
     }
 
-    int64_t pos = input->getPosition();
-    if (input->read(b, 16, 16) != 16) {
-        error =  "could not read payload\n";
-        status = Error;
+    int64_t pos = m_input->position();
+    if (m_input->read(b, 16, 16) != 16) {
+        m_error =  "could not read payload\n";
+        m_status = Error;
         return;
     }
-    input->reset(pos);
+    m_input->reset(pos);
     if (BZ2InputStream::checkHeader(b, 16)) {
-        uncompressionStream = new BZ2InputStream(input);
+        uncompressionStream = new BZ2InputStream(m_input);
     } else {
-        uncompressionStream = new GZipInputStream(input);
+        uncompressionStream = new GZipInputStream(m_input);
     }
-    if (uncompressionStream->getStatus() == Error) {
-        error = uncompressionStream->getError();
-        status = Error;
+    if (uncompressionStream->status() == Error) {
+        m_error = uncompressionStream->error();
+        m_status = Error;
         return;
     }
     cpio = new CpioInputStream(uncompressionStream);
-    status = cpio->getStatus();
+    m_status = cpio->status();
 }
 RpmInputStream::~RpmInputStream() {
     if (uncompressionStream) {
@@ -146,15 +146,15 @@ RpmInputStream::~RpmInputStream() {
         delete headerinfo;
     }
 }
-StreamBase<char>*
+InputStream*
 RpmInputStream::nextEntry() {
-    if (status) return 0;
-    StreamBase<char>* entry = cpio->nextEntry();
-    status = cpio->getStatus();
-    if (status == Ok) {
-        entryinfo = cpio->getEntryInfo();
-    } else if (status == Error) {
-        error = cpio->getError();
+    if (m_status) return 0;
+    InputStream* entry = cpio->nextEntry();
+    m_status = cpio->status();
+    if (m_status == Ok) {
+        m_entryinfo = cpio->entryInfo();
+    } else if (m_status == Error) {
+        m_error = cpio->error();
     }
     return entry;
 }

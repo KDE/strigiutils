@@ -220,7 +220,7 @@ main(int argc, char** argv) {
     if (listener  && listener->init()) {
         listener->setEventListenerQueue (&listenerEventQueue);
         listener->setIndexerConfiguration(&ic);
-        listener->setIndexReader (index->getIndexReader());
+        listener->setIndexReader (index->indexReader());
         listener->setPollingInterval (config.getPollingInterval());
         // do not start scanning until execution is in the thread!
         // inotifyListener.setIndexedDirectories(dirs);
@@ -252,7 +252,7 @@ main(int argc, char** argv) {
     }
 
     //save filtering rules
-    config.saveFilteringRules(scheduler.getIndexerConfiguration().getFilters());
+    config.saveFilteringRules(scheduler.getIndexerConfiguration().filters());
 
     //save the updated xml configuration file
     config.save();

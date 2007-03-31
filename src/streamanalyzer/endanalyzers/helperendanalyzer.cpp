@@ -36,7 +36,6 @@
 #include <sys/stat.h>
 
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 void
@@ -71,7 +70,7 @@ HelperProgramConfig::HelperProgramConfig() {
         paths.push_back(path);
     }
 
-    string exepath = getPath("pdftotext", paths);
+    string exepath = findPath("pdftotext", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = (unsigned char*)"%PDF-1.";
@@ -85,7 +84,7 @@ HelperProgramConfig::HelperProgramConfig() {
         helpers.push_back(h);
     }
     // this  does not work atm because it requires help programs itself
-    exepath = getPath("wvWare", paths);
+    exepath = findPath("wvWare", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = wordmagic;
@@ -98,7 +97,7 @@ HelperProgramConfig::HelperProgramConfig() {
     }
 }
 std::string
-HelperProgramConfig::getPath(const std::string& exe,
+HelperProgramConfig::findPath(const std::string& exe,
         const std::vector<std::string>& paths) const {
     struct stat s;
     for (uint i=0; i<paths.size(); ++i) {
@@ -149,7 +148,7 @@ HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
             = helperconfig.findHelper(b, nread);
         if (h) {
 //            fprintf(stderr, "calling %s on %s\n", h->arguments[0].c_str(),
-//                idx.getPath().c_str());
+//                idx.path().c_str());
 #ifndef _WIN32
 #warning this does not work on windows because processinputstream does not compile!
             if (h->readfromstdin) {
@@ -180,8 +179,8 @@ HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
 #endif
         }
     }
-    if (in->getStatus() == Error) {
-        error = in->getError();
+    if (in->status() == Error) {
+        m_error = in->error();
         state = Error;
     }
     return state;

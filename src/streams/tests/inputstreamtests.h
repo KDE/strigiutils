@@ -25,25 +25,25 @@
 #include <unistd.h>
 #endif
 
-namespace jstreams {
+namespace Strigi {
     template <class T> class StreamBase;
     class SubStreamProvider;
-}
+} // end namespace Strigi
 
 template <class T>
-void inputStreamTest1(jstreams::StreamBase<T>* stream);
+void inputStreamTest1(Strigi::StreamBase<T>* stream);
 
 template <class T>
-void inputStreamTest2(jstreams::StreamBase<T>* stream);
+void inputStreamTest2(Strigi::StreamBase<T>* stream);
 
-void subStreamProviderTest1(jstreams::SubStreamProvider* stream);
+void subStreamProviderTest1(Strigi::SubStreamProvider* stream);
 
 extern int ninputstreamtests;
-extern void (*charinputstreamtests[])(jstreams::StreamBase<char>*);
-extern void (*wcharinputstreamtests[])(jstreams::StreamBase<wchar_t>*);
+extern void (*charinputstreamtests[])(Strigi::StreamBase<char>*);
+extern void (*wcharinputstreamtests[])(Strigi::StreamBase<wchar_t>*);
 
 extern int nstreamprovidertests;
-extern void (*streamprovidertests[])(jstreams::SubStreamProvider*);
+extern void (*streamprovidertests[])(Strigi::SubStreamProvider*);
 
 extern int founderrors;
 #define VERIFY(TESTBOOL) if (!(TESTBOOL)) {\

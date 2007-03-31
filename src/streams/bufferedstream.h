@@ -21,23 +21,19 @@
 #define BUFFEREDSTREAM_H
 
 #include "streambase.h"
-#include "inputstreambuffer.h"
+#include "streambuffer.h"
 #include <cassert>
 
-/**
- * The classes in this namespace are meant to support the classes in the Strigi namespace.
- * The namespace jstreams still exists because CLucene uses the same headers.
- */
-namespace jstreams {
+namespace Strigi {
 
 /**
  * @brief Abstract class providing a buffered input stream.
  */
 template <class T>
-class BufferedInputStream : public StreamBase<T> {
+class BufferedStream : public StreamBase<T> {
 private:
     bool finishedWritingToBuffer;
-    InputStreamBuffer<T> buffer;
+    StreamBuffer<T> buffer;
 
     void writeToBuffer(int32_t minsize, int32_t maxsize);
 protected:
@@ -51,7 +47,7 @@ protected:
      * If the end of the stream is encountered, -1 should be
      * returned.
      *
-     * If an error offurs, the status should be set to Error,
+     * If an error occurs, the status should be set to Error,
      * an error message should be set and -1 should be returned.
      *
      * You should @em not call this function yourself.
@@ -75,21 +71,29 @@ protected:
         buffer.makeSpace(s);
     }
     /** Default constructor just initialises members */
-    BufferedInputStream<T>();
+    BufferedStream<T>();
 public:
     int32_t read(const T*& start, int32_t min, int32_t max);
-    int64_t reset(int64_t);
+    int64_t reset(int64_t pos);
     virtual int64_t skip(int64_t ntoskip);
 };
 
+
+/** Abstract class for a buffered stream of bytes */
+typedef BufferedStream<char> BufferedInputStream;
+
+/** Abstract class for a buffered stream of Unicode characters */
+typedef BufferedStream<wchar_t> BufferedReader;
+
+
 template <class T>
-BufferedInputStream<T>::BufferedInputStream() {
+BufferedStream<T>::BufferedStream() {
     finishedWritingToBuffer = false;
 }
 
 template <class T>
 void
-BufferedInputStream<T>::writeToBuffer(int32_t ntoread, int32_t maxread) {
+BufferedStream<T>::writeToBuffer(int32_t ntoread, int32_t maxread) {
     int32_t missing = ntoread - buffer.avail;
     int32_t nwritten = 0;
     while (missing > 0 && nwritten >= 0) {
@@ -100,7 +104,7 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread, int32_t maxread) {
         }
         T* start = buffer.readPos + buffer.avail;
         nwritten = fillBuffer(start, space);
-        assert(StreamBase<T>::status != Eof);
+        assert(StreamBase<T>::m_status != Eof);
         if (nwritten > 0) {
             buffer.avail += nwritten;
             missing = ntoread - buffer.avail;
@@ -112,34 +116,34 @@ BufferedInputStream<T>::writeToBuffer(int32_t ntoread, int32_t maxread) {
 }
 template <class T>
 int32_t
-BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
-    if (StreamBase<T>::status == Error) return -2;
-    if (StreamBase<T>::status == Eof) return -1;
+BufferedStream<T>::read(const T*& start, int32_t min, int32_t max) {
+    if (StreamBase<T>::m_status == Error) return -2;
+    if (StreamBase<T>::m_status == Eof) return -1;
 
     // do we need to read data into the buffer?
     if (min > max) max = 0;
     if (!finishedWritingToBuffer && min > buffer.avail) {
         // do we have enough space in the buffer?
         writeToBuffer(min, max);
-        if (StreamBase<T>::status == Error) return -2;
+        if (StreamBase<T>::m_status == Error) return -2;
     }
 
     int32_t nread = buffer.read(start, max);
 
-    StreamBase<T>::position += nread;
-    if (StreamBase<T>::position > StreamBase<T>::size
-        && StreamBase<T>::size > 0) {
+    StreamBase<T>::m_position += nread;
+    if (StreamBase<T>::m_position > StreamBase<T>::m_size
+        && StreamBase<T>::m_size > 0) {
         // error: we read more than was specified in size
         // this is an error because all dependent code might have been labouring
         // under a misapprehension
-        StreamBase<T>::status = Error;
-        StreamBase<T>::error = "Stream is longer than specified.";
+        StreamBase<T>::m_status = Error;
+        StreamBase<T>::m_error = "Stream is longer than specified.";
         nread = -2;
-    } else if (StreamBase<T>::status == Ok && buffer.avail == 0
+    } else if (StreamBase<T>::m_status == Ok && buffer.avail == 0
             && finishedWritingToBuffer) {
-        StreamBase<T>::status = Eof;
-        if (StreamBase<T>::size == -1) {
-            StreamBase<T>::size = StreamBase<T>::position;
+        StreamBase<T>::m_status = Eof;
+        if (StreamBase<T>::m_size == -1) {
+            StreamBase<T>::m_size = StreamBase<T>::m_position;
         }
         // save one call to read() by already returning -1 if no data is there
         if (nread == 0) nread = -1;
@@ -148,22 +152,22 @@ BufferedInputStream<T>::read(const T*& start, int32_t min, int32_t max) {
 }
 template <class T>
 int64_t
-BufferedInputStream<T>::reset(int64_t newpos) {
+BufferedStream<T>::reset(int64_t newpos) {
     assert(newpos >= 0);
-    if (StreamBase<T>::status == Error) return -2;
+    if (StreamBase<T>::m_status == Error) return -2;
     // check to see if we have this position
-    int64_t d = StreamBase<T>::position - newpos;
+    int64_t d = StreamBase<T>::m_position - newpos;
     if (buffer.readPos - d >= buffer.start && -d < buffer.avail) {
-        StreamBase<T>::position -= d;
+        StreamBase<T>::m_position -= d;
         buffer.avail += (int32_t)d;
         buffer.readPos -= d;
-        StreamBase<T>::status = Ok;
+        StreamBase<T>::m_status = Ok;
     }
-    return StreamBase<T>::position;
+    return StreamBase<T>::m_position;
 }
 template <class T>
 int64_t
-BufferedInputStream<T>::skip(int64_t ntoskip) {
+BufferedStream<T>::skip(int64_t ntoskip) {
     const T *begin;
     int32_t nread;
     int64_t skipped = 0;
@@ -178,6 +182,7 @@ BufferedInputStream<T>::skip(int64_t ntoskip) {
     }
     return skipped;
 }
-}
+
+} // end namespace Strigi
 
 #endif

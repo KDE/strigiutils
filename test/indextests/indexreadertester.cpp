@@ -62,6 +62,6 @@ void IndexReaderTester::getFiles()
 {
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
     
-    reader->getFiles(0);
+    reader->files(0);
     //TODO: think to a better assert
 }

@@ -21,35 +21,36 @@
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include <cstring>
-using namespace jstreams;
 
-TarInputStream::TarInputStream(StreamBase<char>* input)
+using namespace Strigi;
+
+TarInputStream::TarInputStream(InputStream* input)
         : SubStreamProvider(input) {
 }
 
 TarInputStream::~TarInputStream() {
 }
-StreamBase<char>*
+InputStream*
 TarInputStream::nextEntry() {
-    if (status) return 0;
-    if (entrystream) {
-        entrystream->skip(entrystream->getSize());
-        input->skip(numPaddingBytes);
-        delete entrystream;
-        entrystream = 0;
+    if (m_status) return 0;
+    if (m_entrystream) {
+        m_entrystream->skip(m_entrystream->size());
+        m_input->skip(numPaddingBytes);
+        delete m_entrystream;
+        m_entrystream = 0;
     }
     parseHeader();
-    if (status) return 0;
-    entrystream = new SubInputStream(input, entryinfo.size);
-    return entrystream;
+    if (m_status) return 0;
+    m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
+    return m_entrystream;
 }
 const char*
 TarInputStream::readHeader() {
     // read the first 500 characters
     const char *begin;
-    int32_t nread = input->read(begin, 512, 512);
+    int32_t nread = m_input->read(begin, 512, 512);
     if (nread != 512) {
-        status = Error;
+        m_status = Error;
     }
     return begin;
 }
@@ -78,64 +79,64 @@ void
 TarInputStream::parseHeader() {
     const char *hb;
     hb = readHeader();
-    if (status) return;
+    if (m_status) return;
 
     // check for terminators ('\0') on the first couple of fields
     if (!checkHeader(hb, 257)) {
-        error = "Invalid tar header.\n";
-        status = Error;
+        m_error = "Invalid tar header.\n";
+        m_status = Error;
         return;
     }
 
     int32_t len = strlen(hb);
     if (len == 0) {
         // ready
-        status = Eof;
+        m_status = Eof;
         return;
     }
     if (len > 100) len = 100;
-    entryinfo.filename.resize(0);
-    entryinfo.filename.append(hb, len);
-    if (entryinfo.filename == "././@LongLink") {
-        entryinfo.filename.resize(0);
+    m_entryinfo.filename.resize(0);
+    m_entryinfo.filename.append(hb, len);
+    if (m_entryinfo.filename == "././@LongLink") {
+        m_entryinfo.filename.resize(0);
         readLongLink(hb);
-        if (status) return;
+        if (m_status) return;
         hb = readHeader();
-        if (status) return;
+        if (m_status) return;
     }
 
     // read the file size which is in octal format
-    entryinfo.size = readOctalField(hb, 124);
-    if (status) return;
-    entryinfo.mtime = readOctalField(hb, 136);
-    if (status) return;
+    m_entryinfo.size = readOctalField(hb, 124);
+    if (m_status) return;
+    m_entryinfo.mtime = readOctalField(hb, 136);
+    if (m_status) return;
 
-    numPaddingBytes = 512 - entryinfo.size%512;
+    numPaddingBytes = 512 - m_entryinfo.size%512;
     if (numPaddingBytes == 512) {
         numPaddingBytes = 0;
     }
 
-    len = entryinfo.filename.length();
-    if (entryinfo.filename[len-1] == '/') {
-        entryinfo.filename.resize(len-1);
+    len = m_entryinfo.filename.length();
+    if (m_entryinfo.filename[len-1] == '/') {
+        m_entryinfo.filename.resize(len-1);
     }
     // read file type
     if (hb[156] == 0 || hb[156] == '0') {
-        entryinfo.type = EntryInfo::File;
+        m_entryinfo.type = EntryInfo::File;
     } else if (hb[156] == '5') {
-        entryinfo.type = EntryInfo::Dir;
+        m_entryinfo.type = EntryInfo::Dir;
     } else {
-        entryinfo.type = EntryInfo::Unknown;
+        m_entryinfo.type = EntryInfo::Unknown;
     }
-//    printf("!%s %i\n", entryinfo.filename.c_str(), hb[156]);
+//    printf("!%s %i\n", m_entryinfo.filename.c_str(), hb[156]);
 }
 int32_t
 TarInputStream::readOctalField(const char *b, int32_t offset) {
     int32_t val;
     int r = sscanf(b+offset, "%o", &val);
     if (r != 1) {
-        status = Error;
-        error = "Error reading header: octal field is not a valid integer.";
+        m_status = Error;
+        m_error = "Error reading header: octal field is not a valid integer.";
         return 0;
     }
     return val;
@@ -148,28 +149,28 @@ TarInputStream::readLongLink(const char *b) {
         left = 512 - left;
     }
     const char *begin;
-    if (status) return;
-    int32_t nread = input->read(begin, toread, toread);
+    if (m_status) return;
+    int32_t nread = m_input->read(begin, toread, toread);
     if (nread != toread) {
-            status = Error;
-            error = "Error reading LongLink: ";
+            m_status = Error;
+            m_error = "Error reading LongLink: ";
             if (nread == -1) {
-                error += input->getError();
+                m_error += m_input->error();
             } else {
-                error += " premature end of file.";
+                m_error += " premature end of file.";
             }
             return;
     }
-    entryinfo.filename.append(begin, nread);
+    m_entryinfo.filename.append(begin, nread);
 
-    int64_t skipped = input->skip(left);
+    int64_t skipped = m_input->skip(left);
     if (skipped != left) {
-        status = Error;
-        error = "Error reading LongLink: ";
-        if (input->getStatus() == Error) {
-            error += input->getError();
+        m_status = Error;
+        m_error = "Error reading LongLink: ";
+        if (m_input->status() == Error) {
+            m_error += m_input->error();
         } else {
-            error += " premature end of file.";
+            m_error += " premature end of file.";
         }
     }
 }

@@ -25,7 +25,7 @@
 #include "dostime.h"
 #include "textutils.h"
 
-using namespace jstreams;
+using namespace Strigi;
 
 bool
 ZipInputStream::checkHeader(const char* data, int32_t datasize) {
@@ -34,7 +34,7 @@ ZipInputStream::checkHeader(const char* data, int32_t datasize) {
     bool ok = memcmp(data, magic, 4) == 0 && datasize > 8;
     return ok;
 }
-ZipInputStream::ZipInputStream(StreamBase<char>* input)
+ZipInputStream::ZipInputStream(InputStream* input)
         : SubStreamProvider(input) {
     compressedEntryStream = 0;
     uncompressionStream = 0;
@@ -47,15 +47,15 @@ ZipInputStream::~ZipInputStream() {
         delete uncompressionStream;
     }
 }
-StreamBase<char>*
+InputStream*
 ZipInputStream::nextEntry() {
-    if (status) return 0;
+    if (m_status) return 0;
     // clean up the last stream(s)
-    if (entrystream) {
+    if (m_entrystream) {
 	// if this entry is a compressed entry of know size, we can skip to
 	// the end by skipping in the compressed stream, without decompressing
         if (compressedEntryStream) {
-            compressedEntryStream->skip(compressedEntryStream->getSize());
+            compressedEntryStream->skip(compressedEntryStream->size());
             delete compressedEntryStream;
             compressedEntryStream = 0;
             delete uncompressionStream;
@@ -63,66 +63,66 @@ ZipInputStream::nextEntry() {
 
             // check for a potential signature and skip it if it is there
             const char* c;
-            int64_t p = input->getPosition();
-            int32_t n = input->read(c, 16, 16);
+            int64_t p = m_input->position();
+            int32_t n = m_input->read(c, 16, 16);
             if (n == 16) {
                 n = readLittleEndianUInt32((const unsigned char*)c);
                 if (n != 0x08074b50) {
-                    input->reset(p);
+                    m_input->reset(p);
                 }
             }
         } else {
-            int32_t size = entrystream->getSize();
+            int32_t size = m_entrystream->size();
             if (size < 1) {
                 size = 1024;
             }
-            while (entrystream->getStatus() == Ok) {
-                entrystream->skip(size);
+            while (m_entrystream->status() == Ok) {
+                m_entrystream->skip(size);
             }
-            if (entryinfo.size < 0) {
+            if (m_entryinfo.size < 0) {
                 // skip the data descriptor that occurs after the data
                 const char* c;
-                int32_t n = input->read(c, 4, 4);
+                int32_t n = m_input->read(c, 4, 4);
                 if (n == 4) {
                     n = readLittleEndianUInt32((const unsigned char*)c);
                     if (n == 0x08074b50) { // sometimes this signature appears
-                        n = input->read(c, 12, 12);
+                        n = m_input->read(c, 12, 12);
                         n -= 8;
                     } else {
-                        n = input->read(c, 8, 8);
+                        n = m_input->read(c, 8, 8);
                         n -= 4;
                     }
                 }
                 if (n != 4) {
-                    status = Error;
-                    error = "No valid data descriptor after entry data.";
+                    m_status = Error;
+                    m_error = "No valid data descriptor after entry data.";
                     return 0;
                 }
             }
         }
-        delete entrystream;
-        entrystream = 0;
+        delete m_entrystream;
+        m_entrystream = 0;
     }
     readHeader();
-    if (status) return 0;
+    if (m_status) return 0;
     if (compressionMethod == 8) {
-        if (entryinfo.size >= 0) {
-            compressedEntryStream = new SubInputStream(input, entryCompressedSize);
+        if (m_entryinfo.size >= 0) {
+            compressedEntryStream = new SubInputStream(m_input, entryCompressedSize);
             if (uncompressionStream) {
                 delete uncompressionStream;
             }
             uncompressionStream = new GZipInputStream(compressedEntryStream,
                 GZipInputStream::ZIPFORMAT);
-            entrystream
-                = new SubInputStream(uncompressionStream, entryinfo.size);
+            m_entrystream
+                = new SubInputStream(uncompressionStream, m_entryinfo.size);
         } else {
-            entrystream = new GZipInputStream(input,
+            m_entrystream = new GZipInputStream(m_input,
                 GZipInputStream::ZIPFORMAT);
         }
     } else {
-        entrystream = new SubInputStream(input, entryinfo.size);
+        m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
     }
-    return entrystream;
+    return m_entrystream;
 }
 void
 ZipInputStream::readHeader() {
@@ -133,16 +133,16 @@ ZipInputStream::readHeader() {
 
     // read the first 30 characters
     toread = 30;
-    nread = input->read(b, toread, toread);
+    nread = m_input->read(b, toread, toread);
     if (nread != toread) {
-        error = "Error reading zip header: ";
+        m_error = "Error reading zip header: ";
         if (nread == -1) {
-            error += input->getError();
+            m_error += m_input->error();
         } else {
-            error += " premature end of file.";
+            m_error += " premature end of file.";
         }
-        status = Error;
-        fprintf(stderr, "%s\n", error.c_str());
+        m_status = Error;
+        fprintf(stderr, "%s\n", m_error.c_str());
         return;
     }
     hb = (const unsigned char*)b;
@@ -150,8 +150,8 @@ ZipInputStream::readHeader() {
     // check the first half of the signature
     if (hb[0] != 0x50 || hb[1] != 0x4b) {
         // signature is invalid
-        status = Error;
-        error = "Error: wrong zip signature.";
+        m_status = Error;
+        m_error = "Error: wrong zip signature.";
         return;
     }
     // check the second half of the signature
@@ -161,14 +161,14 @@ ZipInputStream::readHeader() {
             fprintf(stderr, "This is new: %x %x %x %x\n",
                 hb[0], hb[1], hb[2], hb[3]);
         }
-        status = Eof;
+        m_status = Eof;
         return;
     }
     // read 2 bytes into the filename size
     int32_t filenamelen = readLittleEndianUInt16(hb + 26);
     int64_t extralen = readLittleEndianUInt16(hb + 28);
     // read 4 bytes into the length of the uncompressed size
-    entryinfo.size = readLittleEndianUInt32(hb + 22);
+    m_entryinfo.size = readLittleEndianUInt32(hb + 22);
     // read 4 bytes into the length of the compressed size
     entryCompressedSize = readLittleEndianUInt32(hb + 18);
     compressionMethod = readLittleEndianUInt16(hb + 8);
@@ -179,57 +179,57 @@ ZipInputStream::readHeader() {
 	// if the file is compressed with method 8 we rely on the decompression
 	// stream to signal the end of the stream properly
         if (compressionMethod != 8) {
-            status = Error;
-            error = "This particular zip file format is not supported for "
+            m_status = Error;
+            m_error = "This particular zip file format is not supported for "
                 "reading as a stream.";
             return;
         }
-        entryinfo.size = -1;
+        m_entryinfo.size = -1;
         entryCompressedSize = -1;
     }
     unsigned long dost = readLittleEndianUInt32(hb+10);
-    entryinfo.mtime = dos2unixtime(dost);
+    m_entryinfo.mtime = dos2unixtime(dost);
 
     readFileName(filenamelen);
-    if (status) {
-        status = Error;
-        error = "Error reading file name: ";
-        error += input->getError();
+    if (m_status) {
+        m_status = Error;
+        m_error = "Error reading file name: ";
+        m_error += m_input->error();
         return;
     }
     // read 2 bytes into the length of the extra field
-    int64_t skipped = input->skip(extralen);
+    int64_t skipped = m_input->skip(extralen);
     if (skipped != extralen) {
-        status = Error;
-//	printf("skipped %li extralen %li position: %li size: %li\n", skipped, extralen, input->getPosition(), input->getSize());
-        error = "Error skipping extra field: ";
-        error += input->getError();
+        m_status = Error;
+//	printf("skipped %li extralen %li position: %li size: %li\n", skipped, extralen, m_input->position(), m_input->size());
+        m_error = "Error skipping extra field: ";
+        m_error += m_input->error();
         return;
     }
 }
 void
 ZipInputStream::readFileName(int32_t len) {
-    entryinfo.filename.resize(0);
+    m_entryinfo.filename.resize(0);
     const char *begin;
-    int32_t nread = input->read(begin, len, len);
+    int32_t nread = m_input->read(begin, len, len);
     if (nread != len) {
-        error = "Error reading filename: ";
+        m_error = "Error reading filename: ";
         if (nread == -1) {
-            error += input->getError();
+            m_error += m_input->error();
         } else {
-            error += " premature end of file.";
+            m_error += " premature end of file.";
         }
         return;
     }
-    entryinfo.filename.assign(begin, nread);
+    m_entryinfo.filename.assign(begin, nread);
 
     // temporary hack for determining if this is a directory:
     // does the filename end in '/'?
-    len = entryinfo.filename.length();
-    if (entryinfo.filename[len-1] == '/') {
-        entryinfo.filename.resize(len-1);
-        entryinfo.type = EntryInfo::Dir;
+    len = m_entryinfo.filename.length();
+    if (m_entryinfo.filename[len-1] == '/') {
+        m_entryinfo.filename.resize(len-1);
+        m_entryinfo.type = EntryInfo::Dir;
     } else {
-        entryinfo.type = EntryInfo::File;
+        m_entryinfo.type = EntryInfo::File;
     }
 }

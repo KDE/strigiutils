@@ -19,12 +19,13 @@
  */
 #include "jstreamsconfig.h"
 #include "kmpsearcher.h"
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 void
 KmpSearcher::setQuery(const string& query) {
-    this->query = query;
+    m_query = query;
     len = query.length();
     const char* p = query.c_str();
     if (table) {
@@ -61,7 +62,7 @@ const char*
 KmpSearcher::search(const char* haystack, int32_t haylen) const {
     if (table == 0) return 0;
 //    printf("start search %i\n", len);
-    const char* needle = query.c_str();
+    const char* needle = m_query.c_str();
     // search for the pattern
     int32_t i = 0;
     int32_t j = 0;

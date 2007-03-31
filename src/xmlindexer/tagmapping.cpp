@@ -37,7 +37,7 @@ TagMapping::TagMapping(const char* path) {
         } else {
             p = line.find(':');
             if (p != string::npos) {
-                namespaces[line.substr(0, p)] = line.substr(p+1);
+                m_namespaces[line.substr(0, p)] = line.substr(p+1);
             }
         }
     }

@@ -21,7 +21,8 @@
 #include "../fileinputstream.h"
 #include "../zipinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 ZipInputStreamTest(int argc, char* argv[]) {

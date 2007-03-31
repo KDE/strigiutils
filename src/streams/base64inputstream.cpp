@@ -19,8 +19,9 @@
  */
 #include "jstreamsconfig.h"
 #include "base64inputstream.h"
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 /* code is based on public domain code at
    http://www.tug.org/ftp/vm/base64-decode.c
@@ -47,7 +48,7 @@ Base64InputStream::initialize() {
     }
 }
 
-Base64InputStream::Base64InputStream(StreamBase<char>* i) :input(i) {
+Base64InputStream::Base64InputStream(InputStream* i) :input(i) {
     initialize();
     nleft = 0;
     char_count = 0;
@@ -60,8 +61,8 @@ Base64InputStream::moreData() {
     if (pos == pend) {
         int32_t nread = input->read(pos, 1, 0);
         if (nread < -1) {
-            status = Error;
-            error = input->getError();
+            m_status = Error;
+            m_error = input->error();
             input = 0;
             return false;
         }

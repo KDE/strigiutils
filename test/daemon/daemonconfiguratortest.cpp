@@ -64,5 +64,5 @@ void DaemonConfiguratorTest::testDefaultConf()
     // test default filtering rules presence
     Strigi::AnalyzerConfiguration anConf;
     defaultConf->loadFilteringRules(anConf);
-    CPPUNIT_ASSERT (anConf.getFilters().size() > 0);
+    CPPUNIT_ASSERT (anConf.filters().size() > 0);
 }

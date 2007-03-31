@@ -132,7 +132,7 @@ DBusMessageWriter::operator<<(const ClientInterface::Hits& s) {
         // the fragments as stored are sometimes not properly recoded back
         // from usc2 to utf8 which causes dbus to close the connection,
         // whereupon the strigidaemon quits
-        if (jstreams::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
+        if (Strigi::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
             c = i->fragment.c_str();
         } else {
             c = "";

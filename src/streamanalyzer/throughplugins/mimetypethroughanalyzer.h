@@ -34,7 +34,7 @@ public:
     MimeTypeThroughAnalyzer();
     ~MimeTypeThroughAnalyzer();
     void setIndexable(Strigi::AnalysisResult* i) { idx = i; }
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 

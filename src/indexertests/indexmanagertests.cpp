@@ -40,9 +40,9 @@ private:
     StreamAnalyzer si;
 public:
     IndexManagerTester(IndexManager* m, AnalyzerConfiguration& ic)
-            : manager(m), writer(manager->getIndexWriter()),
+            : manager(m), writer(manager->indexWriter()),
               si(ic) {
-        reader = manager->getIndexReader();
+        reader = manager->indexReader();
     }
     ~IndexManagerTester() {
     }
@@ -97,7 +97,7 @@ IndexManagerTester::testNumberQuery() {
         string name('/'+value);
         {
              AnalysisResult idx(name, 0, *writer, si);
-             idx.setField(idx.config().getFieldRegister().sizeField, value);
+             idx.addValue(idx.config().fieldRegister().sizeField, value);
         }
         str.str("");
     }

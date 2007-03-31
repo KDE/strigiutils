@@ -22,15 +22,16 @@
 #include "mailinputstream.h"
 #include "tarinputstream.h"
 #include "zipinputstream.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 SubStreamProviderProvider::SubStreamProviderProvider() {
 }
 SubStreamProvider*
-SubStreamProviderProvider::getSubStreamProvider(StreamBase<char>* input) {
+SubStreamProviderProvider::subStreamProvider(InputStream* input) {
     // read the header
     const char* header;
-    int64_t pos = input->getPosition();
+    int64_t pos = input->position();
     int32_t headersize = input->read(header, 1024, 0);
     input->reset(pos);
     if (headersize <= 0) {

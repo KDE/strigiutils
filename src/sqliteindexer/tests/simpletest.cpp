@@ -39,8 +39,8 @@ simpletest(int argc, char**argv) {
     string p(path);
     p += "/test.db";
     IndexManager* manager = createSqliteIndexManager(p.c_str());
-    IndexWriter* writer = manager->getIndexWriter();
-    IndexReader* reader = manager->getIndexReader();
+    IndexWriter* writer = manager->indexWriter();
+    IndexReader* reader = manager->indexReader();
     addAndCount(writer, reader, 1);
 
     // close and clean up the manager

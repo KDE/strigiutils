@@ -24,9 +24,9 @@
 #include <iconv.h>
 #include "jstreamsconfig.h"
 #include "bufferedstream.h"
+#include "streambase.h"
 
-/** Namespace for the JStreams Java-style streaming api */
-namespace jstreams {
+namespace Strigi {
 
 /**
  * @brief Adapter to convert an InputStream (a byte stream) into a Reader
@@ -36,14 +36,14 @@ namespace jstreams {
  * http://www.gnu.org/software/libc/manual/html_node/iconv-Examples.html and
  * http://tangentsoft.net/mysql++/doc/userman/html/unicode.html
  */
-class STREAMS_EXPORT InputStreamReader : public BufferedInputStream<wchar_t> {
+class STREAMS_EXPORT InputStreamReader : public BufferedReader {
 private:
     iconv_t converter;
     bool finishedDecoding;
-    StreamBase<char>* input;
+    InputStream* input;
     int32_t charsLeft;
 
-    InputStreamBuffer<char> charbuf;
+    StreamBuffer<char> charbuf;
     void readFromStream();
     int32_t decode(wchar_t* start, int32_t space);
     int32_t fillBuffer(wchar_t* start, int32_t space);
@@ -61,11 +61,11 @@ public:
      * @param enc the encoding of the input stream.  UTF-8 is assumed if
      * no encoding is given
      */
-    explicit InputStreamReader(StreamBase<char> *i, const char *enc=0);
+    explicit InputStreamReader(InputStream *i, const char *enc=0);
     /** Destructor */
     ~InputStreamReader();
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

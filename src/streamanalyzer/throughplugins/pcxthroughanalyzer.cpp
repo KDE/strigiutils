@@ -26,7 +26,6 @@
 #include "textutils.h"
 
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 const string PcxThroughAnalyzerFactory::compressionFieldName("compression");
@@ -79,16 +78,16 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     int h = ( readLittleEndianUInt16(header+10)-readLittleEndianUInt16(header+6) ) + 1;
     int bpp = header[3]*header[65];
 
-    indexable->setField(factory->widthField, w);
-    indexable->setField(factory->heightField, h);
-    indexable->setField(factory->colorDepthField, bpp);
+    indexable->addValue(factory->widthField, w);
+    indexable->addValue(factory->heightField, h);
+    indexable->addValue(factory->colorDepthField, bpp);
     if ( header[2] == 1 ) {
-	indexable->setField(factory->compressionField, "RLE");
+	indexable->addValue(factory->compressionField, "RLE");
     } else {
-	indexable->setField(factory->compressionField, "None");
+	indexable->addValue(factory->compressionField, "None");
     }
-    indexable->setField(factory->hResolutionField, readLittleEndianUInt16(header+12));
-    indexable->setField(factory->vResolutionField, readLittleEndianUInt16(header+14));
+    indexable->addValue(factory->hResolutionField, readLittleEndianUInt16(header+12));
+    indexable->addValue(factory->vResolutionField, readLittleEndianUInt16(header+14));
 
     return in;
 }
@@ -101,7 +100,7 @@ PcxThroughAnalyzer::isReadyWithStream() {
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new PcxThroughAnalyzerFactory());
         return af;

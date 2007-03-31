@@ -30,7 +30,7 @@ public:
     ProgramThroughAnalyzer();
     ~ProgramThroughAnalyzer();
     void setIndexable(Strigi::AnalysisResult*);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
 };
 
 #endif

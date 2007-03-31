@@ -20,11 +20,10 @@
 #include "jstreamsconfig.h"
 #include "digestthroughanalyzer.h"
 #include "digestinputstream.h"
-#include "inputstream.h"
+#include "streambase.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 string DigestThroughAnalyzer::shafieldname("sha1");
@@ -52,14 +51,14 @@ DigestThroughAnalyzer::connectInputStream(InputStream *in) {
 }
 void
 DigestThroughAnalyzer::setIndexable(AnalysisResult* idx) {
-    if (indexable && stream) { // && stream->getStatus() == Eof) {
-        indexable->setField(shafield, stream->getDigestString());
-//        printf("%s: %s\n", indexable->getName().c_str(), stream->getDigestString().c_str());
+    if (indexable && stream) { // && stream->status() == Eof) {
+        indexable->addValue(shafield, stream->digestString());
+//        printf("%s: %s\n", indexable->name().c_str(), stream->digestString().c_str());
     }
 
     indexable = idx;
 }
 bool
 DigestThroughAnalyzer::isReadyWithStream() {
-    return stream->getStatus() != Ok;
+    return stream->status() != Ok;
 }

@@ -54,7 +54,7 @@ void LuceneIndexWriterTest::setUp()
 #endif
 
     manager = createCLuceneIndexManager(path.c_str());
-    writer = manager->getIndexWriter();
+    writer = manager->indexWriter();
     ic = new Strigi::AnalyzerConfiguration ();
     si = new Strigi::StreamAnalyzer (*ic);
 }

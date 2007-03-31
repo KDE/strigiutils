@@ -23,7 +23,6 @@
 #include "analysisresult.h"
 #include "textendanalyzer.h"
 #include "fieldtypes.h"
-using namespace jstreams;
 using namespace Strigi;
 using namespace std;
 
@@ -49,40 +48,40 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     MailInputStream mail(in);
     InputStream *s = mail.nextEntry();
-    if (mail.getStatus() == Error) {
-        error = mail.getError();
+    if (mail.status() == Error) {
+        m_error = mail.error();
         return -1;
     }
 /*    if (s == 0) {
-        error = "mail contains no body";
+        m_error = "mail contains no body";
         return -1;
     }*/
-    idx.setField(factory->titleField, mail.getSubject());
-    idx.setField(factory->contenttypeField, mail.getContentType());
+    idx.addValue(factory->titleField, mail.subject());
+    idx.addValue(factory->contenttypeField, mail.contentType());
     TextEndAnalyzer tea;
     if (s != 0 && tea.analyze(idx, s) != 0) {
-        error = "Error reading mail body.";
+        m_error = "Error reading mail body.";
         return -1;
     }
     s = mail.nextEntry();
     int n = 1;
     while (s) {
         std::string file;
-        if (mail.getEntryInfo().filename.length() == 0) {
+        if (mail.entryInfo().filename.length() == 0) {
             file = (char)(n+'1');
         } else {
-            file = mail.getEntryInfo().filename;
+            file = mail.entryInfo().filename;
         }
         // maybe use the date of sending the mail here
         idx.indexChild(file, idx.mTime(), s);
         s = mail.nextEntry();
         n++;
     }
-    if (mail.getStatus() == Error) {
-        error = mail.getError();
+    if (mail.status() == Error) {
+        m_error = mail.error();
         return -1;
     } else {
-        error.resize(0);
+        m_error.resize(0);
     }
     return 0;
 }

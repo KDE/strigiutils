@@ -35,15 +35,15 @@ public:
     CombinedIndexManager(const std::string& type, const std::string& dir);
     ~CombinedIndexManager();
 
-    Strigi::IndexReader* getIndexReader();
-    Strigi::IndexWriter* getIndexWriter();
+    Strigi::IndexReader* indexReader();
+    Strigi::IndexWriter* indexWriter();
 
     void addReadonlyIndex(const std::string& indexdir, const std::string& type);
     void removeReadonlyIndex(const std::string& indexdir);
 
     static std::map<std::string, Strigi::IndexManager*(*)(const char*)>
-        getFactories();
-    static std::vector<std::string> getBackEnds();
+        factories();
+    static std::vector<std::string> backEnds();
 };
 
 #endif

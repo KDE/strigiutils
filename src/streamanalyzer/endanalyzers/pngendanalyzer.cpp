@@ -28,7 +28,6 @@
 #include "gzipinputstream.h"
 #include "textutils.h"
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 const string PngEndAnalyzerFactory::widthFieldName("width");
@@ -116,8 +115,8 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     // read the png dimensions
     uint32_t width = readBigEndianUInt32(c+4);
     uint32_t height = readBigEndianUInt32(c+8);
-    as.setField(factory->widthField, width);
-    as.setField(factory->heightField, height);
+    as.addValue(factory->widthField, width);
+    as.addValue(factory->heightField, height);
 
     uint16_t type = c[13];
     uint16_t bpp = c[12];
@@ -135,15 +134,15 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
             bpp = 0;
     }
 
-    as.setField(factory->colorDepthField, (uint32_t)bpp);
-    as.setField(factory->colorModeField,
+    as.addValue(factory->colorDepthField, (uint32_t)bpp);
+    as.addValue(factory->colorModeField,
         (type < sizeof(colors)/sizeof(colors[0]))
                    ? colors[type] : "Unknown");
 
-    as.setField(factory->compressionField,
+    as.addValue(factory->compressionField,
         (c[14] == 0) ? "Deflate" : "Unknown");
 
-    as.setField(factory->interlaceModeField,
+    as.addValue(factory->interlaceModeField,
         ((uint)c[16] < sizeof(interlaceModes)/sizeof(interlaceModes[0]))
                    ? interlaceModes[(int)c[16]] : "Unknown");
 
@@ -184,7 +183,7 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
             if (time == -1) {
                 return -1;
             }
-            as.setField(factory->lastModificationTimeField, (uint32_t)time);
+            as.addValue(factory->lastModificationTimeField, (uint32_t)time);
         } else {
             nread = (int32_t)in->skip(chunksize);
             if (nread != (int32_t)chunksize) {
@@ -205,7 +204,7 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
 }
 char
 PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
-        jstreams::InputStream* in) {
+        InputStream* in) {
     const char* c;
     int32_t nread = in->read(c, 80, 80);
     if (nread < 1) {
@@ -222,7 +221,7 @@ PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
 }
 char
 PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
-        jstreams::InputStream* in) {
+        InputStream* in) {
     const char* c;
     int32_t nread = in->read(c, 81, 81);
     if (nread < 1) {

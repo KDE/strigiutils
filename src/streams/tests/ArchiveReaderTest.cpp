@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 int errors;
 
@@ -46,7 +46,7 @@ test2(const char* path) {
     FileStreamOpener opener;
     ArchiveReader r;
     r.addStreamOpener(&opener);
-    DirLister dl = r.getDirEntries(path);
+    DirLister dl = r.dirEntries(path);
     EntryInfo e;
     while (dl.nextEntry(e)) {
         string filepath(path);

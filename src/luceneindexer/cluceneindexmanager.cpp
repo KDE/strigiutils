@@ -72,11 +72,11 @@ CLuceneIndexManager::~CLuceneIndexManager() {
     }
 }
 Strigi::IndexReader*
-CLuceneIndexManager::getIndexReader() {
-    return getReader();
+CLuceneIndexManager::indexReader() {
+    return luceneReader();
 }
 CLuceneIndexReader*
-CLuceneIndexManager::getReader() {
+CLuceneIndexManager::luceneReader() {
     // TODO check if we should update/reopen the reader
     STRIGI_THREAD_TYPE self = STRIGI_THREAD_SELF();
     CLuceneIndexReader* r;
@@ -92,11 +92,11 @@ CLuceneIndexManager::getReader() {
     return r;
 }
 Strigi::IndexWriter*
-CLuceneIndexManager::getIndexWriter() {
+CLuceneIndexManager::indexWriter() {
     return writer;
 }
 /*Strigi::QueryBitsetCache*
-CLuceneIndexManager::getBitSets() {
+CLuceneIndexManager::bitSets() {
     return &bitsets;
 }*/
 IndexWriter*
@@ -137,10 +137,10 @@ CLuceneIndexManager::closeWriter() {
 }
 int
 CLuceneIndexManager::docCount() {
-    return getReader()->reader->numDocs();
+    return luceneReader()->reader->numDocs();
 }
 int64_t
-CLuceneIndexManager::getIndexSize() {
+CLuceneIndexManager::indexSize() {
     // sum the sizes of the files in the index
     // loop over directory entries
     DIR* dir = opendir(dbdir.c_str());
@@ -173,7 +173,7 @@ CLuceneIndexManager::deleteIndex() {
     openWriter(true);
 }
 time_t
-CLuceneIndexManager::getIndexMTime() {
+CLuceneIndexManager::indexMTime() {
     time_t t;
     STRIGI_MUTEX_LOCK(&lock.lock);
     t = mtime;

@@ -26,7 +26,6 @@
 #include "streamanalyzer.h"
 #include "analysisresult.h"
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 void
@@ -52,7 +51,7 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* start;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
-        fprintf(stderr, "Error reading bz2: %s\n", stream.getError());
+        fprintf(stderr, "Error reading bz2: %s\n", stream.error());
         return -2;
     }
     stream.reset(0);

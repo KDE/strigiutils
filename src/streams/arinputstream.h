@@ -21,9 +21,10 @@
 #define ARINPUTSTREAM_H
 
 #include "jstreamsconfig.h"
+#include "streambase.h"
 #include "substreamprovider.h"
 
-namespace jstreams {
+namespace Strigi {
 
 class STREAMS_EXPORT ArInputStream : public SubStreamProvider {
 private:
@@ -32,15 +33,15 @@ private:
 
     void readHeader();
 public:
-    explicit ArInputStream(StreamBase<char>* input);
+    explicit ArInputStream(InputStream* input);
     ~ArInputStream();
-    StreamBase<char>* nextEntry();
+    InputStream* nextEntry();
     static bool checkHeader(const char* data, int32_t datasize);
-    static SubStreamProvider* factory(StreamBase<char>* input) {
+    static SubStreamProvider* factory(InputStream* input) {
         return new ArInputStream(input);
     }
 };
 
-} // end namespace jstreams
+} // end namespace Strigi
 
 #endif

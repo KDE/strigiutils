@@ -21,18 +21,18 @@
 #define BZ2ENDANALYZER
 
 #include "streamendanalyzer.h"
-#include "inputstream.h"
+#include "streambase.h"
 
 class Bz2EndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in);
-    const char* getName() const { return "Bz2EndAnalyzer"; }
+    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "Bz2EndAnalyzer"; }
 };
 
 class Bz2EndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 public:
-    const char* getName() const {
+    const char* name() const {
         return "Bz2EndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {

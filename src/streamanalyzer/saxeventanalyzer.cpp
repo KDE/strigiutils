@@ -23,7 +23,6 @@
 #include "textutils.h"
 #include <libxml/SAX2.h>
 
-using namespace jstreams;
 using namespace Strigi;
 using namespace std;
 

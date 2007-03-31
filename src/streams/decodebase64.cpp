@@ -19,8 +19,9 @@
  */
 #include "base64inputstream.h"
 #include <stdio.h>
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 int
 main(int argc, char** argv) {

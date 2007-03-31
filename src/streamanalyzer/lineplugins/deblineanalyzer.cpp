@@ -27,7 +27,6 @@
 
 
 using namespace Strigi;
-using namespace jstreams;
 
 const cnstr DebLineAnalyzerFactory::nameFieldName("name");
 const cnstr DebLineAnalyzerFactory::versionFieldName("version");
@@ -64,7 +63,7 @@ DebLineAnalyzer::startAnalysis(AnalysisResult* res)
     if (res->fileName()!="control.tar.gz") return;
     res=res->parent();
     if (!res) return;
-    if (strcmp(res->endAnalyzer()->getName(),"ArEndAnalyzer")) return ;
+    if (strcmp(res->endAnalyzer()->name(),"ArEndAnalyzer")) return ;
 
     // it is .deb file after all
     result=res;
@@ -75,18 +74,18 @@ void
 DebLineAnalyzer::handleLine(const char* data, uint32_t length)
 {
 	std::string line(data,length);
-	if (line.find("Package: ",0)==0) { result->setField(factory->nameField, line.substr(9,line.size())); finished++; }
-	if (line.find("Description: ",0)==0) { result->setField(factory->summaryField, line.substr(13,line.size())); finished++; }
-	if (line.find("Version: ")==0) { result->setField(factory->versionField, line.substr(9,line.size())); finished++; }
-	if (line.find("Maintainer: ")==0) { result->setField(factory->maintainerField, line.substr(12,line.size())); finished++; }
-	if (line.find("Section: ")==0) { result->setField(factory->sectionField, line.substr(9,line.size())); finished++; }
+	if (line.find("Package: ",0)==0) { result->addValue(factory->nameField, line.substr(9,line.size())); finished++; }
+	if (line.find("Description: ",0)==0) { result->addValue(factory->summaryField, line.substr(13,line.size())); finished++; }
+	if (line.find("Version: ")==0) { result->addValue(factory->versionField, line.substr(9,line.size())); finished++; }
+	if (line.find("Maintainer: ")==0) { result->addValue(factory->maintainerField, line.substr(12,line.size())); finished++; }
+	if (line.find("Section: ")==0) { result->addValue(factory->sectionField, line.substr(9,line.size())); finished++; }
 	if (line.find("Depends: ")==0) {
 	    unsigned int start=9;
 	    unsigned int end;
 	    do {
 		end=line.find(", ",start);
 		if (end==std::string::npos) end=length;
-		result->setField(factory->dependsField, line.substr(start, end-start));
+		result->addValue(factory->dependsField, line.substr(start, end-start));
 		start=end+2;
 	    } while (start<length);
 	    finished++;
@@ -103,7 +102,7 @@ DebLineAnalyzer::isReadyWithStream()
 class Factory : public AnalyzerFactoryFactory {
 public:
     std::list<StreamLineAnalyzerFactory*> 
-    getStreamLineAnalyzerFactories() const {
+    streamLineAnalyzerFactories() const {
         std::list<StreamLineAnalyzerFactory*> af;
         af.push_back(new DebLineAnalyzerFactory());
         return af;

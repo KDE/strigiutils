@@ -1,5 +1,7 @@
 * replace cnstr with std::string everywhere (can be done anytime)
 * remove jstreams namespace
+* rename BufferedInputStream to BufferedStream,
+  typedef BufferedStream<char> BufferedInputStream
 * seek and replace getFoo() functions with foo() (but not in StreamBase yet)
 * rename the functions AnalysisResult::setField to AnalysisResult::addValue.
 * add a AnalysisResult*parent() function to AnalysisResult

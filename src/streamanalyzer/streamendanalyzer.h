@@ -20,7 +20,7 @@
 #ifndef STREAMENDANALYZER_H
 #define STREAMENDANALYZER_H
 
-#include "inputstream.h"
+#include "streambase.h"
 #include "cnstr.h"
 
 namespace Strigi {
@@ -31,20 +31,20 @@ class FieldRegister;
 
 class STREAMANALYZER_EXPORT StreamEndAnalyzer {
 protected:
-    std::string error;
-    static char testStream(jstreams::InputStream *in);
+    std::string m_error;
+    static char testStream(InputStream *in);
 public:
     virtual ~StreamEndAnalyzer() {}
     virtual bool checkHeader(const char* header, int32_t headersize) const = 0;
-    virtual char analyze(Strigi::AnalysisResult& idx, jstreams::InputStream* in)=0;
-    const std::string& getError() const { return error; }
-    virtual const char* getName() const = 0;
+    virtual char analyze(Strigi::AnalysisResult& idx, InputStream* in)=0;
+    const std::string& error() const { return m_error; }
+    virtual const char* name() const = 0;
 };
 
 class STREAMANALYZER_EXPORT StreamEndAnalyzerFactory {
 public:
     virtual ~StreamEndAnalyzerFactory(){}
-    virtual const char* getName() const = 0;
+    virtual const char* name() const = 0;
     virtual void registerFields(Strigi::FieldRegister&) = 0;
     virtual StreamEndAnalyzer* newInstance() const = 0;
     virtual bool analyzesSubStreams() const { return false; }

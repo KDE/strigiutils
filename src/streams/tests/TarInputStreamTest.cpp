@@ -20,7 +20,8 @@
 #include "../fileinputstream.h"
 #include "../tarinputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 TarInputStreamTest(int argc, char* argv[]) {

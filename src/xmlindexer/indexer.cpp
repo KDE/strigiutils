@@ -39,8 +39,8 @@ Indexer::Indexer(ostream& o, AnalyzerConfiguration& ic, const char* mappingfile)
     m_indexer.setIndexWriter(writer);
     out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");
-    map<string, string>::const_iterator i = mapping.getNamespaces().begin();
-    while (i != mapping.getNamespaces().end()) {
+    map<string, string>::const_iterator i = mapping.namespaces().begin();
+    while (i != mapping.namespaces().end()) {
         out << " xmlns:" << i->first << "='" << i->second << "'";
         i++;
     }

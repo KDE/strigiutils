@@ -22,7 +22,6 @@
 #include "id3v2throughanalyzer.h"
 #include "analysisresult.h"
 using namespace Strigi;
-using namespace jstreams;
 using namespace std;
 
 const string ID3V2ThroughAnalyzerFactory::titleFieldName("title");
@@ -56,7 +55,7 @@ readSize(const unsigned char* b, bool async) {
     return (((int32_t)b[0])<<24) + (((int32_t)b[1])<<16)
             + (((int32_t)b[2])<<8) + ((int32_t)b[3]);
 }
-jstreams::InputStream*
+InputStream*
 ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     if(!in)
         return in;
@@ -92,13 +91,13 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
             }
             if (p[10] == 0 || p[10] == 1) { // text is ISO-8859-1 or utf8
                 if (strncmp("TIT2", p, 4) == 0) {
-                    indexable->setField(factory->titleField,
+                    indexable->addValue(factory->titleField,
                         string(p+11, size-1));
                 } else if (strncmp("TPE1", p, 4) == 0) {
-                    indexable->setField(factory->artistField,
+                    indexable->addValue(factory->artistField,
                         string(p+11, size-1));
                 } else if (strncmp("TALB", p, 4) == 0) {
-                    indexable->setField(factory->albumField,
+                    indexable->addValue(factory->albumField,
                         string(p+11, size-1));
                 }
             }

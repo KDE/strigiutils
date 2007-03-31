@@ -50,7 +50,7 @@ XapianIndexWriter::startIndexable(AnalysisResult* idx) {
 void
 XapianIndexWriter::finishIndexable(const AnalysisResult* idx) {
     static const string path("path"), mtime("mtime"), depth("depth");
-    Document* doc = static_cast<Document*>(idx->getWriterData());
+    Document* doc = static_cast<Document*>(idx->writerData());
     manager->ref();
     db->add_document(*doc);
     manager->deref();

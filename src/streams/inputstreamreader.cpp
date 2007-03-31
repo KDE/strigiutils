@@ -25,7 +25,6 @@
 #include "jstreamsconfig.h"
 #include "inputstreamreader.h"
 #include <cerrno>
-using namespace jstreams;
 
 #ifndef ICONV_CONST
      //we try to guess whether the iconv function requires
@@ -39,8 +38,10 @@ using namespace jstreams;
      #endif
 #endif
 
-InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
-    status = Ok;
+using namespace Strigi;
+
+InputStreamReader::InputStreamReader(InputStream* i, const char* enc) {
+    m_status = Ok;
     finishedDecoding = false;
     input = i;
     if (enc == 0) enc = "UTF-8";
@@ -59,10 +60,10 @@ InputStreamReader::InputStreamReader(StreamBase<char>* i, const char* enc) {
 
     // check if the converter is valid
     if (converter == (iconv_t) -1) {
-        error = "conversion from '";
-        error += enc;
-        error += "' not available.";
-        status = Error;
+        m_error = "conversion from '";
+        m_error += enc;
+        m_error += "' not available.";
+        m_status = Error;
         return;
     }
     charbuf.setSize(262);
@@ -86,8 +87,8 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
     if (r == (size_t)-1) {
         switch (errno) {
         case EILSEQ: //invalid multibyte sequence
-            error = "Invalid multibyte sequence.";
-            status = Error;
+            m_error = "Invalid multibyte sequence.";
+            m_status = Error;
             return -1;
         case EINVAL: // last character is incomplete
             // move from inbuf to the end to the start of
@@ -105,10 +106,10 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
         default:
             char tmp[10];
             snprintf(tmp, 10, "%i", errno);
-            error = "inputstreamreader error: ";
-            error.append(tmp);
+            m_error = "inputstreamreader error: ";
+            m_error.append(tmp);
             fprintf(stderr, "inputstreamreader::error %d\n", errno);
-            status = Error;
+            m_status = Error;
             return -1;
         }
     } else { //input sequence was completely converted
@@ -130,8 +131,8 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
         numRead = input->read(begin, 1, charbuf.size - charbuf.avail);
         //printf("filled up charbuf\n");
         if (numRead < -1) {
-            error = input->getError();
-            status = Error;
+            m_error = input->error();
+            m_status = Error;
             input = 0;
             return numRead;
         }
@@ -139,8 +140,8 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
             // signal end of input buffer
             input = 0;
             if (charbuf.avail) {
-                error = "stream ends on incomplete character";
-                status = Error;
+                m_error = "stream ends on incomplete character";
+                m_status = Error;
             }
             return -1;
         }

@@ -28,11 +28,10 @@
 #include <QtCore/QFSFileEngine>
 #include <QtDebug>
 using namespace Strigi;
-using namespace jstreams;
 
 FileEntry::~FileEntry() {
-    QHash<const QString, FileEntry*>::const_iterator i = entries.constBegin();
-    while (i != entries.constEnd()) {
+    QHash<const QString, FileEntry*>::const_iterator i = m_entries.constBegin();
+    while (i != m_entries.constEnd()) {
         delete i.value();
         ++i;
     }
@@ -41,16 +40,16 @@ FileEntry*
 FileEntry::add(const QString &name) {
 //    printf("adding '%s' to '%s'\n", (const char*)name.toUtf8(), (const char*)this->name.toUtf8());
     FileEntry *fe = new FileEntry(name);
-    entries.insert(name, fe);
+    m_entries.insert(name, fe);
     return fe;
 }
 FileEntry *
-FileEntry::getEntry(const QString &name) {
-    return entries.value(name);
+FileEntry::entry(const QString &name) {
+    return m_entries.value(name);
 }
 const FileEntry *
-FileEntry::getEntry(const QString &name) const {
-    return entries.value(name);
+FileEntry::entry(const QString &name) const {
+    return m_entries.value(name);
 }
 
 QHash<QString, FileEntryCache::Entry> FileEntryCache::entrycache;
@@ -72,7 +71,7 @@ FileEntryCache::addEntry(const QString& key, FileEntry*fe) {
     prune();
 }
 FileEntry*
-FileEntryCache::getEntry(const QString& key, const QDateTime &mtime) {
+FileEntryCache::entry(const QString& key, const QDateTime &mtime) {
     QHash<QString, Entry>::iterator e = entrycache.find(key);
     if (e == entrycache.end()) {
         return 0;
@@ -124,16 +123,16 @@ ArchiveEngine::ArchiveEngine(const QString &p, QFSFileEngine *fse)
     entry = e;
 
     zipstream = 0;
-    getRootEntry(e->mtime);
+    rootEntry(e->mtime);
     openArchive();
 }
 ArchiveEngine::ArchiveEngine(StreamEngine *se)
-        : streamengine(se), parentstream(se->getInputStream()), filestream(0),
+        : streamengine(se), parentstream(se->inputStream()), filestream(0),
             rootentry(0) {
     fullpath = se->fileName();
-    entry = se->getFileEntry();
+    entry = se->fileEntry();
     zipstream = 0;
-    getRootEntry(entry->mtime);
+    rootEntry(entry->mtime);
     openArchive();
 }
 ArchiveEngine::~ArchiveEngine() {
@@ -155,8 +154,8 @@ ArchiveEngine::~ArchiveEngine() {
     }
 }
 void
-ArchiveEngine::getRootEntry(const QDateTime& mtime) {
-    rootentry = cache.getEntry(fullpath, mtime);
+ArchiveEngine::rootEntry(const QDateTime& mtime) {
+    rootentry = cache.entry(fullpath, mtime);
     if (rootentry) {
         readAllEntryNames = true;
     } else {
@@ -201,7 +200,7 @@ ArchiveEngine::openArchive() {
         setError(QFile::NoError, "");
         return;
     }
-    setError(QFile::FatalError, zipstream->getError());
+    setError(QFile::FatalError, zipstream->error());
     if (compressed->reset(0) != Ok) {
         qDebug("ArchiveEngine mark call is too small.");
         return;
@@ -273,7 +272,7 @@ ArchiveEngine::entryList(QDir::Filters /*filters*/,
         readEntryNames();
     }
     QStringList e;
-    foreach (FileEntry *fe, rootentry->getEntries()) {
+    foreach (FileEntry *fe, rootentry->entries()) {
         e.append(fe->name);
     }
     return e;
@@ -283,12 +282,12 @@ ArchiveEngine::nextEntry() const {
     entrystream = zipstream->nextEntry();
     if (entrystream) {
         //entrystream->mark(1);
-        const EntryInfo& info = zipstream->getEntryInfo();
+        const EntryInfo& info = zipstream->entryInfo();
         QString name(info.filename.c_str());
         QStringList path = name.split("/", QString::SkipEmptyParts);
         FileEntry* fe = rootentry;
         foreach(QString s, path) {
-            current = fe->getEntry(s);
+            current = fe->entry(s);
             if (current == 0) {
                 if (readAllEntryNames) {
                     qDebug("Archive was modified between accesses.");
@@ -353,6 +352,6 @@ ArchiveEngine::fileName(FileName file) const {
     }
 }
 InputStream *
-ArchiveEngine::getInputStream(const FileEntry* entry) {
+ArchiveEngine::inputStream(const FileEntry* entry) {
     return (current == entry) ?entrystream :0;
 }

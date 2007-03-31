@@ -38,7 +38,7 @@ public:
     TgaThroughAnalyzer(const TgaThroughAnalyzerFactory* f) :factory(f) {}
     ~TgaThroughAnalyzer() {}
     void setIndexable(Strigi::AnalysisResult* i);
-    jstreams::InputStream *connectInputStream(jstreams::InputStream *in);
+    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
 };
 
@@ -56,7 +56,7 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
-    const char* getName() const {
+    const char* name() const {
         return "TgaThroughAnalyzer";
     }
     Strigi::StreamThroughAnalyzer* newInstance() const {

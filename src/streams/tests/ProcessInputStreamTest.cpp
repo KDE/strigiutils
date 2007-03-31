@@ -21,8 +21,9 @@
 #include "../fileinputstream.h"
 #include "inputstreamtests.h"
 #include <vector>
+
 using namespace std;
-using namespace jstreams;
+using namespace Strigi;
 
 int
 ProcessInputStreamTest(int argc, char* argv[]) {

@@ -24,7 +24,6 @@
 #include "fieldtypes.h"
 
 using namespace std;
-using namespace jstreams;
 using namespace Strigi;
 
 // AnalyzerFactory
@@ -125,8 +124,8 @@ XbmThroughAnalyzer::connectInputStream(InputStream* in) {
         return in;
     }
 
-    analysisResult->setField(factory->widthField, width);
-    analysisResult->setField(factory->heightField, height);
+    analysisResult->addValue(factory->widthField, width);
+    analysisResult->addValue(factory->heightField, height);
 
     // these both fields are optional
     int32_t xHot;
@@ -135,8 +134,8 @@ XbmThroughAnalyzer::connectInputStream(InputStream* in) {
         int32_t yHot;
         nextOffset = processLine(buf, nread, nextOffset, yHot);
         if (nextOffset != -1) {
-            analysisResult->setField(factory->xHotField, xHot);
-            analysisResult->setField(factory->yHotField, yHot);
+            analysisResult->addValue(factory->xHotField, xHot);
+            analysisResult->addValue(factory->yHotField, yHot);
         }
     }
 
@@ -152,7 +151,7 @@ XbmThroughAnalyzer::isReadyWithStream() {
 class Factory : public AnalyzerFactoryFactory {
 public:
     list<StreamThroughAnalyzerFactory*>
-    getStreamThroughAnalyzerFactories() const {
+    streamThroughAnalyzerFactories() const {
         list<StreamThroughAnalyzerFactory*> af;
         af.push_back(new XbmThroughAnalyzerFactory());
         return af;

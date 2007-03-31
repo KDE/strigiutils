@@ -21,13 +21,13 @@
 #include "gzipcompressstream.h"
 #include <zlib.h>
 
+using namespace Strigi;
 
-using namespace jstreams;
 
 
-GZipCompressInputStream::GZipCompressInputStream(StreamBase<char>* input, int level) {
+GZipCompressInputStream::GZipCompressInputStream(InputStream* input, int level) {
     // initialize values that signal state
-    status = Ok;
+    m_status = Ok;
     zstream = 0;
 	if ( level < 0 || level > 9 )
 		level = Z_DEFAULT_COMPRESSION;
@@ -44,9 +44,9 @@ GZipCompressInputStream::GZipCompressInputStream(StreamBase<char>* input, int le
     // initialize for writing gzip streams
 	int r = deflateInit(zstream, level);
     if (r != Z_OK) {
-        error = "Error initializing GZipCompressInputStream.";
+        m_error = "Error initializing GZipCompressInputStream.";
         dealloc();
-        status = Error;
+        m_status = Error;
         return;
     }
 
@@ -71,8 +71,8 @@ GZipCompressInputStream::readFromStream() {
     int32_t nread;
     nread = input->read(inStart, 1, 0);
     if (nread < -1) {
-        status = Error;
-        error = input->getError();
+        m_status = Error;
+        m_error = input->error();
     } else if (nread < 1) {
         zstream->avail_in = 0; //bail...
     } else {
@@ -86,7 +86,7 @@ GZipCompressInputStream::fillBuffer(char* start, int32_t space) {
     // make sure there is data to decompress
     if (zstream->avail_in==0) {
         readFromStream();
-        if (status == Error) {
+        if (m_status == Error) {
             // no data was read
             return -1;
         }else if ( zstream->avail_in == 0 ){
@@ -108,16 +108,16 @@ GZipCompressInputStream::fillBuffer(char* start, int32_t space) {
 	int32_t nwritten = space - zstream->avail_out;
 	switch (r) {
 	case Z_NEED_DICT:
-		error = "Z_NEED_DICT while inflating stream.";
-		status = Error;
+		m_error = "Z_NEED_DICT while inflating stream.";
+		m_status = Error;
 		break;
 	case Z_DATA_ERROR:
-		error = "Z_DATA_ERROR while inflating stream.";
-		status = Error;
+		m_error = "Z_DATA_ERROR while inflating stream.";
+		m_status = Error;
 		break;
 	case Z_MEM_ERROR:
-		error = "Z_MEM_ERROR while inflating stream.";
-		status = Error;
+		m_error = "Z_MEM_ERROR while inflating stream.";
+		m_status = Error;
 		break;
 	}
     return nwritten;

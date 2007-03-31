@@ -29,8 +29,9 @@
 #include "base64inputstream.h"
 #include <cstring>
 #include <sstream>
-using namespace jstreams;
+
 using namespace std;
+using namespace Strigi;
 
 char
 decodeHex(char h) {
@@ -68,7 +69,7 @@ decodeQuotedPrintable(const char* v, int32_t len) {
  * This function can decode a mail header if it contains utf8 encoded in base64.
  **/
 string
-getDecodedHeaderValue(const char* v, int32_t len) {
+decodedHeaderValue(const char* v, int32_t len) {
     string decoded;
     decoded.reserve(len*2);
     const char* s = v;
@@ -179,19 +180,19 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
     }
     return reqheader && linecount >= 5;
 }
-MailInputStream::MailInputStream(StreamBase<char>* input)
+MailInputStream::MailInputStream(InputStream* input)
         : SubStreamProvider(input), substream(0) {
     entrynumber = 0;
     nextLineStartPosition = 0;
     // parse the header and store the imporant header fields
     readHeader();
-    if (status != Ok) {
+    if (m_status != Ok) {
         fprintf(stderr, "no valid header\n");
         return;
     }
 }
 MailInputStream::~MailInputStream() {
-    if (substream && substream != entrystream) {
+    if (substream && substream != m_entrystream) {
         delete substream;
     }
 }
@@ -212,24 +213,24 @@ MailInputStream::readHeaderLine() {
     bool completeLine = false;
     char c = 0;
 
-    input->reset(nextLineStartPosition);
+    m_input->reset(nextLineStartPosition);
     do {
-        nread = input->read(linestart, linepos+1, maxlinesize);
+        nread = m_input->read(linestart, linepos+1, maxlinesize);
         if (nread < linepos+1) {
             completeLine = true;
             lineend = linestart + nread;
-            status = Eof;
+            m_status = Eof;
             return;
         }
-        input->reset(nextLineStartPosition);
-        if (input->getStatus() == Error) {
-            status = Error;
-            error = input->getError();
+        m_input->reset(nextLineStartPosition);
+        if (m_input->status() == Error) {
+            m_status = Error;
+            m_error = m_input->error();
             return;
         } else if (linepos >= maxlinesize) {
             // error line is too long
-            status = Error;
-            error = "mail header line is too long";
+            m_status = Error;
+            m_error = "mail header line is too long";
             return;
         } else {
             while (linepos < nread) {
@@ -274,7 +275,7 @@ MailInputStream::readHeaderLine() {
     nextLineStartPosition += linepos;
 }
 string
-MailInputStream::getValue(const char* n, const string& headerline) const {
+MailInputStream::value(const char* n, const string& headerline) const {
     size_t nl = strlen(n);
     string value;
     // get the value
@@ -302,7 +303,7 @@ MailInputStream::readHeader() {
     maxlinesize = 1000;
 
     readHeaderLine();
-    while (status == Ok && linestart != lineend) {
+    while (m_status == Ok && linestart != lineend) {
         handleHeaderLine();
         readHeaderLine();
     }
@@ -313,7 +314,7 @@ MailInputStream::readHeader() {
  **/
 void
 MailInputStream::scanBody() {
-    while (status == Ok) {
+    while (m_status == Ok) {
         readHeaderLine();
         string::size_type len = lineend - linestart;
         if (len > 2 && strncmp("--", linestart, 2) == 0) {
@@ -324,7 +325,7 @@ MailInputStream::scanBody() {
                 // check if this is the end of a multipart
                 boundary.pop();
                 if (boundary.size() == 0) {
-                    status = Eof;
+                    m_status = Eof;
                 }
             } else if (len == blen + 2
                     && strncmp(linestart + 2, boundary.top().c_str(), blen)
@@ -349,13 +350,13 @@ MailInputStream::handleHeaderLine() {
     } else if (strncasecmp(linestart, subject, 8) == 0) {
         int32_t offset = 8;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->subject = getDecodedHeaderValue(linestart+offset, len-offset);
+        this->m_subject = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->contenttype = std::string(linestart+offset, len-offset);
+        this->m_contenttype = std::string(linestart+offset, len-offset);
         // get the boundary
-        string b = getValue("boundary", this->contenttype);
+        string b = value("boundary", this->m_contenttype);
         if (b.size()) {
             boundary.push(b);
         }
@@ -389,32 +390,32 @@ MailInputStream::handleBodyLine() {
     size_t n = boundary.size();
     do {
         readHeaderLine();
-        validheader = status == Ok && checkHeaderLine();
+        validheader = m_status == Ok && checkHeaderLine();
         if (validheader) {
             handleHeaderLine();
         }
-    } while (status == Ok && validheader);
+    } while (m_status == Ok && validheader);
     if (boundary.size() > n) {
         return false;
     }
     readHeaderLine();
-    if (status != Ok) {
+    if (m_status != Ok) {
         return false;
     }
 
     // get the filename
-    entryinfo.filename = getValue("filename", contentdisposition);
-    if (entryinfo.filename.length() == 0) {
-        entryinfo.filename = getValue("name", contenttype);
+    m_entryinfo.filename = value("filename", contentdisposition);
+    if (m_entryinfo.filename.length() == 0) {
+        m_entryinfo.filename = value("name", m_contenttype);
     }
 
     // create a stream that's limited to the content
-    substream = new StringTerminatedSubStream(input, "--"+boundary.top());
+    substream = new StringTerminatedSubStream(m_input, "--"+boundary.top());
     // set a reasonable buffer size
     if (strcasestr(contenttransferencoding.c_str(), "base64")) {
-        entrystream = new Base64InputStream(substream);
+        m_entrystream = new Base64InputStream(substream);
     } else {
-        entrystream = substream;
+        m_entrystream = substream;
     }
     return true;
 }
@@ -426,59 +427,59 @@ MailInputStream::handleBodyLine() {
 void
 MailInputStream::ensureFileName() {
     entrynumber++;
-    if (entryinfo.filename.length() == 0) {
+    if (m_entryinfo.filename.length() == 0) {
         ostringstream o;
         o << entrynumber;
-        entryinfo.filename = o.str();
+        m_entryinfo.filename = o.str();
     }
-    entryinfo.type = EntryInfo::File;
+    m_entryinfo.type = EntryInfo::File;
 }
-StreamBase<char>*
+InputStream*
 MailInputStream::nextEntry() {
-    if (status != Ok) return 0;
+    if (m_status != Ok) return 0;
     // if the mail does not consist of multiple parts, we give a pointer to
     // the input stream
     if (boundary.size() == 0) {
         // signal eof because we only return eof once
-        status = Eof;
-        entrystream = new SubInputStream(input);
-        entryinfo.filename = "body";
-        return entrystream;
+        m_status = Eof;
+        m_entrystream = new SubInputStream(m_input);
+        m_entryinfo.filename = "body";
+        return m_entrystream;
     }
     // read anything that's left over in the previous stream
     if (substream) {
         const char* dummy;
-        while (substream->getStatus() == Ok) {
+        while (substream->status() == Ok) {
             substream->read(dummy, 1, 0);
         }
-        if (substream->getStatus() == Error) {
-            status = Error;
+        if (substream->status() == Error) {
+            m_status = Error;
         } else {
-            nextLineStartPosition = substream->getOffset()
-                + substream->getSize();
+            nextLineStartPosition = substream->offset()
+                + substream->size();
         }
-        if (substream && substream != entrystream) {
+        if (substream && substream != m_entrystream) {
             delete substream;
         }
         substream = 0;
-        delete entrystream;
-        entrystream = 0;
+        delete m_entrystream;
+        m_entrystream = 0;
 
-        if (status != Ok) {
+        if (m_status != Ok) {
             return 0;
         }
     }
     scanBody();
 
-    if (entrystream == 0) {
-        status = Eof;
+    if (m_entrystream == 0) {
+        m_status = Eof;
     }
     ensureFileName();
-    return entrystream;
+    return m_entrystream;
 }
 void
 MailInputStream::clearHeaders() {
-    contenttype.resize(0);
+    m_contenttype.resize(0);
     contenttransferencoding.resize(0);
     contentdisposition.resize(0);
 }

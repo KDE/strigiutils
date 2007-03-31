@@ -20,7 +20,8 @@
 #include "../fileinputstream.h"
 #include "../bz2inputstream.h"
 #include "inputstreamtests.h"
-using namespace jstreams;
+
+using namespace Strigi;
 
 int
 BZ2InputStreamTest(int argc, char* argv[]) {
