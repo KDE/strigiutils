@@ -39,6 +39,16 @@ const string PngEndAnalyzerFactory::colorModeFieldName("colorMode");
 const string PngEndAnalyzerFactory::compressionFieldName("compression");
 const string PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
 const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificationTime");
+const string PngEndAnalyzerFactory::titleFieldName("title");
+const string PngEndAnalyzerFactory::authorFieldName("author");
+const string PngEndAnalyzerFactory::descriptionFieldName("description");
+const string PngEndAnalyzerFactory::copyrightFieldName("copyright");
+const string PngEndAnalyzerFactory::creationTimeFieldName("creationTime");
+const string PngEndAnalyzerFactory::softwareFieldName("software");
+const string PngEndAnalyzerFactory::disclaimerFieldName("disclaimer");
+const string PngEndAnalyzerFactory::warningFieldName("warning");
+const string PngEndAnalyzerFactory::sourceFieldName("source");
+const string PngEndAnalyzerFactory::commentFieldName("comment");
 
 // and for the colors
 static const char* colors[] = {
@@ -58,8 +68,8 @@ static const char* interlaceModes[] = {
 
 void
 PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField
-        = reg.registerField(widthFieldName, FieldRegister::integerType, 1, 0);
+    widthField = reg.registerField(widthFieldName,
+        FieldRegister::integerType, 1, 0);
     heightField = reg.registerField(heightFieldName,
         FieldRegister::integerType, 1, 0);
     colorDepthField = reg.registerField(colorDepthFieldName,
@@ -72,6 +82,26 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         FieldRegister::integerType, 1, 0);
     lastModificationTimeField = reg.registerField(lastModificationTimeFieldName,
         FieldRegister::integerType, 1, 0);
+    titleField = reg.registerField(titleFieldName,
+        FieldRegister::stringType, 1, 0);
+    authorField = reg.registerField(authorFieldName,
+        FieldRegister::stringType, 1, 0);
+    descriptionField = reg.registerField(descriptionFieldName,
+        FieldRegister::stringType, 1, 0);
+    copyrightField = reg.registerField(copyrightFieldName,
+        FieldRegister::stringType, 1, 0);
+    creationTimeField = reg.registerField(creationTimeFieldName,
+        FieldRegister::integerType, 1, 0);
+    softwareField = reg.registerField(softwareFieldName,
+        FieldRegister::stringType, 1, 0);
+    disclaimerField = reg.registerField(disclaimerFieldName,
+        FieldRegister::stringType, 1, 0);
+    warningField = reg.registerField(warningFieldName,
+        FieldRegister::stringType, 1, 0);
+    sourceField = reg.registerField(sourceFieldName,
+        FieldRegister::stringType, 1, 0);
+    commentField = reg.registerField(commentFieldName,
+        FieldRegister::stringType, 1, 0);
 }
 
 PngEndAnalyzer::PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {
@@ -216,8 +246,9 @@ PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
     int32_t nlen = 0;
     while (nlen < nread && c[nlen]) nlen++;
     if (nlen == nread) return -1;
-    string name(c, nlen); // do something with the name!
+    const string name(c, nlen); // do something with the name!
     in->reset(nlen+1);
+    addMetaData(name, as, in);
     TextEndAnalyzer tea;
     return tea.analyze(as, in);
 }
@@ -233,9 +264,10 @@ PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
     int32_t nlen = 0;
     while (nlen < nread && c[nlen]) nlen++;
     if (nlen == nread) return -1;
-    string name(c, nlen); // do something with the name!
+    const string name(c, nlen); // do something with the name!
     in->reset(nlen+2);
     GZipInputStream z(in, GZipInputStream::ZLIBFORMAT);
+    addMetaData(name, as, &z);
     TextEndAnalyzer tea;
     return tea.analyze(as, &z);
 }
@@ -276,4 +308,36 @@ PngEndAnalyzer::extractTime(const char* chunck) {
     // so i have to add the offset of the local time zone
     // If someone has a better solution...
     return sinceEpoch + timeZoneOffset;
+}
+void
+PngEndAnalyzer::addMetaData(const string& key,
+        Strigi::AnalysisResult& as, InputStream* in) {
+    const char* b;
+    // try to store the whole buffer
+    int32_t nread = in->read(b, 0, 80);
+    if (0 < nread) {
+        const string value(b, nread);
+        if ("Title" == key) {
+            as.addValue(factory->titleField, value);
+        } else if ("Author" == key) {
+            as.addValue(factory->authorField, value);
+        } else if ("Description" == key) {
+            as.addValue(factory->descriptionField, value);
+        } else if ("Copyright" == key) {
+            as.addValue(factory->copyrightField, value);
+        } else if ("Creation Time" == key) {
+            // TODO we need to parse the date time
+            // "[...]the date format defined in section 5.2.14 of RFC 1123[...]"
+        } else if ("Software" == key) {
+            as.addValue(factory->softwareField, value);
+        } else if ("Disclaimer" == key) {
+            as.addValue(factory->disclaimerField, value);
+        } else if ("Warning" == key) {
+            as.addValue(factory->warningField, value);
+        } else if ("Source" == key) {
+            as.addValue(factory->sourceField, value);
+        } else if ("Comment" == key) {
+            as.addValue(factory->commentField, value);
+        }
+    }
 }

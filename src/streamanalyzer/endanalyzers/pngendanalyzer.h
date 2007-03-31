@@ -31,6 +31,8 @@ private:
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "PngEndAnalyzer"; }
     int32_t extractTime(const char* chunck);
+    void addMetaData(const std::string& key, Strigi::AnalysisResult& as,
+        Strigi::InputStream* in);
     /*
        Internal function called to analyze text embedded in the png.
        Such text has a special format: 79 bytes of header, a \0 and content
@@ -52,6 +54,16 @@ private:
     static const std::string compressionFieldName;
     static const std::string interlaceModeFieldName;
     static const std::string lastModificationTimeFieldName;
+    static const std::string titleFieldName;
+    static const std::string authorFieldName;
+    static const std::string descriptionFieldName;
+    static const std::string copyrightFieldName;
+    static const std::string creationTimeFieldName;
+    static const std::string softwareFieldName;
+    static const std::string disclaimerFieldName;
+    static const std::string warningFieldName;
+    static const std::string sourceFieldName;
+    static const std::string commentFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;
@@ -59,6 +71,16 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* interlaceModeField;
     const Strigi::RegisteredField* lastModificationTimeField;
+    const Strigi::RegisteredField* titleField;
+    const Strigi::RegisteredField* authorField;
+    const Strigi::RegisteredField* descriptionField;
+    const Strigi::RegisteredField* copyrightField;
+    const Strigi::RegisteredField* creationTimeField;
+    const Strigi::RegisteredField* softwareField;
+    const Strigi::RegisteredField* disclaimerField;
+    const Strigi::RegisteredField* warningField;
+    const Strigi::RegisteredField* sourceField;
+    const Strigi::RegisteredField* commentField;
     const char* name() const {
         return "PngEndAnalyzer";
     }
