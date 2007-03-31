@@ -25,7 +25,9 @@
 
 namespace Strigi {
 
-/** Provides buffered access to a file */
+/**
+ * @brief Provides buffered access to a file
+ */
 class STREAMS_EXPORT FileInputStream : public BufferedInputStream {
 private:
     FILE *file;
@@ -43,7 +45,6 @@ public:
      */
     explicit FileInputStream(const char *filepath,
         int32_t buffersize=defaultBufferSize);
-    /** Destructor */
     ~FileInputStream();
 };
 

@@ -43,8 +43,8 @@ enum StreamStatus {
  * This class contains all the non-virtual StreamBase methods
  * that don't depend on a specific Stream type
  *
- * developer comment: This is needed because win32 compilation.
- * When we want to access a function outside a lib, we have to export them
+ * Developer comment: This is needed because of win32 compilation.
+ * When we want to access a function outside a lib, we have to export them,
  * but we can't export the template class because this would be somewhat
  * stupid / does not work by design :)
  * Because of this I've introduced this StreamBaseBase class
@@ -64,9 +64,12 @@ protected:
     StreamStatus m_status;
 public:
     /**
-     * @brief  Default constructor just initialises everything to sane defaults
-     */
+     * @brief  Constructor: initialises everything to sane defaults
+     **/
     StreamBaseBase() :m_size(-1), m_position(0), m_status(Ok) {}
+    /**
+     * @brief Destructor
+     **/
     virtual ~StreamBaseBase() {}
     /**
      * @brief  Return a string representation of the last error.
@@ -85,34 +88,32 @@ public:
     /**
      * @brief Return the size of the stream.
      *
-     * The size of the stream is always know if the end of the stream
+     * The size of the stream is always known if the end of the stream
      * has been reached.  In all other cases, this may return -1 to
      * indicate the size of the stream is unknown.
      *
-     * @return the size of the stream, if it is known. -1 is returned
-     * otherwise
+     * @return the size of the stream, if it is known, or -1 if the size
+     * of the stream is unknown
      **/
     int64_t size() const { return m_size; }
 };
 
 /**
- * @brief Base class for stream read access to many different file types.
+ * @brief Base class for stream read access to a data source.
  *
- * This class is based on the interface java.io.InputStream. It allows
- * for uniform access to streamed resources.
+ * This class is based on the interface java.io.InputStream. It provides
+ * a uniform interface for accessing streamed resources.
  *
- * The main difference with the java equivalent is a performance improvement.
+ * The main difference with the Java equivalent is a performance improvement.
  * When reading data, data is not copied into a buffer provided by the caller,
  * but a pointer to the read data is provided. This makes this interface
- * especially useful for deriving from it and implementing filterers or
+ * especially useful for deriving from it and implementing filters or
  * transformers.
  */
 template <class T>
 class StreamBase : public StreamBaseBase {
 public:
-    /** @brief Default constructor does nothing */
     StreamBase() { }
-    /** @brief Default destructor does nothing */
     virtual ~StreamBase(){}
     /**
      * @brief Reads items from the stream and sets @p start to point to
@@ -130,7 +131,7 @@ public:
      * @p max items be read.
      *
      * If the end of the stream is reached before @p min items are read, the
-     * read is still considered successful, and the number of items read will
+     * read is still considered successful and the number of items read will
      * be returned.
      *
      * @param start pointer passed by reference that will be set to point to

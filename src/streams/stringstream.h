@@ -63,7 +63,6 @@ public:
      * a pointer to the original data will be used
      */
     StringStream(const T* value, int32_t length = -1, bool copy = true);
-    /** Destructor */
     ~StringStream();
     int32_t read(const T*& start, int32_t min, int32_t max);
     int64_t skip(int64_t ntoskip);

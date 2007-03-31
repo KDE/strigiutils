@@ -28,6 +28,10 @@ namespace Strigi {
 
 /**
  * @brief Abstract class providing a buffered input stream.
+ *
+ * You can inherit this class to provide buffered access to a
+ * resource.  You just need to implement fillBuffer, and
+ * BufferedStream will do the rest.
  */
 template <class T>
 class BufferedStream : public StreamBase<T> {
@@ -70,7 +74,6 @@ protected:
     void setMinBufSize(int32_t s) {
         buffer.makeSpace(s);
     }
-    /** Default constructor just initialises members */
     BufferedStream<T>();
 public:
     int32_t read(const T*& start, int32_t min, int32_t max);

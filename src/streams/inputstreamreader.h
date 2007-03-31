@@ -55,14 +55,13 @@ public:
      * Not all encodings are supported on all systems.
      *
      * If the requested encoding is not available, the status is set to
-     * Error and an error message is set.
+     * Error and an error message is available by calling error().
      *
      * @param i the input stream to decode
      * @param enc the encoding of the input stream.  UTF-8 is assumed if
      * no encoding is given
      */
     explicit InputStreamReader(InputStream *i, const char *enc=0);
-    /** Destructor */
     ~InputStreamReader();
 };
 

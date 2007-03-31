@@ -33,8 +33,9 @@ InputStream that facilitate opening files.  For example,
 FileInputStream will open an InputStream to read the
 contents of a file.
 
-StringReader (and StringInputStream) allows you to
-access in-memory data as a stream.
+StringStream allows you to access in-memory data as a stream.
+StringInputStream and StringReader are types of StringStream
+for byte (char) arrays and Unicode (wchar_t) strings.
 
 @subsection Substreams
 
