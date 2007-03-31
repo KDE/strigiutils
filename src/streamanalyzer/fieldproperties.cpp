@@ -47,7 +47,7 @@ FieldProperties::operator=(const FieldProperties& f) {
 }
 bool
 FieldProperties::valid() const {
-    return p->uri.size();
+    return p->uri.size() != 0;
 }
 const string&
 FieldProperties::uri() const {

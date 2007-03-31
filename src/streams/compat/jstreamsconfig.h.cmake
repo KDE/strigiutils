@@ -43,6 +43,24 @@
 #endif
 
 // our needed types
+#if !@HAVE_INT8_T@
+ #define HAVE_INT8_T 1
+ #if ${SIZEOF_CHAR}==1 //is char 1bit?
+  typedef char int8_t;
+ #else
+  #error Could not determine type for int8_t!
+ #endif
+#endif
+
+#if !@HAVE_UINT8_T@
+ #define HAVE_UINT8_T 1
+ #if ${SIZEOF_CHAR}==1 //is char 1bit?
+  typedef unsigned char uint8_t;
+ #else
+  #error Could not determine type for uint8_t!
+ #endif
+#endif
+
 #if !@HAVE_INT16_T@
  #define HAVE_INT16_T 1
  #if ${SIZEOF_SHORT}==2 //is short 2bits?

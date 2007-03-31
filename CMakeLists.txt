@@ -72,12 +72,9 @@ OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
   OFF)
 
-if (WIN32)
-    find_package(GNUWIN32 REQUIRED)
-endif(WIN32)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
-find_package(Sha REQUIRED)
+find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Iconv REQUIRED)
 find_package(Magic REQUIRED)

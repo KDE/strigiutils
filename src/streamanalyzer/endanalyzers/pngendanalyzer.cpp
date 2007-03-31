@@ -20,6 +20,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
+#include <time.h>
+
 #include "pngendanalyzer.h"
 #include "analysisresult.h"
 #include "textendanalyzer.h"
