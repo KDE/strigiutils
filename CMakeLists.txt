@@ -20,8 +20,8 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 #add extra search paths for libraries and includes
-SET ( STRIGI_EXTRA_INC_DIRECTORY "" CACHE STRING "Extra include directories to search in")
-SET ( STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to search in" )
+SET (STRIGI_EXTRA_INC_DIRECTORY "" CACHE STRING "Extra include directories to search in")
+SET (STRIGI_EXTRA_LIB_DIRECTORY "" CACHE STRING "Extra library directories to search in")
 SET (CMAKE_INCLUDE_PATH "${STRIGI_EXTRA_INC_DIRECTORY};${CMAKE_INCLUDE_PATH}")
 SET (CMAKE_LIBRARY_PATH "${STRIGI_EXTRA_LIB_DIRECTORY};${CMAKE_LIBRARY_PATH}")
 set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
