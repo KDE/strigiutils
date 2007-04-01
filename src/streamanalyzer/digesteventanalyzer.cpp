@@ -25,23 +25,37 @@
 using namespace std;
 using namespace Strigi;
 
-DigestEventAnalyzer::DigestEventAnalyzer(FieldRegister& reg) {
+DigestEventAnalyzer::DigestEventAnalyzer(const DigestEventAnalyzerFactory* f)
+        :factory(f) {
+fprintf(stderr, "NEW\n");
     analysisresult = 0;
-    shafield = reg.registerField("sha1", FieldRegister::binaryType, 1, 0);
 }
 DigestEventAnalyzer::~DigestEventAnalyzer() {
 }
 void
 DigestEventAnalyzer::startAnalysis(AnalysisResult* ar) {
+fprintf(stderr, "start NEW\n");
     analysisresult = ar;
+    sha1.reset();
 }
 void
 DigestEventAnalyzer::handleData(const char* data, uint32_t length) {
+    sha1.process(data, length);
 }
 void
 DigestEventAnalyzer::endAnalysis() {
+    const char* digest = (const char*)sha1.hash();
+    char d[41];
+    for (int i = 0; i < 20; i++) {
+        sprintf(d+2*i, "%02x", digest[i]);
+    }
+    analysisresult->addValue(factory->shafield, d, 40);
 }
 bool
 DigestEventAnalyzer::isReadyWithStream() {
     return false;
+}
+void
+DigestEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
+    shafield = reg.registerField("sha1", FieldRegister::binaryType, 1, 0);
 }
