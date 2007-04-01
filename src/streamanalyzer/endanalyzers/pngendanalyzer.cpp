@@ -248,9 +248,7 @@ PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
     if (nlen == nread) return -1;
     const string name(c, nlen); // do something with the name!
     in->reset(nlen+1);
-    addMetaData(name, as, in);
-    TextEndAnalyzer tea;
-    return tea.analyze(as, in);
+    return addMetaData(name, as, in);
 }
 char
 PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
@@ -267,9 +265,7 @@ PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
     const string name(c, nlen); // do something with the name!
     in->reset(nlen+2);
     GZipInputStream z(in, GZipInputStream::ZLIBFORMAT);
-    addMetaData(name, as, &z);
-    TextEndAnalyzer tea;
-    return tea.analyze(as, &z);
+    return addMetaData(name, as, &z);
 }
 int32_t
 PngEndAnalyzer::extractTime(const char* chunck) {
@@ -309,13 +305,16 @@ PngEndAnalyzer::extractTime(const char* chunck) {
     // If someone has a better solution...
     return sinceEpoch + timeZoneOffset;
 }
-void
+char
 PngEndAnalyzer::addMetaData(const string& key,
         Strigi::AnalysisResult& as, InputStream* in) {
+    // try to store 1KB (should we get more?)
     const char* b;
-    int64_t pos = in->position();
-    // try to store the whole buffer
-    int32_t nread = in->read(b, 0, -1);
+    int32_t nread = in->read(b, 1024, 0);
+    if (in->status() == Error) {
+        m_error = in->error();
+        return -1;
+    }
     if (0 < nread) {
         const string value(b, nread);
         if ("Title" == key) {
@@ -340,6 +339,6 @@ PngEndAnalyzer::addMetaData(const string& key,
         } else if ("Comment" == key) {
             as.addValue(factory->commentField, value);
         }
-        in->reset(pos);
     }
+    return 0;
 }

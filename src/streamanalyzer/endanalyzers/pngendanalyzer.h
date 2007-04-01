@@ -31,7 +31,7 @@ private:
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "PngEndAnalyzer"; }
     int32_t extractTime(const char* chunck);
-    void addMetaData(const std::string& key, Strigi::AnalysisResult& as,
+    char addMetaData(const std::string& key, Strigi::AnalysisResult& as,
         Strigi::InputStream* in);
     /*
        Internal function called to analyze text embedded in the png.
