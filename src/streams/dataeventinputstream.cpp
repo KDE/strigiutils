@@ -30,11 +30,12 @@ DataEventInputStream::DataEventInputStream(InputStream *i,
     m_size = input->size();
     totalread = 0;
     m_status = Ok;
+    finished = false;
 }
 int32_t
 DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     int32_t nread = input->read(start, min, max);
-//    printf("%p pos: %lli min %i max %i nread %i\n", this, m_position, min, max, nread);
+    //fprintf(stderr, "%p pos: %lli min %i max %i nread %i\n", this, m_position, min, max, nread);
     if (nread < -1) {
         m_error = input->error();
         m_status = Error;
@@ -63,13 +64,16 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
 #endif
         assert(m_size == m_position);
         assert(totalread == m_size);
-        finish();
+        if (!finished) {
+            finish();
+            finished = true;
+        }
     }
     return nread;
 }
 int64_t
 DataEventInputStream::skip(int64_t ntoskip) {
-//    printf("skipping %lli\n", ntoskip);
+    //fprintf(stderr, "skipping %lli\n", ntoskip);
     // we call the default implementation because it calls
     // read() which is required for sending the signals
     int64_t skipped = InputStream::skip(ntoskip);
@@ -79,7 +83,7 @@ DataEventInputStream::skip(int64_t ntoskip) {
 }
 int64_t
 DataEventInputStream::reset(int64_t np) {
-//    printf("reset from %lli to %lli\n", m_position, np);
+    //fprintf(stderr, "reset from %lli to %lli\n", m_position, np);
     if (np > m_position) {
         // advance to the new position, using skip ensure we actually read
         // the files
@@ -87,7 +91,7 @@ DataEventInputStream::reset(int64_t np) {
         return m_position;
     }
     int64_t newpos = input->reset(np);
-//    printf("np %lli newpos %lli\n", np, newpos);
+    //fprintf(stderr, "np %lli newpos %lli\n", np, newpos);
     if (newpos < 0) {
         m_status = Error;
         m_error = input->error();

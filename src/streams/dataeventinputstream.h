@@ -96,6 +96,7 @@ private:
     int64_t totalread;
     InputStream* input;
     DataEventHandler& handler;
+    bool finished;
 
     void finish();
 public:

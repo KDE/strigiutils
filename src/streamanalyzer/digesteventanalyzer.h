@@ -21,18 +21,21 @@
 #define DIGESTEVENTANALYZER_H
 
 #include "streameventanalyzer.h"
+#include "sha1.h"
 
 namespace Strigi {
     class RegisteredField;
     class FieldRegister;
 }
 
+class DigestEventAnalyzerFactory;
 class DigestEventAnalyzer : public Strigi::StreamEventAnalyzer {
 private:
+    SHA1 sha1;
     Strigi::AnalysisResult* analysisresult;
-    const Strigi::RegisteredField* shafield;
+    const DigestEventAnalyzerFactory* const factory;
 public:
-    DigestEventAnalyzer(Strigi::FieldRegister& reg);
+    DigestEventAnalyzer(const DigestEventAnalyzerFactory*);
     ~DigestEventAnalyzer();
     const char* name() const { return "DigestEventAnalyzer"; }
     void startAnalysis(Strigi::AnalysisResult*);
@@ -43,13 +46,15 @@ public:
 
 class DigestEventAnalyzerFactory
         : public Strigi::StreamEventAnalyzerFactory {
+public:
+    const Strigi::RegisteredField* shafield;
 private:
     const char* name() const {
         return "DigestEventAnalyzer";
     }
-    Strigi::StreamEventAnalyzer* newInstance(Strigi::FieldRegister& reg)
-            const {
-        return new DigestEventAnalyzer(reg);
+    void registerFields(Strigi::FieldRegister&);
+    Strigi::StreamEventAnalyzer* newInstance() const {
+        return new DigestEventAnalyzer(this);
     }
 };
 

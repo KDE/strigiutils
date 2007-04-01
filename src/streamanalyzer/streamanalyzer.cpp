@@ -225,6 +225,7 @@ StreamAnalyzerPrivate::initializeEventFactories() {
     list<StreamEventAnalyzerFactory*> plugins
         = moduleLoader->streamEventAnalyzerFactories();
     list<StreamEventAnalyzerFactory*>::iterator i;
+    addFactory(new DigestEventAnalyzerFactory());
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
@@ -237,7 +238,6 @@ StreamAnalyzerPrivate::initializeThroughFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    //addFactory(new DigestThroughAnalyzerFactory());
     addFactory(new ID3V2ThroughAnalyzerFactory());
     addFactory(new OggThroughAnalyzerFactory());
     addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,

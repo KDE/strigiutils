@@ -27,29 +27,33 @@ using namespace Strigi;
 
 DigestEventAnalyzer::DigestEventAnalyzer(const DigestEventAnalyzerFactory* f)
         :factory(f) {
-fprintf(stderr, "NEW\n");
+//fprintf(stderr, "NEW\n");
     analysisresult = 0;
 }
 DigestEventAnalyzer::~DigestEventAnalyzer() {
 }
 void
 DigestEventAnalyzer::startAnalysis(AnalysisResult* ar) {
-fprintf(stderr, "start NEW\n");
+//fprintf(stderr, "start NEW\n");
     analysisresult = ar;
     sha1.reset();
 }
 void
 DigestEventAnalyzer::handleData(const char* data, uint32_t length) {
+//fprintf(stderr, "process %i\n", length);
     sha1.process(data, length);
 }
 void
 DigestEventAnalyzer::endAnalysis() {
+//fprintf(stderr, "end\n");
     const char* digest = (const char*)sha1.hash();
     char d[41];
     for (int i = 0; i < 20; i++) {
-        sprintf(d+2*i, "%02x", digest[i]);
+        char c = digest[i];
+        sprintf(d+2*i, "%02x", c);
     }
     analysisresult->addValue(factory->shafield, d, 40);
+    analysisresult = 0;
 }
 bool
 DigestEventAnalyzer::isReadyWithStream() {
