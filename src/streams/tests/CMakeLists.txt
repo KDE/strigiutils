@@ -1,4 +1,8 @@
 
+include_directories(
+	${strigi_BINARY_DIR}/src/streams/compat
+	${strigi_SOURCE_DIR}/src/streams/compat
+)
 set(streamtests
 	testrunner.cpp
 	FileInputStreamTest.cpp
@@ -13,7 +17,6 @@ set(streamtests
 	MailInputStreamTest.cpp
 	Base64InputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
-	DigestInputStreamTest.cpp
 )
 if(NOT WIN32)
         set(streamtests ${streamtests}

@@ -1,9 +1,9 @@
-
+add_subdirectory(tests)
+add_subdirectory(pdf)
 
 include_directories(
 	${ZLIB_INCLUDE_DIR}
 	${BZIP2_INCLUDE_DIR}
-	${OPENSSL_INCLUDE_DIR}
 	${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat
@@ -51,7 +51,7 @@ set_target_properties(streams PROPERTIES
     DEFINE_SYMBOL MAKE_STREAMS_LIB
 )
 
-target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${OPENSSL_LIBRARIES} ${OPENSSL_EAY_LIBRARIES} ${ICONV_LIBRARIES})
+target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 
 install(FILES
 	streambase.h

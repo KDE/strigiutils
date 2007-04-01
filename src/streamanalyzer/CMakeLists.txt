@@ -4,7 +4,7 @@ add_subdirectory(tests)
 add_subdirectory(fieldproperties)
 
 include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
-	${LIBXML2_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${ICONV_INCLUDE_DIR} ${QT_QTCORE_INCLUDE}
+	${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR} ${QT_QTCORE_INCLUDE}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
