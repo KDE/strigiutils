@@ -313,6 +313,7 @@ void
 PngEndAnalyzer::addMetaData(const string& key,
         Strigi::AnalysisResult& as, InputStream* in) {
     const char* b;
+    int64_t pos = in->position();
     // try to store the whole buffer
     int32_t nread = in->read(b, 0, -1);
     if (0 < nread) {
@@ -339,5 +340,6 @@ PngEndAnalyzer::addMetaData(const string& key,
         } else if ("Comment" == key) {
             as.addValue(factory->commentField, value);
         }
+        in->reset(pos);
     }
 }
