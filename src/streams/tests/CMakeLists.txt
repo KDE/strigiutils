@@ -11,6 +11,7 @@ set(streamtests
 	BZ2InputStreamTest.cpp
 	TarInputStreamTest.cpp
 	RpmInputStreamTest.cpp
+	EventInputStreamTest.cpp
 	SubInputStreamTest.cpp
 	InputStreamTest.cpp
 	InputStreamReaderTest.cpp

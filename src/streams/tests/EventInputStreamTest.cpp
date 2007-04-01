@@ -18,20 +18,26 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "../fileinputstream.h"
-#include "../digestinputstream.h"
+#include "../dataeventinputstream.h"
 #include "inputstreamtests.h"
 
 using namespace Strigi;
 
+class TestEventHandler : public DataEventHandler {
+public:
+    bool handleData(const char* data, uint32_t size) { return true; }
+};
+
 int
-DigestInputStreamTest(int argc, char* argv[]) {
+EventInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 0;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
+    TestEventHandler de;
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
-        DigestInputStream sub(&file);
+        DataEventInputStream sub(&file, de);
         charinputstreamtests[i](&sub);
     }
     return founderrors;
