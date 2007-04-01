@@ -21,7 +21,6 @@
 #define DIGESTTHROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
-#include "cnstr.h"
 
 namespace Strigi {
     class DigestInputStream;

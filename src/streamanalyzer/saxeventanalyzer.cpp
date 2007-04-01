@@ -26,6 +26,14 @@
 using namespace Strigi;
 using namespace std;
 
+class xmlCleaner {
+public:
+    ~xmlCleaner() {
+         xmlCleanupParser();
+    }
+};
+static xmlCleaner xmlcleaner;
+
 class SaxEventAnalyzer::Private {
 public:
     std::vector<StreamSaxAnalyzer*> sax;

@@ -22,7 +22,7 @@
 
 #include "streamthroughanalyzer.h"
 #include "analyzerplugin.h"
-#include "cnstr.h"
+#include "string.h"
 
 namespace Strigi {
     class RegisteredField;
@@ -46,10 +46,10 @@ class AuThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class AuThroughAnalyzer;
 private:
-    static const cnstr lengthFieldName;
-    static const cnstr sampleRateFieldName;
-    static const cnstr channelsFieldName;
-    static const cnstr encodingFieldName;
+    static const std::string lengthFieldName;
+    static const std::string sampleRateFieldName;
+    static const std::string channelsFieldName;
+    static const std::string encodingFieldName;
     const Strigi::RegisteredField* lengthField;
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;

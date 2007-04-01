@@ -26,9 +26,9 @@ using namespace std;
 
 void
 OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["title"] = r.registerField("title", FieldRegister::stringType, 1, 0);
-    fields["album"] = r.registerField("album", FieldRegister::stringType, 1, 0);
-    fields["artist"] = r.registerField("artist", FieldRegister::stringType,
+    fields["title"] = r.registerField("ogg.title", FieldRegister::stringType, 1, 0);
+    fields["album"] = r.registerField("ogg.album", FieldRegister::stringType, 1, 0);
+    fields["artist"] = r.registerField("ogg.artist", FieldRegister::stringType,
         1, 0);
 }
 

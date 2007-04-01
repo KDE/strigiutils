@@ -22,7 +22,6 @@
 
 #include "streamthroughanalyzer.h"
 #include "analyzerplugin.h"
-#include "cnstr.h"
 
 namespace Strigi {
     class RegisteredField;

@@ -25,15 +25,15 @@
 #include "fieldtypes.h"
 #include <iostream> 
 
-
 using namespace Strigi;
+using namespace std;
 
-const cnstr DebLineAnalyzerFactory::nameFieldName("name");
-const cnstr DebLineAnalyzerFactory::versionFieldName("version");
-const cnstr DebLineAnalyzerFactory::summaryFieldName("summary");
-const cnstr DebLineAnalyzerFactory::maintainerFieldName("maintainer");
-const cnstr DebLineAnalyzerFactory::sectionFieldName("section");
-const cnstr DebLineAnalyzerFactory::dependsFieldName("depends");
+const string DebLineAnalyzerFactory::nameFieldName("name");
+const string DebLineAnalyzerFactory::versionFieldName("version");
+const string DebLineAnalyzerFactory::summaryFieldName("summary");
+const string DebLineAnalyzerFactory::maintainerFieldName("maintainer");
+const string DebLineAnalyzerFactory::sectionFieldName("section");
+const string DebLineAnalyzerFactory::dependsFieldName("depends");
 
 
 void

@@ -20,6 +20,7 @@
 #include "estraierindexwriter.h"
 #include "estraierindexmanager.h"
 #include "analysisresult.h"
+#include <fieldtypes.h>
 #include <vector>
 #include <sstream>
 using namespace std;
@@ -45,19 +46,19 @@ EstraierIndexWriter::addText(const AnalysisResult* idx, const char* text,
     est_doc_add_text(doc, value.c_str());
 }
 void
-EstraierIndexWriter::setField(const AnalysisResult* idx, const string& name,
-        const string& value) {
+EstraierIndexWriter::addField(const AnalysisResult* idx,
+        const RegisteredField* field, const string& value) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());
-    if (name == "size") {
+    if (field->getKey() == "size") {
         est_doc_add_attr(doc, "@size", value.c_str());
-    } else if (name == "title") {
+    } else if (field->getKey() == "title") {
         est_doc_add_attr(doc, "@title", value.c_str());
     } else {
-        est_doc_add_attr(doc, name.c_str(), value.c_str());
+        est_doc_add_attr(doc, field->getKey().c_str(), value.c_str());
     }
 }
 void
-EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
+EstraierIndexWriter::startAnalysis(AnalysisResult* idx) {
     // allocate a new estraier document
     ESTDOC* doc = est_doc_new();
     idx->setWriterData(doc);
@@ -66,7 +67,7 @@ EstraierIndexWriter::startIndexable(AnalysisResult* idx) {
     Close all left open indexwriters for this path.
 */
 void
-EstraierIndexWriter::finishIndexable(const AnalysisResult* idx) {
+EstraierIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());;
     // add required url field
 

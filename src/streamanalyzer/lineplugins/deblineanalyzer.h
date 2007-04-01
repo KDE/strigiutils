@@ -23,8 +23,6 @@
 #include "analysisresult.h"
 #include "analyzerplugin.h"
 #include "streamlineanalyzer.h"
-#include "cnstr.h"
-
 
 class DebLineAnalyzerFactory;
 class DebLineAnalyzer : public Strigi::StreamLineAnalyzer {
@@ -42,12 +40,12 @@ public:
 
 class DebLineAnalyzerFactory : public Strigi::StreamLineAnalyzerFactory {
 public:
-    static const cnstr nameFieldName;
-    static const cnstr versionFieldName;
-    static const cnstr summaryFieldName;
-    static const cnstr maintainerFieldName;
-    static const cnstr sectionFieldName;
-    static const cnstr dependsFieldName;
+    static const std::string nameFieldName;
+    static const std::string versionFieldName;
+    static const std::string summaryFieldName;
+    static const std::string maintainerFieldName;
+    static const std::string sectionFieldName;
+    static const std::string dependsFieldName;
     const Strigi::RegisteredField* nameField;
     const Strigi::RegisteredField* versionField;
     const Strigi::RegisteredField* summaryField;

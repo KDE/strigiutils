@@ -79,7 +79,6 @@ install(FILES
 	indexwriter.h
 	analyzerconfiguration.h
 	fieldproperties.h
-	cnstr.h
 	fieldtypes.h
 	DESTINATION include/strigi
 )

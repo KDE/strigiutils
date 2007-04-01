@@ -37,7 +37,7 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
     // build the phrase string
 
     // write the part of the query that matches the document context
-    string phrase;
+    string inphrase, exphrase;
     set<string> terms;
     const map<string, set<string> >& includes = query.includes();
     map<string, set<string> >::const_iterator i = includes.find("");

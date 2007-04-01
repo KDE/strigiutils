@@ -21,7 +21,8 @@
 #define REGISTEREDFIELD_H
 
 #include "jstreamsconfig.h"
-#include "cnstr.h"
+#include <map>
+#include <string>
 
 namespace Strigi {
 
@@ -35,8 +36,8 @@ private:
     void* m_writerdata;
 
     RegisteredField();
-    RegisteredField(const std::string& key, const std::string& type, int maxoccurs,
-        const RegisteredField* parent);
+    RegisteredField(const std::string& key, const std::string& type,
+        int maxoccurs, const RegisteredField* parent);
 public:
     const std::string& key() const { return m_key; }
     void* writerData() const { return m_writerdata; }

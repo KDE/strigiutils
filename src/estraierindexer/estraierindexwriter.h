@@ -31,12 +31,24 @@ private:
     const std::string indexpath;
 
 protected:
-    void startIndexable(Strigi::AnalysisResult*);
-    void finishIndexable(const Strigi::AnalysisResult*);
+    void startAnalysis(Strigi::AnalysisResult*);
+    void addField(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        const std::string& value);
+    void addField(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        const unsigned char* data, uint32_t size) {}
+    void addField(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        int32_t value) {}
+    void addField(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        uint32_t value) {}
+    void addField(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        double value) {}
+    void addValue(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
+        const std::string& name, const std::string& value) {}
+    void finishAnalysis(const Strigi::AnalysisResult*);
     void addText(const Strigi::AnalysisResult*, const char* text,
         int32_t length);
-    void setField(const Strigi::AnalysisResult* idx, const std::string &fieldname,
-        const std::string& value);
+    void addTriplet(const std::string& subject,
+        const std::string& predicate, const std::string& object) {}
     explicit EstraierIndexWriter(EstraierIndexManager*);
     ~EstraierIndexWriter();
 public:

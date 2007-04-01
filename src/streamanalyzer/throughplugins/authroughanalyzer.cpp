@@ -28,10 +28,10 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const cnstr AuThroughAnalyzerFactory::lengthFieldName("length");
-const cnstr AuThroughAnalyzerFactory::sampleRateFieldName("sampleRate");
-const cnstr AuThroughAnalyzerFactory::channelsFieldName("channels");
-const cnstr AuThroughAnalyzerFactory::encodingFieldName("encoding");
+const string AuThroughAnalyzerFactory::lengthFieldName("length");
+const string AuThroughAnalyzerFactory::sampleRateFieldName("sampleRate");
+const string AuThroughAnalyzerFactory::channelsFieldName("channels");
+const string AuThroughAnalyzerFactory::encodingFieldName("encoding");
 
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

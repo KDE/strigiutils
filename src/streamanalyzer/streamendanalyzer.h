@@ -21,7 +21,6 @@
 #define STREAMENDANALYZER_H
 
 #include "streambase.h"
-#include "cnstr.h"
 
 namespace Strigi {
 class StreamAnalyzer;
