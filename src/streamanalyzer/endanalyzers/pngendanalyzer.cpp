@@ -314,7 +314,7 @@ PngEndAnalyzer::addMetaData(const string& key,
         Strigi::AnalysisResult& as, InputStream* in) {
     const char* b;
     // try to store the whole buffer
-    int32_t nread = in->read(b, 0, 80);
+    int32_t nread = in->read(b, 0, -1);
     if (0 < nread) {
         const string value(b, nread);
         if ("Title" == key) {
