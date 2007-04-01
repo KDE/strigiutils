@@ -49,7 +49,7 @@ enum StreamStatus {
  * stupid / does not work by design :)
  * Because of this I've introduced this StreamBaseBase class
  */
-class STREAMS_EXPORT StreamBaseBase {
+class STREAMS_EXPORT StreamBaseBase { //krazy:exclude=dpointer
 protected:
     /** The size of the stream (-1 if unknown) */
     int64_t m_size;
