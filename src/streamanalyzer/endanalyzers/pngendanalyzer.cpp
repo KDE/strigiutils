@@ -186,9 +186,6 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
         // get the size of the data block
         chunksize = readBigEndianUInt32(c);
 
-        // TODO read http://tools.ietf.org/html/rfc2083 to handle
-        // predefined text values and map them to good semantic fields
-
         if (strncmp("tEXt", c+4, 4) == 0) {
             // TODO convert latin1 to utf8 and analyze the format properly
             SubInputStream sub(in, chunksize);
@@ -203,19 +200,9 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
             analyzeText(as, &sub);
             sub.skip(chunksize);
         } else if (strncmp("tIME", c+4, 4) == 0) {
-            // the chunck size has to be 7
-            if (chunksize != 7) {
-                return -1;
-            }
-            nread = in->read(c, chunksize, chunksize);
-            if (nread != (int32_t)chunksize) {
-                return -1;
-            }
-            int32_t time = extractTime(c);
-            if (time == -1) {
-                return -1;
-            }
-            as.addValue(factory->lastModificationTimeField, (uint32_t)time);
+            SubInputStream sub(in, chunksize);
+            analyzeTime(as, &sub);
+            sub.skip(chunksize);
         } else {
             nread = (int32_t)in->skip(chunksize);
             if (nread != (int32_t)chunksize) {
@@ -267,8 +254,15 @@ PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
     GZipInputStream z(in, GZipInputStream::ZLIBFORMAT);
     return addMetaData(name, as, &z);
 }
-int32_t
-PngEndAnalyzer::extractTime(const char* chunck) {
+char
+PngEndAnalyzer::analyzeTime(Strigi::AnalysisResult& as,
+        Strigi::InputStream* in) {
+    const char* chunck;
+    int32_t nread = in->read(chunck, 7, 7);
+    if (nread != 7) {
+        return -1;
+    }
+
     int16_t year = readBigEndianInt16(chunck);
     int8_t month = *(chunck+2);
     int8_t day = *(chunck+3);
@@ -303,7 +297,10 @@ PngEndAnalyzer::extractTime(const char* chunck) {
     // FIXME the chunck is UTC but mktime use the local timezone :-(
     // so i have to add the offset of the local time zone
     // If someone has a better solution...
-    return sinceEpoch + timeZoneOffset;
+    uint32_t time = sinceEpoch + timeZoneOffset;
+    as.addValue(factory->lastModificationTimeField, (uint32_t)time);
+
+    return 0;
 }
 char
 PngEndAnalyzer::addMetaData(const string& key,

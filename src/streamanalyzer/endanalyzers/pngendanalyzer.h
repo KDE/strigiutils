@@ -30,16 +30,16 @@ private:
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "PngEndAnalyzer"; }
-    int32_t extractTime(const char* chunck);
-    char addMetaData(const std::string& key, Strigi::AnalysisResult& as,
-        Strigi::InputStream* in);
+    char analyzeTime(Strigi::AnalysisResult& as, Strigi::InputStream* in);
     /*
        Internal function called to analyze text embedded in the png.
        Such text has a special format: 79 bytes of header, a \0 and content
        until the end of the stream.
      */
-    char analyzeText(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
-    char analyzeZText(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    char analyzeText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
+    char analyzeZText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
+    char addMetaData(const std::string& key, Strigi::AnalysisResult& as,
+        Strigi::InputStream* in);
 public:
     PngEndAnalyzer(const PngEndAnalyzerFactory* f);
 };
