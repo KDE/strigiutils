@@ -1,4 +1,4 @@
-subdirs(tests pdf)
+
 
 include_directories(
 	${ZLIB_INCLUDE_DIR}
@@ -11,7 +11,6 @@ include_directories(
 
 set(streams_SRCS
 	bz2inputstream.cpp
-	digestinputstream.cpp
 	fileinputstream.cpp
 	gzipinputstream.cpp
 	gzipcompressstream.cpp
