@@ -57,7 +57,7 @@ struct EntryInfo {
  *
  * This class extracts substreams, such as files and directories,
  * from an InputStream.  For example, it may extract files
- * and directories from a tar achive, or a uncompressed data from
+ * and directories from a tar archive, or a uncompressed data from
  * a gzipped data stream.
  */
 class STREAMS_EXPORT SubStreamProvider {
