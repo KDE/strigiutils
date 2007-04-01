@@ -1,4 +1,1 @@
-* replace cnstr with std::string everywhere (can be done anytime)
 * seek and replace getFoo() functions with foo() in daemon/client?
-* add a AnalysisResult*parent() function to AnalysisResult
-* add a function addValue(RegisteredField*field, const std::string&name, const std::string&value);
