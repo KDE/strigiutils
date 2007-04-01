@@ -1,4 +1,16 @@
-- documentation
+- documentation ( complete apidox )
+- clean up the old tutorials (they're a little confusing at the mo)
+- write new tutorials for the new analyzer types
+- finish kfilemetainfo and kfile in kdelibs
+- make per-analyzer unit tests
+- write though unit tests for indexers
+- fix strigiapplet
+- implement xesam (wasabi)
+- finish the ontologies
+- implement a qdbm+sqlite backend
+- implement an rdf backend
+- add mechanism for i18n of ontology
+- allow for i18n of (finite) enums? [as part of i18n of ontology]
 - make sure the applet displays fine if kicker is on the top of the screen
 - add support for numeric < and > in the queries
 - monitor the free disk space and make sure the indexer does not fill up the drive. this might be done with Solid or a call to a monitor with dbus. best is probably to let the client tell the server how much space is left
