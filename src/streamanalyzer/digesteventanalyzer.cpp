@@ -18,47 +18,30 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "jstreamsconfig.h"
-#include "digestthroughanalyzer.h"
-#include "digestinputstream.h"
+#include "digesteventanalyzer.h"
 #include "streambase.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
 using namespace std;
 using namespace Strigi;
 
-string DigestThroughAnalyzer::shafieldname("sha1");
-
-DigestThroughAnalyzer::DigestThroughAnalyzer(FieldRegister& reg) {
-    stream = 0;
-    indexable = 0;
-    shafield = reg.registerField(shafieldname, FieldRegister::binaryType, 1, 0);
+DigestEventAnalyzer::DigestEventAnalyzer(FieldRegister& reg) {
+    analysisresult = 0;
+    shafield = reg.registerField("sha1", FieldRegister::binaryType, 1, 0);
 }
-DigestThroughAnalyzer::~DigestThroughAnalyzer() {
-    if (stream) {
-        delete stream;
-    }
-}
-InputStream *
-DigestThroughAnalyzer::connectInputStream(InputStream *in) {
-    if(!in)
-        return in;
-
-    if (stream) {
-        delete stream;
-    }
-    stream = new DigestInputStream(in);
-    return stream;
+DigestEventAnalyzer::~DigestEventAnalyzer() {
 }
 void
-DigestThroughAnalyzer::setIndexable(AnalysisResult* idx) {
-    if (indexable && stream) { // && stream->status() == Eof) {
-        indexable->addValue(shafield, stream->digestString());
-//        printf("%s: %s\n", indexable->name().c_str(), stream->digestString().c_str());
-    }
-
-    indexable = idx;
+DigestEventAnalyzer::startAnalysis(AnalysisResult* ar) {
+    analysisresult = ar;
+}
+void
+DigestEventAnalyzer::handleData(const char* data, uint32_t length) {
+}
+void
+DigestEventAnalyzer::endAnalysis() {
 }
 bool
-DigestThroughAnalyzer::isReadyWithStream() {
-    return stream->status() != Ok;
+DigestEventAnalyzer::isReadyWithStream() {
+    return false;
 }

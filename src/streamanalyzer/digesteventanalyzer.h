@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,40 +17,39 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DIGESTTHROUGHANALYZER_H
-#define DIGESTTHROUGHANALYZER_H
+#ifndef DIGESTEVENTANALYZER_H
+#define DIGESTEVENTANALYZER_H
 
-#include "streamthroughanalyzer.h"
+#include "streameventanalyzer.h"
 
 namespace Strigi {
-    class DigestInputStream;
     class RegisteredField;
     class FieldRegister;
 }
 
-class DigestThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
+class DigestEventAnalyzer : public Strigi::StreamEventAnalyzer {
 private:
-    static std::string shafieldname;
-    Strigi::DigestInputStream *stream;
-    Strigi::AnalysisResult* indexable;
+    Strigi::AnalysisResult* analysisresult;
     const Strigi::RegisteredField* shafield;
 public:
-    DigestThroughAnalyzer(Strigi::FieldRegister& reg);
-    ~DigestThroughAnalyzer();
-    void setIndexable(Strigi::AnalysisResult*);
-    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
+    DigestEventAnalyzer(Strigi::FieldRegister& reg);
+    ~DigestEventAnalyzer();
+    const char* name() const { return "DigestEventAnalyzer"; }
+    void startAnalysis(Strigi::AnalysisResult*);
+    void endAnalysis();
+    void handleData(const char* data, uint32_t length);
     bool isReadyWithStream();
 };
 
-class DigestThroughAnalyzerFactory
-        : public Strigi::StreamThroughAnalyzerFactory {
+class DigestEventAnalyzerFactory
+        : public Strigi::StreamEventAnalyzerFactory {
 private:
     const char* name() const {
-        return "DigestThroughAnalyzer";
+        return "DigestEventAnalyzer";
     }
-    Strigi::StreamThroughAnalyzer* newInstance(Strigi::FieldRegister& reg)
+    Strigi::StreamEventAnalyzer* newInstance(Strigi::FieldRegister& reg)
             const {
-        return new DigestThroughAnalyzer(reg);
+        return new DigestEventAnalyzer(reg);
     }
 };
 

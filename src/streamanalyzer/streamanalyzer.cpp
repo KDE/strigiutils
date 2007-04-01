@@ -40,7 +40,7 @@
 #include "dataeventinputstream.h"
 #include "id3v2throughanalyzer.h"
 #include "oggthroughanalyzer.h"
-#include "digestthroughanalyzer.h"
+#include "digesteventanalyzer.h"
 #include "odfmimetypelineanalyzer.h"
 #include "odfsaxanalyzer.h"
 #include "analysisresult.h"

@@ -9,7 +9,7 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
 set(streamanalyzer_SRCS
-	digestthroughanalyzer.cpp
+	digesteventanalyzer.cpp
 	streamendanalyzer.cpp
 	query.cpp
 	analyzerloader.cpp
