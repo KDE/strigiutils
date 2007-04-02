@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXREADER_H
 #define CLUCENEINDEXREADER_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "indexreader.h"
 
 #include <map>

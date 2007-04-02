@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
  
-#ifndef JSTREAMSCONFIG_H
-#define JSTREAMSCONFIG_H
+#ifndef STRIGICONFIG_H
+#define STRIGICONFIG_H
 
 /* use the same includes for types finding as in ConfigureChecks.cmake */
 #if @STRIGI_HAVE_SOCKET_H@
@@ -238,4 +238,4 @@
 # define STRIGIHTMLGUI_EXPORT STRIGI_EXPORT
 #endif
 
-#endif //JSTREAMSCONFIG_H
+#endif //STRIGICONFIG_H

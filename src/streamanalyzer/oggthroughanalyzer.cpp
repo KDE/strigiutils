@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "oggthroughanalyzer.h"
 #include "analysisresult.h"
 using namespace Strigi;

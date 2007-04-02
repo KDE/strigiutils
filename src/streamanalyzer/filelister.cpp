@@ -22,7 +22,7 @@
 # include "config.h"
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "filelister.h"
 #include "analyzerconfiguration.h"
 #include <sys/types.h>

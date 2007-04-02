@@ -125,7 +125,7 @@
 	#endif
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #define KDELIBSUFF "${KDELIBSUFF}"
 

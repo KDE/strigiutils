@@ -20,7 +20,7 @@
 #ifndef CPIOINPUTSTREAM_H
 #define CPIOINPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"

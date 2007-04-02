@@ -1,4 +1,4 @@
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "cluceneindexmanager.h"
 #include "indexmanagertests.h"
 #include "indexwritertests.h"

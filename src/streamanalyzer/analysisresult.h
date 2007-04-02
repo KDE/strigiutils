@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 
 /**

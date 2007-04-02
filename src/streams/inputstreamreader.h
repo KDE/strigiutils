@@ -22,7 +22,7 @@
 
 #include <string>
 #include <iconv.h>
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "bufferedstream.h"
 #include "streambase.h"
 

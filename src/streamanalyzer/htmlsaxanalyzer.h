@@ -21,7 +21,7 @@
 #ifndef HTMLSAXANALYZER
 #define HTMLSAXANALYZER
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streamsaxanalyzer.h"
 #include <vector>
 

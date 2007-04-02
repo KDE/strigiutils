@@ -22,7 +22,7 @@
 # include <config.h>
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include <CLucene.h>
 #include "cluceneindexmanager.h"
 #include "cluceneindexwriter.h"

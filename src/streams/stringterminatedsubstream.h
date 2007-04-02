@@ -20,7 +20,7 @@
 #ifndef STRINGTERMINATEDSUBSTREAM
 #define STRINGTERMINATEDSUBSTREAM
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "kmpsearcher.h"
 

@@ -21,7 +21,7 @@
  #include "config.h"
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
 #include "indexer.h"

@@ -19,7 +19,7 @@
  */
 #ifndef DATAEVENTINPUTSTREAM_H
 #define DATAEVENTINPUTSTREAM_H
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 
 namespace Strigi {

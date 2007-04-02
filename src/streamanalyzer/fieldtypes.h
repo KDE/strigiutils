@@ -20,7 +20,7 @@
 #ifndef REGISTEREDFIELD_H
 #define REGISTEREDFIELD_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include <map>
 #include <string>
 

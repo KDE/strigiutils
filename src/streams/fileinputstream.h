@@ -20,7 +20,7 @@
 #ifndef FILEINPUTSTREAM_H
 #define FILEINPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "bufferedstream.h"
 
 namespace Strigi {

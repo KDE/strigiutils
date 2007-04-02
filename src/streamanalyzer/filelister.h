@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <string>
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #ifdef _WIN32
 typedef unsigned int uid_t;

@@ -20,7 +20,7 @@
 #ifndef INDEXREADER_H
 #define INDEXREADER_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "indexeddocument.h"
 #include <vector>
 

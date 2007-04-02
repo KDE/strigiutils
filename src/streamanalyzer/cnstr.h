@@ -21,8 +21,8 @@
 #define CNSTR_H
 
 #ifdef __GNUC__
-#warning cnstr is deprecated.  Use std::string instead.
-#warning also, include <string> instead of cnstr.h
+#error cnstr is deprecated.  Use std::string instead.
+#error also, include <string> instead of cnstr.h
 #endif
 
 #endif

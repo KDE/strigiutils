@@ -21,7 +21,7 @@
 # include "config.h"
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "archivereader.h"
 #include "fileinputstream.h"
 #include <sys/types.h>

@@ -25,7 +25,7 @@
  #include <unistd.h>
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "compat.h"
 #include "helperendanalyzer.h"
 #include "processinputstream.h"

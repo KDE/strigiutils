@@ -17,9 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "query.h"
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "indexreader.h"
 #include <ctype.h>
 using namespace std;

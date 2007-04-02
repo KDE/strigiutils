@@ -20,7 +20,7 @@
 #ifndef BASE64INPUTSTREAM_H
 #define BASE64INPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "bufferedstream.h"
 

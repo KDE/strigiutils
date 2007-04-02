@@ -20,7 +20,7 @@
 #ifndef FIELDPROPERIESDB_H
 #define FIELDPROPERIESDB_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "fieldproperties.h"
 #include <map>
 #include <vector>

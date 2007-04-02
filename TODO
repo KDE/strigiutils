@@ -32,3 +32,4 @@ quick way to parse desktop files according to dfaure:
 
 - add support for IPTC, see http://nets.ii.uam.es/neptuno/iptc/
 - think about supporting very large files with nested files, such as 1 gb mailbox files
+- delete deprecated headers (those that currently cause #errors)

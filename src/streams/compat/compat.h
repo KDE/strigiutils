@@ -25,7 +25,7 @@
 # include "config.h"
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #ifndef HAVE_ISBLANK
 STREAMS_EXPORT bool isblank(char c);

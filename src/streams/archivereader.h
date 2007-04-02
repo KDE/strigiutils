@@ -24,7 +24,7 @@
 #include <list>
 #include <vector>
 #include <string>
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "substreamprovider.h"
 

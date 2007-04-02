@@ -21,7 +21,7 @@
 #define SUBSTREAMPROVIDER
 
 #include <string>
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 
 namespace Strigi {

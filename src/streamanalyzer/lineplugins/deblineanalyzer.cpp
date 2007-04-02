@@ -21,7 +21,7 @@
 #include "analysisresult.h"
 #include "deblineanalyzer.h"
 #include "streamendanalyzer.h"
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "fieldtypes.h"
 #include <iostream> 
 

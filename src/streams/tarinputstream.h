@@ -20,7 +20,7 @@
 #ifndef TARINPUTSTREAM_H
 #define TARINPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "substreamprovider.h"
 

@@ -21,7 +21,7 @@
 #define CLUCENEINDEXWRITER_H
 
 #include <CLucene/StdHeader.h>
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "indexwriter.h"
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"

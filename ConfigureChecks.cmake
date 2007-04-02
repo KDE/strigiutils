@@ -14,7 +14,7 @@ CHECK_INCLUDE_FILE_CXX(socket.h HAVE_SOCKET_H)
 CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)
 CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)          # src/streamindexer/pluginendanalyzer.cpp
-CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, jstreamsconfig.h
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, strigiconfig.h
 
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
@@ -103,6 +103,6 @@ CONFIGURE_FILE(
 )
 
 CONFIGURE_FILE(
-  ${strigi_SOURCE_DIR}/src/streams/compat/jstreamsconfig.h.cmake
-  ${strigi_BINARY_DIR}/src/streams/compat/jstreamsconfig.h
+  ${strigi_SOURCE_DIR}/src/streams/compat/strigiconfig.h.cmake
+  ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h
 )

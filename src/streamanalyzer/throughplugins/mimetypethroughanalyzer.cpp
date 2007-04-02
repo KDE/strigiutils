@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #include "mimetypethroughanalyzer.h"
 #include "analysisresult.h"

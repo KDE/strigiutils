@@ -20,13 +20,11 @@
 #ifndef STRINGREADER_H
 #define STRINGREADER_H
 
-#include "stringstream.h"
-
 #ifdef __GNUC__
-#warning stringreader.h is deprecated. Include stringstream.h instead.
-#warning StringReader has been renamed to StringStream
-#warning Use StringInputStream for StringStream<char>
-#warning Use StringReader for StringStream<wchar_t>
+#error stringreader.h is deprecated. Include stringstream.h instead.
+#error StringReader has been renamed to StringStream
+#error Use StringInputStream for StringStream<char>
+#error Use StringReader for StringStream<wchar_t>
 #endif
 
 #endif

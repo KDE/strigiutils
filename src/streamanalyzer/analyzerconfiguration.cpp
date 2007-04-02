@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "analyzerconfiguration.h"
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "strigi_fnmatch.h"
 #include "fieldproperties.h"
 #include "fieldpropertiesdb.h"

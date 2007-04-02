@@ -21,7 +21,7 @@
  #include "config.h"
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "indexer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>

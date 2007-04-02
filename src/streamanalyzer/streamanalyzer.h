@@ -20,7 +20,7 @@
 #ifndef STREAMINDEXER_H
 #define STREAMINDEXER_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include <string>
 
 

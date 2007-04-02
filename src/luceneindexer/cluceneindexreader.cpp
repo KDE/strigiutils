@@ -22,7 +22,7 @@
 # include <config.h>
 #endif
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "query.h"
 #include "textutils.h"
 #include <CLucene.h>

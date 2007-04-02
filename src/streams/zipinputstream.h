@@ -20,7 +20,7 @@
 #ifndef ZIPINPUTSTREAM_H
 #define ZIPINPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "substreamprovider.h"
 #include "gzipinputstream.h"

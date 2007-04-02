@@ -21,7 +21,7 @@
 #ifndef EVENTTHROUGHANALYZER
 #define EVENTTHROUGHANALYZER
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "dataeventinputstream.h"
 #include "streamthroughanalyzer.h"
 #include <vector>

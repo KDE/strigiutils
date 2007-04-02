@@ -23,7 +23,7 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odc_SP2003_ta/h
 */
 
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #include "IFilterEndAnalyzer.h"
 #include "streamanalyzer.h"

@@ -22,7 +22,7 @@
 
 #include <qtdbus/strigitypes.h>
 #include <QMutex>
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 /**
  * Wrapper class for accessing the Strigi search client.

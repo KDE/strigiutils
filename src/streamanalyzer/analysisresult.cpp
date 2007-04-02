@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "analysisresult.h"
 #include "indexwriter.h"
 #include "analyzerconfiguration.h"

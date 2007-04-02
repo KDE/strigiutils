@@ -19,7 +19,7 @@
  */
 #ifndef STRIGICLIENT
 #define STRIGICLIENT
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "strigitypes.h"
 
 /**

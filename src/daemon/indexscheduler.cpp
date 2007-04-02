@@ -22,7 +22,7 @@
 #include "indexreader.h"
 #include "indexwriter.h"
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "analyzerconfiguration.h"

@@ -20,10 +20,8 @@
 #ifndef INPUTSTREAM_H
 #define INPUTSTREAM_H
 
-#include "streambase.h"
-
 #ifdef __GNUC__
-#warning inputstream.h is deprecated. Include streambase.h instead.
+#error inputstream.h is deprecated. Include streambase.h instead.
 #endif
 
 #endif

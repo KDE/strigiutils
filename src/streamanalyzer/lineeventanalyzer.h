@@ -21,7 +21,7 @@
 #ifndef LINEEVENTANALYZER
 #define LINEEVENTANALYZER
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streameventanalyzer.h"
 #include <vector>
 #include <iconv.h>

@@ -23,7 +23,7 @@
 #include <set>
 #include <list>
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 namespace Strigi {
 #undef max

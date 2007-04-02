@@ -20,7 +20,7 @@
 #ifndef BZ2INPUTSTREAM_H
 #define BZ2INPUTSTREAM_H
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "bufferedstream.h"
 

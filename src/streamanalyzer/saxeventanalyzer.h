@@ -21,7 +21,7 @@
 #ifndef SAXEVENTANALYZER
 #define SAXEVENTANALYZER
 
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 #include "streameventanalyzer.h"
 #include <vector>
 

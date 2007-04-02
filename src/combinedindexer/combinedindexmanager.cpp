@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "combinedindexmanager.h"
-#include "jstreamsconfig.h"
+#include "strigiconfig.h"
 
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
