@@ -61,7 +61,6 @@ private:
         int maxoccurs, const RegisteredField* parent);
 public:
     /**
-     * @internal
      * @brief Get the key for this field.
      *
      * The key is a (unique) string indicating what this field
@@ -69,36 +68,47 @@ public:
      */
     const std::string& key() const { return m_key; }
     /**
-     * @internal
-     * @brief Get the data stored in the field.
+     * @brief Get a pointer to the data stored in the field.
      *
-     * It is up the the caller to perform the correct
-     * cast on the result based on the value of type().
+     * Retrieves the data stored by setWriterData().
+     *
+     * It is the caller's responsibility to know the type
+     * of data pointed to.
+     *
+     * @return a pointer to the data stored by setWriterData(),
+     * or 0 if setWriterData() has not been called.
      */
     void* writerData() const { return m_writerdata; }
     /**
-     * @internal
      * @brief Store data in the field.
      *
      * This will overwrite any previous data.
      *
-     * It is up the the caller to store the correct type
-     * of data as indicated by type().
+     * This is meant to be used by a Strigi::IndexWriter to
+     * store the data associated with the field in whatever
+     * form is convenient to it.  This may be a string, a
+     * primitive type, an array or an object of some
+     * description.
+     *
+     * It is up the the caller to keep track of the type of
+     * the data that is pointed to.  The RegisteredField does
+     * not take ownership of the data, and it the caller's
+     * responsibility to ensure that any data allocated with
+     * new is deallocated when it is no longer needed.
+     *
+     * @param data a pointer to the data
      */
     void setWriterData(void* data) { m_writerdata = data; }
     /**
-     * @internal
      * @brief Get the parent field of this field.
      */
     const RegisteredField* parent() const { return m_parent; }
     /**
-     * @internal
      * @brief Get the maximum number of types a field will occur in any
      * given resource.
      */
     int maxOccurs() const { return m_maxoccurs; }
     /**
-     * @internal
      * @brief The type of the data in this field.
      */
     const std::string& type() const { return m_type; }

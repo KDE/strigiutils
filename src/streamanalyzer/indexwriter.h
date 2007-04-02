@@ -195,7 +195,55 @@ public:
      * temporarily use the double amount of diskspace.
      **/
     virtual void optimize() {}
+    /**
+     * @brief Initialise the writer data of the fields.
+     *
+     * This performs initialization on the writer data of the fields in
+     * @p fieldRegister.  When called, the writer data is set to a 0-pointer
+     * for every field.
+     *
+     * For example, this function may create an object to store the value for
+     * the field.  The following example is based on code from xmlindexer:
+     * @code
+     * map<string, RegisteredField*>::const_iterator i;
+     * map<string, RegisteredField*>::const_iterator end = fieldRegister.fields().end();
+     * for (i = fieldRegister.fields().begin(); i != end; ++i) {
+     *     Tag* tag = new Tag();
+     *     const string name(i->first);
+     *     tag->open = "  <value name='" + name + "'>";
+     *     tag->close = "</value>\n";
+     *     i->second->setWriterData(tag);
+     * }
+     * @endcode
+     *
+     * This function must be called on a fieldRegister before any of its
+     * fields are passed to any addField() function.
+     *
+     * @param fieldRegister the FieldRegister to initialize
+     */
     virtual void initWriterData(const Strigi::FieldRegister& fieldRegister) {}
+    /**
+     * @brief Clean up the writer data of the fields.
+     *
+     * This cleans up the writer data set with initWriterData() and/or addField().
+     * Typically, this will mean deleting the memory used by the writer data:
+     * @code
+     * map<string, RegisteredField*>::const_iterator i;
+     * map<string, RegisteredField*>::const_iterator end = f.fields().end();
+     * for (i = f.fields().begin(); i != end; ++i) {
+     *     delete static_cast<Tag*>(i->second->writerData());
+     * }
+     * @endcode
+     *
+     * No further calls may be made to addField() with any Strigi::RegisteredField
+     * that has already been passed to this function in a Strigi::FieldRegister.
+     *
+     * This function may only be called once for each corresponding call of
+     * initWriterData() with the same Strigi::FieldRegister, and this must take
+     * place after the call to initWriterData().
+     *
+     * @param fieldRegister contains the fields to be cleaned up after
+     */
     virtual void releaseWriterData(const Strigi::FieldRegister& fieldRegister) {}
 };
 
