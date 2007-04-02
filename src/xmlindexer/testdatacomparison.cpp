@@ -26,6 +26,11 @@
 #include "bz2inputstream.h"
 #include "indexer.h"
 #include "analyzerconfiguration.h"
+#include "streamendanalyzer.h"
+#include "streamthroughanalyzer.h"
+#include "streamlineanalyzer.h"
+#include "streamsaxanalyzer.h"
+#include "streameventanalyzer.h"
 
 #include <cstdio>
 #include <cstring>
@@ -37,12 +42,56 @@
 #endif
 
 #include <sstream>
+#include <fstream>
 using namespace Strigi;
 using namespace std;
 
+class SingleAnalyzerConfiguration : public Strigi::AnalyzerConfiguration {
+private:
+    const char* const analyzerName;
+    mutable int count;
+public:
+    mutable vector<string> names;
+    explicit SingleAnalyzerConfiguration(const char* an)
+        : analyzerName(an), count(0) {}
+
+    bool valid() const { return count == 1; }
+    bool useFactory(StreamEndAnalyzerFactory* f) const {
+        bool use = strcmp(f->name(), analyzerName) == 0;
+        count += (use) ?1 :0;
+        names.push_back(f->name());
+        return use;
+    }
+    bool useFactory(StreamThroughAnalyzerFactory* f) const {
+        bool use = strcmp(f->name(), analyzerName) == 0;
+        count += (use) ?1 :0;
+        names.push_back(f->name());
+        return use;
+    }
+    bool useFactory(StreamSaxAnalyzerFactory* f) const {
+        bool use = strcmp(f->name(), analyzerName) == 0;
+        count += (use) ?1 :0;
+        names.push_back(f->name());
+        return use;
+    }
+    bool useFactory(StreamEventAnalyzerFactory* f) const {
+        bool use = strcmp(f->name(), analyzerName) == 0;
+        count += (use) ?1 :0;
+        names.push_back(f->name());
+        return use;
+    }
+    bool useFactory(StreamLineAnalyzerFactory* f) const {
+        bool use = strcmp(f->name(), analyzerName) == 0;
+        count += (use) ?1 :0;
+        names.push_back(f->name());
+        return use;
+    }
+};
+
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s workingdir dir-to-index referenceoutputfile\n", argv[0]);
+    fprintf(stderr, "Usage: %s analyzer file-to-analyze referenceoutputfile\n",
+        argv[0]);
 }
 bool
 containsHelp(int argc, char **argv) {
@@ -54,23 +103,52 @@ containsHelp(int argc, char **argv) {
 }
 int
 main(int argc, char** argv) {
-    if (containsHelp(argc, argv) || (argc != 4)) {
+    if (containsHelp(argc, argv) || argc < 3 || argc > 4) {
         printUsage(argv);
         return -1;
     }
 
-    const char* mappingfile = 0;
+    const char* analyzerName = argv[1];
+    const char* targetFile = argv[2];
+    const char* referenceFile = 0;
+    if (argc == 4) {
+        referenceFile = argv[3];
+    }
+    const char* mappingFile = 0;
+
+    // check that the target file exists
+    {
+        ifstream filetest(targetFile);
+        if (!filetest.good()) {
+            cerr << "The file '" << targetFile << "' cannot be read." << endl;
+            return 1;
+        }
+    }
 
     ostringstream s;
-    Strigi::AnalyzerConfiguration ic;
-    Indexer indexer(s, ic, mappingfile);
+    SingleAnalyzerConfiguration ic(analyzerName);
+    Indexer indexer(s, ic, mappingFile);
+    if (!ic.valid()) {
+        fprintf(stderr, "No analyzer with name %s was found.\n", analyzerName);
+        fprintf(stderr, "Choose one from:\n");
+        for (uint i=0; i<ic.names.size(); i++) {
+            cerr << " " << ic.names[i] << endl;
+        }
+        return 1;
+    }
     chdir(argv[1]);
-    indexer.index(argv[2]);
+    indexer.index(targetFile);
     string str = s.str();
     int32_t n = 2*str.length();
 
+    // if no reference file was specified, we output the analysis
+    if (referenceFile == 0) {
+        cout << str;
+        return 0;
+    }
+
     // load the file to compare with
-    FileInputStream f(argv[3]);
+    FileInputStream f(referenceFile);
     BZ2InputStream bz2(&f);
     const char* c;
     n = bz2.read(c, n, n);
@@ -90,7 +168,7 @@ main(int argc, char** argv) {
         p1++;
         p2++;
     }
-    if (*p1 || *p2) {
+    if (n1 ==0 && (*p1 || *p2)) {
          printf("difference at position %i\n", p1-c);
 
          int32_t m = (80 > str.length())?str.length():80;
