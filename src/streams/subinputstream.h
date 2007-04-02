@@ -59,7 +59,7 @@ public:
      * @param size the maximum amount of data that may be read
      * from this substream
      */
-    SubInputStream(InputStream *input, int64_t size=-1);
+    explicit SubInputStream(InputStream *input, int64_t size=-1);
     int32_t read(const char*& start, int32_t min, int32_t max);
     int64_t reset(int64_t pos);
     int64_t skip(int64_t ntoskip);
