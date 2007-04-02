@@ -27,6 +27,13 @@
 using namespace std;
 using namespace Strigi;
 
+class SqliteWriterData
+{
+    public:
+        int64_t id;
+        SqliteWriterData() : id(-1) {}
+};
+
 SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m, sqlite3* db)
         : manager(m) {
     temprows = 0;
@@ -79,7 +86,7 @@ SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
     // very simple algorithm to get out sequences of ascii characters
     // we actually miss characters that are not on the edge between reads
-    int64_t id = idx->id();
+    int64_t id = static_cast<SqliteWriterData*>(idx->writerData())->id;
     map<int64_t, map<string, int> >::iterator m = content.find(id);
     if (m == content.end()) {
         content[id];
@@ -111,12 +118,12 @@ SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
 void
 SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* field,
         const string& value) {
-    int64_t id = idx->id();
+    int64_t id = static_cast<SqliteWriterData*>(idx->writerData())->id;
     //id = -1; // debug
     if (id == -1) return;
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
-    sqlite3_bind_int64(insertvaluestmt, 1, idx->id());
+    sqlite3_bind_int64(insertvaluestmt, 1, id);
     sqlite3_bind_text(insertvaluestmt, 2, field->key().c_str(),
         field->key().length(), SQLITE_STATIC);
     sqlite3_bind_text(insertvaluestmt, 3, value.c_str(), value.length(),
@@ -137,6 +144,9 @@ SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* fi
 }
 void
 SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
+    SqliteWriterData *wdata = new SqliteWriterData();
+    idx->setWriterData(wdata);
+
     // get the file name
     const char* name = idx->path().c_str();
     size_t namelen = idx->path().length();
@@ -148,7 +158,6 @@ SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
 
     sqlite3* db = manager->ref();
     assert(db == dbcheck);
-    int64_t id = -1;
     sqlite3_bind_text(insertfilestmt, 1, name, namelen, SQLITE_STATIC);
     sqlite3_bind_int64(insertfilestmt, 2, idx->mTime());
     sqlite3_bind_int(insertfilestmt, 3, idx->depth());
@@ -160,9 +169,8 @@ SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
             sqlite3_errmsg(db), r);
         //exit(1);
     }
-    id = sqlite3_last_insert_rowid(db);
+    wdata->id = sqlite3_last_insert_rowid(db);
     sqlite3_reset(insertfilestmt);
-    idx->setId(id);
     manager->deref();
 }
 /*
@@ -172,7 +180,7 @@ void
 SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     // store the content field
     map<int64_t, map<string, int> >::const_iterator m
-        = content.find(idx->id());
+        = content.find(static_cast<SqliteWriterData*>(idx->writerData())->id);
 
     if (m == content.end()) {
         return;
@@ -195,7 +203,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     }
     map<string, int>::const_iterator i = m->second.begin();
     map<string, int>::const_iterator e = m->second.end();
-    sqlite3_bind_int64(stmt, 1, idx->id());
+    sqlite3_bind_int64(stmt, 1, static_cast<SqliteWriterData*>(idx->writerData())->id);
     for (; i!=e; ++i) {
         sqlite3_bind_text(stmt, 2, i->first.c_str(), i->first.length(),
             SQLITE_STATIC);
