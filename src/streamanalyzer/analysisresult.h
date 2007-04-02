@@ -66,20 +66,27 @@ private:
      * Create a new AnalysisResult object that will be written to the index.
      *
      * @param path the path of the file
+     * @param name the name of the file
      * @param mt the modification time of the file
-     * @param writer the writer with which the indexable will be written upon
-     *        destruction
      * @param d the depth at which a document is embedded in other documents.
      *        a depth of 0 means a document is not embedded in another document.
      **/
     AnalysisResult(const std::string& path, const char* name, time_t mt,
         AnalysisResult& parent);
     /**
-     * Retrieve the type of endanalyzer an analysisresult has. This is useful
+     * Retrieve the type of end analyzer an analysisresult has. This is useful
      * for determining the filetype of the parent.
      */
     void setEndAnalyzer(const StreamEndAnalyzer*);
 public:
+    /**
+     * Create a new AnalysisResult object that will be written to the index.
+     *
+     * @param path the path of the file
+     * @param mt the modification time of the file
+     * @param writer the writer with which the indexable will be written upon
+     *        destruction
+     **/
     AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
             StreamAnalyzer& indexer);
     /**

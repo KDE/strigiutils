@@ -48,7 +48,7 @@ public:
     int32_t queryLength() const { return len; }
     std::string query() const { return m_query; }
     /**
-     * @brief Find the needle in @haystack.
+     * @brief Find the needle in @p haystack.
      * @param haystack the text to search in.
      * @param haylen   the length of the text to search in.
      * @return         a pointer to the start of the match if a match is found

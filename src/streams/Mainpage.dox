@@ -6,8 +6,8 @@ resources in manner similar to the Java interface
 java.io.InputStream.
 
 If you are writing an analyzer, you probably want to know
-about the InputStream, which is just an (abstract)
-instance of StreamBase, with char as the template
+about the Strigi::InputStream, which is just an (abstract)
+instance of Strigi::StreamBase, with char as the template
 parameter.  This latter class is the one all Stream classes
 are derived from and implement the methods of.
 
@@ -15,47 +15,69 @@ In JStreams terminology (derived from the Java Streaming API
 terminology), an InputStream is a stream of raw bytes, and a
 Reader is a (Unicode) text stream.
 
-@section Using JStreams
+@section using Using JStreams
 
 If you just want to use JStreams to read from files, there's
 very little you need to know.  The documentation for
-StreamBase should give you information on the basic
+Strigi::StreamBase should give you information on the basic
 stream-reading functionality.
 
-InputStream is the interface for reading a raw stream
+Strigi::InputStream is the interface for reading a raw stream
 of bytes.  If you need the decoded contents of a text file,
-you should use InputStreamReader to convert an
-InputStream to a Reader, which is an interface for
-reading a stream of Unicode characters.
+you should use Strigi::InputStreamReader to convert a
+Strigi::InputStream to a Strigi::Reader, which is an interface
+for reading a stream of Unicode characters.
 
 JStreams also provides several implementations of
-InputStream that facilitate opening files.  For example,
-FileInputStream will open an InputStream to read the
+Strigi::InputStream that facilitate opening files.  For example,
+Strigi::FileInputStream will open a Strigi::InputStream to read the
 contents of a file.
 
-StringStream allows you to access in-memory data as a stream.
-StringInputStream and StringReader are types of StringStream
-for byte (char) arrays and Unicode (wchar_t) strings.
+Strigi::StringStream allows you to access in-memory data as a stream.
+Strigi::StringInputStream and Strigi::StringReader are types of
+Strigi::StringStream for byte (char) arrays and Unicode (wchar_t) strings.
 
-@subsection Substreams
+@subsection substreams Substreams
 
 One of the most useful features of JStreams is the ability
 to split a stream into substreams.  For example, you might
-have a stream for a tar archive.  A SubStreamProvider for
+have a stream for a tar archive.  A Strigi::SubStreamProvider for
 this could give you a stream for each file in the archive.
 
 
-@section Writing New Stream Providers
+@section extending Writing New Stream Providers
 
 If you want to write a new stream that allows you to, for
 example, read a file from the internet over HTTP, you need
-to derive it from StreamBase.  Almost certainly you will
-want to derive from InputStream, for a simple raw stream
-of bytes, or from BufferedInputStream, for buffered stream.
+to derive it from Strigi::StreamBase.  Almost certainly you will
+want to derive from Strigi::InputStream, for a simple raw stream
+of bytes, or from Strigi::BufferedInputStream, for buffered stream.
 
 If your stream returns Unicode characters, the classes you
-want are Reader and BufferedReader.  Don't forget that you
-can use InputStreamReader to decode a text InputStream.
+want are Strigi::Reader and Strigi::BufferedReader.  Don't forget
+that you can use Strigi::InputStreamReader to decode a text
+Strigi::InputStream.
+
+
+@subsection extending_strigi Stream Providers for Analyzers
+
+The main reason you might want to write a stream provider
+is for use in a Strigi::StreamThroughAnalyzer.  This could take
+a Strigi::InputStream as an argument to the constructor, and
+operate on the data as it is read.
+
+To do this, you should inherit from either Strigi::InputStream
+or Strigi::BufferedInputStream.  In the former case, you need to
+implement Strigi::InputStream::read(), Strigi::InputStream::reset()
+and Strigi::InputStream::skip().  reset and skip should just call
+the same methods in the underlying source stream, whereas
+read should operate on the data read from the source stream
+as it is requested.
+
+If you inherit from Strigi::BufferedInputStream, you need to
+implement Strigi::BufferedInputStream::fillBuffer(), and this
+should again read from the source stream and operate on the data
+as it is read.
 
 
 */
