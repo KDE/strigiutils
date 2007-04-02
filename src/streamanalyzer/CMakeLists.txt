@@ -81,6 +81,7 @@ install(FILES
 	analyzerconfiguration.h
 	fieldproperties.h
 	fieldtypes.h
+	cnstr.h
 	DESTINATION include/strigi
 )
 install(TARGETS streamanalyzer
