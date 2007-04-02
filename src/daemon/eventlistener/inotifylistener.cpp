@@ -490,7 +490,7 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
     // we've to de-index all files contained into the deleted/moved directory
     if (m_pIndexReader) {
         // all indexed files
-        map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
+        map<string, time_t> indexedFiles = m_pIndexReader->files( 0);
 
         // remove all entries that were contained into the removed dir
         for (map<string, time_t>::iterator it = indexedFiles.begin(); it != indexedFiles.end(); it++)
@@ -530,7 +530,7 @@ void InotifyListener::dirsRemoved (set<string> dirs, vector<Event*>& events)
 {
     if (m_pIndexReader) {
         // all indexed files
-        map<string, time_t> indexedFiles = m_pIndexReader->getFiles( 0);
+        map<string, time_t> indexedFiles = m_pIndexReader->files( 0);
 
         // remove all entries that were contained into the removed dirs
         for (map<string, time_t>::iterator fileIt = indexedFiles.begin(); fileIt != indexedFiles.end(); fileIt++)
@@ -627,7 +627,7 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     }
 
     vector<Event*> events;
-    map <string, time_t> indexedFiles = m_pIndexReader->getFiles(0);
+    map <string, time_t> indexedFiles = m_pIndexReader->files(0);
 
     FileLister lister (*m_pindexerconfiguration);
 
