@@ -35,7 +35,7 @@ public:
     const Strigi::RegisteredField *keywordField;
 
     const char *name() const {
-        return "OdfSaxAnalyzerFactory";
+        return "OdfSaxAnalyzer";
     }
 
     void registerFields(Strigi::FieldRegister &);

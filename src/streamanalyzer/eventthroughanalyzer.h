@@ -58,7 +58,7 @@ class EventThroughAnalyzerFactory : public StreamThroughAnalyzerFactory {
     std::vector<StreamLineAnalyzerFactory*>& linefactories;
     std::vector<StreamEventAnalyzerFactory*>& eventfactories;
 
-    const char* name() const { return "EventThroughAnalyzerFactory"; }
+    const char* name() const { return "EventThroughAnalyzer"; }
     void registerFields(Strigi::FieldRegister&);
 public:
     EventThroughAnalyzerFactory(std::vector<StreamSaxAnalyzerFactory*>& s,

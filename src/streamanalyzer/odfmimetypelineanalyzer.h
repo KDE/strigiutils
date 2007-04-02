@@ -29,7 +29,7 @@ public:
     const Strigi::RegisteredField *mimeTypeField;
 
     const char *name() const {
-        return "OdfMimeTypeLineAnalyzerFactory";
+        return "OdfMimeTypeLineAnalyzer";
     }
 
     void registerFields(Strigi::FieldRegister &);

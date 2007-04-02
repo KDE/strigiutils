@@ -42,7 +42,7 @@ public:
 };
 class HtmlSaxAnalyzerFactory : public StreamSaxAnalyzerFactory {
     const char* name() const {
-        return "HtmlSaxAnalyzerFactory";
+        return "HtmlSaxAnalyzer";
     }
     void registerFields(Strigi::FieldRegister&) {
     }
