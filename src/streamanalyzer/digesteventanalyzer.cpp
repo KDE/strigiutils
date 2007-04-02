@@ -46,11 +46,10 @@ DigestEventAnalyzer::handleData(const char* data, uint32_t length) {
 void
 DigestEventAnalyzer::endAnalysis() {
 //fprintf(stderr, "end\n");
-    const char* digest = (const char*)sha1.hash();
+    const unsigned char* digest = sha1.hash();
     char d[41];
     for (int i = 0; i < 20; i++) {
-        char c = digest[i];
-        sprintf(d+2*i, "%02x", c);
+        sprintf(d+2*i, "%02x", *digest++);
     }
     analysisresult->addValue(factory->shafield, d, 40);
     analysisresult = 0;
