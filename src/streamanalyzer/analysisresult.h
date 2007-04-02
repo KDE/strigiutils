@@ -25,6 +25,12 @@
 #include "strigiconfig.h"
 #include "streambase.h"
 
+#if defined(__GNUC__) && __GNUC__ >= 3 && __GNUC_MINOR__ >= 2
+#define STRIGI_DEPRECATED __attribute__((deprecated))
+#else
+#define STRIGI_DEPRECATED
+#endif
+
 /**
  * Strigi is the major namespace for all classes that are used in the analysis of streams.
  */
@@ -85,13 +91,13 @@ public:
      *
      * @param path the path of the file
      * @param mt the last modified time of the file
-     * @param writer the writer with which the indexable will be written upon
+     * @param writer the writer with which the analysis result will be written upon
      *        destruction
      **/
     AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
             StreamAnalyzer& indexer);
     /**
-     * @brief Write the indexable to the index and release the allocated resources.
+     * @brief Write the analysis result to the index and release the allocated resources.
      **/
     ~AnalysisResult();
     /**
@@ -232,12 +238,12 @@ public:
      * @deprecated
      * @brief Use writerData() instead.
      */
-    int64_t id() const;
+    STRIGI_DEPRECATED int64_t id() const;
     /**
      * @deprecated
      * @brief Use setWriterData() instead.
      */
-    void setId(int64_t i);
+    STRIGI_DEPRECATED void setId(int64_t i);
     /**
      * @brief Set the encoding of the file associated with
      * this analysis result.
