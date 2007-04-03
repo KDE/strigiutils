@@ -48,44 +48,39 @@ using namespace Strigi;
 using namespace std;
 
 class SingleAnalyzerConfiguration : public Strigi::AnalyzerConfiguration {
-private:
-    const char* const analyzerName;
-    mutable int count;
 public:
-    mutable vector<string> names;
-    explicit SingleAnalyzerConfiguration(const char* an)
-        : analyzerName(an), count(0) {}
+    const set<string> requiredAnalyzers;
+    mutable set<string> usedAnalyzers;
+    mutable set<string> availableAnalyzers;
 
-    bool valid() const { return count == 1; }
-    bool useFactory(StreamEndAnalyzerFactory* f) const {
-        bool use = strcmp(f->name(), analyzerName) == 0;
-        count += (use) ?1 :0;
-        names.push_back(f->name());
+    explicit SingleAnalyzerConfiguration(const set<string> an)
+        : requiredAnalyzers(an) {}
+
+    bool valid() const {
+        return requiredAnalyzers.size() == usedAnalyzers.size();
+    }
+    bool useFactory(const string& name) const {
+        bool use = requiredAnalyzers.find(name) != requiredAnalyzers.end();
+        if (use) {
+            usedAnalyzers.insert(name);
+        }
+        availableAnalyzers.insert(name);
         return use;
+    }
+    bool useFactory(StreamEndAnalyzerFactory* f) const {
+        return useFactory(f->name());
     }
     bool useFactory(StreamThroughAnalyzerFactory* f) const {
-        bool use = strcmp(f->name(), analyzerName) == 0;
-        count += (use) ?1 :0;
-        names.push_back(f->name());
-        return use;
+        return useFactory(f->name());
     }
     bool useFactory(StreamSaxAnalyzerFactory* f) const {
-        bool use = strcmp(f->name(), analyzerName) == 0;
-        count += (use) ?1 :0;
-        names.push_back(f->name());
-        return use;
+        return useFactory(f->name());
     }
     bool useFactory(StreamEventAnalyzerFactory* f) const {
-        bool use = strcmp(f->name(), analyzerName) == 0;
-        count += (use) ?1 :0;
-        names.push_back(f->name());
-        return use;
+        return useFactory(f->name());
     }
     bool useFactory(StreamLineAnalyzerFactory* f) const {
-        bool use = strcmp(f->name(), analyzerName) == 0;
-        count += (use) ?1 :0;
-        names.push_back(f->name());
-        return use;
+        return useFactory(f->name());
     }
 };
 
@@ -103,8 +98,17 @@ containsHelp(int argc, char **argv) {
     return false;
 }
 set<string>
-parseAnalyzerNames(const char*) {
-    return set<string>();
+parseAnalyzerNames(const char* names) {
+    set<string> n;
+    string ns(names);
+    string::size_type start = 0, p = ns.find(',');
+    while (p != string::npos) {
+        n.insert(ns.substr(start, p-start));
+        start  = p + 1;
+        p = ns.find(',', start);
+    }
+    n.insert(ns.substr(start));
+    return n;
 }
 /**
  * Usage: $0 [OPTIONS] SOURCE
@@ -162,15 +166,28 @@ main(int argc, char** argv) {
             return 1;
         }
     }
-const char*analyzerName=0;
     ostringstream s;
-    SingleAnalyzerConfiguration ic(analyzerName);
+    SingleAnalyzerConfiguration ic(analyzers);
     Indexer indexer(s, ic, mappingFile);
     if (!ic.valid()) {
-        fprintf(stderr, "No analyzer with name %s was found.\n", analyzerName);
-        fprintf(stderr, "Choose one from:\n");
-        for (uint i=0; i<ic.names.size(); i++) {
-            cerr << " " << ic.names[i] << endl;
+        set<string>::const_iterator i;
+        set<string> missing;
+        set_difference(analyzers.begin(), analyzers.end(),
+            ic.availableAnalyzers.begin(), ic.availableAnalyzers.end(),
+            insert_iterator<set<string> >(missing, missing.begin()));
+        if (missing.size() == 1) {
+            fprintf(stderr, "No analyzer with name %s was found.\n",
+               missing.begin()->c_str());
+        } else {
+            cerr << "The analyzers";
+            for (i = missing.begin(); i != missing.end(); ++i) {
+                cerr << ", " << *i; 
+            }
+            cerr << " were not found." << endl;
+        }
+        fprintf(stderr, "Choose from:\n");
+        for (i = ic.availableAnalyzers.begin(); i != ic.availableAnalyzers.end(); ++i) {
+            cerr << " " << *i << endl;
         }
         return 1;
     }
