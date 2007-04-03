@@ -47,24 +47,32 @@
 using namespace Strigi;
 using namespace std;
 
-class SelectedAnalyzerConfiguration : public Strigi::AnalyzerConfiguration {
-public:
-    const set<string> requiredAnalyzers;
-    mutable set<string> usedAnalyzers;
-    mutable set<string> availableAnalyzers;
 
-    explicit SelectedAnalyzerConfiguration(const set<string> an)
-        : requiredAnalyzers(an) {}
+/**
+ * This class has not been finished yet. It requires changes in all
+   analyzer factories.
+ **/
+
+
+
+class SelectedFieldConfiguration : public Strigi::AnalyzerConfiguration {
+public:
+    const set<string> requiredFields;
+    mutable set<string> usedFields;
+    mutable set<string> availableFields;
+
+    explicit SelectedFieldConfiguration(const set<string> af)
+        : requiredFields(af) {}
 
     bool valid() const {
-        return requiredAnalyzers.size() == usedAnalyzers.size();
+        return requiredFields.size() == usedFields.size();
     }
     bool useFactory(const string& name) const {
-        bool use = requiredAnalyzers.find(name) != requiredAnalyzers.end();
+        bool use = requiredFields.find(name) != requiredFields.end();
         if (use) {
-            usedAnalyzers.insert(name);
+            usedFields.insert(name);
         }
-        availableAnalyzers.insert(name);
+        availableFields.insert(name);
         return use;
     }
     bool useFactory(StreamEndAnalyzerFactory* f) const {
@@ -167,13 +175,13 @@ main(int argc, char** argv) {
         }
     }
     ostringstream s;
-    SelectedAnalyzerConfiguration ic(analyzers);
+    SelectedFieldConfiguration ic(analyzers);
     Indexer indexer(s, ic, mappingFile);
     if (!ic.valid()) {
         set<string>::const_iterator i;
         set<string> missing;
         set_difference(analyzers.begin(), analyzers.end(),
-            ic.availableAnalyzers.begin(), ic.availableAnalyzers.end(),
+            ic.availableFields.begin(), ic.availableFields.end(),
             insert_iterator<set<string> >(missing, missing.begin()));
         if (missing.size() == 1) {
             fprintf(stderr, "No analyzer with name %s was found.\n",
@@ -186,7 +194,7 @@ main(int argc, char** argv) {
             cerr << " were not found." << endl;
         }
         fprintf(stderr, "Choose from:\n");
-        for (i = ic.availableAnalyzers.begin(); i != ic.availableAnalyzers.end(); ++i) {
+        for (i = ic.availableFields.begin(); i != ic.availableFields.end(); ++i) {
             cerr << " " << *i << endl;
         }
         return 1;

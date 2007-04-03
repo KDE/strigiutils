@@ -24,6 +24,14 @@ add_executable(peranalyzerxml
 )
 target_link_libraries(peranalyzerxml streamanalyzer)
 
+add_executable(peranalyzerxml peranalyzerxml.cpp indexer.cpp xmlindexwriter.cpp
+    tagmapping.cpp)
+target_link_libraries(peranalyzerxml streamanalyzer)
+
+add_executable(perfieldxml perfieldxml.cpp indexer.cpp xmlindexwriter.cpp
+    tagmapping.cpp)
+target_link_libraries(perfieldxml streamanalyzer)
+
 # disable test until fixed
 #ADD_TEST(XmlIndexer testdatacomparison ${strigi_SOURCE_DIR}/testdata data
 #	${strigi_SOURCE_DIR}/testdata/xmlindexeroutput.bz2)
