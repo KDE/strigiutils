@@ -26,71 +26,76 @@ class StreamSaxAnalyzerFactory;
 class StreamLineAnalyzerFactory;
 class StreamEventAnalyzerFactory;
 
-/** An AnalyzerFactoryFactory returns lists of AnalyzerFactory instances
-    for StreamThroughAnalyzers and StreamEndAnalyzers.
-
-    Each loadable plugin has one AnalyzerFactoryFactory. This factory
-    can pass the available factories to the application that loads the plugin.
+/**
+ * @brief Provides a list of analyzer factories present within a plugin.
+ *
+ * Each loadable plugin has one AnalyzerFactoryFactory. This factory
+ * can pass the available factories to the application that loads the plugin.
  */
 class AnalyzerFactoryFactory {
 public:
     /** Destructor */
     virtual ~AnalyzerFactoryFactory() {}
 
-    /** Return instances of the StreamEndAnalyzerFactories available in this
-        plugin.
-
-        The default implementation returns an empty list. A particular plugin
-        should subclass the AnalyzerFactoryFactory and overload this function
-        if it implements any StreamEndAnalyzers.
+    /**
+     * @brief Return instances of the StreamEndAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamEndAnalyzers.
      */
     virtual std::list<StreamEndAnalyzerFactory*>
             streamEndAnalyzerFactories() const {
         std::list<StreamEndAnalyzerFactory*> af;
         return af;
     }
-    /** Return instances of the StreamThroughAnalyzerFactories available in this
-        plugin.
-
-        The default implementation returns an empty list. A particular plugin
-        should subclass the AnalyzerFactoryFactory and overload this function
-        if it implements any StreamThroughAnalyzers.
+    /**
+     * @brief Return instances of the StreamThroughAnalyzerFactories available
+     * in this plugin.
+     *
+     *  The default implementation returns an empty list. A particular plugin
+     *  should subclass the AnalyzerFactoryFactory and overload this function
+     *  if it implements any StreamThroughAnalyzers.
      */
     virtual std::list<StreamThroughAnalyzerFactory*>
             streamThroughAnalyzerFactories() const {
         std::list<StreamThroughAnalyzerFactory*> af;
         return af;
     }
-    /** Return instances of the StreamSaxAnalyzerFactories available in this
-        plugin.
-
-        The default implementation returns an empty list. A particular plugin
-        should subclass the AnalyzerFactoryFactory and overload this function
-        if it implements any StreamSaxAnalyzers.
+    /**
+     * @brief Return instances of the StreamSaxAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamSaxAnalyzers.
      */
     virtual std::list<StreamSaxAnalyzerFactory*>
             streamSaxAnalyzerFactories() const {
         std::list<StreamSaxAnalyzerFactory*> af;
         return af;
     }
-    /** Return instances of the StreamLineAnalyzerFactories available in this
-        plugin.
-
-        The default implementation returns an empty list. A particular plugin
-        should subclass the AnalyzerFactoryFactory and overload this function
-        if it implements any StreamLineAnalyzers.
+    /**
+     * @brief Return instances of the StreamLineAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamLineAnalyzers.
      */
     virtual std::list<StreamLineAnalyzerFactory*>
             streamLineAnalyzerFactories() const {
         std::list<StreamLineAnalyzerFactory*> af;
         return af;
     }
-    /** Return instances of the StreamEventAnalyzerFactories available in this
-        plugin.
-
-        The default implementation returns an empty list. A particular plugin
-        should subclass the AnalyzerFactoryFactory and overload this function
-        if it implements any StreamEventAnalyzers.
+    /**
+     * @brief Return instances of the StreamEventAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamEventAnalyzers.
      */
     virtual std::list<StreamEventAnalyzerFactory*>
             streamEventAnalyzerFactories() const {

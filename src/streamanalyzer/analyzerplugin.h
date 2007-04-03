@@ -20,9 +20,15 @@
 #include "strigiconfig.h"
 #include "analyzerfactoryfactory.h"
 
-/* @deprecated us STRIGI_EXPORT instead */
+/** @deprecated use STRIGI_EXPORT instead */
 #define STRIGI_PLUGIN_API STRIGI_EXPORT
 
+/**
+ * @brief Export a Strigi::AnalyzerFactoryFactory in a plugin
+ *
+ * @param CLASS the name of the subclass of Strigi::AnalyzerFactoryFactory
+ * that provides the analyzer factories available in this plugin.
+ */
 #define STRIGI_ANALYZER_FACTORY(CLASS) extern "C" { STRIGI_EXPORT \
     const Strigi::AnalyzerFactoryFactory* strigiAnalyzerFactory() { \
         return new CLASS(); \
