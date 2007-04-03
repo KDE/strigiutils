@@ -43,6 +43,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <set>
 using namespace Strigi;
 using namespace std;
 
@@ -101,19 +102,56 @@ containsHelp(int argc, char **argv) {
     }
     return false;
 }
+set<string>
+parseAnalyzerNames(const char*) {
+    return set<string>();
+}
+/**
+ * Usage: $0 [OPTIONS] SOURCE
+ **/
 int
 main(int argc, char** argv) {
-    if (containsHelp(argc, argv) || argc < 3 || argc > 4) {
+    // there are 2 optional options that both require an argument.
+    // one can specify 1 source, so the number of arguments must be
+    // 2, 4 or 6
+    if (containsHelp(argc, argv) || (argc != 2 && argc != 4 && argc != 6)) {
         printUsage(argv);
         return -1;
     }
 
-    const char* analyzerName = argv[1];
-    const char* targetFile = argv[2];
+    set<string> analyzers;
+    const char* targetFile;
     const char* referenceFile = 0;
     if (argc == 4) {
-        referenceFile = argv[3];
+        if (strcmp(argv[1],"-a") == 0) {
+            analyzers = parseAnalyzerNames(argv[2]);
+        } else if (strcmp(argv[1], "-r") == 0) {
+            referenceFile = argv[2];
+        } else {
+            printUsage(argv);
+            return -1;
+        }
+        targetFile = argv[3];
+    } else if (argc == 6) {
+        if (strcmp(argv[1], "-a") == 0) {
+            analyzers = parseAnalyzerNames(argv[2]);
+            if (strcmp(argv[3], "-r") == 0) {
+                referenceFile = argv[4];
+            }
+        } else if (strcmp(argv[1], "-r") == 0) {
+            referenceFile = argv[2];
+            if (strcmp(argv[3], "-a") == 0) {
+                analyzers = parseAnalyzerNames(argv[4]);
+            }
+        } else {
+            printUsage(argv);
+            return -1;
+        }
+        targetFile = argv[5];
+    } else {
+        targetFile = argv[1];
     }
+
     const char* mappingFile = 0;
 
     // check that the target file exists
@@ -124,7 +162,7 @@ main(int argc, char** argv) {
             return 1;
         }
     }
-
+const char*analyzerName=0;
     ostringstream s;
     SingleAnalyzerConfiguration ic(analyzerName);
     Indexer indexer(s, ic, mappingFile);
