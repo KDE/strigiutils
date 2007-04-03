@@ -2,6 +2,7 @@
 include_directories(
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat
+	${BZIP2_INCLUDE_DIR}
 )
 set(streamtests
 	testrunner.cpp
