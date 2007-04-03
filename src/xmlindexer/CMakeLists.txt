@@ -17,9 +17,9 @@ target_link_libraries(xmlindexer streamanalyzer)
 
 install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 
-add_executable(testdatacomparison testdatacomparison.cpp indexer.cpp
+add_executable(peranalyzerxml peranalyzerxml.cpp indexer.cpp
     tagmapping.cpp xmlindexwriter.cpp)
-target_link_libraries(testdatacomparison streamanalyzer)
+target_link_libraries(peranalyzerxml streamanalyzer)
 
 # disable test until fixed
 #ADD_TEST(XmlIndexer testdatacomparison ${strigi_SOURCE_DIR}/testdata data
