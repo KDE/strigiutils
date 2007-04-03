@@ -178,9 +178,10 @@ SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
 */
 void
 SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
+    SqliteWriterData *wdata = static_cast<SqliteWriterData*>(idx->writerData());
     // store the content field
     map<int64_t, map<string, int> >::const_iterator m
-        = content.find(static_cast<SqliteWriterData*>(idx->writerData())->id);
+        = content.find(wdata->id);
 
     if (m == content.end()) {
         return;
@@ -203,7 +204,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     }
     map<string, int>::const_iterator i = m->second.begin();
     map<string, int>::const_iterator e = m->second.end();
-    sqlite3_bind_int64(stmt, 1, static_cast<SqliteWriterData*>(idx->writerData())->id);
+    sqlite3_bind_int64(stmt, 1, wdata->id);
     for (; i!=e; ++i) {
         sqlite3_bind_text(stmt, 2, i->first.c_str(), i->first.length(),
             SQLITE_STATIC);
@@ -219,6 +220,8 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     sqlite3_finalize(stmt);
     manager->deref();
     content.erase(m->first);
+    delete wdata;
+    idx->setWriterData(0);
 }
 void
 SqliteIndexWriter::commit() {
