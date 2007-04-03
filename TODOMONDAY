@@ -1,1 +1,5 @@
 * seek and replace getFoo() functions with foo() in daemon/client?
+* Make AnalysisResult usage in IndexWriter consistent:
+  - Make it a const argument in startAnalysis
+  - make AnalysisResult::mWriterData mutable
+  - make AnalysisResult::setWriterData const
