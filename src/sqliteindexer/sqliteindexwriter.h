@@ -59,6 +59,9 @@ protected:
         const Strigi::RegisteredField* field, double value) {}
     void addTriplet(const std::string& subject,
         const std::string& predicate, const std::string& object) {}
+    void addValue(const Strigi::AnalysisResult* result,
+        const Strigi::RegisteredField* field,
+        const std::string& name, const std::string& value) {}
     SqliteIndexWriter(SqliteIndexManager*, sqlite3*);
     ~SqliteIndexWriter();
     void initWriterData(const Strigi::FieldRegister& f) {}

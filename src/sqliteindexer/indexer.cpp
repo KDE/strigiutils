@@ -29,7 +29,7 @@ Indexer *Indexer::workingIndexer;
 Indexer::Indexer(const char *indexdir, Strigi::AnalyzerConfiguration& ic)
         : m_indexdir(indexdir), m_manager(indexdir), m_indexer(ic)
 {
-    m_indexer.setIndexWriter(*m_manager.getIndexWriter());
+    m_indexer.setIndexWriter(*m_manager.indexWriter());
     m_lister = new FileLister(ic);
 }
 Indexer::~Indexer() {
