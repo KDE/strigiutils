@@ -15,11 +15,11 @@ IF(WIN32)
 ENDIF(WIN32)
 
 set(cluceneindex_SRCS
-        jsgzipcompressstream.cpp
-        cluceneindexwriter.cpp
+        PrefixFilter.cpp
         cluceneindexmanager.cpp
         cluceneindexreader.cpp
-        PrefixFilter.cpp
+        cluceneindexwriter.cpp
+        jsgzipcompressstream.cpp
 )
 
 add_library(cluceneindex SHARED ${cluceneindex_SRCS})

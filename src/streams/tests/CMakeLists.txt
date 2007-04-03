@@ -6,25 +6,25 @@ include_directories(
 )
 set(streamtests
 	testrunner.cpp
-	FileInputStreamTest.cpp
-	ZipInputStreamTest.cpp
-	GZipInputStreamTest.cpp
-	BZ2InputStreamTest.cpp
-	TarInputStreamTest.cpp
-	RpmInputStreamTest.cpp
-	EventInputStreamTest.cpp
-	SubInputStreamTest.cpp
-	InputStreamTest.cpp
-	InputStreamReaderTest.cpp
-	MailInputStreamTest.cpp
 	Base64InputStreamTest.cpp
+	BZ2InputStreamTest.cpp
+	EventInputStreamTest.cpp
+	FileInputStreamTest.cpp
+	GZipInputStreamTest.cpp
+	InputStreamReaderTest.cpp
+	InputStreamTest.cpp
+	MailInputStreamTest.cpp
+	RpmInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
+	SubInputStreamTest.cpp
+	TarInputStreamTest.cpp
+	ZipInputStreamTest.cpp
 )
 if(NOT WIN32)
         set(streamtests ${streamtests}
-                StringStreamTest.cpp    # this maybe works with mingw
                 ArchiveReaderTest.cpp
                 ProcessInputStreamTest.cpp
+                StringStreamTest.cpp    # this maybe works with mingw
         )
 endif(NOT WIN32)
 

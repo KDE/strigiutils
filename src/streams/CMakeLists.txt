@@ -10,28 +10,28 @@ include_directories(
 )
 
 set(streams_SRCS
-	bz2inputstream.cpp
-	fileinputstream.cpp
-	gzipinputstream.cpp
-	gzipcompressstream.cpp
-	inputstreamreader.cpp
-	filereader.cpp
-	subinputstream.cpp
-	mailinputstream.cpp
-	stringterminatedsubstream.cpp
-	tarinputstream.cpp
-	zipinputstream.cpp
-	base64inputstream.cpp
-	dostime.cpp
-	substreamproviderprovider.cpp
-	arinputstream.cpp
-	rpminputstream.cpp
 	archivereader.cpp
-	textutils.cpp
-	kmpsearcher.cpp
-	filestreamopener.cpp
+	arinputstream.cpp
+	base64inputstream.cpp
+	bz2inputstream.cpp
 	cpioinputstream.cpp
         dataeventinputstream.cpp
+	dostime.cpp
+	fileinputstream.cpp
+	filereader.cpp
+	filestreamopener.cpp
+	gzipcompressstream.cpp
+	gzipinputstream.cpp
+	inputstreamreader.cpp
+	kmpsearcher.cpp
+	mailinputstream.cpp
+	rpminputstream.cpp
+	stringterminatedsubstream.cpp
+	subinputstream.cpp
+	substreamproviderprovider.cpp
+	tarinputstream.cpp
+	textutils.cpp
+	zipinputstream.cpp
 )
 
 if(NOT WIN32)
@@ -54,17 +54,17 @@ set_target_properties(streams PROPERTIES
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 
 install(FILES
-	streambase.h
-	inputstream.h
-	streambuffer.h
+	archivereader.h
 	bufferedstream.h
 	fileinputstream.h
+	inputstream.h
 	inputstreamreader.h
-	stringstream.h
+	streambase.h
+	streambuffer.h
 	stringreader.h
+	stringstream.h
 	substreamprovider.h
 	substreamproviderprovider.h
-	archivereader.h
 	compat/jstreamsconfig.h
 	${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h
 	DESTINATION include/strigi

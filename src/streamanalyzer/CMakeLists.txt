@@ -9,39 +9,39 @@ include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
 set(streamanalyzer_SRCS
-	sha1.cpp
-	digesteventanalyzer.cpp
-	streamendanalyzer.cpp
-	query.cpp
-	analyzerloader.cpp
-	oggthroughanalyzer.cpp
-	indexwriter.cpp
 	analysisresult.cpp
-	id3v2throughanalyzer.cpp
 	analyzerconfiguration.cpp
-	fieldtypes.cpp
-	streamanalyzer.cpp
-	filelister.cpp
+	analyzerloader.cpp
+	digesteventanalyzer.cpp
 	eventthroughanalyzer.cpp
-	saxeventanalyzer.cpp
-	lineeventanalyzer.cpp
-	htmlsaxanalyzer.cpp
-	odfmimetypelineanalyzer.cpp
-	odfsaxanalyzer.cpp
 	fieldproperties.cpp
 	fieldpropertiesdb.cpp
+	fieldtypes.cpp
+	filelister.cpp
+	htmlsaxanalyzer.cpp
+	id3v2throughanalyzer.cpp
+	indexwriter.cpp
+	lineeventanalyzer.cpp
+	odfmimetypelineanalyzer.cpp
+	odfsaxanalyzer.cpp
+	oggthroughanalyzer.cpp
+	query.cpp
+	saxeventanalyzer.cpp
+	sha1.cpp
+	streamanalyzer.cpp
+	streamendanalyzer.cpp
+	endanalyzers/arendanalyzer.cpp
+	endanalyzers/bmpendanalyzer.cpp
 	endanalyzers/bz2endanalyzer.cpp
+	endanalyzers/cpioendanalyzer.cpp
+	endanalyzers/gzipendanalyzer.cpp
+	endanalyzers/helperendanalyzer.cpp
+	endanalyzers/mailendanalyzer.cpp
+	endanalyzers/pngendanalyzer.cpp
+	endanalyzers/rpmendanalyzer.cpp
+	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
-	endanalyzers/tarendanalyzer.cpp
-	endanalyzers/pngendanalyzer.cpp
-	endanalyzers/mailendanalyzer.cpp
-	endanalyzers/gzipendanalyzer.cpp
-	endanalyzers/cpioendanalyzer.cpp
-	endanalyzers/arendanalyzer.cpp
-	endanalyzers/rpmendanalyzer.cpp
-	endanalyzers/helperendanalyzer.cpp
-	endanalyzers/bmpendanalyzer.cpp
 )
 
 #IF(WIN32)
@@ -67,21 +67,21 @@ endif(HAVE_LIBDL)
 target_link_libraries(streamanalyzer ${streamanalyzer_libs})
 
 install(FILES
-	indexeddocument.h
 	analysisresult.h
-	analyzerplugin.h
-	streamanalyzer.h
-	streamthroughanalyzer.h
-	streamendanalyzer.h
-	streamsaxanalyzer.h
-	streamlineanalyzer.h
-	streameventanalyzer.h
-	analyzerfactoryfactory.h
-	indexwriter.h
 	analyzerconfiguration.h
+	analyzerfactoryfactory.h
+	analyzerplugin.h
+	cnstr.h
 	fieldproperties.h
 	fieldtypes.h
-	cnstr.h
+	indexeddocument.h
+	indexwriter.h
+	streamanalyzer.h
+	streamendanalyzer.h
+	streameventanalyzer.h
+	streamlineanalyzer.h
+	streamsaxanalyzer.h
+	streamthroughanalyzer.h
 	DESTINATION include/strigi
 )
 install(TARGETS streamanalyzer

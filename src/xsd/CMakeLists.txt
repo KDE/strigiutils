@@ -4,12 +4,18 @@ include_directories(xsdparser)
 
 if (LIBXML2_FOUND)
   include_directories(${LIBXML2_INCLUDE_DIR})
-  add_library(xmlstream xsdparser/xmlstream.cpp xsdparser/libxmlstream.cpp)
+  add_library(xmlstream
+	xsdparser/libxmlstream.cpp
+	xsdparser/xmlstream.cpp
+  )
   target_link_libraries(xmlstream ${LIBXML2_LIBRARIES})
 else (LIBXML2_FOUND)
   # we use expat
   include_directories(${EXPAT_INCLUDE_DIR})
-  add_library(xmlstream xsdparser/xmlstream.cpp xsdparser/expatxmlstream.cpp)
+  add_library(xmlstream
+	xsdparser/expatxmlstream.cpp
+	xsdparser/xmlstream.cpp
+  )
   target_link_libraries(xmlstream ${EXPAT_LIBRARY})
 endif (LIBXML2_FOUND)
 

@@ -43,13 +43,24 @@ ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
 
 include_directories(eventlistener .)
 
-add_executable(strigidaemon daemon.cpp socketserver.cpp interface.cpp
-	indexscheduler.cpp strigilogging.h strigithread.cpp)
+add_executable(strigidaemon
+	daemon.cpp
+	indexscheduler.cpp
+	interface.cpp
+	socketserver.cpp
+	strigilogging.h
+	strigithread.cpp
+)
 
 #add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
 
-set(strigidaemon_LIBS streamanalyzer eventlistener combinedindex
-	${CMAKE_THREAD_LIBS_INIT} ${strigidaemon_LIBS})
+set(strigidaemon_LIBS
+	combinedindex
+	eventlistener
+	streamanalyzer
+	${CMAKE_THREAD_LIBS_INIT}
+	${strigidaemon_LIBS}
+)
 target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 
 #target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters

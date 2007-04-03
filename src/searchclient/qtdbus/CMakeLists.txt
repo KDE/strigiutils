@@ -3,9 +3,16 @@ include_directories(${QT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 include(${QT_USE_FILE})
 
 # strigiclient
-set(strigiqtdbusclient_SRCS strigitypes.cpp strigidbus.cpp strigiclient.cpp
-  strigiasyncclient.cpp)
-set(strigiqtdbusclient_MOC_HDRS strigidbus.h strigiasyncclient.h)
+set(strigiqtdbusclient_SRCS
+	strigiasyncclient.cpp
+	strigiclient.cpp
+	strigidbus.cpp
+	strigitypes.cpp
+)
+set(strigiqtdbusclient_MOC_HDRS
+	strigiasyncclient.h
+	strigidbus.h
+)
 
 qt4_wrap_cpp(strigiqtdbusclient_MOC_SRCS ${strigiqtdbusclient_MOC_HDRS})
 

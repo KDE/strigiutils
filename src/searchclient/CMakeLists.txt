@@ -7,10 +7,23 @@ add_subdirectory(filterwidget)
 include(${QT_USE_FILE})
 
 # strigiclient
-set(strigiclient_SRCS strigiclient.cpp simplesearchgui.cpp searchtabs.cpp
-  searchview.cpp  dlglistindexedfiles.cpp dlgfilters.cpp histogram.cpp)
-set(strigiclient_MOC_HDRS searchtabs.h searchview.h simplesearchgui.h
-  dlglistindexedfiles.h dlgfilters.h histogram.h)
+set(strigiclient_SRCS
+	dlgfilters.cpp
+	dlglistindexedfiles.cpp
+	histogram.cpp
+	searchtabs.cpp
+	searchview.cpp
+	simplesearchgui.cpp
+	strigiclient.cpp
+)
+set(strigiclient_MOC_HDRS
+	dlgfilters.h
+	dlglistindexedfiles.h
+	histogram.h
+	searchtabs.h
+	searchview.h
+	simplesearchgui.h
+)
 
 qt4_wrap_cpp(strigiclient_MOC_SRCS ${strigiclient_MOC_HDRS})
 

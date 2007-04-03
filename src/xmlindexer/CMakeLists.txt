@@ -5,8 +5,7 @@ include_directories(
 	${BZIP2_INCLUDE_DIR}
 )
 
-add_executable(
-        xmlindexer
+add_executable(xmlindexer
         xmlindexer.cpp
         indexer.cpp
         tagmapping.cpp
@@ -17,8 +16,12 @@ target_link_libraries(xmlindexer streamanalyzer)
 
 install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 
-add_executable(peranalyzerxml peranalyzerxml.cpp indexer.cpp
-    tagmapping.cpp xmlindexwriter.cpp)
+add_executable(peranalyzerxml
+	peranalyzerxml.cpp
+	indexer.cpp
+	tagmapping.cpp
+	xmlindexwriter.cpp
+)
 target_link_libraries(peranalyzerxml streamanalyzer)
 
 # disable test until fixed
