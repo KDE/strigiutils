@@ -82,7 +82,7 @@ main(int argc, char** argv) {
     bool help = false;
     while (1) {
         int optindex;
-        int c = getopt_long_only(argc, argv, "", long_options, &optindex);
+        int c = getopt_long(argc, argv, "", long_options, &optindex);
         if (c == -1) break;
         if (c == 0) {
             if (optindex == 0) help = true;
