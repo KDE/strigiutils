@@ -30,7 +30,7 @@ operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b
     return static_cast<AnalyzerConfiguration::FieldType>((int)a|(int)b);
 }
 AnalyzerConfiguration::AnalyzerConfiguration() {
-    fprintf(stderr, "AnalyzerConfiguration\n");
+//    fprintf(stderr, "AnalyzerConfiguration\n");
     FieldPropertiesDb::db();
 }
 /**

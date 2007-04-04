@@ -1,6 +1,6 @@
 
 install(FILES
-	test.fieldproperties
+#	test.fieldproperties
 	ogg.fieldproperties
 	DESTINATION share/apps/strigi/fieldproperties
 )

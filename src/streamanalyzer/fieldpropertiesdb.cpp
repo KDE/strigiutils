@@ -99,7 +99,7 @@ FieldPropertiesDb::Private::loadProperties(const string& dir) {
                 if (f) {
                     data = (char*)realloc(data, s.st_size+1);
                     if (fread(data, 1, s.st_size, f) == (size_t)s.st_size) {
-                        fprintf(stderr, "parsing %s\n", path.c_str());
+                        //fprintf(stderr, "parsing %s\n", path.c_str());
                         data[s.st_size] = '\0';
                         parseProperties(data);
                     }
