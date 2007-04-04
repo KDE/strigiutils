@@ -16,7 +16,6 @@ analyzer=HelperEndAnalyzer
 analyzer=HtmlSaxAnalyzer
 analyzer=ID3V2ThroughAnalyzer
 analyzer=MailEndAnalyzer
-analyzer=MimeTypeThroughAnalyzer
 analyzer=OdfMimeTypeLineAnalyzer
 analyzer=OdfSaxAnalyzer
 analyzer=OggThroughAnalyzer
