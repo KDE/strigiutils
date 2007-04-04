@@ -32,21 +32,23 @@ add_executable(perfieldxml perfieldxml.cpp indexer.cpp xmlindexwriter.cpp
     tagmapping.cpp)
 target_link_libraries(perfieldxml streamanalyzer)
 
-if(NOT WIN32)
+# is this still broken on win32?
+#if(NOT WIN32)
   add_executable(ontoprint ontoprint.cpp)
   target_link_libraries(ontoprint streamanalyzer)
-endif(NOT WIN32)
+#endif(NOT WIN32)
 
-# look for all config files
+# register all tests based on the data in the testdata directory
 FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)
 FOREACH(file ${allfiles})
-  MESSAGE("configfile ${analyzers}")
-  STRING(REPLACE "/config" "*bz2" ofile ${file})
-  FILE(GLOB_RECURSE ofiles ${ofile})
-  # TODO add the list of analyzers as an argument
+  GET_FILENAME_COMPONENT(testdir ${file} PATH)
+  GET_FILENAME_COMPONENT(dir ${testdir} NAME)
+  FILE(GLOB_RECURSE ofiles "${testdir}/*bz2")
   FOREACH(ofile ${ofiles})
-    STRING(REPLACE "/analyzers/" "/data/" ifile ${ofile})
+    STRING(REPLACE "/analyzers/${dir}/" "/data/" ifile ${ofile})
+    STRING(REPLACE ".bz2" "" ifile ${ifile})
     STRING(REPLACE "*/" "" testname ${ofile})
-    ADD_TEST(${testname} peranalyzerxml -a ${analyzers} -r ${ofile} ${ifile})
+    GET_FILENAME_COMPONENT(testname ${ifile} NAME)
+    ADD_TEST("${dir}/${testname}" peranalyzerxml -c ${testdir}/config -r ${ofile} ${ifile})
   ENDFOREACH(ofile ${ofiles})
 ENDFOREACH(file ${allfiles})

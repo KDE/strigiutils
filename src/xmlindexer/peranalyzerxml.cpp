@@ -57,10 +57,12 @@ public:
         : requiredAnalyzers(an) {}
 
     bool valid() const {
-        return requiredAnalyzers.size() == usedAnalyzers.size();
+        return requiredAnalyzers.size() == usedAnalyzers.size()
+            || requiredAnalyzers.size() == 0;
     }
     bool useFactory(const string& name) const {
-        bool use = requiredAnalyzers.find(name) != requiredAnalyzers.end();
+        bool use = requiredAnalyzers.find(name) != requiredAnalyzers.end()
+            || requiredAnalyzers.size() == 0;
         if (use) {
             usedAnalyzers.insert(name);
         }
@@ -86,7 +88,13 @@ public:
 
 void
 printUsage(char** argv) {
-    fprintf(stderr, "Usage: %s analyzer file-to-analyze referenceoutputfile\n",
+    fprintf(stderr, "Usage: %s [OPTIONS] SOURCE\n"
+        "Analyze the given file and output the result as XML.\n"
+        " -c   configuration file\n"
+        " -a   comma-separated list of analyzers\n"
+        " -r   reference output, when specified, the reference output is \n"
+        "      compared to the given output and the first difference is \n"
+        "      reported.\n",
         argv[0]);
 }
 bool
@@ -110,6 +118,11 @@ parseAnalyzerNames(const char* names) {
     n.insert(ns.substr(start));
     return n;
 }
+set<string>
+parseConfig(const char* config) {
+    set<string> n;
+    return n;
+}
 /**
  * Usage: $0 [OPTIONS] SOURCE
  **/
@@ -131,6 +144,8 @@ main(int argc, char** argv) {
             analyzers = parseAnalyzerNames(argv[2]);
         } else if (strcmp(argv[1], "-r") == 0) {
             referenceFile = argv[2];
+        } else if (strcmp(argv[1], "-c") == 0) {
+            analyzers = parseConfig(argv[1]);
         } else {
             printUsage(argv);
             return -1;
@@ -139,6 +154,11 @@ main(int argc, char** argv) {
     } else if (argc == 6) {
         if (strcmp(argv[1], "-a") == 0) {
             analyzers = parseAnalyzerNames(argv[2]);
+            if (strcmp(argv[3], "-r") == 0) {
+                referenceFile = argv[4];
+            }
+        } else if (strcmp(argv[1], "-c") == 0) {
+            analyzers = parseConfig(argv[2]);
             if (strcmp(argv[3], "-r") == 0) {
                 referenceFile = argv[4];
             }
@@ -166,6 +186,14 @@ main(int argc, char** argv) {
             return 1;
         }
     }
+    // check that the result file is ok
+    FileInputStream f(referenceFile);
+    BZ2InputStream bz2(&f);
+    if (referenceFile != 0 && bz2.status() != Ok) {
+        cerr << "The file '" << referenceFile << "' cannot be read." << endl;
+        return 1;
+    }
+
     ostringstream s;
     SelectedAnalyzerConfiguration ic(analyzers);
     Indexer indexer(s, ic, mappingFile);
@@ -191,8 +219,17 @@ main(int argc, char** argv) {
         }
         return 1;
     }
-    chdir(argv[1]);
-    indexer.index(targetFile);
+
+    // change to the directory of the file to analyze
+    // this ensures a consistent naming of the file uris, regardless of cwd
+    string targetPath(targetFile);
+    string::size_type slashpos = targetPath.rfind('/');
+    if (slashpos == string::npos) {
+         indexer.index(targetFile);
+    } else {
+         chdir(targetPath.substr(0,slashpos).c_str());
+         indexer.index(targetPath.substr(slashpos+1).c_str());
+    }
     string str = s.str();
     int32_t n = 2*str.length();
 
@@ -203,8 +240,6 @@ main(int argc, char** argv) {
     }
 
     // load the file to compare with
-    FileInputStream f(referenceFile);
-    BZ2InputStream bz2(&f);
     const char* c;
     n = bz2.read(c, n, n);
     if (n < 0) {
