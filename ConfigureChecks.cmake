@@ -102,7 +102,36 @@ CONFIGURE_FILE(
   ${strigi_BINARY_DIR}/config.h
 )
 
+# this is needed to be able to build a combined mingw/msvc strigi package
+if(WIN32)
+  if(MINGW)
+    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig_mingw.h)
+  else(MINGW) # msvc
+    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig_msvc.h)
+  endif(MINGW)
+  SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
+
+  FILE(WRITE ${strigi_extra_config_output}
+"
+/* Automatically created by strigi configure, do not touch! */\n
+#ifdef _MSC_VER
+# include \"strigiconfig_msvc.h\"
+#else
+# include \"strigiconfig_mingw.h\"
+#endif
+")
+
+else(WIN32)
+  SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
+endif(WIN32)
+
 CONFIGURE_FILE(
   ${strigi_SOURCE_DIR}/src/streams/compat/strigiconfig.h.cmake
-  ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h
+  ${strigi_config_output}
+)
+
+install(FILES
+  ${strigi_config_output}
+  ${strigi_extra_config_output}
+  DESTINATION include/strigi
 )

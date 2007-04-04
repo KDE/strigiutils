@@ -66,7 +66,6 @@ install(FILES
 	substreamprovider.h
 	substreamproviderprovider.h
 	compat/jstreamsconfig.h
-	${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h
 	DESTINATION include/strigi
 )
 install(TARGETS streams
