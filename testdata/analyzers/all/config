@@ -9,7 +9,6 @@ analyzer=DummyEventAnalyzerFactory
 analyzer=DummyLineAnalyzerFactory
 analyzer=DummySaxAnalyzerFactory
 analyzer=DummyThroughAnalyzerFactory
-analyzer=ElfEndAnalyzer
 analyzer=EventThroughAnalyzer
 analyzer=GZipEndAnalyzer
 analyzer=HelperEndAnalyzer
