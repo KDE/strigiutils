@@ -27,6 +27,12 @@ using namespace Strigi;
 STREAMS_EXPORT const int32_t FileInputStream::defaultBufferSize = 1048576;
 
 FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
+    if (filepath == 0) {
+        file = 0;
+        m_error = "No filename was provided.";
+        m_status = Error;
+        return;
+    }
     // try to open the file for reading
     file = fopen(filepath, "rb");
     this->filepath = filepath;
