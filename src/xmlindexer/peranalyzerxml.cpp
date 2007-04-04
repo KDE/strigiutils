@@ -121,6 +121,15 @@ parseAnalyzerNames(const char* names) {
 set<string>
 parseConfig(const char* config) {
     set<string> n;
+    ifstream f(config);
+    string line;
+    while (f.good()) {
+        getline(f, line);
+        if (strncmp("analyzer=", line.c_str(), 9) == 0) {
+            n.insert(line.substr(9));
+        }
+    }
+    
     return n;
 }
 /**
@@ -145,7 +154,7 @@ main(int argc, char** argv) {
         } else if (strcmp(argv[1], "-r") == 0) {
             referenceFile = argv[2];
         } else if (strcmp(argv[1], "-c") == 0) {
-            analyzers = parseConfig(argv[1]);
+            analyzers = parseConfig(argv[2]);
         } else {
             printUsage(argv);
             return -1;
@@ -166,6 +175,8 @@ main(int argc, char** argv) {
             referenceFile = argv[2];
             if (strcmp(argv[3], "-a") == 0) {
                 analyzers = parseAnalyzerNames(argv[4]);
+            } else if (strcmp(argv[3], "-c") == 0) {
+                analyzers = parseConfig(argv[4]);
             }
         } else {
             printUsage(argv);
