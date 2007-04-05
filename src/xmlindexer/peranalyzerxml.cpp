@@ -199,8 +199,8 @@ main(int argc, char** argv) {
     }
     // check that the result file is ok
     FileInputStream f(referenceFile);
-    BZ2InputStream bz2(&f);
-    if (referenceFile != 0 && bz2.status() != Ok) {
+//    BZ2InputStream bz2(&f);
+    if (referenceFile != 0 && f.status() != Ok) {
         cerr << "The file '" << referenceFile << "' cannot be read." << endl;
         return 1;
     }
@@ -252,9 +252,9 @@ main(int argc, char** argv) {
 
     // load the file to compare with
     const char* c;
-    n = bz2.read(c, n, n);
+    n = f.read(c, n, n);
     if (n < 0) {
-        fprintf(stderr, "Error: %s\n", bz2.error());
+        fprintf(stderr, "Error: %s\n", f.error());
         return -1;
     }
     if (n != (int32_t)s.str().length()) {
