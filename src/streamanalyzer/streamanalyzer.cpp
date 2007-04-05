@@ -26,6 +26,7 @@
 #include "streameventanalyzer.h"
 #include "streamsaxanalyzer.h"
 #include "bz2endanalyzer.h"
+#include "mimeeventanalyzer.h"
 #include "bmpendanalyzer.h"
 #include "textendanalyzer.h"
 #include "tarendanalyzer.h"
@@ -226,6 +227,7 @@ StreamAnalyzerPrivate::initializeEventFactories() {
         = moduleLoader->streamEventAnalyzerFactories();
     list<StreamEventAnalyzerFactory*>::iterator i;
     addFactory(new DigestEventAnalyzerFactory());
+    addFactory(new MimeEventAnalyzerFactory());
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
