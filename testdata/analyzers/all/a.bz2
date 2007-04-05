@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.bz2/a/file1' mtime='1139008378'>
+  <value name='size'>6</value>
+  <value name='sha1'>56ac1c08fa5479fd57c4a5c65861c4ed3ed93ff8</value>
+  <value name='depth'>2</value>
+  <text>hallo
+</text>
+ </file>
+ <file uri='a.bz2/a/file2' mtime='1139008384'>
+  <value name='size'>7</value>
+  <value name='sha1'>63f982e9e4bff72858424f9336a2089987f1c2e4</value>
+  <value name='depth'>2</value>
+  <text>hallo!
+</text>
+ </file>
+ <file uri='a.bz2/a' mtime='1175792718'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>275</value>
+  <value name='sha1'>25da41e3282f81b8289ed63da8a534c15d9fee9b</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='a.bz2' mtime='1175792718'>
+  <value name='size'>214</value>
+  <value name='sha1'>146b37a2ca543803ec87733a87dd5cb2e0f88515</value>
+  <value name='depth'>0</value>
+ </file>

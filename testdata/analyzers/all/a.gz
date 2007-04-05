@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.gz/a' mtime='1175792718'>
+  <value name='size'>23</value>
+  <value name='sha1'>52c72e7f550d7eb5180b14059b7000194ceeebf6</value>
+  <value name='depth'>1</value>
+  <text>a multiline
+text file
+</text>
+ </file>
+ <file uri='a.gz' mtime='1175792718'>
+  <value name='size'>45</value>
+  <value name='sha1'>ef1dfdbe9963a6f81ff64913adf39b3ddf1ed72c</value>
+  <value name='depth'>0</value>
+ </file>

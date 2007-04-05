@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.zip/file1' mtime='1139008378'>
+  <value name='size'>6</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='a.zip/file2' mtime='1139008384'>
+  <value name='size'>7</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='a.zip' mtime='1175792718'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>275</value>
+  <value name='depth'>0</value>
+ </file>

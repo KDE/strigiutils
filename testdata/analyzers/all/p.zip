@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='p.zip/data2/kdesvn/qt4/qt-copy/demos/affine/bg1.jpg' mtime='1156299536'>
+  <value name='size'>23771</value>
+  <value name='sha1'>a25141506f894bd6e963283d758d7ff21aeee516</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='p.zip/data2/kdesvn/qt4/qt-copy/demos/arthurplugin/bg1.jpg' mtime='1156299536'>
+  <value name='size'>23771</value>
+  <value name='sha1'>a25141506f894bd6e963283d758d7ff21aeee516</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='p.zip/data2/kdesvn/qt4/qt-copy/examples/draganddrop/puzzle/example.jpg' mtime='1156299544'>
+  <value name='size'>31770</value>
+  <value name='sha1'>3ac748ae480abf1338bd29ed053f1c0c81f0d9e7</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='p.zip/data2/kdesvn/qt4/qt-copy/src/3rdparty/libpng/pngbar.jpg' mtime='1156299376'>
+  <value name='size'>2498</value>
+  <value name='sha1'>a84c0b3e7b148977ef1c46d9f2c1fa6e7ac78838</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='p.zip' mtime='1175792718'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>82148</value>
+  <value name='sha1'>38b5387c1891c84b69d08a104a9b093e55227ef4</value>
+  <value name='depth'>0</value>
+ </file>

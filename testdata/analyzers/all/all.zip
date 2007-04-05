@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='all.zip/a.bz2/a/file1' mtime='1139008378'>
+  <value name='size'>6</value>
+  <value name='sha1'>56ac1c08fa5479fd57c4a5c65861c4ed3ed93ff8</value>
+  <value name='depth'>3</value>
+  <text>hallo
+</text>
+ </file>
+ <file uri='all.zip/a.bz2/a/file2' mtime='1139008384'>
+  <value name='size'>7</value>
+  <value name='sha1'>63f982e9e4bff72858424f9336a2089987f1c2e4</value>
+  <value name='depth'>3</value>
+  <text>hallo!
+</text>
+ </file>
+ <file uri='all.zip/a.bz2/a' mtime='1150927654'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>275</value>
+  <value name='sha1'>25da41e3282f81b8289ed63da8a534c15d9fee9b</value>
+  <value name='depth'>2</value>
+ </file>
+ <file uri='all.zip/a.bz2' mtime='1150927654'>
+  <value name='size'>214</value>
+  <value name='sha1'>146b37a2ca543803ec87733a87dd5cb2e0f88515</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='all.zip/a.gz/a' mtime='1165888460'>
+  <value name='size'>23</value>
+  <value name='sha1'>52c72e7f550d7eb5180b14059b7000194ceeebf6</value>
+  <value name='depth'>2</value>
+  <text>a multiline
+text file
+</text>
+ </file>
+ <file uri='all.zip/a.gz' mtime='1165888460'>
+  <value name='size'>45</value>
+  <value name='sha1'>ef1dfdbe9963a6f81ff64913adf39b3ddf1ed72c</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='all.zip/a.tar/file1' mtime='1139008378'>
+  <value name='size'>6</value>
+  <value name='sha1'>56ac1c08fa5479fd57c4a5c65861c4ed3ed93ff8</value>
+  <value name='depth'>2</value>
+  <text>hallo
+</text>
+ </file>
+ <file uri='all.zip/a.tar/file2' mtime='1139008383'>
+  <value name='size'>7</value>
+  <value name='sha1'>63f982e9e4bff72858424f9336a2089987f1c2e4</value>
+  <value name='depth'>2</value>
+  <text>hallo!
+</text>
+ </file>
+ <file uri='all.zip/a.tar' mtime='1150927654'>
+  <value name='size'>10240</value>
+  <value name='sha1'>c1f8d66a5e20ca70756344649f5a6be195ac35e5</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='all.zip/a.zip/file1' mtime='1139008378'>
+  <value name='size'>6</value>
+  <value name='sha1'>56ac1c08fa5479fd57c4a5c65861c4ed3ed93ff8</value>
+  <value name='depth'>2</value>
+  <text>hallo
+</text>
+ </file>
+ <file uri='all.zip/a.zip/file2' mtime='1139008384'>
+  <value name='size'>7</value>
+  <value name='sha1'>63f982e9e4bff72858424f9336a2089987f1c2e4</value>
+  <value name='depth'>2</value>
+  <text>hallo!
+</text>
+ </file>
+ <file uri='all.zip/a.zip' mtime='1150927654'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>275</value>
+  <value name='sha1'>25da41e3282f81b8289ed63da8a534c15d9fee9b</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/affine/bg1.jpg' mtime='1156299536'>
+  <value name='size'>23771</value>
+  <value name='sha1'>a25141506f894bd6e963283d758d7ff21aeee516</value>
+  <value name='depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/arthurplugin/bg1.jpg' mtime='1156299536'>
+  <value name='size'>23771</value>
+  <value name='sha1'>a25141506f894bd6e963283d758d7ff21aeee516</value>
+  <value name='depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/examples/draganddrop/puzzle/example.jpg' mtime='1156299544'>
+  <value name='size'>31770</value>
+  <value name='sha1'>3ac748ae480abf1338bd29ed053f1c0c81f0d9e7</value>
+  <value name='depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/src/3rdparty/libpng/pngbar.jpg' mtime='1156299376'>
+  <value name='size'>2498</value>
+  <value name='sha1'>a84c0b3e7b148977ef1c46d9f2c1fa6e7ac78838</value>
+  <value name='depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip' mtime='1156476736'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>82148</value>
+  <value name='sha1'>38b5387c1891c84b69d08a104a9b093e55227ef4</value>
+  <value name='depth'>1</value>
+ </file>
+ <file uri='all.zip' mtime='1175792718'>
+  <value name='mimetype'>application/zip</value>
+  <value name='size'>83437</value>
+  <value name='sha1'>9c27e6215ec2280e9391e782fff8aa6614cf91a2</value>
+  <value name='depth'>0</value>
+ </file>
