@@ -165,7 +165,7 @@ private:
         }
     }
 protected:
-    void startAnalysis(Strigi::AnalysisResult* ar) {
+    void startAnalysis(const Strigi::AnalysisResult* ar) {
         void* m = new Data();
         ar->setWriterData(m);
     }
@@ -216,14 +216,14 @@ protected:
         Data* d = static_cast<Data*>(ar->writerData());
         d->text.append(text, length);
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(ar->writerData());
         d->values.insert(
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, value));
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field,
             const unsigned char* data, uint32_t size) {
         Data* d = static_cast<Data*>(ar->writerData());
@@ -231,7 +231,7 @@ protected:
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, std::string((const char*)data, size)));
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, uint32_t value) {
         Data* d = static_cast<Data*>(ar->writerData());
         static std::ostringstream v;
@@ -241,7 +241,7 @@ protected:
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, v.str()));
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, int32_t value) {
         Data* d = static_cast<Data*>(ar->writerData());
         static std::ostringstream v;
@@ -251,7 +251,7 @@ protected:
             std::make_pair<const Strigi::RegisteredField*, std::string>(
             field, v.str()));
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, double value) {
         Data* d = static_cast<Data*>(ar->writerData());
         static std::ostringstream v;

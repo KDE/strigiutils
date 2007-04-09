@@ -1,9 +1,1 @@
-* seek and replace getFoo() functions with foo() in daemon/client?
-* Make AnalysisResult usage in IndexWriter consistent:
-  - Make it a const argument in startAnalysis
-  - make AnalysisResult::mWriterData mutable
-  - make AnalysisResult::setWriterData const
-* give all analyzers a common ancestor
-* give this ancestor a dptr with at least a vector with the registered fields
-  this will allow us to ask the factory which fields the analyzer can provide.
-* mv addField functions to addValue in IndexWriter
+* seek and replace getFoo() functions with foo() in daemon/client

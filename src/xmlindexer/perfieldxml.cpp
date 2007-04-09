@@ -47,14 +47,10 @@
 using namespace Strigi;
 using namespace std;
 
-
 /**
  * This class has not been finished yet. It requires changes in all
    analyzer factories.
  **/
-
-
-
 class SelectedFieldConfiguration : public Strigi::AnalyzerConfiguration {
 public:
     const set<string> requiredFields;
