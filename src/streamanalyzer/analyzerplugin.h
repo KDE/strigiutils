@@ -18,7 +18,94 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "analyzerfactoryfactory.h"
+
+#include <list>
+
+namespace Strigi {
+class StreamEndAnalyzerFactory;
+class StreamThroughAnalyzerFactory;
+class StreamSaxAnalyzerFactory;
+class StreamLineAnalyzerFactory;
+class StreamEventAnalyzerFactory;
+
+/**
+ * @brief Provides a list of analyzer factories present within a plugin.
+ *
+ * Each loadable plugin has one AnalyzerFactoryFactory. This factory
+ * can pass the available factories to the application that loads the plugin.
+ */
+class AnalyzerFactoryFactory {
+public:
+    /** Destructor */
+    virtual ~AnalyzerFactoryFactory() {}
+
+    /**
+     * @brief Return instances of the StreamEndAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamEndAnalyzers.
+     */
+    virtual std::list<StreamEndAnalyzerFactory*>
+            streamEndAnalyzerFactories() const {
+        std::list<StreamEndAnalyzerFactory*> af;
+        return af;
+    }
+    /**
+     * @brief Return instances of the StreamThroughAnalyzerFactories available
+     * in this plugin.
+     *
+     *  The default implementation returns an empty list. A particular plugin
+     *  should subclass the AnalyzerFactoryFactory and overload this function
+     *  if it implements any StreamThroughAnalyzers.
+     */
+    virtual std::list<StreamThroughAnalyzerFactory*>
+            streamThroughAnalyzerFactories() const {
+        std::list<StreamThroughAnalyzerFactory*> af;
+        return af;
+    }
+    /**
+     * @brief Return instances of the StreamSaxAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamSaxAnalyzers.
+     */
+    virtual std::list<StreamSaxAnalyzerFactory*>
+            streamSaxAnalyzerFactories() const {
+        std::list<StreamSaxAnalyzerFactory*> af;
+        return af;
+    }
+    /**
+     * @brief Return instances of the StreamLineAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamLineAnalyzers.
+     */
+    virtual std::list<StreamLineAnalyzerFactory*>
+            streamLineAnalyzerFactories() const {
+        std::list<StreamLineAnalyzerFactory*> af;
+        return af;
+    }
+    /**
+     * @brief Return instances of the StreamEventAnalyzerFactories available
+     * in this plugin.
+     *
+     * The default implementation returns an empty list. A particular plugin
+     * should subclass the AnalyzerFactoryFactory and overload this function
+     * if it implements any StreamEventAnalyzers.
+     */
+    virtual std::list<StreamEventAnalyzerFactory*>
+            streamEventAnalyzerFactories() const {
+        std::list<StreamEventAnalyzerFactory*> af;
+        return af;
+    }
+};
+}
 
 /** @deprecated use STRIGI_EXPORT instead */
 #define STRIGI_PLUGIN_API STRIGI_EXPORT

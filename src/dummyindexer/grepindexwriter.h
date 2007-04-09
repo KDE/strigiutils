@@ -27,20 +27,20 @@ class GrepIndexWriter : public Strigi::IndexWriter {
 private:
     regex_t regex;
 protected:
-    void startAnalysis(Strigi::AnalysisResult* idx);
+    void startAnalysis(const Strigi::AnalysisResult* idx);
     void finishAnalysis(const Strigi::AnalysisResult* idx);
     void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);
-    void addField(const Strigi::AnalysisResult* idx,
+    void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, const std::string& value);
-    void addField(const Strigi::AnalysisResult* idx,
+    void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field,
             const unsigned char* data, uint32_t size) {}
-    void addField(const Strigi::AnalysisResult* idx,
+    void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, uint32_t value) {}
-    void addField(const Strigi::AnalysisResult* idx,
+    void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, int32_t value) {}
-    void addField(const Strigi::AnalysisResult* idx,
+    void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, double value) {}
     void addTriplet(const std::string& subject,
         const std::string& predicate, const std::string& object) {}

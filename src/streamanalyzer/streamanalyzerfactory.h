@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ *               2007 Tobias G. Pfeiffer <tgpfeiffer@web.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,30 +18,38 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMSTREAMANALYZER_H
-#define STREAMSTREAMANALYZER_H
+#ifndef STREAMANALYZERFACTORY
+#define STREAMANALYZERFACTORY
 
-#include "streamanalyzerfactory.h"
+#include "strigiconfig.h"
+
+#include <vector>
 
 namespace Strigi {
-class AnalysisResult;
 
-class STREAMANALYZER_EXPORT StreamEventAnalyzer {
+class FieldRegister;
+class RegisteredField;
+
+class STREAMANALYZER_EXPORT StreamAnalyzerFactory {
+private:
+    class Private;
+    Private* p;
 public:
-    virtual ~StreamEventAnalyzer() {}
+    StreamAnalyzerFactory();
+    virtual ~StreamAnalyzerFactory();
+    /**
+     * Returns the name of this analyzer factory. Taking the class name is fine
+     * for this purpose.
+     */
     virtual const char* name() const = 0;
-    virtual void startAnalysis(AnalysisResult*) = 0;
-    virtual void endAnalysis() {}
-    virtual void handleData(const char* data, uint32_t length) = 0;
-    virtual bool isReadyWithStream() = 0;
+    /**
+     * Here you should register all fields that the corresponding
+     * StreamLineAnalyzer is able to extract using FieldRegister::registerField().
+     */
+    virtual void registerFields(FieldRegister&) = 0;
+    void addField(const RegisteredField*);
+    const std::vector<const RegisteredField*>& registeredFields() const;
 };
-
-class STREAMANALYZER_EXPORT StreamEventAnalyzerFactory
-        : public StreamAnalyzerFactory {
-public:
-    virtual StreamEventAnalyzer* newInstance() const = 0;
-};
-
 
 }
 

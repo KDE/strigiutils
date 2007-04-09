@@ -92,7 +92,7 @@ CLuceneIndexWriter::mapId(const TCHAR* id) {
     }
 }
 void
-CLuceneIndexWriter::addField(const AnalysisResult* idx,
+CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const TCHAR* value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
@@ -104,26 +104,26 @@ CLuceneIndexWriter::addField(const AnalysisResult* idx,
     doc->doc.add(*field);
 }
 void
-CLuceneIndexWriter::addField(const AnalysisResult* idx,
+CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         AnalyzerConfiguration::FieldType type, const TCHAR* fn,
         const std::string& value) {
 #if defined(_UCS2)
-    addField(idx, type, CLuceneIndexWriter::mapId(fn),
+    addValue(idx, type, CLuceneIndexWriter::mapId(fn),
         utf8toucs2(value).c_str());
 #else
-    addField(idx, type, CLuceneIndexWriter::mapId(fn), value.c_str());
+    addValue(idx, type, CLuceneIndexWriter::mapId(fn), value.c_str());
 #endif
 }
 void
-CLuceneIndexWriter::addField(const Strigi::AnalysisResult* idx,
+CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
         const Strigi::RegisteredField* field, const std::string& value) {
     AnalyzerConfiguration::FieldType type
         = idx->config().indexType(field);
     if (type == AnalyzerConfiguration::None) return;
 #if defined(_UCS2)
-    addField(idx, type, utf8toucs2(field->key()).c_str(), value);
+    addValue(idx, type, utf8toucs2(field->key()).c_str(), value);
 #else
-    addField(idx, type, field->key(), value);
+    addValue(idx, type, field->key(), value);
 #endif
 }
 void
@@ -138,18 +138,18 @@ CLuceneIndexWriter::startAnalysis(AnalysisResult* idx) {
 void
 CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     const FieldRegister& fr = idx->config().fieldRegister();
-    addField(idx, fr.pathField, idx->path());
+    addValue(idx, fr.pathField, idx->path());
     string field = idx->encoding();
-    if (field.length()) addField(idx, fr.encodingField, field);
+    if (field.length()) addValue(idx, fr.encodingField, field);
     field = idx->mimeType();
-    if (field.length()) addField(idx, fr.mimetypeField, field);
+    if (field.length()) addValue(idx, fr.mimetypeField, field);
     field = idx->fileName();
-    if (field.length()) addField(idx, fr.filenameField, field);
+    if (field.length()) addValue(idx, fr.filenameField, field);
     field = idx->extension();
-    if (field.length()) addField(idx, fr.extensionField, field);
+    if (field.length()) addValue(idx, fr.extensionField, field);
     ostringstream o;
     o << (int)idx->depth();
-    addField(idx, fr.embeddepthField, o.str());
+    addValue(idx, fr.embeddepthField, o.str());
     o.str("");
     {
         char tmp[100];
@@ -157,7 +157,7 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
         o << tmp;
     }
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
-    addField(idx, fr.mtimeField, o.str());
+    addValue(idx, fr.mtimeField, o.str());
     wstring c(utf8toucs2(doc->content));
     jstreams::StringReader<char>* sr = NULL; //we use this for compressed streams
 

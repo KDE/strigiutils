@@ -36,8 +36,8 @@ namespace Strigi {
 template <class T>
 class BufferedStream : public StreamBase<T> {
 private:
-    bool finishedWritingToBuffer;
     StreamBuffer<T> buffer;
+    bool finishedWritingToBuffer;
 
     void writeToBuffer(int32_t minsize, int32_t maxsize);
 protected:

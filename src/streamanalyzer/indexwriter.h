@@ -65,7 +65,7 @@ protected:
      * @param result the AnalysisResult for the stream that is being
      * analyzed.
      */
-    virtual void startAnalysis(AnalysisResult*) = 0;
+    virtual void startAnalysis(const AnalysisResult*) = 0;
     /**
      * @brief Add a fragment of text to the index.
      *
@@ -87,7 +87,7 @@ protected:
      * @param field description of the field
      * @param value value of the field
      */
-    virtual void addField(const AnalysisResult* result, const RegisteredField* field,
+    virtual void addValue(const AnalysisResult* result, const RegisteredField* field,
         const std::string& value) = 0;
     /**
      * @brief Add a field to the index.
@@ -100,7 +100,7 @@ protected:
      * @param data value of the field
      * @param size length of the data
      */
-    virtual void addField(const AnalysisResult* result, const RegisteredField* field,
+    virtual void addValue(const AnalysisResult* result, const RegisteredField* field,
         const unsigned char* data, uint32_t size) = 0;
     /**
      * @brief Add a field to the index.
@@ -112,7 +112,7 @@ protected:
      * @param field description of the field
      * @param value value of the field
      */
-    virtual void addField(const AnalysisResult* result, const RegisteredField* field,
+    virtual void addValue(const AnalysisResult* result, const RegisteredField* field,
         int32_t value) = 0;
     /**
      * @brief Add a field to the index.
@@ -124,7 +124,7 @@ protected:
      * @param field description of the field
      * @param value value of the field
      */
-    virtual void addField(const AnalysisResult* result, const RegisteredField* field,
+    virtual void addValue(const AnalysisResult* result, const RegisteredField* field,
         uint32_t value) = 0;
     /**
      * @brief Add a field to the index.
@@ -136,7 +136,7 @@ protected:
      * @param field description of the field
      * @param value value of the field
      */
-    virtual void addField(const AnalysisResult* result, const RegisteredField* field,
+    virtual void addValue(const AnalysisResult* result, const RegisteredField* field,
         double value) = 0;
     /**
      * @brief Add a field to the index.
@@ -217,7 +217,7 @@ public:
      * @endcode
      *
      * This function must be called on a fieldRegister before any of its
-     * fields are passed to any addField() function.
+     * fields are passed to any addValue() function.
      *
      * @param fieldRegister the FieldRegister to initialize
      */
@@ -225,7 +225,7 @@ public:
     /**
      * @brief Clean up the writer data of the fields.
      *
-     * This cleans up the writer data set with initWriterData() and/or addField().
+     * This cleans up the writer data set with initWriterData() and/or addValue().
      * Typically, this will mean deleting the memory used by the writer data:
      * @code
      * map<string, RegisteredField*>::const_iterator i;
@@ -235,7 +235,7 @@ public:
      * }
      * @endcode
      *
-     * No further calls may be made to addField() with any Strigi::RegisteredField
+     * No further calls may be made to addValue() with any Strigi::RegisteredField
      * that has already been passed to this function in a Strigi::FieldRegister.
      *
      * This function may only be called once for each corresponding call of

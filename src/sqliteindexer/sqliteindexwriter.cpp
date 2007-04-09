@@ -116,7 +116,7 @@ SqliteIndexWriter::addText(const AnalysisResult* idx, const char* text,
     }
 }
 void
-SqliteIndexWriter::addField(const AnalysisResult* idx, const RegisteredField* field,
+SqliteIndexWriter::addValue(const AnalysisResult* idx, const RegisteredField* field,
         const string& value) {
     int64_t id = static_cast<SqliteWriterData*>(idx->writerData())->id;
     //id = -1; // debug

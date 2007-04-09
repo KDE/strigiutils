@@ -21,11 +21,12 @@
 #define STREAMTHROUGHANALYZER_H
 
 #include "streambase.h"
+#include "streamanalyzerfactory.h"
 
 namespace Strigi {
 
 class AnalysisResult;
-class FieldRegister;
+
 /**
  * This class defines an interface for analyzing streams.
  * This interface is not yet complete, it lacks good functions for retrieving
@@ -49,12 +50,10 @@ public:
      **/
     virtual bool isReadyWithStream() = 0;
 };
-class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory
+        : public StreamAnalyzerFactory {
 public:
-    virtual ~StreamThroughAnalyzerFactory(){}
-    virtual const char* name() const = 0;
     virtual StreamThroughAnalyzer* newInstance() const = 0;
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
 };
 
 } // end namespace Strigi

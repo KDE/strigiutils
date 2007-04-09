@@ -51,22 +51,10 @@ class StreamEndAnalyzerPrivate;
  * automatically written do the index when ~AnalysisResult() is called.
  **/
 class STREAMANALYZER_EXPORT AnalysisResult {
-friend class IndexWriter;
 friend class StreamAnalyzerPrivate;
 private:
-    int64_t m_id;
-    void* m_writerData;
-    const time_t m_mtime;
-    std::string m_name;
-    const std::string m_path;
-    std::string m_encoding;
-    std::string m_mimetype;
-    IndexWriter& m_writer;
-    const int m_depth;
-    StreamAnalyzer& m_indexer;
-    AnalyzerConfiguration& m_analyzerconfig;
-    AnalysisResult* const m_parent;
-    const StreamEndAnalyzer* m_endanalyzer;
+    class Private;
+    Private* const p;
 
     /**
      * @brief Create a new AnalysisResult object that will be written to the index.
@@ -296,7 +284,7 @@ public:
      *
      * @param data pointer to the object
      **/
-    void setWriterData(void* data);
+    void setWriterData(void* data) const;
     /**
      * @brief Set the mimetype of the associated file.
      */

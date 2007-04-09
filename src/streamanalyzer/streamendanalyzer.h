@@ -21,12 +21,10 @@
 #define STREAMENDANALYZER_H
 
 #include "streambase.h"
+#include "streamanalyzerfactory.h"
 
 namespace Strigi {
-class StreamAnalyzer;
 class AnalysisResult;
-class RegisteredField;
-class FieldRegister;
 
 class STREAMANALYZER_EXPORT StreamEndAnalyzer {
 protected:
@@ -40,11 +38,9 @@ public:
     virtual const char* name() const = 0;
 };
 
-class STREAMANALYZER_EXPORT StreamEndAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamEndAnalyzerFactory
+        : public StreamAnalyzerFactory {
 public:
-    virtual ~StreamEndAnalyzerFactory(){}
-    virtual const char* name() const = 0;
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
     virtual StreamEndAnalyzer* newInstance() const = 0;
     virtual bool analyzesSubStreams() const { return false; }
 };

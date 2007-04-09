@@ -21,12 +21,9 @@
 #ifndef STREAMSAXANALYZER_H
 #define STREAMSAXANALYZER_H
 
-#include "streambase.h"
+#include "streamanalyzerfactory.h"
 
 namespace Strigi {
-class StreamAnalyzer;
-class RegisteredField;
-class FieldRegister;
 class AnalysisResult;
 
 /**
@@ -130,19 +127,9 @@ public:
 /**
  * This is the factory for the creation of a StreamSaxAnalyzer.
  */
-class STREAMANALYZER_EXPORT StreamSaxAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamSaxAnalyzerFactory
+        : public StreamAnalyzerFactory {
 public:
-    virtual ~StreamSaxAnalyzerFactory() {}
-    /**
-     * Returns the name of this analyzer factory. Taking the class name is fine
-     * for this purpose.
-     */
-    virtual const char* name() const = 0;
-    /**
-     * Here you should register all fields that the corresponding
-     * StreamSaxAnalyzer is able to extract using FieldRegister::registerField().
-     */
-    virtual void registerFields(Strigi::FieldRegister&) = 0;
     /**
      * Is called to create a new instance of the corresponding StreamSaxAnalyzer.
      * \return pointer to the new analyzer instance

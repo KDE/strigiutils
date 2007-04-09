@@ -46,7 +46,7 @@ EstraierIndexWriter::addText(const AnalysisResult* idx, const char* text,
     est_doc_add_text(doc, value.c_str());
 }
 void
-EstraierIndexWriter::addField(const AnalysisResult* idx,
+EstraierIndexWriter::addValue(const AnalysisResult* idx,
         const RegisteredField* field, const string& value) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());
     if (field->getKey() == "size") {

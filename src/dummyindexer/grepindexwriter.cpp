@@ -30,7 +30,7 @@ GrepIndexWriter::~GrepIndexWriter() {
     regfree(&regex);
 }
 void
-GrepIndexWriter::startAnalysis(Strigi::AnalysisResult* idx) {
+GrepIndexWriter::startAnalysis(const Strigi::AnalysisResult* idx) {
 }
 void
 GrepIndexWriter::finishAnalysis(const Strigi::AnalysisResult* idx) {
@@ -62,7 +62,7 @@ GrepIndexWriter::addText(const Strigi::AnalysisResult* idx, const char* text,
     }
 }
 void
-GrepIndexWriter::addField(const Strigi::AnalysisResult* idx,
+GrepIndexWriter::addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, const std::string& value) {
     if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s:%s\n", idx->path().c_str(),

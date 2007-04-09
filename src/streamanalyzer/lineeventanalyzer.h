@@ -24,6 +24,7 @@
 #include "strigiconfig.h"
 #include "streameventanalyzer.h"
 #include <vector>
+#include <string>
 #include <iconv.h>
 
 namespace Strigi {

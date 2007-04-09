@@ -28,7 +28,7 @@ class DummyIndexWriter : public Strigi::IndexWriter {
 private:
     int verbosity;
 protected:
-    void startAnalysis(Strigi::AnalysisResult* ar) {
+    void startAnalysis(const Strigi::AnalysisResult* ar) {
         if (verbosity >= 1) {
             printf("%s\n", ar->path().c_str());
         }
@@ -52,7 +52,7 @@ protected:
                 text);
         }
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* field, const std::string& value) {
         if (verbosity > 1) {
             printf("%s: setField '%s': '%s'\n", ar->path().c_str(),
@@ -63,14 +63,14 @@ protected:
             *s = value;
         }
     }
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, const unsigned char* data,
         uint32_t size) {}
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, uint32_t value) {}
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, int32_t value) {}
-    void addField(const Strigi::AnalysisResult* ar,
+    void addValue(const Strigi::AnalysisResult* ar,
         const Strigi::RegisteredField* fieldname, double value) {}
     void addTriplet(const std::string& subject,
         const std::string& predicate, const std::string& object) {}

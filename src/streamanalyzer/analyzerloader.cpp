@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "analyzerloader.h"
-#include "analyzerfactoryfactory.h"
+#include "analyzerplugin.h"
 #include <string>
 #include <cstdio>
 #include <sys/types.h>

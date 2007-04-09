@@ -20,7 +20,6 @@ set(streamanalyzer_SRCS
 	filelister.cpp
 	htmlsaxanalyzer.cpp
 	id3v2throughanalyzer.cpp
-	indexwriter.cpp
 	lineeventanalyzer.cpp
 	mimeeventanalyzer.cpp
 	odfmimetypelineanalyzer.cpp
@@ -30,6 +29,7 @@ set(streamanalyzer_SRCS
 	saxeventanalyzer.cpp
 	sha1.cpp
 	streamanalyzer.cpp
+	streamanalyzerfactory.cpp
 	streamendanalyzer.cpp
 	endanalyzers/arendanalyzer.cpp
 	endanalyzers/bmpendanalyzer.cpp
@@ -70,14 +70,13 @@ target_link_libraries(streamanalyzer ${streamanalyzer_libs})
 install(FILES
 	analysisresult.h
 	analyzerconfiguration.h
-	analyzerfactoryfactory.h
 	analyzerplugin.h
-	cnstr.h
 	fieldproperties.h
 	fieldtypes.h
 	indexeddocument.h
 	indexwriter.h
 	streamanalyzer.h
+	streamanalyzerfactory.h
 	streamendanalyzer.h
 	streameventanalyzer.h
 	streamlineanalyzer.h

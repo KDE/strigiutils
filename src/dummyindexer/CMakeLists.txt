@@ -15,4 +15,5 @@ if(NOT WIN32)
   install(TARGETS deepgrep RUNTIME DESTINATION bin)
 endif(NOT WIN32)
 
-
+add_executable(greptest grepindexreader.cpp)
+target_link_libraries(greptest streamanalyzer)

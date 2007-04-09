@@ -29,7 +29,7 @@ namespace Strigi {
 }
 class AuThroughAnalyzerFactory;
 
-class STRIGI_PLUGIN_API AuThroughAnalyzer
+class STRIGI_EXPORT AuThroughAnalyzer
     : public Strigi::StreamThroughAnalyzer {
 private:
     Strigi::AnalysisResult* analysisResult;

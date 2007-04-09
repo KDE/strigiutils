@@ -21,13 +21,10 @@
 #ifndef STREAMLINEANALYZER_H
 #define STREAMLINEANALYZER_H
 
-#include "streambase.h"
+#include "streamanalyzerfactory.h"
 
 namespace Strigi {
-class StreamAnalyzer;
-class RegisteredField;
 class AnalysisResult;
-class FieldRegister;
 
 /**
  * This class is especially well suited for file formats that are based on
@@ -83,19 +80,9 @@ public:
 /**
  * This is the factory for the creation of a StreamLineAnalyzer.
  */
-class STREAMANALYZER_EXPORT StreamLineAnalyzerFactory {
+class STREAMANALYZER_EXPORT StreamLineAnalyzerFactory
+        : public StreamAnalyzerFactory {
 public:
-    virtual ~StreamLineAnalyzerFactory() {}
-    /**
-     * Returns the name of this analyzer factory. Taking the class name is fine
-     * for this purpose.
-     */
-    virtual const char* name() const = 0;
-    /**
-     * Here you should register all fields that the corresponding
-     * StreamLineAnalyzer is able to extract using FieldRegister::registerField().
-     */
-    virtual void registerFields(Strigi::FieldRegister& reg) = 0;
     /**
      * Is called to create a new instance of the corresponding StreamLineAnalyzer.
      * \return pointer to the new analyzer instance
