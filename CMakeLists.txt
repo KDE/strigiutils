@@ -76,7 +76,6 @@ find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Iconv REQUIRED)
-find_package(Magic REQUIRED)
 
 # use either expat or libxml2
 find_package(Expat)
