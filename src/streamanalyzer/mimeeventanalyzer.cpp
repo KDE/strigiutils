@@ -22,6 +22,7 @@
 #include "fieldtypes.h"
 #include "textutils.h"
 #include "fileinputstream.h"
+#include "analysisresult.h"
 
 // http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.12.html
 
@@ -30,26 +31,70 @@ using namespace std;
 
 class MimeRule {
 public:
-    uint64_t offset;
-    uint64_t range;
+    uint32_t offset;
+    uint32_t range;
     unsigned char* value;
     unsigned char* mask;
     uint16_t length;
     unsigned char indent;
     MimeRule() :range(1), indent(0) {}
+    bool matches(const char* data, int32_t length) const;
 };
+bool
+MimeRule::matches(const char* data, int32_t len) const {
+    // TODO: handle range
+    data += offset;
+    len -= offset;
+    bool match = false;
+    for (uint32_t o = offset; !match && o <= range; ++o) {
+        if (len < (int32_t)length) {
+            return false;
+        }
+        if (mask) {
+            match = true;
+            for (uint16_t i = 0; match && i<length; ++i) {
+                match = match && (data[i] & mask[i]) == value[i];
+            }
+        } else {
+            match = memcmp(data, value, length) == 0;
+        }
+        data++;
+        len--;
+    }
+    return match;
+}
 class Mime {
 public:
     string mimetype;
     vector<MimeRule> rules;
     int32_t priority;
+
+    bool matches(const char* data, int32_t length) const;
 };
+bool
+Mime::matches(const char* data, int32_t length) const {
+    vector<MimeRule>::const_iterator i;
+    bool match = false;
+    for (i = rules.begin(); i < rules.end(); ++i) {
+        if (i->indent == 0) {
+            if (match) return true;
+            match = true;
+        }
+        match = match && i->matches(data, length);
+    }
+    return match;
+}
 class MimeEventAnalyzer::Private {
 public:
     bool parsed;
     vector<Mime> mimes;
-    Private() {}
+    AnalysisResult* analysisResult;
+    const MimeEventAnalyzerFactory* const factory;
+
+    Private(const MimeEventAnalyzerFactory* f)
+        :parsed(false), factory(f) {}
     ~Private();
+
     void parseFile(const string&);
     void parseFiles();
 };
@@ -164,6 +209,9 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
                 }
                 rule.mask = (unsigned char*)malloc(len);
                 memcpy(rule.mask, pos, len);
+                for (uint16_t i = 0; i < len; ++i) {
+                    rule.value[i] = rule.mask[i] & rule.value[i];
+                }
                 pos += len;
             } else {
                 rule.mask = 0;
@@ -198,6 +246,11 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
                     return;
                 }
                 rule.range = atol(lpos);
+                if (rule.range < rule.offset) {
+                    rule.range = rule.offset;
+                }
+            } else {
+                rule.range = rule.offset;
             }
             if (*pos++ != '\n') {
                 fprintf(stderr, "'%s' ended unexpectedly.\n", file.c_str());
@@ -209,23 +262,32 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
         mimes.push_back(mime);
     }
 }
-
 void
-MimeEventAnalyzer::startAnalysis(AnalysisResult*) {
-    p->parseFiles();
+MimeEventAnalyzer::startAnalysis(AnalysisResult* ar) {
+    if (!p->parsed) {
+        p->parseFiles();
+        p->parsed = true;
+    }
+    p->analysisResult = ar;
 }
 void
 MimeEventAnalyzer::endAnalysis() {
 }
 void
 MimeEventAnalyzer::handleData(const char* data, uint32_t length) {
+    vector<Mime>::const_iterator i;
+    for (i = p->mimes.begin(); i < p->mimes.end(); ++i) {
+        if (i->matches(data, length)) {
+            p->analysisResult->addValue(p->factory->mimetypefield, i->mimetype);
+        }
+    }
 }
 bool
 MimeEventAnalyzer::isReadyWithStream() {
     return true;
 }
-MimeEventAnalyzer::MimeEventAnalyzer(const MimeEventAnalyzerFactory*)
-    :p(new Private()) {
+MimeEventAnalyzer::MimeEventAnalyzer(const MimeEventAnalyzerFactory* f)
+    :p(new Private(f)) {
 }
 MimeEventAnalyzer::~MimeEventAnalyzer() {
     delete p;
