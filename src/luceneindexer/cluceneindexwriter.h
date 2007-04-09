@@ -33,7 +33,7 @@ private:
     int doccount;
 
 protected:
-    void startAnalysis(Strigi::AnalysisResult*);
+    void startAnalysis(const Strigi::AnalysisResult*);
     void finishAnalysis(const Strigi::AnalysisResult*);
     void addText(const Strigi::AnalysisResult*, const char* text, int32_t length);
     static void addValue(const Strigi::AnalysisResult* idx,

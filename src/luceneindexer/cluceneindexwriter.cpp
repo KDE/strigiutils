@@ -127,7 +127,7 @@ CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
 #endif
 }
 void
-CLuceneIndexWriter::startAnalysis(AnalysisResult* idx) {
+CLuceneIndexWriter::startAnalysis(const AnalysisResult* idx) {
     doccount++;
     CLuceneDocData*doc = new CLuceneDocData();
     idx->setWriterData(doc);
