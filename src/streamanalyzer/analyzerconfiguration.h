@@ -19,19 +19,15 @@
  */
 #ifndef INDEXERCONFIGURATION_H
 #define INDEXERCONFIGURATION_H
-#include <string>
-#include <vector>
 
-#include "strigiconfig.h"
+#include "streamendanalyzer.h"
+#include "streamsaxanalyzer.h"
+#include "streamlineanalyzer.h"
+#include "streamthroughanalyzer.h"
+#include "streameventanalyzer.h"
 #include "fieldtypes.h"
 
 namespace Strigi {
-class StreamEndAnalyzerFactory;
-class StreamThroughAnalyzerFactory;
-class StreamSaxAnalyzerFactory;
-class StreamLineAnalyzerFactory;
-class StreamEventAnalyzerFactory;
-class FieldRegister;
 
 /**
  * @brief This class provides information and functions to control
@@ -148,7 +144,7 @@ public:
      *
      * The default implementation allows all factories.
      */
-    virtual bool useFactory(StreamEndAnalyzerFactory*) const { return true; }
+    virtual bool useFactory(StreamAnalyzerFactory*) const { return true; }
     /**
      * @brief Whether to use the given factory.
      *
@@ -156,7 +152,9 @@ public:
      * useFactory(StreamEndAnalyzerFactory*)
      * for more information.
      */
-    virtual bool useFactory(StreamThroughAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamEndAnalyzerFactory* f) const {
+        return useFactory(static_cast<StreamAnalyzerFactory*>(f));
+    }
     /**
      * @brief Whether to use the given factory.
      *
@@ -164,7 +162,9 @@ public:
      * useFactory(StreamEndAnalyzerFactory*)
      * for more information.
      */
-    virtual bool useFactory(StreamSaxAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamThroughAnalyzerFactory* f) const {
+        return useFactory(static_cast<StreamAnalyzerFactory*>(f));
+    }
     /**
      * @brief Whether to use the given factory.
      *
@@ -172,7 +172,9 @@ public:
      * useFactory(StreamEndAnalyzerFactory*)
      * for more information.
      */
-    virtual bool useFactory(StreamEventAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamSaxAnalyzerFactory* f) const {
+        return useFactory(static_cast<StreamAnalyzerFactory*>(f));
+    }
     /**
      * @brief Whether to use the given factory.
      *
@@ -180,7 +182,19 @@ public:
      * useFactory(StreamEndAnalyzerFactory*)
      * for more information.
      */
-    virtual bool useFactory(StreamLineAnalyzerFactory*) const {return true; }
+    virtual bool useFactory(StreamEventAnalyzerFactory* f) const {
+        return useFactory(static_cast<StreamAnalyzerFactory*>(f));
+    }
+    /**
+     * @brief Whether to use the given factory.
+     *
+     * This is an overloaded function.  See
+     * useFactory(StreamEndAnalyzerFactory*)
+     * for more information.
+     */
+    virtual bool useFactory(StreamLineAnalyzerFactory* f) const {
+        return useFactory(static_cast<StreamAnalyzerFactory*>(f));
+    }
     /**
      * @brief Allows end analyzer to check whether they should continue
      * indexing.
