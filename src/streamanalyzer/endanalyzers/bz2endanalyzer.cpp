@@ -22,7 +22,6 @@
 #include "bz2inputstream.h"
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
-#include "tarendanalyzer.h"
 #include "streamanalyzer.h"
 #include "analysisresult.h"
 using namespace std;

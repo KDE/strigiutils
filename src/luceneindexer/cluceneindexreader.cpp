@@ -425,7 +425,6 @@ public:
     vector<int> values;
 };
 #include <time.h>
-#include <sstream>
 vector<pair<string,uint32_t> >
 makeTimeHistogram(const vector<int>& v) {
     map<int32_t, int32_t> m;

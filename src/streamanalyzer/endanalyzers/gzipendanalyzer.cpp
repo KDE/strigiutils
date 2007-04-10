@@ -22,7 +22,6 @@
 #include "gzipinputstream.h"
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
-#include "tarendanalyzer.h"
 #include "analysisresult.h"
 using namespace Strigi;
 using namespace std;

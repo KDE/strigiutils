@@ -29,7 +29,6 @@
 #include "analyzerconfiguration.h"
 #include "stringstream.h"
 #include "query.h"
-#include "analyzerconfiguration.h"
 #include <sstream>
 #include <vector>
 #include <sys/types.h>

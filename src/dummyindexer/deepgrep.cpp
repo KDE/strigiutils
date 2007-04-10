@@ -19,7 +19,6 @@
  */
 #include "strigiconfig.h"
 #include "grepindexwriter.h"
-#include "strigiconfig.h"
 #include "indexer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>

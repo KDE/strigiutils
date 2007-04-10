@@ -19,7 +19,6 @@
  */
 #include "strigiconfig.h"
 #include "query.h"
-#include "strigiconfig.h"
 #include "indexreader.h"
 #include <ctype.h>
 using namespace std;
