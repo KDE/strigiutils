@@ -21,6 +21,7 @@
 #define HELPERENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 #include <vector>
 
 class HelperProgramConfig {

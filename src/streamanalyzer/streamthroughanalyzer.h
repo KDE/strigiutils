@@ -20,12 +20,13 @@
 #ifndef STREAMTHROUGHANALYZER_H
 #define STREAMTHROUGHANALYZER_H
 
-#include "streambase.h"
 #include "streamanalyzerfactory.h"
 
 namespace Strigi {
 
 class AnalysisResult;
+template <class T> class StreamBase;
+typedef StreamBase<char> InputStream;
 
 /**
  * This class defines an interface for analyzing streams.

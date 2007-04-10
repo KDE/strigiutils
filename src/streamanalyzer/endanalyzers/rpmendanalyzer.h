@@ -21,6 +21,7 @@
 #define RPMENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class RpmEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

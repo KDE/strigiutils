@@ -21,6 +21,7 @@
 #define TARENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class TarEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

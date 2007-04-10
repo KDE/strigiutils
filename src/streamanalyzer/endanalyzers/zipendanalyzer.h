@@ -21,6 +21,7 @@
 #define ZIPENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class ZipEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

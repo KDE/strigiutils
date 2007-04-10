@@ -21,6 +21,7 @@
 #define PNGENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class PngEndAnalyzerFactory;
 class PngEndAnalyzer : public Strigi::StreamEndAnalyzer {

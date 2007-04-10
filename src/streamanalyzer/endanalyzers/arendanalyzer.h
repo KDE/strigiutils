@@ -21,6 +21,7 @@
 #define ARENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class ArEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

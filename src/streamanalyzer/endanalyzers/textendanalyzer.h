@@ -21,6 +21,7 @@
 #define TEXTENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class TextEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

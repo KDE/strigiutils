@@ -20,16 +20,17 @@
 #ifndef STREAMENDANALYZER_H
 #define STREAMENDANALYZER_H
 
-#include "streambase.h"
+#include <string>
 #include "streamanalyzerfactory.h"
 
 namespace Strigi {
 class AnalysisResult;
+template <class T> class StreamBase;
+typedef StreamBase<char> InputStream;
 
 class STREAMANALYZER_EXPORT StreamEndAnalyzer {
 protected:
     std::string m_error;
-    static char testStream(InputStream *in);
 public:
     virtual ~StreamEndAnalyzer() {}
     virtual bool checkHeader(const char* header, int32_t headersize) const = 0;

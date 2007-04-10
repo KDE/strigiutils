@@ -21,6 +21,7 @@
 #define CPIOENDANALYZER
 
 #include "streamendanalyzer.h"
+#include "streambase.h"
 
 class CpioEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
