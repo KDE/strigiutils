@@ -28,8 +28,11 @@
 
 class GrepIndexReader : public Strigi::IndexReader {
 private:
+    class Private;
+    Private* const p;
 public:
     GrepIndexReader(const std::string& dir);
+    ~GrepIndexReader();
     int32_t countHits(const Strigi::Query& query);
     std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
     std::map<std::string, time_t> files(char depth);
