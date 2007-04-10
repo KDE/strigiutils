@@ -42,7 +42,7 @@ private:
         int sqllength);
     void finalizeStmt(sqlite3* db, sqlite3_stmt*& stmt);
 protected:
-    void startAnalysis(Strigi::AnalysisResult*);
+    void startAnalysis(const Strigi::AnalysisResult*);
     void finishAnalysis(const Strigi::AnalysisResult*);
     void addText(const Strigi::AnalysisResult* idx, const char* text,
         int32_t length);

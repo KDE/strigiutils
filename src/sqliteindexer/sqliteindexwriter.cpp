@@ -143,7 +143,7 @@ SqliteIndexWriter::addValue(const AnalysisResult* idx, const RegisteredField* fi
     manager->deref();
 }
 void
-SqliteIndexWriter::startAnalysis(AnalysisResult* idx) {
+SqliteIndexWriter::startAnalysis(const AnalysisResult* idx) {
     SqliteWriterData *wdata = new SqliteWriterData();
     idx->setWriterData(wdata);
 
@@ -221,7 +221,6 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     manager->deref();
     content.erase(m->first);
     delete wdata;
-    idx->setWriterData(0);
 }
 void
 SqliteIndexWriter::commit() {
