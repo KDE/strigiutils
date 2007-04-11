@@ -46,7 +46,7 @@ bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
     
     if(headersize < 9)
     {
-        cerr << "File was less than nine bytes.  Not long enough" << endl;
+        //cerr << "File was less than nine bytes.  Not long enough" << endl;
         return false;
     }
     dword = readBigEndianUInt32(header);
@@ -56,12 +56,12 @@ bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
         dword = readBigEndianUInt32(header+5);
         
         if (dword == 0x43445841) { // == "CDXA"
-            cerr << "CDXA not yet supported" << endl;
+            //cerr << "CDXA not yet supported" << endl;
             return false;
         }
     }
     else if(dword != 0x000001ba) {
-        cerr << "Not a MPEG-PS file" << endl;
+        //cerr << "Not a MPEG-PS file" << endl;
         return false;
     }
     
@@ -75,7 +75,7 @@ char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     
     if(!this->readMpeg(in) )
     {
-        cerr << "Error reading mpeg." << endl;
+        //cerr << "Error reading mpeg." << endl;
         in->reset(0);
         return -1;
     }
@@ -182,7 +182,7 @@ bool MpegEndAnalyzer::readMpeg(InputStream* in) {
         return false;
     }
     else if (this->mpeg_version == 0) {
-        cerr << "No sequence-start found" << endl;
+        //cerr << "No sequence-start found" << endl;
         return false;
     }
     return true;
@@ -292,7 +292,7 @@ bool MpegEndAnalyzer::parse_audio(InputStream* in)
     }
     if(!sync_found)
     {
-        cerr << "MPEG audio sync not found" << endl;
+        //cerr << "MPEG audio sync not found" << endl;
         return false;
     }
     
@@ -305,7 +305,7 @@ bool MpegEndAnalyzer::parse_audio(InputStream* in)
     else if (layer == 3)
         this->audio_type = 1;
     else
-        cerr << "Invalid MPEG audio layer" << endl;
+        //cerr << "Invalid MPEG audio layer" << endl;
     
 
     return true;
