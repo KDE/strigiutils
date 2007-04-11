@@ -72,7 +72,7 @@ ZipInputStream::nextEntry() {
                 }
             }
         } else {
-            int32_t size = m_entrystream->size();
+            int64_t size = m_entrystream->size();
             if (size < 1) {
                 size = 1024;
             }
