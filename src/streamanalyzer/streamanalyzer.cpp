@@ -366,7 +366,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     }
     bool finished = false;
     int32_t headersize = 1024;
-    const char* header;
+    const char* header = 0;
     if (input) {
         headersize = input->read(header, headersize, headersize);
         if (input->reset(0) != 0) {
