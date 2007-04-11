@@ -56,7 +56,7 @@ XbmThroughAnalyzer::setIndexable(AnalysisResult* i) {
 int32_t
 processLine(const char* buf, int32_t bufSize, int32_t offset, int32_t& data) {
     // check we have a '#define'
-    if (strncmp(buf + offset, "#define", 7)) {
+    if (bufSize < offset+7 || strncmp(buf + offset, "#define", 7)) {
         return -1;
     }
 
