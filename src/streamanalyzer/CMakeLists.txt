@@ -42,6 +42,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
+    endanalyzers/mpegendanalyzer.cpp   
 )
 
 #IF(WIN32)

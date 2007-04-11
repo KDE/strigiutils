@@ -37,6 +37,7 @@
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
+#include "mpegendanalyzer.h"
 #include "helperendanalyzer.h"
 #include "dataeventinputstream.h"
 #include "id3v2throughanalyzer.h"
@@ -298,6 +299,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
     addFactory(new MailEndAnalyzerFactory());
+    addFactory(new MpegEndAnalyzerFactory());
     addFactory(new ZipEndAnalyzerFactory());
     addFactory(new RpmEndAnalyzerFactory());
     addFactory(new CpioEndAnalyzerFactory());
