@@ -19,6 +19,7 @@
 - use locate for search systemwide for filenames
 - <fosterfeld_> vandenoever: i would suggest to add IndexReader::query() version based on iterators
 - add the option to not refresh status automatically
+- support for more archive types like http://www.kde-apps.org/content/show.php/PeaZip?content=52805
 
 - set the lib version numbers to 0.0.0 until we stabilize the api
 

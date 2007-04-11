@@ -25,6 +25,7 @@ set(streams_SRCS
 	inputstreamreader.cpp
 	kmpsearcher.cpp
 	mailinputstream.cpp
+	oleinputstream.cpp
 	rpminputstream.cpp
 	stringterminatedsubstream.cpp
 	subinputstream.cpp
@@ -33,6 +34,9 @@ set(streams_SRCS
 	textutils.cpp
 	zipinputstream.cpp
 )
+
+add_executable(oletest oleinputstream.cpp fileinputstream.cpp oletest.cpp
+textutils.cpp)
 
 if(NOT WIN32)
 set(streams_SRCS ${streams_SRCS}
