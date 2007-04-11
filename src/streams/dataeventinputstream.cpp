@@ -34,8 +34,9 @@ DataEventInputStream::DataEventInputStream(InputStream *i,
 }
 int32_t
 DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
+//    fprintf(stderr, "input->position(): %lli\n", input->position());
     int32_t nread = input->read(start, min, max);
-    //fprintf(stderr, "%p pos: %lli min %i max %i nread %i\n", this, m_position, min, max, nread);
+//    fprintf(stderr, "%p pos: %lli min %i max %i nread %i\n", this, m_position, min, max, nread);
     if (nread < -1) {
         m_error = input->error();
         m_status = Error;
@@ -43,22 +44,22 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     if (nread > 0) {
         m_position += nread;
-    }
-    if (totalread < m_position) {
-        int32_t amount = (int32_t)(m_position - totalread);
-        handler.handleData(start + nread - amount, amount);
-        totalread = m_position;
+        if (totalread < m_position) {
+            int32_t amount = (int32_t)(m_position - totalread);
+            handler.handleData(start + nread - amount, amount);
+            totalread = m_position;
+        }
     }
     if (nread < min) {
         m_status = Eof;
         if (m_size == -1) {
-//            printf("set m_size: %lli\n", m_position);
+//            fprintf(stderr, "set m_size: %lli\n", m_position);
             m_size = m_position;
         }
 #ifndef NDEBUG
         if (m_size != m_position || m_size != totalread) {
-            fprintf(stderr, "m_size: %lli m_position: %lli totalread: %lli\n",
-                m_size, m_position, totalread);
+            fprintf(stderr, "m_size: %lli m_position: %lli totalread: %lli nread: %i\n",
+                m_size, m_position, totalread, nread);
             fprintf(stderr, "%i %s\n", input->status(), input->error());
         }
 #endif
@@ -83,21 +84,22 @@ DataEventInputStream::skip(int64_t ntoskip) {
 }
 int64_t
 DataEventInputStream::reset(int64_t np) {
-    //fprintf(stderr, "reset from %lli to %lli\n", m_position, np);
+//    fprintf(stderr, "DataEventInputStream::reset from %lli to %lli.\n", m_position, np);
     if (np > m_position) {
         // advance to the new position, using skip ensure we actually read
         // the files
         skip(np - m_position);
         return m_position;
     }
+//    fprintf(stderr, "DataEventInputStream::reset\n");
     int64_t newpos = input->reset(np);
-    //fprintf(stderr, "np %lli newpos %lli\n", np, newpos);
     if (newpos < 0) {
         m_status = Error;
         m_error = input->error();
     } else {
         m_status = (newpos == m_size) ?Eof :Ok;
     }
+//    fprintf(stderr, "np %lli newpos %lli status %i\n", np, newpos, m_status);
     m_position = newpos;
     return newpos;
 }

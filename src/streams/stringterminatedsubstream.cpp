@@ -27,6 +27,7 @@ using namespace Strigi;
 
 int32_t
 StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
+//    fprintf(stderr, "StringTerminatedSubStream::read %i\n", m_status);
     if (m_status == Eof) return -1;
     if (m_status == Error) return -2;
 
@@ -44,8 +45,9 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     if (tlmax > 0 && tlmax < tlmin) tlmax = tlmin;
 
     int64_t pos = m_input->position();
+//    fprintf(stderr, "STSS tl: %i tlmin %i tlmax %i %lli pos\n", tl, tlmin, tlmax, pos);
     int32_t nread = m_input->read(start, tlmin, tlmax);
-    //printf("str %i pos %lli m_offset %lli\n", nread, pos, m_offset);
+//    fprintf(stderr, "stss str %i pos %lli m_offset %lli\n", nread, pos, m_offset);
     if (nread == -1) {
         m_status = Eof;
         return nread;
@@ -66,7 +68,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         m_status = Eof;
         // set input stream to point after the terminator
         m_input->reset(pos + nread + tl);
-    } else if (nread > tlmin) {
+    } else if (nread >= tlmin) {
         // we are not at or near the end and read the required amount
         // reserve the last bit of buffer for rereading to match the terminator
         // in the next call
@@ -83,23 +85,17 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
         // signal the end of stream at the next call
         m_status = Eof;
     }
-//    printf("stss: %i '%.*s'\n", nread, (20>nread)?nread:20, start);
+//    fprintf(stderr, "stss: %i '%.*s'\n", nread, (20>nread)?nread:20, start);
     if (nread > 0) m_position += nread;
     if (m_status == Eof) {
-//        printf("Eof size %lli pos %lli\n", m_size, m_position);
+//        fprintf(stderr, "Eof size %lli pos %lli\n", m_size, m_position);
         m_size = m_position;
     }
-//    printf("str2 %i\n", nread);
+//    fprintf(stderr, "str2 %i %i\n", nread, m_status);
     return nread;
 }
-/*int64_t
-StringTerminatedSubStream::mark(int32_t readlimit) {
-//    printf("mark %i\n", readlimit);
-    return m_input->mark(readlimit) - m_offset;
-}*/
 int64_t
 StringTerminatedSubStream::reset(int64_t newpos) {
-//    printf("stssreset %lli\n", newpos);
     m_position = m_input->reset(newpos+m_offset);
     if (m_position >= m_offset) {
         m_position -= m_offset;
@@ -109,5 +105,6 @@ StringTerminatedSubStream::reset(int64_t newpos) {
         m_status = Error;
         m_position = -1;
     }
+//    fprintf(stderr, "StringTerminatedSubStream::reset %lli %i\n", newpos, m_status);
     return m_position;
 }
