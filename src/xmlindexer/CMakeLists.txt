@@ -33,10 +33,10 @@ add_executable(perfieldxml perfieldxml.cpp indexer.cpp xmlindexwriter.cpp
 target_link_libraries(perfieldxml streamanalyzer)
 
 # is this still broken on win32?
-#if(NOT WIN32)
+if(NOT WIN32)
   add_executable(ontoprint ontoprint.cpp)
   target_link_libraries(ontoprint streamanalyzer)
-#endif(NOT WIN32)
+endif(NOT WIN32)
 
 # register all tests based on the data in the testdata directory
 FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)
