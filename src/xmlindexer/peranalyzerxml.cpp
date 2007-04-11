@@ -34,6 +34,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 #ifdef HAVE_UNISTD_H
  #include <unistd.h>
 #endif
