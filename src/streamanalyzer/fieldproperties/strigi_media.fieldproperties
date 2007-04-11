@@ -1,0 +1,49 @@
+[Field]
+Uri=media.codec
+Name=Codec
+TypeUri=string
+Description=Media codec
+Comment=
+
+[Field]
+Uri=media.bitrate.type
+Name=Bitrate type
+TypeUri=string
+Description=
+Comment=lossless, CBR, VBR, ABR
+
+[Field]
+Uri=media.bitrate.value
+Name=Bitrate
+TypeUri=integer
+Description=
+Comment=n/a or file average for lossless and vbr; actual value for CBR, ABR; unit: bit
+
+[Field]
+Uri=media.sample_rate
+Name=Sample rate
+TypeUri=integer
+Description=Media sample rate
+Comment=FPS for video, sample rate for audio
+
+[Field]
+Uri=media.sample_count
+Name=Sample count
+TypeUri=integer
+Description=Media sample count
+Comment=1, for still pictures, -1 for (semi-)infinite streams like net radio/tv
+
+[Field]
+Uri=media.channel_count
+Name=Channel count
+TypeUri=integer
+Description=Media channel count
+Comment=
+
+[Field]
+Uri=media.sample_format
+Name=Sample format
+TypeUri=string
+Description=Media sample format
+Comment=color depth for images, sample size for audio. 8/16/24/32/X bit int/float. TODO: complete list
+

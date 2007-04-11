@@ -1,0 +1,83 @@
+[Field]
+Uri=content.genre
+Name=Genre
+TypeUri=string
+Description=Content genre
+Comment=music, literature, movie genre. Also can be used for pictures. Regular photos can be considered Documentary.
+
+[Field]
+Uri=content.author
+Name=Author
+TypeUri=string
+Description=Content author
+Comment=List of persons/organizations who create the content(book authors, music band, artist)
+
+[Field]
+Uri=content.creation_time
+Name=Content creation time
+TypeUri=integer
+Description=
+Comment=this is different from system.creation_time in that this is the time when the content was actually produced. ID3 tag Year, for e-mail, this is send time etc
+
+[Field]
+Uri=content.subject
+Name=Subject
+TypeUri=string
+Description=Content subject
+Comment= message subject, ODF.subject. Author's subject of the content.
+
+[Field]
+Uri=content.title
+Name=Title
+TypeUri=string
+Description=Content title
+Comment=Author's title of the content. ODF.title, ID3.title
+
+[Field]
+Uri=content.description
+Name=Description
+TypeUri=string
+Description=Content description
+Comment=Author's description of the content.ODF.description.
+
+[Field]
+Uri=content.version
+Name=Version
+TypeUri=string
+Description=Content version
+Comment=application version. document revision
+
+[Field]
+Uri=content.mime_type
+Name=Mime type
+TypeUri=string
+Description=Content mime type
+Comment=
+
+[Field]
+Uri=content.size
+Name=Content size
+TypeUri=integer
+Description=
+Comment=unpacked size for archives. for other files this might be the same as system.size, might be actual data size w/o headers(not sure about this yet).
+
+[Field]
+Uri=content.language
+Name=Language
+TypeUri=string
+Description=Content language
+Comment=
+
+[Field]
+Uri=content.charset
+Name=Charset
+TypeUri=string
+Description=Content character encoding
+Comment=document character encoding. This will eventually be obsolete.
+
+[Field]
+Uri=content.full_text
+Name=Full text
+TypeUri=string
+Description=Content converted to plain-text
+Comment=This is indexable text body for documents, for images we might eventually do OCR, and speech recognition for audio(hopefully by the end of the century).

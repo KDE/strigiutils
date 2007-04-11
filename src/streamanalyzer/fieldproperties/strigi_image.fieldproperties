@@ -1,0 +1,34 @@
+[Field]
+Uri=image.resolution.x
+Name=Resolution X
+TypeUri=integer
+Description=Image resolution along X axis
+Comment=
+
+[Field]
+Uri=image.resolution.y
+Name=Resolution Y
+TypeUri=integer
+Description=Image resolution along Y axis
+Comment=
+
+[Field]
+Uri=image.dimensions.x
+Name=Resolution X
+TypeUri=integer
+Description=Image width
+Comment=
+
+[Field]
+Uri=image.dimensions.y
+Name=Resolution Y
+TypeUri=integer
+Description=Image height
+Comment=
+
+[Field]
+Uri=image.color_space
+Name=Color space
+TypeUri=string
+Description=Image color space
+Comment=RGB, RGBA, CMYK, Grayscale, Indexed(palette) and more exotic, for pictures. Something similar exists for video. TODO: complete list
