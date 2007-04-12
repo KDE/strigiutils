@@ -42,7 +42,7 @@ void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
     subjectField = reg.registerField("content.subject", FieldRegister::stringType, 1, 0);
     descriptionField = reg.registerField("content.description", FieldRegister::stringType, 1, 0);
     languageField = reg.registerField("content.language", FieldRegister::stringType, 1, 0);
-    keywordField = reg.registerField("user.categories", FieldRegister::stringType, 1, 0);
+    keywordField = reg.registerField("content.keyword", FieldRegister::stringType, 1, 0);
 }
 
 Strigi::StreamSaxAnalyzer *OdfSaxAnalyzerFactory::newInstance() const {

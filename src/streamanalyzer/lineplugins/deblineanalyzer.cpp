@@ -28,9 +28,9 @@
 using namespace Strigi;
 using namespace std;
 
-const string DebLineAnalyzerFactory::nameFieldName("name");
-const string DebLineAnalyzerFactory::versionFieldName("version");
-const string DebLineAnalyzerFactory::summaryFieldName("summary");
+const string DebLineAnalyzerFactory::nameFieldName("content.title");
+const string DebLineAnalyzerFactory::versionFieldName("content.version");
+const string DebLineAnalyzerFactory::summaryFieldName("content.description");
 const string DebLineAnalyzerFactory::maintainerFieldName("maintainer");
 const string DebLineAnalyzerFactory::sectionFieldName("section");
 const string DebLineAnalyzerFactory::dependsFieldName("depends");

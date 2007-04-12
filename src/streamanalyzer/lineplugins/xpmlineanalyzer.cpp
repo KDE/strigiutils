@@ -29,9 +29,9 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField("width", FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField("height", FieldRegister::integerType, 1, 0);
-    numberOfColorsField = reg.registerField("numberofcolors",
+    widthField = reg.registerField("image.dimensions.x", FieldRegister::integerType, 1, 0);
+    heightField = reg.registerField("image.dimensions.y", FieldRegister::integerType, 1, 0);
+    numberOfColorsField = reg.registerField("image.color_depth",
         FieldRegister::integerType, 1, 0);
 }
 

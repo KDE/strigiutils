@@ -41,6 +41,14 @@ Description=Content description
 Comment=Author's description of the content.ODF.description.
 
 [Field]
+Uri=content.keyword
+Name=Keyword
+TypeUri=string
+Description=Content keyword
+Comment=
+
+
+[Field]
 Uri=content.version
 Name=Version
 TypeUri=string
