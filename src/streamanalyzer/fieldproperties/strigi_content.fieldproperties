@@ -81,3 +81,18 @@ Name=Full text
 TypeUri=string
 Description=Content converted to plain-text
 Comment=This is indexable text body for documents, for images we might eventually do OCR, and speech recognition for audio(hopefully by the end of the century).
+
+[Field]
+Uri=content.license_type
+Name=License type
+TypeUri=string
+Description=Content license type
+Comment=GPL, BSD, proprietary
+
+[Field]
+Uri=content.doi
+Name=DOI
+TypeUri=string
+Description=Digital Object Identifier
+Comment=http://www.doi.org/
+

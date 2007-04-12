@@ -174,6 +174,7 @@ public:
     /** The type name to use with registerField for fields that will
      * store a string value */
     static const std::string stringType;
+
     static const std::string datetimeType;
 
     /** The name of a field for storing the path of a file */
@@ -193,6 +194,9 @@ public:
     static const std::string mtimeFieldName;
     /** The name of a field for storing the size of a file */
     static const std::string sizeFieldName;
+
+    /** Default namespace for fields */
+    static const std::string defaultNamespace;
 
     /** A field for storing the path of a file */
     const RegisteredField* pathField;
