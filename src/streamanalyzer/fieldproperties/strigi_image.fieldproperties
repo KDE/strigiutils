@@ -40,3 +40,10 @@ Name=Color depth
 TypeUri=string
 Description=Image color depth
 Comment=
+
+[Field]
+Uri=image.aspect_ratio
+Name=Aspect ratio
+TypeUri=string
+Description=Image aspect ratio
+Comment=user-friendly representation of dimensions.x/dimensions.y

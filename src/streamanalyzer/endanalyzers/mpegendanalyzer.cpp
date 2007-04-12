@@ -31,13 +31,13 @@ using namespace Strigi;
 using namespace std;
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["length"] = r.registerField("length", FieldRegister::integerType, 1, 0);
-    fields["vertical resolution"] = r.registerField("vertical resolution", FieldRegister::integerType, 1, 0);
-    fields["horizontal resolution"] = r.registerField("horizontal resolution", FieldRegister::integerType, 1, 0);
-    fields["frame rate"] = r.registerField("frame rate", FieldRegister::floatType, 1, 0);
-    fields["video codec"] = r.registerField("video codec", FieldRegister::stringType, 1, 0);
-    fields["audio codec"] = r.registerField("audio codec", FieldRegister::stringType, 1, 0);
-    fields["aspect ratio"] = r.registerField("aspect ratio", FieldRegister::stringType, 1, 0);
+    fields["length"] = r.registerField("media.duration", FieldRegister::integerType, 1, 0);
+    fields["dimensions.y"] = r.registerField("image.dimensions.y", FieldRegister::integerType, 1, 0);
+    fields["dimensions.x"] = r.registerField("image.dimensions.x", FieldRegister::integerType, 1, 0);
+    fields["frame rate"] = r.registerField("video.frame_rate", FieldRegister::floatType, 1, 0);
+    fields["video codec"] = r.registerField("av.video_codec", FieldRegister::stringType, 1, 0);
+    fields["audio codec"] = r.registerField("av.audio_codec", FieldRegister::stringType, 1, 0);
+    fields["aspect ratio"] = r.registerField("image.aspect_ratio", FieldRegister::stringType, 1, 0);
 }
 
 bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
@@ -82,8 +82,8 @@ char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     
     std::map<std::string, const Strigi::RegisteredField*>tempfields = factory->fields;
     idx.addValue(tempfields["frame rate"], this->frame_rate);
-    idx.addValue(tempfields["vertical resolution"], this->vertical_size);
-    idx.addValue(tempfields["horizontal resolution"], this->horizontal_size);
+    idx.addValue(tempfields["dimensions.y"], this->vertical_size);
+    idx.addValue(tempfields["dimensions.x"], this->horizontal_size);
     
     if (this->mpeg_version == 1) idx.addValue(tempfields["video codec"], "MPEG-1");
     else idx.addValue(tempfields["video codec"], "MPEG-2");

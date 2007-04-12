@@ -34,13 +34,6 @@ Description=Media sample count
 Comment=1, for still pictures, -1 for (semi-)infinite streams like net radio/tv
 
 [Field]
-Uri=media.channel_count
-Name=Channel count
-TypeUri=integer
-Description=Media channel count
-Comment=
-
-[Field]
 Uri=media.sample_format
 Name=Sample format
 TypeUri=string
@@ -52,4 +45,11 @@ Uri=media.album
 Name=Album
 TypeUri=string
 Description=Media Album
+Comment=
+
+[Field]
+Uri=media.duration
+Name=Duration
+TypeUri=integer
+Description=Media Duration
 Comment=

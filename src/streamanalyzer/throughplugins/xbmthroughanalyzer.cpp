@@ -27,8 +27,8 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string XbmThroughAnalyzerFactory::widthFieldName("width");
-const string XbmThroughAnalyzerFactory::heightFieldName("height");
+const string XbmThroughAnalyzerFactory::widthFieldName("image.dimensions.x");
+const string XbmThroughAnalyzerFactory::heightFieldName("image.dimensions.y");
 const string XbmThroughAnalyzerFactory::xHotFieldName("xhot");
 const string XbmThroughAnalyzerFactory::yHotFieldName("yhot");
 

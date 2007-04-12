@@ -24,9 +24,9 @@
 using namespace Strigi;
 using namespace std;
 
-const string ID3V2ThroughAnalyzerFactory::titleFieldName("title");
-const string ID3V2ThroughAnalyzerFactory::artistFieldName("artist");
-const string ID3V2ThroughAnalyzerFactory::albumFieldName("album");
+const string ID3V2ThroughAnalyzerFactory::titleFieldName("audio.title");
+const string ID3V2ThroughAnalyzerFactory::artistFieldName("audio.artist");
+const string ID3V2ThroughAnalyzerFactory::albumFieldName("audio.album");
 
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {

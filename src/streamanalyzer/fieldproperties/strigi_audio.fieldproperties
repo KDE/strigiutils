@@ -1,0 +1,38 @@
+[Field]
+Uri=audio.channel_count
+Name=Channel count
+TypeUri=string
+Description=Audio channel count
+Comment=
+
+[Field]
+Uri=audio.duration
+ParentUri=media.duration
+Name=Duration
+TypeUri=string
+Description=Audio duration
+Comment=
+
+[Field]
+Uri=audio.artist
+ParentUri=content.author
+Name=Artist
+TypeUri=string
+Description=Audio Artist
+Comment=
+
+[Field]
+Uri=audio.title
+ParentUri=content.title
+Name=Title
+TypeUri=string
+Description=Audio Title
+Comment=
+
+[Field]
+Uri=audio.album
+ParentUri=media.album
+Name=Album
+TypeUri=string
+Description=Audio Album
+Comment=
