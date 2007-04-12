@@ -127,8 +127,8 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
         m_error = "Invalid OLE file.";
         return;
     }
-    fprintf(stderr, "%i %i %i %i %i\n", nBat, ptOffset, sBatOffset, xBatOffset, nXBat);
-    fprintf(stderr, "doing ole\n");
+    //fprintf(stderr, "%i %i %i %i %i\n", nBat, ptOffset, sBatOffset, xBatOffset, nXBat);
+    //fprintf(stderr, "doing ole\n");
     int32_t max = 0;
     batIndex.reserve(109);
     data += 76;
@@ -238,14 +238,17 @@ OleInputStream::readEntryInfo() {
         currentDataBlock = -1;
         return;
     }
+    string name;
+    for (int i=0; i< d[0x40]; ++i) {
+        name.append(d+2*i,1);
+    }
+    m_entryinfo.filename.assign(name);
+    //fprintf(stderr, "'%s'\n", m_entryinfo.filename.c_str());
     currentDataBlock = readLittleEndianInt32(d+0x74);
     currentStreamSize = readLittleEndianInt32(d+0x78);
+    m_entryinfo.size = currentStreamSize;
     if (currentDataBlock > maxindex || currentStreamSize <= 0) {
         currentDataBlock = -1;
-    }
-    // we do not support small blocks yet
-    if (currentStreamSize < 4096) {
-//        currentDataBlock = -1;
     }
 }
 InputStream*

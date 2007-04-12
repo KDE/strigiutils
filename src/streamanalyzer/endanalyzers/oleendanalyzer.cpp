@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,40 +18,38 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "zipendanalyzer.h"
-#include "zipinputstream.h"
+#include "oleinputstream.h"
+#include "oleendanalyzer.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
 using namespace Strigi;
 
 void
-ZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 }
 
 bool
-ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    return ZipInputStream::checkHeader(header, headersize);
+OleEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
+    return OleInputStream::checkHeader(header, headersize);
 }
 char
-ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+OleEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;
 
-    ZipInputStream zip(in);
-    InputStream *s = zip.nextEntry();
-    if (zip.status()) {
-        fprintf(stderr, "error: %s\n", zip.error());
+    OleInputStream ole(in);
+    InputStream *s = ole.nextEntry();
+    if (ole.status()) {
+        fprintf(stderr, "error: %s\n", ole.error());
 //        exit(1);
     }
-    idx.setMimeType("application/zip");
     while (s) {
-        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
-        idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
+        idx.indexChild(ole.entryInfo().filename, ole.entryInfo().mtime,
             s);
-        s = zip.nextEntry();
+        s = ole.nextEntry();
     }
-    if (zip.status() == Error) {
-        m_error = zip.error();
+    if (ole.status() == Error) {
+        m_error = ole.error();
         return -1;
     } else {
         m_error.resize(0);

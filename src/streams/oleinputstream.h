@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

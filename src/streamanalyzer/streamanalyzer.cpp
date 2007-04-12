@@ -32,6 +32,7 @@
 #include "tarendanalyzer.h"
 #include "arendanalyzer.h"
 #include "zipendanalyzer.h"
+#include "oleendanalyzer.h"
 #include "rpmendanalyzer.h"
 #include "cpioendanalyzer.h"
 #include "pngendanalyzer.h"
@@ -295,6 +296,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     }
     addFactory(new Bz2EndAnalyzerFactory());
     addFactory(new GZipEndAnalyzerFactory());
+    addFactory(new OleEndAnalyzerFactory());
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
     addFactory(new MailEndAnalyzerFactory());
