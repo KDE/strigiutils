@@ -64,10 +64,17 @@ protected:
     /**
      * @brief Resets the buffer, allowing it to be used again
      *
-     * If imlemented, this function will reset the buffer, allowing
-     * it to be re-used.
+     * This function resets the buffer, allowing it to be re-used.
      */
-    void resetBuffer() {printf("implement 'resetBuffer'\n");}
+    void resetBuffer() {
+        StreamBase<T>::m_size = -1;
+        StreamBase<T>::m_position = 0;
+        StreamBase<T>::m_error.assign("");
+        StreamBase<T>::m_status = Ok;
+        buffer.readPos = buffer.start;
+        buffer.avail = 0; 
+        finishedWritingToBuffer = false;
+    }
     /**
      * @brief Sets the minimum size of the buffer
      */
