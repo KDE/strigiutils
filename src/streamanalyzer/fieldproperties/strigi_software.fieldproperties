@@ -1,0 +1,39 @@
+[Field]
+Uri=software.name
+ParentUri=content.title
+Name=Name
+TypeUri=string
+Description=Software name
+Comment=
+
+[Field]
+Uri=software.version
+ParentUri=content.version
+Name=Version
+TypeUri=string
+Description=Software version
+Comment=
+
+[Field]
+Uri=software.depends
+Name=Depends on
+TypeUri=string
+Description=Software depends on
+Comment=
+
+[Field]
+Uri=software.section
+ParentUri=content.keyword
+Name=Section
+TypeUri=string
+Description=Software section
+Comment=
+
+[Field]
+Uri=software.maintainer
+ParentUri=content.author
+Name=Name
+TypeUri=string
+Description=Software maintainer
+Comment=maintainer is the author of package itself.
+

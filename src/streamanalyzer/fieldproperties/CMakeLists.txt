@@ -12,6 +12,7 @@ install(FILES
 	strigi_system.fieldproperties
 	strigi_user.fieldproperties
 	strigi_video.fieldproperties
+	strigi_software.fieldproperties
 
 	DESTINATION share/apps/strigi/fieldproperties
 )

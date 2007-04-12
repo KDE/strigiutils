@@ -28,12 +28,12 @@
 using namespace Strigi;
 using namespace std;
 
-const string DebLineAnalyzerFactory::nameFieldName("content.title");
-const string DebLineAnalyzerFactory::versionFieldName("content.version");
+const string DebLineAnalyzerFactory::nameFieldName("software.name");
+const string DebLineAnalyzerFactory::versionFieldName("software.version");
 const string DebLineAnalyzerFactory::summaryFieldName("content.description");
-const string DebLineAnalyzerFactory::maintainerFieldName("maintainer");
-const string DebLineAnalyzerFactory::sectionFieldName("section");
-const string DebLineAnalyzerFactory::dependsFieldName("depends");
+const string DebLineAnalyzerFactory::maintainerFieldName("software.maintainer");
+const string DebLineAnalyzerFactory::sectionFieldName("software.section");
+const string DebLineAnalyzerFactory::dependsFieldName("software.depends");
 
 
 void
