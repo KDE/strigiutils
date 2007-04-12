@@ -35,11 +35,11 @@ STREAMANALYZER_EXPORT const string FieldRegister::datetimeType = "datetime";
 
 STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "path";
 STREAMANALYZER_EXPORT const string FieldRegister::encodingFieldName = "encoding";
-STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "mimetype";
+STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "content.mime_type";
 STREAMANALYZER_EXPORT const string FieldRegister::filenameFieldName = "filename";
 STREAMANALYZER_EXPORT const string FieldRegister::extensionFieldName = "ext";
 STREAMANALYZER_EXPORT const string FieldRegister::embeddepthFieldName = "depth";
-STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "mtime";
+STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "content.last_modified_time";
 STREAMANALYZER_EXPORT const string FieldRegister::sizeFieldName = "system.size";
 
 STREAMANALYZER_EXPORT const string FieldRegister::defaultNamespace = "strigi.";
