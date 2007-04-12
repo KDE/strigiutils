@@ -23,6 +23,7 @@
 #include "strigiconfig.h"
 #include "streambase.h"
 #include "substreamprovider.h"
+#include <vector>
 
 namespace Strigi {
 
@@ -30,10 +31,26 @@ namespace Strigi {
  * Partial implementation of the ole file format according to
  * http://jakarta.apache.org/poi/poifs/fileformat.html
  **/
+class OleEntryStream;
 class STREAMS_EXPORT OleInputStream : public SubStreamProvider {
+friend class OleEntryStream;
 private:
     const char* data;
-    int32_t nread;
+    std::vector<int32_t> batIndex;
+    std::vector<int32_t> sbatIndex;
+    std::vector<int32_t> sbatbIndex;
+    int32_t size;
+    int32_t maxindex;
+    int32_t currentTableBlock;
+    int32_t currentTableIndex;
+    int32_t currentDataBlock;
+    int32_t currentStreamSize;
+    OleEntryStream* const entrystream;
+
+    void readEntryInfo();
+    int32_t nextBlock(int32_t);
+    int32_t nextSmallBlock(int32_t);
+    const char* getCurrentSmallBlock();
 public:
     explicit OleInputStream(InputStream* input);
     ~OleInputStream();
