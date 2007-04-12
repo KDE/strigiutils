@@ -174,6 +174,7 @@ public:
     /** The type name to use with registerField for fields that will
      * store a string value */
     static const std::string stringType;
+    static const std::string datetimeType;
 
     /** The name of a field for storing the path of a file */
     static const std::string pathFieldName;

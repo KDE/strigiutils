@@ -31,7 +31,7 @@ STREAMANALYZER_EXPORT const string FieldRegister::floatType = "float";
 STREAMANALYZER_EXPORT const string FieldRegister::integerType = "integer";
 STREAMANALYZER_EXPORT const string FieldRegister::binaryType = "binary";
 STREAMANALYZER_EXPORT const string FieldRegister::stringType = "string";
-STREAMANALYZER_EXPORT const string FieldRegister::stringType = "datetime";
+STREAMANALYZER_EXPORT const string FieldRegister::datetimeType = "datetime";
 
 STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "path";
 STREAMANALYZER_EXPORT const string FieldRegister::encodingFieldName = "encoding";
@@ -42,7 +42,7 @@ STREAMANALYZER_EXPORT const string FieldRegister::embeddepthFieldName = "depth";
 STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "mtime";
 STREAMANALYZER_EXPORT const string FieldRegister::sizeFieldName = "size";
 
-STREAMANALYZER_EXPORT const string FieldRegister::defaultNamespace = "strigi.";
+//STREAMANALYZER_EXPORT const string FieldRegister::defaultNamespace = "strigi.";
 
 
 FieldRegister::FieldRegister() {
