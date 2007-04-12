@@ -35,9 +35,6 @@ set(streams_SRCS
 	zipinputstream.cpp
 )
 
-add_executable(oletest oleinputstream.cpp fileinputstream.cpp oletest.cpp
-textutils.cpp)
-
 if(NOT WIN32)
 set(streams_SRCS ${streams_SRCS}
 	processinputstream.cpp
@@ -77,6 +74,9 @@ install(TARGETS streams
 	RUNTIME DESTINATION bin
 	ARCHIVE DESTINATION  ${LIB_DESTINATION}
 )
+
+add_executable(oletest oletest.cpp)
+target_link_libraries(oletest streams)
 
 if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)
