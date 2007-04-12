@@ -100,8 +100,7 @@ public:
 
 StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c) :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
-    sizefield = c.fieldRegister().registerField("size",
-        FieldRegister::integerType, 1, 0);
+    sizefield = c.fieldRegister().sizeField;
 
     moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     

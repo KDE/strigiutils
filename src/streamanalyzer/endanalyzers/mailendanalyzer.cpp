@@ -26,7 +26,7 @@
 using namespace Strigi;
 using namespace std;
 
-const string MailEndAnalyzerFactory::titleFieldName = "title";
+const string MailEndAnalyzerFactory::titleFieldName = "email.subject";
 const string MailEndAnalyzerFactory::contenttypeFieldName = "contenttype";
 
 void

@@ -33,7 +33,7 @@ STREAMANALYZER_EXPORT const string FieldRegister::binaryType = "binary";
 STREAMANALYZER_EXPORT const string FieldRegister::stringType = "string";
 STREAMANALYZER_EXPORT const string FieldRegister::datetimeType = "datetime";
 
-STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "path";
+STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "system.location";
 STREAMANALYZER_EXPORT const string FieldRegister::encodingFieldName = "encoding";
 STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "content.mime_type";
 STREAMANALYZER_EXPORT const string FieldRegister::filenameFieldName = "filename";

@@ -60,5 +60,5 @@ DigestEventAnalyzer::isReadyWithStream() {
 }
 void
 DigestEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
-    shafield = reg.registerField("sha1", FieldRegister::binaryType, 1, 0);
+    shafield = reg.registerField("system.hash.sha1", FieldRegister::binaryType, 1, 0);
 }
