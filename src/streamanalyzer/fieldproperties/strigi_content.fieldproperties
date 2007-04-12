@@ -15,7 +15,7 @@ Comment=List of persons/organizations who create the content(book authors, music
 [Field]
 Uri=content.creation_time
 Name=Content creation time
-TypeUri=integer
+TypeUri=datetime
 Description=
 Comment=this is different from system.creation_time in that this is the time when the content was actually produced. ID3 tag Year, for e-mail, this is send time etc
 

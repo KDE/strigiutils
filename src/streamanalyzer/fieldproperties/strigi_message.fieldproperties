@@ -1,0 +1,52 @@
+[Field]
+Uri=message.sender
+Name=Sender
+TypeUri=string
+Description=Message sender
+Comment=
+
+[Field]
+Uri=message.recipient
+Name=Recipient
+TypeUri=string
+Description=Message recipient
+Comment=
+
+[Field]
+Uri=message.primary_recipient
+ParentUri=message.recipient
+Name=Primary recipient
+TypeUri=string
+Description=Message primary recipient
+Comment=
+
+[Field]
+Uri=message.secondary_recipient
+ParentUri=message.recipient
+Name=Secondary recipient
+TypeUri=string
+Description=Message secondary recipient
+Comment=a "witness" recipient along the lines of e-mail cc:
+
+[Field]
+Uri=message.subject
+ParentUri=content.subject
+Name=Subject
+TypeUri=string
+Description=Message subject
+Comment=
+
+[Field]
+Uri=message.sent_time
+ParentUri=content.creation_time
+Name=Sent time
+TypeUri=string
+Description=Message sent time
+Comment=
+
+[Field]
+Uri=message.specific_ID
+Name=ID
+TypeUri=string
+Description=Protocol-specific message ID
+Comment= re: email ID tag

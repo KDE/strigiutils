@@ -15,26 +15,26 @@ Comment=unique ID within the system, or who knows even network
 [Field]
 Uri=system.creation_time
 Name=Creation time
-TypeUri=integer
+TypeUri=datetime
 Description=File creation time
 Comment=time when the file was created *locally*, unlike content.creation_time
 
 [Field]
 Uri=system.last_modified_time
 Name=Last modified time
-TypeUri=integer
+TypeUri=datetime
 Description=File last modified time
 Comment=
 
 [Field]
 Uri=system.last_accessed_time
 Name=Last accessed time
-TypeUri=integer
+TypeUri=datetime
 Description=File last accessed time
 Comment=
 
 [Field]
-Uri=system.hash
+Uri=system.hash.sha1
 Name=Hash
 TypeUri=binary
 Description=SHA-1 hash of file contents

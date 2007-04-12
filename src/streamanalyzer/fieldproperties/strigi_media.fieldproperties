@@ -47,3 +47,9 @@ TypeUri=string
 Description=Media sample format
 Comment=color depth for images, sample size for audio. 8/16/24/32/X bit int/float. TODO: complete list
 
+[Field]
+Uri=media.album
+Name=Album
+TypeUri=string
+Description=Media Album
+Comment=
