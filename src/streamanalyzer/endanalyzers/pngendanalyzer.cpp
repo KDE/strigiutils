@@ -32,18 +32,18 @@
 using namespace std;
 using namespace Strigi;
 
-const string PngEndAnalyzerFactory::widthFieldName("width");
-const string PngEndAnalyzerFactory::heightFieldName("height");
+const string PngEndAnalyzerFactory::widthFieldName("image.dimensions.x");
+const string PngEndAnalyzerFactory::heightFieldName("image.dimensions.y");
 const string PngEndAnalyzerFactory::colorDepthFieldName("colorDepth");
-const string PngEndAnalyzerFactory::colorModeFieldName("colorMode");
+const string PngEndAnalyzerFactory::colorModeFieldName("image.color_space");
 const string PngEndAnalyzerFactory::compressionFieldName("compression");
 const string PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
 const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificationTime");
-const string PngEndAnalyzerFactory::titleFieldName("title");
-const string PngEndAnalyzerFactory::authorFieldName("author");
-const string PngEndAnalyzerFactory::descriptionFieldName("description");
+const string PngEndAnalyzerFactory::titleFieldName("content.title");
+const string PngEndAnalyzerFactory::authorFieldName("content.author");
+const string PngEndAnalyzerFactory::descriptionFieldName("content.description");
 const string PngEndAnalyzerFactory::copyrightFieldName("copyright");
-const string PngEndAnalyzerFactory::creationTimeFieldName("creationTime");
+const string PngEndAnalyzerFactory::creationTimeFieldName("content.creation_time");
 const string PngEndAnalyzerFactory::softwareFieldName("software");
 const string PngEndAnalyzerFactory::disclaimerFieldName("disclaimer");
 const string PngEndAnalyzerFactory::warningFieldName("warning");

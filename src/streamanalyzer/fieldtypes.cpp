@@ -39,7 +39,7 @@ STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "content.m
 STREAMANALYZER_EXPORT const string FieldRegister::filenameFieldName = "filename";
 STREAMANALYZER_EXPORT const string FieldRegister::extensionFieldName = "ext";
 STREAMANALYZER_EXPORT const string FieldRegister::embeddepthFieldName = "depth";
-STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "content.last_modified_time";
+STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "system.last_modified_time";
 STREAMANALYZER_EXPORT const string FieldRegister::sizeFieldName = "system.size";
 
 STREAMANALYZER_EXPORT const string FieldRegister::defaultNamespace = "strigi.";
