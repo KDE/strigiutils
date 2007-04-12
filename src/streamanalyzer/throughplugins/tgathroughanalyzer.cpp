@@ -29,10 +29,10 @@ using namespace Strigi;
 
 // AnalyzerFactory
 const string TgaThroughAnalyzerFactory::compressionFieldName("compression");
-const string TgaThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
-const string TgaThroughAnalyzerFactory::colorModeFieldName("colorMode");
-const string TgaThroughAnalyzerFactory::widthFieldName("width");
-const string TgaThroughAnalyzerFactory::heightFieldName("height");
+const string TgaThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
+const string TgaThroughAnalyzerFactory::colorModeFieldName("image.color_space");
+const string TgaThroughAnalyzerFactory::widthFieldName("image.dimensions.x");
+const string TgaThroughAnalyzerFactory::heightFieldName("image.dimensions.y");
 
 void
 TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

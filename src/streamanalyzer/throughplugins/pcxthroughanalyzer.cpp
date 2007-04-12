@@ -29,11 +29,11 @@ using namespace Strigi;
 using namespace std;
 
 const string PcxThroughAnalyzerFactory::compressionFieldName("compression");
-const string PcxThroughAnalyzerFactory::widthFieldName("width");
-const string PcxThroughAnalyzerFactory::heightFieldName("height");
-const string PcxThroughAnalyzerFactory::colorDepthFieldName("colorDepth");
-const string PcxThroughAnalyzerFactory::hResolutionFieldName("horizontalResolution");
-const string PcxThroughAnalyzerFactory::vResolutionFieldName("verticalResolution");
+const string PcxThroughAnalyzerFactory::widthFieldName("image.dimensions.x");
+const string PcxThroughAnalyzerFactory::heightFieldName("image.dimensions.y");
+const string PcxThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
+const string PcxThroughAnalyzerFactory::hResolutionFieldName("image.resolution.x");
+const string PcxThroughAnalyzerFactory::vResolutionFieldName("image.resolution.y");
 
 
 void

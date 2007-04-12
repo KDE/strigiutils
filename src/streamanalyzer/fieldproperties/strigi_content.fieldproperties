@@ -62,13 +62,6 @@ Description=
 Comment=unpacked size for archives. for other files this might be the same as system.size, might be actual data size w/o headers(not sure about this yet).
 
 [Field]
-Uri=content.language
-Name=Language
-TypeUri=string
-Description=Content language
-Comment=
-
-[Field]
 Uri=content.charset
 Name=Charset
 TypeUri=string

@@ -32,3 +32,11 @@ Name=Color space
 TypeUri=string
 Description=Image color space
 Comment=RGB, RGBA, CMYK, Grayscale, Indexed(palette) and more exotic, for pictures. Something similar exists for video. TODO: complete list
+
+[Field]
+Uri=image.color_depth
+ParentUri=media.sample_format
+Name=Color depth
+TypeUri=string
+Description=Image color depth
+Comment=
