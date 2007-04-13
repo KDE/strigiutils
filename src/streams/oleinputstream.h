@@ -41,6 +41,7 @@ private:
     std::vector<int32_t> sbatbIndex;
     int32_t size;
     int32_t maxindex;
+    int32_t maxsindex;
     int32_t currentTableBlock;
     int32_t currentTableIndex;
     int32_t currentDataBlock;
