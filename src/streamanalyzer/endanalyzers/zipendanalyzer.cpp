@@ -45,7 +45,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
     idx.setMimeType("application/zip");
     while (s) {
-        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
+//        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
         idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
             s);
         s = zip.nextEntry();
