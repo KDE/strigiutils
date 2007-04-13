@@ -24,6 +24,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "textutils.h"
+#include <sstream>
 using namespace Strigi;
 using namespace std;
 
@@ -74,7 +75,7 @@ OleEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return OleInputStream::checkHeader(header, headersize);
 }
 bool
-tryThumbsdbEntry(const string& name, AnalysisResult& idx, InputStream* in) {
+tryThumbsdbEntry(const string& name, AnalysisResult& ar, InputStream* in) {
     static const char magic[] = {0x0c, 0, 0, 0, 0x01, 0, 0, 0};
     const char* d;
     uint32_t nread = in->read(d, 12, 12);
@@ -83,8 +84,23 @@ tryThumbsdbEntry(const string& name, AnalysisResult& idx, InputStream* in) {
         return false;
     }
     SubInputStream thumb(in, in->size()-12);
-    idx.indexChild(name, 0, &thumb);
+    ar.indexChild(name, 0, &thumb);
     return true;
+}
+void
+tryPictures(AnalysisResult& ar, InputStream* in) {
+    const char* d;
+    int32_t nread = in->read(d, 25, 25);
+    ostringstream s;
+    int pos = 1;
+    while (nread == 25) {
+        uint32_t size = readLittleEndianInt32(d+4)-17;
+        SubInputStream sub(in, size);
+        s << "Pictures/" << pos++;
+        ar.indexChild(s.str(), 0, &sub);
+        s.str("");
+        nread = in->read(d, 25, 25);
+    }
 }
 // format description: http://jakarta.apache.org/poi/hpsf/internals.html
 bool
@@ -170,6 +186,8 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
             } else if (name[0] == 5) {
                 // todo: handle property stream
                 tryPropertyStream(ar, s);
+            } else if (name == "Pictures") {
+                tryPictures(ar, s);
             } else {
                 ar.indexChild(name, ole.entryInfo().mtime,
                     s);
