@@ -22,24 +22,39 @@
 
 #include "streamendanalyzer.h"
 #include "streambase.h"
+#include <map>
 
+class OleEndAnalyzerFactory;
 class OleEndAnalyzer : public Strigi::StreamEndAnalyzer {
+private:
+    const OleEndAnalyzerFactory* const factory;
+    Strigi::AnalysisResult* result;
+
+    void handleProperty(const Strigi::RegisteredField* field, const char* data);
+    void handlePropertyStream(const char* key, const char* data, const char* end);
 public:
+    OleEndAnalyzer(const OleEndAnalyzerFactory* const f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
+    bool tryPropertyStream(Strigi::AnalysisResult& idx, Strigi::InputStream* s);
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "OleEndAnalyzer"; }
 };
 
 class OleEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+private:
+    std::map<std::string,
+        std::map<int,const Strigi::RegisteredField*> > fieldsMaps;
 public:
     const char* name() const {
         return "OleEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new OleEndAnalyzer();
+        return new OleEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);
+    const std::map<int, const Strigi::RegisteredField*>* getFieldMap(
+        const std::string& key) const;
 };
 
 
