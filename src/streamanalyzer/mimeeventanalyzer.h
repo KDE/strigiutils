@@ -31,8 +31,7 @@ class MimeEventAnalyzer : public StreamEventAnalyzer {
 private:
     class Private;
     Private* const p;
-    bool ready;
-    bool initialized;
+    bool wasCalled;
 
     const char* name() const { return "MimeEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);

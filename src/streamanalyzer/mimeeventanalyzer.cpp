@@ -269,12 +269,15 @@ MimeEventAnalyzer::startAnalysis(AnalysisResult* ar) {
         p->parsed = true;
     }
     p->analysisResult = ar;
+    wasCalled = false;
 }
 void
 MimeEventAnalyzer::endAnalysis() {
 }
 void
 MimeEventAnalyzer::handleData(const char* data, uint32_t length) {
+    if (wasCalled) return;
+    wasCalled = true;
     vector<Mime>::const_iterator i;
     for (i = p->mimes.begin(); i < p->mimes.end(); ++i) {
         if (i->matches(data, length)) {
@@ -284,7 +287,7 @@ MimeEventAnalyzer::handleData(const char* data, uint32_t length) {
 }
 bool
 MimeEventAnalyzer::isReadyWithStream() {
-    return true;
+    return wasCalled;
 }
 MimeEventAnalyzer::MimeEventAnalyzer(const MimeEventAnalyzerFactory* f)
     :p(new Private(f)) {
