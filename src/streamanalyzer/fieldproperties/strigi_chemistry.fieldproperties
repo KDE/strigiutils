@@ -1,0 +1,35 @@
+[Field]
+Uri=chemistry.inchi
+Name=InChI
+TypeUri=string
+Description=IUPAC International Chemical Identifier
+Comment=http://www.iupac.org/inchi/
+
+[Field]
+Uri=chemistry.molecular_formula
+Name=Molecular Formula
+TypeUri=string
+Description=Molecular Formula
+Comment=Must have the form 'C x H y Z1 z1 Z2 z2', where Zx indicate all other elements other than C and H and must be in alphabetical order.
+
+[Field]
+Uri=chemistry.molecular_weight
+Name=Molecular Weight
+TypeUri=string
+Description=Molecular Weight
+Comment=
+
+[Field]
+Uri=chemistry.pdbid
+Name=PDB Identifier
+TypeUri=string
+Description=Identifier used for proteins in the PDB database.
+Comment=
+
+[Field]
+Uri=chemistry.xray_resolution
+Name=X-Ray Resolution
+TypeUri=string
+Description=Resolution of the X-Ray data for crystal structures.
+Comment=
+
