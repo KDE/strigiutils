@@ -72,6 +72,12 @@ OPTION(ENABLE_LOG4CXX
   "enable log4cxx support for advanced logging"
   OFF)
 
+if (WIN32)
+   find_package(KDEWIN32 REQUIRED)
+   include_directories(${KDEWIN32_INCLUDES})
+   set (PLATFORM_LIBRARIES ${KDEWIN32_LIBRARIES})
+endif (WIN32)
+
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Threads REQUIRED)
