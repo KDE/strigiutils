@@ -52,7 +52,7 @@ set_target_properties(streams PROPERTIES
     DEFINE_SYMBOL MAKE_STREAMS_LIB
 )
 
-target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES} ${PLATFORM_LIBRARIES})
+target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 
 install(FILES
 	archivereader.h
