@@ -22,6 +22,7 @@
 #include "analysisresult.h"
 #include "textutils.h"
 #include <libxml/SAX2.h>
+#include <cassert>
 
 using namespace Strigi;
 using namespace std;
@@ -82,7 +83,7 @@ public:
         ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
         if (ctxt == 0) {
             error = true;
-        } else {
+        } else if (len > initlen) {
             push(data + initlen, len - initlen);
         }
     }

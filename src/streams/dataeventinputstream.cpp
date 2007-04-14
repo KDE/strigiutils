@@ -46,11 +46,8 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
         m_position += nread;
         if (totalread < m_position) {
             int32_t amount = (int32_t)(m_position - totalread);
-            if (amount) {
-                assert(amount > 0);
-                handler.handleData(start + nread - amount, amount);
-                totalread = m_position;
-            }
+            handler.handleData(start + nread - amount, amount);
+            totalread = m_position;
         }
     }
     if (nread < min) {
