@@ -13,6 +13,7 @@ install(FILES
 	strigi_user.fieldproperties
 	strigi_video.fieldproperties
 	strigi_software.fieldproperties
+	strigi_chemistry.fieldproperties
 
 	DESTINATION share/apps/strigi/fieldproperties
 )
