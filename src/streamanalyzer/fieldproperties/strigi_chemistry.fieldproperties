@@ -10,7 +10,8 @@ Uri=chemistry.molecular_formula
 Name=Molecular Formula
 TypeUri=string
 Description=Molecular Formula
-Comment=Must have the form 'C x H y Z1 z1 Z2 z2', where Zx indicate all other elements other than C and H and must be in alphabetical order.
+Comment=Must have the form 'C x H y Z1 z1 Z2 z2', where Zx indicate all other elements other than C and H and must be in alphabetical order, partly described by this regexp 
+'([A-Z][a-z]?\s+(([0-9]+(\.[0-9]*)?)|(\.[0-9]*))?\s*)+(\s+[\-|+]?[0-9]+)?'.
 
 [Field]
 Uri=chemistry.molecular_weight
