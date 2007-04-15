@@ -1,5 +1,5 @@
 include_directories(../combinedindexer ../streamanalyzer
-    "${CMAKE_BINARY_DIR}/src/streams/compat")
+    "${CMAKE_CURRENT_BINARY_DIR}/../streams/compat")
 
 add_executable(strigicmd strigicmd.cpp indexer.cpp)
 
