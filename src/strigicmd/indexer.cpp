@@ -28,12 +28,13 @@ Indexer* Indexer::workingIndexer;
 
 Indexer::Indexer(const string&id, const string& backend,
          Strigi::AnalyzerConfiguration& ac)
-        : indexdir(id), config(ac), analyzer(config) {
+        : indexdir(id), config(ac), analyzer(new StreamAnalyzer(ac)) {
     manager = CombinedIndexManager::factories()[backend](indexdir.c_str());
-    analyzer.setIndexWriter(*manager->indexWriter());
+    analyzer->setIndexWriter(*manager->indexWriter());
     lister = new FileLister(config);
 }
 Indexer::~Indexer() {
+    delete analyzer;
     delete manager;
     delete lister;
 }
@@ -50,5 +51,5 @@ Indexer::addFileCallback(const char* path, uint dirlen, uint len,
 }
 void
 Indexer::doFile(const char* filepath) {
-    analyzer.indexFile(filepath);
+    analyzer->indexFile(filepath);
 }

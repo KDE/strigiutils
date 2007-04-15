@@ -57,7 +57,7 @@ create(int argc, char** argv) {
     string indexdir;
     vector<string> dirs;
     int i = 1;
-    while (++i < argc-2) {
+    while (++i < argc) {
         const char* arg = argv[i];
         if (!strcmp("-t", arg)) {
             if (++i == argc) {
@@ -77,21 +77,33 @@ create(int argc, char** argv) {
     // check arguments: backend
     const vector<string>& backends = CombinedIndexManager::backEnds();
     // if there is only one backend, the backend does not have to be specified
-    if (backend.size() == 0 && backends.size() == 1) {
-        backend = backends[0];
+    if (backend.size() == 0) {
+        if (backends.size() == 1) {
+            backend = backends[0];
+        } else {
+            pe("Specify a backend.\n");
+            return usage(argc, argv);
+        }
     }
     vector<string>::const_iterator b
         = find(backends.begin(), backends.end(), backend);
     if (b == backends.end()) {
         pe("Invalid index type. Choose one from ");
         for (uint j=0; j<backends.size()-1; ++j) {
-            pe("%s, ", backends[i].c_str());
+            pe("%s, ", backends[j].c_str());
         }
         pe("%s\n", backends[backends.size()-1].c_str());
         return 1;
     }
     // check arguments: indexdir
     if (indexdir.length() == 0) {
+        pe("Provide a dir to write the index to with -d.\n");
+        return usage(argc, argv);
+    }
+    // check arguments: dirs
+    if (dirs.size() == 0) {
+        pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
+        pe("Provide directories to index.\n");
         return usage(argc, argv);
     }
 

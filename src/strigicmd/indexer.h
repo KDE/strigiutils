@@ -32,7 +32,7 @@ private:
     Strigi::IndexWriter* writer;
     const std::string indexdir;
     Strigi::AnalyzerConfiguration& config;
-    Strigi::StreamAnalyzer analyzer;
+    Strigi::StreamAnalyzer* const analyzer;
 
     static void addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime);

@@ -149,7 +149,7 @@ StreamAnalyzerPrivate::~StreamAnalyzerPrivate() {
         }
     }
     delete moduleLoader;
-    if (writer != 0) {
+    if (writer) {
         writer->releaseWriterData(conf.fieldRegister());
     }
 }
