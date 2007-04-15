@@ -1,6 +1,6 @@
 #subdirs(tests)
 
-include_directories( ../streamanalyzer ../streams ../filters
+include_directories( ../streamanalyzer ../streams ../filters ../dummyindexer
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat)
 
@@ -24,7 +24,8 @@ endif (SQLite_FOUND)
 
 add_library(combinedindex combinedindexmanager.cpp)
 
-target_link_libraries(combinedindex streamanalyzer ${combinedindex_LIBS})
+target_link_libraries(combinedindex streamanalyzer grepindex
+    ${combinedindex_LIBS})
 
 #add_executable(combinedindexer combinedindexer.cpp indexer.cpp)
 #target_link_libraries(combinedindexer combinedindex filters)

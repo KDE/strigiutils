@@ -20,6 +20,7 @@
 #include "combinedindexmanager.h"
 #include "strigiconfig.h"
 
+#include "grepindexmanager.h"
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
 #endif
@@ -57,6 +58,7 @@ CombinedIndexManager::factories() {
 #ifdef HAVE_SQLITE
     factories["sqlite"] = createSqliteIndexManager;
 #endif
+    factories["grep"] = createGrepIndexManager;
     return factories;
 }
 

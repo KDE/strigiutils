@@ -1,4 +1,4 @@
-set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer)
+set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer combinedindexer indexertests strigicmd)
 
 if (CLucene_FOUND)
   set(DIRS ${DIRS} luceneindexer)
@@ -15,7 +15,6 @@ if (SQLite_FOUND)
 endif (SQLite_FOUND)
 
 if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
-  set(DIRS ${DIRS} indexertests combinedindexer)
   if(NOT WIN32)
      set(DIRS ${DIRS} daemon htmlgui)
   endif(NOT WIN32)

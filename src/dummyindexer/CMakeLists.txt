@@ -17,3 +17,5 @@ endif(NOT WIN32)
 
 add_executable(greptest grepindexreader.cpp)
 target_link_libraries(greptest streamanalyzer)
+
+add_library(grepindex grepindexmanager.cpp)
