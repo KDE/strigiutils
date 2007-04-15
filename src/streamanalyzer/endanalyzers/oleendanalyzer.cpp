@@ -87,6 +87,10 @@ tryThumbsdbEntry(const string& name, AnalysisResult& ar, InputStream* in) {
     ar.indexChild(name, 0, &thumb);
     return true;
 }
+/**
+ * Exctract images from a 'Pictures' field from a ppt file.
+ * http://jakarta.apache.org/poi/apidocs/org/apache/poi/hslf/model/Picture.html
+ **/
 void
 tryPictures(AnalysisResult& ar, InputStream* in) {
     const char* d;
