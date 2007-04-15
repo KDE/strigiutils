@@ -37,8 +37,8 @@ public:
 class MailEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class MailEndAnalyzer;
 private:
-    const static std::string titleFieldName;
-    const static std::string contenttypeFieldName;
+    static const std::string titleFieldName;
+    static const std::string contenttypeFieldName;
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* contenttypeField;
 public:

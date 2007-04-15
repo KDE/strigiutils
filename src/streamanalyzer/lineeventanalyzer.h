@@ -52,7 +52,7 @@ private:
     void handleData(const char* data, uint32_t length);
     void handleUtf8Data(const char* data, uint32_t length);
     bool isReadyWithStream();
-    void emit(const char* data, uint32_t length);
+    void emitData(const char* data, uint32_t length);
     void initEncoding(std::string encoding);
 public:
     LineEventAnalyzer(std::vector<StreamLineAnalyzer*>&s);

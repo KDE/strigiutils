@@ -92,7 +92,7 @@ void
 LineEventAnalyzer::endAnalysis() {
     // flush the last line if it did not end with a newline character
     if(lineBuffer.size() > 0) {
-        emit(lineBuffer.c_str(), lineBuffer.size());
+        emitData(lineBuffer.c_str(), lineBuffer.size());
         lineBuffer.assign("");
     }
 
@@ -247,10 +247,10 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
     // handle the first line from this call
     if (lineBuffer.size()) {
         lineBuffer.append(data, lineend-data);
-        emit(lineBuffer.c_str(), lineBuffer.size());
+        emitData(lineBuffer.c_str(), lineBuffer.size());
         lineBuffer.assign("");
     } else {
-        emit(data, p-data);
+        emitData(data, p-data);
     }
     if (ready) return;
 
@@ -275,12 +275,12 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
                 sawCarriageReturn = true;
             }
         }
-        emit(data, lineend-data);
+        emitData(data, lineend-data);
         if (ready) return;
     }
 }
 void
-LineEventAnalyzer::emit(const char*data, uint32_t length) {
+LineEventAnalyzer::emitData(const char*data, uint32_t length) {
 //    fprintf(stderr, "%.*s\n", length, data);
     bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;

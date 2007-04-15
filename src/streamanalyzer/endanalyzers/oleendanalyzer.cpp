@@ -157,7 +157,7 @@ OleEndAnalyzer::handlePropertyStream(const char* key, const char* data,
     int32_t len = readLittleEndianInt32(data);
     const char* p = data + 8;
     const char* n = data + readLittleEndianInt32(data+4)*4 + 8;
-    if (len < 0 || len > end-data || n > end) {
+    if (len < 0 || (len > end-data) || n > end) {
         return;
     }
     map<int, const RegisteredField*>::const_iterator field;
