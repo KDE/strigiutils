@@ -22,6 +22,7 @@
 #include <cstring>
 #include <string>
 #include <combinedindexmanager.h>
+#include "strigiconfig.h"
 using namespace std;
 using namespace Strigi;
 
