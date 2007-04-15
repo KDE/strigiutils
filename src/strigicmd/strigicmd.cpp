@@ -21,7 +21,9 @@
 #include <cstdarg>
 #include <cstring>
 #include <string>
-#include <combinedindexmanager.h>
+#include "combinedindexmanager.h"
+#include "analyzerconfiguration.h"
+#include "indexer.h"
 #include "strigiconfig.h"
 using namespace std;
 using namespace Strigi;
@@ -51,20 +53,27 @@ int
 create(int argc, char** argv) {
     // parse arguments
     string backend;
+    string indexdir;
+    vector<string> dirs;
     int i = 1;
-    while (++i < argc) {
+    while (++i < argc-2) {
         const char* arg = argv[i];
         if (!strcmp("-t", arg)) {
             if (++i == argc) {
                 return usage(argc, argv);
             }
             backend.assign(argv[i]);
+        } else if (!strcmp("-d", arg)) {
+            if (++i == argc || indexdir.length()) {
+                return usage(argc, argv);
+            }
+            indexdir.assign(argv[i]);
         } else {
-            return usage(argc, argv);
+            dirs.push_back(argv[i]);
         }
     }
 
-    // check arguments
+    // check arguments: backend
     const vector<string>& backends = CombinedIndexManager::backEnds();
     // if there is only one backend, the backend does not have to be specified
     if (backend.size() == 0 && backends.size() == 1) {
@@ -80,8 +89,19 @@ create(int argc, char** argv) {
         pe("%s\n", backends[backends.size()-1].c_str());
         return 1;
     }
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        return usage(argc, argv);
+    }
 
-    return 1;
+    AnalyzerConfiguration config;
+    Indexer indexer(indexdir, backend, config);
+    vector<string>::const_iterator j;
+    for (j = dirs.begin(); j != dirs.end(); ++j) {
+        indexer.index(j->c_str());
+    }
+
+    return 0;
 }
 int
 main(int argc, char** argv) {

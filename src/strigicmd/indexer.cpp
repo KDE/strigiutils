@@ -19,48 +19,36 @@
  */
 #include "strigiconfig.h"
 #include "indexer.h"
-#include <Combined.h>
 #include "filelister.h"
-#include "filereader.h"
 #include "combinedindexmanager.h"
-
-using lucene::index::IndexWriter;
 using namespace Strigi;
+using namespace std;
 
-Indexer *Indexer::workingIndexer;
+Indexer* Indexer::workingIndexer;
 
-Indexer::Indexer(const char *indexdir) :m_indexdir(indexdir),
-        m_manager(indexdir), m_writer(&m_manager), m_indexer(&m_writer) {
-    m_lister = new FileLister();
+Indexer::Indexer(const string&id, const string& backend,
+         Strigi::AnalyzerConfiguration& ac)
+        : indexdir(id), config(ac), analyzer(config) {
+    manager = CombinedIndexManager::factories()[backend](indexdir.c_str());
+    analyzer.setIndexWriter(*manager->indexWriter());
+    lister = new FileLister(config);
 }
 Indexer::~Indexer() {
-    delete m_lister;
-    _lucene_shutdown();
+    delete manager;
+    delete lister;
 }
 void
-Indexer::index(const char *dir) {
+Indexer::index(const char* dir) {
     workingIndexer = this;
-    m_lister->setFileCallbackFunction(&Indexer::addFileCallback);
-    bool exceptions = true;
-    if (exceptions) {
-        try {
-            m_lister->listFiles(dir);
-        } catch (CombinedError& err) {
-            printf(err.what());
-        } catch(...) {
-            printf("Unknown error");
-        }
-    } else {
-        m_lister->listFiles(dir);
-    }
+    lister->setFileCallbackFunction(&Indexer::addFileCallback);
+    lister->listFiles(dir);
 }
-bool
+void
 Indexer::addFileCallback(const char* path, uint dirlen, uint len,
         time_t mtime) {
     workingIndexer->doFile(path);
-    return true;
 }
 void
 Indexer::doFile(const char* filepath) {
-    m_indexer.indexFile(filepath);
+    analyzer.indexFile(filepath);
 }
