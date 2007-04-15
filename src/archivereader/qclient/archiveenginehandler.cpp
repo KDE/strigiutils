@@ -86,7 +86,7 @@ public:
         return true;
     }
     bool open(QIODevice::OpenMode mode) {
-        if (mode & QIODevice::WriteOnly && !(mode & QIODevice::ReadOnly)) {
+        if ((mode & QIODevice::WriteOnly) && !(mode & QIODevice::ReadOnly)) {
             return false;
         }
         stream = reader->openStream(url);
