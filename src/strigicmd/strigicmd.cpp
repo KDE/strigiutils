@@ -21,6 +21,7 @@
 #include <cstdarg>
 #include <cstring>
 #include <string>
+#include <algorithm>
 #include "combinedindexmanager.h"
 #include "analyzerconfiguration.h"
 #include "indexer.h"
