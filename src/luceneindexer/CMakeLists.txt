@@ -2,11 +2,11 @@
 subdirs(indexdump simplereader)
 
 include_directories( ../streamanalyzer ../streams
-	${CLUCENE_LIBRARY_DIR}
-	${CLUCENE_INCLUDE_DIR}
-	${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat)
+	${strigi_SOURCE_DIR}/src/streams/compat
+        ${CLUCENE_LIBRARY_DIR}
+        ${CLUCENE_INCLUDE_DIR}
+        ${ICONV_INCLUDE_DIR})
 
 IF(WIN32)
     # why only here and not for the complete project?
