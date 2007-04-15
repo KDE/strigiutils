@@ -305,7 +305,9 @@ bool MpegEndAnalyzer::parse_audio(InputStream* in)
     else if (layer == 3)
         this->audio_type = 1;
     else
+    {
         //cerr << "Invalid MPEG audio layer" << endl;
+    }
     
 
     return true;
