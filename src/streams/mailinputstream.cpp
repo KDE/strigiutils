@@ -316,9 +316,9 @@ void
 MailInputStream::scanBody() {
     while (m_status == Ok) {
         readHeaderLine();
-        string::size_type len = lineend - linestart;
+        int32_t len = lineend - linestart;
         if (len > 2 && strncmp("--", linestart, 2) == 0) {
-            string::size_type blen = boundary.top().length();
+            int32_t blen = boundary.top().length();
             if (len == blen + 4 && strncmp(linestart + 2 + blen, "--", 2) == 0
                     && strncmp(linestart + 2, boundary.top().c_str(), blen)
                         == 0) { 
