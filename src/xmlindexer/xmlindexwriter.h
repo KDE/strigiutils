@@ -215,6 +215,7 @@ protected:
         int32_t length) {
         Data* d = static_cast<Data*>(ar->writerData());
         d->text.append(text, length);
+        d->text.append("\n");
     }
     void addValue(const Strigi::AnalysisResult* ar,
             const Strigi::RegisteredField* field, const std::string& value) {
