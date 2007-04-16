@@ -26,8 +26,39 @@
 #include "streambase.h"
 #include "textutils.h"
 #include <string>
+#include <iconv.h>
 using namespace Strigi;
 using namespace std;
+
+class Latin1Converter {
+    iconv_t const conv;
+    char* out;
+    size_t outlen;
+
+    int32_t _fromLatin1(const char*& out, const char* data, size_t len);
+    Latin1Converter() :conv(iconv_open("LATIN1", "UTF-8")), outlen(0) {}
+    ~Latin1Converter() { iconv_close(conv); free(out); }
+public:
+    static int32_t fromLatin1(const char*& out, const char* data, int32_t len) {
+        static Latin1Converter l;
+        return l._fromLatin1(out, data, len);
+    }
+};
+int32_t
+Latin1Converter::_fromLatin1(const char*& o, const char* data, size_t len) {
+    size_t l = 3*len;
+    if (outlen < l) {
+        out = (char*)realloc(out, l);
+        outlen = l;
+    } else {
+        l = outlen;
+    }
+    o = out;
+    char* inp = (char*)data;
+    char* outp = out;
+    iconv(conv, &inp, &len, &outp, &l);
+    return (len == 0) ?outlen-l :0;
+}
 
 class AnalysisResult::Private {
 public:
@@ -117,7 +148,20 @@ AnalysisResult::indexChild(const std::string& name, time_t mt,
 }
 void
 AnalysisResult::addText(const char* text, int32_t length) {
-    p->m_writer.addText(this, text, length);
+    fprintf(stderr, "addText\n");
+    if (checkUtf8(text, length)) {
+        p->m_writer.addText(this, text, length);
+    } else {
+        const char* d;
+        size_t len = Latin1Converter::fromLatin1(d, text, length);
+        if (len) {
+    fprintf(stderr, "latin addText\n");
+            p->m_writer.addText(this, d, len);
+        } else {
+            fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
+                length, text);
+        }
+    }
 }
 AnalyzerConfiguration&
 AnalysisResult::config() const {
