@@ -36,6 +36,10 @@ typedef StreamBase<char> InputStream;
 class STREAMANALYZER_EXPORT StreamThroughAnalyzer {
 public:
     virtual ~StreamThroughAnalyzer() {}
+    /**
+     * Passes a pointer to the AnalysisResult to be used for
+     * this stream.
+     **/
     virtual void setIndexable(Strigi::AnalysisResult*) = 0;
     /**
      * This function sets up the analyzer for handling a stream.
@@ -47,7 +51,8 @@ public:
      **/
     virtual InputStream *connectInputStream(InputStream *in) = 0;
     /**
-     *
+     * Signals to the caller whether this analyzer is finished
+     * with the current stream.
      **/
     virtual bool isReadyWithStream() = 0;
 };

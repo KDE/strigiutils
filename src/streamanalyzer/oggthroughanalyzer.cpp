@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ *               2007 Tobias Pfeiffer <tgpfeiffer@web.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,6 +31,8 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["album"] = r.registerField("audio.album", FieldRegister::stringType, 1, 0);
     fields["artist"] = r.registerField("audio.artist", FieldRegister::stringType,
         1, 0);
+    fields["genre"] = r.registerField("audio.genre", FieldRegister::stringType, 1, 0);
+    fields["codec"] = r.registerField("media.codec", FieldRegister::stringType, 1, 0);
 }
 
 void
@@ -43,8 +46,9 @@ readSize(const char*b) {
 }
 InputStream*
 OggThroughAnalyzer::connectInputStream(InputStream* in) {
-    if(!in)
+    if(!in) {
         return in;
+    }
 
     const char* buf;
     // read 1024 initially
@@ -93,15 +97,22 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
             if (eq < size - 1) {
                 string name(p2, eq);
                 string value(p2+eq+1, size-eq-1);
-                map<string, const RegisteredField*>::const_iterator i
+                // convert field name to lower case
+                const int length = name.length();
+                for(int k=0; k!=length; ++k) {
+                    name[k] = std::tolower(name[k]);
+                }
+                map<string, const RegisteredField*>::const_iterator iter
                     = factory->fields.find(name);
-                if (i != factory->fields.end()) {
-                    indexable->addValue(i->second, value);
+                if (iter != factory->fields.end()) {
+                    indexable->addValue(iter->second, value);
                 }
             }
         }
         p2 += size;
     }
+    // set the "codec" value
+    indexable->addValue(factory->fields.find("codec")->second, "Ogg/Vorbis");
     return in;
 }
 bool
