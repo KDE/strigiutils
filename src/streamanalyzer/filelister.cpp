@@ -172,9 +172,7 @@ FileLister::walk_directory(uint len) {
                 || (gid == dirstat.st_uid && S_IRGRP & dirstat.st_mode))) {
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
 #else
-        if (lstat(path, &dirstat) == 0 && (S_IROTH & dirstat.st_mode
-                || (uid == dirstat.st_uid && S_IRUSR & dirstat.st_mode)
-                || (gid == dirstat.st_uid && S_IRGRP & dirstat.st_mode))) {
+        if (lstat(path, &dirstat) == 0) {
             if (S_ISREG(dirstat.st_mode) && dirstat.st_mtime >= m_oldestdate) {
 #endif
                 if (m_config.indexFile(path, path+len)) {
