@@ -189,18 +189,36 @@ AnalysisResult::extension() const {
     return "";
 }
 void
-AnalysisResult::addValue(const RegisteredField* field, const std::string& value){
-    // make sure only utf8 is stored
-    if (!checkUtf8(value)) {
-        fprintf(stderr, "'%s' is not a UTF8 string\n", value.c_str());
-        return;
+AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
+    if (checkUtf8(val)) {
+        p->m_writer.addValue(this, field, val);
+    } else {
+        const char* d;
+        size_t len = Latin1Converter::fromLatin1(d, val.c_str(), val.length());
+        if (len) {
+            p->m_writer.addValue(this, field, (const unsigned char*)d, len);
+        } else {
+            fprintf(stderr, "'%s' is not a UTF8 or latin1 string\n",
+                val.c_str());
+        }
     }
-    p->m_writer.addValue(this, field, value);
 }
 void
 AnalysisResult::addValue(const RegisteredField* field,
         const char* data, uint32_t length) {
-    p->m_writer.addValue(this, field, (const unsigned char*)data, length);
+    if (checkUtf8(data, length)) {
+        p->m_writer.addText(this, data, length);
+    } else {
+        const char* d;
+        size_t len = Latin1Converter::fromLatin1(d, data, length);
+        if (len) {
+            const unsigned char* dd = (const unsigned char*)d;
+            p->m_writer.addValue(this, field, dd, len);
+        } else {
+            fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
+                length, data);
+        }
+    }
 }
 void
 AnalysisResult::addValue(const RegisteredField* field, int32_t value) {
