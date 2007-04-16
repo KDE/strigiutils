@@ -63,6 +63,7 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
         if (d == 0) {
             m_status = Error;
             fprintf(stderr, "error in small blocks\n");
+	    return -1;
         }
     } else {
         d = parent->data+(1+parent->currentDataBlock)*512;
@@ -239,7 +240,7 @@ OleInputStream::getCurrentSmallBlock() {
         return 0;
     }
     i = 512*(1+sbatbIndex[i]) + (currentDataBlock%8)*64;
-    return (i>=size-64) ?0 :d+i;
+    return (i > size-64) ?0 :d+i;
 }
 void
 OleInputStream::readEntryInfo() {
@@ -256,11 +257,13 @@ OleInputStream::readEntryInfo() {
         name[i] = d[2*i];
     }
     // only allow valid Utf8 names or names that start with the value 5
-    if (namesize == 0 || (name[0] != 5 && !checkUtf8(name))) {
-        fprintf(stderr, "Invalid entry name in OLE: '%s'\n", name.c_str());
+    // TODO: handle names that start with 0x1
+/*    if (namesize == 0 || (name[0] != 5 && !checkUtf8(name))) {
+        fprintf(stderr, "Invalid entry name in OLE: '%s' of length %i\n",
+	    name.c_str(), namesize);
         currentDataBlock = -1;
         return;
-    }
+    }*/
     
     m_entryinfo.filename.assign(name);
     currentDataBlock = readLittleEndianInt32(d+0x74);

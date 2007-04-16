@@ -70,6 +70,82 @@ OleEndAnalyzerFactory::getFieldMap(const string& key) const {
         = fieldsMaps.find(key);
     return (i == fieldsMaps.end()) ?0 :&i->second;
 }
+// parse with info from http://www.wotsit.org/getfile.asp?file=wword8&sc=230027800
+bool
+tryFIB(AnalysisResult& ar, InputStream* in) {
+    const char* d;
+    int32_t size = 34;
+    int32_t nread = in->read(d, size, size);
+    in->reset(0);
+    if (nread != size
+            || (unsigned char)d[0] != 0xec || (unsigned char)d[1] != 0xa5) {
+        return false;
+    }
+    bool complex = d[10] & 4;
+    if (complex) return false;
+    int32_t fcMin = readLittleEndianInt32(d+24);
+    int32_t fcMac = readLittleEndianInt32(d+28);
+    // for some reason we need to add 512 here. No clue why.
+    fcMin += 512;
+    fcMac += 512;
+    uint16_t csw = readLittleEndianUInt16(d+32);
+    size += 2*csw + 2;
+    nread = in->read(d, size, size);
+    in->reset(0);
+    if (nread != size) return false;
+    csw = readLittleEndianUInt16(d+size-2);
+    size += 4*csw + 2;
+    nread = in->read(d, size, size);
+    in->reset(0);
+    if (nread != size) return false;
+    csw = readLittleEndianUInt16(d+size-2);
+    size += 8*csw;
+    
+    nread = in->read(d, fcMac, fcMac);
+    in->reset(0);
+    if (nread != fcMac) {
+        return false;
+    }
+    const char *end = d+fcMac;
+    d += fcMin;
+    const char *p = d;
+    string text;
+    while (p < end) {
+        switch (*p) {
+        case 7: // cell/row end
+        case 12: // Page break / Section mark
+        case 13: // Paragraph end
+        case 14: // Column end
+        case 19: // Field start
+            if (p > d) {
+                text.append(d, p-d);
+	        ar.addText(text.c_str(), text.size());
+	    }
+            text.assign("");
+            d = p+1;
+	    break;
+        case 21: // Field end
+            text.assign("");
+            d = p+1;
+	    break;
+        case 30: // Non-breaken hyphen
+            if (p > d) text.append(d, p-d);
+            text.append("-");
+            d = p+1;
+        case 31: // Non-required hyphen
+            if (p > d) text.append(d, p-d);
+            d = p+1;
+	    break;
+        case 160: // Non-breaking space
+            if (p > d) text.append(d, p-d);
+            text.append(" ");
+            d = p+1;
+        default:;
+        }
+	++p;
+    }
+    return true;
+}
 bool
 OleEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return OleInputStream::checkHeader(header, headersize);
@@ -181,12 +257,13 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
     InputStream *s = ole.nextEntry();
     if (ole.status()) {
         fprintf(stderr, "error: %s\n", ole.error());
-//        exit(1);
+	return -1;
     }
     while (s) {
         const string& name = ole.entryInfo().filename;
         if (name.size()) {
-            if (tryThumbsdbEntry(name, ar, s)) {
+	    if (tryFIB(ar, s)) {
+            } else if (tryThumbsdbEntry(name, ar, s)) {
             } else if (name[0] == 5) {
                 // todo: handle property stream
                 tryPropertyStream(ar, s);
