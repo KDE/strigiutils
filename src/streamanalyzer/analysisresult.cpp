@@ -148,14 +148,12 @@ AnalysisResult::indexChild(const std::string& name, time_t mt,
 }
 void
 AnalysisResult::addText(const char* text, int32_t length) {
-    fprintf(stderr, "addText\n");
     if (checkUtf8(text, length)) {
         p->m_writer.addText(this, text, length);
     } else {
         const char* d;
         size_t len = Latin1Converter::fromLatin1(d, text, length);
         if (len) {
-    fprintf(stderr, "latin addText\n");
             p->m_writer.addText(this, d, len);
         } else {
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
