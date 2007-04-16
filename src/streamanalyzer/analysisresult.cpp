@@ -36,7 +36,7 @@ class Latin1Converter {
     size_t outlen;
 
     int32_t _fromLatin1(const char*& out, const char* data, size_t len);
-    Latin1Converter() :conv(iconv_open("LATIN1", "UTF-8")), outlen(0) {}
+    Latin1Converter() :conv(iconv_open("UTF-8", "ISO-8859-1")), outlen(0){}
     ~Latin1Converter() { iconv_close(conv); free(out); }
 public:
     static int32_t fromLatin1(const char*& out, const char* data, int32_t len) {
@@ -207,13 +207,12 @@ void
 AnalysisResult::addValue(const RegisteredField* field,
         const char* data, uint32_t length) {
     if (checkUtf8(data, length)) {
-        p->m_writer.addText(this, data, length);
+        p->m_writer.addValue(this, field, (const unsigned char*)data, length);
     } else {
         const char* d;
         size_t len = Latin1Converter::fromLatin1(d, data, length);
         if (len) {
-            const unsigned char* dd = (const unsigned char*)d;
-            p->m_writer.addValue(this, field, dd, len);
+            p->m_writer.addValue(this, field, (const unsigned char*)d, len);
         } else {
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
                 length, data);
