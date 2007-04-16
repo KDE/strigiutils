@@ -12,6 +12,7 @@ if (CLucene_FOUND)
   set (STRIGI_UNIT_TEST_LIBRARIES ${STRIGI_UNIT_TEST_LIBRARIES} lucenetest)
 endif (CLucene_FOUND)
 
+if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
 SUBDIRS (${TESTINGDIRS})
 
 include_directories (. ${CPPUNIT_INCLUDE_DIR})
@@ -19,6 +20,8 @@ include_directories (. ${CPPUNIT_INCLUDE_DIR})
 ADD_EXECUTABLE(strigiunittester test_runner.cpp)
 target_link_libraries(strigiunittester    ${CPPUNIT_LIBRARIES}
                                     ${STRIGI_UNIT_TEST_LIBRARIES})
+
+endif (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
 
 FOREACH (dir ${TESTINGDIRS})
     FILE(GLOB_RECURSE UnitTests_SRCS ${dir} "${dir}/*test.cpp" )
