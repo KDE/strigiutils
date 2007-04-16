@@ -217,7 +217,10 @@ OleEndAnalyzer::handleProperty(const RegisteredField* field, const char* data) {
     int32_t datatype = readLittleEndianInt32(data);
     // currently we only support null-terminated strings
     if (datatype == 30) {
-        result->addValue(field, data+4);
+        int32_t len = readLittleEndianInt32(data+4);
+        if (len > 0) {
+            result->addValue(field, data+8, len-1);
+        }
     }
 }
 void
