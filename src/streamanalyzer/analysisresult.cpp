@@ -54,7 +54,11 @@ Latin1Converter::_fromLatin1(const char*& o, const char* data, size_t len) {
         l = outlen;
     }
     o = out;
-    char* inp = (char*)data;
+#ifdef _WIN32
+    const char* inp = (char*)data;
+#else
+	char* inp = (char*)data;
+#endif
     char* outp = out;
     iconv(conv, &inp, &len, &outp, &l);
     return (len == 0) ?outlen-l :0;
