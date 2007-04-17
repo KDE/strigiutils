@@ -1,0 +1,13 @@
+[Field]
+Uri=cursor.hot_spot.x
+Name=Hot spot X
+TypeUri=string
+Description=Cursor hot spot X
+Comment=
+
+[Field]
+Uri=cursor.hot_spot.y
+Name=Hot spot Y
+TypeUri=string
+Description=Cursor hot spot Y
+Comment=
