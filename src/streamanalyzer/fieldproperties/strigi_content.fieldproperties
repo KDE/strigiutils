@@ -47,7 +47,6 @@ TypeUri=string
 Description=Content keyword
 Comment=
 
-
 [Field]
 Uri=content.version
 Name=Version
@@ -91,9 +90,23 @@ Description=Content license type
 Comment=GPL, BSD, proprietary
 
 [Field]
+Uri=content.ID
+Name=ID
+TypeUri=string
+Description=Content ID
+Comment=Generic content ID. Use subproperties.
+
+[Field]
 Uri=content.doi
+ParentUri=content.ID
 Name=DOI
 TypeUri=string
 Description=Digital Object Identifier
 Comment=http://www.doi.org/
 
+[Field]
+Uri=content.thumbnail
+Name=Thumbnail
+TypeUri=binary
+Description=Content thumbnail
+Comment=

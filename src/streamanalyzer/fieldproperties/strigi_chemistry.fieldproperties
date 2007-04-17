@@ -1,5 +1,6 @@
 [Field]
 Uri=chemistry.inchi
+ParentUri=content.ID
 Name=InChI
 TypeUri=string
 Description=IUPAC International Chemical Identifier
@@ -22,6 +23,7 @@ Comment=
 
 [Field]
 Uri=chemistry.pdbid
+ParentUri=content.ID
 Name=PDB Identifier
 TypeUri=string
 Description=Identifier used for proteins in the PDB database.
@@ -33,4 +35,3 @@ Name=X-Ray Resolution
 TypeUri=string
 Description=Resolution of the X-Ray data for crystal structures.
 Comment=
-

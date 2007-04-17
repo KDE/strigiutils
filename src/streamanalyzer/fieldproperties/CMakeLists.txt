@@ -15,5 +15,10 @@ install(FILES
 	strigi_software.fieldproperties
 	strigi_chemistry.fieldproperties
 
+	strigi_font.fieldproperties
+	strigi_trash.fieldproperties
+	strigi_photo.fieldproperties
+	strigi_container.fieldproperties
+
 	DESTINATION share/apps/strigi/fieldproperties
 )
