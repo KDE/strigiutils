@@ -22,6 +22,7 @@
 #include "strigiconfig.h"
 #include "oggthroughanalyzer.h"
 #include "analysisresult.h"
+#include <cctype>
 using namespace Strigi;
 using namespace std;
 
