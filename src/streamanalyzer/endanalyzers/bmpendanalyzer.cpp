@@ -28,8 +28,8 @@ using namespace Strigi;
 
 const string BmpEndAnalyzerFactory::typeFieldName("type");
 const string BmpEndAnalyzerFactory::compressionFieldName("compression");
-const string BmpEndAnalyzerFactory::widthFieldName("image.dimensions.x");
-const string BmpEndAnalyzerFactory::heightFieldName("image.dimensions.y");
+const string BmpEndAnalyzerFactory::widthFieldName("image.width");
+const string BmpEndAnalyzerFactory::heightFieldName("image.height");
 const string BmpEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
 
 void

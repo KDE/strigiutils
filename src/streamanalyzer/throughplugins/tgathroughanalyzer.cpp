@@ -31,8 +31,8 @@ using namespace Strigi;
 const string TgaThroughAnalyzerFactory::compressionFieldName("compression");
 const string TgaThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
 const string TgaThroughAnalyzerFactory::colorModeFieldName("image.color_space");
-const string TgaThroughAnalyzerFactory::widthFieldName("image.dimensions.x");
-const string TgaThroughAnalyzerFactory::heightFieldName("image.dimensions.y");
+const string TgaThroughAnalyzerFactory::widthFieldName("image.width");
+const string TgaThroughAnalyzerFactory::heightFieldName("image.height");
 
 void
 TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

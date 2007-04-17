@@ -32,8 +32,8 @@
 using namespace std;
 using namespace Strigi;
 
-const string PngEndAnalyzerFactory::widthFieldName("image.dimensions.x");
-const string PngEndAnalyzerFactory::heightFieldName("image.dimensions.y");
+const string PngEndAnalyzerFactory::widthFieldName("image.width");
+const string PngEndAnalyzerFactory::heightFieldName("image.height");
 const string PngEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
 const string PngEndAnalyzerFactory::colorModeFieldName("image.color_space");
 const string PngEndAnalyzerFactory::compressionFieldName("compression");

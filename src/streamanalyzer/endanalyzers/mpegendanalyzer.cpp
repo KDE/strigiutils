@@ -32,8 +32,8 @@ using namespace std;
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["length"] = r.registerField("media.duration", FieldRegister::integerType, 1, 0);
-    fields["dimensions.y"] = r.registerField("image.dimensions.y", FieldRegister::integerType, 1, 0);
-    fields["dimensions.x"] = r.registerField("image.dimensions.x", FieldRegister::integerType, 1, 0);
+    fields["dimensions.y"] = r.registerField("image.height", FieldRegister::integerType, 1, 0);
+    fields["dimensions.x"] = r.registerField("image.width", FieldRegister::integerType, 1, 0);
     fields["frame rate"] = r.registerField("video.frame_rate", FieldRegister::floatType, 1, 0);
     fields["video codec"] = r.registerField("av.video_codec", FieldRegister::stringType, 1, 0);
     fields["audio codec"] = r.registerField("av.audio_codec", FieldRegister::stringType, 1, 0);

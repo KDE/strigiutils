@@ -13,15 +13,15 @@ Description=Image resolution along Y axis
 Comment=
 
 [Field]
-Uri=image.dimensions.x
-Name=Resolution X
+Uri=image.width
+Name=Width
 TypeUri=integer
 Description=Image width
 Comment=
 
 [Field]
-Uri=image.dimensions.y
-Name=Resolution Y
+Uri=image.height
+Name=Height
 TypeUri=integer
 Description=Image height
 Comment=
