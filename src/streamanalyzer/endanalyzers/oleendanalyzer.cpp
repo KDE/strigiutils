@@ -41,15 +41,15 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Summary Information Stream
     key.assign(summaryKey, 16);
     m = &fieldsMaps[key];
-    r = reg.registerField("title", FieldRegister::stringType, 1, 0);
+    r = reg.registerField("content.title", FieldRegister::stringType, 1, 0);
     if (r) (*m)[2] = r;
-    r = reg.registerField("subject", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("content.subject", FieldRegister::stringType, -1, 0);
     if (r) (*m)[3] = r;
-    r = reg.registerField("author", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("content.author", FieldRegister::stringType, -1, 0);
     if (r) (*m)[4] = r;
-    r = reg.registerField("keywords", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("content.keyword", FieldRegister::stringType, -1, 0);
     if (r) (*m)[5] = r;
-    r = reg.registerField("comments", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("content.comment", FieldRegister::stringType, -1, 0);
     if (r) (*m)[6] = r;
 
     // register the fields for the Document Summary Information Stream

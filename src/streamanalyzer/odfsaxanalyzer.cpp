@@ -36,7 +36,7 @@ static const char *metaNS = "urn:oasis:names:tc:opendocument:xmlns:meta:1.0";
 //static const char *textNS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
 
 void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
-    creatorField = reg.registerField("content.authors", FieldRegister::stringType, 1, 0);
+    creatorField = reg.registerField("content.author", FieldRegister::stringType, 1, 0);
     creationTimeField = reg.registerField("content.creation_time", FieldRegister::stringType, 1, 0);
     titleField = reg.registerField("content.title", FieldRegister::stringType, 1, 0);
     subjectField = reg.registerField("content.subject", FieldRegister::stringType, 1, 0);

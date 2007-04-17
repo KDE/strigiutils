@@ -72,6 +72,7 @@ FieldRegister::registerField(const string& fieldname,
         map<std::string, FieldProperties>::const_iterator j
             = props.find(fieldname);
         if (j == props.end()) {
+            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties files.\n", fieldname.c_str());
             // register this property with the propertiesdatabase
             string parentname;
             if (parent) {

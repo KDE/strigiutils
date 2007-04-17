@@ -41,6 +41,13 @@ Description=Content description
 Comment=Author's description of the content.ODF.description.
 
 [Field]
+Uri=content.comment
+Name=Comment
+TypeUri=string
+Description=Content comment
+Comment=Author's comment on the content.
+
+[Field]
 Uri=content.keyword
 Name=Keyword
 TypeUri=string
@@ -74,6 +81,13 @@ Name=Charset
 TypeUri=string
 Description=Content character encoding
 Comment=document character encoding. This will eventually be obsolete.
+
+[Field]
+Uri=content.language
+Name=Language
+TypeUri=string
+Description=Content language
+Comment=
 
 [Field]
 Uri=content.full_text
