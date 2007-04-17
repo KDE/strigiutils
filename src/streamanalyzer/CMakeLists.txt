@@ -3,8 +3,8 @@ add_subdirectory(lineplugins)
 add_subdirectory(tests)
 add_subdirectory(fieldproperties)
 
-include_directories( ./ ../streams ${BZIP2_INCLUDE_DIR} endanalyzers
-	${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
+include_directories( ./ ../streams ../streams/pdf ${BZIP2_INCLUDE_DIR}
+	endanalyzers ${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams/compat
 	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
 
@@ -38,6 +38,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/helperendanalyzer.cpp
 	endanalyzers/mailendanalyzer.cpp
 	endanalyzers/oleendanalyzer.cpp
+	endanalyzers/pdfendanalyzer.cpp
 	endanalyzers/pngendanalyzer.cpp
 	endanalyzers/rpmendanalyzer.cpp
 	endanalyzers/tarendanalyzer.cpp
@@ -66,7 +67,7 @@ set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES} )
 if(HAVE_LIBDL)
         set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
 endif(HAVE_LIBDL)
-target_link_libraries(streamanalyzer ${streamanalyzer_libs})
+target_link_libraries(streamanalyzer ${streamanalyzer_libs} pdfstream)
 
 install(FILES
 	analysisresult.h

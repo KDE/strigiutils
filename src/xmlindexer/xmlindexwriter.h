@@ -35,6 +35,7 @@ private:
          std::multimap<const Strigi::RegisteredField*, std::string> values;
          std::string text;
     };
+    std::vector<Data*> data;
     struct Tag {
          std::string open;
          std::string close;
@@ -166,8 +167,12 @@ private:
     }
 protected:
     void startAnalysis(const Strigi::AnalysisResult* ar) {
-        void* m = new Data();
-        ar->setWriterData(m);
+        unsigned char depth = ar->depth();
+        if (depth >= data.size()) {
+            data.push_back(new Data());
+        }
+        Data* d = data[depth];
+        ar->setWriterData(d);
     }
     void printValue(const Strigi::RegisteredField* name, std::string& value) {
         const Tag* tag = static_cast<const Tag*>(name->writerData());
@@ -209,7 +214,8 @@ protected:
             out << "</text>\n";
         }
         out << " </" << mapping.map("file") << ">\n";
-        delete d;
+        d->values.clear();
+        d->text.assign("");
     }
     void addText(const Strigi::AnalysisResult* ar, const char* text,
         int32_t length) {
@@ -273,7 +279,12 @@ public:
     explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
             :out(o), mapping(m) {
     }
-    ~XmlIndexWriter() {}
+    ~XmlIndexWriter() {
+         std::vector<Data*>::const_iterator i;
+         for (i = data.begin(); i != data.end(); ++i) {
+             delete *i;
+         }
+    }
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}
     void deleteAllEntries() {}

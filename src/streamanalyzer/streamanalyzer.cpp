@@ -35,6 +35,7 @@
 #include "oleendanalyzer.h"
 #include "rpmendanalyzer.h"
 #include "cpioendanalyzer.h"
+#include "pdfendanalyzer.h"
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "mailendanalyzer.h"
@@ -307,7 +308,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
     addFactory(new OdfSaxAnalyzerFactory());
-//    addFactory(new PdfEndAnalyzerFactory());
+    addFactory(new PdfEndAnalyzerFactory());
 #ifdef WIN32
 #ifdef __GNUC__
 #warning FIXME - IFilterEndAnalyzerFactory is pure virtual!

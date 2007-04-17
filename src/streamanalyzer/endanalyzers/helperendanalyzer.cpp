@@ -51,9 +51,9 @@ public:
 };
 
 HelperProgramConfig::HelperProgramConfig() {
-    static const unsigned char wordmagic[] = {
+/*    static const unsigned char wordmagic[] = {
         0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1,0,0,0,0,0,0,0,0
-    };
+    };*/
 
     // make a vector with all the paths
     const char* path =getenv("PATH");
@@ -69,7 +69,7 @@ HelperProgramConfig::HelperProgramConfig() {
     if (path[0] == '/') {
         paths.push_back(path);
     }
-
+/*
     string exepath = findPath("pdftotext", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
@@ -94,7 +94,7 @@ HelperProgramConfig::HelperProgramConfig() {
         h->arguments.push_back("%s");
         h->readfromstdin = false;
         helpers.push_back(h);
-    }
+    }*/
 }
 std::string
 HelperProgramConfig::findPath(const std::string& exe,
