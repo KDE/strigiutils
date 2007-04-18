@@ -1,6 +1,6 @@
 
 # create a library with the shared code for parsing xml files
-include_directories(xsdparser)
+include_directories(xsdparser ${ICONV_INCLUDE_DIR})
 
 if (LIBXML2_FOUND)
   include_directories(${LIBXML2_INCLUDE_DIR})
