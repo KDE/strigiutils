@@ -1,4 +1,4 @@
-Format specification of .fieldproperties files
+Format specification of .fieldproperties files(DRAFT)
 ======================================================================================
 
 [Field]
@@ -9,6 +9,8 @@ Name[$LANG]=$LOCALIZED_NAME
 Description=$DESCRIPTION
 Description[$LANG]=$LOCALIZED_DESCRIPTION
 TypeUri=$TYPE
+Values=$VALUES
+Values[$LANG]=$LOCALIZED_VALUES
 MinCardinality=$MIN_CARDINALITY
 MaxCardinality=$MAX_CARDINALITY
 Intrinsic=$IS_INTRINSIC
@@ -31,7 +33,22 @@ $DESCRIPTION(required), $LOCALIZED_DESCRIPTION
   User-friendly property description. This is the description of property suitable for tooltips.
 
 $TYPE(required)
-  Property data type. Valid values: string, integer, float, boolean, datetime, binary.
+  Property data type.
+  Valid values: string, string_enum, string_enum_ext, integer, float, boolean, datetime, binary.
+  string_enum type is a property that can only take one of the list of valid values provided by $VALUES.
+  string_enum_ext type is a property that can take any string value, however $values list provides some
+  suggestions for the value of this property.
+
+$VALUES(required if $TYPE=string_enum), $LOCALIZED_VALUES
+  Property value constraints. Default =  no constraints.
+  if $TYPE=string, $VALUES=validation regexp
+  if $TYPE=string_enum, $VALUES=value1|value2|value3
+  if $TYPE=string_enum_ext, $VALUES=value1|value2|value3|(regexp or *)
+  if $TYPE=integer|datetime|float, $VALUES=min_value,max_value,decimal_digits (all parameters are optional)
+                     Is it possible that we may have to enumerate ints/floats instead of providing ranges? 
+  Another option is to unite string(_enum)?(_ext)? just by defining a common regexp template for these and
+  trying to parse it, since regexp in the form of value|value|value(|*) is quite intuitive and devs don't
+  have to be aware of the implications.  //TODO
 
 $MIN_CARDINALITY
   Minimum cardinality. Minimum number of properties of this type you must set for a given file.
