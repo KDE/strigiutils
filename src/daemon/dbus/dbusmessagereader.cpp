@@ -140,7 +140,7 @@ DBusMessageReader::operator>>(vector<char>& s) {
 
     DBusMessageIter sub;
     dbus_message_iter_recurse(&it, &sub);
-    int length = dbus_message_iter_get_array_len(&sub);
+    int length;
     char* array;
     dbus_message_iter_get_fixed_array(&sub, &array, &length);
     s.assign(array, array+length);
