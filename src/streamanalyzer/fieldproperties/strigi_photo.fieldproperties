@@ -1,0 +1,48 @@
+[Field]
+Uri=photo.camera_manufacturer
+Name=Camera Manufacturer
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.camera_model
+Name=Camera model
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.focal_length
+Name=Focal length
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.exposure_time
+Name=Exposure time
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.focus_distance
+Name=Focus distance
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.white_balance
+Name=White balance
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.flash_used
+Name=Flash used
+TypeUri=string
+Description=
+Comment=
