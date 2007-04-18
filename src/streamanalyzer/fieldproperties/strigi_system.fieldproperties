@@ -48,6 +48,27 @@ Description=URL/URI of the file
 Comment=URL/URI of the file. TODO: should this be merged with system.ID somehow?
 
 [Field]
+Uri=system.file_name
+Name=File name
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=system.file_extension
+Name=File extension
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=system.depth
+Name=Depth
+TypeUri=string
+Description=
+Comment=
+
+[Field]
 Uri=system.size
 Name=Size
 TypeUri=integer

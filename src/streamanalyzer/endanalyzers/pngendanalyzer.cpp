@@ -48,7 +48,7 @@ const string PngEndAnalyzerFactory::softwareFieldName("software");
 const string PngEndAnalyzerFactory::disclaimerFieldName("disclaimer");
 const string PngEndAnalyzerFactory::warningFieldName("warning");
 const string PngEndAnalyzerFactory::sourceFieldName("source");
-const string PngEndAnalyzerFactory::commentFieldName("comment");
+const string PngEndAnalyzerFactory::commentFieldName("content.comment");
 
 // and for the colors
 static const char* colors[] = {

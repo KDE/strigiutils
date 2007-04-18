@@ -1,0 +1,57 @@
+Format specification of .fieldproperties files
+======================================================================================
+
+[Field]
+Uri=$URI
+ParentUri=$PARENTURI
+Name=$NAME
+Name[$LANG]=$LOCALIZED_NAME
+Description=$DESCRIPTION
+Description[$LANG]=$LOCALIZED_DESCRIPTION
+TypeUri=$TYPE
+MinCardinality=$MIN_CARDINALITY
+MaxCardinality=$MAX_CARDINALITY
+Intrinsic=$IS_INTRINSIC
+Writable=$IS_WRITABLE
+Indexing=$INDEXING
+Relevance=$RELEVANCE
+Comment=$COMMENT
+
+$URI(required)
+  Unique resource identifier of the property. Internally properties are identified by this ID.
+
+$PARENTURI
+  URI of parent property. Parent relation is similar to inheritance. Usually child property
+  introduces some specifics/limitations/implications compared to its parent.
+
+$NAME(required), $LOCALIZED NAME
+  Short user-friendly name. This is the name users will see when file metadata is displayed to them.
+
+$DESCRIPTION(required), $LOCALIZED_DESCRIPTION
+  User-friendly property description. This is the description of property suitable for tooltips.
+
+$TYPE(required)
+  Property data type. Valid values: string, integer, float, boolean, datetime, binary.
+
+$MIN_CARDINALITY
+  Minimum cardinality. Minimum number of properties of this type you must set for a given file.
+  Lets specify mandatory properties. If omitted, default value is 0.
+
+$MAX_CARDINALITY
+  Maximum cardinality. Maximum number of properties of this type you can set for a given file.
+  If omitted, default value is infinity.
+
+$IS_INTRINSIC
+  Is this property intrinsic to a file or provided by the user. Default = true.
+
+$IS_WRITABLE
+  Is this property writable. Default = TBD.  //TODO
+
+$INDEXING
+  Values=fulltext, atomic, none, TBD. Default = TBD. //TODO
+
+$RELEVANCE
+  Defines how relevance of the file is affected if a match is found in this field. Default = 1.0
+
+$COMMENT
+  Developer comment. Users won't see this.

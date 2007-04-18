@@ -32,7 +32,7 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["album"] = r.registerField("audio.album", FieldRegister::stringType, 1, 0);
     fields["artist"] = r.registerField("audio.artist", FieldRegister::stringType,
         1, 0);
-    fields["genre"] = r.registerField("audio.genre", FieldRegister::stringType, 1, 0);
+    fields["genre"] = r.registerField("content.genre", FieldRegister::stringType, 1, 0);
     fields["codec"] = r.registerField("media.codec", FieldRegister::stringType, 1, 0);
 }
 
