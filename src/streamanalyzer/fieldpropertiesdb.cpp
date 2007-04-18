@@ -8,6 +8,7 @@
 #include "stgdirent.h"
 #endif
 #include <sys/stat.h>
+#include <config.h>
 using namespace Strigi;
 using namespace std;
 
@@ -62,7 +63,7 @@ FieldPropertiesDb::Private::Private() {
     if (dirpath) {
         d = getdirs(dirpath);
     } else {
-        d = getdirs("/usr/local/share:/usr/share");
+        d = getdirs(INSTALLDIR "/share:/usr/local/share:/usr/share");
     }
     copy(d.begin(), d.end(), back_insert_iterator<vector<string> >(dirs));
     vector<string>::const_iterator i;
