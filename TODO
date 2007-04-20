@@ -1,3 +1,5 @@
+- maintain the version number and check in kdelibs for the right version number
+
 - documentation ( complete apidox )
 - clean up the old tutorials (they're a little confusing at the mo)
 - write new tutorials for the new analyzer types
