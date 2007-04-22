@@ -24,11 +24,6 @@
 
 #include "strigiconfig.h"
 
-#ifdef _WIN32
-typedef unsigned int uid_t;
-typedef unsigned int gid_t;
-#endif
-
 namespace Strigi {
     class AnalyzerConfiguration;
 
@@ -45,45 +40,6 @@ namespace Strigi {
         through a pipe.
       - no need to spawn a separate process
 **/
-class STREAMANALYZER_EXPORT FileListerDep {
-private:
-    char* path;
-    uint length;
-    uid_t uid;
-    gid_t gid;
-    time_t m_oldestdate;
-    void (*m_fileCallback)(const char* fullpath, uint dirlen, uint len,
-        time_t mtime);
-    void (*m_dirCallback)(const char* fullpath,  uint len);
-
-    char* resize(uint len);
-    void walk_directory(uint len);
-
-    Strigi::AnalyzerConfiguration& m_config;
-public:
-    explicit FileListerDep(Strigi::AnalyzerConfiguration& ic);
-    ~FileListerDep();
-    /**
-     * Specify the callback function that reports the files found.
-         **/
-    void setFileCallbackFunction(void (*callback)(const char* fullpath,
-            uint dirlen, uint len, time_t mtime)) {
-        m_fileCallback = callback;
-    }
-
-    void setDirCallbackFunction(
-            void (*callback)(const char* fullpath, uint len)) {
-        m_dirCallback = callback;
-    }
-
-    /**
-     * List all the files in directory dir that have been modified more
-     * recently then oldestdate.
-     * dir should end with a /
-     * on windows the root directory must be formatted like c:/ or c:\
-     **/
-    void listFiles(const char *dir, time_t oldestdate = 0);
-};
 
 /*!
 * @param path string containing path to check
