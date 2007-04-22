@@ -164,8 +164,10 @@ Strigi::FileLister::Private::nextFile() {
             //printf("read %i %s\n", sl, path);
             if (lstat(path, &dirstat) == 0) {
                 if (S_ISREG(dirstat.st_mode)) {
+                    mtime = dirstat.st_mtime;
                     return sl;
                 } else if (dirstat.st_mode & S_IFDIR) {
+                    mtime = dirstat.st_mtime;
                     strcpy(this->path+sl, "/");
                     DIR* d = opendir(path);
                     if (d) {
