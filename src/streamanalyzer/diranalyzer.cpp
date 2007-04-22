@@ -45,12 +45,12 @@ DirAnalyzer::Private::analyze() {
         while (r >= 0) {
             if (r > 0) {
                 AnalysisResult analysisresult(path, mtime, writer, analyzer);
-/*                FileInputStream file(path.c_str());
+                FileInputStream file(path.c_str());
                 if (file.status() == Ok) {
                     analysisresult.index(&file);
-                } else {*/
+                } else {
                     analysisresult.index(0);
-               // }
+                }
             }
             r = lister.nextFile(path, mtime);
         }
