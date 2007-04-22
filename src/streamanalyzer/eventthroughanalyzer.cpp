@@ -23,6 +23,7 @@ EventThroughAnalyzer::setIndexable(AnalysisResult* r) {
 }
 InputStream*
 EventThroughAnalyzer::connectInputStream(InputStream* in) {
+    if (!in) return in;
     if (datastream) {
         delete datastream;
         datastream = 0;

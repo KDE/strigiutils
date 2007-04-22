@@ -379,6 +379,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     } else {
         // indicate that we have no data in the stream
         headersize = -1;
+        finished = true;
     }
     int es = 0, size = eIter->size();
     while (!finished && es != size) {
