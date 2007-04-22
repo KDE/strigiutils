@@ -34,7 +34,6 @@
 #include <unistd.h>
 
 using namespace std;
-using namespace Strigi;
 
 PollingListener* PollingListener::workingPoller;
 
@@ -109,8 +108,8 @@ void PollingListener::poll ()
     set<string> watches;
 
     assert(m_pindexerconfiguration);
-    FileLister lister (*m_pindexerconfiguration);
-    lister.setFileCallbackFunction(&fileCallback);
+    Strigi::FileLister lister (m_pindexerconfiguration);
+//    lister.setFileCallbackFunction(&fileCallback);
 
     m_toIndex.clear();
 
@@ -137,7 +136,16 @@ void PollingListener::poll ()
         else
         {
             closedir( dir);
-            lister.listFiles(iter->c_str());
+            lister.startListing(iter->c_str());
+            string path;
+            time_t mtime;
+            int r = lister.nextFile(path, mtime);
+            while (r >= 0) {
+                if (r > 0) {
+                    m_toIndex.insert(make_pair(path, mtime));
+                }
+                r = lister.nextFile(path, mtime);
+            }
         }
     }
 
@@ -256,10 +264,4 @@ void PollingListener::setIndexedDirectories (const set<string>& dirs)
 void
 PollingListener::fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
 {
-    if (strstr(path, "/.")) return;
-
-    string file (path,len);
-
-    (workingPoller->m_toIndex).insert (make_pair(file, mtime));
-
 }

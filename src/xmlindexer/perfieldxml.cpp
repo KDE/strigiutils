@@ -24,8 +24,9 @@
 #include "strigiconfig.h"
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "analyzerconfiguration.h"
+#include "xmlindexwriter.h"
 #include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
 #include "streamlineanalyzer.h"
@@ -43,6 +44,7 @@
 #endif
 
 #include <sstream>
+#include <iostream>
 #include <fstream>
 #include <set>
 using namespace Strigi;
@@ -171,9 +173,22 @@ main(int argc, char** argv) {
             return 1;
         }
     }
+
+    const TagMapping mapping(mappingFile);
+    ostringstream out;
+    out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
+        << mapping.map("metadata");
+    map<string, string>::const_iterator i = mapping.namespaces().begin();
+    while (i != mapping.namespaces().end()) {
+        out << " xmlns:" << i->first << "='" << i->second << "'";
+        i++;
+    }
+    out << ">\n";
+
     ostringstream s;
     SelectedFieldConfiguration ic(analyzers);
-    Indexer indexer(s, ic, mappingFile);
+    XmlIndexWriter writer(s, mapping);
+    DirAnalyzer analyzer(writer, &ic);
     if (!ic.valid()) {
         set<string>::const_iterator i;
         set<string> missing;
@@ -197,7 +212,7 @@ main(int argc, char** argv) {
         return 1;
     }
     chdir(argv[1]);
-    indexer.index(targetFile);
+    analyzer.analyzeDir(targetFile);
     string str = s.str();
     int32_t n = 2*str.length();
 

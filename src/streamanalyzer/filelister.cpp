@@ -39,7 +39,6 @@
 #endif
 
 using namespace std;
-using namespace Strigi;
 
 string fixPath (string path)
 {
@@ -66,7 +65,7 @@ string fixPath (string path)
     return temp;
 }
 
-FileLister::FileLister(AnalyzerConfiguration& ic) :m_config(ic) {
+FileListerDep::FileListerDep(Strigi::AnalyzerConfiguration& ic) :m_config(ic) {
     m_fileCallback = 0;
     m_dirCallback = 0;
     path = 0;
@@ -79,13 +78,13 @@ FileLister::FileLister(AnalyzerConfiguration& ic) :m_config(ic) {
     gid = getegid();
 #endif
 }
-FileLister::~FileLister() {
+FileListerDep::~FileListerDep() {
     if (length) {
         free(path);
     }
 }
 void
-FileLister::listFiles(const char *dir, time_t oldestdate) {
+FileListerDep::listFiles(const char *dir, time_t oldestdate) {
     if (m_fileCallback == 0) return;
     fprintf(stderr, "listFiles %s\n", dir);
     m_oldestdate = oldestdate;
@@ -103,7 +102,7 @@ FileLister::listFiles(const char *dir, time_t oldestdate) {
     walk_directory(len);
 }
 char*
-FileLister::resize(uint len) {
+FileListerDep::resize(uint len) {
     if (len > length) {
         length = len + 100;
         path = (char*) realloc(path, length);
@@ -114,7 +113,7 @@ FileLister::resize(uint len) {
  * Walk through a directory. The directory name must end in a '/'.
  **/
 void
-FileLister::walk_directory(uint len) {
+FileListerDep::walk_directory(uint len) {
     //bool expandedPath = false;
     DIR *dir;
     struct dirent *subdir;
@@ -193,4 +192,146 @@ FileLister::walk_directory(uint len) {
     closedir(dir);
     // go back to where we came from
     //chdir("..");
+}
+class Strigi::FileLister::Private {
+public:
+    char path[10000];
+    pthread_mutex_t mutex;
+    DIR** dirs;
+    DIR** dirsEnd;
+    DIR** curDir;
+    int* len;
+    int* lenEnd;
+    int* curLen;
+    time_t mtime;
+    struct dirent* subdir;
+    struct stat dirstat;
+    const Strigi::AnalyzerConfiguration* const config;
+
+    Private(const Strigi::AnalyzerConfiguration* ic);
+    ~Private();
+    int nextFile(string& p, time_t& time) {
+        int r;
+        pthread_mutex_lock(&mutex);
+        r = nextFile();
+        if (r > 0) {
+            p.assign(path, r);
+            time = mtime;
+        }
+        pthread_mutex_unlock(&mutex);
+        return r;
+    }
+    void startListing(const std::string&);
+    int nextFile();
+};
+Strigi::FileLister::Private::Private(
+            const Strigi::AnalyzerConfiguration* ic) :
+        config(ic) {
+    pthread_mutex_init(&mutex, 0);
+    int nOpenDirs = 100;
+    dirs = (DIR**)malloc(sizeof(DIR*)*nOpenDirs);
+    dirsEnd = dirs + nOpenDirs;
+    len = (int*)malloc(sizeof(int)*nOpenDirs);
+    lenEnd = len + nOpenDirs;
+}
+void
+Strigi::FileLister::Private::startListing(const string&dir){
+    curDir = dirs;
+    curLen = len;
+    int len = dir.length();
+    *curLen = len;
+    strcpy(path, dir.c_str());
+    if (len) {
+        if (path[len-1] != '/') {
+            path[len++] = '/';
+            path[len] = 0;
+            *curLen = len;
+        }
+        DIR* d = opendir(path);
+        if (d) {
+            *curDir = d;
+        } else {
+            curDir--;
+        }
+    } else {
+        curDir--;
+    }
+}
+Strigi::FileLister::Private::~Private() {
+    fprintf(stderr, "~FileLister\n");
+    while (curDir >= dirs) {
+        if (*curDir) {
+            closedir(*curDir);
+        }
+        curDir--;
+    }
+    free(dirs);
+    free(len);
+    pthread_mutex_destroy(&mutex);
+}
+int
+Strigi::FileLister::Private::nextFile() {
+    //fprintf(stderr, "cD %i\n", curDir-dirs);
+
+    while (curDir >= dirs) {
+        DIR*& dir = *curDir;
+        int l = *curLen;
+        subdir = readdir(dir);
+        while (subdir) {
+            // skip the directories '.' and '..'
+            char c1 = subdir->d_name[0];
+            if (c1 == '.') {
+                char c2 = subdir->d_name[1];
+                if (c2 == '.' || c2 == '\0') {
+                    subdir = readdir(dir);
+                    continue;
+                }
+            }
+            strcpy(path + l, subdir->d_name);
+            int sl = l + strlen(subdir->d_name);
+            //printf("read %i %s\n", sl, path);
+            if (lstat(path, &dirstat) == 0) {
+                if (S_ISREG(dirstat.st_mode)) {
+                    return sl;
+                } else if (dirstat.st_mode & S_IFDIR) {
+                    strcpy(this->path+sl, "/");
+                    DIR* d = opendir(path);
+                    if (d) {
+                        curDir++;
+                        *curDir = d;
+                        curLen++;
+                        *curLen = sl+1;
+                    }
+                }
+            }
+            subdir = readdir(dir);
+        }
+        closedir(dir);
+        curDir--;
+        curLen--;
+    }
+    return -1;
+}
+Strigi::FileLister::FileLister(const Strigi::AnalyzerConfiguration* ic)
+    : p(new Private(ic)) {
+}
+Strigi::FileLister::~FileLister() {
+    delete p;
+}
+void
+Strigi::FileLister::startListing(const string& dir) {
+    p->startListing(dir);
+}
+int
+Strigi::FileLister::nextFile(std::string& path, time_t& time) {
+    return p->nextFile(path, time);
+}
+int
+Strigi::FileLister::nextFile(const char*& path, time_t& time) {
+    int r = p->nextFile();
+    if (r >= 0) {
+        time = p->mtime;
+        path = p->path;
+    }
+    return r;
 }

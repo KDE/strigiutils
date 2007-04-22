@@ -7,7 +7,6 @@ include_directories(
 
 add_executable(xmlindexer
         xmlindexer.cpp
-        indexer.cpp
         tagmapping.cpp
 	xmlindexwriter.cpp
 )
@@ -18,17 +17,16 @@ install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 
 add_executable(peranalyzerxml
 	peranalyzerxml.cpp
-	indexer.cpp
 	tagmapping.cpp
 	xmlindexwriter.cpp
 )
 target_link_libraries(peranalyzerxml streamanalyzer)
 
-add_executable(peranalyzerxml peranalyzerxml.cpp indexer.cpp xmlindexwriter.cpp
+add_executable(peranalyzerxml peranalyzerxml.cpp xmlindexwriter.cpp
     tagmapping.cpp)
 target_link_libraries(peranalyzerxml streamanalyzer)
 
-add_executable(perfieldxml perfieldxml.cpp indexer.cpp xmlindexwriter.cpp
+add_executable(perfieldxml perfieldxml.cpp xmlindexwriter.cpp
     tagmapping.cpp)
 target_link_libraries(perfieldxml streamanalyzer)
 

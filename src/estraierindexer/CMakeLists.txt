@@ -12,6 +12,6 @@ add_library(estraierindex
 
 target_link_libraries(estraierindex streamanalyzer ${EST_LIBS})
 
-add_executable(estraierindexer estraierindexer.cpp indexer.cpp)
+add_executable(estraierindexer estraierindexer.cpp)
 target_link_libraries(estraierindexer estraierindex)
 

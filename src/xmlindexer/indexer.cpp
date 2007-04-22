@@ -22,18 +22,18 @@
 #endif
 
 #include "strigiconfig.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "filelister.h"
 #include "filereader.h"
 #include <iostream>
 #include <sys/stat.h>
 
 using namespace std;
-using namespace Strigi;
 
 Indexer *Indexer::workingIndexer;
 
-Indexer::Indexer(ostream& o, AnalyzerConfiguration& ic, const char* mappingfile)
+Indexer::Indexer(ostream& o, Strigi::AnalyzerConfiguration& ic,
+        const char* mappingfile)
     :out(o), writer(out, mapping), m_indexer(ic), mapping(mappingfile) {
     m_lister = new FileLister(ic);
     m_indexer.setIndexWriter(writer);

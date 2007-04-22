@@ -22,13 +22,14 @@
 
 #include <string>
 #include "streamanalyzer.h"
-//#include "indexwriter.h"
 
+namespace Strigi {
 class FileLister;
+}
 
 class Indexer {
 private:
-    FileLister* m_lister;
+    Strigi::FileLister* m_lister;
     Strigi::IndexWriter& m_writer;
     Strigi::StreamAnalyzer m_indexer;
 

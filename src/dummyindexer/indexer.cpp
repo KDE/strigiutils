@@ -34,7 +34,7 @@ Indexer *Indexer::workingIndexer;
 
 Indexer::Indexer(Strigi::IndexWriter& w, Strigi::AnalyzerConfiguration& c)
         : m_writer(w), m_indexer(c) {
-    m_lister = new FileLister(c);
+    m_lister = new Strigi::FileLister(&c);
     m_indexer.setIndexWriter(w);
 }
 Indexer::~Indexer() {

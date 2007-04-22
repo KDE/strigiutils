@@ -32,7 +32,7 @@ set_target_properties(cluceneindex
 
 target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
 
-add_executable(luceneindexer luceneindexer.cpp indexer.cpp)
+add_executable(luceneindexer luceneindexer.cpp)
 target_link_libraries(luceneindexer cluceneindex)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)

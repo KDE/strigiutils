@@ -19,7 +19,8 @@
  */
 #include "strigiconfig.h"
 #include <CLucene.h>
-#include "indexer.h"
+#include "diranalyzer.h"
+#include "cluceneindexmanager.h"
 #include "analyzerconfiguration.h"
 #include <sys/types.h>
 #include <stgdirent.h>
@@ -60,7 +61,8 @@ main(int argc, char **argv) {
     filters.push_back(make_pair<bool,string>(false,".*"));
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
-    Indexer indexer(argv[1], ic);
-    indexer.index(argv[2]);
+    CLuceneIndexManager manager(argv[1]);
+    Strigi::DirAnalyzer analyzer(*manager.indexWriter(), &ic);
+    analyzer.analyzeDir(argv[2]);
     return 0;
 }

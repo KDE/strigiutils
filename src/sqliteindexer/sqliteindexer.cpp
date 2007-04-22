@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "analyzerconfiguration.h"
 
 int

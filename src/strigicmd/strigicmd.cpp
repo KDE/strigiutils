@@ -24,7 +24,7 @@
 #include <algorithm>
 #include "combinedindexmanager.h"
 #include "analyzerconfiguration.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "strigiconfig.h"
 using namespace std;
 using namespace Strigi;
@@ -107,12 +107,17 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
+
+    IndexManager* manager
+        = CombinedIndexManager::factories()[backend](indexdir.c_str());
+    IndexWriter* writer = manager->indexWriter();
     AnalyzerConfiguration config;
-    Indexer indexer(indexdir, backend, config);
+    DirAnalyzer analyzer(*writer, &config);
     vector<string>::const_iterator j;
     for (j = dirs.begin(); j != dirs.end(); ++j) {
-        indexer.index(j->c_str());
+        analyzer.analyzeDir(j->c_str());
     }
+    delete manager;
 
     return 0;
 }

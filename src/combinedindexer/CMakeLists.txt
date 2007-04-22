@@ -27,6 +27,6 @@ add_library(combinedindex combinedindexmanager.cpp)
 target_link_libraries(combinedindex streamanalyzer grepindex
     ${combinedindex_LIBS})
 
-#add_executable(combinedindexer combinedindexer.cpp indexer.cpp)
+#add_executable(combinedindexer combinedindexer.cpp)
 #target_link_libraries(combinedindexer combinedindex filters)
 

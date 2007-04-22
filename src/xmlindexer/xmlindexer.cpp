@@ -22,8 +22,9 @@
 #endif
 
 #include "strigiconfig.h"
-#include "indexer.h"
+#include "xmlindexwriter.h"
 #include "analyzerconfiguration.h"
+#include "diranalyzer.h"
 #include <iostream>
 #ifdef HAVE_UNISTD_H
  #include <unistd.h>
@@ -76,9 +77,24 @@ main(int argc, char **argv) {
     filters.push_back(make_pair<bool,string>(false,".*"));
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
-    Indexer indexer(cout, ic, mappingfile);
-    for (unsigned i = 0; i < toindex.size(); ++i) {
-        indexer.index(toindex[i]);
+
+    const TagMapping mapping(mappingfile);
+    ostringstream out;
+    out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
+        << mapping.map("metadata");
+    map<string, string>::const_iterator i = mapping.namespaces().begin();
+    while (i != mapping.namespaces().end()) {
+        out << " xmlns:" << i->first << "='" << i->second << "'";
+        i++;
     }
+    out << ">\n";
+
+    XmlIndexWriter writer(cout, mapping);
+    Strigi::DirAnalyzer analyzer(writer, &ic);
+    for (unsigned i = 0; i < toindex.size(); ++i) {
+        analyzer.analyzeDir(toindex[i]);
+    }
+    out << "</" << mapping.map("metadata") << ">\n";
+
     return 0;
 }

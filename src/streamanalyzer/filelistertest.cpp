@@ -26,28 +26,11 @@
 #include <vector>
 
 using namespace std;
-using namespace Strigi;
 
 /**
  * This test file can be used to measure the performance of the filelister
  * class. The speed can be compared to e.g. "find [path] -printf ''".
  **/
-
-vector<string> files;
-vector<string> dirs;
-
-void fileCallback(const char* path, uint dirlen, uint len, time_t mtime) {
-    // stupid callback, used to test a situation similar to inotify's memory leak
-    string file (path, len);
-    files.push_back(file);
-}
-
-void dirCallback(const char* path, uint len)
-{
-    // stupid callback, used to test a situation similar to inotify's memory leak
-    string dir (path, len);
-    dirs.push_back(dir);
-}
 
 int
 main(int argc, char** argv) {
@@ -57,12 +40,24 @@ main(int argc, char** argv) {
 
 //  TODO add the rules to the indexerconfiguration
 
-    AnalyzerConfiguration ic;
-    FileLister lister (ic);
-    lister.setFileCallbackFunction(&fileCallback);
-    lister.setDirCallbackFunction(&dirCallback);
 
-    lister.listFiles(argv[1]);
+    Strigi::AnalyzerConfiguration ic;
+    Strigi::FileLister lister(&ic);
+
+    lister.startListing(argv[1]);
+    string path;
+    time_t mtime;
+    vector<string> files;
+    vector<string> dirs;
+    int r = lister.nextFile(path, mtime);
+    while (r >= 0) {
+        if (r > 0) {
+            files.push_back(path);
+        } else {
+            dirs.push_back(path);
+        }
+        r = lister.nextFile(path, mtime);
+    }
 
     printf ("files:\n");
     for (unsigned int i = 0; i < files.size(); i++)

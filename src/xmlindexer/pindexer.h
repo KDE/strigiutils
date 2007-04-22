@@ -17,18 +17,32 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
-#include "diranalyzer.h"
+#ifndef PINDEXER_H
+#define PINDEXER_H
 
-int
-main(int argc, char **argv) {
-    if (argc != 3) {
-        printf("Usage: %s [indexdir] [dir-to-index]\n", argv[0]);
-        return -1;
-    }
+#include <string>
+#include "streamanalyzer.h"
+#include "xmlindexwriter.h"
 
-    AnalyzerConfiguration ic;
-    Indexer indexer(argv[1], ic);
-    indexer.index(argv[2]);
-    return 0;
-}
+class FileLister;
+
+class PIndexer {
+private:
+    std::ostream& out;
+    FileLister* m_lister;
+    XmlIndexWriter writer;
+    Strigi::StreamAnalyzer m_indexer;
+    const TagMapping mapping;
+
+    static void addFileCallback(const char* fullpath, unsigned dirlen,
+        unsigned len, time_t mtime);
+    static PIndexer *workingIndexer;
+    void doFile(const char* filepath);
+public:
+    PIndexer(std::ostream& out, Strigi::AnalyzerConfiguration&,
+        const char* mappingfile, int nthreads);
+    ~PIndexer();
+    void index(const char *dir);
+};
+
+#endif

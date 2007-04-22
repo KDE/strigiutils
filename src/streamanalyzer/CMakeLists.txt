@@ -13,6 +13,7 @@ set(streamanalyzer_SRCS
 	analyzerconfiguration.cpp
 	analyzerloader.cpp
 	digesteventanalyzer.cpp
+	diranalyzer.cpp
 	eventthroughanalyzer.cpp
 	fieldproperties.cpp
 	fieldpropertiesdb.cpp
@@ -67,7 +68,8 @@ set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES} )
 if(HAVE_LIBDL)
         set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
 endif(HAVE_LIBDL)
-target_link_libraries(streamanalyzer ${streamanalyzer_libs} pdfstream)
+target_link_libraries(streamanalyzer ${streamanalyzer_libs} pdfstream
+	${CMAKE_THREAD_LIBS_INIT})
 
 install(FILES
 	analysisresult.h

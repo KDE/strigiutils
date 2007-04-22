@@ -31,6 +31,7 @@ typedef unsigned int gid_t;
 
 namespace Strigi {
     class AnalyzerConfiguration;
+
 }
 
 /**
@@ -44,7 +45,7 @@ namespace Strigi {
         through a pipe.
       - no need to spawn a separate process
 **/
-class STREAMANALYZER_EXPORT FileLister {
+class STREAMANALYZER_EXPORT FileListerDep {
 private:
     char* path;
     uint length;
@@ -60,8 +61,8 @@ private:
 
     Strigi::AnalyzerConfiguration& m_config;
 public:
-    explicit FileLister(Strigi::AnalyzerConfiguration& ic);
-    ~FileLister();
+    explicit FileListerDep(Strigi::AnalyzerConfiguration& ic);
+    ~FileListerDep();
     /**
      * Specify the callback function that reports the files found.
          **/
@@ -91,4 +92,32 @@ public:
 */
 STREAMANALYZER_EXPORT std::string fixPath (std::string path);
 
+namespace Strigi {
+
+
+class STREAMANALYZER_EXPORT FileLister {
+private:
+    class Private;
+    Private* p;
+public:
+    FileLister(const Strigi::AnalyzerConfiguration* ic=0);
+    ~FileLister();
+
+    void startListing(const std::string& dir);
+
+    /**
+     * Thread-safe function for getting the next filename.
+     @return length of the path assigned to the path variable or -1 if
+             an error occurred
+     */
+    int nextFile(std::string& path, time_t& time);
+
+    /**
+     Tread-unsafe version to loop through all files.
+     @return length of the path assigned to the path variable or -1 if
+             an error occurred
+     **/
+    int nextFile(const char*& path, time_t& time);
+};
+}
 #endif

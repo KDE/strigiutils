@@ -21,14 +21,13 @@
 #include "indexer.h"
 #include "filelister.h"
 #include "combinedindexmanager.h"
-using namespace Strigi;
 using namespace std;
 
 Indexer* Indexer::workingIndexer;
 
 Indexer::Indexer(const string&id, const string& backend,
          Strigi::AnalyzerConfiguration& ac)
-        : indexdir(id), config(ac), analyzer(new StreamAnalyzer(ac)) {
+        : indexdir(id), config(ac), analyzer(new Strigi::StreamAnalyzer(ac)) {
     manager = CombinedIndexManager::factories()[backend](indexdir.c_str());
     analyzer->setIndexWriter(*manager->indexWriter());
     lister = new FileLister(config);

@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "indexer.h"
 #include "dummyindexwriter.h"
 #include "streamanalyzer.h"
 #include "analyzerconfiguration.h"
 #include "streamendanalyzer.h"
+#include "diranalyzer.h"
 using namespace Strigi;
 using namespace std;
 
@@ -68,7 +68,7 @@ main(int argc, char **argv) {
 
     DummyIndexWriter writer(1);
     FindIndexerConfiguration conf;
-    Indexer indexer(writer, conf);
-    indexer.index(path);
+    DirAnalyzer analyzer(writer, &conf);
+    analyzer.analyzeDir(path);
     return 0;
 }

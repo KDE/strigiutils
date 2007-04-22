@@ -34,8 +34,6 @@ namespace Strigi {
     class AnalyzerConfiguration;
 }
 class IndexScheduler : public StrigiThread {
-friend bool addFileCallback(const char* path, unsigned dirlen, unsigned len,
-        time_t mtime);
 private:
     std::set<std::string> dirstoindex;
     Strigi::IndexManager* indexmanager;
@@ -49,8 +47,6 @@ private:
     void* run(void*);
     void index();
 public:
-    static void addFileCallback(const char* path, unsigned dirlen, unsigned len,
-        time_t mtime);
     IndexScheduler();
     void addDirToIndex(const std::string& d) {
         dirstoindex.insert(d);

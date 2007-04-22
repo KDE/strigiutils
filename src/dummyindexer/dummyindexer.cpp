@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "dummyindexwriter.h"
 #include "analyzerconfiguration.h"
 
@@ -46,7 +46,7 @@ main(int argc, char **argv) {
 
     DummyIndexWriter writer(verbosity);
     Strigi::AnalyzerConfiguration ic;
-    Indexer indexer(writer, ic);
-    indexer.index(argv[argc-1]);
+    Strigi::DirAnalyzer analyzer(writer, &ic);
+    analyzer.analyzeDir(argv[argc-1]);
     return 0;
 }

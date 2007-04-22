@@ -19,7 +19,7 @@
  */
 #include "strigiconfig.h"
 #include "grepindexwriter.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
 using namespace Strigi;
@@ -72,13 +72,13 @@ main(int argc, char** argv) {
     }
     GrepIndexWriter writer(argv[1]);
 
-    Indexer indexer(writer, ic);
+    DirAnalyzer analyzer(writer, &ic);
     if (argc > 2) {
         for (int32_t i=2; i<argc; ++i) {
-            indexer.index(argv[i]);
+            analyzer.analyzeDir(argv[i]);
         }
     } else {
-        indexer.index(".");
+        analyzer.analyzeDir(".");
     }
     return 0;
 }

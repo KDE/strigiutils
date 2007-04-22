@@ -24,13 +24,14 @@
 #include "strigiconfig.h"
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
-#include "indexer.h"
+#include "diranalyzer.h"
 #include "analyzerconfiguration.h"
 #include "streamendanalyzer.h"
 #include "streamthroughanalyzer.h"
 #include "streamlineanalyzer.h"
 #include "streamsaxanalyzer.h"
 #include "streameventanalyzer.h"
+#include "xmlindexwriter.h"
 
 #include <cstdio>
 #include <cstring>
@@ -41,7 +42,7 @@
 #ifdef HAVE_DIRECT_H
  #include <direct.h>
 #endif
-
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <set>
@@ -206,9 +207,21 @@ main(int argc, char** argv) {
         return 1;
     }
 
-    ostringstream s;
+    const TagMapping mapping(mappingFile);
+    ostringstream out;
+    out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
+        << mapping.map("metadata");
+    map<string, string>::const_iterator i = mapping.namespaces().begin();
+    while (i != mapping.namespaces().end()) {
+        out << " xmlns:" << i->first << "='" << i->second << "'";
+        i++;
+    }
+    out << ">\n";
+
     SelectedAnalyzerConfiguration ic(analyzers);
-    Indexer indexer(s, ic, mappingFile);
+
+    XmlIndexWriter writer(out, mapping);
+    DirAnalyzer analyzer(writer, &ic);
     if (!ic.valid()) {
         set<string>::const_iterator i;
         set<string> missing;
@@ -237,12 +250,12 @@ main(int argc, char** argv) {
     string targetPath(targetFile);
     string::size_type slashpos = targetPath.rfind('/');
     if (slashpos == string::npos) {
-         indexer.index(targetFile);
+         analyzer.analyzeDir(targetFile);
     } else {
          chdir(targetPath.substr(0,slashpos).c_str());
-         indexer.index(targetPath.substr(slashpos+1).c_str());
+         analyzer.analyzeDir(targetPath.substr(slashpos+1).c_str());
     }
-    string str = s.str();
+    string str = out.str();
     int32_t n = 2*str.length();
 
     // if no reference file was specified, we output the analysis
@@ -258,8 +271,8 @@ main(int argc, char** argv) {
         fprintf(stderr, "Error: %s\n", f.error());
         return -1;
     }
-    if (n != (int32_t)s.str().length()) {
-        printf("output length differs %i instead of %i\n", n, s.str().length());
+    if (n != (int32_t)out.str().length()) {
+        printf("output length differs %i instead of %i\n", n, out.str().length());
     }
 
     const char* p1 = c;

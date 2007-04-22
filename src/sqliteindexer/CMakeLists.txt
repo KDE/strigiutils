@@ -12,6 +12,6 @@ add_library(sqliteindex
 
 target_link_libraries(sqliteindex streamanalyzer ${SQLITE_LIBRARIES})
 
-add_executable(sqliteindexer sqliteindexer.cpp indexer.cpp)
+add_executable(sqliteindexer sqliteindexer.cpp)
 target_link_libraries(sqliteindexer sqliteindex sqlite3)
 
