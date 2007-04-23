@@ -23,6 +23,7 @@
 #endif
 
 #include "strigiconfig.h"
+#include "strigi_thread.h"
 #include "filelister.h"
 #include "analyzerconfiguration.h"
 #include <sys/types.h>
@@ -65,7 +66,7 @@ string fixPath (string path)
 class Strigi::FileLister::Private {
 public:
     char path[10000];
-    pthread_mutex_t mutex;
+    STRIGI_MUTEX_DEFINE(mutex);
     DIR** dirs;
     DIR** dirsEnd;
     DIR** curDir;
@@ -81,13 +82,13 @@ public:
     ~Private();
     int nextFile(string& p, time_t& time) {
         int r;
-        pthread_mutex_lock(&mutex);
+        STRIGI_MUTEX_LOCK(&mutex);
         r = nextFile();
         if (r > 0) {
             p.assign(path, r);
             time = mtime;
         }
-        pthread_mutex_unlock(&mutex);
+        STRIGI_MUTEX_UNLOCK(&mutex);
         return r;
     }
     void startListing(const std::string&);
@@ -96,7 +97,7 @@ public:
 Strigi::FileLister::Private::Private(
             const Strigi::AnalyzerConfiguration* ic) :
         config(ic) {
-    pthread_mutex_init(&mutex, 0);
+    STRIGI_MUTEX_INIT(&mutex);
     int nOpenDirs = 100;
     dirs = (DIR**)malloc(sizeof(DIR*)*nOpenDirs);
     dirsEnd = dirs + nOpenDirs;
@@ -104,7 +105,7 @@ Strigi::FileLister::Private::Private(
     lenEnd = len + nOpenDirs;
 }
 void
-Strigi::FileLister::Private::startListing(const string&dir){
+Strigi::FileLister::Private::startListing(const string& dir){
     curDir = dirs;
     curLen = len;
     int len = dir.length();
@@ -135,14 +136,13 @@ Strigi::FileLister::Private::~Private() {
     }
     free(dirs);
     free(len);
-    pthread_mutex_destroy(&mutex);
+    STRIGI_MUTEX_DESTROY(&mutex);
 }
 int
 Strigi::FileLister::Private::nextFile() {
-    //fprintf(stderr, "cD %i\n", curDir-dirs);
 
     while (curDir >= dirs) {
-        DIR*& dir = *curDir;
+        DIR* dir = *curDir;
         int l = *curLen;
         subdir = readdir(dir);
         while (subdir) {
@@ -157,20 +157,22 @@ Strigi::FileLister::Private::nextFile() {
             }
             strcpy(path + l, subdir->d_name);
             int sl = l + strlen(subdir->d_name);
-            //printf("read %i %s\n", sl, path);
             if (lstat(path, &dirstat) == 0) {
                 if (S_ISREG(dirstat.st_mode)) {
-                    mtime = dirstat.st_mtime;
-                    return sl;
-                } else if (dirstat.st_mode & S_IFDIR) {
+                    if (config == 0 || config->indexFile(path, path+sl)) {
+                        mtime = dirstat.st_mtime;
+                        return sl;
+                    }
+                } else if (dirstat.st_mode & S_IFDIR && (config == 0
+                        || config->indexDir(path, path+sl))) {
                     mtime = dirstat.st_mtime;
                     strcpy(this->path+sl, "/");
                     DIR* d = opendir(path);
                     if (d) {
                         curDir++;
-                        *curDir = d;
                         curLen++;
-                        *curLen = sl+1;
+                        dir = *curDir = d;
+                        l = *curLen = sl+1;
                     }
                 }
             }

@@ -79,22 +79,21 @@ main(int argc, char **argv) {
     ic.setFilters(filters);
 
     const TagMapping mapping(mappingfile);
-    ostringstream out;
-    out << "<?xml version='1.0' encoding='UTF-8'?>\n<"
+    cout << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");
     map<string, string>::const_iterator i = mapping.namespaces().begin();
     while (i != mapping.namespaces().end()) {
-        out << " xmlns:" << i->first << "='" << i->second << "'";
+        cout << " xmlns:" << i->first << "='" << i->second << "'";
         i++;
     }
-    out << ">\n";
+    cout << ">\n";
 
     XmlIndexWriter writer(cout, mapping);
     Strigi::DirAnalyzer analyzer(writer, &ic);
     for (unsigned i = 0; i < toindex.size(); ++i) {
         analyzer.analyzeDir(toindex[i]);
     }
-    out << "</" << mapping.map("metadata") << ">\n";
+    cout << "</" << mapping.map("metadata") << ">\n";
 
     return 0;
 }

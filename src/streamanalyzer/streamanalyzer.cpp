@@ -228,7 +228,7 @@ StreamAnalyzerPrivate::initializeEventFactories() {
     list<StreamEventAnalyzerFactory*> plugins
         = moduleLoader->streamEventAnalyzerFactories();
     list<StreamEventAnalyzerFactory*>::iterator i;
-    addFactory(new DigestEventAnalyzerFactory());
+//    addFactory(new DigestEventAnalyzerFactory());
     addFactory(new MimeEventAnalyzerFactory());
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
