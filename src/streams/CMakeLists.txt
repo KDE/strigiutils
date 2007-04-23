@@ -54,6 +54,8 @@ set_target_properties(streams PROPERTIES
 
 target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libstreams.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libstreams.pc)
+
 install(FILES
 	archivereader.h
 	bufferedstream.h
@@ -74,6 +76,9 @@ install(TARGETS streams
 	RUNTIME DESTINATION bin
 	ARCHIVE DESTINATION  ${LIB_DESTINATION}
 )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libstreams.pc
+	DESTINATION ${LIB_DESTINATION}/pkgconfig )
 
 add_executable(oletest oletest.cpp)
 target_link_libraries(oletest streams)
