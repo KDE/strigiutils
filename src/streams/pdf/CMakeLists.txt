@@ -1,4 +1,4 @@
-add_subdirectory(txlib)
+#add_subdirectory(txlib)
 
 include_directories(..
 	${strigi_BINARY_DIR}/src/streams/compat
