@@ -26,7 +26,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "odfsaxanalyzer.h"
-
+//#include <iostream.h>
 using namespace Strigi;
 
 static const char *dcNS = "http://purl.org/dc/elements/1.1/";
@@ -95,8 +95,38 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
             m_currentField = m_factory->keywordField;
         } else if(strcmp(localname, "generator") == 0) {
 	    m_currentField = m_factory->generatorField;
+	} else if(strcmp(localname, "document-statistic")==0) {
+	   for(int i = 0 ; i < nb_attributes ;i++)
+	   	{
+		   if(strcmp(attributes[3+i*4], metaNS) ==0) {
+			const char *attrName(attributes[1+i*4]);
+			//cout <<" attributes[3+i*4].size() :"<<strlen(attributes[3+i*4])<<endl;
+			//cout <<" attributes[4+i*4].size() :"<<strlen(attributes[4+i*4])<<endl;
+		   	if(strcmp(attrName, "word-count") ==0 ){
+				//cout<<" word-count !!!!!!!!!!!!!!! \n";
+			}
+			else if(strcmp(attrName, "paragraph-count") ==0 ){
+				//cout<<" paragraph-count !!!!!!!!!\n";
+			}
+                        else if(strcmp(attrName, "page-count") ==0 ){
+                                //cout<<" page-count !!!!!!!!!\n";
+                        }
+                        else if(strcmp(attrName, "image-count") ==0 ){
+                                //cout<<" image-count !!!!!!!!!\n";
+                        }
+                        else if(strcmp(attrName, "character-count") ==0 ){
+                                //cout<<" character-count !!!!!!!!!\n";
+                        }
+                        else if(strcmp(attrName, "object-count") ==0 ){
+                                //cout<<" object-count !!!!!!!!!\n";
+                        }
+                        else if(strcmp(attrName, "table-count") ==0 ){
+                                //cout<<" table-count !!!!!!!!!\n";
+                        }
+		   }
+	   	}
+	   }
 	}
-    }
 }
 
 void OdfSaxAnalyzer::endElement(const char *localname, const char *prefix,
