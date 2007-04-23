@@ -111,25 +111,25 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
 			std::string line(attributes[3+i*5],stringLength);
 
 		   	if(strcmp(attrName, "word-count") ==0 ){
-				m_result->addValue(m_factory->wordcountField, line/*, stringLength*/);
+				m_result->addValue(m_factory->wordcountField, line);
 			}
 			else if(strcmp(attrName, "paragraph-count") ==0 ){
-				m_result->addValue(m_factory->paragcountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->paragcountField,line);
 			}
                         else if(strcmp(attrName, "page-count") ==0 ){
-				m_result->addValue(m_factory->pagecountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->pagecountField,line);
                         }
                         else if(strcmp(attrName, "image-count") ==0 ){
-				m_result->addValue(m_factory->imagecountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->imagecountField,line);
                         }
                         else if(strcmp(attrName, "character-count") ==0 ){
-				m_result->addValue(m_factory->charcountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->charcountField,line);
                         }
                         else if(strcmp(attrName, "object-count") ==0 ){
-				m_result->addValue(m_factory->objectcountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->objectcountField,line);
                         }
                         else if(strcmp(attrName, "table-count") ==0 ){
-				m_result->addValue(m_factory->tablecountField,line/*, stringLength*/);
+				m_result->addValue(m_factory->tablecountField,line);
                         }
 		   }
 	   	}
