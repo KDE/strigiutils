@@ -33,6 +33,7 @@ public:
     const Strigi::RegisteredField *descriptionField;
     const Strigi::RegisteredField *languageField;
     const Strigi::RegisteredField *keywordField;
+    const Strigi::RegisteredField *generatorField;
 
     const char *name() const {
         return "OdfSaxAnalyzer";

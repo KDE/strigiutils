@@ -43,6 +43,7 @@ void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
     descriptionField = reg.registerField("content.description", FieldRegister::stringType, 1, 0);
     languageField = reg.registerField("content.language", FieldRegister::stringType, 1, 0);
     keywordField = reg.registerField("content.keyword", FieldRegister::stringType, 1, 0);
+    generatorField = reg.registerField("generator", FieldRegister::stringType, 1, 0);
 }
 
 Strigi::StreamSaxAnalyzer *OdfSaxAnalyzerFactory::newInstance() const {
@@ -92,7 +93,9 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
             m_currentField = m_factory->creationTimeField;
         } else if(strcmp(localname, "keyword") == 0) {
             m_currentField = m_factory->keywordField;
-        }
+        } else if(strcmp(localname, "generator") == 0) {
+	    m_currentField = m_factory->generatorField;
+	}
     }
 }
 
