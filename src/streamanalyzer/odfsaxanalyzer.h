@@ -34,6 +34,13 @@ public:
     const Strigi::RegisteredField *languageField;
     const Strigi::RegisteredField *keywordField;
     const Strigi::RegisteredField *generatorField;
+    const Strigi::RegisteredField *tablecountField;
+    const Strigi::RegisteredField *pagecountField;
+    const Strigi::RegisteredField *paragcountField;
+    const Strigi::RegisteredField *wordcountField;
+    const Strigi::RegisteredField *charcountField;
+    const Strigi::RegisteredField *objectcountField;
+    const Strigi::RegisteredField *imagecountField;
 
     const char *name() const {
         return "OdfSaxAnalyzer";

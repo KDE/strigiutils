@@ -26,7 +26,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "odfsaxanalyzer.h"
-//#include <iostream.h>
+
 using namespace Strigi;
 
 static const char *dcNS = "http://purl.org/dc/elements/1.1/";
@@ -44,6 +44,13 @@ void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
     languageField = reg.registerField("content.language", FieldRegister::stringType, 1, 0);
     keywordField = reg.registerField("content.keyword", FieldRegister::stringType, 1, 0);
     generatorField = reg.registerField("generator", FieldRegister::stringType, 1, 0);
+    tablecountField = reg.registerField("document.stats.table_count", FieldRegister::stringType, 1, 0);
+    pagecountField = reg.registerField("document.stats.page_count", FieldRegister::stringType, 1, 0);
+    paragcountField = reg.registerField("document.stats.paragraph_count", FieldRegister::stringType, 1, 0);
+    wordcountField = reg.registerField("document.stats.word_count", FieldRegister::stringType, 1, 0);
+    charcountField = reg.registerField("document.stats.char_count", FieldRegister::stringType, 1, 0);
+    objectcountField = reg.registerField("document.stats.object_count", FieldRegister::stringType, 1, 0);
+    imagecountField = reg.registerField("document.stats.image_count", FieldRegister::stringType, 1, 0);
 }
 
 Strigi::StreamSaxAnalyzer *OdfSaxAnalyzerFactory::newInstance() const {
@@ -98,30 +105,31 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
 	} else if(strcmp(localname, "document-statistic")==0) {
 	   for(int i = 0 ; i < nb_attributes ;i++)
 	   	{
-		   if(strcmp(attributes[3+i*4], metaNS) ==0) {
-			const char *attrName(attributes[1+i*4]);
-			//cout <<" attributes[3+i*4].size() :"<<strlen(attributes[3+i*4])<<endl;
-			//cout <<" attributes[4+i*4].size() :"<<strlen(attributes[4+i*4])<<endl;
+		   if(strcmp(attributes[2+i*5], metaNS) ==0) {
+			const char *attrName(attributes[0+i*5]);
+			int stringLength = strlen(attributes[3+i*5]) - strlen(attributes[4+i*5]);
+			std::string line(attributes[3+i*5],stringLength);
+
 		   	if(strcmp(attrName, "word-count") ==0 ){
-				//cout<<" word-count !!!!!!!!!!!!!!! \n";
+				m_result->addValue(m_factory->wordcountField, line/*, stringLength*/);
 			}
 			else if(strcmp(attrName, "paragraph-count") ==0 ){
-				//cout<<" paragraph-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->paragcountField,line/*, stringLength*/);
 			}
                         else if(strcmp(attrName, "page-count") ==0 ){
-                                //cout<<" page-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->pagecountField,line/*, stringLength*/);
                         }
                         else if(strcmp(attrName, "image-count") ==0 ){
-                                //cout<<" image-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->imagecountField,line/*, stringLength*/);
                         }
                         else if(strcmp(attrName, "character-count") ==0 ){
-                                //cout<<" character-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->charcountField,line/*, stringLength*/);
                         }
                         else if(strcmp(attrName, "object-count") ==0 ){
-                                //cout<<" object-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->objectcountField,line/*, stringLength*/);
                         }
                         else if(strcmp(attrName, "table-count") ==0 ){
-                                //cout<<" table-count !!!!!!!!!\n";
+				m_result->addValue(m_factory->tablecountField,line/*, stringLength*/);
                         }
 		   }
 	   	}
