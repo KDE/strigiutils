@@ -32,3 +32,18 @@ Name=Table count
 TypeUri=integer
 Description=Document table count
 Comment=per ODF spec
+
+[Field]
+Uri=document.stats.object_count
+Name=Object count
+TypeUri=integer
+Description=Document object count
+Comment=per ODF spec
+
+[Field]
+Uri=document.stats.image_count
+Name=Image count
+TypeUri=integer
+Description=Document image count
+Comment=per ODF spec
+
