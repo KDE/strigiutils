@@ -82,7 +82,7 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
 
     lister.startListing(dir);
     if (nthreads < 1) nthreads = 1;
-    vector<pthread_t> threads;
+    vector<STRIGI_THREAD_TYPE> threads;
     threads.resize(nthreads-1);
     for (int i=1; i<nthreads; i++) {
         STRIGI_THREAD_CREATE(&threads[i-1], ::analyze, this);

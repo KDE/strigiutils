@@ -50,7 +50,7 @@
 
     #define STRIGI_THREAD_DEFINE(x) HANDLE x
     #define STRIGI_THREAD_TYPE HANDLE
-    #define STRIGI_THREAD_CREATE(threadObject, rfunction, data) ((*(threadObject)=CreateThread( NULL, 0, rfunction,  data, 0, NULL))==NULL?-1:0)
+    #define STRIGI_THREAD_CREATE(threadObject, rfunction, data) ((*(threadObject)=CreateThread( NULL, 0, (LPTHREAD_START_ROUTINE)rfunction,  data, 0, NULL))==NULL?-1:0)
     #define STRIGI_THREAD_FUNCTION(functionName, param) DWORD WINAPI functionName(LPVOID param)
     #define STRIGI_THREAD_JOIN(object) WaitForSingleObject (object, INFINITE)
     #define STRIGI_THREAD_EXIT(ret) ExitThread(ret)
