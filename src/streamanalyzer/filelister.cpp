@@ -103,6 +103,7 @@ Strigi::FileLister::Private::Private(
     dirsEnd = dirs + nOpenDirs;
     len = (int*)malloc(sizeof(int)*nOpenDirs);
     lenEnd = len + nOpenDirs;
+    curDir = dirs - 1;
 }
 void
 Strigi::FileLister::Private::startListing(const string& dir){
