@@ -53,6 +53,7 @@ AuThroughAnalyzer::setIndexable(AnalysisResult* i) {
 
 InputStream*
 AuThroughAnalyzer::connectInputStream(InputStream* in) {
+    if (in == 0) return in;
     const int32_t nreq = 24;
     const char* buf;
     int32_t nread = in->read(buf, nreq, nreq);
