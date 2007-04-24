@@ -158,7 +158,11 @@ Strigi::FileLister::Private::nextFile() {
             }
             strcpy(path + l, subdir->d_name);
             int sl = l + strlen(subdir->d_name);
+#ifdef _WIN32
+            if (stat(path, &dirstat) == 0) {
+#else
             if (lstat(path, &dirstat) == 0) {
+#endif
                 if (S_ISREG(dirstat.st_mode)) {
                     if (config == 0 || config->indexFile(path, path+sl)) {
                         mtime = dirstat.st_mtime;
