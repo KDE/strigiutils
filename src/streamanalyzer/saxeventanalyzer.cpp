@@ -62,25 +62,24 @@ public:
         handler.endElementNs = endElementNsSAX2Func;
     }
     ~Private() {
-        reset();
         vector<StreamSaxAnalyzer*>::iterator s;
         for (s = sax.begin(); s != sax.end(); ++s) {
             delete *s;
         }
-    }
-    void reset() {
         if (ctxt) {
             xmlFreeParserCtxt(ctxt);
-            ctxt = 0;
         }
-        error = false;
     }
     void init(const char* data, int32_t len) {
-        reset();
+        error = false;
         int initlen = (1024 > len) ?len :1024;
         const char* name = result->fileName().c_str();
         xmlKeepBlanksDefault(0);
-        ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
+        if (ctxt) {
+            xmlCtxtResetPush(ctxt, data, initlen, name, 0);
+        } else {
+            ctxt = xmlCreatePushParserCtxt(&handler, this, data, initlen, name);
+        }
         if (ctxt == 0) {
             error = true;
         } else if (len > initlen) {
@@ -138,7 +137,7 @@ SaxEventAnalyzer::Private::endElementNsSAX2Func(void *ctx,
                          (const char *) URI);
     }
 }
-SaxEventAnalyzer::SaxEventAnalyzer(std::vector<StreamSaxAnalyzer*>&s)
+SaxEventAnalyzer::SaxEventAnalyzer(std::vector<StreamSaxAnalyzer*>& s)
     :p(new Private(s)), ready(true) {
 }
 SaxEventAnalyzer::~SaxEventAnalyzer() {
