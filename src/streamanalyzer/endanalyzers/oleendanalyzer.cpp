@@ -113,10 +113,12 @@ tryFIB(AnalysisResult& ar, InputStream* in) {
     while (p < end) {
         switch (*p) {
         case 7: // cell/row end
+        case 11: // ?
         case 12: // Page break / Section mark
         case 13: // Paragraph end
         case 14: // Column end
         case 19: // Field start
+        case 20: // ?
             if (p > d) {
                 text.append(d, p-d);
 	        ar.addText(text.c_str(), text.size());
