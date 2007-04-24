@@ -35,10 +35,12 @@
 
 using namespace std;
 
-void
-printUsage(char** argv) {
+int
+usage(int /*argc*/, char** argv) {
     fprintf(stderr, "Usage: %s [--mappingfile <mappingfile>] "
         "[dirs-or-files-to-index]\n", argv[0]);
+    fprintf(stderr, " -j [threads]  Specify the number of threads to use.\n");
+    return -1;
 }
 bool
 containsHelp(int argc, char **argv) {
@@ -51,25 +53,43 @@ containsHelp(int argc, char **argv) {
 
 int
 main(int argc, char **argv) {
-    if (containsHelp(argc, argv) || argc < 2) {
-        printUsage(argv);
-        return -1;
-    }
-
+    vector<string> dirs;
+    int nthreads = 1;
     const char* mappingfile = 0;
-    vector<const char*> toindex;
-    for (int i = 1; i < argc; ++i) {
-        if (i < argc-1 && strcmp(argv[i], "--mappingfile") == 0) {
-            mappingfile = argv[i+1];
-            i++;
+    int i = 0;
+    while (++i < argc) {
+        const char* arg = argv[i];
+        if (!strcmp("-h", arg) || !strcmp("--help", arg)) {
+            return usage(argc, argv);
+        }
+        if (!strcmp("-j", arg)) {
+            if (++i == argc) {
+                return usage(argc, argv);
+            }
+            char* end;
+            nthreads = strtol(argv[i], &end, 10);
+            if (end == argv[i] || nthreads < 1) {
+                return usage(argc, argv);
+            }
+        } else if (!strcmp("--mappingfile", arg)) {
+            if (++i == argc) {
+                return usage(argc, argv);
+            }
+            mappingfile = argv[i];
         } else {
-            toindex.push_back(argv[i]);
+            dirs.push_back(argv[i]);
         }
     }
-    if (toindex.size() == 0) {
+
+    if (dirs.size() == 0) {
         char buf[1024];
         getcwd(buf, 1023);
-        toindex.push_back(buf);
+        dirs.push_back(buf);
+    }
+
+    if (nthreads > 1) {
+        fprintf(stderr,
+            "WARNING: using more than one thread is still unstable\n");
     }
 
     vector<pair<bool,string> >filters;
@@ -81,17 +101,18 @@ main(int argc, char **argv) {
     const TagMapping mapping(mappingfile);
     cout << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");
-    map<string, string>::const_iterator i = mapping.namespaces().begin();
-    while (i != mapping.namespaces().end()) {
-        cout << " xmlns:" << i->first << "='" << i->second << "'";
-        i++;
+    map<string, string>::const_iterator k = mapping.namespaces().begin();
+    while (k != mapping.namespaces().end()) {
+        cout << " xmlns:" << k->first << "='" << k->second << "'";
+        k++;
     }
     cout << ">\n";
 
     XmlIndexWriter writer(cout, mapping);
     Strigi::DirAnalyzer analyzer(writer, &ic);
-    for (unsigned i = 0; i < toindex.size(); ++i) {
-        analyzer.analyzeDir(toindex[i]);
+    fprintf(stderr, "nthreads %i\n", nthreads);
+    for (unsigned i = 0; i < dirs.size(); ++i) {
+        analyzer.analyzeDir(dirs[i], nthreads);
     }
     cout << "</" << mapping.map("metadata") << ">\n";
 

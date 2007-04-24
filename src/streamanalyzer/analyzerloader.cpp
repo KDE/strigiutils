@@ -19,6 +19,7 @@
  */
 #include "analyzerloader.h"
 #include "analyzerplugin.h"
+#include "strigi_thread.h"
 #include <string>
 #include <cstdio>
 #include <sys/types.h>
@@ -57,9 +58,11 @@ public:
     };
     class ModuleList {
     public:
+        std::map<std::string, Module*> modules;
+        STRIGI_MUTEX_DEFINE(mutex);
+
         ModuleList();
         ~ModuleList();
-        std::map<std::string, Module*> modules;
     };
     static ModuleList modulelist;
     static void loadModule(const char* lib);
@@ -68,6 +71,7 @@ public:
 AnalyzerLoader::Private::ModuleList AnalyzerLoader::Private::modulelist;
 
 AnalyzerLoader::Private::ModuleList::ModuleList() {
+    STRIGI_MUTEX_INIT(&mutex);
 }
 AnalyzerLoader::Private::ModuleList::~ModuleList() {
     map<string, Module*>::iterator i;
@@ -122,9 +126,11 @@ AnalyzerLoader::loadPlugins(const char* d) {
 }
 void
 AnalyzerLoader::Private::loadModule(const char* lib) {
-    if (AnalyzerLoader::Private::modulelist.modules.find(lib)
-            != AnalyzerLoader::Private::modulelist.modules.end()) {
+    //fprintf(stderr, "load lib %s\n", lib);
+    STRIGI_MUTEX_LOCK(&modulelist.mutex);
+    if (modulelist.modules.find(lib) != modulelist.modules.end()) {
         // module was already loaded
+        STRIGI_MUTEX_UNLOCK(&modulelist.mutex);
         return;
     }
     StgModuleType handle;
@@ -134,6 +140,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     handle = LoadLibrary(lib);
 #endif
     if (!handle) {
+        STRIGI_MUTEX_UNLOCK(&modulelist.mutex);
         return;
     }
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())
@@ -145,9 +152,11 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
         fprintf(stderr, "GetLastError: %d\n", GetLastError());
 #endif
         DLCLOSE(handle);
+        STRIGI_MUTEX_UNLOCK(&modulelist.mutex);
         return;
     }
     AnalyzerLoader::Private::modulelist.modules[lib] = new Module(handle, f());
+    STRIGI_MUTEX_UNLOCK(&modulelist.mutex);
 }
 list<StreamEndAnalyzerFactory*>
 AnalyzerLoader::streamEndAnalyzerFactories() {

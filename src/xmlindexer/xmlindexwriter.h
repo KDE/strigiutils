@@ -25,6 +25,7 @@
 #include "tagmapping.h"
 #include "fieldtypes.h"
 #include "analyzerconfiguration.h"
+#include "strigi_thread.h"
 #include <iostream>
 #include <sstream>
 #include <map>
@@ -41,11 +42,13 @@ private:
          std::string close;
     };
 
+    STRIGI_MUTEX_DEFINE(mutex);
     std::ostream& out;
 
     const TagMapping& mapping;
 
     void printText(const std::string& text) {
+        STRIGI_MUTEX_LOCK(&mutex);
         const char* p = text.c_str();
         const char* end = p + text.size();
         char nb = 0;
@@ -54,6 +57,7 @@ private:
             char c = *p;
             if (nb) {
                 if ((0xC0 & c) != 0x80) {
+                    STRIGI_MUTEX_UNLOCK(&mutex);
                     return;
                 }
                 out.put(c);
@@ -86,8 +90,9 @@ private:
             }
             p++;
         }
+        STRIGI_MUTEX_UNLOCK(&mutex);
     }
-    void escape(std::string& value) {
+    static void escape(std::string& value) {
         int namp, nlt, ngt, napos;
         namp = nlt = ngt = napos = 0;
         const char* p = value.c_str();
@@ -278,6 +283,7 @@ protected:
 public:
     explicit XmlIndexWriter(std::ostream& o, const TagMapping& m)
             :out(o), mapping(m) {
+        STRIGI_MUTEX_INIT(&mutex);
     }
     ~XmlIndexWriter() {
          std::vector<Data*>::const_iterator i;
