@@ -25,27 +25,35 @@
 #include "streamanalyzer.h"
 #include "streambase.h"
 #include "textutils.h"
+#include "strigi_thread.h"
 #include <string>
 #include <iconv.h>
 using namespace Strigi;
 using namespace std;
 
 class Latin1Converter {
+    STRIGI_MUTEX_DEFINE(mutex);
     iconv_t const conv;
     char* out;
     size_t outlen;
 
-    int32_t _fromLatin1(const char*& out, const char* data, size_t len);
-    Latin1Converter() :conv(iconv_open("UTF-8", "ISO-8859-1")), outlen(0){}
-    ~Latin1Converter() { iconv_close(conv); free(out); }
+    int32_t _fromLatin1(char*& out, const char* data, size_t len);
+    Latin1Converter() :conv(iconv_open("UTF-8", "ISO-8859-1")), outlen(0) {
+        STRIGI_MUTEX_INIT(&mutex);
+    }
+    ~Latin1Converter() {
+        iconv_close(conv);
+        free(out);
+        STRIGI_MUTEX_DESTROY(&mutex);
+    }
 public:
-    static int32_t fromLatin1(const char*& out, const char* data, int32_t len) {
+    static int32_t fromLatin1(char*& out, const char* data, int32_t len) {
         static Latin1Converter l;
         return l._fromLatin1(out, data, len);
     }
 };
 int32_t
-Latin1Converter::_fromLatin1(const char*& o, const char* data, size_t len) {
+Latin1Converter::_fromLatin1(char*& o, const char* data, size_t len) {
     size_t l = 3*len;
     if (outlen < l) {
         out = (char*)realloc(out, l);
@@ -155,9 +163,9 @@ AnalysisResult::addText(const char* text, int32_t length) {
     if (checkUtf8(text, length)) {
         p->m_writer.addText(this, text, length);
     } else {
-        const char* d;
+        char* d;
         size_t len = Latin1Converter::fromLatin1(d, text, length);
-        if (len) {
+        if (len && checkUtf8(d, len)) {
             p->m_writer.addText(this, d, len);
         } else {
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
@@ -195,9 +203,9 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
     if (checkUtf8(val)) {
         p->m_writer.addValue(this, field, val);
     } else {
-        const char* d;
+        char* d;
         size_t len = Latin1Converter::fromLatin1(d, val.c_str(), val.length());
-        if (len) {
+        if (len && checkUtf8(d, len)) {
             p->m_writer.addValue(this, field, (const unsigned char*)d, len);
         } else {
             fprintf(stderr, "'%s' is not a UTF8 or latin1 string\n",
@@ -211,9 +219,9 @@ AnalysisResult::addValue(const RegisteredField* field,
     if (checkUtf8(data, length)) {
         p->m_writer.addValue(this, field, (const unsigned char*)data, length);
     } else {
-        const char* d;
+        char* d;
         size_t len = Latin1Converter::fromLatin1(d, data, length);
-        if (len) {
+        if (len && checkUtf8(d, len)) {
             p->m_writer.addValue(this, field, (const unsigned char*)d, len);
         } else {
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
