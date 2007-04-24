@@ -54,7 +54,7 @@ Latin1Converter::_fromLatin1(const char*& o, const char* data, size_t len) {
         l = outlen;
     }
     o = out;
-#if defined(_WIN32) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
     const char* inp = (char*)data;
 #else
 	char* inp = (char*)data;
