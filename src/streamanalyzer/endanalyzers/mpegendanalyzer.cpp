@@ -64,8 +64,13 @@ bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
         //cerr << "Not a MPEG-PS file" << endl;
         return false;
     }
-    
-    return true;
+    uint16_t packet = readBigEndianUInt16(header);
+    if (packet) return false;
+    packet = readBigEndianUInt16(header+2);
+    return packet == sequence_start || packet == ext_sequence_start
+        || packet == private1_packet || packet == private2_packet
+        || packet == audio1_packet || packet == audio2_packet
+        || packet == 0x01ba;
 }
 
 char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
@@ -73,20 +78,21 @@ char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return -1;
     }
     
-    if(!this->readMpeg(in) )
-    {
-        //cerr << "Error reading mpeg." << endl;
-        in->reset(0);
+    if(!this->readMpeg(in) ) {
         return -1;
     }
     
-    std::map<std::string, const Strigi::RegisteredField*>tempfields = factory->fields;
+    std::map<std::string, const Strigi::RegisteredField*>tempfields
+        = factory->fields;
     idx.addValue(tempfields["frame rate"], this->frame_rate);
     idx.addValue(tempfields["dimensions.y"], this->vertical_size);
     idx.addValue(tempfields["dimensions.x"], this->horizontal_size);
     
-    if (this->mpeg_version == 1) idx.addValue(tempfields["video codec"], "MPEG-1");
-    else idx.addValue(tempfields["video codec"], "MPEG-2");
+    if (this->mpeg_version == 1) {
+        idx.addValue(tempfields["video codec"], "MPEG-1");
+    } else {
+        idx.addValue(tempfields["video codec"], "MPEG-2");
+    }
 
     switch (this->audio_type)
     {
@@ -136,9 +142,7 @@ bool MpegEndAnalyzer::readMpeg(InputStream* in) {
     const char *buf;
     this->mpeg_version = 0;
     this->audio_type = 0;
-    uint32_t dword = 0,nread = 0;
-
-    
+    uint32_t nread = 0;
     
     //Now that we've established that this is an mpeg file (almost),
     //we search for the audio and video elements
