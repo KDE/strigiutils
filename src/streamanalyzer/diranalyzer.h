@@ -15,7 +15,7 @@ private:
 public:
    DirAnalyzer(IndexWriter& writer, AnalyzerConfiguration* conf = 0);
    ~DirAnalyzer();
-   int analyzeDir(const std::string& dir, int nthreads = 1);
+   int analyzeDir(const std::string& dir, int nthreads = 2);
 };
 }
 #endif

@@ -36,10 +36,11 @@ private:
          std::multimap<const Strigi::RegisteredField*, std::string> values;
          std::string text;
     };
-    std::vector<Data*> data;
+    std::map<STRIGI_THREAD_TYPE, std::vector<Data*> > data;
     struct Tag {
          std::string open;
          std::string close;
+         int refcount;
     };
 
     STRIGI_MUTEX_DEFINE(mutex);
@@ -48,7 +49,6 @@ private:
     const TagMapping& mapping;
 
     void printText(const std::string& text) {
-        STRIGI_MUTEX_LOCK(&mutex);
         const char* p = text.c_str();
         const char* end = p + text.size();
         char nb = 0;
@@ -57,7 +57,6 @@ private:
             char c = *p;
             if (nb) {
                 if ((0xC0 & c) != 0x80) {
-                    STRIGI_MUTEX_UNLOCK(&mutex);
                     return;
                 }
                 out.put(c);
@@ -90,7 +89,6 @@ private:
             }
             p++;
         }
-        STRIGI_MUTEX_UNLOCK(&mutex);
     }
     static void escape(std::string& value) {
         int namp, nlt, ngt, napos;
@@ -112,7 +110,7 @@ private:
                 nb = 2;
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
-            } else if (c <= 8) {
+            } else if (c <= 32) { // TODO make this into general escaping to %xx
                 value = "";
                 return;
             } else if (c == '&') {
@@ -172,11 +170,14 @@ private:
     }
 protected:
     void startAnalysis(const Strigi::AnalysisResult* ar) {
+        STRIGI_MUTEX_LOCK(&mutex);
+        std::vector<Data*>& dv = data[STRIGI_THREAD_SELF()];
+        STRIGI_MUTEX_UNLOCK(&mutex);
         unsigned char depth = ar->depth();
-        if (depth >= data.size()) {
-            data.push_back(new Data());
+        if (depth >= dv.size()) {
+            dv.push_back(new Data());
         }
-        Data* d = data[depth];
+        Data* d = dv[depth];
         ar->setWriterData(d);
     }
     void printValue(const Strigi::RegisteredField* name, std::string& value) {
@@ -185,6 +186,7 @@ protected:
         out << tag->open << value << tag->close;
     }
     void finishAnalysis(const Strigi::AnalysisResult* ar) {
+        STRIGI_MUTEX_LOCK(&mutex);
         Data* d = static_cast<Data*>(ar->writerData());
         const Strigi::FieldRegister& fr = ar->config().fieldRegister();
         std::string v = ar->path();
@@ -219,6 +221,7 @@ protected:
             out << "</text>\n";
         }
         out << " </" << mapping.map("file") << ">\n";
+        STRIGI_MUTEX_UNLOCK(&mutex);
         d->values.clear();
         d->text.assign("");
     }
@@ -286,10 +289,14 @@ public:
         STRIGI_MUTEX_INIT(&mutex);
     }
     ~XmlIndexWriter() {
-         std::vector<Data*>::const_iterator i;
-         for (i = data.begin(); i != data.end(); ++i) {
-             delete *i;
+         std::map<STRIGI_THREAD_TYPE, std::vector<Data*> >::const_iterator j;
+         for (j = data.begin(); j != data.end(); ++j) {
+             std::vector<Data*>::const_iterator i;
+             for (i = j->second.begin(); i != j->second.end(); ++i) {
+                 delete *i;
+             }
          }
+         STRIGI_MUTEX_DESTROY(&mutex);
     }
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}

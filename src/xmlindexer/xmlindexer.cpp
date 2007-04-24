@@ -54,7 +54,7 @@ containsHelp(int argc, char **argv) {
 int
 main(int argc, char **argv) {
     vector<string> dirs;
-    int nthreads = 1;
+    int nthreads = 2;
     const char* mappingfile = 0;
     int i = 0;
     while (++i < argc) {
@@ -87,11 +87,6 @@ main(int argc, char **argv) {
         dirs.push_back(buf);
     }
 
-    if (nthreads > 1) {
-        fprintf(stderr,
-            "WARNING: using more than one thread is still unstable\n");
-    }
-
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
     filters.push_back(make_pair<bool,string>(false,".*"));
@@ -110,7 +105,6 @@ main(int argc, char **argv) {
 
     XmlIndexWriter writer(cout, mapping);
     Strigi::DirAnalyzer analyzer(writer, &ic);
-    fprintf(stderr, "nthreads %i\n", nthreads);
     for (unsigned i = 0; i < dirs.size(); ++i) {
         analyzer.analyzeDir(dirs[i], nthreads);
     }

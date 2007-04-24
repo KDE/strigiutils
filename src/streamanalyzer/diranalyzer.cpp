@@ -19,12 +19,19 @@ public:
             :lister(c), writer(w), config(c) {
     }
     int analyzeDir(const string& dir, int nthreads);
-    void analyze();
+    void analyze(StreamAnalyzer*);
 };
+
+struct DA {
+    StreamAnalyzer* streamanalyzer;
+    DirAnalyzer::Private* diranalyzer;
+};
+
 void*
-analyze(void* d) {
-    DirAnalyzer::Private* a = static_cast<DirAnalyzer::Private*>(d);
-    a->analyze();
+analyzeInThread(void* d) {
+    DA* a = static_cast<DA*>(d);
+    a->diranalyzer->analyze(a->streamanalyzer);
+    delete a;
     STRIGI_THREAD_EXIT(0);
 }
 
@@ -35,16 +42,14 @@ DirAnalyzer::~DirAnalyzer() {
     delete p;
 }
 void
-DirAnalyzer::Private::analyze() {
-    StreamAnalyzer analyzer(*config);
-    analyzer.setIndexWriter(writer);
+DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
     try {
         string path;
         time_t mtime;
         int r = lister.nextFile(path, mtime);
         while (r >= 0) {
             if (r > 0) {
-                AnalysisResult analysisresult(path, mtime, writer, analyzer);
+                AnalysisResult analysisresult(path, mtime, writer, *analyzer);
                 FileInputStream file(path.c_str());
                 if (file.status() == Ok) {
                     analysisresult.index(&file);
@@ -82,14 +87,24 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
 
     lister.startListing(dir);
     if (nthreads < 1) nthreads = 1;
+    vector<StreamAnalyzer*> analyzers(nthreads);
+    for (int i=0; i<nthreads; ++i) {
+        analyzers[i] = new StreamAnalyzer(*config);
+        analyzers[i]->setIndexWriter(writer);
+    }
     vector<STRIGI_THREAD_TYPE> threads;
     threads.resize(nthreads-1);
     for (int i=1; i<nthreads; i++) {
-        STRIGI_THREAD_CREATE(&threads[i-1], ::analyze, this);
+        DA* da = new DA();
+        da->diranalyzer = this;
+        da->streamanalyzer = analyzers[i];
+        STRIGI_THREAD_CREATE(&threads[i-1], analyzeInThread, da);
     }
-    analyze(); 
+    analyze(analyzers[0]); 
+    delete analyzers[0];
     for (int i=1; i<nthreads; i++) {
         STRIGI_THREAD_JOIN(threads[i-1]);
+        delete analyzers[i];
     }
     return 0;
 }
