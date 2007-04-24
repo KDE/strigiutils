@@ -102,6 +102,7 @@ processLine(const char* buf, int32_t bufSize, int32_t offset, int32_t& data) {
 
 InputStream*
 XbmThroughAnalyzer::connectInputStream(InputStream* in) {
+    if (in == 0) return in;
     const int32_t nreq = 16;
     int32_t nextOffset = 0;
     const char* buf;
