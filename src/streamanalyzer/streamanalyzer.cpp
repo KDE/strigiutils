@@ -362,7 +362,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 
     // insert the through analyzers
     vector<StreamThroughAnalyzer*>::iterator ts;
-    for (ts = tIter->begin(); ts != tIter->end(); ++ts) {
+    for (ts = tIter->begin(); (input == 0 || input->status() == Ok)
+            && ts != tIter->end(); ++ts) {
         (*ts)->setIndexable(&idx);
         input = (*ts)->connectInputStream(input);
     }
