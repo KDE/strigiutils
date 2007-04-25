@@ -31,19 +31,29 @@ Strigi::checkUtf8(const char* p, int32_t length) {
     const char* end = p + length;
     // check if the text is valid UTF-8
     char nb = 0;
+    uint64_t val = 0;
     while (p < end) {
         unsigned char c = *p;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
                 return false;
             }
-            nb--;
+            val = (val << 6) + (c & 0x3F);
+            if (--nb == 0) {
+                // check the range of the utf 8 value
+                if (val == 0xFFFE || val == 0xFFFF) { // Noncharacters
+                    return false;
+                }
+            }
         } else if ((0xE0 & c) == 0xC0) {
             nb = 1;
+            val = c & 0x1F;
         } else if ((0xF0 & c) == 0xE0) {
             nb = 2;
+            val = c & 0x0F;
         } else if (c >= 0xF0 && c <= 0xF4) {
             nb = 3;
+            val = c & 0x07;
         } else if (c > 0x7F
                 || (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD))) {
             return false;
@@ -58,7 +68,8 @@ Strigi::checkUtf8(const std::string& p) {
     return checkUtf8(p.c_str(), p.size());
 }
 
-// http://www.w3.org/TR/REC-xml/#charsets
+// http://www.w3.org/TR/REC-xml/#charsetsa
+// http://tools.ietf.org/html/rfc3629
 /**
  * Return the position of the first byte that is not valid
  * utf8. Return value of 0 means that the entire string is valid.
@@ -70,24 +81,36 @@ const char*
 Strigi::checkUtf8(const char* p, int32_t length, char& nb) {
     const char* end = p + length;
     const char* cs = p;
+    uint64_t val = 0;
     // check if the text is valid UTF-8
     nb = 0;
     while (p < end) {
         unsigned char c = *p;
+        //unsigned char d = c & 0xFE;
         if (nb) {
             if ((0xC0 & c) != 0x80) {
                 nb = 0;
                 return p;
             }
-            nb--;
+            val = (val << 6) + (c & 0x3F);
+            if (--nb == 0) {
+                // check the range of the utf 8 value
+                if (val == 0xFFFE || val == 0xFFFF) { // Noncharacters
+                    // nb is 0 to signal an error
+                    return p;
+                }
+            }
         } else if ((0xE0 & c) == 0xC0) {
             cs = p;
+            val = c & 0x1F;
             nb = 1;
         } else if ((0xF0 & c) == 0xE0) {
             cs = p;
+            val = c & 0x0F;
             nb = 2;
         } else if (c >= 0xF0 && c <= 0xF4) {
             cs = p;
+            val = c & 0x07;
             nb = 3;
         } else if (c > 0x7F
                 || (c < 0x20 && !(c == 0x9 || c == 0xA || c == 0xD))) {
