@@ -32,10 +32,10 @@ using namespace Strigi;
 using namespace std;
 
 class Latin1Converter {
-    STRIGI_MUTEX_DEFINE(mutex);
     iconv_t const conv;
     char* out;
     size_t outlen;
+    STRIGI_MUTEX_DEFINE(mutex);
 
     int32_t _fromLatin1(char*& out, const char* data, size_t len);
     Latin1Converter() :conv(iconv_open("UTF-8", "ISO-8859-1")), outlen(0) {
@@ -46,10 +46,19 @@ class Latin1Converter {
         free(out);
         STRIGI_MUTEX_DESTROY(&mutex);
     }
+    static Latin1Converter& converter() {
+        static Latin1Converter l;
+        return l;
+    }
 public:
     static int32_t fromLatin1(char*& out, const char* data, int32_t len) {
-        static Latin1Converter l;
-        return l._fromLatin1(out, data, len);
+        return converter()._fromLatin1(out, data, len);
+    }
+    static void lock() {
+        STRIGI_MUTEX_LOCK(&converter().mutex);
+    }
+    static void unlock() {
+        STRIGI_MUTEX_UNLOCK(&converter().mutex);
     }
 };
 int32_t
@@ -163,6 +172,7 @@ AnalysisResult::addText(const char* text, int32_t length) {
     if (checkUtf8(text, length)) {
         p->m_writer.addText(this, text, length);
     } else {
+        Latin1Converter::lock();
         char* d;
         size_t len = Latin1Converter::fromLatin1(d, text, length);
         if (len && checkUtf8(d, len)) {
@@ -171,6 +181,7 @@ AnalysisResult::addText(const char* text, int32_t length) {
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
                 length, text);
         }
+        Latin1Converter::unlock();
     }
 }
 AnalyzerConfiguration&
@@ -203,6 +214,7 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
     if (checkUtf8(val)) {
         p->m_writer.addValue(this, field, val);
     } else {
+        Latin1Converter::lock();
         char* d;
         size_t len = Latin1Converter::fromLatin1(d, val.c_str(), val.length());
         if (len && checkUtf8(d, len)) {
@@ -211,6 +223,7 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
             fprintf(stderr, "'%s' is not a UTF8 or latin1 string\n",
                 val.c_str());
         }
+        Latin1Converter::unlock();
     }
 }
 void
@@ -219,6 +232,7 @@ AnalysisResult::addValue(const RegisteredField* field,
     if (checkUtf8(data, length)) {
         p->m_writer.addValue(this, field, (const unsigned char*)data, length);
     } else {
+        Latin1Converter::lock();
         char* d;
         size_t len = Latin1Converter::fromLatin1(d, data, length);
         if (len && checkUtf8(d, len)) {
@@ -227,6 +241,7 @@ AnalysisResult::addValue(const RegisteredField* field,
             fprintf(stderr, "'%.*s' is not a UTF8 or latin1 string\n",
                 length, data);
         }
+        Latin1Converter::unlock();
     }
 }
 void
