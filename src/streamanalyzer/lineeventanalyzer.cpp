@@ -43,8 +43,12 @@ using namespace std;
 #define CONVBUFSIZE 65536
 
 LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
-        :line(l), converter((iconv_t)-1), convBuffer(new char[CONVBUFSIZE]),
-         ready(true), initialized(false) {
+        :line(l), converter((iconv_t)-1), numAnalyzers(l.size()),
+         convBuffer(new char[CONVBUFSIZE]), ready(true), initialized(false) {
+    started = new bool[l.size()];
+    for (uint i=0; i<numAnalyzers; ++i) {
+        started[i] = false;
+    }
 }
 LineEventAnalyzer::~LineEventAnalyzer() {
     vector<StreamLineAnalyzer*>::iterator l;
@@ -55,11 +59,12 @@ LineEventAnalyzer::~LineEventAnalyzer() {
         iconv_close(converter);
     }
     delete [] convBuffer;
+    delete [] started;
 }
 void
 LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
     result = r;
-    ready = line.size() == 0;
+    ready = numAnalyzers == 0;
     initialized = false;
     sawCarriageReturn = false;
     missingBytes = 0;
@@ -68,6 +73,9 @@ LineEventAnalyzer::startAnalysis(AnalysisResult* r) {
     byteBuffer.assign("");
     ibyteBuffer.assign("");
     initEncoding(r->encoding());
+    for (uint i=0; i < numAnalyzers; ++i) {
+        started[i] = false;
+    }
 }
 void
 LineEventAnalyzer::initEncoding(std::string enc) {
@@ -96,9 +104,10 @@ LineEventAnalyzer::endAnalysis() {
         lineBuffer.assign("");
     }
 
-    vector<StreamLineAnalyzer*>::iterator l;
-    for (l = line.begin(); l != line.end(); ++l) {
-        (*l)->endAnalysis();
+    for (uint i=0; i < numAnalyzers; ++i) {
+        if (started[i]) {
+            line[i]->endAnalysis();
+        }
     }
 }
 void
@@ -285,9 +294,11 @@ LineEventAnalyzer::emitData(const char*data, uint32_t length) {
     bool more = false;
     vector<StreamLineAnalyzer*>::iterator i;
     if (!initialized) {
-        for (i = line.begin(); i != line.end(); ++i) {
-            (*i)->startAnalysis(result);
-            more = more || !(*i)->isReadyWithStream();
+        for (uint j = 0; j < numAnalyzers; ++j) {
+            StreamLineAnalyzer* s = line[j];
+            s->startAnalysis(result);
+            started[j] = true;
+            more = more || !s->isReadyWithStream();
         }
         initialized = true;
         ready = !more;

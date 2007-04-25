@@ -32,12 +32,14 @@ class StreamLineAnalyzer;
 class LineEventAnalyzer : public StreamEventAnalyzer {
 private:
     std::vector<StreamLineAnalyzer*> line;
+    bool* started;
     std::string byteBuffer;
     std::string ibyteBuffer;
     std::string lineBuffer;
     std::string encoding;
     AnalysisResult* result;
     iconv_t converter;
+    const uint numAnalyzers;
     char* const convBuffer;
     unsigned char iMissingBytes;
     char missingBytes;
