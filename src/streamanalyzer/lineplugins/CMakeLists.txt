@@ -16,3 +16,10 @@ set_target_properties(deb PROPERTIES
 target_link_libraries(deb streamanalyzer)
 install(TARGETS deb LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
+add_library(cpp MODULE cpplineanalyzer.cpp)
+set_target_properties(cpp PROPERTIES
+  PREFIX strigila_
+  VERSION ${STRIGI_VERSION}
+  SOVERSION ${STRIGI_VERSION_MAJOR})
+target_link_libraries(cpp streamanalyzer)
+install(TARGETS cpp LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
