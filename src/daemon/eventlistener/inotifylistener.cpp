@@ -290,12 +290,11 @@ void InotifyListener::watch ()
                     m_toIndex.clear();
                     m_toWatch.clear();
 
-                    FileLister lister(*m_pindexerconfiguration);
+                    FileLister lister(m_pindexerconfiguration);
 
-                    lister.setFileCallbackFunction(&indexFileCallback);
-                    lister.setDirCallbackFunction(&watchDirCallback);
-
-                    lister.listFiles(file.c_str());
+                    //lister.setFileCallbackFunction(&indexFileCallback);
+                    //lister.setDirCallbackFunction(&watchDirCallback);
+                    //lister.listFiles(file.c_str());
 
                     for (map<string,time_t>::iterator i = m_toIndex.begin(); i != m_toIndex.end(); i++)
                     {
@@ -629,18 +628,19 @@ void InotifyListener::bootstrap (const set<string> &dirs) {
     vector<Event*> events;
     map <string, time_t> indexedFiles = m_pIndexReader->files(0);
 
-    FileLister lister (*m_pindexerconfiguration);
+    FileLister lister (m_pindexerconfiguration);
 
     m_toWatch.clear();
     m_toIndex.clear();
 
-    lister.setFileCallbackFunction(&indexFileCallback);
-    lister.setDirCallbackFunction(&watchDirCallback);
+    //lister.setFileCallbackFunction(&indexFileCallback);
+    //lister.setDirCallbackFunction(&watchDirCallback);
 
     // walk through user selected dirs
+    /*
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
         lister.listFiles(iter->c_str());
-
+    */
     // de-index files deleted since last strigi run
     map<string,time_t>::iterator mi = indexedFiles.begin();
     while (mi != indexedFiles.end())
@@ -851,18 +851,19 @@ void InotifyListener::ReindexDirsThread::reindex () {
     if (!newIndexedDirs.empty())
         STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.reindex", "new indexed dirs: " + strNewIndexedDirs);
 
-    FileLister lister (*m_pindexerconfiguration);
+    FileLister lister (m_pindexerconfiguration);
 
     m_toWatch.clear();
     m_toIndex.clear();
 
-    lister.setFileCallbackFunction(&indexFileCallback);
-    lister.setDirCallbackFunction(&watchDirCallback);
+    //lister.setFileCallbackFunction(&indexFileCallback);
+    //lister.setDirCallbackFunction(&watchDirCallback);
 
     // walk over the newly added dirs
+    /*
     for (set<string>::const_iterator iter = newIndexedDirs.begin(); iter != newIndexedDirs.end(); iter++)
         lister.listFiles(iter->c_str());
-
+    */
     for (map<string,time_t>::iterator iter = m_toIndex.begin(); iter != m_toIndex.end(); iter++)
     {
         Event* event = new Event (Event::CREATED, iter->first);
