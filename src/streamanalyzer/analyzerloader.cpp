@@ -113,7 +113,6 @@ AnalyzerLoader::loadPlugins(const char* d) {
             // check that the file is a regular file
             struct stat s;
             if (stat(plugin.c_str(), &s) == 0 && (S_IFREG & s.st_mode)) {
-                fprintf(stderr, "%s\n", plugin.c_str());
                 Private::loadModule(plugin.c_str());
             }
         }
@@ -128,6 +127,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
         // module was already loaded
         return;
     }
+    fprintf(stderr, "%s\n", lib);
     StgModuleType handle;
 #ifdef HAVE_DLFCN_H
     handle = dlopen(lib, RTLD_LAZY);
