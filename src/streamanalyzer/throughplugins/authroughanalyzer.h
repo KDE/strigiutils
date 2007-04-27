@@ -23,6 +23,7 @@
 #include "streamthroughanalyzer.h"
 #include "analyzerplugin.h"
 #include "string.h"
+#include <string>
 
 namespace Strigi {
     class RegisteredField;

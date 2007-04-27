@@ -27,6 +27,7 @@
 #include "textutils.h"
 #include "strigi_thread.h"
 #include <string>
+#include <cstdlib>
 #include <iconv.h>
 using namespace Strigi;
 using namespace std;

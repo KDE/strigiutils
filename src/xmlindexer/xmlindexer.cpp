@@ -32,6 +32,7 @@
 #ifdef HAVE_DIRECT_H
  #include <direct.h>
 #endif
+#include <stdlib.h>
 
 using namespace std;
 

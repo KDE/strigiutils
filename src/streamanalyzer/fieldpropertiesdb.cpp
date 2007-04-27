@@ -9,6 +9,7 @@
 #endif
 #include <sys/stat.h>
 #include <config.h>
+#include <cstdlib>
 using namespace Strigi;
 using namespace std;
 

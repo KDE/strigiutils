@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <unistd.h>
 #include <getopt.h>
 #include "fieldpropertiesdb.h"
