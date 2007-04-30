@@ -66,7 +66,7 @@ string fixPath (string path)
 class Strigi::FileLister::Private {
 public:
     char path[10000];
-    STRIGI_MUTEX_DEFINE(mutex);
+    STRIGI_MUTEX_DEFINE(mutex)
     DIR** dirs;
     DIR** dirsEnd;
     DIR** curDir;

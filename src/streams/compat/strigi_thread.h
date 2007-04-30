@@ -61,7 +61,7 @@
 
 class StrigiMutex{
 public:
-    STRIGI_MUTEX_DEFINE(lock);
+    STRIGI_MUTEX_DEFINE(lock)
     StrigiMutex(){
         STRIGI_MUTEX_INIT(&lock);
     }

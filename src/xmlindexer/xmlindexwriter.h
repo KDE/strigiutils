@@ -43,7 +43,7 @@ private:
          int refcount;
     };
 
-    STRIGI_MUTEX_DEFINE(mutex);
+    STRIGI_MUTEX_DEFINE(mutex)
     std::ostream& out;
 
     const TagMapping& mapping;
