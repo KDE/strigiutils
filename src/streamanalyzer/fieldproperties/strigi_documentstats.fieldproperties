@@ -1,18 +1,4 @@
 [Field]
-Uri=document.stats.char_count
-Name=Character count
-TypeUri=integer
-Description=Document character count
-Comment=per ODF spec
-
-[Field]
-Uri=document.stats.word_count
-Name=Word count
-TypeUri=integer
-Description=Document word count
-Comment=per ODF spec
-
-[Field]
 Uri=document.stats.paragraph_count
 Name=Paragraph count
 TypeUri=integer
@@ -46,4 +32,3 @@ Name=Image count
 TypeUri=integer
 Description=Document image count
 Comment=per ODF spec
-

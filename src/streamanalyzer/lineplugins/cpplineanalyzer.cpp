@@ -31,9 +31,9 @@ void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     includeField = reg.registerField("TODO_include", FieldRegister::stringType, 0, 0);
     classField = reg.registerField("TODO_class", FieldRegister::stringType, 0, 0);
-    codeLinesField = reg.registerField("TODO_codelines", FieldRegister::integerType, 1, 0);
-    commentLinesField = reg.registerField("TODO_commentlines", FieldRegister::integerType, 1, 0);
-    totalLinesField = reg.registerField("TODO_totallines", FieldRegister::integerType, 1, 0);
+    codeLinesField = reg.registerField("source_code.stats.code_line_count", FieldRegister::integerType, 1, 0);
+    commentLinesField = reg.registerField("source_code.stats.comment_line_count", FieldRegister::integerType, 1, 0);
+    totalLinesField = reg.registerField("text.stats.line_count", FieldRegister::integerType, 1, 0);
     includesField = reg.registerField("TODO_includes", FieldRegister::integerType, 1, 0);
 }
 

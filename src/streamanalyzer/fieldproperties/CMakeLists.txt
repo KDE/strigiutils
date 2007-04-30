@@ -20,6 +20,8 @@ install(FILES
 	strigi_photo.fieldproperties
 	strigi_container.fieldproperties
 	strigi_cursor.fieldproperties
+	strigi_source_code.fieldproperties
+	strigi_text.fieldproperties
 
 	DESTINATION share/apps/strigi/fieldproperties
 )

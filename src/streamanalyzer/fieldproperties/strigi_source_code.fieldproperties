@@ -1,0 +1,13 @@
+[Field]
+Uri=source_code.stats.code_line_count
+Name=Code line count
+TypeUri=integer
+Description=Source code line count
+Comment=
+
+[Field]
+Uri=source_code.stats.comment_line_count
+Name=Comment line count
+TypeUri=integer
+Description=Source code comment line count
+Comment=

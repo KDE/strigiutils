@@ -55,13 +55,13 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Document Summary Information Stream
     key.assign(docSummaryKey, 16);
     m = &fieldsMaps[key];
-    r = reg.registerField("category", FieldRegister::stringType, 1, 0);
+    r = reg.registerField("OLE.category", FieldRegister::stringType, 1, 0);
     if (r) (*m)[2] = r;
-    r = reg.registerField("presentationtarget",FieldRegister::stringType, 1, 0);
+    r = reg.registerField("OLE.presentationtarget",FieldRegister::stringType, 1, 0);
     if (r) (*m)[3] = r;
-    r = reg.registerField("manager", FieldRegister::stringType, 1, 0);
+    r = reg.registerField("OLE.manager", FieldRegister::stringType, 1, 0);
     if (r) (*m)[14] = r;
-    r = reg.registerField("company", FieldRegister::stringType, 1, 0);
+    r = reg.registerField("OLE.company", FieldRegister::stringType, 1, 0);
     if (r) (*m)[15] = r;
 }
 const map<int, const RegisteredField*>*

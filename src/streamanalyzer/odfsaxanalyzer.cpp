@@ -43,12 +43,12 @@ void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
     descriptionField = reg.registerField("content.description", FieldRegister::stringType, 1, 0);
     languageField = reg.registerField("content.language", FieldRegister::stringType, 1, 0);
     keywordField = reg.registerField("content.keyword", FieldRegister::stringType, 1, 0);
-    generatorField = reg.registerField("generator", FieldRegister::stringType, 1, 0);
+    generatorField = reg.registerField("content.generator", FieldRegister::stringType, 1, 0);
     tablecountField = reg.registerField("document.stats.table_count", FieldRegister::stringType, 1, 0);
     pagecountField = reg.registerField("document.stats.page_count", FieldRegister::stringType, 1, 0);
     paragcountField = reg.registerField("document.stats.paragraph_count", FieldRegister::stringType, 1, 0);
-    wordcountField = reg.registerField("document.stats.word_count", FieldRegister::stringType, 1, 0);
-    charcountField = reg.registerField("document.stats.char_count", FieldRegister::stringType, 1, 0);
+    wordcountField = reg.registerField("text.stats.word_count", FieldRegister::stringType, 1, 0);
+    charcountField = reg.registerField("text.stats.char_count", FieldRegister::stringType, 1, 0);
     objectcountField = reg.registerField("document.stats.object_count", FieldRegister::stringType, 1, 0);
     imagecountField = reg.registerField("document.stats.image_count", FieldRegister::stringType, 1, 0);
 }
