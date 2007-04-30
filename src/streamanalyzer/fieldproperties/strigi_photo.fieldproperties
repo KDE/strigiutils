@@ -46,3 +46,59 @@ Name=Flash used
 TypeUri=string
 Description=
 Comment=
+
+[Field]
+Uri=photo.iso_equivalent
+Name=ISO equivalent
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=photo.orientation
+Name=Orientation
+TypeUri=string
+Description=Photo orientation
+Comment=
+
+[Field]
+Uri=photo.exposure_program
+Name=Exposure program
+TypeUri=string
+Description=Photo exposure program
+Comment=
+
+[Field]
+Uri=photo.exposure_bias
+Name=Exposure bias
+TypeUri=string
+Description=Photo exposure bias
+Comment=
+
+[Field]
+Uri=photo.aperture
+Name=Aperture
+TypeUri=string
+Description=Photo aperture
+Comment=
+
+[Field]
+Uri=photo.cdd_width
+Name=CCD width
+TypeUri=string
+Description=Photo CCD width
+Comment=
+
+[Field]
+Uri=photo.metering_mode
+Name=Metering mode
+TypeUri=string
+Description=Photo metering mode
+Comment=
+
+[Field]
+Uri=photo.35mm_equivalent
+Name=35mm equivalent
+TypeUri=string
+Description=Photo 35mm equivalent
+Comment=

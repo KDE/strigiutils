@@ -97,13 +97,6 @@ Description=Content converted to plain-text
 Comment=This is indexable text body for documents, for images we might eventually do OCR, and speech recognition for audio(hopefully by the end of the century).
 
 [Field]
-Uri=content.license_type
-Name=License type
-TypeUri=string
-Description=Content license type
-Comment=GPL, BSD, proprietary
-
-[Field]
 Uri=content.ID
 Name=ID
 TypeUri=string
@@ -123,4 +116,57 @@ Uri=content.thumbnail
 Name=Thumbnail
 TypeUri=binary
 Description=Content thumbnail
+Comment=
+
+[Field]
+Uri=content.legal
+Name=Legal Info
+TypeUri=string
+Description=Content Legal Info
+Comment=
+
+[Field]
+Uri=content.license_type
+ParentUri=content.legal
+Name=License type
+TypeUri=string
+Description=Content license type
+Comment=GPL, BSD, proprietary
+
+[Field]
+Uri=content.license
+ParentUri=content.legal
+Name=License
+TypeUri=string
+Description=Content license
+Comment=
+
+[Field]
+Uri=content.copyright
+ParentUri=content.legal
+Name=Copyright
+TypeUri=string
+Description=Content copyright notice
+Comment=
+
+[Field]
+Uri=content.disclaimer
+ParentUri=content.legal
+Name=Disclaimer
+TypeUri=string
+Description=Content disclaimer
+Comment=
+
+[Field]
+Uri=content.generator
+Name=Generated with
+TypeUri=string
+Description=Content generator software
+Comment=
+
+[Field]
+Uri=content.generator_settings
+Name=Generator settings
+TypeUri=string
+Description=Content generator software settings
 Comment=

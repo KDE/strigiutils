@@ -42,10 +42,10 @@ const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificat
 const string PngEndAnalyzerFactory::titleFieldName("content.title");
 const string PngEndAnalyzerFactory::authorFieldName("content.author");
 const string PngEndAnalyzerFactory::descriptionFieldName("content.description");
-const string PngEndAnalyzerFactory::copyrightFieldName("copyright");
+const string PngEndAnalyzerFactory::copyrightFieldName("content.copyright");
 const string PngEndAnalyzerFactory::creationTimeFieldName("content.creation_time");
-const string PngEndAnalyzerFactory::softwareFieldName("software");
-const string PngEndAnalyzerFactory::disclaimerFieldName("disclaimer");
+const string PngEndAnalyzerFactory::softwareFieldName("content.generator");
+const string PngEndAnalyzerFactory::disclaimerFieldName("content.disclaimer");
 const string PngEndAnalyzerFactory::warningFieldName("warning");
 const string PngEndAnalyzerFactory::sourceFieldName("source");
 const string PngEndAnalyzerFactory::commentFieldName("content.comment");
