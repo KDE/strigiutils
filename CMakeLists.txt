@@ -49,7 +49,7 @@ IF(MSVC)
 ELSE(MSVC)
     IF (NOT WIN32)
       add_definitions (-fPIC)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wformat-security -fno-check-new -fno-common")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wformat-security -fno-check-new -fno-common -fno-exceptions")
     ENDIF(NOT WIN32)
 ENDIF(MSVC)
 

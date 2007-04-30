@@ -14,6 +14,11 @@ IF(WIN32)
     ADD_DEFINITIONS(-DUNICODE)
 ENDIF(WIN32)
 
+# CLucene requires exception support
+IF(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+ENDIF(NOT WIN32)
+
 set(cluceneindex_SRCS
         PrefixFilter.cpp
         cluceneindexmanager.cpp
