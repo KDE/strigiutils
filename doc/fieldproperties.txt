@@ -11,16 +11,16 @@ Description[$LANG]=$LOCALIZED_DESCRIPTION
 TypeUri=$TYPE
 Values=$VALUES
 Values[$LANG]=$LOCALIZED_VALUES
+Range=$RANGE
 MinCardinality=$MIN_CARDINALITY
 MaxCardinality=$MAX_CARDINALITY
-Intrinsic=$IS_INTRINSIC
-Writable=$IS_WRITABLE
 Indexing=$INDEXING
 Relevance=$RELEVANCE
 Comment=$COMMENT
 
 $URI(required)
   Unique resource identifier of the property. Internally properties are identified by this ID.
+  Alternative to this would be [$URI] instead of [Field].
 
 $PARENTURI
   URI of parent property. Parent relation is similar to inheritance. Usually child property
@@ -36,36 +36,34 @@ $TYPE(required)
   Property data type.
   Valid values: string, string_enum, string_enum_ext, integer, float, boolean, datetime, binary.
   string_enum type is a property that can only take one of the list of valid values provided by $VALUES.
-  string_enum_ext type is a property that can take any string value, however $values list provides some
-  suggestions for the value of this property.
+  string_enum_ext type is a property that can take any string value, however $values list provides
+  suggested values of this property.
 
-$VALUES(required if $TYPE=string_enum), $LOCALIZED_VALUES
+$VALUES(required if $TYPE=string_enum or string_enum_ext), $LOCALIZED_VALUES
   Property value constraints. Default =  no constraints.
+  if $TYPE=integer|datetime|float, $VALUES=value1|value2|value3
   if $TYPE=string, $VALUES=validation regexp
   if $TYPE=string_enum, $VALUES=value1|value2|value3
-  if $TYPE=string_enum_ext, $VALUES=value1|value2|value3|(regexp or *)
-  if $TYPE=integer|datetime|float, $VALUES=min_value,max_value,decimal_digits (all parameters are optional)
-                     Is it possible that we may have to enumerate ints/floats instead of providing ranges? 
-  Another option is to unite string(_enum)?(_ext)? just by defining a common regexp template for these and
-  trying to parse it, since regexp in the form of value|value|value(|*) is quite intuitive and devs don't
-  have to be aware of the implications.  //TODO
+  if $TYPE=string_enum_ext, $VALUES=value1|value2|value3|*(or)
+  This syntax lets us directly use $VALUES as a regexp for validating user input. Yet it's syntax
+  is developer- and translator- friendly.
+  Suggestions on regex subset are welcome. KDE and Strigi is going to use QValidator and QRegExp for this.
+
+$RANGE
+  Numeric property allowed value range. Default = no constraints.
+  $RANGE=[minValue,maxValue>
+  [ and ] = inclusive. < and > = exclusive.
 
 $MIN_CARDINALITY
   Minimum cardinality. Minimum number of properties of this type you must set for a given file.
-  Lets specify mandatory properties. If omitted, default value is 0.
+  Lets specify mandatory properties. Default is 0.
 
 $MAX_CARDINALITY
   Maximum cardinality. Maximum number of properties of this type you can set for a given file.
-  If omitted, default value is infinity.
-
-$IS_INTRINSIC
-  Is this property intrinsic to a file or provided by the user. Default = true.
-
-$IS_WRITABLE
-  Is this property writable. Default = TBD.  //TODO
+  Default is infinity.
 
 $INDEXING
-  Values=fulltext, atomic, none, TBD. Default = TBD. //TODO
+  Values=fulltext, atomic, none, TBD. Default = TBD.
 
 $RELEVANCE
   Defines how relevance of the file is affected if a match is found in this field. Default = 1.0
