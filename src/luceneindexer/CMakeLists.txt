@@ -14,9 +14,10 @@ IF(WIN32)
     ADD_DEFINITIONS(-DUNICODE)
 ENDIF(WIN32)
 
-# CLucene requires exception support
+# CLucene requires exception support and has no support for visibility=hidden
+# so we must use the default (i.e. public) value for -fvisibility
 IF(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fvisibility=default")
 ENDIF(NOT WIN32)
 
 set(cluceneindex_SRCS
