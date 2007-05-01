@@ -80,8 +80,8 @@ DebLineAnalyzer::handleLine(const char* data, uint32_t length)
 	if (line.find("Maintainer: ")==0) { result->addValue(factory->maintainerField, line.substr(12,line.size())); finished++; }
 	if (line.find("Section: ")==0) { result->addValue(factory->sectionField, line.substr(9,line.size())); finished++; }
 	if (line.find("Depends: ")==0) {
-	    unsigned int start=9;
-	    unsigned int end;
+	    size_t start=9;
+	    size_t end;
 	    do {
 		end=line.find(", ",start);
 		if (end==std::string::npos) end=length;
