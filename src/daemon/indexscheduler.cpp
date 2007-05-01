@@ -115,6 +115,7 @@ IndexScheduler::index() {
             time_t mtime;
             int r = lister.nextFile(path, mtime);
             while (r >= 0) {
+                fprintf(stderr, "r %i\n", r);
                 if (r > 0) {
                     map<string, time_t>::iterator i
                         = sched->dbfiles.find(path);
@@ -126,6 +127,7 @@ IndexScheduler::index() {
                         sched->dbfiles.erase(i);
                     }
                 }
+                r = lister.nextFile(path, mtime);
             }
         }
 
