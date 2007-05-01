@@ -200,8 +200,8 @@ OleInputStream::~OleInputStream() {
 int32_t
 OleInputStream::nextBlock(int32_t in) {
     // get the number of the bat block we need
-    uint32_t bid = in/128;
-    if (bid < 0 || bid >= batIndex.size()) {
+    int32_t bid = in/128;
+    if (bid < 0 || bid >= (int32_t)batIndex.size()) {
         fprintf(stderr, "error: input block out of range %i\n", in);
         return -4;
     }
@@ -217,8 +217,8 @@ OleInputStream::nextBlock(int32_t in) {
 int32_t
 OleInputStream::nextSmallBlock(int32_t in) {
     // get the number of the sbat block we need
-    uint32_t bid = in/128;
-    if (bid < 0 || bid >= sbatIndex.size()) {
+    int32_t bid = in/128;
+    if (bid < 0 || bid >= (int32_t)sbatIndex.size()) {
         fprintf(stderr, "error: input block out of range %i\n", in);
         return -4;
     }
