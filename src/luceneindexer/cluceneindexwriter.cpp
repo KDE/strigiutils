@@ -127,6 +127,20 @@ CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
 #endif
 }
 void
+CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, uint32_t value) {
+    ostringstream o;
+    o << value;
+    addValue(idx, field, o.str());
+}
+void
+CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, int32_t value) {
+    ostringstream o;
+    o << value;
+    addValue(idx, field, o.str());
+}
+void
 CLuceneIndexWriter::startAnalysis(const AnalysisResult* idx) {
     doccount++;
     CLuceneDocData*doc = new CLuceneDocData();
@@ -147,17 +161,9 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     if (field.length()) addValue(idx, fr.filenameField, field);
     field = idx->extension();
     if (field.length()) addValue(idx, fr.extensionField, field);
-    ostringstream o;
-    o << (int)idx->depth();
-    addValue(idx, fr.embeddepthField, o.str());
-    o.str("");
-    {
-        char tmp[100];
-        snprintf(tmp,100,"%llu",(uint64_t)idx->mTime());
-        o << tmp;
-    }
+    addValue(idx, fr.embeddepthField, idx->depth());
+    addValue(idx, fr.mtimeField, (uint32_t)idx->mTime());
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
-    addValue(idx, fr.mtimeField, o.str());
     wstring c(utf8toucs2(doc->content));
     jstreams::StringReader<char>* sr = NULL; //we use this for compressed streams
 
@@ -211,7 +217,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     lucene::index::IndexReader* reader = manager->luceneReader()->reader;
 
     wstring tstr(utf8toucs2(entry));
-    Term term(_T("path"), tstr.c_str());
+    Term term(_T("system.location"), tstr.c_str());
     StrigiPrefixFilter filter(&term);
     BitSet* bits;
     try {

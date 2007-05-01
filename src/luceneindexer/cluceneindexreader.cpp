@@ -224,13 +224,13 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
 //    printf("%s\t%s\n", n.c_str(), value.c_str());
     if (wcscmp(name, L"content") == 0) {
         doc.fragment = value;
-    } else if (wcscmp(name, L"path") == 0) {
+    } else if (wcscmp(name, L"system.location") == 0) {
         doc.uri = value;
-    } else if (wcscmp(name, L"mimetype") == 0) {
+    } else if (wcscmp(name, L"content.mime_type") == 0) {
         doc.mimetype = value;
-    } else if (wcscmp(name, L"mtime") == 0) {
+    } else if (wcscmp(name, L"system.last_modified_time") == 0) {
         doc.mtime=atol(value.c_str());
-    } else if (wcscmp(name, L"size") == 0) {
+    } else if (wcscmp(name, L"system.size") == 0) {
         string size = value;
         doc.size = atoi(size.c_str());
     } else {
@@ -337,16 +337,16 @@ CLuceneIndexReader::files(char depth) {
     snprintf(cstr, CL_MAX_DIR, "%i", depth);
     STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
 
-    Term term(mapId(_T("depth")), tstr);
+    Term term(mapId(_T("system.depth")), tstr);
     TermDocs* docs = reader->termDocs(&term);
-    const TCHAR* mtime = mapId(_T("mtime"));
+    const TCHAR* mtime = mapId(_T("system.last_modified_time"));
     while ( docs->next() ){
         Document *d = reader->document(docs->doc());
 
         const TCHAR* v = d->get(mtime);
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         time_t mtime = atoi(cstr);
-        v = d->get(_T("path"));
+        v = d->get(_T("system.location"));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         files[cstr] = mtime;
 
@@ -387,7 +387,7 @@ CLuceneIndexReader::documentId(const string& uri) {
 
     TCHAR tstr[CL_MAX_DIR];
     STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
-    Term term(mapId(_T("path")), tstr);
+    Term term(mapId(_T("system.location")), tstr);
     TermDocs* docs = reader->termDocs(&term);
     if (docs->next()) {
         id = docs->doc();
@@ -412,7 +412,7 @@ CLuceneIndexReader::mTime(int64_t docid) {
     Document *d = reader->document(docid);
     if (d) {
         char cstr[CL_MAX_DIR];
-        const TCHAR* v = d->get(mapId(_T("mtime")));
+        const TCHAR* v = d->get(mapId(_T("system.last_modified_time")));
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);
         mtime = atoi(cstr);
         delete d;
@@ -515,7 +515,7 @@ CLuceneIndexReader::histogram(const string& query,
     }
     searcher.close();
     _CLDELETE(bq);
-    if (fieldname == "mtime" || labeltype == "time") {
+    if (fieldname == "system.last_modified_time" || labeltype == "time") {
         return makeTimeHistogram(values);
     } else {
         return makeHistogram(values, min, max);
