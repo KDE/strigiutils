@@ -2,6 +2,11 @@ set (TESTINGDIRS ${TESTINGDIRS} daemon)
 set (STRIGI_UNIT_TEST_LIBRARIES ${STRIGI_UNIT_TEST_LIBRARIES}
      daemonconfiguratortest)
 
+# cppunit requires exception support
+IF(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+ENDIF(NOT WIN32)
+
 if (HyperEstraier_FOUND)
   set (TESTINGDIRS ${TESTINGDIRS} estraierindexer)
   set (STRIGI_UNIT_TEST_LIBRARIES ${STRIGI_UNIT_TEST_LIBRARIES} estraiertest)
