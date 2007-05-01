@@ -41,7 +41,7 @@
     #define STRIGI_THREAD_SELF() pthread_self()
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     #include <windows.h>
-    #define STRIGI_MUTEX_DEFINE(x) CRITICAL_SECTION x
+    #define STRIGI_MUTEX_DEFINE(x) CRITICAL_SECTION x;
     #define STRIGI_MUTEX_INIT(x) InitializeCriticalSection(x)
     #define STRIGI_MUTEX_DESTROY(x) DeleteCriticalSection(x)
     #define STRIGI_MUTEX_LOCK(x) EnterCriticalSection(x)
