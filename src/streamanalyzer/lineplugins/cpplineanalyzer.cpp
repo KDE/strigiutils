@@ -60,22 +60,22 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
 
         codeLines++;
 
-        uint pos = line.find_first_of("//");
+        size_t pos = line.find_first_of("//");
         if (pos != string::npos) commentLines++;
 
         //TODO Add code here for counting strings.
         //Look for included files.
-        uint pos1 = line.find("#include",0);
+        size_t pos1 = line.find("#include",0);
         if(pos1 != string::npos){
             string include1 = line.substr(8+pos1,line.size());
-            uint pos2 = include1.find("<",0);
-            uint pos3 = include1.find(">",0);
+            size_t pos2 = include1.find("<",0);
+            size_t pos3 = include1.find(">",0);
             if((pos2 != string::npos) && (pos3 != string::npos)){
                 analysisResult->addValue(factory->includeField, include1.substr(1+pos2,((pos3-1)-pos2)));
                 includes++;
             }
-            uint pos4 = include1.find("\"",0);
-            uint pos5 = include1.find("\"", pos4+1);
+            size_t pos4 = include1.find("\"",0);
+            size_t pos5 = include1.find("\"", pos4+1);
             if((pos4 != string::npos) && (pos5 != string::npos)){
                 analysisResult->addValue(factory->includeField, include1.substr(1+pos4,((pos5-1)-pos4)));
                 includes++;
