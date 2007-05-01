@@ -13,10 +13,12 @@ class DirAnalyzer::Private {
 public:
     FileLister lister;
     IndexWriter& writer;
-    AnalyzerConfiguration* config;
+    AnalyzerConfiguration& config;
+    StreamAnalyzer analyzer;
 
-    Private(IndexWriter& w, AnalyzerConfiguration* c)
-            :lister(c), writer(w), config(c) {
+    Private(IndexWriter& w, AnalyzerConfiguration& c)
+            :lister(&c), writer(w), config(c), analyzer(c) {
+        analyzer.setIndexWriter(writer);
     }
     int analyzeDir(const string& dir, int nthreads);
     void analyze(StreamAnalyzer*);
@@ -36,7 +38,7 @@ analyzeInThread(void* d) {
 }
 
 DirAnalyzer::DirAnalyzer(IndexWriter& writer, AnalyzerConfiguration* conf)
-    :p(new Private(writer, conf)) {
+        :p(new Private(writer, *conf)) {
 }
 DirAnalyzer::~DirAnalyzer() {
     delete p;
@@ -74,8 +76,6 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
     if (stat(dir.c_str(), &s) == -1) return -1;
 
     if (S_ISREG(s.st_mode)) {
-        StreamAnalyzer analyzer(*config);
-        analyzer.setIndexWriter(writer);
         AnalysisResult analysisresult(dir, s.st_mtime, writer, analyzer);
         FileInputStream file(dir.c_str());
         if (file.status() == Ok) {
@@ -88,8 +88,9 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
     lister.startListing(dir);
     if (nthreads < 1) nthreads = 1;
     vector<StreamAnalyzer*> analyzers(nthreads);
-    for (int i=0; i<nthreads; ++i) {
-        analyzers[i] = new StreamAnalyzer(*config);
+    analyzers[0] = &analyzer;
+    for (int i=1; i<nthreads; ++i) {
+        analyzers[i] = new StreamAnalyzer(config);
         analyzers[i]->setIndexWriter(writer);
     }
     vector<STRIGI_THREAD_TYPE> threads;
@@ -101,7 +102,6 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
         STRIGI_THREAD_CREATE(&threads[i-1], analyzeInThread, da);
     }
     analyze(analyzers[0]); 
-    delete analyzers[0];
     for (int i=1; i<nthreads; i++) {
         STRIGI_THREAD_JOIN(threads[i-1]);
         delete analyzers[i];

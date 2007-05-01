@@ -13,7 +13,7 @@ public:
 private:
     Private* p;
 public:
-   DirAnalyzer(IndexWriter& writer, AnalyzerConfiguration* conf = 0);
+   DirAnalyzer(IndexWriter& writer, AnalyzerConfiguration* conf);
    ~DirAnalyzer();
    int analyzeDir(const std::string& dir, int nthreads = 2);
 };
