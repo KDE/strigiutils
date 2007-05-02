@@ -52,6 +52,7 @@ private:
     QPushButton* removedir;
     QPushButton* toggleindexing;
     QPushButton* toggledaemon;
+    QPushButton* refreshHistogram;
     QComboBox* backendsList;
     QComboBox* fieldnames;
     QWidget* centralview;
@@ -79,6 +80,7 @@ private Q_SLOTS:
     void removeDirectory();
     void editFilters();
     void editListIndexedFiles();
+    void refresh();
 public:
     explicit SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
 };

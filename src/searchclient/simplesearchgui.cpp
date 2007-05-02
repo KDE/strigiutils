@@ -31,6 +31,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QDockWidget>
 #include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QComboBox>
 #include <QtGui/QMenu>
@@ -77,7 +78,10 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     fieldnames = new QComboBox();
     fieldnames->addItems(strigi.getFieldNames());
     fieldnames->setCurrentIndex(fieldnames->findText("system.last_modified_time"));
-    histogram->setFieldName("mtime");
+    histogram->setFieldName("system.last_modified_time");
+    refreshHistogram = new QPushButton("refresh histogram");
+    refreshHistogram->setEnabled(false);
+
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
         backendsList = new QComboBox();
@@ -123,6 +127,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     histwidget->setWidget(histw);
     histlayout->addWidget(fieldnames);
     histlayout->addWidget(histogram);
+    histlayout->addWidget(refreshHistogram);
     addDockWidget(Qt::LeftDockWidgetArea, histwidget);
 
     centralview = new QWidget();
@@ -146,8 +151,10 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 
     connect(&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
         this, SLOT(updateStatus(const QMap<QString, QString>& )));
-    connect(tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
-        histogram, SLOT(setQuery(const QString&)));
+//    connect(tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
+//        histogram, SLOT(setQuery(const QString&)));
+    connect(refreshHistogram, SIGNAL(clicked()),
+        this, SLOT(refresh()));
     connect(fieldnames, SIGNAL(currentIndexChanged(const QString&)),
         histogram, SLOT(setFieldName(const QString&)));
 
@@ -155,6 +162,10 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
     timer->start(2000);
     asyncstrigi.updateStatus();
+}
+void
+SimpleSearchGui::refresh() {
+    histogram->setQuery(queryfield->text());
 }
 void
 SimpleSearchGui::createMenus() {
@@ -191,6 +202,7 @@ SimpleSearchGui::query(const QString& item) {
         mainview->setCurrentIndex(0);
         tabs->setQuery(query);
     }
+    refreshHistogram->setEnabled(query.length());
 }
 void
 SimpleSearchGui::updateStatus() {
