@@ -389,15 +389,17 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             idx.setEndAnalyzer(sea);
             char ar = sea->analyze(idx, input);
             if (ar) {
-                if (input) {
-                    int64_t pos = input->reset(0);
-                    if (pos != 0) { // could not reset
-                        fprintf(stderr, "could not reset stream of %s from pos "
-                            "%lli to 0 after reading with %s: %s\n",
-                            idx.path().c_str(), input->position(),
-                            sea->name(), sea->error().c_str());
-                        finished = true;
-                    }
+                int64_t pos = input->reset(0);
+                if (pos != 0) { // could not reset
+                    fprintf(stderr, "could not reset stream of %s from pos "
+                        "%lli to 0 after reading with %s: %s\n",
+                        idx.path().c_str(), input->position(),
+                        sea->name(), sea->error().c_str());
+                    finished = true;
+                } else {
+                    // refresh the pointer to the start of the data
+                    headersize = input->read(header, headersize, headersize);
+                    if (headersize < 0) finished = true;
                 }
             } else {
                 finished = true;
