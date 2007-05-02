@@ -48,6 +48,8 @@ public:
 int32_t
 OleEntryStream::fillBuffer(char* start, int32_t space) {
     if (done == m_size) return -1;
+//    fprintf(stderr, "current %i %i\n", parent->currentDataBlock, blocksize);
+//    fprintf(stderr, "doff %i\n", (1+parent->currentDataBlock)*512);
 
     int32_t n = space;
     int32_t avail = blocksize-blockoffset;
@@ -68,6 +70,13 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     } else {
         d = parent->data+(1+parent->currentDataBlock)*512;
     }
+    if (d < parent->data || d - parent->data + n > parent->size) {
+        m_status = Error;
+        m_error = "Invalid OLE stream.";
+        fprintf(stderr, "not 0 < %i < %lli %i\n", d-parent->data, m_size,
+            blocksize);
+        return -1;
+    }
     memcpy(start, d+blockoffset, n);
     done += n;
     blockoffset += n;
@@ -82,8 +91,9 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
         blockoffset = 0;
         if (parent->currentDataBlock < 0) {
             if (parent->currentDataBlock != -2 || done != m_size) {
-//                fprintf(stderr, "error: %i\n", parent->currentDataBlock);
+                fprintf(stderr, "error: %i\n", parent->currentDataBlock);
                 m_status = Error;
+                n = -1;
             }
         }
     }
@@ -148,6 +158,7 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
     }
     toread = (input->size() > 0) ?input->size() :10000000;
     size = input->read(data, toread, toread);
+    input->reset(0);
     if (size != input->size()) {
         m_status = Error;
         m_error = string("File cannot be read completely: ")+input->error();
@@ -182,14 +193,18 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
 
     sbatbIndex.reserve(sbatIndex.size()*16);
     // read the info for the root entry
-    currentDataBlock = readLittleEndianInt32(data + (1+ptOffset)*512 + 0x74);
-//    fprintf(stderr, "db %i\n", currentDataBlock);
+    currentDataBlock = (1+ptOffset)*512 + 0x74;
+    if (currentDataBlock + 4 > size) {
+        m_status = Error;
+        m_error = "Invalid header.";
+        return;
+    }
+    currentDataBlock = readLittleEndianInt32(data + currentDataBlock);
     while (currentDataBlock >= 0 && sbatbIndex.size() < 16000) {
         sbatbIndex.push_back(currentDataBlock);
         currentDataBlock = nextBlock(currentDataBlock);
     }
     maxsindex = sbatbIndex.size()*8;
-//    fprintf(stderr, "i sb %i %i max: %i\n", sbatIndex.size(), sbatbIndex.size(), maxsindex);
 
     currentTableBlock = ptOffset;
     currentTableIndex = 0;
@@ -199,6 +214,7 @@ OleInputStream::~OleInputStream() {
 }
 int32_t
 OleInputStream::nextBlock(int32_t in) {
+//    fprintf(stderr, "nextBlock(%i)\n", in);
     // get the number of the bat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)batIndex.size()) {
@@ -207,7 +223,12 @@ OleInputStream::nextBlock(int32_t in) {
     }
     bid = batIndex[bid]+1;
     int32_t next = in%128*4;
-    next = readLittleEndianInt32(data+512*bid+next);
+    next += 512*bid;
+    if (next < 0 || next > size-4) {
+        fprintf(stderr, "error: output block out of range %i\n", next);
+        return -4;
+    }
+    next = readLittleEndianInt32(data+next);
     bool error = next < -2 || next == -1 || next > maxindex;
     if (error) {
         fprintf(stderr, "error: output block out of range %i\n", next);
@@ -216,6 +237,7 @@ OleInputStream::nextBlock(int32_t in) {
 }
 int32_t
 OleInputStream::nextSmallBlock(int32_t in) {
+//    fprintf(stderr, "nextSmallBlock(%i)\n", in);
     // get the number of the sbat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)sbatIndex.size()) {
@@ -236,7 +258,7 @@ OleInputStream::getCurrentSmallBlock() {
     const char* d = data;
     // each block of 512 has 8 blocks of 64
     int32_t i = currentDataBlock/8;
-    if (i < 0 || i > (int32_t)sbatbIndex.size()) {
+    if (i < 0 || i >= (int32_t)sbatbIndex.size()) {
         return 0;
     }
     i = 512*(1+sbatbIndex[i]) + (currentDataBlock%8)*64;
@@ -276,6 +298,7 @@ OleInputStream::readEntryInfo() {
 InputStream*
 OleInputStream::nextEntry() {
     if (currentTableBlock < 0) return 0;
+//    fprintf(stderr, "nextEntry()\n");
     do {
         if (++currentTableIndex == 4) {
             currentTableBlock = nextBlock(currentTableBlock);
