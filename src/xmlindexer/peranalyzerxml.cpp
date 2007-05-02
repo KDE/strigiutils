@@ -272,7 +272,8 @@ main(int argc, char** argv) {
         return -1;
     }
     if (n != (int32_t)out.str().length()) {
-        printf("output length differs %i instead of %i\n", n, out.str().length());
+        printf("output length differs %i instead of %i\n", out.str().length(),
+            n);
     }
 
     const char* p1 = c;
