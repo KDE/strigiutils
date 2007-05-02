@@ -76,7 +76,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     histogram->setOrientation(Qt::Vertical);
     fieldnames = new QComboBox();
     fieldnames->addItems(strigi.getFieldNames());
-    fieldnames->setCurrentIndex(fieldnames->findText("mtime"));
+    fieldnames->setCurrentIndex(fieldnames->findText("system.last_modified_time"));
     histogram->setFieldName("mtime");
 /*    vector<string> backends = ClientInterface::getBackEnds();
     if (backends.size() > 1) {
@@ -196,6 +196,10 @@ void
 SimpleSearchGui::updateStatus() {
     if (statusview->isVisible()) {
         asyncstrigi.updateStatus();
+    }
+    if (fieldnames->count() == 0) {
+        fieldnames->addItems(strigi.getFieldNames());
+        fieldnames->setCurrentIndex(fieldnames->findText("system.last_modified_time"));
     }
 }
 void
