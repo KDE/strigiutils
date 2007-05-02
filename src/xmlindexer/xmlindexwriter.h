@@ -110,8 +110,11 @@ private:
                 nb = 2;
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
-            } else if (c <= 32) { // TODO make this into general escaping to %xx
-                value = "";
+            } else if (c < 32 && c != 9 && c != 10 && c != 12) {
+                // TODO make this into general escaping to %xx
+                fprintf(stderr, "Error writing value '%s' at %i\n",
+                    value.c_str(), p-value.c_str());
+                value.resize(p-value.c_str());
                 return;
             } else if (c == '&') {
                 namp++;
@@ -125,7 +128,9 @@ private:
             p++;
         }
         // if no character has to be escaped, just return
-        if (!(namp||nlt||ngt|napos)) return;
+        if (!(namp||nlt||ngt|napos)) {
+            return;
+        }
 
         std::string ov(value);
         p = ov.c_str();
