@@ -265,18 +265,21 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
 	return -1;
     }
     while (s) {
-        const string& name = ole.entryInfo().filename;
+        string name = ole.entryInfo().filename;
         if (name.size()) {
+            char first = name[0];
+            if (first < 10) {
+                name = name.substr(1);
+            }
 	    if (tryFIB(ar, s)) {
             } else if (tryThumbsdbEntry(name, ar, s)) {
-            } else if (name[0] == 5) {
+            } else if (first == 5) {
                 // todo: handle property stream
                 tryPropertyStream(ar, s);
             } else if (name == "Pictures") {
                 tryPictures(ar, s);
             } else {
-                ar.indexChild(name, ole.entryInfo().mtime,
-                    s);
+                ar.indexChild(name, ole.entryInfo().mtime, s);
             }
         }
         s = ole.nextEntry();
