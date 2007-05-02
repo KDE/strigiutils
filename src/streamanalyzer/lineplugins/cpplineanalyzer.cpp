@@ -89,11 +89,14 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
     if (line.find("*/") != string::npos) inComment = false;
 }
 void
-CppLineAnalyzer::endAnalysis(){
-    analysisResult->addValue(factory->codeLinesField, codeLines);
-    analysisResult->addValue(factory->commentLinesField, commentLines);
-    analysisResult->addValue(factory->totalLinesField, totalLines);
-    analysisResult->addValue(factory->includesField, includes);
+CppLineAnalyzer::endAnalysis() {
+    // we assume all cpp files must have includes
+    if (includes) {
+        analysisResult->addValue(factory->codeLinesField, codeLines);
+        analysisResult->addValue(factory->commentLinesField, commentLines);
+        analysisResult->addValue(factory->totalLinesField, totalLines);
+        analysisResult->addValue(factory->includesField, includes);
+    }
     ready = true;
 }
 bool
