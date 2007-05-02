@@ -65,6 +65,24 @@ decodeQuotedPrintable(const char* v, int32_t len) {
     }
     return decoded;
 }
+string
+decode(const string& enc, const string& data) {
+    string s;
+    iconv_t const conv(iconv_open("UTF-8", enc.c_str()));
+    if (conv == (iconv_t)-1) return s;
+    char* in = (char*)data.c_str();
+    size_t ilen = data.length();
+    size_t olen = 4*ilen;
+    char* out = (char*)malloc(olen);
+    char* mem = out;
+    size_t r = iconv(conv, &in, &ilen, &out, &olen);
+    if (r != (size_t)-1) {
+        s.assign(mem, out-mem);
+    }
+    free(mem);
+    iconv_close(conv);
+    return s;
+}
 /**
  * This function can decode a mail header if it contains utf8 encoded in base64.
  **/
@@ -76,30 +94,40 @@ decodedHeaderValue(const char* v, int32_t len) {
     const char* p = v;
     const char* e = s + len;
     while (s < e) {
-        if (*s == '=' && e-s >= 12 && strncasecmp("?utf-8?", s+1, 7) == 0) {
-            if (strncasecmp("b?", s+8, 2) == 0) {
-                const char* ec = s + 10;
-                while (ec < e && *ec != '?') ec += 4;
-                if (ec < e - 1) {
-                    decoded.append(p, s-p);
-                    decoded.append(Base64InputStream::decode(s+10, ec-10-s));
-                    s = p = ec + 2;
-                } else {
-                    s++;
-                }
-            } else if (strncasecmp("q?", s+8, 2) == 0) {
-                const char* ec = s + 10;
-                while (ec < e && *ec != '?') ++ec;
-                if (ec < e -1) {
-                    decoded.append(p, s-p);
-                    decoded.append(decodeQuotedPrintable(s+10, ec-10-s));
-                    s = p = ec + 2;
-                } else {
-                    s++;
-                }
-            } else {
+        if (e-s > 8 && *s == '=' && s[1] == '?') {
+            // start of encoded data, find the next position of '?','?' and '?='
+            const char *q1, *q2, *end;
+            q1 = s+2;
+            while (q1 < e && *q1 != '?') q1++;
+            q2 = q1+1;
+            while (q2 < e && *q2 != '?') q2++;
+            end = q2+1;
+            while (end < e && *end != '?') end++;
+            if (e - end < 1 || end[1] != '=') {
                 s++;
+                continue;
             }
+            decoded.append(p, s-p);
+            s += 2;
+            q1++;
+            q2++;
+            // find the end
+            if (*q1 == 'b' || *q1 == 'B') {
+                string str = Base64InputStream::decode(q2, end-q2);
+                if (strncasecmp("utf-8", s, 5)) {
+                    string encoding(s, q1-s-1);
+                    str = decode(encoding, str);
+                }
+                decoded.append(str);
+            } else if ((*q1 == 'q' || *q1 =='Q')
+                    && strncasecmp("utf-8", s, 5)) {
+                decoded.append(decodeQuotedPrintable(q2, end-q2));
+            } else {
+                s -= 1;
+            }
+
+            // continue after the quoted data
+            s = p = end + 2;
         } else {
             s++;
         }
