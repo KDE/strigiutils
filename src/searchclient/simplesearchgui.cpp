@@ -199,7 +199,8 @@ SimpleSearchGui::updateStatus() {
     }
     if (fieldnames->count() == 0) {
         fieldnames->addItems(strigi.getFieldNames());
-        fieldnames->setCurrentIndex(fieldnames->findText("system.last_modified_time"));
+        fieldnames->setCurrentIndex(
+            fieldnames->findText("system.last_modified_time"));
     }
 }
 void
