@@ -159,7 +159,7 @@ Strigi::FileLister::Private::nextFile() {
             strcpy(path + l, subdir->d_name);
             int sl = l + strlen(subdir->d_name);
 #ifdef _WIN32
-#warning this is wrong!! never use stat! it causes loops
+            // windows does not have symbolic links, so stat() is fine
             if (stat(path, &dirstat) == 0) {
 #else
             if (lstat(path, &dirstat) == 0) {
