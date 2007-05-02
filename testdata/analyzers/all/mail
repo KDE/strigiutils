@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
- <file uri='mail/2' mtime='1175792718'>
-  <value name='system.size'>577</value>
+ <file uri='mail/2' mtime='1162936785'>
   <value name='system.hash.sha1'>7e9cc5843a7c783c26ed88eb913ef50c59305a2b</value>
+  <value name='system.size'>577</value>
   <value name='system.depth'>1</value>
   <text>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
 &lt;html&gt;
@@ -21,15 +21,15 @@ href="http://www.esethgnow.com"&gt;not&lt;/a&gt;&lt;br&gt;
 &lt;/html&gt;
 </text>
  </file>
- <file uri='mail/ghostlike.gif' mtime='1175792718'>
-  <value name='system.size'>14461</value>
+ <file uri='mail/ghostlike.gif' mtime='1162936785'>
   <value name='system.hash.sha1'>4da0f05a648d38b39b96217c4a46ae9cc8c3dd90</value>
+  <value name='system.size'>14461</value>
   <value name='system.depth'>1</value>
  </file>
- <file uri='mail' mtime='1175792718'>
-  <value name='system.size'>21801</value>
+ <file uri='mail' mtime='1162936785'>
   <value name='system.hash.sha1'>7108f5c6d0b9ca3ec22bab8bb4f25ba4a1682140</value>
-  <value name='title'>babylonian coordinate stream</value>
+  <value name='system.size'>21801</value>
+  <value name='email.subject'>babylonian coordinate stream</value>
   <value name='contenttype'>text/plain;
 	charset="iso-8859-1"</value>
   <value name='system.depth'>0</value>

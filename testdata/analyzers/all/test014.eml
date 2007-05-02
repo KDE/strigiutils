@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
- <file uri='test014.eml/peter-ja.html' mtime='1175792718'>
-  <value name='system.size'>790</value>
+ <file uri='test014.eml/peter-ja.html' mtime='1162936788'>
   <value name='system.hash.sha1'>ce9b1d1dea5af96546355e80b2929f4bdc035eea</value>
+  <value name='system.size'>790</value>
   <value name='system.depth'>1</value>
   <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;html&gt;
@@ -22,10 +22,10 @@
 &lt;/html&gt;
 </text>
  </file>
- <file uri='test014.eml' mtime='1175792718'>
-  <value name='system.size'>2348</value>
+ <file uri='test014.eml' mtime='1162936788'>
   <value name='system.hash.sha1'>8a865ff220ee717189a824eb1ae361d3a1306d73</value>
-  <value name='title'>=?ISO-2022-JP?B?GyRCSH4kNyQkRnxLXDhsJHJPQyQ9JCYbKEI=?=</value>
+  <value name='system.size'>2348</value>
+  <value name='email.subject'>美しい日本語を話そう</value>
   <value name='contenttype'>text/plain; charset=ISO-2022-JP</value>
   <value name='system.depth'>0</value>
  </file>

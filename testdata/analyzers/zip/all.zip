@@ -1,53 +1,53 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='all.zip/a.bz2' mtime='1150927654'>
-  <value name='size'>214</value>
-  <value name='depth'>1</value>
+  <value name='system.size'>214</value>
+  <value name='system.depth'>1</value>
  </file>
  <file uri='all.zip/a.gz' mtime='1165888460'>
-  <value name='size'>45</value>
-  <value name='depth'>1</value>
+  <value name='system.size'>45</value>
+  <value name='system.depth'>1</value>
  </file>
  <file uri='all.zip/a.tar' mtime='1150927654'>
-  <value name='size'>10240</value>
-  <value name='depth'>1</value>
+  <value name='system.size'>10240</value>
+  <value name='system.depth'>1</value>
  </file>
  <file uri='all.zip/a.zip/file1' mtime='1139008378'>
-  <value name='size'>6</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>6</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/a.zip/file2' mtime='1139008384'>
-  <value name='size'>7</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>7</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/a.zip' mtime='1150927654'>
-  <value name='mimetype'>application/zip</value>
-  <value name='size'>275</value>
-  <value name='depth'>1</value>
+  <value name='content.mime_type'>application/zip</value>
+  <value name='system.size'>275</value>
+  <value name='system.depth'>1</value>
  </file>
  <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/affine/bg1.jpg' mtime='1156299536'>
-  <value name='size'>23771</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>23771</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/arthurplugin/bg1.jpg' mtime='1156299536'>
-  <value name='size'>23771</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>23771</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/examples/draganddrop/puzzle/example.jpg' mtime='1156299544'>
-  <value name='size'>31770</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>31770</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/src/3rdparty/libpng/pngbar.jpg' mtime='1156299376'>
-  <value name='size'>2498</value>
-  <value name='depth'>2</value>
+  <value name='system.size'>2498</value>
+  <value name='system.depth'>2</value>
  </file>
  <file uri='all.zip/p.zip' mtime='1156476736'>
-  <value name='mimetype'>application/zip</value>
-  <value name='size'>82148</value>
-  <value name='depth'>1</value>
+  <value name='content.mime_type'>application/zip</value>
+  <value name='system.size'>82148</value>
+  <value name='system.depth'>1</value>
  </file>
- <file uri='all.zip' mtime='1175792718'>
-  <value name='mimetype'>application/zip</value>
-  <value name='size'>83437</value>
-  <value name='depth'>0</value>
+ <file uri='all.zip' mtime='1165946081'>
+  <value name='content.mime_type'>application/zip</value>
+  <value name='system.size'>83437</value>
+  <value name='system.depth'>0</value>
  </file>

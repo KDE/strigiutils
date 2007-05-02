@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='simple.doc/CompObj' mtime='0'>
+  <value name='system.hash.sha1'>6b77c883318dfd0ad6183f0861ca0d239a410351</value>
+  <value name='system.size'>106</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='simple.doc/Ole' mtime='0'>
+  <value name='system.hash.sha1'>d3d1cde9eb43ed4b77d197af879f5ca8b8837577</value>
+  <value name='system.size'>20</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='simple.doc/1Table' mtime='0'>
+  <value name='system.hash.sha1'>4f211f4660cf22189c354737f7e32a8a7c2a4d32</value>
+  <value name='system.size'>1617</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='simple.doc' mtime='1176759125'>
+  <value name='system.hash.sha1'>7626250ea42b04368faaa3f875a7037531284a6c</value>
+  <value name='system.size'>103936</value>
+  <value name='content.title'>Strigi is übercool</value>
+  <value name='content.subject'>desktop search</value>
+  <value name='system.depth'>0</value>
+ </file>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
- <file uri='a.bz2' mtime='1162936774'>
-  <value name='system.size'>214</value>
+ <file uri='msg_02.txt' mtime='1176553108'>
+  <value name='system.size'>2811</value>
   <value name='system.depth'>0</value>
  </file>

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='msg_02.txt/2' mtime='1176553108'>
+  <value name='system.hash.sha1'>08320b9877c4a5bd2f580e111830dd6d0915368f</value>
+  <value name='system.size'>193</value>
+  <value name='system.depth'>1</value>
+  <text>Today's Topics:
+1. testing #1 (Barry A. Warsaw)
+2. testing #2 (Barry A. Warsaw)
+3. testing #3 (Barry A. Warsaw)
+4. testing #4 (Barry A. Warsaw)
+5. testing #5 (Barry A. Warsaw)
+</text>
+ </file>
+ <file uri='msg_02.txt/3' mtime='1176553108'>
+  <value name='system.hash.sha1'>6b148165b219d343ec9835ca6b72b200395a24a4</value>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #1</value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/4' mtime='1176553108'>
+  <value name='system.hash.sha1'>1dbcf5e32b7f8e5b4b4183f7d2de1770268afcab</value>
+  <value name='system.size'>210</value>
+  <value name='email.subject'></value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/5' mtime='1176553108'>
+  <value name='system.hash.sha1'>7491dfa3c33a4e1e6818873e2e9c04aee05e46bd</value>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #3</value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/6' mtime='1176553108'>
+  <value name='system.hash.sha1'>5c133f2098b999a59aa66e5176991079ab06bd92</value>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #4</value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/7' mtime='1176553108'>
+  <value name='system.hash.sha1'>93d88d7437404036e3738a20dff9f8b277a3d611</value>
+  <value name='system.size'>238</value>
+  <value name='email.subject'>[Ppp] testing #5</value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/8' mtime='1176553108'>
+  <value name='system.hash.sha1'>2e3f73ab5476d773dbbd3fbc4960467777bfb26d</value>
+  <value name='system.size'>119</value>
+  <value name='system.depth'>1</value>
+  <text>_______________________________________________
+Ppp mailing list
+Ppp@zzz.org
+http://www.zzz.org/mailman/listinfo/ppp
+</text>
+ </file>
+ <file uri='msg_02.txt' mtime='1176553108'>
+  <value name='system.hash.sha1'>698a9603dbbcd45814041a53cbc6174a8d85e9b8</value>
+  <value name='system.size'>2811</value>
+  <value name='email.subject'>Ppp digest, Vol 1 #2 - 5 msgs</value>
+  <value name='contenttype'>text/plain; charset=us-ascii</value>
+  <value name='system.depth'>0</value>
+  <text>Send Ppp mailing list submissions to
+ppp@zzz.org
+To subscribe or unsubscribe via the World Wide Web, visit
+http://www.zzz.org/mailman/listinfo/ppp
+or, via email, send a message with subject or body 'help' to
+ppp-request@zzz.org
+You can reach the person managing the list at
+ppp-admin@zzz.org
+When replying, please edit your Subject line so it is more specific
+than "Re: Contents of Ppp digest..."
+</text>
+ </file>

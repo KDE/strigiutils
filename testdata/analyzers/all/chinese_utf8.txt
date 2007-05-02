@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
- <file uri='chinese_utf8.txt' mtime='1175792718'>
-  <value name='system.size'>1435</value>
+ <file uri='chinese_utf8.txt' mtime='1162936780'>
   <value name='system.hash.sha1'>e59a3ae3092da8720e79def0a7e0e2d2fe8274d4</value>
+  <value name='system.size'>1435</value>
   <value name='system.depth'>0</value>
  </file>

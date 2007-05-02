@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
- <file uri='polish.txt' mtime='1175792718'>
-  <value name='system.size'>158</value>
+ <file uri='polish.txt' mtime='1163782814'>
   <value name='system.hash.sha1'>556e58d6d3d597c1476ec2a65401c16f575c7ed5</value>
+  <value name='system.size'>158</value>
   <value name='system.depth'>0</value>
   <text>Dzień dobry
 Chcę powiedzieć, że strigi jest wspaniałą aplikacją, która jednak wymaga

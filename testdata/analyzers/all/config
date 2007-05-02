@@ -12,6 +12,7 @@ analyzer=ID3V2ThroughAnalyzer
 analyzer=MailEndAnalyzer
 analyzer=OdfMimeTypeLineAnalyzer
 analyzer=OdfSaxAnalyzer
+analyzer=OleEndAnalyzer
 analyzer=OggThroughAnalyzer
 analyzer=PcxThroughAnalyzer
 analyzer=PngEndAnalyzer
