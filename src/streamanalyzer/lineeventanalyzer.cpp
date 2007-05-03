@@ -234,9 +234,10 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
     // find the first \n
     p = data;
     const char* end = data + length;
-    do {
-        if (*p == '\n' || *p == '\r') break; 
-    } while (++p != end);
+    while (p < end) {
+        if (*p == '\n' || *p == '\r') break;
+        p++; 
+    }
     if (p == end) { // no '\n' was found, we put this in the buffer
         lineBuffer.append(data, length);
         return;
