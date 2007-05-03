@@ -101,7 +101,7 @@ FILE*
 aquireLock(const char* lockfile, struct flock& lock) {
     FILE* f = fopen(lockfile, "w");
     if (f == 0) {
-        fprintf(stderr, strerror(errno));
+        fprintf(stderr, "%s\n", strerror(errno));
         return 0;
     }
     lock.l_type = F_WRLCK;
@@ -110,7 +110,7 @@ aquireLock(const char* lockfile, struct flock& lock) {
     lock.l_len = 0;
     int r = fcntl(fileno(f), F_SETLK, &lock);
     if (r == -1) {
-        fprintf(stderr, strerror(errno));
+        fprintf(stderr, "%s\n", strerror(errno));
         fclose(f);
         return 0;
     }
