@@ -87,7 +87,7 @@ FieldPropertiesDb::Private::getdirs(const string& direnv) const {
 }
 void
 FieldPropertiesDb::Private::loadProperties(const string& dir) {
-    string pdir = dir + "/apps/strigi/fieldproperties/";
+    string pdir = dir + "/strigi/fieldproperties/";
     DIR* d = opendir(pdir.c_str());
     if (!d) return;
     struct dirent* de = readdir(d);

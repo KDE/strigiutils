@@ -23,5 +23,5 @@ install(FILES
 	strigi_source_code.fieldproperties
 	strigi_text.fieldproperties
 
-	DESTINATION share/apps/strigi/fieldproperties
+	DESTINATION share/strigi/fieldproperties
 )
