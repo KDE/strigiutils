@@ -340,8 +340,8 @@ CLuceneIndexReader::files(char depth) {
     Term term(mapId(_T("system.depth")), tstr);
     TermDocs* docs = reader->termDocs(&term);
     const TCHAR* mtime = mapId(_T("system.last_modified_time"));
-    while ( docs->next() ){
-        Document *d = reader->document(docs->doc());
+    while (docs->next()) {
+        Document* d = reader->document(docs->doc());
 
         const TCHAR* v = d->get(mtime);
         STRCPY_TtoA(cstr, v, CL_MAX_DIR);

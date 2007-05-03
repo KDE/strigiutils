@@ -63,6 +63,7 @@ CLuceneIndexManager::~CLuceneIndexManager() {
     std::map<STRIGI_THREAD_TYPE, CLuceneIndexReader*>::iterator r;
     for (r = readers.begin(); r != readers.end(); ++r) {
         delete r->second;
+        r->second = 0;
     }
     closeWriter();
     delete analyzer;
@@ -134,6 +135,16 @@ CLuceneIndexManager::closeWriter() {
     indexwriter = 0;
     // clear the cache
     //bitsets.clear();
+    refreshReaders();
+}
+void
+CLuceneIndexManager::refreshReaders() {
+    map<STRIGI_THREAD_TYPE, CLuceneIndexReader*>::iterator i;
+    for (i = readers.begin(); i != readers.end(); ++i) {
+        if (i->second) {
+            i->second->closeReader();
+        }
+    }
 }
 int
 CLuceneIndexManager::docCount() {
@@ -168,8 +179,8 @@ CLuceneIndexManager::indexSize() {
 }
 void
 CLuceneIndexManager::deleteIndex() {
-    // todo: close all readers
     closeWriter();
+    refreshReaders();
     openWriter(true);
 }
 time_t

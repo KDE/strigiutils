@@ -87,10 +87,15 @@ IndexManagerTester::testNumberQuery() {
     VERIFY(writer);
     if (writer == 0) return;
     writer->deleteAllEntries();
+    int files = reader->files(0).size();
+    VERIFY(files == 0);
+    if (files) return;
+    files = reader->countDocuments();
+    VERIFY(files == 0);
+    if (files) return;
     // add numbers to the database
     int m = 200;
     ostringstream str;
-    string size("size");
     for (int i=1; i<=m; ++i) {
         str << i;
         string value(str.str());
@@ -102,8 +107,20 @@ IndexManagerTester::testNumberQuery() {
         str.str("");
     }
     writer->commit();
+    files = reader->countDocuments();
+    VERIFY(files == m);
+    if (files != m) {
+        fprintf(stderr, "files: %i m: %i\n", files, m);
+        return;
+    }
+    files = reader->files(0).size();
+    VERIFY(files == m);
+    if (files != m) {
+        fprintf(stderr, "files: %i m: %i\n", files, m);
+        return;
+    }
     QueryParser parser;
-    Query q = parser.buildQuery("size:>0", -1, 0);
+    Query q = parser.buildQuery(FieldRegister::sizeFieldName+":>0", -1, 0);
     int count = reader->countHits(q);
     if (count != m) fprintf(stderr, "%i != %i\n", count, m);
     VERIFY(count == m);

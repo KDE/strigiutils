@@ -59,6 +59,7 @@ private:
     static int numberOfManagers;
 
     void openWriter(bool truncate=false);
+    void refreshReaders();
 public:
     explicit CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
