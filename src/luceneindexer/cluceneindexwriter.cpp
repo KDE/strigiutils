@@ -227,7 +227,6 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
             err.what());
         bits = 0;
     }
-    fprintf(stderr, "trying to delete '%s' %i\n", entry.c_str(), bits);
     if (bits) {
         for (int32_t i = 0; i < bits->size(); ++i) {
             try {
