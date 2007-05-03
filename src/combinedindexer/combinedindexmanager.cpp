@@ -195,7 +195,12 @@ CombinedIndexReader::files(char depth) {
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        files = i->second->indexReader()->files(depth);
+        map<string, time_t> af(i->second->indexReader()->files(depth));
+        map<string, time_t>::const_iterator j;
+        for (j = af.begin(); j != af.end(); ++j) {
+            // insert entry if it does not yet occur in the map
+            files.insert(*j);
+        }
     }
     return files;
 }
