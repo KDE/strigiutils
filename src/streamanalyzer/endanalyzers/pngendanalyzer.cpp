@@ -46,7 +46,7 @@ const string PngEndAnalyzerFactory::copyrightFieldName("content.copyright");
 const string PngEndAnalyzerFactory::creationTimeFieldName("content.creation_time");
 const string PngEndAnalyzerFactory::softwareFieldName("content.generator");
 const string PngEndAnalyzerFactory::disclaimerFieldName("content.disclaimer");
-const string PngEndAnalyzerFactory::warningFieldName("content.comment");
+const string PngEndAnalyzerFactory::warningFieldName("content.warning");
  // PNG spec says Source is Device used to create the image
 const string PngEndAnalyzerFactory::sourceFieldName("photo.camera_model");
 const string PngEndAnalyzerFactory::commentFieldName("content.comment");

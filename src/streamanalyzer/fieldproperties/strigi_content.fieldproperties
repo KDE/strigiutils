@@ -1,23 +1,35 @@
 [Field]
-Uri=content.genre
-Name=Genre
-TypeUri=string
-Description=Content genre
-Comment=music, literature, movie genre. Also can be used for pictures. Regular photos can be considered Documentary.
-
-[Field]
 Uri=content.creator
 Name=Creator
 TypeUri=string
 Description=Content creator
-Comment=abstract class. use its children
+Comment=abstract class, use children. List of entities who created the content(book authors, music band, artist)
 
 [Field]
 Uri=content.author
+ParentUri=content.creator
 Name=Author
 TypeUri=string
 Description=Content author
-Comment=List of persons/organizations who create the content(book authors, music band, artist)
+Comment=Primary content creator(s)
+
+[Field]
+Uri=content.contributor
+ParentUri=content.creator
+Name=Contributor
+TypeUri=string
+Description=Content contributor
+Comment=Secondary content creator(s)
+
+[Field]
+Uri=content.maintainer
+ParentUri=content.creator
+Name=Maintainer
+TypeUri=string
+Description=Content maintainer
+Comment=Entity keeping the content up to date in general or for a specific purpose.
+
+
 
 [Field]
 Uri=content.creation_time
@@ -25,6 +37,13 @@ Name=Content creation time
 TypeUri=datetime
 Description=
 Comment=this is different from system.creation_time in that this is the time when the content was actually produced. ID3 tag Year, for e-mail, this is send time etc
+
+[Field]
+Uri=content.genre
+Name=Genre
+TypeUri=string
+Description=Content genre
+Comment=music, literature, movie genre. Also can be used for pictures. Regular photos can be considered Documentary.
 
 [Field]
 Uri=content.subject
@@ -125,6 +144,8 @@ TypeUri=binary
 Description=Content thumbnail
 Comment=
 
+
+
 [Field]
 Uri=content.legal
 Name=Legal Info
@@ -165,6 +186,16 @@ Description=Content disclaimer
 Comment=
 
 [Field]
+Uri=content.warning
+ParentUri=content.legal
+Name=Warning
+TypeUri=string
+Description=Warning of nature of content
+Comment=
+
+
+
+[Field]
 Uri=content.generator
 Name=Generated with
 TypeUri=string
@@ -184,6 +215,8 @@ Name=Format subtype
 TypeUri=string
 Description=Content format subtype
 Comment=
+
+
 
 [Field]
 Uri=content.related
