@@ -26,16 +26,10 @@
 #include "inputstreamreader.h"
 #include <cerrno>
 
-#ifndef ICONV_CONST
-     //we try to guess whether the iconv function requires
-     //a const char. We have no way of automatically figuring
-     //this out if we did not use autoconf, so we guess based
-     //on certain parameters:
-     #if defined (_LIBICONV_H)
-          #define ICONV_CONST const
-     #else
-          #define ICONV_CONST
-     #endif
+#ifdef ICONV_SECOND_ARGUMENT_IS_CONST
+     #define ICONV_CONST const
+#else
+     #define ICONV_CONST
 #endif
 
 using namespace Strigi;

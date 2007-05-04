@@ -41,18 +41,6 @@ set<string> IFilterEndAnalyzer::extensions;
 
 std::string wchartoutf8(const wchar_t* p, const wchar_t* e);
 
-#ifndef ICONV_CONST
-     //we try to guess whether the iconv function requires
-     //a const char. We have no way of automatically figuring
-     //this out if we did not use autoconf, so we guess based
-     //on certain parameters:
-     #ifdef _LIBICONV_H
-          #define ICONV_CONST const
-     #else
-          #define ICONV_CONST
-     #endif
-#endif
-
 IFilterEndAnalyzer::IFilterEndAnalyzer(){
 	if ( extensions.size() == 0 ){
 		HKEY pKey, kKey;

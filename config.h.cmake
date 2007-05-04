@@ -59,6 +59,7 @@
 //////////////////////////////
 //misc
 //////////////////////////////
+#cmakedefine ICONV_SECOND_ARGUMENT_IS_CONST 1
 #cmakedefine CMAKE_ANSI_FOR_SCOPE 1
 
 #ifndef CMAKE_ANSI_FOR_SCOPE

@@ -18,6 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "strigiconfig.h"
 #include "analysisresult.h"
 #include "indexwriter.h"
@@ -29,6 +33,12 @@
 #include <string>
 #include <cstdlib>
 #include <iconv.h>
+#ifdef ICONV_SECOND_ARGUMENT_IS_CONST
+     #define ICONV_CONST const
+#else
+     #define ICONV_CONST
+#endif
+
 using namespace Strigi;
 using namespace std;
 
@@ -72,11 +82,7 @@ Latin1Converter::_fromLatin1(char*& o, const char* data, size_t len) {
         l = outlen;
     }
     o = out;
-#if defined(_WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
-    const char* inp = (char*)data;
-#else
-	char* inp = (char*)data;
-#endif
+    ICONV_CONST char* inp = (char*)data;
     char* outp = out;
     iconv(conv, &inp, &len, &outp, &l);
     return (len == 0) ?outlen-l :0;
