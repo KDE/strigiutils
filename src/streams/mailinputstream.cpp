@@ -74,7 +74,7 @@ decode(const string& enc, const string& data) {
 #ifdef __linux__
     char* in = (char*)data.c_str();
 #else
-    const char* in = (char*)data.c_str();
+    const char* in = data.c_str();
 #endif
     size_t ilen = data.length();
     size_t olen = 4*ilen;
