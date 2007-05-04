@@ -68,7 +68,7 @@ XMLStream& operator>>(XMLStream& in, std::string& e);
 class SimpleNode {
 friend class SimpleNodeParser;
 private:
-    SimpleNode() :parent(0), next(0) {};
+    SimpleNode() :parent(0), next(0) {}
 public:
     const SimpleNode* parent;
     const SimpleNode* next;

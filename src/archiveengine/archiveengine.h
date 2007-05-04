@@ -64,7 +64,7 @@ public:
     virtual ArchiveDirEngine *openDir(const QString& filename) = 0;
     virtual Strigi::StreamBase<char>* inputStream(const FileEntry* entry) = 0;
     // lose references to engines so that they are not deleted
-    virtual void releaseEngines() {};
+    virtual void releaseEngines() {}
     bool caseSensitive () const { return true; }
     bool close () { return true; }
     bool copy ( const QString & /*newName*/ ) { return false; }
@@ -141,7 +141,7 @@ public:
         const QStringList& filterNames) const;
     QString fileName ( FileName file = DefaultName ) const;
     // lose references to engines so that they are not deleted
-    void releaseEngines() {    streamengine = 0;};
+    void releaseEngines() {    streamengine = 0;}
     Strigi::StreamBase<char>* inputStream(const FileEntry* entry);
     FileFlags fileFlags ( FileFlags type = FileInfoAll ) const {
         // signal that this is file _and_ a "directory"

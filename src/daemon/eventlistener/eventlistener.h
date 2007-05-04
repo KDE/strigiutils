@@ -45,7 +45,7 @@ public:
         m_pollingInterval = 180;
     }
 
-    virtual ~EventListener() {};
+    virtual ~EventListener() {}
 
     virtual bool init() { return true; }
     virtual bool addWatch (const std::string& path) = 0;

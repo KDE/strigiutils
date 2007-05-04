@@ -31,7 +31,7 @@ Q_OBJECT
 
 public:
     explicit DlgListIndexedFiles(const QStringList& files, QWidget* parent = 0);
-    ~DlgListIndexedFiles () {};
+    ~DlgListIndexedFiles () {}
 
 private Q_SLOTS:
     void accept();

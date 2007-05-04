@@ -68,7 +68,7 @@ public:
      * the DataEventHandler that all the data from the stream
      * has been read and passed in exactly one call to handleData.
      */
-    virtual void handleEnd() {};
+    virtual void handleEnd() {}
 };
 
 /**
