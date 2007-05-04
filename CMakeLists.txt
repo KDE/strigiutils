@@ -41,9 +41,10 @@ ENDIF(APPLE)
 IF(MSVC)
     # msvc2005 deprecated warnings
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
-    # some export related warnings
+    # calm mdown msvc
     ADD_DEFINITIONS(-wd4251) # 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2'
     ADD_DEFINITIONS(-wd4275) # non  DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
+    ADD_DEFINITIONS(-wd4309) # 'conversion' : truncation of constant value
     ADD_DEFINITIONS(-wd4503) # decorated name length exceeded
     ADD_DEFINITIONS(-wd4786) # identifier was truncated to '255' characters in the debug information
 ELSE(MSVC)

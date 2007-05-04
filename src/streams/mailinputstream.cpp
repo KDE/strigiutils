@@ -27,6 +27,7 @@
 #include "subinputstream.h"
 #include "stringterminatedsubstream.h"
 #include "base64inputstream.h"
+#include "iconv.h"
 #include <cstring>
 #include <sstream>
 
@@ -70,7 +71,11 @@ decode(const string& enc, const string& data) {
     string s;
     iconv_t const conv(iconv_open("UTF-8", enc.c_str()));
     if (conv == (iconv_t)-1) return s;
+#ifdef __linux__
     char* in = (char*)data.c_str();
+#else
+    const char* in = (char*)data.c_str();
+#endif
     size_t ilen = data.length();
     size_t olen = 4*ilen;
     char* out = (char*)malloc(olen);
