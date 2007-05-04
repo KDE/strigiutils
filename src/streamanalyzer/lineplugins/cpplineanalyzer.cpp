@@ -29,12 +29,13 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    includeField = reg.registerField("TODO_include", FieldRegister::stringType, 0, 0);
-    classField = reg.registerField("TODO_class", FieldRegister::stringType, 0, 0);
+    includeField = reg.registerField("content.depends", FieldRegister::stringType, 0, 0);
+    classField = reg.registerField("source_code.describes_class", FieldRegister::stringType, 0, 0);
     codeLinesField = reg.registerField("source_code.stats.code_line_count", FieldRegister::integerType, 1, 0);
     commentLinesField = reg.registerField("source_code.stats.comment_line_count", FieldRegister::integerType, 1, 0);
     totalLinesField = reg.registerField("text.stats.line_count", FieldRegister::integerType, 1, 0);
-    includesField = reg.registerField("TODO_includes", FieldRegister::integerType, 1, 0);
+// Include count not required. Include list length is easy to obtain.
+//    includesField = reg.registerField("TODO_includes", FieldRegister::integerType, 1, 0);
 }
 
 // Analyzer
@@ -95,7 +96,7 @@ CppLineAnalyzer::endAnalysis() {
         analysisResult->addValue(factory->codeLinesField, codeLines);
         analysisResult->addValue(factory->commentLinesField, commentLines);
         analysisResult->addValue(factory->totalLinesField, totalLines);
-        analysisResult->addValue(factory->includesField, includes);
+//        analysisResult->addValue(factory->includesField, includes);
     }
     ready = true;
 }

@@ -36,8 +36,8 @@ const string PngEndAnalyzerFactory::widthFieldName("image.width");
 const string PngEndAnalyzerFactory::heightFieldName("image.height");
 const string PngEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
 const string PngEndAnalyzerFactory::colorModeFieldName("image.color_space");
-const string PngEndAnalyzerFactory::compressionFieldName("compression");
-const string PngEndAnalyzerFactory::interlaceModeFieldName("interlaceMode");
+const string PngEndAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
+const string PngEndAnalyzerFactory::interlaceModeFieldName("image.interlace");
 const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificationTime");
 const string PngEndAnalyzerFactory::titleFieldName("content.title");
 const string PngEndAnalyzerFactory::authorFieldName("content.author");
@@ -46,8 +46,9 @@ const string PngEndAnalyzerFactory::copyrightFieldName("content.copyright");
 const string PngEndAnalyzerFactory::creationTimeFieldName("content.creation_time");
 const string PngEndAnalyzerFactory::softwareFieldName("content.generator");
 const string PngEndAnalyzerFactory::disclaimerFieldName("content.disclaimer");
-const string PngEndAnalyzerFactory::warningFieldName("warning");
-const string PngEndAnalyzerFactory::sourceFieldName("source");
+const string PngEndAnalyzerFactory::warningFieldName("content.comment");
+ // PNG spec says Source is Device used to create the image
+const string PngEndAnalyzerFactory::sourceFieldName("photo.camera_model");
 const string PngEndAnalyzerFactory::commentFieldName("content.comment");
 
 // and for the colors

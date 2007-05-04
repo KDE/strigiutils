@@ -26,8 +26,8 @@
 using namespace std;
 using namespace Strigi;
 
-const string BmpEndAnalyzerFactory::typeFieldName("type");
-const string BmpEndAnalyzerFactory::compressionFieldName("compression");
+const string BmpEndAnalyzerFactory::typeFieldName("content.format_subtype");
+const string BmpEndAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
 const string BmpEndAnalyzerFactory::widthFieldName("image.width");
 const string BmpEndAnalyzerFactory::heightFieldName("image.height");
 const string BmpEndAnalyzerFactory::colorDepthFieldName("image.color_depth");

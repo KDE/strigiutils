@@ -1,0 +1,20 @@
+[Field]
+Uri=compressed.compression_algorithm
+Name=Compression algo
+TypeUri=string
+Description=Compression algorithm
+Comment=
+
+[Field]
+Uri=compressed.compression_level
+Name=Compression level
+TypeUri=string
+Description=Lossless compression level
+Comment=
+
+[Field]
+Uri=compressed.target_quality
+Name=Target quality
+TypeUri=string
+Description=Lossy compression target quality
+Comment=

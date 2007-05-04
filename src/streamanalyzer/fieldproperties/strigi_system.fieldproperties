@@ -44,8 +44,8 @@ Comment=
 Uri=system.location
 Name=Location
 TypeUri=string
-Description=URL/URI of the file
-Comment=URL/URI of the file. TODO: should this be merged with system.ID somehow?
+Description=File location
+Comment=Path
 
 [Field]
 Uri=system.file_name

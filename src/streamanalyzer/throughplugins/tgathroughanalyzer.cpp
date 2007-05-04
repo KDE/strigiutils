@@ -28,7 +28,7 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string TgaThroughAnalyzerFactory::compressionFieldName("compression");
+const string TgaThroughAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
 const string TgaThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
 const string TgaThroughAnalyzerFactory::colorModeFieldName("image.color_space");
 const string TgaThroughAnalyzerFactory::widthFieldName("image.width");

@@ -6,6 +6,13 @@ Description=Content genre
 Comment=music, literature, movie genre. Also can be used for pictures. Regular photos can be considered Documentary.
 
 [Field]
+Uri=content.creator
+Name=Creator
+TypeUri=string
+Description=Content creator
+Comment=abstract class. use its children
+
+[Field]
 Uri=content.author
 Name=Author
 TypeUri=string
@@ -169,4 +176,50 @@ Uri=content.generator_settings
 Name=Generator settings
 TypeUri=string
 Description=Content generator software settings
+Comment=
+
+[Field]
+Uri=content.format_subtype
+Name=Format subtype
+TypeUri=string
+Description=Content format subtype
+Comment=
+
+[Field]
+Uri=content.related
+Name=Related
+TypeUri=string
+Description=Related content
+Comment=abstract. use children.
+
+[Field]
+Uri=content.depends
+ParentUri=content.related
+Name=Depends
+TypeUri=string
+Description=Content dependency
+Comment=
+
+[Field]
+Uri=content.conflicts
+ParentUri=content.related
+Name=Conflicts
+TypeUri=string
+Description=Content conflicts with
+Comment=
+
+[Field]
+Uri=content.supercedes
+ParentUri=content.related
+Name=Supercedes
+TypeUri=string
+Description=Content supercedes
+Comment=
+
+[Field]
+Uri=content.links
+ParentUri=content.related
+Name=Links
+TypeUri=string
+Description=Content links to
 Comment=

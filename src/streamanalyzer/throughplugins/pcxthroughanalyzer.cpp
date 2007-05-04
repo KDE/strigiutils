@@ -28,7 +28,7 @@
 using namespace Strigi;
 using namespace std;
 
-const string PcxThroughAnalyzerFactory::compressionFieldName("compression");
+const string PcxThroughAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
 const string PcxThroughAnalyzerFactory::widthFieldName("image.width");
 const string PcxThroughAnalyzerFactory::heightFieldName("image.height");
 const string PcxThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");

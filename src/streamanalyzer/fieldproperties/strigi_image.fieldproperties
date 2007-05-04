@@ -47,3 +47,10 @@ Name=Aspect ratio
 TypeUri=string
 Description=Image aspect ratio
 Comment=user-friendly representation of dimensions.x/dimensions.y
+
+[Field]
+Uri=image.interlace
+Name=Interlace
+TypeUri=string
+Description=Image interlace mode
+Comment=none|Adam7|
