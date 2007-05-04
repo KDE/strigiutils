@@ -98,7 +98,7 @@ void SHA1::transform(void *data) {
 	d = _h3;
 	e = _h4;
 
-#if __BIG_ENDIAN__
+#ifdef __BIG_ENDIAN__
 	memcpy(x, _data, 64);
 #else
 	int i;
@@ -313,7 +313,7 @@ const unsigned char *SHA1::hash() {
 
 	p = _buf;
 
-#if __BIG_ENDIAN__
+#ifdef __BIG_ENDIAN__
 #define X(a) do { *(uint32_t *)p = _h##a; p += 4; } while (0)
 #else
 #define X(a) do { *p++ = _h##a >> 24;  *p++ = _h##a >> 16;             \
