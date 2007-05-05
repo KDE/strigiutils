@@ -20,6 +20,7 @@
 #include "strigiconfig.h"
 #include "diranalyzer.h"
 #include "analyzerconfiguration.h"
+#include "sqliteindexmanager.h"
 
 int
 main(int argc, char **argv) {
@@ -31,7 +32,8 @@ main(int argc, char **argv) {
     file += "/sqlite.db";
 
     Strigi::AnalyzerConfiguration ic;
-    Indexer indexer(file.c_str(), ic);
-    indexer.index(argv[2]);
+    SqliteIndexManager indexer(file.c_str());
+    Strigi::DirAnalyzer analyzer(*indexer.indexWriter(), &ic);
+    analyzer.analyzeDir(argv[2]);
     return 0;
 }

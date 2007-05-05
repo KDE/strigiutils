@@ -1,4 +1,4 @@
-#subdirs(tests)
+subdirs(tests)
 
 include_directories( ../streamanalyzer ../streams ../streams/compat
 	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR}
