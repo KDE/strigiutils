@@ -17,15 +17,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include <cstdio>
-#include <cstdarg>
-#include <cstring>
-#include <string>
-#include <algorithm>
 #include "combinedindexmanager.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
 #include "strigiconfig.h"
+#include <algorithm>
+#include <cstdio>
+#include <cstdarg>
+#include <cstring>
+#include <string>
+#include <dirent.h>
 using namespace std;
 using namespace Strigi;
 
@@ -49,9 +50,23 @@ int
 usage(int argc, char** argv) {
     pe("%s: program for creating and querying indices\n\n", argv[0]);
     pe("usage:\n");
-    pe("  %s create [-j num] [-t backend] -d indexdir files/dirs");
-    pe("  %s update [-j num] [-t backend] -d indexdir files/dirs");
+    pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
     return 1; 
+}
+void
+checkIndexdirIsEmpty(const char* dir) {
+    DIR* d = opendir(dir);
+    if (!d) return;
+    struct dirent* de = readdir(d);
+    while (de) {
+        if (strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
+            fprintf(stderr, "Directory %s is not empty.\n", dir);
+            exit(1);
+        }
+        de = readdir(d);
+    }
+    closedir(d);
 }
 int
 create(int argc, char** argv) {
@@ -60,6 +75,7 @@ create(int argc, char** argv) {
     string indexdir;
     vector<string> dirs;
     int i = 1;
+    int nthreads = 2;
     while (++i < argc) {
         const char* arg = argv[i];
         if (!strcmp("-t", arg)) {
@@ -72,6 +88,20 @@ create(int argc, char** argv) {
                 return usage(argc, argv);
             }
             indexdir.assign(argv[i]);
+        } else if (strlen(arg) >= 2 && !strncmp("-j", arg, 2)) {
+            int j;
+            if (strlen(arg) > 2) {
+                j = atoi(arg+2);
+            } else if (++i < argc) {
+                j = atoi(argv[i]);
+            } else {
+                return usage(argc, argv);
+            }
+            if (j > 0) {
+                nthreads = j;
+            } else {
+                return usage(argc, argv);
+            }
         } else {
             dirs.push_back(argv[i]);
         }
@@ -84,7 +114,11 @@ create(int argc, char** argv) {
         if (backends.size() == 1) {
             backend = backends[0];
         } else {
-            pe("Specify a backend.\n");
+            pe("Specify a backend. Choose one from ");
+            for (uint j=0; j<backends.size()-1; ++j) {
+                pe("'%s', ", backends[j].c_str());
+            }
+            pe("'%s'.\n", backends[backends.size()-1].c_str());
             return usage(argc, argv);
         }
     }
@@ -103,6 +137,9 @@ create(int argc, char** argv) {
         pe("Provide a dir to write the index to with -d.\n");
         return usage(argc, argv);
     }
+    // check that the dir does not yet exist
+    checkIndexdirIsEmpty(indexdir.c_str());
+
     // check arguments: dirs
     if (dirs.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
@@ -110,16 +147,16 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
-
     IndexManager* manager
         = CombinedIndexManager::factories()[backend](indexdir.c_str());
     IndexWriter* writer = manager->indexWriter();
     AnalyzerConfiguration config;
-    DirAnalyzer analyzer(*writer, &config);
+    DirAnalyzer* analyzer = new DirAnalyzer(*writer, &config);
     vector<string>::const_iterator j;
     for (j = dirs.begin(); j != dirs.end(); ++j) {
-        analyzer.analyzeDir(j->c_str());
+        analyzer->analyzeDir(j->c_str(), nthreads);
     }
+    delete analyzer;
     delete manager;
 
     return 0;
