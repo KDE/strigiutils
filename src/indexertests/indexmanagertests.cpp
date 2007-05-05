@@ -89,8 +89,16 @@ IndexManagerTester::testNumberQuery() {
     writer->deleteAllEntries();
     int files = reader->files(0).size();
     VERIFY(files == 0);
+    if (files != 0) {
+        fprintf(stderr, " %i files left\n", files);
+        return;
+    }
     if (files) return;
     files = reader->countDocuments();
+    if (files != 0) {
+        fprintf(stderr, " %i files left\n", files);
+        return;
+    }
     VERIFY(files == 0);
     if (files) return;
     // add numbers to the database
