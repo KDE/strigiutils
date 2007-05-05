@@ -13,14 +13,14 @@ Description=Source code comment line count
 Comment=
 
 [Field]
-Uri=source_code.stats.describes_class
+Uri=source_code.describes_class
 Name=Class
 TypeUri=integer
 Description=Source code describes class
 Comment=
 
 [Field]
-Uri=source_code.stats.describes_function
+Uri=source_code.describes_function
 Name=Function
 TypeUri=integer
 Description=Source code describes function

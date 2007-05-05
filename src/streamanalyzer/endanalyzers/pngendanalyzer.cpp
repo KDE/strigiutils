@@ -38,7 +38,7 @@ const string PngEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
 const string PngEndAnalyzerFactory::colorModeFieldName("image.color_space");
 const string PngEndAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
 const string PngEndAnalyzerFactory::interlaceModeFieldName("image.interlace");
-const string PngEndAnalyzerFactory::lastModificationTimeFieldName("lastModificationTime");
+const string PngEndAnalyzerFactory::lastModificationTimeFieldName("content.last_modified_time");
 const string PngEndAnalyzerFactory::titleFieldName("content.title");
 const string PngEndAnalyzerFactory::authorFieldName("content.author");
 const string PngEndAnalyzerFactory::descriptionFieldName("content.description");

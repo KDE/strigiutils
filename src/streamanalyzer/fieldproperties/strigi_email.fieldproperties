@@ -31,6 +31,14 @@ Description=E-mail blind carbon copy
 Comment=
 
 [Field]
+Uri=email.subject
+ParentUri=message.subject
+Name=Subject
+TypeUri=string
+Description=E-mail subject
+Comment=
+
+[Field]
 Uri=email.content_type
 Name=Content-type
 TypeUri=string
