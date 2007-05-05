@@ -47,7 +47,10 @@ pe(const char *format, ...) {
  **/
 int
 usage(int argc, char** argv) {
-    pe("%s: program for creating and querying indices\n", argv[0]);
+    pe("%s: program for creating and querying indices\n\n", argv[0]);
+    pe("usage:\n");
+    pe("  %s create [-j num] [-t backend] -d indexdir files/dirs");
+    pe("  %s update [-j num] [-t backend] -d indexdir files/dirs");
     return 1; 
 }
 int
@@ -122,12 +125,18 @@ create(int argc, char** argv) {
     return 0;
 }
 int
+update(int argc, char** argv) {
+    return 0;
+}
+int
 main(int argc, char** argv) {
     if (argc < 2) { 
         return usage(argc, argv);
     }
     const char* cmd = argv[1];
     if (!strcmp(cmd,"create")) {
+        return create(argc, argv);
+    } else if (!strcmp(cmd,"update")) {
         return create(argc, argv);
     } else {
         return usage(argc, argv);
