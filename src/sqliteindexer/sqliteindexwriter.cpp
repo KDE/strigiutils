@@ -49,7 +49,6 @@ SqliteIndexWriter::SqliteIndexWriter(SqliteIndexManager *m, sqlite3* db)
     prepareStmt(db, updatefilestmt, sql, strlen(sql));
     sql = "insert into files (path, mtime, depth) values(?, ?, ?);";
     prepareStmt(db, insertfilestmt, sql, strlen(sql));
-    fprintf(stderr, "opened db %p %p\n", db, insertfilestmt);
 }
 SqliteIndexWriter::~SqliteIndexWriter() {
     commit();
@@ -63,7 +62,7 @@ SqliteIndexWriter::~SqliteIndexWriter() {
 void
 SqliteIndexWriter::prepareStmt(sqlite3* db, sqlite3_stmt*& stmt,
         const char* sql, int sqllength) {
-    int r = sqlite3_prepare(db, sql, sqllength, &stmt, 0);
+    int r = sqlite3_prepare_v2(db, sql, sqllength, &stmt, 0);
     if (r != SQLITE_OK) {
         fprintf(stderr, "could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
@@ -189,9 +188,9 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
 
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare(db,
+    int r = sqlite3_prepare_v2(db,
         "insert into tempfilewords (fileid, word, count) values(?, ?,?);",
-        0, &stmt, 0);
+        -1, &stmt, 0);
     if (r != SQLITE_OK) {
         if (idx->depth() == 0) {
             sqlite3_exec(db, "rollback; ", 0, 0, 0);
@@ -224,7 +223,6 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
 }
 void
 SqliteIndexWriter::commit() {
-    fprintf(stderr, "start commit\n");
     // move the data from the temp tables into the index
 
     const char* sql = "replace into words (wordid, word, count) "
@@ -246,7 +244,6 @@ SqliteIndexWriter::commit() {
         fprintf(stderr, "could not store new data: %s\n", sqlite3_errmsg(db));
     }
     manager->deref();
-    fprintf(stderr, "end commit of %i rows\n", temprows);
     temprows = 0;
 }
 /**
@@ -268,7 +265,7 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
             fprintf(stderr, "could not delete file %s: %s (%i)\n", i->c_str(),
                 sqlite3_errmsg(db), r);
         }
-//        fprintf(stderr, "removed entry '%s'\n", f.c_str());
+        //fprintf(stderr, "removed entry '%s'\n", f.c_str());
         sqlite3_reset(delstmt);
     }
     sqlite3_finalize(delstmt);
@@ -289,6 +286,14 @@ SqliteIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 }
 void
 SqliteIndexWriter::deleteAllEntries() {
-    manager->ref();
+    sqlite3* db = manager->ref();
+    // remove all information
+    int r = sqlite3_exec(db,
+        "delete from files; delete from idx;"
+        "delete from filewords; delete from words;", 0, 0, 0);
+    if (r != SQLITE_OK) {
+        fprintf(stderr, "could not delete all entries: %s\n",
+            sqlite3_errmsg(db));
+    }
     manager->deref();
 }

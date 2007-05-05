@@ -90,6 +90,7 @@ createQuery(int n, bool filterpath) {
     }
     if (n > 0) q <<"group by fa.fileid order by p ";
     q <<"limit 100";
+
     return q.str();
 }
 int
@@ -131,11 +132,10 @@ SqliteIndexReader::query(const Strigi::Query& query) {
     if (terms.size() == 0 && pathfilter.length() == 0) return results;
 
     string sql = createQuery(terms.size(), pathfilter.length() > 0);
-    //printf("%s\n", sql.c_str());
 
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare(db, sql.c_str(), 0, &stmt, 0);
+    int r = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare query '%s': %s\n", sql.c_str(),
             sqlite3_errmsg(db));
@@ -171,10 +171,10 @@ SqliteIndexReader::files(char depth) {
     sqlite3* db = manager->ref();
     printf("%p\n", db);
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare(db, "select path, mtime from files where depth = ?",
-        0, &stmt, 0);
+    int r = sqlite3_prepare_v2(db,
+        "select path, mtime from files where depth = ?", -1, &stmt, 0);
     if (r != SQLITE_OK) {
-        printf("could not prepare query: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "could not prepare query: %s\n", sqlite3_errmsg(db));
         manager->deref();
         return files;
     }
@@ -197,15 +197,17 @@ int
 SqliteIndexReader::countDocuments() {
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare(db, "select count(*) from files;", 0, &stmt, 0);
+    int r = sqlite3_prepare_v2(db, "select count(*) from files;", -1, &stmt, 0);
     if (r != SQLITE_OK) {
-        printf("could not prepare count query: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "could not prepare count query: %i %s\n", r,
+            sqlite3_errmsg(db));
         manager->deref();
         return -1;
     }
     r = sqlite3_step(stmt);
     if (r != SQLITE_ROW) {
-        printf("could not read count query: %i %s\n", r, sqlite3_errmsg(db));
+        fprintf(stderr, "could not read count query: %i %s\n", r,
+            sqlite3_errmsg(db));
         manager->deref();
         return -1;
     }

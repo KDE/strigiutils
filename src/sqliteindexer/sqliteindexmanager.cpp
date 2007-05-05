@@ -51,7 +51,6 @@ SqliteIndexManager::~SqliteIndexManager() {
 }
 sqlite3*
 SqliteIndexManager::opendb(const char* path) {
-    fprintf(stderr, "opening db\n");
     sqlite3* db;
     int r = sqlite3_open(path, &db);
     // any value other than SQLITE_OK is an error
