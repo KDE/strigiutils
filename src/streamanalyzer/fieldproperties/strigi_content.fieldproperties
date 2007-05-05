@@ -33,10 +33,17 @@ Comment=Entity keeping the content up to date in general or for a specific purpo
 
 [Field]
 Uri=content.creation_time
-Name=Content creation time
+Name=Creation time
 TypeUri=datetime
-Description=
+Description=Content creation time
 Comment=this is different from system.creation_time in that this is the time when the content was actually produced. ID3 tag Year, for e-mail, this is send time etc
+
+[Field]
+Uri=content.last_modified_time
+Name=Modification time
+TypeUri=datetime
+Description=Content last modification time
+Comment=this is different from system.last_modified_time in that this is the time when the content was actually modified, while system.last_modified_time may reflect file rename or some other operation.
 
 [Field]
 Uri=content.genre

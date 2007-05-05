@@ -1,7 +1,7 @@
 [Field]
 Uri=email.from
 ParentUri=message.sender
-Name=From:
+Name=From
 TypeUri=string
 Description=E-mail sender
 Comment=
@@ -9,7 +9,7 @@ Comment=
 [Field]
 Uri=email.to
 ParentUri=message.primary_recipient
-Name=To:
+Name=To
 TypeUri=string
 Description=E-mail recipient
 Comment=
@@ -17,7 +17,7 @@ Comment=
 [Field]
 Uri=email.cc
 ParentUri=message.secondary_recipient
-Name=CC:
+Name=CC
 TypeUri=string
 Description=E-mail carbon copy
 Comment=
@@ -25,15 +25,14 @@ Comment=
 [Field]
 Uri=email.bcc
 ParentUri=message.secondary_recipient
-Name=BCC:
+Name=BCC
 TypeUri=string
 Description=E-mail blind carbon copy
 Comment=
 
 [Field]
-Uri=email.subject
-ParentUri=message.subject
-Name=Subject:
+Uri=email.content_type
+Name=Content-type
 TypeUri=string
-Description=E-mail subject
+Description=E-mail content-type
 Comment=

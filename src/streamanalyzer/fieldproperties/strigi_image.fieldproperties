@@ -42,6 +42,14 @@ Description=Image color depth
 Comment=
 
 [Field]
+Uri=image.color_count
+ParentUri=media.sample_format
+Name=Color_count
+TypeUri=string
+Description=Image color count
+Comment=For palette
+
+[Field]
 Uri=image.aspect_ratio
 Name=Aspect ratio
 TypeUri=string
