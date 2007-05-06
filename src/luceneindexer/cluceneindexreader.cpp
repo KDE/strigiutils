@@ -332,27 +332,42 @@ CLuceneIndexReader::files(char depth) {
         return files;
     }
 
-    TCHAR tstr[CL_MAX_DIR];
-    char cstr[CL_MAX_DIR];
-    snprintf(cstr, CL_MAX_DIR, "%i", depth);
-    STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
-
-    Term term(mapId(_T("system.depth")), tstr);
-    TermDocs* docs = reader->termDocs(&term);
     const TCHAR* mtime = mapId(_T("system.last_modified_time"));
-    while (docs->next()) {
-        Document* d = reader->document(docs->doc());
-
-        const TCHAR* v = d->get(mtime);
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        time_t mtime = atoi(cstr);
-        v = d->get(_T("system.location"));
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        files[cstr] = mtime;
-
-        _CLDELETE(d);
+    char cstr[CL_MAX_DIR];
+    if (depth >= 0) {
+        TCHAR tstr[CL_MAX_DIR];
+        snprintf(cstr, CL_MAX_DIR, "%i", depth);
+        STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
+        Term term(mapId(_T("system.depth")), tstr);
+        TermDocs* docs = reader->termDocs(&term);
+        while (docs->next()) {
+            Document* d = reader->document(docs->doc());
+    
+            const TCHAR* v = d->get(mtime);
+            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+            time_t mtime = atoi(cstr);
+            v = d->get(_T("system.location"));
+            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+            files[cstr] = mtime;
+    
+            _CLDELETE(d);
+        }
+        _CLDELETE(docs);
+    } else {
+        int32_t max = reader->maxDoc();
+        for (int32_t i = 0; i < max; ++i) {
+            Document* d = reader->document(i);
+            if (d) {
+                const TCHAR* v = d->get(mtime);
+                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+                time_t mtime = atoi(cstr);
+                v = d->get(_T("system.location"));
+                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+                files[cstr] = mtime;
+                _CLDELETE(d);
+            }
+        }
     }
-    _CLDELETE(docs);
     return files;
 }
 int32_t

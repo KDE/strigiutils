@@ -192,7 +192,7 @@ list(int argc, char** argv) {
         return usage(argc, argv);
     }
     IndexReader* reader = manager->indexReader();
-    map<string, time_t> files = reader->files(0);
+    map<string, time_t> files = reader->files(-1);
     map<string, time_t>::iterator i;
     for (i=files.begin(); i!=files.end(); ++i) {
         printf("%s\n", i->first.c_str());
