@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "combinedindexmanager.h"
+#include "indexreader.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
 #include "strigiconfig.h"
@@ -80,6 +81,7 @@ usage(int argc, char** argv) {
     pe("usage:\n");
     pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
     pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s list -t backend -d indexdir\n");
     return 1; 
 }
 void
@@ -105,6 +107,27 @@ printBackends(const string& msg, const vector<string> backends) {
     }
     pe("'%s'.\n", backends[backends.size()-1].c_str());
 }
+IndexManager*
+getIndexManager(string& backend, const string& indexdir) {
+    // check arguments: backend
+    const vector<string>& backends = CombinedIndexManager::backEnds();
+    // if there is only one backend, the backend does not have to be specified
+    if (backend.size() == 0) {
+        if (backends.size() == 1) {
+            backend = backends[0];
+        } else {
+            printBackends("Specify a backend.", backends);
+            return 0;
+        }
+    }
+    vector<string>::const_iterator b
+        = find(backends.begin(), backends.end(), backend);
+    if (b == backends.end()) {
+        printBackends("Invalid index type.", backends);
+        return 0;
+    }
+    return CombinedIndexManager::factories()[backend](indexdir.c_str());
+}
 int
 create(int argc, char** argv) {
     // parse arguments
@@ -114,23 +137,6 @@ create(int argc, char** argv) {
     int nthreads = atoi(options['j'].c_str());
     if (nthreads < 1) nthreads = 2;
 
-    // check arguments: backend
-    const vector<string>& backends = CombinedIndexManager::backEnds();
-    // if there is only one backend, the backend does not have to be specified
-    if (backend.size() == 0) {
-        if (backends.size() == 1) {
-            backend = backends[0];
-        } else {
-            printBackends("Specify a backend.", backends);
-            return usage(argc, argv);
-        }
-    }
-    vector<string>::const_iterator b
-        = find(backends.begin(), backends.end(), backend);
-    if (b == backends.end()) {
-        printBackends("Invalid index type.", backends);
-        return usage(argc, argv);
-    }
     // check arguments: indexdir
     if (indexdir.length() == 0) {
         pe("Provide a dir to write the index to with -d.\n");
@@ -146,8 +152,11 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
-    IndexManager* manager
-        = CombinedIndexManager::factories()[backend](indexdir.c_str());
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+
     IndexWriter* writer = manager->indexWriter();
     AnalyzerConfiguration config;
     DirAnalyzer* analyzer = new DirAnalyzer(*writer, &config);
@@ -165,6 +174,33 @@ update(int argc, char** argv) {
     return 0;
 }
 int
+list(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    IndexReader* reader = manager->indexReader();
+    map<string, time_t> files = reader->files(0);
+    map<string, time_t>::iterator i;
+    for (i=files.begin(); i!=files.end(); ++i) {
+        printf("%s\n", i->first.c_str());
+    }
+    delete manager;
+    return 0;
+}
+int
 main(int argc, char** argv) {
     if (argc < 2) { 
         return usage(argc, argv);
@@ -173,7 +209,9 @@ main(int argc, char** argv) {
     if (!strcmp(cmd,"create")) {
         return create(argc, argv);
     } else if (!strcmp(cmd,"update")) {
-        return create(argc, argv);
+        return update(argc, argv);
+    } else if (!strcmp(cmd,"list")) {
+        return list(argc, argv);
     } else {
         return usage(argc, argv);
     }
