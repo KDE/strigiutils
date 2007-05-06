@@ -81,7 +81,8 @@ usage(int argc, char** argv) {
     pe("usage:\n");
     pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
     pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
-    pe("  %s list -t backend -d indexdir\n");
+    pe("  %s listFiles -t backend -d indexdir\n");
+    pe("  %s listFields -t backend -d indexdir\n");
     return 1; 
 }
 void
@@ -174,7 +175,7 @@ update(int argc, char** argv) {
     return 0;
 }
 int
-list(int argc, char** argv) {
+listFiles(int argc, char** argv) {
     // parse arguments
     parseArguments(argc, argv);
     string backend = options['t'];
@@ -193,9 +194,36 @@ list(int argc, char** argv) {
     }
     IndexReader* reader = manager->indexReader();
     map<string, time_t> files = reader->files(-1);
-    map<string, time_t>::iterator i;
+    map<string, time_t>::const_iterator i;
     for (i=files.begin(); i!=files.end(); ++i) {
         printf("%s\n", i->first.c_str());
+    }
+    delete manager;
+    return 0;
+}
+int
+listFields(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    IndexReader* reader = manager->indexReader();
+    vector<string> fields = reader->fieldNames();
+    vector<string>::const_iterator i;
+    for (i=fields.begin(); i!=fields.end(); ++i) {
+        printf("%s\n", i->c_str());
     }
     delete manager;
     return 0;
@@ -210,8 +238,10 @@ main(int argc, char** argv) {
         return create(argc, argv);
     } else if (!strcmp(cmd,"update")) {
         return update(argc, argv);
-    } else if (!strcmp(cmd,"list")) {
-        return list(argc, argv);
+    } else if (!strcmp(cmd,"listFiles")) {
+        return listFiles(argc, argv);
+    } else if (!strcmp(cmd,"listFields")) {
+        return listFields(argc, argv);
     } else {
         return usage(argc, argv);
     }

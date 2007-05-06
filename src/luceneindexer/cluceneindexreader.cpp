@@ -549,8 +549,7 @@ CLuceneIndexReader::fieldNames() {
         s.push_back(str);
         n++;
     }
-    // TODO: how do we clean up names?
-    // _CLDELETE(names);
+    _CLDELETE_ARRAY(names);
     return s;
 }
 int32_t

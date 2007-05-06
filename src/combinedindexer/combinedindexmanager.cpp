@@ -256,7 +256,22 @@ CombinedIndexReader::mTime(int64_t docid) {
 }
 vector<string>
 CombinedIndexReader::fieldNames() {
-    return m->p->writermanager->indexReader()->fieldNames();
+    vector<string> n = m->p->writermanager->indexReader()->fieldNames();
+    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
+    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    if (f.size() == 0) return n;
+
+    set<string> names;
+    copy(n.begin(), n.end(), inserter(names, names.begin()));
+    map<string, TSSPtr<IndexManager> >::const_iterator i;
+    for (i = f.begin(); i != f.end(); ++i) {
+        n =  i->second->indexReader()->fieldNames();
+        copy(n.begin(), n.end(), inserter(names, names.begin()));
+    }
+    n.clear();
+    copy(names.begin(), names.end(), n.begin());
+    return n;
 }
 int32_t
 CombinedIndexReader::countKeywords(const string& keywordprefix,
