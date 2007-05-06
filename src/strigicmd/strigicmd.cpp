@@ -30,6 +30,32 @@
 using namespace std;
 using namespace Strigi;
 
+map<char, string> options;
+vector<string> dirs;
+
+void
+parseArguments(int argc, char** argv) {
+    // parse arguments
+    int i = 1;
+    while (++i < argc) {
+        const char* arg = argv[i];
+        size_t len = strlen(arg);
+        if (len == 0) continue;
+        if (*arg == '-' && len > 1) {
+            char option = arg[1];
+            if (len > 2) {
+                arg += 2;
+            } else if (i+1 < argc) {
+                arg = argv[++i]; 
+            } else {
+                arg = "";
+            }
+            options[option].assign(arg);
+        } else {
+            dirs.push_back(arg);
+        }
+    }
+}
 /*
  * Help function for printing to stderr: fprintf(stderr, 
  */
@@ -48,7 +74,9 @@ pe(const char *format, ...) {
  **/
 int
 usage(int argc, char** argv) {
-    pe("%s: program for creating and querying indices\n\n", argv[0]);
+    pe("%s:\n", argv[0]);
+    pe("    Program for creating and querying indices.\n");
+    pe("    This program is not meant for talking to the strigi daemon.\n\n");
     pe("usage:\n");
     pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
     pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
@@ -68,44 +96,23 @@ checkIndexdirIsEmpty(const char* dir) {
     }
     closedir(d);
 }
+void
+printBackends(const string& msg, const vector<string> backends) {
+    pe(msg.c_str());
+    pe(" Choose one from ");
+    for (uint j=0; j<backends.size()-1; ++j) {
+        pe("'%s', ", backends[j].c_str());
+    }
+    pe("'%s'.\n", backends[backends.size()-1].c_str());
+}
 int
 create(int argc, char** argv) {
     // parse arguments
-    string backend;
-    string indexdir;
-    vector<string> dirs;
-    int i = 1;
-    int nthreads = 2;
-    while (++i < argc) {
-        const char* arg = argv[i];
-        if (!strcmp("-t", arg)) {
-            if (++i == argc) {
-                return usage(argc, argv);
-            }
-            backend.assign(argv[i]);
-        } else if (!strcmp("-d", arg)) {
-            if (++i == argc || indexdir.length()) {
-                return usage(argc, argv);
-            }
-            indexdir.assign(argv[i]);
-        } else if (strlen(arg) >= 2 && !strncmp("-j", arg, 2)) {
-            int j;
-            if (strlen(arg) > 2) {
-                j = atoi(arg+2);
-            } else if (++i < argc) {
-                j = atoi(argv[i]);
-            } else {
-                return usage(argc, argv);
-            }
-            if (j > 0) {
-                nthreads = j;
-            } else {
-                return usage(argc, argv);
-            }
-        } else {
-            dirs.push_back(argv[i]);
-        }
-    }
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+    int nthreads = atoi(options['j'].c_str());
+    if (nthreads < 1) nthreads = 2;
 
     // check arguments: backend
     const vector<string>& backends = CombinedIndexManager::backEnds();
@@ -114,23 +121,15 @@ create(int argc, char** argv) {
         if (backends.size() == 1) {
             backend = backends[0];
         } else {
-            pe("Specify a backend. Choose one from ");
-            for (uint j=0; j<backends.size()-1; ++j) {
-                pe("'%s', ", backends[j].c_str());
-            }
-            pe("'%s'.\n", backends[backends.size()-1].c_str());
+            printBackends("Specify a backend.", backends);
             return usage(argc, argv);
         }
     }
     vector<string>::const_iterator b
         = find(backends.begin(), backends.end(), backend);
     if (b == backends.end()) {
-        pe("Invalid index type. Choose one from ");
-        for (uint j=0; j<backends.size()-1; ++j) {
-            pe("%s, ", backends[j].c_str());
-        }
-        pe("%s\n", backends[backends.size()-1].c_str());
-        return 1;
+        printBackends("Invalid index type.", backends);
+        return usage(argc, argv);
     }
     // check arguments: indexdir
     if (indexdir.length() == 0) {
