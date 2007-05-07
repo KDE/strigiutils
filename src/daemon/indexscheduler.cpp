@@ -120,7 +120,10 @@ IndexScheduler::index() {
                         = sched->dbfiles.find(path);
                     // if the file has not yet been indexed or if the mtime has
                     // changed, put it in the list to index
-                    if (i == sched->dbfiles.end() || i->second != mtime) {
+                    if (i == sched->dbfiles.end()) {
+                        sched->toindex[path] = mtime;
+                    } else if ( i->second != mtime) {
+                        sched->dbfiles.erase(i);
                         sched->toindex[path] = mtime;
                     } else {
                         sched->dbfiles.erase(i);
@@ -141,7 +144,6 @@ IndexScheduler::index() {
     map<string,time_t>::iterator it = dbfiles.begin();
     while (getState() == Working && it != dbfiles.end()) {
         todelete.push_back(it->first);
-//        writer->deleteEntry(it->first);
         dbfiles.erase(it++);
     }
     writer->deleteEntries(todelete);
