@@ -115,9 +115,9 @@ printBackends(const string& msg, const vector<string> backends) {
 void
 printIndexedDocument (IndexedDocument indexedDoc)
 {
-    printf ("\t- mimetype: %s", indexedDoc.mimetype.c_str());
-    printf ("\t- sha1: %s", indexedDoc.sha1.c_str());
-    printf ("\t- size: %lld", indexedDoc.size);
+    printf ("\t- mimetype: %s\n", indexedDoc.mimetype.c_str());
+    printf ("\t- sha1: %s\n", indexedDoc.sha1.c_str());
+    printf ("\t- size: %lld\n", indexedDoc.size);
     const time_t mtime = (const time_t) indexedDoc.mtime;
     printf ("\t- mtime: %s", ctime (&mtime));
     set<string> processedProperties;
@@ -272,11 +272,7 @@ get(int argc, char** argv) {
     for (vector<string>::iterator iter = dirs.begin();
          iter != dirs.end(); iter++)
     {
-        string q ("system.location:\"");
-        q += *iter;
-        q += "\"";
-        printf ("Query = |%s|\n", q.c_str());
-        Query query = parser.buildQuery( q, 0, 0);
+        Query query = parser.buildQuery( "system.location:'"+ *iter + "'", 10, 0);
         vector<IndexedDocument> matches = reader->query( query);
         if (matches.size() == 0)
             printf ("%s: is not indexed\n", iter->c_str());
