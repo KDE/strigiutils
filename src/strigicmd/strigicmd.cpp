@@ -19,6 +19,7 @@
  */
 #include "combinedindexmanager.h"
 #include "indexreader.h"
+#include "indexwriter.h"
 #include "indexeddocument.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
@@ -84,6 +85,7 @@ usage(int argc, char** argv) {
     pe("    This program is not meant for talking to the strigi daemon.\n\n");
     pe("usage:\n");
     pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s deindex -t backend -d indexdir files/dirs\n");
     pe("  %s get -t backend -d indexdir files\n");
     pe("  %s listFiles -t backend -d indexdir\n");
     pe("  %s listFields -t backend -d indexdir\n");
@@ -121,6 +123,7 @@ printIndexedDocument (IndexedDocument indexedDoc)
     printf ("\t- size: %lld\n", indexedDoc.size);
     const time_t mtime = (const time_t) indexedDoc.mtime;
     printf ("\t- mtime: %s", ctime (&mtime));
+    printf ("\t- fragment: %s", indexedDoc.fragment.c_str());
     set<string> processedProperties;
     for (multimap<string,string>::iterator iter = indexedDoc.properties.begin();
          iter != indexedDoc.properties.end();
@@ -149,6 +152,25 @@ printIndexedDocument (IndexedDocument indexedDoc)
         }
     }
 }
+
+/*!
+    Convenience class used with find_if statement. It returns all the indexed
+    files whose path starts with ref
+ */
+class FindIndexedFiles {
+    string m_ref;
+    public:
+        FindIndexedFiles(string ref) {m_ref = ref;}
+        ~FindIndexedFiles() {};
+        bool operator() (pair<string, time_t> indexedFile) {
+            string::size_type pos = (indexedFile.first).find (m_ref);
+            if (pos == 0)
+                return true;
+                
+            return false;
+        }
+};
+
 IndexManager*
 getIndexManager(string& backend, const string& indexdir) {
     // check arguments: backend
@@ -293,7 +315,7 @@ get(int argc, char** argv) {
     // check arguments: dirs
     if (dirs.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
-        pe("Provide directories to index.\n");
+        pe("Provide one or more files to search.\n");
         return usage(argc, argv);
     }
     
@@ -326,6 +348,76 @@ get(int argc, char** argv) {
     delete manager;
     return 0;
 }
+int
+deindex(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    // check arguments: dirs
+    if (dirs.size() == 0) {
+        pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
+        pe("Provide directories/files to deindex.\n");
+        return usage(argc, argv);
+    }
+    
+    AnalyzerConfiguration config;
+    
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    
+    // retrieve all indexed files at level 0 (archives contents aren't returned)
+    IndexReader* indexReader = manager->indexReader();
+    map <string, time_t> indexedFiles = indexReader->files(0);
+    vector<string> toDelete;
+    
+    for (vector<string>::iterator iter = dirs.begin();
+         iter != dirs.end(); iter++)
+    {
+        // find all indexed files whose path starts with *iter
+        FindIndexedFiles match (*iter);
+        map<string, time_t>::iterator itBeg, itEnd, itMatch;
+        itBeg = indexedFiles.begin();
+        itEnd = indexedFiles.end();
+        
+        itMatch = find_if (itBeg, itEnd, match);
+        while (itMatch != itEnd)
+        {
+            toDelete.push_back (itMatch->first);
+            itBeg = ++itMatch;
+            itMatch = find_if (itBeg, itEnd, match);
+        }
+    }
+    
+    if (toDelete.empty())
+        printf ("no file will be deindexed\n");
+    else
+    {
+        for (vector<string>::iterator iter = toDelete.begin();
+             iter != toDelete.end(); iter++)
+        {
+            printf ("%s will be deindex\n", iter->c_str());
+        }
+        IndexWriter* writer = manager->indexWriter();
+        writer->deleteEntries(toDelete);
+        writer->commit();
+        writer->optimize();
+    }
+    
+    delete manager;
+    return 0;
+}
+
 int
 listFields(int argc, char** argv) {
     // parse arguments
@@ -369,6 +461,8 @@ main(int argc, char** argv) {
         return listFields(argc, argv);
     } else if (!strcmp(cmd,"get")) {
         return get(argc, argv);
+    } else if (!strcmp(cmd,"deindex")) {
+        return deindex(argc, argv);
     } else {
         return usage(argc, argv);
     }
