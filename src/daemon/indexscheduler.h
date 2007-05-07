@@ -37,8 +37,6 @@ class IndexScheduler : public StrigiThread {
 private:
     std::set<std::string> dirstoindex;
     Strigi::IndexManager* indexmanager;
-    std::map<std::string, time_t> dbfiles;
-    std::map<std::string, time_t> toindex;
 
     EventListenerQueue* m_listenerEventQueue;
     Strigi::AnalyzerConfiguration* m_indexerconfiguration;

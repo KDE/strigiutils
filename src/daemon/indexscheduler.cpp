@@ -21,6 +21,7 @@
 #include "indexmanager.h"
 #include "indexreader.h"
 #include "indexwriter.h"
+#include "diranalyzer.h"
 
 #include "strigiconfig.h"
 #include "event.h"
@@ -35,6 +36,7 @@
 #include "strigilogging.h"
 
 using namespace std;
+using namespace Strigi;
 
 IndexScheduler* sched;
 
@@ -43,6 +45,10 @@ IndexScheduler::IndexScheduler() :StrigiThread("IndexScheduler") {
     m_listenerEventQueue = NULL;
 }
 IndexScheduler::~IndexScheduler() {
+}
+bool
+continueAnalysis() {
+    return sched->getState() == IndexScheduler::Working;
 }
 std::string
 IndexScheduler::getStateString() {
@@ -53,7 +59,7 @@ IndexScheduler::getStateString() {
 }
 int
 IndexScheduler::getQueueSize() {
-    return toindex.size();
+    return 0;
 }
 void
 shortsleep(long nanoseconds) {
@@ -91,77 +97,17 @@ IndexScheduler::run(void*) {
 }
 void
 IndexScheduler::index() {
-    Strigi::IndexReader* reader = indexmanager->indexReader();
     Strigi::IndexWriter* writer = indexmanager->indexWriter();
-    Strigi::StreamAnalyzer* streamindexer
-        = new Strigi::StreamAnalyzer(*m_indexerconfiguration);
-    streamindexer->setIndexWriter(*writer);
+    DirAnalyzer* analyzer = new DirAnalyzer(*indexmanager,
+        *m_indexerconfiguration);
+    vector<std::string> dirs;
+    copy(dirstoindex.begin(), dirstoindex.end(), dirs.begin());
+    analyzer->updateDirs(dirs, 2, continueAnalysis);
 
-    if (dbfiles.size() == 0 && toindex.size() == 0) {
-        // retrieve the list of real files currently in the database
-        dbfiles = reader->files(0);
-
-        char buff [20];
-        snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " real files in the database")
-
-        // first loop through all files
-        Strigi::FileLister lister(m_indexerconfiguration);
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "going to index")
-        set<string>::const_iterator i;
-        for (i = dirstoindex.begin(); i != dirstoindex.end(); ++i) {
-            lister.startListing(i->c_str());
-            string path;
-            time_t mtime;
-            int r = lister.nextFile(path, mtime);
-            while (r >= 0) {
-                if (r > 0) {
-                    map<string, time_t>::iterator i
-                        = sched->dbfiles.find(path);
-                    // if the file has not yet been indexed or if the mtime has
-                    // changed, put it in the list to index
-                    if (i == sched->dbfiles.end()) {
-                        sched->toindex[path] = mtime;
-                    } else if ( i->second != mtime) {
-                        sched->dbfiles.erase(i);
-                        sched->toindex[path] = mtime;
-                    } else {
-                        sched->dbfiles.erase(i);
-                    }
-                }
-                r = lister.nextFile(path, mtime);
-            }
-        }
-
-        snprintf(buff, 20* sizeof (char), "%i", dbfiles.size());
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to remove")
-
-        snprintf(buff, 20* sizeof (char), "%i", toindex.size());
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", string(buff) + " files to add or update")
-    }
-
-    vector<string> todelete;
-    map<string,time_t>::iterator it = dbfiles.begin();
-    while (getState() == Working && it != dbfiles.end()) {
-        todelete.push_back(it->first);
-        dbfiles.erase(it++);
-    }
-    writer->deleteEntries(todelete);
-
-    it = toindex.begin();
-    while (getState() == Working && it != toindex.end()) {
-        streamindexer->indexFile(it->first);
-        if (writer->itemsInCache() > 10000) {
-            writer->commit();
-        }
-        toindex.erase(it++);
-    }
     if (getState() == Working) {
         writer->commit();
         writer->optimize();
     }
-
-    delete streamindexer;
 }
 
 void
@@ -172,6 +118,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     Strigi::StreamAnalyzer* streamindexer = new Strigi::StreamAnalyzer(ic);
     streamindexer->setIndexWriter(*writer);
 
+    map<string, time_t> toindex;
     vector<string> toDelete;
 
     STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
