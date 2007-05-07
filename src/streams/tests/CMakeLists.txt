@@ -39,6 +39,6 @@ REMOVE (TestsToRun testrunner.cpp)
 
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  ADD_TEST(${TName} testrunner ${TName} ${strigi_SOURCE_DIR}/testdata/data)
+  ADD_TEST(${TName} testrunner-streams ${TName} ${strigi_SOURCE_DIR}/testdata/data)
 ENDFOREACH (test)
 

@@ -111,16 +111,10 @@ if(WIN32)
   endif(MINGW)
   SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
 
-  FILE(WRITE ${strigi_extra_config_output}
-"
-/* Automatically created by strigi configure, do not touch! */\n
-#ifdef _MSC_VER
-# include \"strigiconfig_msvc.h\"
-#else
-# include \"strigiconfig_mingw.h\"
-#endif
-")
-
+  CONFIGURE_FILE(
+    ${strigi_SOURCE_DIR}/src/streams/compat/strigiconfig.h.win32.cmake
+    ${strigi_extra_config_output}
+  )
 else(WIN32)
   SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
 endif(WIN32)
