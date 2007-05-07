@@ -101,7 +101,12 @@ AnalyzerLoader::loadPlugins(const char* d) {
                 || strncmp(ent->d_name, "strigiea_", 9) == 0
                 || strncmp(ent->d_name, "strigila_", 9) == 0)
 #ifdef WIN32
-                && strcmp(ent->d_name+len-4, ".dll") == 0) {
+                && strcmp(ent->d_name+len-4, ".dll") == 0
+# ifdef _MSC_VER
+                && strncmp(ent->d_name, "msvc_", 5) == 0) {
+# else
+                && strncmp(ent->d_name, "mingw_", 6) == 0) {
+# endif
 #else
                 && strcmp(ent->d_name+len-3, ".so") == 0) {
 #endif

@@ -1,25 +1,26 @@
 include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams/compat)
 
-add_library(xpm MODULE xpmlineanalyzer.cpp)
-set_target_properties(xpm PROPERTIES
-  PREFIX strigila_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(xpm streamanalyzer)
-install(TARGETS xpm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+MACRO(ADD_STRIGILA libname files)
+  if(WIN32)
+    # this is needed to have mingw and msvc libs installed in one directory
+    if(MSVC)
+      set(prefix msvc_strigila_)
+    else(MSVC)
+      # mingw
+      set(prefix mingw_strigila_)
+    endif(MSVC)
+  else(WIN32)
+    set(prefix strigila_)
+  endif(WIN32)
+  add_library(${libname} MODULE ${files})
+  set_target_properties(${libname} PROPERTIES
+    PREFIX ${prefix}
+    VERSION ${STRIGI_VERSION}
+    SOVERSION ${STRIGI_VERSION_MAJOR})
+  target_link_libraries(${libname} streamanalyzer)
+  install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+ENDMACRO(ADD_STRIGILA)
 
-add_library(deb MODULE deblineanalyzer.cpp)
-set_target_properties(deb PROPERTIES
-  PREFIX strigila_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(deb streamanalyzer)
-install(TARGETS deb LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
-
-add_library(cpp MODULE cpplineanalyzer.cpp)
-set_target_properties(cpp PROPERTIES
-  PREFIX strigila_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(cpp streamanalyzer)
-install(TARGETS cpp LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+ADD_STRIGILA(xpm xpmlineanalyzer.cpp)
+ADD_STRIGILA(deb deblineanalyzer.cpp)
+ADD_STRIGILA(cpp cpplineanalyzer.cpp)

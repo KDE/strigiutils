@@ -1,45 +1,35 @@
 include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams/compat)
 
-if (XATTR_FOUND)
-  include_directories(${XATTR_INCLUDE_DIR})
-  add_library(xattr MODULE xattrthroughanalyzer.cpp)
-  set_target_properties(xattr PROPERTIES
-    PREFIX strigita_
+MACRO(ADD_STRIGITA libname files)
+  if(WIN32)
+    # this is needed to have mingw and msvc libs installed in one directory
+    if(MSVC)
+      set(prefix msvc_strigita_)
+    else(MSVC)
+      # mingw
+      set(prefix mingw_strigita_)
+    endif(MSVC)
+  else(WIN32)
+    set(prefix strigita_)
+  endif(WIN32)
+  add_library(${libname} MODULE ${files})
+  set_target_properties(${libname} PROPERTIES
+    PREFIX ${prefix}
     VERSION ${STRIGI_VERSION}
     SOVERSION ${STRIGI_VERSION_MAJOR})
-  target_link_libraries(xattr streamanalyzer)
-  install(TARGETS xattr LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+  target_link_libraries(${libname} streamanalyzer)
+  install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+ENDMACRO(ADD_STRIGITA)
+
+
+if (XATTR_FOUND)
+  include_directories(${XATTR_INCLUDE_DIR})
+  ADD_STRIGITA(xattr xattrthroughanalyzer.cpp)
 endif (XATTR_FOUND)
 
-add_library(pcx MODULE pcxthroughanalyzer.cpp)
-set_target_properties(pcx PROPERTIES
-  PREFIX strigita_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(pcx streamanalyzer)
-install(TARGETS pcx LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
-
-add_library(xbm MODULE xbmthroughanalyzer.cpp)
-set_target_properties(xbm PROPERTIES
-  PREFIX strigita_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(xbm streamanalyzer)
-install(TARGETS xbm LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+ADD_STRIGITA(pcx pcxthroughanalyzer.cpp)
+ADD_STRIGITA(xbm xbmthroughanalyzer.cpp)
+ADD_STRIGITA(au  authroughanalyzer.cpp)
 
 # disabled until a good check for making sure the file is a tga
-#add_library(tga MODULE tgathroughanalyzer.cpp)
-#set_target_properties(tga PROPERTIES
-#  PREFIX strigita_
-#  VERSION ${STRIGI_VERSION}
-#  SOVERSION ${STRIGI_VERSION_MAJOR})
-#target_link_libraries(tga streamanalyzer)
-#install(TARGETS tga LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
-
-add_library(au MODULE authroughanalyzer.cpp)
-set_target_properties(au PROPERTIES
-  PREFIX strigita_
-  VERSION ${STRIGI_VERSION}
-  SOVERSION ${STRIGI_VERSION_MAJOR})
-target_link_libraries(au streamanalyzer)
-install(TARGETS au LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+#ADD_STRIGITA(tga  tgathroughanalyzer.cpp)
