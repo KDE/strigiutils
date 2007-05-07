@@ -17,7 +17,7 @@ printDot(ostream& out, const char* locale) {
     for (i = p.begin(); i != p.end(); ++i) {
         const vector<string>& parents = i->second.parentUris();
         vector<string>::const_iterator j;
-        out << '"' << i->second.uri() << "\" [shape=record];" << endl;
+        out << '"' << i->second.uri() << "\" [shape=record, label =\"" << i->second.uri() << "|{type: " << i->second.typeUri() << "}\"];" << endl;
         for (j = parents.begin(); j != parents.end(); ++j) {
             out << '"' << *j << "\"->\"" << i->second.uri() << '"' << endl;
         }
@@ -31,7 +31,7 @@ printRdfsProperties(ostream& out, const FieldProperties& p) {
         << "  <rdfs:comment>" << p.description() << "</rdfs:comment>\n";
     const vector<string>& parents = p.parentUris();
     vector<string>::const_iterator j;
-    for (j = parents.begin(); j != parents.end(); ++j) {
+    for (j = parents.begin(); j != parents.end(); ++j){
         out << "  <rdfs:subPropertyOf rdf:resource='" << *j << "'/>\n";
     }
     out << "  <rdfs:range rdf:resource='" << p.typeUri() << "'/>\n";
