@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdlib>
+#include <list>
+#include <algorithm>
 #include <unistd.h>
 #include <getopt.h>
 #include "fieldpropertiesdb.h"
@@ -13,6 +15,7 @@ printDot(ostream& out, const char* locale) {
     const map<string, FieldProperties>& p
         = FieldPropertiesDb::db().allProperties();
     map<string, FieldProperties>::const_iterator i;
+    // list<string> categories;
     out << "digraph{graph[rankdir=LR];" << endl;
     for (i = p.begin(); i != p.end(); ++i) {
         const vector<string>& parents = i->second.parentUris();
@@ -20,6 +23,16 @@ printDot(ostream& out, const char* locale) {
         out << '"' << i->second.uri() << "\" [shape=record, label =\"" << i->second.uri() << "|{type: " << i->second.typeUri() << "}\"];" << endl;
         for (j = parents.begin(); j != parents.end(); ++j) {
             out << '"' << *j << "\"->\"" << i->second.uri() << '"' << endl;
+        }
+        // make link to category, e.g. chemistry for chemistry.inchi
+        string category = i->second.uri().substr(0,i->second.uri().find("."));
+        if (category.length() != i->second.uri().length()) {
+            // list<string>::const_iterator match = categories.find(categories.begin(), categories.end(), category);
+            // if (match != categories.end()) {
+            //     categories.push_back(category);
+            //     out << "\"" << category << "\" [style=filles,color=yellow]" << endl;
+            //}
+            out << "\"" << category << "\"->\"" << i->second.uri() << '"' << endl;
         }
     }
     out << "}" << endl;
