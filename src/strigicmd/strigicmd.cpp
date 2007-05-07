@@ -29,6 +29,7 @@
 #include <cstdarg>
 #include <cstring>
 #include <string>
+#include <time.h>
 #include "stgdirent.h" //dirent replacement (includes native if available)
 
 using namespace std;
