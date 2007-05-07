@@ -25,6 +25,7 @@
 #include <set>
 #include <vector>
 #include "strigithread.h"
+#include "diranalyzer.h"
 
 class Event;
 class EventListenerQueue;
@@ -33,7 +34,7 @@ namespace Strigi {
     class IndexManager;
     class AnalyzerConfiguration;
 }
-class IndexScheduler : public StrigiThread {
+class IndexScheduler : public StrigiThread, private Strigi::AnalysisCaller {
 private:
     std::set<std::string> dirstoindex;
     Strigi::IndexManager* indexmanager;
@@ -70,6 +71,9 @@ public:
         return dirstoindex;
     }
     void setIndexedDirectories(const std::set<std::string> &d);
+    bool continueAnalysis() {
+        return getState() == Working;
+    }
 };
 
 #endif

@@ -20,7 +20,7 @@ public:
     StreamAnalyzer analyzer;
     map<string, time_t> dbfiles;
     STRIGI_MUTEX_DEFINE(updateMutex)
-    bool (*continueAnalysis)();
+    AnalysisCaller* caller;
 
     Private(IndexManager& m, AnalyzerConfiguration& c)
             :lister(&c), manager(m), config(c), analyzer(c) {
@@ -30,9 +30,9 @@ public:
     ~Private() {
         STRIGI_MUTEX_DESTROY(&updateMutex);
     }
-    int analyzeDir(const string& dir, int nthreads, bool (*continueAnalysis)());
+    int analyzeDir(const string& dir, int nthreads, AnalysisCaller* caller);
     int updateDirs(const vector<string>& dir, int nthreads,
-        bool (*continueAnalysis)());
+        AnalysisCaller* caller);
     void analyze(StreamAnalyzer*);
     void update(StreamAnalyzer*);
 };
@@ -69,7 +69,7 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
         string path;
         time_t mtime;
         int r = lister.nextFile(path, mtime);
-        while (r >= 0 && (continueAnalysis == 0 || continueAnalysis())) {
+        while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
             if (r > 0) {
                 AnalysisResult analysisresult(path, mtime,
                     *manager.indexWriter(), *analyzer);
@@ -92,7 +92,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
         string path;
         time_t mtime;
         int r = lister.nextFile(path, mtime);
-        while (r >= 0 && (continueAnalysis == 0 || continueAnalysis())) {
+        while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
             if (r > 0) {
                 STRIGI_MUTEX_LOCK(&updateMutex);
                 map<string, time_t>::iterator i
@@ -127,13 +127,13 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
     }
 }
 int
-DirAnalyzer::analyzeDir(const string& dir, int nthreads, bool (*cont)()) {
-    return p->analyzeDir(dir, nthreads, cont);
+DirAnalyzer::analyzeDir(const string& dir, int nthreads, AnalysisCaller* c) {
+    return p->analyzeDir(dir, nthreads, c);
 }
 int
 DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
-        bool (*cont)()) {
-    continueAnalysis = cont;
+        AnalysisCaller* c) {
+    caller = c;
     // check if the path is a file
     struct stat s;
     if (stat(dir.c_str(), &s) == -1) return -1;
@@ -173,17 +173,17 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
     return 0;
 }
 int
-DirAnalyzer::updateDir(const string& dir, int nthreads, bool (*cont)()) {
+DirAnalyzer::updateDir(const string& dir, int nthreads, AnalysisCaller* caller){
     vector<string> dirs;
     dirs.push_back(dir);
-    return p->updateDirs(dirs, nthreads, cont);
+    return p->updateDirs(dirs, nthreads, caller);
 }
 int
 DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
-        bool (*cont)()) {
+        AnalysisCaller* c) {
     IndexReader* reader = manager.indexReader();
     if (reader == 0) return -1;
-    continueAnalysis = cont;
+    caller = c;
 
     // retrieve the complete list of files
     dbfiles = reader->files(0);
@@ -231,6 +231,6 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 }
 int
 DirAnalyzer::updateDirs(const std::vector<std::string>& dirs, int nthreads,
-        bool (*continueAnalysis)()) {
-    return p->updateDirs(dirs, nthreads, continueAnalysis);
+        AnalysisCaller* caller) {
+    return p->updateDirs(dirs, nthreads, caller);
 }

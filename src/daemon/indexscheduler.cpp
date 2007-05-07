@@ -38,17 +38,10 @@
 using namespace std;
 using namespace Strigi;
 
-IndexScheduler* sched;
-
 IndexScheduler::IndexScheduler() :StrigiThread("IndexScheduler") {
-    sched = this;
     m_listenerEventQueue = NULL;
 }
 IndexScheduler::~IndexScheduler() {
-}
-bool
-continueAnalysis() {
-    return sched->getState() == IndexScheduler::Working;
 }
 std::string
 IndexScheduler::getStateString() {
@@ -102,7 +95,7 @@ IndexScheduler::index() {
         *m_indexerconfiguration);
     vector<std::string> dirs;
     copy(dirstoindex.begin(), dirstoindex.end(), dirs.begin());
-    analyzer->updateDirs(dirs, 2, continueAnalysis);
+    analyzer->updateDirs(dirs, 2, this);
 
     if (getState() == Working) {
         writer->commit();
