@@ -19,15 +19,18 @@
  */
 #include "combinedindexmanager.h"
 #include "indexreader.h"
+#include "indexeddocument.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
 #include "strigiconfig.h"
+#include "query.h"
 #include <algorithm>
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
 #include <string>
 #include "stgdirent.h" //dirent replacement (includes native if available)
+
 using namespace std;
 using namespace Strigi;
 
@@ -80,9 +83,10 @@ usage(int argc, char** argv) {
     pe("    This program is not meant for talking to the strigi daemon.\n\n");
     pe("usage:\n");
     pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
-    pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s get -t backend -d indexdir files\n");
     pe("  %s listFiles -t backend -d indexdir\n");
     pe("  %s listFields -t backend -d indexdir\n");
+    pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
     return 1; 
 }
 void
@@ -107,6 +111,42 @@ printBackends(const string& msg, const vector<string> backends) {
         pe("'%s', ", backends[j].c_str());
     }
     pe("'%s'.\n", backends[backends.size()-1].c_str());
+}
+void
+printIndexedDocument (IndexedDocument indexedDoc)
+{
+    printf ("\t- mimetype: %s", indexedDoc.mimetype.c_str());
+    printf ("\t- sha1: %s", indexedDoc.sha1.c_str());
+    printf ("\t- size: %lld", indexedDoc.size);
+    const time_t mtime = (const time_t) indexedDoc.mtime;
+    printf ("\t- mtime: %s", ctime (&mtime));
+    set<string> processedProperties;
+    for (multimap<string,string>::iterator iter = indexedDoc.properties.begin();
+         iter != indexedDoc.properties.end();
+         iter++)
+    {
+        // iter over all document properties
+        
+        set<string>::iterator match = processedProperties.find(iter->first);
+        if (match != processedProperties.end())
+            continue;
+        
+        processedProperties.insert (iter->first);
+        multimap<string,string>::iterator it;
+        bool first = true;
+        for (it = indexedDoc.properties.lower_bound(iter->first);
+             it != indexedDoc.properties.upper_bound(iter->first); it++)
+        {
+            // shows all properties with the same key together
+            if (first)
+            {
+                printf ("\t- %s:\t%s\n", it->first.c_str(), it->second.c_str());
+                first = false;
+            }
+            else
+                printf ("\t\t%s\n", it->second.c_str());
+        }
+    }
 }
 IndexManager*
 getIndexManager(string& backend, const string& indexdir) {
@@ -202,6 +242,59 @@ listFiles(int argc, char** argv) {
     return 0;
 }
 int
+get(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    // check arguments: dirs
+    if (dirs.size() == 0) {
+        pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
+        pe("Provide directories to index.\n");
+        return usage(argc, argv);
+    }
+    
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    IndexReader* reader = manager->indexReader();
+    QueryParser parser;
+    
+    for (vector<string>::iterator iter = dirs.begin();
+         iter != dirs.end(); iter++)
+    {
+        string q ("system.location:\"");
+        q += *iter;
+        q += "\"";
+        printf ("Query = |%s|\n", q.c_str());
+        Query query = parser.buildQuery( q, 0, 0);
+        vector<IndexedDocument> matches = reader->query( query);
+        if (matches.size() == 0)
+            printf ("%s: is not indexed\n", iter->c_str());
+        else
+        {
+            printf ("Informations associated to %s:\n", iter->c_str());
+            for (vector<IndexedDocument>::iterator it = matches.begin();
+                 it != matches.end(); it++)
+            {
+                printIndexedDocument(*it);
+            }
+        }
+    }
+    
+    delete manager;
+    return 0;
+}
+int
 listFields(int argc, char** argv) {
     // parse arguments
     parseArguments(argc, argv);
@@ -242,6 +335,8 @@ main(int argc, char** argv) {
         return listFiles(argc, argv);
     } else if (!strcmp(cmd,"listFields")) {
         return listFields(argc, argv);
+    } else if (!strcmp(cmd,"get")) {
+        return get(argc, argv);
     } else {
         return usage(argc, argv);
     }
