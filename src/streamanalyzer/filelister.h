@@ -19,6 +19,7 @@
  */
 #ifndef FILELISTER_H
 #define FILELISTER_H
+#include <set>
 #include <sys/types.h>
 #include <string>
 
@@ -74,6 +75,8 @@ public:
              an error occurred
      **/
     int nextFile(const char*& path, time_t& time);
+    
+    std::set<std::string>& getListedDirs();
 };
 }
 #endif

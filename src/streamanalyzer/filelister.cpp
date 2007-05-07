@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +27,7 @@
 #include "strigi_thread.h"
 #include "filelister.h"
 #include "analyzerconfiguration.h"
+#include <set>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -76,6 +78,7 @@ public:
     time_t mtime;
     struct dirent* subdir;
     struct stat dirstat;
+    set<string> listedDirs;
     const Strigi::AnalyzerConfiguration* const config;
 
     Private(const Strigi::AnalyzerConfiguration* ic);
@@ -107,6 +110,7 @@ Strigi::FileLister::Private::Private(
 }
 void
 Strigi::FileLister::Private::startListing(const string& dir){
+    listedDirs.clear();
     curDir = dirs;
     curLen = len;
     int len = dir.length();
@@ -121,6 +125,7 @@ Strigi::FileLister::Private::startListing(const string& dir){
         DIR* d = opendir(path);
         if (d) {
             *curDir = d;
+            listedDirs.insert (path);
         } else {
             curDir--;
         }
@@ -179,6 +184,7 @@ Strigi::FileLister::Private::nextFile() {
                         curLen++;
                         dir = *curDir = d;
                         l = *curLen = sl+1;
+                        listedDirs.insert ( path);
                     }
                 }
             }
@@ -212,4 +218,9 @@ Strigi::FileLister::nextFile(const char*& path, time_t& time) {
         path = p->path;
     }
     return r;
+}
+set<string>&
+Strigi::FileLister::getListedDirs()
+{
+    return p->listedDirs;
 }
