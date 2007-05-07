@@ -15,8 +15,10 @@ private:
 public:
     DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf);
     ~DirAnalyzer();
-    int analyzeDir(const std::string& dir, int nthreads = 2);
-    int updateDir(const std::string& dir, int nthreads = 2);
+    int analyzeDir(const std::string& dir, int nthreads = 2,
+        bool (*continueAnalysis)() = 0);
+    int updateDir(const std::string& dir, int nthreads = 2,
+        bool (*continueAnalysis)() = 0);
 };
 }
 #endif
