@@ -246,8 +246,6 @@ update(int argc, char** argv) {
         pe("Provide a dir to write the index to with -d.\n");
         return usage(argc, argv);
     }
-    // check that the dir does not yet exist
-    checkIndexdirIsEmpty(indexdir.c_str());
 
     // check arguments: dirs
     if (dirs.size() == 0) {
