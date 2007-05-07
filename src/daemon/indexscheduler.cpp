@@ -94,11 +94,11 @@ IndexScheduler::index() {
     DirAnalyzer* analyzer = new DirAnalyzer(*indexmanager,
         *m_indexerconfiguration);
     vector<std::string> dirs;
-    copy(dirstoindex.begin(), dirstoindex.end(), dirs.begin());
+    copy(dirstoindex.begin(), dirstoindex.end(), back_inserter(dirs));
     analyzer->updateDirs(dirs, 2, this);
 
+    writer->commit();
     if (getState() == Working) {
-        writer->commit();
         writer->optimize();
     }
 }
