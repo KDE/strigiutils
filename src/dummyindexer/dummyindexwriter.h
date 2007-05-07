@@ -22,6 +22,7 @@
 
 #include "analysisresult.h"
 #include "indexwriter.h"
+#include "indexmanager.h"
 #include "fieldtypes.h"
 
 class DummyIndexWriter : public Strigi::IndexWriter {
@@ -85,6 +86,19 @@ public:
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}
     void deleteAllEntries() {}
+};
+
+class DummyIndexManager : public Strigi::IndexManager {
+private:
+    DummyIndexWriter writer;
+public:
+    DummyIndexManager(int level) :writer(level) {}
+    Strigi::IndexWriter* indexWriter() {
+        return &writer;
+    }
+    Strigi::IndexReader* indexReader() {
+        return 0;
+    }
 };
 
 #endif

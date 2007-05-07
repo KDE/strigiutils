@@ -8,14 +8,14 @@ add_executable(deepfind deepfind.cpp)
 target_link_libraries(deepfind streamanalyzer)
 install(TARGETS deepfind RUNTIME DESTINATION bin)
 
+add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp grepindexwriter.cpp)
+
 # no regexp.h on win32
 if(NOT WIN32)
-  add_executable(deepgrep deepgrep.cpp grepindexwriter.cpp)
-  target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES})
+  add_executable(deepgrep deepgrep.cpp)
+  target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES} grepindexer)
   install(TARGETS deepgrep RUNTIME DESTINATION bin)
 endif(NOT WIN32)
-
-add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp)
 
 add_executable(greptest grepindexreader.cpp)
 target_link_libraries(greptest streamanalyzer)

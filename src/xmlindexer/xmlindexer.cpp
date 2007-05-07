@@ -104,8 +104,8 @@ main(int argc, char **argv) {
     }
     cout << ">\n";
 
-    XmlIndexWriter writer(cout, mapping);
-    Strigi::DirAnalyzer analyzer(writer, &ic);
+    XmlIndexManager manager(cout, mapping);
+    Strigi::DirAnalyzer analyzer(manager, ic);
     for (unsigned i = 0; i < dirs.size(); ++i) {
         analyzer.analyzeDir(dirs[i], nthreads);
     }

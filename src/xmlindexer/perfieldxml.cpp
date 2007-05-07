@@ -187,8 +187,8 @@ main(int argc, char** argv) {
 
     ostringstream s;
     SelectedFieldConfiguration ic(analyzers);
-    XmlIndexWriter writer(s, mapping);
-    DirAnalyzer analyzer(writer, &ic);
+    XmlIndexManager manager(s, mapping);
+    DirAnalyzer analyzer(manager, ic);
     if (!ic.valid()) {
         set<string>::const_iterator i;
         set<string> missing;

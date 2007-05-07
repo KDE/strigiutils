@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigiconfig.h"
-#include "grepindexwriter.h"
+#include "grepindexmanager.h"
 #include "diranalyzer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
@@ -70,9 +70,9 @@ main(int argc, char** argv) {
         printUsage(argv);
         return -1;
     }
-    GrepIndexWriter writer(argv[1]);
+    GrepIndexManager manager(argv[1]);
 
-    DirAnalyzer analyzer(writer, &ic);
+    DirAnalyzer analyzer(manager, ic);
     if (argc > 2) {
         for (int32_t i=2; i<argc; ++i) {
             analyzer.analyzeDir(argv[i]);

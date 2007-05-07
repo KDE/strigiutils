@@ -1,9 +1,12 @@
 #include "diranalyzer.h"
 #include "indexwriter.h"
+#include "indexmanager.h"
+#include "indexreader.h"
 #include "filelister.h"
 #include "analysisresult.h"
 #include "strigi_thread.h"
 #include "fileinputstream.h"
+#include <map>
 #include <sys/stat.h>
 
 using namespace Strigi;
@@ -12,15 +15,17 @@ using namespace std;
 class DirAnalyzer::Private {
 public:
     FileLister lister;
-    IndexWriter& writer;
+    IndexManager& manager;
     AnalyzerConfiguration& config;
     StreamAnalyzer analyzer;
+    map<string, time_t> dbfiles;
 
-    Private(IndexWriter& w, AnalyzerConfiguration& c)
-            :lister(&c), writer(w), config(c), analyzer(c) {
-        analyzer.setIndexWriter(writer);
+    Private(IndexManager& m, AnalyzerConfiguration& c)
+            :lister(&c), manager(m), config(c), analyzer(c) {
+        analyzer.setIndexWriter(*manager.indexWriter());
     }
     int analyzeDir(const string& dir, int nthreads);
+    int updateDir(const string& dir, int nthreads);
     void analyze(StreamAnalyzer*);
 };
 
@@ -37,8 +42,8 @@ analyzeInThread(void* d) {
     STRIGI_THREAD_EXIT(0);
 }
 
-DirAnalyzer::DirAnalyzer(IndexWriter& writer, AnalyzerConfiguration* conf)
-        :p(new Private(writer, *conf)) {
+DirAnalyzer::DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf)
+        :p(new Private(manager, conf)) {
 }
 DirAnalyzer::~DirAnalyzer() {
     delete p;
@@ -51,7 +56,8 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
         int r = lister.nextFile(path, mtime);
         while (r >= 0) {
             if (r > 0) {
-                AnalysisResult analysisresult(path, mtime, writer, *analyzer);
+                AnalysisResult analysisresult(path, mtime,
+                    *manager.indexWriter(), *analyzer);
                 FileInputStream file(path.c_str());
                 if (file.status() == Ok) {
                     analysisresult.index(&file);
@@ -76,7 +82,8 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
     if (stat(dir.c_str(), &s) == -1) return -1;
 
     if (S_ISREG(s.st_mode)) {
-        AnalysisResult analysisresult(dir, s.st_mtime, writer, analyzer);
+        AnalysisResult analysisresult(dir, s.st_mtime,
+            *manager.indexWriter(), analyzer);
         FileInputStream file(dir.c_str());
         if (file.status() == Ok) {
             return analysisresult.index(&file);
@@ -91,7 +98,7 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
     analyzers[0] = &analyzer;
     for (int i=1; i<nthreads; ++i) {
         analyzers[i] = new StreamAnalyzer(config);
-        analyzers[i]->setIndexWriter(writer);
+        analyzers[i]->setIndexWriter(*manager.indexWriter());
     }
     vector<STRIGI_THREAD_TYPE> threads;
     threads.resize(nthreads-1);
@@ -106,5 +113,15 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads) {
         STRIGI_THREAD_JOIN(threads[i-1]);
         delete analyzers[i];
     }
+    return 0;
+}
+int
+DirAnalyzer::updateDir(const string& dir, int nthreads) {
+    return p->updateDir(dir, nthreads);
+}
+int
+DirAnalyzer::Private::updateDir(const string& dir, int nthreads) {
+    // retrieve the complete list of files
+    dbfiles = manager.indexReader()->files(0);
     return 0;
 }

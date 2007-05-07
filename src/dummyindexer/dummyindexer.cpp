@@ -44,9 +44,9 @@ main(int argc, char **argv) {
         verbosity = atoi(argv[2]);
     }
 
-    DummyIndexWriter writer(verbosity);
+    DummyIndexManager manager(verbosity);
     Strigi::AnalyzerConfiguration ic;
-    Strigi::DirAnalyzer analyzer(writer, &ic);
+    Strigi::DirAnalyzer analyzer(manager, ic);
     analyzer.analyzeDir(argv[argc-1]);
     return 0;
 }

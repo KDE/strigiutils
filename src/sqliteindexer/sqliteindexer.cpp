@@ -33,7 +33,7 @@ main(int argc, char **argv) {
 
     Strigi::AnalyzerConfiguration ic;
     SqliteIndexManager indexer(file.c_str());
-    Strigi::DirAnalyzer analyzer(*indexer.indexWriter(), &ic);
+    Strigi::DirAnalyzer analyzer(indexer, ic);
     analyzer.analyzeDir(argv[2]);
     return 0;
 }

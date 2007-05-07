@@ -62,7 +62,7 @@ main(int argc, char **argv) {
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
     CLuceneIndexManager manager(argv[1]);
-    Strigi::DirAnalyzer analyzer(*manager.indexWriter(), &ic);
+    Strigi::DirAnalyzer analyzer(manager, ic);
     analyzer.analyzeDir(argv[2]);
     return 0;
 }

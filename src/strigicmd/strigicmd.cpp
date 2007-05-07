@@ -199,9 +199,8 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
-    IndexWriter* writer = manager->indexWriter();
     AnalyzerConfiguration config;
-    DirAnalyzer* analyzer = new DirAnalyzer(*writer, &config);
+    DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
     vector<string>::const_iterator j;
     for (j = dirs.begin(); j != dirs.end(); ++j) {
         analyzer->analyzeDir(j->c_str(), nthreads);
@@ -213,6 +212,42 @@ create(int argc, char** argv) {
 }
 int
 update(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+    int nthreads = atoi(options['j'].c_str());
+    if (nthreads < 1) nthreads = 2;
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide a dir to write the index to with -d.\n");
+        return usage(argc, argv);
+    }
+    // check that the dir does not yet exist
+    checkIndexdirIsEmpty(indexdir.c_str());
+
+    // check arguments: dirs
+    if (dirs.size() == 0) {
+        pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
+        pe("Provide directories to index.\n");
+        return usage(argc, argv);
+    }
+
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+
+    AnalyzerConfiguration config;
+    DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
+    vector<string>::const_iterator j;
+    for (j = dirs.begin(); j != dirs.end(); ++j) {
+        analyzer->updateDir(j->c_str(), nthreads);
+    }
+    delete analyzer;
+    delete manager;
+
     return 0;
 }
 int

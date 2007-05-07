@@ -21,6 +21,7 @@
 #define XMLINDEXWRITER_H
 
 #include "indexwriter.h"
+#include "indexmanager.h"
 #include "analysisresult.h"
 #include "tagmapping.h"
 #include "fieldtypes.h"
@@ -308,6 +309,19 @@ public:
     void commit() {}
     void deleteEntries(const std::vector<std::string>& entries) {}
     void deleteAllEntries() {}
+};
+
+class XmlIndexManager : public Strigi::IndexManager {
+private:
+    XmlIndexWriter writer;
+public:
+    XmlIndexManager(std::ostream& o, const TagMapping& m) :writer(o, m) {}
+    Strigi::IndexWriter* indexWriter() {
+        return &writer;
+    }
+    Strigi::IndexReader* indexReader() {
+        return 0;
+    }
 };
 
 #endif

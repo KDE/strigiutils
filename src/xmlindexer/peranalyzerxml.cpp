@@ -220,8 +220,8 @@ main(int argc, char** argv) {
 
     SelectedAnalyzerConfiguration ic(analyzers);
 
-    XmlIndexWriter writer(out, mapping);
-    DirAnalyzer analyzer(writer, &ic);
+    XmlIndexManager manager(out, mapping);
+    DirAnalyzer analyzer(manager, ic);
     if (!ic.valid()) {
         set<string>::const_iterator i;
         set<string> missing;
