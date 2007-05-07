@@ -95,11 +95,19 @@ AnalyzerLoader::loadPlugins(const char* d) {
         return;
     }
     struct dirent* ent = readdir(dir);
+    int iOffset = 0;
+#ifdef WIN32
+# ifdef _MSC_VER
+    iOffset = 5;    // strlen("msvc_")
+# else
+    iOffset = 6;    // strlen("mingw_")
+# endif
+#endif
     while(ent) {
         size_t len = strlen(ent->d_name);
-        if ((strncmp(ent->d_name, "strigita_", 9) == 0
-                || strncmp(ent->d_name, "strigiea_", 9) == 0
-                || strncmp(ent->d_name, "strigila_", 9) == 0)
+        if ((strncmp(ent->d_name + iOffset, "strigita_", 9) == 0
+                || strncmp(ent->d_name + iOffset, "strigiea_", 9) == 0
+                || strncmp(ent->d_name + iOffset, "strigila_", 9) == 0)
 #ifdef WIN32
                 && strcmp(ent->d_name+len-4, ".dll") == 0
 # ifdef _MSC_VER
