@@ -31,7 +31,8 @@ public:
         STRIGI_MUTEX_DESTROY(&updateMutex);
     }
     int analyzeDir(const string& dir, int nthreads, bool (*continueAnalysis)());
-    int updateDir(const string& dir, int nthreads, bool (*continueAnalysis)());
+    int updateDirs(const vector<string>& dir, int nthreads,
+        bool (*continueAnalysis)());
     void analyze(StreamAnalyzer*);
     void update(StreamAnalyzer*);
 };
@@ -99,9 +100,10 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 bool newfile = i == dbfiles.end();
                 bool updatedfile = !newfile && i->second != mtime;
 
-                // if the file is new or was modified: erase the indexed version
-                if (updatedfile) {
-                    dbfiles.erase(path);
+                // if the file is not new or updated, remove it from the list
+                // of files to be removed from the index
+                if (!newfile && !updatedfile) {
+                    dbfiles.erase(i);
                 }
                 STRIGI_MUTEX_UNLOCK(&updateMutex);
 
@@ -172,10 +174,12 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
 }
 int
 DirAnalyzer::updateDir(const string& dir, int nthreads, bool (*cont)()) {
-    return p->updateDir(dir, nthreads, 0);
+    vector<string> dirs;
+    dirs.push_back(dir);
+    return p->updateDirs(dirs, nthreads, cont);
 }
 int
-DirAnalyzer::Private::updateDir(const string& dir, int nthreads,
+DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
         bool (*cont)()) {
     IndexReader* reader = manager.indexReader();
     if (reader == 0) return -1;
@@ -194,26 +198,39 @@ DirAnalyzer::Private::updateDir(const string& dir, int nthreads,
     }
     vector<STRIGI_THREAD_TYPE> threads;
     threads.resize(nthreads-1);
-    for (int i=1; i<nthreads; i++) {
-        DA* da = new DA();
-        da->diranalyzer = this;
-        da->streamanalyzer = analyzers[i];
-        STRIGI_THREAD_CREATE(&threads[i-1], updateInThread, da);
+
+    for (vector<string>::const_iterator d =dirs.begin(); d != dirs.end(); ++d) {
+        lister.startListing(*d);
+        for (int i=1; i<nthreads; i++) {
+            DA* da = new DA();
+            da->diranalyzer = this;
+            da->streamanalyzer = analyzers[i];
+            STRIGI_THREAD_CREATE(&threads[i-1], updateInThread, da);
+        }
+        update(analyzers[0]); 
+        for (int i=1; i<nthreads; i++) {
+            STRIGI_THREAD_JOIN(threads[i-1]);
+        }
     }
-    update(analyzers[0]); 
     for (int i=1; i<nthreads; i++) {
-        STRIGI_THREAD_JOIN(threads[i-1]);
         delete analyzers[i];
     }
 
     // remove the files that were not encountered from the index
     vector<string> todelete(dbfiles.size());
+    fprintf(stderr, "to delete: %i\n", dbfiles.size());
     map<string,time_t>::iterator it = dbfiles.begin();
     while (it != dbfiles.end()) {
         todelete.push_back(it->first);
+        ++it;
     }
     manager.indexWriter()->deleteEntries(todelete);
     dbfiles.clear();
 
     return 0;
+}
+int
+DirAnalyzer::updateDirs(const std::vector<std::string>& dirs, int nthreads,
+        bool (*continueAnalysis)()) {
+    return p->updateDirs(dirs, nthreads, continueAnalysis);
 }

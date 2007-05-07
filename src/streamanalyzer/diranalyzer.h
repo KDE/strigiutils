@@ -3,6 +3,7 @@
 
 #include "strigiconfig.h"
 #include <string>
+#include <vector>
 
 namespace Strigi {
 class IndexManager;
@@ -18,6 +19,8 @@ public:
     int analyzeDir(const std::string& dir, int nthreads = 2,
         bool (*continueAnalysis)() = 0);
     int updateDir(const std::string& dir, int nthreads = 2,
+        bool (*continueAnalysis)() = 0);
+    int updateDirs(const std::vector<std::string>& dirs, int nthreads = 2,
         bool (*continueAnalysis)() = 0);
 };
 }

@@ -261,10 +261,7 @@ update(int argc, char** argv) {
 
     AnalyzerConfiguration config;
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
-    vector<string>::const_iterator j;
-    for (j = dirs.begin(); j != dirs.end(); ++j) {
-        analyzer->updateDir(j->c_str(), nthreads);
-    }
+    analyzer->updateDirs(dirs, nthreads);
     delete analyzer;
     delete manager;
 
