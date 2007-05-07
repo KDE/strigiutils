@@ -214,6 +214,13 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 }
 void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
+    if (!manager->luceneReader()->checkReader())
+    {
+        fprintf(stderr, "CLuceneIndexWriter::deleteEntry,\
+                         error checking reader");
+        return;
+    }
+    
     lucene::index::IndexReader* reader = manager->luceneReader()->reader;
 
     wstring tstr(utf8toucs2(entry));

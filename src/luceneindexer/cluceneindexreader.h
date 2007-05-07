@@ -34,6 +34,7 @@ namespace lucene {
 class CLuceneIndexManager;
 class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public Strigi::IndexReader {
 friend class CLuceneIndexManager;
+friend class CLuceneIndexWriter;
 private:
     CLuceneIndexManager* manager;
     class Private;
