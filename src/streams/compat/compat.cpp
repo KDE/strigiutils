@@ -100,11 +100,11 @@ const char * strcasestr(const char *big, const char *little){
 #endif
 
 #ifndef HAVE_ISBLANK
-bool isblank(char c){
+int isblank(char c){
     if ( c == ' ' || c == '\t' || c == '\n' || c == '\r' )
-     return true;
+     return 1;
 
-    return false;
+    return 0;
 }
 #endif
 

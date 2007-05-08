@@ -28,7 +28,7 @@
 #include "strigiconfig.h"
 
 #ifndef HAVE_ISBLANK
-STREAMS_EXPORT bool isblank(char c);
+STREAMS_EXPORT int isblank(char c);
 #endif
 
 #ifndef HAVE_STRCASECMP
