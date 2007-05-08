@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../clientinterface.h"
+#include "xesamlivesearchinterface.h"
 
 class DBusMessageWriter {
     DBusConnection* conn;
@@ -51,5 +52,7 @@ public:
     DBusMessageWriter& operator<<(const ClientInterface::Hits& s);
     DBusMessageWriter& operator<<(const std::multimap<int, std::string>&);
     DBusMessageWriter& operator<<(const std::vector<std::pair<std::string, uint32_t> >&);
+    DBusMessageWriter& operator<<(const Variant& v);
+    DBusMessageWriter& operator<<(const std::vector<std::vector<Variant> >& v);
 };
 #endif

@@ -23,6 +23,8 @@
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 
+#include "xesamlivesearchinterface.h"
+
 #include <set>
 #include <map>
 #include <string>
@@ -49,6 +51,7 @@ public:
     DBusMessageReader& operator>>(std::set<std::string>& s);
     DBusMessageReader& operator>>(std::vector<std::string>& s);
     DBusMessageReader& operator>>(std::vector<char>& s);
+    DBusMessageReader& operator>>(std::vector<int32_t>& s);
     DBusMessageReader& operator>>(std::string& s);
     DBusMessageReader& operator>>(dbus_uint32_t& s);
     DBusMessageReader& operator>>(int32_t& s);
@@ -56,6 +59,7 @@ public:
     DBusMessageReader& operator>>(int64_t& s);
     DBusMessageReader& operator>>(std::multimap<int, std::string>&);
     DBusMessageReader& operator>>(std::vector<std::pair<bool, std::string> >&);
+    DBusMessageReader& operator>>(Variant& v);
     bool isOk() const { return ok; }
 };
 

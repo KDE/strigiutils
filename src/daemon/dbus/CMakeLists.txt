@@ -22,6 +22,16 @@ IF (PERL_FOUND)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
     add_custom_command(
+        OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
+        COMMAND ${PERL_EXECUTABLE}
+        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
+                vandenoever.strigi
+                "${strigi_SOURCE_DIR}/src/daemon/dbus/xesamlivesearchinterface.h"
+        MAIN_DEPENDENCY ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    add_custom_command(
         OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
                 "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
         COMMAND ${PERL_EXECUTABLE}
@@ -59,6 +69,8 @@ ENDIF (PERL_FOUND)
 set_source_files_properties(
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
+    "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
     "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
     GENERATED
@@ -67,6 +79,7 @@ set_source_files_properties(
 add_library(dbusserver dbusserver.cpp dbusmessagereader.cpp
     dbusmessagewriter.cpp dbusobjectcallhandler.cpp testinterface.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
+    "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
 )
 set(CMAKE_CXX_FLAGS ${DBUS_CFLAGS})

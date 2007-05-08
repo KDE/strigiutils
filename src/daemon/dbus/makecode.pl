@@ -29,7 +29,10 @@ my %typemapping = (
 	"std::multimap<int, std::string>" => "a(is)",
 	"std::vector<std::pair<bool,std::string> >" => "a(bs)",
 	"std::vector<std::pair<std::string, uint32_t> >" => "a(su)",
-	"uint64_t" => "t"
+	"uint64_t" => "t",
+	"Variant" => "v",
+	"std::vector<std::vector<Variant> >" => "aav",
+	"std::vector<int32_t>" => "ai"
 );
 
 sub splitArguments {
@@ -60,6 +63,9 @@ sub parseFunction {
     my $out = shift;
     my $name = shift;
     my $in = shift;
+    if (defined $out) {
+        $out =~ s/^const\s+//;
+    }
     die "Type $out cannot be mapped." unless $typemapping{$out};
     my @args = splitArguments($in);
     my @a;
