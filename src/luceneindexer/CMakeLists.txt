@@ -17,8 +17,11 @@ ENDIF(WIN32)
 # CLucene requires exception support and has no support for visibility=hidden
 # so we must use the default (i.e. public) value for -fvisibility
 IF(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fvisibility=default")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 ENDIF(NOT WIN32)
+IF(__STRIGI_HAVE_GCC_VISIBILITY)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS
         PrefixFilter.cpp
