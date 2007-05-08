@@ -356,8 +356,8 @@ CLuceneIndexReader::files(char depth) {
     } else {
         int32_t max = reader->maxDoc();
         for (int32_t i = 0; i < max; ++i) {
-            Document* d = reader->document(i);
-            if (d) {
+            if (!reader->isDeleted(i)) {
+                Document* d = reader->document(i);
                 const TCHAR* v = d->get(mtime);
                 STRCPY_TtoA(cstr, v, CL_MAX_DIR);
                 time_t mtime = atoi(cstr);
