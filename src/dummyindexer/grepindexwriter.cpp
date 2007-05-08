@@ -21,13 +21,23 @@
 #include "grepindexwriter.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
+#include <regex.h>
 using namespace std;
 
-GrepIndexWriter::GrepIndexWriter(const char* re) {
-    regcomp(&regex, re, REG_NOSUB);
+class GrepIndexWriter::Private
+{
+public:
+    Private() {}
+    regex_t regex;
+};
+
+GrepIndexWriter::GrepIndexWriter(const char* re)
+  : d(new Private()) {
+    regcomp(&d->regex, re, REG_NOSUB);
 }
 GrepIndexWriter::~GrepIndexWriter() {
-    regfree(&regex);
+    regfree(&d->regex);
+    delete d;
 }
 void
 GrepIndexWriter::startAnalysis(const Strigi::AnalysisResult* idx) {
@@ -49,7 +59,7 @@ GrepIndexWriter::addText(const Strigi::AnalysisResult* idx, const char* text,
         // look at each line separately
         if (*p == '\n' || *p == '\r') {
             s.assign(start, p-start);
-            if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
+            if (regexec(&d->regex, s.c_str(), 0, 0, 0) == 0) {
                 printf("%s:%s\n", idx->path().c_str(), s.c_str());
             }
             start = p+1;
@@ -57,14 +67,14 @@ GrepIndexWriter::addText(const Strigi::AnalysisResult* idx, const char* text,
         p++;
     }
     s.assign(start, p-start);
-    if (regexec(&regex, s.c_str(), 0, 0, 0) == 0) {
+    if (regexec(&d->regex, s.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s\n", idx->path().c_str(), s.c_str());
     }
 }
 void
 GrepIndexWriter::addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, const std::string& value) {
-    if (regexec(&regex, value.c_str(), 0, 0, 0) == 0) {
+    if (regexec(&d->regex, value.c_str(), 0, 0, 0) == 0) {
         printf("%s:%s:%s\n", idx->path().c_str(),
             field->key().c_str(), value.c_str());
     }

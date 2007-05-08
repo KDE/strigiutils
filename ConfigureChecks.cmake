@@ -15,6 +15,7 @@ CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)
 CHECK_INCLUDE_FILE_CXX(sys/types.h HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)          # src/streamindexer/pluginendanalyzer.cpp
 CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, strigiconfig.h
+CHECK_INCLUDE_FILE_CXX(regex.h HAVE_REGEX_H)            # src/dummyindexer/*
 
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)

@@ -21,11 +21,11 @@
 #define GREPINDEXWRITER_H
 
 #include "indexwriter.h"
-#include <regex.h>
 
 class GrepIndexWriter : public Strigi::IndexWriter {
 private:
-    regex_t regex;
+    class Private;
+    Private * const d;
 protected:
     void startAnalysis(const Strigi::AnalysisResult* idx);
     void finishAnalysis(const Strigi::AnalysisResult* idx);
