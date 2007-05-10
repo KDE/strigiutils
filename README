@@ -26,12 +26,11 @@ Requirements
 - CMake >= 2.4.2 (http://www.cmake.org)
 - ZLib >= 1.2.3 (http://www.zlib.net)
 - BZip2 >= 1.0.3 (http://www.bzip.org)
-- OpenSSL (http://http://www.openssl.org)
+- LibXml2 (http://xmlsoft.org/)
 
 Optional:
 - Qt4 >= 4.2 (for a graphical interface)
-- libxml2
-- magic-dev   
+- D-Bus (http://www.freedesktop.org/wiki/Software/dbus): it is optional but is tuned on by default
 - linux kernel >= 2.6.13 (for inotify support)
 - log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
 
