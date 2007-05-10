@@ -1,5 +1,6 @@
 [Field]
 Uri=compressed.compression_algorithm
+ParentUri=content.generator_settings
 Name=Compression algo
 TypeUri=string
 Description=Compression algorithm
@@ -7,6 +8,7 @@ Comment=
 
 [Field]
 Uri=compressed.compression_level
+ParentUri=content.generator_settings
 Name=Compression level
 TypeUri=string
 Description=Lossless compression level
@@ -14,6 +16,7 @@ Comment=
 
 [Field]
 Uri=compressed.target_quality
+ParentUri=content.generator_settings
 Name=Target quality
 TypeUri=string
 Description=Lossy compression target quality
