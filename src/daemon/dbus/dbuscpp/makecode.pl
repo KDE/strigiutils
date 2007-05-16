@@ -233,7 +233,6 @@ foreach (@codelines) {
             \(\s*(.*)\s*\) # 4: function arguments
             (\s*=\s*0)?    # 5: pure virtual syntax
             /x) {
-        print $_."\n";
         my $out = $2;
         my $name = $3;
         my $in = $4;

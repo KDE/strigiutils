@@ -1,4 +1,4 @@
-include_directories(test)
+#include_directories(test)
 
 add_library(dbuscpp dbushandler.cpp dbusmessagereader.cpp
     dbusmessagewriter.cpp dbusobjectcallhandler.cpp
