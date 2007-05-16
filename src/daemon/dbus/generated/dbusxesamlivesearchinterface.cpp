@@ -67,6 +67,18 @@ PrivateDBusXesamLiveSearchInterface::getIntrospectionXML() {
     << "    <method name='CloseSearch'>\n"
     << "      <arg name='search' type='s' direction='in'/>\n"
     << "    </method>\n"
+    << "    <signal name='HitsModified'>\n"
+    << "      <arg name='search' type='s'/>\n"
+    << "      <arg name='hit_ids' type='ai'/>\n"
+    << "    </signal>\n"
+    << "    <signal name='HitsRemoved'>\n"
+    << "      <arg name='search' type='s'/>\n"
+    << "      <arg name='hit_ids' type='ai'/>\n"
+    << "    </signal>\n"
+    << "    <signal name='HitsAdded'>\n"
+    << "      <arg name='search' type='s'/>\n"
+    << "      <arg name='count' type='i'/>\n"
+    << "    </signal>\n"
     << "  </interface>\n";
     return xml.str();
 }
@@ -131,4 +143,31 @@ DBusXesamLiveSearchInterface::DBusXesamLiveSearchInterface(const std::string& on
         :object(on), conn(c), iface(new PrivateDBusXesamLiveSearchInterface(*this)) {}
 DBusXesamLiveSearchInterface::~DBusXesamLiveSearchInterface() {
     delete iface;
+}
+void
+DBusXesamLiveSearchInterface::HitsModified(const std::string& search,         const std::vector<int32_t>& hit_ids) {
+    DBusMessage* m = dbus_message_new_signal(object.c_str(), "vandenoever.strigi", "HitsModified");
+    {   DBusMessageWriter writer(conn, m);
+        writer << hit_ids;
+    };
+    dbus_connection_send(conn, m, NULL);
+    dbus_message_unref(m);
+}
+void
+DBusXesamLiveSearchInterface::HitsRemoved(const std::string& search,         const std::vector<int32_t>& hit_ids) {
+    DBusMessage* m = dbus_message_new_signal(object.c_str(), "vandenoever.strigi", "HitsRemoved");
+    {   DBusMessageWriter writer(conn, m);
+        writer << hit_ids;
+    };
+    dbus_connection_send(conn, m, NULL);
+    dbus_message_unref(m);
+}
+void
+DBusXesamLiveSearchInterface::HitsAdded(const std::string& search, const int32_t count) {
+    DBusMessage* m = dbus_message_new_signal(object.c_str(), "vandenoever.strigi", "HitsAdded");
+    {   DBusMessageWriter writer(conn, m);
+        writer << count;
+    };
+    dbus_connection_send(conn, m, NULL);
+    dbus_message_unref(m);
 }

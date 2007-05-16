@@ -9,6 +9,9 @@ private:
     DBusConnection* const conn;
     std::string object;
     DBusObjectInterface* const iface;
+    void HitsModified(const std::string& search,         const std::vector<int32_t>& hit_ids);
+    void HitsRemoved(const std::string& search,         const std::vector<int32_t>& hit_ids);
+    void HitsAdded(const std::string& search, const int32_t count);
 public:
     DBusXesamLiveSearchInterface(const std::string& objectname, DBusConnection* c);
     ~DBusXesamLiveSearchInterface();
