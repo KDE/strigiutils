@@ -2,8 +2,8 @@ include_directories(.. ../../indexertests)
 
 CREATE_TEST_SOURCELIST(Tests testrunner.cpp CLuceneTest.cpp)
 
-ADD_EXECUTABLE(testrunner ${Tests} )
-target_link_libraries(testrunner streams cluceneindex indexertests)
+ADD_EXECUTABLE(testrunner-lucene ${Tests} )
+target_link_libraries(testrunner-lucene streams cluceneindex indexertests)
 
 SET (TestsToRun ${Tests})
 REMOVE (TestsToRun testrunner.cpp)
