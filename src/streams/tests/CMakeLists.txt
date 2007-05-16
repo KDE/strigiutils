@@ -31,8 +31,8 @@ endif(NOT WIN32)
 
 CREATE_TEST_SOURCELIST(Tests ${streamtests})
 
-ADD_EXECUTABLE(testrunner ${Tests} inputstreamtests.cpp)
-target_link_libraries(testrunner streams)
+ADD_EXECUTABLE(testrunner-streams ${Tests} inputstreamtests.cpp)
+target_link_libraries(testrunner-streams streams)
 
 SET (TestsToRun ${Tests})
 REMOVE (TestsToRun testrunner.cpp)
