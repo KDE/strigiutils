@@ -21,18 +21,21 @@
 #define DBUSSERVER_H
 
 #include "../strigithread.h"
+#include <vector>
 
-class Interface;
+class DBusHandler;
+class ClientInterface;
+class DBusClientInterface;
 class DBusServer : public StrigiThread {
 private:
-    int quitpipe[2];
-    Interface* interface;
+    DBusHandler* handler;
+    DBusClientInterface* interface;
+
     void* run(void*);
     void stopThread();
 public:
-    explicit DBusServer(Interface* i) :StrigiThread("DBusServer"),
-        interface(i) {}
-    ~DBusServer() {}
+    explicit DBusServer(ClientInterface*);
+    ~DBusServer();
 /**
  * return true if the system stopped normally
  **/
