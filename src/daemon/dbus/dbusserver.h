@@ -26,10 +26,12 @@
 class DBusHandler;
 class ClientInterface;
 class DBusClientInterface;
+class DBusXesamLiveSearchInterface;
 class DBusServer : public StrigiThread {
 private:
     DBusHandler* handler;
     DBusClientInterface* interface;
+    DBusXesamLiveSearchInterface* xesam;
 
     void* run(void*);
     void stopThread();

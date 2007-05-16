@@ -19,7 +19,9 @@
  */
 #include "dbushandler.h"
 #include "dbusobjectcallhandler.h"
+#include "dbusobjectinterface.h"
 
+#include <iostream>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -82,7 +84,7 @@ DBusHandler::handle() {
     for (vector<DBusObjectInterface*>::iterator i = interfaces.begin();
             i != interfaces.end(); ++i) {
         callhandler.addInterface(*i);
-//    fprintf(stderr, "%s\n", (*i)->getIntrospectionXML().c_str());
+        cerr << (*i)->getIntrospectionXML().c_str() << endl;
     }
 
     int fd;
@@ -122,6 +124,7 @@ DBusHandler::handle() {
 }
 void
 DBusHandler::stop() {
+    cerr << "DBusHandler::stop" << endl;
     // close the pipe to wake up the dbus thread so it can stop
     // alternatively we can write into it so we can reuse it
     // since we only use it for quitting atm, closing the pipe is fine

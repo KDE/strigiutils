@@ -38,7 +38,7 @@ public:
 //    std::vector<std::vector<Variant> > GetHits(const std::string& search, int32_t num); 
 //    std::vector<std::vector<Variant> > GetHitData(const std::string& search, const std::vector<int32_t>& hit_ids, const std::vector<std::string>& properties);
     void CloseSearch(const std::string& search);
-    const std::vector<std::string> GetState();
+    std::vector<std::string> GetState();
 
     virtual void HitsAdded(const std::string& search, const int32_t count) = 0; 
     virtual void HitsRemoved(const std::string& search,

@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,35 +17,32 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "dbusserver.h"
-#include "dbushandler.h"
-#include "dbusclientinterface.h"
-#include "dbusxesamlivesearchinterface.h"
+
+#include "xesamlivesearchinterface.h"
 #include <iostream>
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 using namespace std;
 
-DBusServer::DBusServer(ClientInterface* iface)
-        :StrigiThread("DBusServer"), handler(new DBusHandler()) {
-    interface = new DBusClientInterface("", handler->connection(), iface);
-    handler->addInterface(interface->interface());
-    xesam = new DBusXesamLiveSearchInterface("", handler->connection());
-    handler->addInterface(xesam->interface());
-}
-DBusServer::~DBusServer() {
-    delete handler;
-    delete interface;
-    delete xesam;
-}
-void*
-DBusServer::run(void*) {
-    return handler->handle() ?this :0;
+string
+XesamLiveSearchInterface::NewSession() {
+    return "not implemented";
 }
 void
-DBusServer::stopThread() {
-    cerr << "stop" << endl;
-    handler->stop();
+XesamLiveSearchInterface::CloseSession(const string& session) {
+}
+string
+XesamLiveSearchInterface::NewSearch(const string& session, const string& query_xml) {
+    return "not implemented";
+}
+int32_t
+XesamLiveSearchInterface::CountHits(const string& search) {
+    return -1;
+}
+//    vector<vector<Variant> > GetHits(const string& search, int32_t num); 
+//    vector<vector<Variant> > GetHitData(const string& search, const vector<int32_t>& hit_ids, const vector<string>& properties);
+void
+XesamLiveSearchInterface::CloseSearch(const string& search) {
+}
+vector<string>
+XesamLiveSearchInterface::GetState() {
+    return vector<string>();
 }
