@@ -37,6 +37,7 @@ private:
     CombinedIndexManager& manager;
     IndexScheduler& scheduler;
     EventListener* eventListener;
+    bool active;
 
 public:
     Interface(CombinedIndexManager& m, IndexScheduler& s);
@@ -65,6 +66,8 @@ public:
     std::vector<std::string> getKeywords(const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset);
+
+    bool isActive() const { return active; }
 };
 
 #endif

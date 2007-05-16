@@ -24,10 +24,12 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <string>
+
 
 class ClientInterface {
-protected:
-    bool active;
+private:
+    ClientInterface* const iface;
 public:
     class Hits {
     public:
@@ -35,28 +37,66 @@ public:
         std::string error;
     };
 
-    ClientInterface() :active(true) {}
+    ClientInterface(ClientInterface* i) :iface(i) {}
     virtual ~ClientInterface() {}
-    virtual int32_t countHits(const std::string& query) = 0;
-    virtual Hits getHits(const std::string& query, uint32_t max, uint32_t offset) = 0;
-    virtual std::map<std::string, std::string> getStatus() = 0;
-    virtual std::string stopDaemon() = 0;
-    virtual std::string startIndexing() = 0;
-    virtual std::string stopIndexing() = 0;
-    virtual std::set<std::string> getIndexedDirectories() = 0;
-    virtual std::string setIndexedDirectories(std::set<std::string> d) = 0;
-    virtual void setFilters(const std::vector<std::pair<bool,std::string> >& rules) = 0;
-    virtual std::vector<std::pair<bool,std::string> > getFilters() = 0;
-    virtual std::set<std::string> getIndexedFiles() = 0;
-    bool isActive() { return active; }
-    virtual std::vector<std::string> getBackEnds() = 0;
-    virtual void indexFile(const std::string& path, uint64_t mtime, const std::vector<char>& content) = 0;
-
-    virtual std::vector<std::string> getFieldNames() = 0;
-    virtual std::vector<std::pair<std::string, uint32_t> > getHistogram(const std::string& query, const std::string& field, const std::string& labeltype) = 0;
-
-    virtual int32_t countKeywords(const std::string& keywordprefix, const std::vector<std::string>& fieldnames) = 0;
-    virtual std::vector<std::string> getKeywords(const std::string& keywordmatch, const std::vector<std::string>& fieldnames, uint32_t max, uint32_t offset) = 0;
+    virtual int32_t countHits(const std::string& query) {
+        return iface->countHits(query);
+    }
+    virtual Hits getHits(const std::string& query, uint32_t max,
+            uint32_t offset) {
+        return iface->getHits(query, max, offset);
+    }
+    virtual std::map<std::string, std::string> getStatus() {
+        return iface->getStatus();
+    }
+    virtual std::string stopDaemon() {
+        return iface->stopDaemon();
+    }
+    virtual std::string startIndexing() {
+        return iface->startIndexing();
+    }
+    virtual std::string stopIndexing() {
+        return iface->stopIndexing();
+    }
+    virtual std::set<std::string> getIndexedDirectories() {
+        return iface->getIndexedDirectories();
+    }
+    virtual std::string setIndexedDirectories(std::set<std::string> d) {
+        return iface->setIndexedDirectories(d);
+    }
+    virtual void setFilters(const std::vector<std::pair<bool,std::string> >& rules) {
+        iface->setFilters(rules);
+    }
+    virtual std::vector<std::pair<bool,std::string> > getFilters() {
+        return iface->getFilters();
+    }
+    virtual std::set<std::string> getIndexedFiles() {
+        return iface->getIndexedFiles();
+    }
+    virtual std::vector<std::string> getBackEnds() {
+        return iface->getBackEnds();
+    }
+    virtual void indexFile(const std::string& path, uint64_t mtime, const std::vector<char>& content) {
+        iface->indexFile(path, mtime, content);
+    }
+    virtual std::vector<std::string> getFieldNames() {
+        return iface->getFieldNames();
+    }
+    virtual std::vector<std::pair<std::string, uint32_t> > getHistogram(
+            const std::string& query, const std::string& field,
+            const std::string& labeltype) {
+        return iface->getHistogram(query, field, labeltype);
+    }
+    virtual int32_t countKeywords(const std::string& keywordprefix,
+            const std::vector<std::string>& fieldnames) {
+        return iface->countKeywords(keywordprefix, fieldnames);
+    }
+    virtual std::vector<std::string> getKeywords(
+            const std::string& keywordmatch,
+            const std::vector<std::string>& fieldnames, uint32_t max,
+            uint32_t offset) {
+        return iface->getKeywords(keywordmatch, fieldnames, max, offset);
+    }
 };
 
 #endif

@@ -34,6 +34,7 @@ private:
     bool readResponse(int sd);
     bool sendRequest(int sd);
 public:
+    SocketClient() :ClientInterface(0) {}
     const std::string& getError() const { return error; }
     void setSocketName(const std::string& socketname);
     int32_t countHits(const std::string &query);

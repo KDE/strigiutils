@@ -1,4 +1,4 @@
-set(DIRS eventlistener events)
+set(DIRS eventlistener events new)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)

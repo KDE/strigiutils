@@ -38,7 +38,7 @@ using namespace std;
 using namespace Strigi;
 
 Interface::Interface(CombinedIndexManager& m, IndexScheduler& s)
-        :manager(m), scheduler(s) {
+        :ClientInterface(0), manager(m), scheduler(s), active(true) {
     eventListener = NULL;
 }
 void
