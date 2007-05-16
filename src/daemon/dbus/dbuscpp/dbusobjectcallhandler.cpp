@@ -65,8 +65,8 @@ IntrospectionInterface::handleCall(DBusConnection* conn, DBusMessage* msg) {
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 void
-IntrospectionInterface::introspect(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageWriter writer(conn, msg);
+IntrospectionInterface::introspect(DBusMessage* msg, DBusConnection* con) {
+    DBusMessageWriter writer(con, msg);
     writer << object->getIntrospectionXML();
 }
 
@@ -76,7 +76,7 @@ const DBusObjectPathVTable DBusObjectCallHandler::vtable = {
     NULL
 };
 DBusObjectCallHandler::DBusObjectCallHandler(const std::string& path)
-        : objectpath(path) {
+        :objectpath(path) {
     introspection = new IntrospectionInterface(this);
     addInterface(introspection);
 }
@@ -92,16 +92,16 @@ DBusObjectCallHandler::message_function(DBusConnection* connection,
         DBusMessage* msg, void* object) {
     DBusObjectCallHandler* handler
         = static_cast<DBusObjectCallHandler*>(object);
-    return handler->handleCall(connection, msg);
+    return handler->handleCall(msg);
 }
 DBusHandlerResult
-DBusObjectCallHandler::handleCall(DBusConnection* connection, DBusMessage* msg){
+DBusObjectCallHandler::handleCall(DBusMessage* msg){
     const char* iface = dbus_message_get_interface(msg);
     map<string, DBusObjectInterface*>::const_iterator i;
     if (iface == 0) { // no interface was specified, try all interfaces
         DBusHandlerResult r;
         for (i=interfaces.begin(); i!=interfaces.end(); ++i) {
-            r = i->second->handleCall(connection, msg);
+            r = i->second->handleCall(conn, msg);
             if (r == DBUS_HANDLER_RESULT_HANDLED) {
                 return r;
             }
@@ -112,11 +112,12 @@ DBusObjectCallHandler::handleCall(DBusConnection* connection, DBusMessage* msg){
         if (i == interfaces.end()) {
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
-        return i->second->handleCall(connection, msg);
+        return i->second->handleCall(conn, msg);
     }
 }
 void
 DBusObjectCallHandler::registerOnConnection(DBusConnection* c) {
+    conn = c;
     dbus_connection_register_object_path(c, objectpath.c_str(),
         &DBusObjectCallHandler::vtable, this);
 }

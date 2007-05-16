@@ -20,10 +20,7 @@
 #ifndef DBUSMESSAGEREADER_H
 #define DBUSMESSAGEREADER_H
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
-
-#include "xesamlivesearchinterface.h"
 
 #include <set>
 #include <map>
@@ -33,9 +30,14 @@
 class DBusMessageReader {
 private:
     DBusMessage* msg;
-    DBusMessageIter it;
     bool ok;
 
+public:
+    DBusMessageIter it;
+    explicit DBusMessageReader(DBusMessage* msg);
+    ~DBusMessageReader() {
+        close();
+    }
     void close() {
         if (msg) {
             dbus_message_unref(msg);
@@ -43,24 +45,21 @@ private:
         }
         ok = false;
     }
-public:
-    explicit DBusMessageReader(DBusMessage* msg);
-    ~DBusMessageReader() {
-        close();
-    }
     DBusMessageReader& operator>>(std::set<std::string>& s);
     DBusMessageReader& operator>>(std::vector<std::string>& s);
     DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::vector<int32_t>& s);
     DBusMessageReader& operator>>(std::string& s);
     DBusMessageReader& operator>>(dbus_uint32_t& s);
-    DBusMessageReader& operator>>(int32_t& s);
     DBusMessageReader& operator>>(dbus_uint64_t& s);
     DBusMessageReader& operator>>(int64_t& s);
     DBusMessageReader& operator>>(std::multimap<int, std::string>&);
     DBusMessageReader& operator>>(std::vector<std::pair<bool, std::string> >&);
-    DBusMessageReader& operator>>(Variant& v);
+//    DBusMessageReader& operator>>(Variant& v);
     bool isOk() const { return ok; }
 };
+
+DBusMessageReader&
+operator>>(DBusMessageReader&, int32_t& s);
 
 #endif

@@ -17,34 +17,31 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DBUSOBJECTCALLHANDLER_H
-#define DBUSOBJECTCALLHANDLER_H
+#ifndef DBUSBYTEARRAY_H
+#define DBUSBYTEARRAY_H
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 
 #include <string>
-#include <map>
 
-class DBusObjectInterface;
-
-class DBusObjectCallHandler {
+class DBusByteArray {
 private:
-    static DBusHandlerResult message_function(DBusConnection* connection,
-        DBusMessage* message, void* user_data);
-    DBusObjectInterface* introspection;
-
-    const std::string objectpath;
-    std::map<std::string, DBusObjectInterface*> interfaces;
+    DBusMessage* msg;
+    const char* array;
+    int32_t length;
 public:
-    static const DBusObjectPathVTable vtable;
-    explicit DBusObjectCallHandler(const std::string& path);
-    ~DBusObjectCallHandler();
-    void addInterface(DBusObjectInterface* interface);
-    void registerOnConnection(DBusConnection* c);
-    std::string getIntrospectionXML();
-    const char* getObjectPath() const { return objectpath.c_str(); }
-    DBusHandlerResult handleCall(DBusConnection* connection, DBusMessage* msg);
+    DBusByteArray(DBusMessage* msg);
+    ~DBusByteArray() {
+        if (msg) {
+            dbus_message_unref(msg);
+        }
+    }
+    const char* getArray() const {
+        return array;
+    }
+    int32_t getLength() const {
+        return length;
+    }
 };
 
 #endif

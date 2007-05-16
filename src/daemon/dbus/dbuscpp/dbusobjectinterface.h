@@ -17,31 +17,23 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DBUSBYTEARRAY_H
-#define DBUSBYTEARRAY_H
+#ifndef DBUSOBJECTINTERFACE_H
+#define DBUSOBJECTINTERFACE_H
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 
 #include <string>
-
-class DBusByteArray {
+class DBusObjectInterface {
 private:
-    DBusMessage* msg;
-    const char* array;
-    int32_t length;
+    const std::string interfacename;
 public:
-    DBusByteArray(DBusMessage* msg);
-    ~DBusByteArray() {
-        if (msg) {
-            dbus_message_unref(msg);
-        }
-    }
-    const char* getArray() const {
-        return array;
-    }
-    int32_t getLength() const {
-        return length;
+    DBusObjectInterface(const std::string& i) :interfacename(i) {}
+    virtual ~DBusObjectInterface() {};
+    virtual DBusHandlerResult handleCall(DBusConnection* connection,
+        DBusMessage* msg) = 0;
+    virtual std::string getIntrospectionXML() = 0;
+    const std::string& getInterfaceName() const {
+        return interfacename;
     }
 };
 

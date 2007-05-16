@@ -158,7 +158,7 @@ die "No class found." unless defined $class;
 # parse the functions from the header file
 foreach (@lines) {
     # match function line
-    if (m/^\s*(virtual\s+)?(.*)\s+~?(\w+)\(\s*(.*)\s*\)/) {
+    if (m/^\s*(virtual\s+)?(\w+)\s+~?(\w+)\(\s*(.*)\s*\)/) {
         if ($3 eq $class) {
             next;
         }

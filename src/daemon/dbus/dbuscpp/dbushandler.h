@@ -17,28 +17,26 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef XESAMLIVESEARCHINTERFACE_H
-#define XESAMLIVESEARCHINTERFACE_H
+#ifndef DBUSHANDLER_H
+#define DBUSHANDLER_H
 
-#include <string>
 #include <vector>
-#include <map>
+#include <dbus/dbus.h>
 
-class Variant {
-};
-
-class XesamLiveSearchInterface {
+class DBusObjectInterface;
+class DBusHandler {
+private:
+    int quitpipe[2];
+    DBusConnection* conn;
+    std::vector<DBusObjectInterface*> interfaces;
 public:
-    XesamLiveSearchInterface() {}
-    std::string NewSession();
-//    Variant SetProperty(const std::string& session, const std::string& prop, const Variant& v);
-    void CloseSession(const std::string& session);
-    std::string NewSearch(const std::string& session, const std::string& query_xml);
-    int32_t CountHits(const std::string& search);
-//    std::vector<std::vector<Variant> > GetHits(const std::string& search, int32_t num); 
-//    std::vector<std::vector<Variant> > GetHitData(const std::string& search, const std::vector<int32_t>& hit_ids, const std::vector<std::string>& properties);
-    void CloseSearch(const std::string& search);
-    const std::vector<std::string> GetState();
+    DBusHandler();
+    void addInterface(DBusObjectInterface*i) {
+        interfaces.push_back(i);
+    }
+    DBusConnection* connection() const { return conn; }
+    bool handle();
+    void stop();
 };
 
 #endif

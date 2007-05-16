@@ -1,4 +1,5 @@
-include_directories(.. ${CMAKE_CURRENT_BINARY_DIR})
+subdirs(dbuscpp)
+include_directories(.. dbuscpp ${CMAKE_CURRENT_BINARY_DIR})
 
 IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
@@ -10,107 +11,71 @@ ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 # otherwise, just copy them into the build directory
 find_package(Perl)
 
-IF (PERL_FOUND)
-    add_custom_command(
-        OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-        COMMAND ${PERL_EXECUTABLE}
-        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
-                vandenoever.strigi
-                "${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
-        MAIN_DEPENDENCY ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-    add_custom_command(
-        OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
-        COMMAND ${PERL_EXECUTABLE}
-        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
-                vandenoever.strigi
-                "${strigi_SOURCE_DIR}/src/daemon/dbus/xesamlivesearchinterface.h"
-        MAIN_DEPENDENCY ${strigi_SOURCE_DIR}/src/daemon/clientinterface.h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-    add_custom_command(
-        OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-        COMMAND ${PERL_EXECUTABLE}
-        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/makecode.pl"
-                vandenoever.dbustest.DBusTest
-                "${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h"
-        MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-ELSE (PERL_FOUND)
-    add_custom_command(
-        OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-        COMMAND ${CMAKE_COMMAND}
-        ARGS    -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbusclientinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-        COMMAND ${CMAKE_COMMAND}
-        ARGS    -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbusclientinterface.cpp"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-        COMMAND ${CMAKE_COMMAND}
-        ARGS    -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbustestinterface.h"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-        COMMAND ${CMAKE_COMMAND}
-        ARGS    -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbustestinterface.cpp"
-                "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-    )
-ENDIF (PERL_FOUND)
+MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
+    IF (PERL_FOUND)
+        add_custom_command(
+            OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+                    "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
+            COMMAND ${PERL_EXECUTABLE}
+            ARGS    "${strigi_SOURCE_DIR}/src/daemon/dbus/dbuscpp/makecode.pl"
+                    ${INTERFACE} 
+                    ${HEADERFILE}
+                    ${EXTRAINCLUDE}
+            MAIN_DEPENDENCY ${HEADERFILE}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbus${INAME}.h"
+        )
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
+                "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbus${INAME}.cpp"
+        )
+    ELSE (PERL_FOUND)
+        add_custom_command(
+            OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+                    "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
+            COMMAND ${CMAKE_COMMAND}
+            ARGS    -E copy_if_different
+                    "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbus${INAME}.h"
+                    "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+            COMMAND ${CMAKE_COMMAND}
+            ARGS    -E copy_if_different
+                    "${CMAKE_CURRENT_SOURCE_DIR}/generated/${INAME}.cpp"
+                    "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
+        )
+    ENDIF (PERL_FOUND)
+    set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
+        "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp")
+ENDMACRO(CreateDBusBinding)
 
-set_source_files_properties(
-    "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-    "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.h"
-    "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-    "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-    GENERATED
-)
+CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
+        "clientinterface" "vandenoever.strigi"
+        "${strigi_SOURCE_DIR}/src/daemon/dbus/dbusserialization.h")
+CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/dbus/testinterface.h"
+        "testinterface" "vandenoever.strigi" "")
+CreateDBusBinding(
+        "${strigi_SOURCE_DIR}/src/daemon/dbus/xesamlivesearchinterface.h"
+        "xesamlivesearchinterface" "vandenoever.strigi" "")
 
-add_library(dbusserver dbusserver.cpp dbusmessagereader.cpp
-    dbusmessagewriter.cpp dbusobjectcallhandler.cpp testinterface.cpp
+add_library(dbusserver testinterface.cpp dbusserver.cpp
+    dbusserialization.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
 )
 set(CMAKE_CXX_FLAGS ${DBUS_CFLAGS})
-target_link_libraries(dbusserver ${DBUS_LDFLAGS})
+target_link_libraries(dbusserver dbuscpp)
 
 add_executable(testserver testserver.cpp ../strigithread.cpp)
 target_link_libraries(testserver dbusserver ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS} streams)
 
-add_executable(dbustest dbustest.cpp)
-target_link_libraries(dbustest ${DBUS_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS})
+#add_executable(dbustest dbustest.cpp)
+#target_link_libraries(dbustest ${DBUS_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS})
 
 
-# Convenience target to copy the generated D-Bus interfaces
-# into the generated/ folder, so they can be imported into SVN.
-# From the current directory, call 'make copy-generated' to copy them.
-add_custom_target( copy-generated
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbusclientinterface.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbusclientinterface.cpp"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbustestinterface.h"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbustestinterface.cpp"
-
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.h"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.h"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
-)

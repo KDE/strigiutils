@@ -17,26 +17,33 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DBUSOBJECTINTERFACE_H
-#define DBUSOBJECTINTERFACE_H
+#ifndef DBUSOBJECTCALLHANDLER_H
+#define DBUSOBJECTCALLHANDLER_H
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 
 #include <string>
+#include <map>
+class DBusObjectInterface;
 
-class DBusObjectInterface {
+class DBusObjectCallHandler {
 private:
-    const std::string interfacename;
+    static DBusHandlerResult message_function(DBusConnection* connection,
+        DBusMessage* message, void* user_data);
+    DBusConnection* conn;
+    DBusObjectInterface* introspection;
+
+    const std::string objectpath;
+    std::map<std::string, DBusObjectInterface*> interfaces;
 public:
-    DBusObjectInterface(const std::string& i) :interfacename(i) {}
-    virtual ~DBusObjectInterface() {};
-    virtual DBusHandlerResult handleCall(DBusConnection* connection,
-        DBusMessage* msg) = 0;
-    virtual std::string getIntrospectionXML() = 0;
-    const std::string& getInterfaceName() const {
-        return interfacename;
-    }
+    static const DBusObjectPathVTable vtable;
+    DBusObjectCallHandler(const std::string& path);
+    ~DBusObjectCallHandler();
+    void addInterface(DBusObjectInterface* interface);
+    void registerOnConnection(DBusConnection* c);
+    std::string getIntrospectionXML();
+    const char* getObjectPath() const { return objectpath.c_str(); }
+    DBusHandlerResult handleCall(DBusMessage* msg);
 };
 
 #endif
