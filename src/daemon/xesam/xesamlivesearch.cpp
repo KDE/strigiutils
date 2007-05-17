@@ -18,43 +18,66 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "xesamlivesearchinterface.h"
+#include "xesamlivesearch.h"
 #include <iostream>
 using namespace std;
 
 string
-XesamLiveSearchInterface::NewSession() {
+XesamLiveSearch::NewSession() {
     return "not implemented";
 }
 Variant
-XesamLiveSearchInterface::SetProperty(const std::string& session,
+XesamLiveSearch::SetProperty(const std::string& session,
         const std::string& prop, const Variant& v) {
     return v;
 }
 void
-XesamLiveSearchInterface::CloseSession(const string& session) {
+XesamLiveSearch::CloseSession(const string& session) {
 }
 string
-XesamLiveSearchInterface::NewSearch(const string& session, const string& query_xml) {
+XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
     return "not implemented";
 }
 int32_t
-XesamLiveSearchInterface::CountHits(const string& search) {
+XesamLiveSearch::CountHits(const string& search) {
     return -1;
 }
 vector<vector<Variant> >
-XesamLiveSearchInterface::GetHits(const string& search, int32_t num) {
+XesamLiveSearch::GetHits(const string& search, int32_t num) {
     return vector<vector<Variant> >();
 }
 vector<vector<Variant> >
-XesamLiveSearchInterface::GetHitData(const string& search,
+XesamLiveSearch::GetHitData(const string& search,
         const vector<int32_t>& hit_ids, const vector<string>& properties) {
     return vector<vector<Variant> >();
 }
 void
-XesamLiveSearchInterface::CloseSearch(const string& search) {
+XesamLiveSearch::CloseSearch(const string& search) {
 }
 vector<string>
-XesamLiveSearchInterface::GetState() {
+XesamLiveSearch::GetState() {
     return vector<string>();
+}
+void
+XesamLiveSearch::HitsAdded(const std::string& search, const int32_t count) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->HitsAdded(search, count);
+    }
+}
+void
+XesamLiveSearch::HitsRemoved(const std::string& search,
+        const std::vector<int32_t>& hit_ids) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->HitsRemoved(search, hit_ids);
+    }
+}
+void
+XesamLiveSearch::HitsModified(const std::string& search,
+        const std::vector<int32_t>& hit_ids) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->HitsModified(search, hit_ids);
+    }
 }

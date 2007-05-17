@@ -28,7 +28,7 @@
 #include <unistd.h>
 using namespace std;
 
-DBusServer::DBusServer(ClientInterface* iface)
+DBusServer::DBusServer(ClientInterface* iface, XesamLiveSearchInterface* x)
         :StrigiThread("DBusServer"), handler(new DBusHandler()) {
     // add strigi interface
     interface = new DBusClientInterface("/search",
@@ -36,7 +36,7 @@ DBusServer::DBusServer(ClientInterface* iface)
     handler->addInterface("/search", interface->interface());
     // add xesam interface
     xesam = new DBusXesamLiveSearchInterface(
-        "/org/freedesktop/xesam/searcher/main", handler->connection());
+        "/org/freedesktop/xesam/searcher/main", handler->connection(), x);
     handler->addInterface("/org/freedesktop/xesam/searcher/main",
         xesam->interface());
 }

@@ -1,4 +1,4 @@
-set(DIRS eventlistener events)
+set(DIRS eventlistener events xesam)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
@@ -7,7 +7,7 @@ ENDIF(ENABLE_DBUS)
 subdirs(${DIRS})
 
 include_directories( ../streamanalyzer ../combinedindexer ../streams ../xsd dbus
-	${strigi_BINARY_DIR}/src/streams/compat ../streams/compat)
+	${strigi_BINARY_DIR}/src/streams/compat ../streams/compat xesam)
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)
@@ -58,6 +58,7 @@ set(strigidaemon_LIBS
 	combinedindex
 	eventlistener
 	streamanalyzer
+	xesam
 	${CMAKE_THREAD_LIBS_INIT}
 	${strigidaemon_LIBS}
 )

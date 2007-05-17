@@ -26,6 +26,7 @@
 class DBusHandler;
 class ClientInterface;
 class DBusClientInterface;
+class XesamLiveSearchInterface;
 class DBusXesamLiveSearchInterface;
 class DBusServer : public StrigiThread {
 private:
@@ -36,7 +37,7 @@ private:
     void* run(void*);
     void stopThread();
 public:
-    explicit DBusServer(ClientInterface*);
+    DBusServer(ClientInterface*, XesamLiveSearchInterface* x);
     ~DBusServer();
 /**
  * return true if the system stopped normally

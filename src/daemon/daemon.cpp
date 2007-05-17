@@ -24,6 +24,7 @@
 
 #include "indexscheduler.h"
 #include "analyzerconfiguration.h"
+#include "xesamlivesearch.h"
 
 #if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
@@ -202,6 +203,7 @@ main(int argc, char** argv) {
     scheduler.start(20);
 
     Interface interface(*index, scheduler);
+    XesamLiveSearch xesam;
 
     EventListener* listener = NULL;
 
@@ -230,7 +232,7 @@ main(int argc, char** argv) {
 //    threads.push_back(listener);
 
 #ifdef HAVE_DBUS
-    DBusServer dbusserver(&interface);
+    DBusServer dbusserver(&interface, &xesam);
     if (config.useDBus()) {
         dbusserver.start();
     }

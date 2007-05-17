@@ -30,6 +30,7 @@
 #include "stringstream.h"
 #include "query.h"
 #include <sstream>
+#include <iostream>
 #include <vector>
 #include <sys/types.h>
 #include <signal.h>
@@ -90,6 +91,7 @@ Interface::getStatus() {
 }
 string
 Interface::stopDaemon() {
+    cerr << "stopDaemon" << endl;
     active = false;
     // signal to all threads to quit. Do not use raise() here, because it will
     // cause a hang
