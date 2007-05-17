@@ -26,13 +26,15 @@ DBusMessageWriter::DBusMessageWriter(DBusConnection* c, DBusMessage* msg)
     dbus_message_iter_init_append(reply, &it);
 }
 DBusMessageWriter::~DBusMessageWriter() {
-    DBusMessage* msg = (error) ?error :reply;
-    dbus_uint32_t serial = 0;
-    dbus_connection_send(conn, msg, &serial);
-    dbus_connection_flush(conn);
-    dbus_message_unref(reply);
-    if (error) {
-        dbus_message_unref(error);
+    if (reply) {
+        DBusMessage* msg = (error) ?error :reply;
+        dbus_uint32_t serial = 0;
+        dbus_connection_send(conn, msg, &serial);
+        dbus_connection_flush(conn);
+        dbus_message_unref(reply);
+        if (error) {
+            dbus_message_unref(error);
+        }
     }
 }
 void
@@ -42,7 +44,8 @@ DBusMessageWriter::setError(const std::string &e) {
 }
 DBusMessageWriter&
 operator<<(DBusMessageWriter& w, const bool b) {
-    dbus_message_iter_append_basic(&w.it, DBUS_TYPE_BOOLEAN, &b);
+    dbus_bool_t db = b;
+    dbus_message_iter_append_basic(&w.it, DBUS_TYPE_BOOLEAN, &db);
     return w;
 }
 DBusMessageWriter&

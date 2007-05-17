@@ -29,6 +29,7 @@ XesamLiveSearch::NewSession() {
 Variant
 XesamLiveSearch::SetProperty(const std::string& session,
         const std::string& prop, const Variant& v) {
+    cerr << "SetProperty " << v.s() << endl;
     return v;
 }
 void
@@ -44,7 +45,15 @@ XesamLiveSearch::CountHits(const string& search) {
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHits(const string& search, int32_t num) {
-    return vector<vector<Variant> >();
+    vector<vector<Variant> > hits;
+    for (int i=0; i<3; ++i) {
+        vector<Variant> v;
+        for (int j=0; j<3; ++j) {
+            v.push_back(j);
+        }
+        hits.push_back(v);
+    }
+    return hits;
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHitData(const string& search,

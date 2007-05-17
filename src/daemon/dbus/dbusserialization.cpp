@@ -1,6 +1,9 @@
 #include "dbusserialization.h"
+#include "variant.h"
 #include "dbusmessagewriter.h"
+#include "dbusmessagereader.h"
 #include "textutils.h"
+#include <iostream>
 using namespace std;
 
 /* yes this is ugly, i have to change the interface */
@@ -63,12 +66,73 @@ operator<<(DBusMessageWriter& w,
 
 DBusMessageWriter&
 operator<<(DBusMessageWriter& w, const Variant& v) {
+    DBusMessageWriter sub;
+    switch (v.type()) {
+    case Variant::b_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "b",&sub.it);
+        sub << v.b();
+        break;
+    case Variant::i_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "i",&sub.it);
+        sub << v.i();
+        break;
+    case Variant::s_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "s",&sub.it);
+        sub << v.s();
+        break;
+    case Variant::as_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT,"as",&sub.it);
+        sub << v.as();
+        break;
+    }
+    dbus_message_iter_close_container(&w.it, &sub.it);
     return w;
 }
 DBusMessageWriter&
 operator<<(DBusMessageWriter& w, const vector<vector<Variant> >& v) {
+    DBusMessageWriter sub, ssub;
+    dbus_message_iter_open_container(&w.it, DBUS_TYPE_ARRAY, "av", &sub.it);
+    vector<vector<Variant> >::const_iterator i;
+    vector<Variant>::const_iterator j;
+    for (i = v.begin(); i != v.end(); ++i) {
+        dbus_message_iter_open_container(&sub.it,DBUS_TYPE_ARRAY,"v",&ssub.it);
+        for (j = i->begin(); j != i->end(); ++j) {
+            ssub << *j;
+        }
+        dbus_message_iter_close_container(&sub.it, &ssub.it);
+    }
+    dbus_message_iter_close_container(&w.it, &sub.it);
     return w;
 }
 DBusMessageReader&
-operator>>(DBusMessageReader& r, const Variant& v) {
+operator>>(DBusMessageReader& r, Variant& v) {
+    if (!r.isOk()) return r;
+    if (dbus_message_iter_get_arg_type(&r.it) != DBUS_TYPE_VARIANT) {
+        r.close();
+        return r;
+    }
+    DBusMessageReader sub(r);
+    dbus_message_iter_recurse(&r.it, &sub.it);
+    dbus_message_iter_next(&r.it);
+    int t = dbus_message_iter_get_arg_type(&sub.it);
+    if (t == DBUS_TYPE_BOOLEAN) {
+        dbus_bool_t b;
+        sub >> b;
+        v = (bool)b;
+    } else if (t == DBUS_TYPE_INT32) {
+        dbus_int32_t i;
+        sub >> i;
+        v = i;
+    } else if (t == DBUS_TYPE_STRING) {
+        string s;
+        sub >> s;
+        v = s;
+    } else if (t == DBUS_TYPE_ARRAY) {
+        vector<string> as;
+        sub >> as;
+        v = as;
+    } else {
+        r.close();
+    }
+    return r;
 }

@@ -36,6 +36,10 @@ private:
 public:
     DBusMessageIter it;
     explicit DBusMessageReader(DBusMessage* msg);
+    explicit DBusMessageReader(const DBusMessageReader& r)
+            :msg(r.msg), ok(r.ok) {
+        dbus_message_ref(msg);
+    }
     ~DBusMessageReader() {
         close();
     }
@@ -51,16 +55,13 @@ public:
     DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::vector<int32_t>& s);
     DBusMessageReader& operator>>(std::string& s);
+    DBusMessageReader& operator>>(dbus_int32_t& s);
     DBusMessageReader& operator>>(dbus_uint32_t& s);
     DBusMessageReader& operator>>(dbus_uint64_t& s);
-    DBusMessageReader& operator>>(int64_t& s);
+    DBusMessageReader& operator>>(dbus_int64_t& s);
     DBusMessageReader& operator>>(std::multimap<int, std::string>&);
     DBusMessageReader& operator>>(std::vector<std::pair<bool, std::string> >&);
-//    DBusMessageReader& operator>>(Variant& v);
     bool isOk() const { return ok; }
 };
-
-DBusMessageReader&
-operator>>(DBusMessageReader&, int32_t& s);
 
 #endif

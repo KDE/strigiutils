@@ -12,6 +12,6 @@ DBusMessageWriter& operator<<(DBusMessageWriter&,
 DBusMessageWriter& operator<<(DBusMessageWriter&, const Variant& v);
 DBusMessageWriter& operator<<(DBusMessageWriter&,
     const std::vector<std::vector<Variant> >& v);
-DBusMessageReader& operator>>(DBusMessageReader&, const Variant& v);
+DBusMessageReader& operator>>(DBusMessageReader&, Variant& v);
 
 #endif

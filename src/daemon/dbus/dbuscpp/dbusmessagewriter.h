@@ -35,14 +35,13 @@ public:
     DBusMessageIter it;
 
     DBusMessageWriter(DBusConnection* conn, DBusMessage* msg);
+    DBusMessageWriter() :conn(0), reply(0) { }
     ~DBusMessageWriter();
     void setError(const std::string& error);
 };
 
-DBusMessageWriter&
-operator<<(DBusMessageWriter&, const bool b);
-DBusMessageWriter&
-operator<<(DBusMessageWriter&, int32_t i);
+DBusMessageWriter& operator<<(DBusMessageWriter&, bool b);
+DBusMessageWriter& operator<<(DBusMessageWriter&, int32_t i);
 DBusMessageWriter& operator<<(DBusMessageWriter&, int64_t i);
 DBusMessageWriter& operator<<(DBusMessageWriter&, double d);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::string& s);
@@ -51,9 +50,7 @@ DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<int32_t>& s)
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::string>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::map<std::string, std::string>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::pair<bool, std::string> >& s);
-//    DBusMessageWriter& operator<<(const ClientInterface::Hits& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::multimap<int, std::string>&);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::pair<std::string, uint32_t> >&);
-//    DBusMessageWriter& operator<<(const Variant& v);
-//    DBusMessageWriter& operator<<(const std::vector<std::vector<Variant> >& v);
+
 #endif

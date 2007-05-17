@@ -20,21 +20,8 @@
 #ifndef XESAMLIVESEARCHINTERFACE_H
 #define XESAMLIVESEARCHINTERFACE_H
 
-#include <string>
-#include <vector>
+#include "variant.h"
 #include <map>
-
-/**
- * Simple inefficient implementation of a variant type as needed by xesam
- **/
-class Variant {
-private:
-    bool b_value;
-    int32_t i_value;
-    std::string s_value;
-    std::vector<std::string> ss_value;
-public:
-};
 
 class XesamLiveSearchInterface {
 private:

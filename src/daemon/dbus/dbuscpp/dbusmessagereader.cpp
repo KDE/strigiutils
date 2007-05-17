@@ -31,7 +31,8 @@ DBusMessageReader::DBusMessageReader(DBusMessage* m) :msg(m), ok(true) {
 DBusMessageReader&
 DBusMessageReader::operator>>(dbus_uint32_t& s) {
     if (!isOk()) return *this;
-    if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&it)) {
+    if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&it)
+            && DBUS_TYPE_BOOLEAN != dbus_message_iter_get_arg_type(&it)) {
         close();
         return *this;
     }
@@ -40,15 +41,15 @@ DBusMessageReader::operator>>(dbus_uint32_t& s) {
     return *this;
 }
 DBusMessageReader&
-operator>>(DBusMessageReader& r, int32_t& s) {
-    if (!r.isOk()) return r;
-    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&r.it)) {
-        r.close();
-        return r;
+DBusMessageReader::operator>>(int32_t& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&it)) {
+        close();
+        return *this;
     }
-    dbus_message_iter_get_basic(&r.it, &s);
-    dbus_message_iter_next(&r.it);
-    return r;
+    dbus_message_iter_get_basic(&it, &s);
+    dbus_message_iter_next(&it);
+    return *this;
 }
 DBusMessageReader&
 DBusMessageReader::operator>>(dbus_uint64_t& s) {
