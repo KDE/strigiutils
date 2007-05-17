@@ -21,6 +21,7 @@
 #define DBUSHANDLER_H
 
 #include <vector>
+#include <map>
 #include <dbus/dbus.h>
 
 class DBusObjectInterface;
@@ -28,11 +29,11 @@ class DBusHandler {
 private:
     int quitpipe[2];
     DBusConnection* conn;
-    std::vector<DBusObjectInterface*> interfaces;
+    std::map<std::string, std::vector<DBusObjectInterface*> > interfaces;
 public:
     DBusHandler();
-    void addInterface(DBusObjectInterface*i) {
-        interfaces.push_back(i);
+    void addInterface(const std::string& objectname, DBusObjectInterface* i) {
+        interfaces[objectname].push_back(i);
     }
     DBusConnection* connection() const { return conn; }
     bool handle();

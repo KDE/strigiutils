@@ -30,10 +30,15 @@ using namespace std;
 
 DBusServer::DBusServer(ClientInterface* iface)
         :StrigiThread("DBusServer"), handler(new DBusHandler()) {
-    interface = new DBusClientInterface("", handler->connection(), iface);
-    handler->addInterface(interface->interface());
-    xesam = new DBusXesamLiveSearchInterface("", handler->connection());
-    handler->addInterface(xesam->interface());
+    // add strigi interface
+    interface = new DBusClientInterface("/search",
+        handler->connection(), iface);
+    handler->addInterface("/search", interface->interface());
+    // add xesam interface
+    xesam = new DBusXesamLiveSearchInterface(
+        "/org/freedesktop/xesam/searcher/main", handler->connection());
+    handler->addInterface("/org/freedesktop/xesam/searcher/main",
+        xesam->interface());
 }
 DBusServer::~DBusServer() {
     delete handler;

@@ -60,11 +60,6 @@ DBusHandler::handle() {
     // initialise the error
     dbus_error_init(&err);
 
-    if (NULL == conn) {
-        fprintf(stderr, "Connection Null\n");
-        return false;
-    }
-
     // request our name on the bus and check for errors
     ret = dbus_bus_request_name(conn, "vandenoever.strigi",
         DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
@@ -77,14 +72,18 @@ DBusHandler::handle() {
         return false;
     }
 
-    // register the introspection interface
-    DBusObjectCallHandler callhandler("/search");
-    callhandler.registerOnConnection(conn);
-
-    for (vector<DBusObjectInterface*>::iterator i = interfaces.begin();
-            i != interfaces.end(); ++i) {
-        callhandler.addInterface(*i);
-        cerr << (*i)->getIntrospectionXML().c_str() << endl;
+    // register the interfaces
+    vector<DBusObjectCallHandler*> callhandlers;
+    map<string, vector<DBusObjectInterface*> >::const_iterator i;
+    for (i = interfaces.begin(); i != interfaces.end(); ++i) {
+        DBusObjectCallHandler* ch = new DBusObjectCallHandler(i->first);
+        ch->registerOnConnection(conn);
+        for (vector<DBusObjectInterface*>::const_iterator j = i->second.begin();
+                j != i->second.end(); ++j) {
+            ch->addInterface(*j);
+            //cerr << (*j)->getIntrospectionXML().c_str() << endl;
+        }
+        callhandlers.push_back(ch);
     }
 
     int fd;
@@ -114,11 +113,16 @@ DBusHandler::handle() {
         dbus_connection_flush(conn);
     }
 
+    for (vector<DBusObjectCallHandler*>::const_iterator i=callhandlers.begin();
+            i != callhandlers.end(); ++i) {
+        delete *i;
+    }
+
     // close the connection
     // these lines are commented out because they crash with dbus 0.61
     // dbus_connection_unref(conn);
-    // dbus_connection_unref(conn);
-    // dbus_shutdown();
+    dbus_connection_unref(conn);
+    dbus_shutdown();
     //
     return true;
 }
