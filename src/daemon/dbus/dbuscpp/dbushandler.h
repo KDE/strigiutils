@@ -31,8 +31,12 @@ private:
     int quitpipe[2];
     DBusConnection* conn;
     std::map<std::string, std::vector<DBusObjectInterface*> > interfaces;
+    std::vector<std::string> busnames;
 public:
     DBusHandler();
+    void addBusName(const std::string& busname) {
+        busnames.push_back(busname);
+    }
     void addInterface(const std::string& objectname, DBusObjectInterface* i) {
         interfaces[objectname].push_back(i);
     }

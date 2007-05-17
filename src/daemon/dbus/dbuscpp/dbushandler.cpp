@@ -61,15 +61,17 @@ DBusHandler::handle() {
     dbus_error_init(&err);
 
     // request our name on the bus and check for errors
-    ret = dbus_bus_request_name(conn, "vandenoever.strigi",
-        DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
-    if (dbus_error_is_set(&err)) {
-        fprintf(stderr, "Name Error (%s)\n", err.message);
-        dbus_error_free(&err);
-    }
-    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
-        fprintf(stderr, "Not Primary Owner (%d)\n", ret);
-        return false;
+    for (vector<string>::const_iterator i = busnames.begin();
+            i != busnames.end(); ++i) {
+        ret = dbus_bus_request_name(conn, i->c_str(),
+            DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
+        if (dbus_error_is_set(&err)) {
+            fprintf(stderr, "Name Error (%s)\n", err.message);
+            dbus_error_free(&err);
+        }
+        if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
+            fprintf(stderr, "Not Primary Owner of %s (%d)\n", ret);
+        }
     }
 
     // register the interfaces

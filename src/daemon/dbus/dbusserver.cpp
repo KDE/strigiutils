@@ -30,6 +30,8 @@ using namespace std;
 
 DBusServer::DBusServer(ClientInterface* iface, XesamLiveSearchInterface* x)
         :StrigiThread("DBusServer"), handler(new DBusHandler()) {
+    handler->addBusName("vandenoever.strigi");
+    handler->addBusName("org.freedesktop.xesam.searcher");
     // add strigi interface
     interface = new DBusClientInterface("/search",
         handler->connection(), iface);
