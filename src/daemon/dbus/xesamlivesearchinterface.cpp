@@ -26,6 +26,11 @@ string
 XesamLiveSearchInterface::NewSession() {
     return "not implemented";
 }
+Variant
+XesamLiveSearchInterface::SetProperty(const std::string& session,
+        const std::string& prop, const Variant& v) {
+    return v;
+}
 void
 XesamLiveSearchInterface::CloseSession(const string& session) {
 }
@@ -37,8 +42,15 @@ int32_t
 XesamLiveSearchInterface::CountHits(const string& search) {
     return -1;
 }
-//    vector<vector<Variant> > GetHits(const string& search, int32_t num); 
-//    vector<vector<Variant> > GetHitData(const string& search, const vector<int32_t>& hit_ids, const vector<string>& properties);
+vector<vector<Variant> >
+XesamLiveSearchInterface::GetHits(const string& search, int32_t num) {
+    return vector<vector<Variant> >();
+}
+vector<vector<Variant> >
+XesamLiveSearchInterface::GetHitData(const string& search,
+        const vector<int32_t>& hit_ids, const vector<string>& properties) {
+    return vector<vector<Variant> >();
+}
 void
 XesamLiveSearchInterface::CloseSearch(const string& search) {
 }

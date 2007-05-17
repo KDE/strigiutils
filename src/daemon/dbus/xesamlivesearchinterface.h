@@ -24,19 +24,33 @@
 #include <vector>
 #include <map>
 
+/**
+ * Simple inefficient implementation of a variant type as needed by xesam
+ **/
 class Variant {
+private:
+    bool b_value;
+    int32_t i_value;
+    std::string s_value;
+    std::vector<std::string> ss_value;
+public:
 };
 
 class XesamLiveSearchInterface {
 public:
     XesamLiveSearchInterface() {}
     std::string NewSession();
-//    Variant SetProperty(const std::string& session, const std::string& prop, const Variant& v);
+    Variant SetProperty(const std::string& session, const std::string& prop,
+        const Variant& v);
     void CloseSession(const std::string& session);
-    std::string NewSearch(const std::string& session, const std::string& query_xml);
+    std::string NewSearch(const std::string& session,
+        const std::string& query_xml);
     int32_t CountHits(const std::string& search);
-//    std::vector<std::vector<Variant> > GetHits(const std::string& search, int32_t num); 
-//    std::vector<std::vector<Variant> > GetHitData(const std::string& search, const std::vector<int32_t>& hit_ids, const std::vector<std::string>& properties);
+    std::vector<std::vector<Variant> > GetHits(const std::string& search,
+        int32_t num); 
+    std::vector<std::vector<Variant> > GetHitData(const std::string& search,
+        const std::vector<int32_t>& hit_ids,
+        const std::vector<std::string>& properties);
     void CloseSearch(const std::string& search);
     std::vector<std::string> GetState();
 

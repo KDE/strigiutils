@@ -61,7 +61,8 @@ CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/dbus/testinterface.h"
         "testinterface" "vandenoever.strigi" "")
 CreateDBusBinding(
         "${strigi_SOURCE_DIR}/src/daemon/dbus/xesamlivesearchinterface.h"
-        "xesamlivesearchinterface" "org.freedesktop.xesam.search" "")
+        "xesamlivesearchinterface" "org.freedesktop.xesam.search"
+        "${strigi_SOURCE_DIR}/src/daemon/dbus/dbusserialization.h")
 
 add_library(dbusserver testinterface.cpp dbusserver.cpp
     dbusserialization.cpp xesamlivesearchinterface.cpp

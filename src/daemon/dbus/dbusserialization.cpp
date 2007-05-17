@@ -60,3 +60,15 @@ operator<<(DBusMessageWriter& w,
     dbus_message_iter_close_container(&w.it, &sub);
     return w;
 }
+
+DBusMessageWriter&
+operator<<(DBusMessageWriter& w, const Variant& v) {
+    return w;
+}
+DBusMessageWriter&
+operator<<(DBusMessageWriter& w, const vector<vector<Variant> >& v) {
+    return w;
+}
+DBusMessageReader&
+operator>>(DBusMessageReader& r, const Variant& v) {
+}
