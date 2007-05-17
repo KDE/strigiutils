@@ -20,6 +20,7 @@
 #ifndef DBUSHANDLER_H
 #define DBUSHANDLER_H
 
+#define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <vector>
 #include <map>
 #include <dbus/dbus.h>

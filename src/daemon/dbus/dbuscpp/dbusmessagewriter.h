@@ -19,7 +19,7 @@
  */
 #ifndef DBUSMESSAGEWRITER_H
 #define DBUSMESSAGEWRITER_H
-
+#define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <string>
 #include <set>
 #include <map>
