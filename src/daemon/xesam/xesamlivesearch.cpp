@@ -56,7 +56,10 @@ XesamLiveSearch::CloseSearch(const string& search) {
 }
 vector<string>
 XesamLiveSearch::GetState() {
-    return vector<string>();
+    cerr << "XesamLiveSearch::GetState()" << endl;
+    vector<string> state;
+    state.push_back("IDLE");
+    return state;
 }
 void
 XesamLiveSearch::HitsAdded(const std::string& search, const int32_t count) {

@@ -42,36 +42,37 @@ private:
 public:
     XesamLiveSearchInterface(XesamLiveSearchInterface* x) :iface(x) {}
     virtual ~XesamLiveSearchInterface() {}
-    std::string NewSession() {
+    virtual std::string NewSession() {
         return iface->NewSession();
     }
-    Variant SetProperty(const std::string& session, const std::string& prop,
-        const Variant& v) {
+    virtual Variant SetProperty(const std::string& session,
+            const std::string& prop, const Variant& v) {
         return iface->SetProperty(session, prop, v);
     }
-    void CloseSession(const std::string& session) {
+    virtual void CloseSession(const std::string& session) {
         iface->CloseSession(session);
     }
-    std::string NewSearch(const std::string& session,
+    virtual std::string NewSearch(const std::string& session,
             const std::string& query_xml) {
         return iface->NewSearch(session, query_xml);
     }
-    int32_t CountHits(const std::string& search) {
+    virtual int32_t CountHits(const std::string& search) {
         return iface->CountHits(search);
     }
-    std::vector<std::vector<Variant> > GetHits(const std::string& search,
-            int32_t num) {
+    virtual std::vector<std::vector<Variant> > GetHits(
+            const std::string& search, int32_t num) {
         return iface->GetHits(search, num);
     }
-    std::vector<std::vector<Variant> > GetHitData(const std::string& search,
+    virtual std::vector<std::vector<Variant> > GetHitData(
+            const std::string& search,
             const std::vector<int32_t>& hit_ids,
             const std::vector<std::string>& properties) {
         return iface->GetHitData(search, hit_ids, properties);
     }
-    void CloseSearch(const std::string& search) {
+    virtual void CloseSearch(const std::string& search) {
         return iface->CloseSearch(search);
     }
-    std::vector<std::string> GetState() {
+    virtual std::vector<std::string> GetState() {
         return iface->GetState();
     }
 
