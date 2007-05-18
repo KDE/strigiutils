@@ -91,11 +91,10 @@ IndexScheduler::run(void*) {
 void
 IndexScheduler::index() {
     Strigi::IndexWriter* writer = indexmanager->indexWriter();
-    DirAnalyzer* analyzer = new DirAnalyzer(*indexmanager,
-        *m_indexerconfiguration);
+    DirAnalyzer analyzer(*indexmanager, *m_indexerconfiguration);
     vector<std::string> dirs;
     copy(dirstoindex.begin(), dirstoindex.end(), back_inserter(dirs));
-    analyzer->updateDirs(dirs, 2, this);
+    analyzer.updateDirs(dirs, 2, this);
 
     writer->commit();
     if (getState() == Working) {
