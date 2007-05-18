@@ -19,49 +19,111 @@
  */
 
 #include "xesamlivesearch.h"
+#include "xesamsession.h"
+#include "xesamsearch.h"
+#include "xesamquery.h"
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
+class XesamLiveSearch::Private {
+public:
+    XesamLiveSearch& xesam;
+    map<string, XesamSession*> sessions;
+    map<string, XesamSearch*> searches;
+
+    Private(XesamLiveSearch& x) :xesam(x) {}
+    ~Private();
+};
+XesamLiveSearch::Private::~Private() {
+    // delete all remaining session
+    for (map<string, XesamSession*>::const_iterator i = sessions.begin();
+            i != sessions.end(); ++i) {
+        delete i->second;
+    }
+}
+XesamLiveSearch::XesamLiveSearch() :XesamLiveSearchInterface(this),
+         p(new Private(*this)) {}
+XesamLiveSearch::~XesamLiveSearch() {
+    delete p;
+}
 string
 XesamLiveSearch::NewSession() {
-    return "not implemented";
+    string name("XXXXXX");
+    mkstemp((char*)name.c_str());
+    XesamSession* session = new XesamSession(*this);
+    p->sessions.insert(make_pair(name, session));
+    return name;
 }
 Variant
 XesamLiveSearch::SetProperty(const std::string& session,
         const std::string& prop, const Variant& v) {
-    cerr << "SetProperty " << v.s() << endl;
-    return v;
+    Variant out;
+    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    if (i != p->sessions.end()) {
+        out = i->second->setProperty(prop, v);
+    }
+    return out;
+}
+Variant
+XesamLiveSearch::GetProperty(const std::string& session,
+        const std::string& prop) {
+    Variant out;
+    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    if (i != p->sessions.end()) {
+        out = i->second->getProperty(prop);
+    }
+    return out;
 }
 void
 XesamLiveSearch::CloseSession(const string& session) {
+    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    if (i != p->sessions.end()) {
+        delete i->second;
+        p->sessions.erase(i->first);
+    }
 }
 string
 XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
-    return "not implemented";
+    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    string name;
+    if (i != p->sessions.end()) {
+        name = i->second->newSearch(query_xml);
+    }
+    return name;
 }
 int32_t
 XesamLiveSearch::CountHits(const string& search) {
-    return -1;
+    int32_t count = 0;
+    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    if (i != p->searches.end()) {
+        count = i->second->countHits();
+    }
+    return count;
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHits(const string& search, int32_t num) {
-    vector<vector<Variant> > hits;
-    for (int i=0; i<3; ++i) {
-        vector<Variant> v;
-        for (int j=0; j<3; ++j) {
-            v.push_back(j);
-        }
-        hits.push_back(v);
+    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    if (i != p->searches.end()) {
+        return i->second->getHits(num);
     }
-    return hits;
+    return vector<vector<Variant> >();
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHitData(const string& search,
         const vector<int32_t>& hit_ids, const vector<string>& properties) {
+    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    if (i != p->searches.end()) {
+        return i->second->getHitData(hit_ids, properties);
+    }
     return vector<vector<Variant> >();
 }
 void
 XesamLiveSearch::CloseSearch(const string& search) {
+    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    if (i != p->searches.end()) {
+        i->second->session.closeSearch(i->second); 
+    }
 }
 vector<string>
 XesamLiveSearch::GetState() {
@@ -92,4 +154,12 @@ XesamLiveSearch::HitsModified(const std::string& search,
             i != ifaces.end(); ++i) {
         (*i)->HitsModified(search, hit_ids);
     }
+}
+void
+XesamLiveSearch::addSearch(const std::string& name, XesamSearch* search) {
+    p->searches.insert(make_pair(name, search));
+}
+void
+XesamLiveSearch::removeSearch(const std::string& name) {
+    p->searches.erase(name);
 }

@@ -20,6 +20,7 @@ public:
     Variant() :i_value(0), vartype(b_val) {}
     Variant(bool v) { *this = v; }
     Variant(int32_t v) { *this = v; }
+    Variant(const char* v) { *this = std::string(v); }
     Variant(const std::string& v) { *this = v; }
     Variant(const std::vector<std::string>& v) { *this = v; }
     Variant(const Variant& v) { *this = v; }
@@ -34,8 +35,13 @@ public:
         vartype = i_val;
         return *this;
     } 
+    const Variant& operator=(const char* v) {
+        s_value.assign(v);
+        vartype = s_val;
+        return *this;
+    }
     const Variant& operator=(const std::string& v) {
-        s_value = v;
+        s_value.assign(v);
         vartype = s_val;
         return *this;
     }

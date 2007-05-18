@@ -36,6 +36,10 @@ public:
             const std::string& prop, const Variant& v) {
         return iface->SetProperty(session, prop, v);
     }
+    virtual Variant GetProperty(const std::string& session,
+            const std::string& prop) {
+        return iface->GetProperty(session, prop);
+    }
     virtual void CloseSession(const std::string& session) {
         iface->CloseSession(session);
     }

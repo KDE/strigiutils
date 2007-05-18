@@ -1,3 +1,4 @@
 include_directories(..)
 
-add_library(xesam xesamlivesearchinterface.cpp xesamlivesearch.cpp)
+add_library(xesam xesamlivesearchinterface.cpp xesamlivesearch.cpp
+	xesamsession.cpp xesamsearch.cpp)

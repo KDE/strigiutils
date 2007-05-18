@@ -22,12 +22,15 @@
 
 #include "xesamlivesearchinterface.h"
 
+class XesamSearch;
 class XesamLiveSearch : public XesamLiveSearchInterface {
 private:
     std::vector<XesamLiveSearchInterface*> ifaces;
+    class Private;
+    Private* const p;
 public:
-    XesamLiveSearch() :XesamLiveSearchInterface(this) {}
-    virtual ~XesamLiveSearch() {}
+    XesamLiveSearch();
+    ~XesamLiveSearch();
 
     void addInterface(XesamLiveSearchInterface* i) {
         ifaces.push_back(i);
@@ -36,6 +39,7 @@ public:
     std::string NewSession();
     Variant SetProperty(const std::string& session, const std::string& prop,
         const Variant& v);
+    Variant GetProperty(const std::string& session, const std::string& prop);
     void CloseSession(const std::string& session);
     std::string NewSearch(const std::string& session,
             const std::string& query_xml);
@@ -53,6 +57,10 @@ public:
         const std::vector<int32_t>& hit_ids);
     void HitsModified(const std::string& search,
         const std::vector<int32_t>& hit_ids);
+
+    // internal
+    void addSearch(const std::string&, XesamSearch*);
+    void removeSearch(const std::string&);
 };
 
 #endif
