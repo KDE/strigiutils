@@ -45,6 +45,7 @@ docdump(Document* doc) {
     while (f) {
         f = e->nextElement();
     }
+    delete e;
 }
 std::string
 t2a(const TCHAR* t) {
