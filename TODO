@@ -33,6 +33,7 @@
 - support for more archive types like http://www.kde-apps.org/content/show.php/PeaZip?content=52805
 - add support for IPTC, see http://nets.ii.uam.es/neptuno/iptc/
 - think about supporting very large files with nested files, such as 1 gb mailbox files
+- only index volumes if they are mounted and do not remove the files from the index if they are not mounted
 
 - set the lib version numbers to 0.0.0 until we stabilize the api
 - delete deprecated headers (those that currently cause #errors)
