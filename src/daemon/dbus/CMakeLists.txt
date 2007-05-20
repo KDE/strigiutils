@@ -79,4 +79,9 @@ target_link_libraries(testserver dbusserver ${CMAKE_THREAD_LIBS_INIT} ${test_LIB
 #add_executable(dbustest dbustest.cpp)
 #target_link_libraries(dbustest ${DBUS_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS})
 
+configure_file(vandenoever.strigi.service.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/vandenoever.strigi.service)
+configure_file(org.freedesktop.xesam.searcher.service.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/org.freedesktop.xesam.searcher.service)
 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/vandenoever.strigi.service ${CMAKE_CURRENT_BINARY_DIR}/org.freedesktop.xesam.searcher.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services )
