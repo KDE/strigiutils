@@ -25,11 +25,13 @@
 #include "diranalyzer.h"
 #include "strigiconfig.h"
 #include "query.h"
+#include "queryparser.h"
 #include <algorithm>
+#include <string>
+#include <set>
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
-#include <string>
 #include <time.h>
 #include "stgdirent.h" //dirent replacement (includes native if available)
 
@@ -325,8 +327,8 @@ get(int argc, char** argv) {
     for (vector<string>::iterator iter = dirs.begin();
          iter != dirs.end(); iter++)
     {
-        Query query = parser.buildQuery( "system.location:'"+ *iter + "'", 10, 0);
-        vector<IndexedDocument> matches = reader->query( query);
+        Query query = parser.buildQuery( "system.location:'"+ *iter + "'");
+        vector<IndexedDocument> matches = reader->query(query, 0, 10);
         if (matches.size() == 0)
             printf ("%s: is not indexed\n", iter->c_str());
         else

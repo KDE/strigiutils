@@ -34,7 +34,8 @@ public:
     GrepIndexReader(const std::string& dir);
     ~GrepIndexReader();
     int32_t countHits(const Strigi::Query& query);
-    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&, int offset,
+        int max);
     std::map<std::string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();

@@ -25,6 +25,7 @@
 #include "indexmanager.h"
 #include "analyzerconfiguration.h"
 #include "query.h"
+#include "queryparser.h"
 #include "strigi_thread.h"
 #include <sstream>
 #include <iostream>
@@ -128,7 +129,7 @@ IndexManagerTester::testNumberQuery() {
         return;
     }
     QueryParser parser;
-    Query q = parser.buildQuery(FieldRegister::sizeFieldName+":>0", -1, 0);
+    Query q = parser.buildQuery(FieldRegister::sizeFieldName+":>0");
     int count = reader->countHits(q);
     if (count != m) fprintf(stderr, "%i != %i\n", count, m);
     VERIFY(count == m);

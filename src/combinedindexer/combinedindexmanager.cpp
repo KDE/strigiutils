@@ -39,6 +39,7 @@
 #include "indexeddocument.h"
 #include "indexreader.h"
 #include <string>
+#include <set>
 #include <map>
 using namespace std;
 using namespace Strigi;
@@ -79,7 +80,7 @@ private:
 public:
     CombinedIndexReader(CombinedIndexManager* manager) :m(manager){}
     int32_t countHits(const Query& query);
-    vector<IndexedDocument> query(const Query& q);
+    vector<IndexedDocument> query(const Query& q, int offset, int max);
     map<string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();
@@ -173,16 +174,16 @@ CombinedIndexReader::countHits(const Query& query) {
     return c;
 }
 vector<IndexedDocument>
-CombinedIndexReader::query(const Query& q) {
+CombinedIndexReader::query(const Query& q, int offset, int max) {
     /** TODO merge the result documents by score **/
     vector<IndexedDocument> v = m->p->writermanager->indexReader()
-        ->query(q);
+        ->query(q, offset, max);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        v = i->second->indexReader()->query(q);
+        v = i->second->indexReader()->query(q, offset, max);
     }
     return v;
 }

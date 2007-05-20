@@ -1,255 +1,188 @@
-/* This file is part of Strigi Desktop Search
- *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; see the file COPYING.LIB.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- */
-#include "strigiconfig.h"
 #include "query.h"
-#include "indexreader.h"
-#include <ctype.h>
 using namespace std;
 using namespace Strigi;
 
-Query::Query() {
+class Strigi::TermPrivate {
+public:
+    int64_t i_value;     // value for Integer, Date and Boolean
+    double d_value;      // value for Float
+    std::string s_value; // value for String
+
+    // flags for String terms (ordered by size)
+    std::string language;
+    float fuzzy;
+    int slack;
+    int proximityDistance;
+    Term::Type type;
+    bool phrase;
+    bool caseSensitive;
+    bool diacriticSensitive;
+    bool ordered;
+    bool enableStemming;
+    bool wordbased;
+};
+class Strigi::QueryPrivate {
+public:
+    // Selection fields
+    Term term;
+    Term termTwo; // needed for Proximity
+    std::vector<std::string> fields;
+    // Collectible fields
+    std::vector<Query> subs;
+    // Shared fields
+    float boost;
+    bool negate;
+    // Type
+    Query::Type type;
+
+    QueryPrivate() :boost(1), negate(false), type(Query::Contains) {}
+};
+
+Term::Term() :p(new TermPrivate()) {
 }
-/**
- * The constructor parses the query in include and exclude statements.
- * The following lines contain example queries.
- * hi
- * 'hi'
- * hi Jos
- * 'hi Jos'
- * "hi Jos"
- * -hi Jos
- * path:"hi Jos"
- * -path:"hi Jos"
- * So the syntax is something like this:
- * query ::= [term]*
- * term ::= [-][prefix]:("searchphrase"|searchphrase)
- **/
-Query::Query(int max, int offset) {
-    m_max = max;
-    m_offset = offset;
+Term::Term(const Term& t) :p(new TermPrivate(*t.p)) {
 }
-QueryParser::QueryParser() {
-    m_defaultFields.push_back("content");
-    m_defaultFields.push_back("artist");
-    m_defaultFields.push_back("filename");
-    m_defaultFields.push_back("album");
-    m_defaultFields.push_back("title");
+Term::~Term() {
+    delete p;
 }
-Query
-QueryParser::buildQuery(const string& querystring, int32_t max, int32_t offset){
-    const char* q = querystring.c_str();
-    const char* end = q + querystring.length();
-    const char* p = q;
-    Query query(max, offset);
-    Query term;
-    Query lastterm;
-    bool hadOr = false;
-    while (p < end) {
-        term.clear();
-        p = parseQuery(p, term);
-        if (term.m_expression == "OR") {
-            hadOr = true;
-            Query q;
-            addQuery(q, lastterm);
-        } else {
-            addQuery(query, lastterm);
-            lastterm = term;
-        }
-    }
-    addQuery(query, lastterm);
-    return query;
-}/*
+void
+Term::operator=(const Term& t) {
+    *p = *t.p;
+}
+int
+Term::proximityDistance() const {
+    return p->proximityDistance;
+}
+void
+Term::setProximityDistance(int d) {
+    p->proximityDistance = d;
+}
 bool
-operator<(const Query&a,const Query&b) {
-    return &a < &b;
-}*/
-void
-QueryParser::addQuery(Query& query, const Query& subquery) const {
-    // if the subquery is empty, do not add it
-    if (subquery.m_terms.size() == 0 && subquery.m_expression.size() == 0) return;
-    // if the subquery has no field name, use the default field names
-    if (subquery.m_expression.size() > 0 && subquery.m_fieldname.size() == 0
-            && m_defaultFields.size() > 0) {
-        if (m_defaultFields.size() == 1) {
-            Query sq = subquery;
-            sq.m_fieldname = *m_defaultFields.begin();
-            query.m_terms.push_back(sq);
-        } else {
-            list<string>::const_iterator i;
-            Query orQuery;
-            orQuery.m_occurrence = subquery.m_occurrence;
-            for (i = m_defaultFields.begin(); i != m_defaultFields.end(); ++i) {
-                Query sub;
-                sub.m_fieldname = *i;
-                sub.m_expression = subquery.m_expression;
-                sub.m_occurrence = Query::SHOULD;
-                orQuery.m_terms.push_back(sub);
-             }
-             query.m_terms.push_back(orQuery);
-        }
-    } else {
-        query.m_terms.push_back(subquery);
-    }
-}
-const char*
-QueryParser::parseQuery(const char* s, Query& parsedterm) const {
-    bool include = true;
-    const char* p = s;
-    // skip whitespace
-    while (*p != '\0' && isspace(*p)) p++;
-    if (*p == '\0') return p;
-
-    // check for a - sign
-    if (*p == '-') {
-        include = false;
-        p++;
-    }
-    // skip whitespace
-    while (*p != '\0' && isspace(*p)) p++;
-    if (*p == '\0') return p;
-
-    char quote = 0;
-    if (*p == '\'' || *p == '"') {
-        quote = *p++;
-        if (*p == '\0') return p;
-    }
-    const char* prefix = 0;
-    const char* prefend = 0;
-    const char* term = p;
-    // skip until end of string or closing quote or colon or whitespace
-    while (*p != '\0' && ((quote == 0 && !isspace(*p))
-            || (quote != 0 && *p != quote))) {
-        if (quote == 0 && *p == ':') {
-            // define the prefix
-            prefix = term;
-            prefend = p;
-            ++p;
-            if (*p == '\0') return p;
-            if (*p == '\'' || *p == '"') {
-                quote = *p++;
-                if (*p == '\0') return p;
-            }
-            term = p;
-        }
-        ++p;
-    }
-    if (*term == '\0') return term;
-    if (p - term > 0) {
-        parsedterm.m_occurrence = (include) ?Query::MUST :Query::MUST_NOT;
-        if (prefix != 0 && term - prefix > 1) {
-            parsedterm.m_fieldname = string(prefix, prefend-prefix);
-        }
-        parsedterm.m_expression = string(term, p-term);
-    }
-    // skip the terminating character
-    if (*p != '\0') p++;
-    return p;
-}
-
-void
-replaceall(string& text, const string& a, const string& b) {
-    size_t pos = 0;
-    pos = text.find(a);
-    while (pos != string::npos) {
-        text.replace(pos, a.length(), "&lt;");
-        pos = text.find('<');
-    }
+Term::caseSensitive() const {
+    return p->caseSensitive;
 }
 void
-Query::clear() {
-    m_terms.clear();
-    m_occurrence = MUST;
-    m_fieldname = m_expression = "";
+Term::setCaseSensitive(bool b) {
+    p->caseSensitive = b;
 }
-string
-Query::highlight(const string& text) const {
-    return text;
-    int pre = 5, post = 5, maxlen = 100;
-    string t = text;
-    replaceall(t, "<", "&lt;");
-    replaceall(t, ">", "&gt;");
-    string lt = t;
-    for (unsigned i=0; i<t.length(); ++i) {
-        lt[i] = tolower(lt[i]);
-    }
-    vector<string> re;
-    list<Query>::const_iterator i;
-    for (i = m_terms.begin(); i != m_terms.end(); ++i) {
-        if (i->m_occurrence != MUST_NOT) {
-            string s = i->m_expression;
-            for (unsigned k = 0; k < s.length(); ++k) {
-                s[k] = tolower(s[k]);
-            }
-            re.push_back(s);
-        }
-    }
-    string out;
-    int pos = 0;
-    string::size_type last1 = string::npos;
-    //int last2 = string::npos;
-    //int last3 = string::npos;
-    string::size_type last4 = string::npos;
-    vector<string>::const_iterator k;
-    while (pos >= 0 && (int)(out.length()+last1-last4) < maxlen) {
-        string::size_type rep = string::npos;
-        int len;
-        for (k = re.begin(); k != re.end(); ++k) {
-            unsigned p = lt.find(*k, pos);
-            if (p > 0 && (rep == string::npos || p < rep)) {
-                rep = p;
-                len = k->length();
-            }
-        }
-        if (rep != string::npos) {
-            string::size_type p1 = t.find(" ", rep-pre);
-            if (p1 == string::npos) p1 = rep-pre;
-            string::size_type p4 = t.find(" ", rep+len+post);
-            if (p4 == string::npos) p4 = t.length();
-            out += t.substr(p1, rep-p1);
-            out += "<b>";
-            out += t.substr(rep, len);
-            out += "</b>";
-            out += t.substr(rep+len, p4-(rep+len));
-            out += " ... ";
-            /* if (lasts == string::npos) {
-                lasts = s;
-            } else if (s > laste) {
-                if (out.length() == 0 && lasts > 0) out += "... ";
-                out += t.substr(lasts, laste - lasts) + " ... ";
-                lasts = s;
-            }
-            laste = e;*/
-            pos = rep+1;
-        } else {
-            pos = rep;
-        }
-    }
-   /* if (lasts != string::npos) {
-        if (out.length() == 0 && lasts > 0) out += "... ";
-        out += t.substr(lasts, laste - lasts) + " ... ";
-    }
-    for (k = re.begin(); k != re.end(); ++k) {
-        replaceall(out, *k, "<b>great</b>");
-    }*/
-    if (out.length() == 0) {
-        out = t.substr(0, 100);
-    }
-    return out;
+bool
+Term::diacriticSensitive() const {
+    return p->diacriticSensitive;
+}
+void
+Term::setDiacriticSensitive(bool b) {
+    p->diacriticSensitive = b;
+}
+bool
+Term::stemming() const {
+    return p->enableStemming;
+}
+void
+Term::setStemming(bool b) {
+    p->enableStemming = b;
+}
+float
+Term::fuzzy() const {
+    return p->fuzzy;
+}
+void
+Term::setFuzzy(float f) {
+    p->fuzzy = f;
+}
+int
+Term::slack() const {
+    return p->slack;
+}
+void
+Term::setSlack(int s) {
+    p->slack = s;
+}
+bool
+Term::ordered() const {
+    return p->ordered;
+}
+void
+Term::setOrdered(bool b) {
+    p->ordered = b;
+}
+bool
+Term::wordBased() const {
+    return p->wordbased;
+}
+void
+Term::setWordBased(bool b) {
+    p->wordbased = b;
+}
+void
+Term::setValue(const std::string& s) {
+    p->s_value = s;
+    p->type = String;
+}
+void
+Term::setValue(const char* s) {
+    p->s_value.assign(s);
+    p->type = String;
+}
+const string&
+Term::string() const {
+    return p->s_value;
+}
+Query::Query() :p(new QueryPrivate()) {
+}
+Query::Query(const Query& t) :p(new QueryPrivate(*t.p)) {
+}
+Query::~Query() {
+    delete p;
+}
+void
+Query::operator=(const Query& q) {
+    *p = *q.p;
+}
+Term&
+Query::term() {
+    return p->term;
+}
+const Term&
+Query::term() const {
+    return p->term;
+}
+float
+Query::boost() const {
+    return p->boost;
+}
+void
+Query::setBoost(int b) {
+    p->boost = b;
+}
+Query::Type
+Query::type() const {
+    return p->type;
+}
+void
+Query::setType(Type t) {
+    p->type = t;
+}
+bool
+Query::negate() const {
+    return p->negate;
+}
+void
+Query::setNegate(bool n) {
+    p->negate = n;
+}
+const vector<string>&
+Query::fields() const {
+    return p->fields;
+}
+vector<string>&
+Query::fields() {
+    return p->fields;
+}
+const vector<Query>&
+Query::subQueries() const {
+    return p->subs;
+}
+vector<Query>&
+Query::subQueries() {
+    return p->subs;
 }

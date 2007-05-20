@@ -29,6 +29,7 @@
 #include "analyzerconfiguration.h"
 #include "stringstream.h"
 #include "query.h"
+#include "queryparser.h"
 #include <sstream>
 #include <iostream>
 #include <vector>
@@ -49,21 +50,22 @@ Interface::setEventListener (EventListener* eListener) {
 int
 Interface::countHits(const string& query) {
     QueryParser parser;
-    Query q = parser.buildQuery(query, -1, 0);
+    Query q = parser.buildQuery(query);
     int count = manager.indexReader()->countHits(q);
     return count;
 }
 ClientInterface::Hits
 Interface::getHits(const string& query, uint32_t max, uint32_t off) {
     QueryParser parser;
-    Query q = parser.buildQuery(query, max, off);
+    Query q = parser.buildQuery(query);
     Hits hits;
-    hits.hits = manager.indexReader()->query(q);
+    hits.hits = manager.indexReader()->query(q, off, max);
     // highlight the hits in the results
-    vector<IndexedDocument>::iterator i;
+    // TODO fix highlighting
+/*    vector<IndexedDocument>::iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
         i->fragment = q.highlight(i->fragment);
-    }
+    }*/
     return hits;
 }
 vector<string>

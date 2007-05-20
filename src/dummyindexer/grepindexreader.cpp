@@ -93,13 +93,11 @@ GrepIndexReader::~GrepIndexReader() {
 }
 void
 getFields(set<string>& fields, const Query& query) {
-    if (query.expression().length()) {
-        fields.insert(query.fieldName());
-    } else {
-        list<Query>::const_iterator i;
-        for (i = query.terms().begin(); i != query.terms().end(); ++i) {
-            getFields(fields, *i);
-        }
+    copy(query.fields().begin(), query.fields().end(),
+        inserter(fields, fields.begin()));
+    for (vector<Query>::const_iterator i = query.subQueries().begin();
+            i != query.subQueries().end(); ++i) {
+        getFields(fields, *i);
     }
 }
 int32_t
@@ -114,7 +112,7 @@ GrepIndexReader::countHits(const Query& query) {
     return -1;
 }
 vector<IndexedDocument>
-GrepIndexReader::query(const Query&) {
+GrepIndexReader::query(const Query&, int offset, int max) {
     vector<IndexedDocument> hits;
     return hits;
 }

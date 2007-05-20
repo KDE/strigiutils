@@ -24,6 +24,7 @@
 
 #include "strigiconfig.h"
 #include "query.h"
+#include "queryparser.h"
 #include "textutils.h"
 #include <CLucene.h>
 #include "cluceneindexreader.h"
@@ -32,6 +33,7 @@
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
 #include <sstream>
+#include <iostream>
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;
@@ -43,12 +45,13 @@ using lucene::index::TermEnum;
 using lucene::search::TermQuery;
 using lucene::search::WildcardQuery;
 using lucene::search::BooleanQuery;
+using lucene::search::Query;
 using lucene::search::RangeQuery;
 using lucene::search::QueryFilter;
 using lucene::search::HitCollector;
 using lucene::util::BitSet;
 using lucene::document::DocumentFieldEnumeration;
-using namespace Strigi;
+using Strigi::IndexedDocument;
 
 class HitCounter : public HitCollector {
 private:
@@ -61,19 +64,30 @@ public:
 
 class CLuceneIndexReader::Private {
 public:
+    CLuceneIndexReader& reader;
+    Private(CLuceneIndexReader& r) :reader(r) {}
+
     static Term* createTerm(const wchar_t* name, const string& value);
     static Term* createWildCardTerm(const wchar_t* name, const string& value);
-    static BooleanQuery* createBooleanQuery(const Query& query);
+    Query* createQuery(const Strigi::Query& query);
+    Query* createSimpleQuery(const Strigi::Query& query);
+    static Query* createSingleFieldQuery(const string& field,
+        const Strigi::Query& query);
+    Query* createNoFieldQuery(const Strigi::Query& query);
+    Query* createMultiFieldQuery(const Strigi::Query& query);
+    BooleanQuery* createBooleanQuery(const Strigi::Query& query);
     static void addField(lucene::document::Field* field, IndexedDocument&);
 };
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
-    const string& dir) :manager(m), dbdir(dir), otime(0), reader(0) {
+    const string& dir) :manager(m), p(new Private(*this)), dbdir(dir), otime(0),
+        reader(0) {
     openReader();
 }
 
 CLuceneIndexReader::~CLuceneIndexReader() {
     closeReader();
+    delete p;
 }
 void
 CLuceneIndexReader::openReader() {
@@ -177,40 +191,85 @@ CLuceneIndexReader::Private::createTerm(const wchar_t* name,
     return t;
 }
 BooleanQuery*
-CLuceneIndexReader::Private::createBooleanQuery(const Query& query) {
+CLuceneIndexReader::Private::createBooleanQuery(const Strigi::Query& query) {
     BooleanQuery* bq = _CLNEW BooleanQuery();
-    lucene::analysis::standard::StandardAnalyzer a;
-    // add the attributes
-    const list<Query>& terms = query.terms();
-    list<Query>::const_iterator i;
-    set<string>::const_iterator j;
-    for (i = terms.begin(); i != terms.end(); ++i) {
-        lucene::search::Query* tq;
-        if (i->terms().size() > 0) {
-            tq = createBooleanQuery(*i);
-        } else {
-            wstring fieldname = mapId(i->fieldName().c_str());
-            string expr = i->expression();
-            Term* t = 0;
-            if (expr.length() > 0 && expr[0] == '<') {
-                t = createTerm(fieldname.c_str(), expr.substr(1));
-                tq = _CLNEW RangeQuery(0, t, false);
-            } else if (expr.length() > 0 && expr[0] == '>') {
-                t = createTerm(fieldname.c_str(), expr.substr(1));
-                tq = _CLNEW RangeQuery(t, 0, false);
-            } else {
-                if (strpbrk(expr.c_str(), "*?")) {
-                    t = createWildCardTerm(fieldname.c_str(), expr);
-                    tq = _CLNEW WildcardQuery(t);
-                } else {
-                    t = createTerm(fieldname.c_str(), expr);
-                    tq = _CLNEW TermQuery(t);
-                }
-            }
-            if (t) _CLDECDELETE(t);
-        }
-        Query::Occurrence o = i->occurrence();
-        bq->add(tq, true, o == Query::MUST, o == Query::MUST_NOT);
+    bool isAnd = query.type() == Strigi::Query::And;
+    const vector<Strigi::Query>& sub = query.subQueries();
+    for (vector<Strigi::Query>::const_iterator i = sub.begin(); i != sub.end();
+            ++i) {
+        Query* q = createQuery(*i);
+        bq->add(q, true, isAnd, i->negate());
+    }
+    return bq;
+}
+Query*
+CLuceneIndexReader::Private::createQuery(const Strigi::Query& query) {
+    return query.subQueries().size()
+        ? createBooleanQuery(query)
+        : createSimpleQuery(query);
+}
+Query*
+CLuceneIndexReader::Private::createSimpleQuery(const Strigi::Query& query) {
+    switch (query.fields().size()) {
+    case 0:  return createNoFieldQuery(query);
+    case 1:  return createSingleFieldQuery(query.fields()[0], query);
+    default: return createMultiFieldQuery(query);
+    }
+}
+Query*
+CLuceneIndexReader::Private::createSingleFieldQuery(const string& field,
+        const Strigi::Query& query) {
+    wstring fieldname = mapId(field.c_str());
+    Query* q;
+    Term* t;
+    const string& val = query.term().string();
+    switch (query.type()) {
+    case Strigi::Query::LessThan:
+          t = createTerm(fieldname.c_str(), val.c_str());
+          q = _CLNEW RangeQuery(0, t, false);
+          break;
+    case Strigi::Query::LessThanEquals:
+          t = createTerm(fieldname.c_str(), query.term().string());
+          q = _CLNEW RangeQuery(0, t, true);
+          break;
+    case Strigi::Query::GreaterThan:
+          t = createTerm(fieldname.c_str(), query.term().string());
+          q = _CLNEW RangeQuery(t, 0, false);
+          break;
+    case Strigi::Query::GreaterThanEquals:
+          t = createTerm(fieldname.c_str(), query.term().string());
+          q = _CLNEW RangeQuery(t, 0, true);
+          break;
+    default:
+          if (strpbrk(val.c_str(), "*?")) {
+               t = createWildCardTerm(fieldname.c_str(), val);
+               q = _CLNEW WildcardQuery(t);
+          } else {
+               t = createTerm(fieldname.c_str(), val);
+               q = _CLNEW TermQuery(t);
+          }
+    }
+    _CLDECDELETE(t);
+    return q;
+}
+Query*
+CLuceneIndexReader::Private::createMultiFieldQuery(const Strigi::Query& query) {
+    BooleanQuery* bq = _CLNEW BooleanQuery();
+    for (vector<string>::const_iterator i = query.fields().begin();
+            i != query.fields().end(); ++i) {
+        Query* q = createSingleFieldQuery(*i, query);
+        bq->add(q, true, false, false);
+    }
+    return bq;
+}
+Query*
+CLuceneIndexReader::Private::createNoFieldQuery(const Strigi::Query& query) {
+    vector<string> fields = reader.fieldNames();
+    BooleanQuery* bq = _CLNEW BooleanQuery();
+    for (vector<string>::const_iterator i = fields.begin(); i != fields.end();
+            ++i) {
+        Query* q = createSingleFieldQuery(*i, query);
+        bq->add(q, true, false, false);
     }
     return bq;
 }
@@ -239,9 +298,9 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     }
 }
 int32_t
-CLuceneIndexReader::countHits(const Query& q) {
+CLuceneIndexReader::countHits(const Strigi::Query& q) {
     if (!checkReader()) return -1;
-    BooleanQuery* bq = Private::createBooleanQuery(q);
+    Query* bq = p->createQuery(q);
     if (reader == 0) {
         return 0;
     }
@@ -285,12 +344,12 @@ CLuceneIndexReader::countHits(const Query& q) {
     return s;
 }
 vector<IndexedDocument>
-CLuceneIndexReader::query(const Query& q) {
+CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     vector<IndexedDocument> results;
     if (!checkReader()) {
         return results;
     }
-    BooleanQuery* bq = Private::createBooleanQuery(q);
+    Query* bq = p->createQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int s = 0;
@@ -300,9 +359,8 @@ CLuceneIndexReader::query(const Query& q) {
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    int off = q.offset();
     if (off < 0) off = 0;
-    int max = q.max() + off;
+    max += off;
     if (max < 0) max = s;
     if (max > s) max = s;
     results.reserve(max-off);
@@ -491,9 +549,9 @@ CLuceneIndexReader::histogram(const string& query,
     if (!checkReader()) {
         return h;
     }
-    QueryParser parser;
-    Query q = parser.buildQuery(query, 0, 0);
-    BooleanQuery* bq = Private::createBooleanQuery(q);
+    Strigi::QueryParser parser;
+    Strigi::Query q = parser.buildQuery(query);
+    Query* bq = p->createQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int s = 0;

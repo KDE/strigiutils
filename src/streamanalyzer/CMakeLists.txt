@@ -27,6 +27,7 @@ set(streamanalyzer_SRCS
 	odfsaxanalyzer.cpp
 	oggthroughanalyzer.cpp
 	query.cpp
+	queryparser.cpp
 	saxeventanalyzer.cpp
 	sha1.cpp
 	streamanalyzer.cpp

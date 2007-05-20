@@ -25,6 +25,7 @@
 #include "indexwriter.h"
 #include "indexreader.h"
 #include "query.h"
+#include "queryparser.h"
 
 #include <sstream>
 #include <sys/stat.h>
@@ -121,7 +122,7 @@ void IndexManagerTester::testNumberQuery()
     }
     writer->commit();
     Strigi::QueryParser parser;
-    Strigi::Query q = parser.buildQuery("size:>0", -1, 0);
+    Strigi::Query q = parser.buildQuery("size>0");
     int count = reader->countHits(q);
     
     char buff [100];

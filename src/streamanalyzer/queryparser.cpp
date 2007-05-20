@@ -1,9 +1,7 @@
-#include "xesamuserparser.h"
-#include "xesamquery.h"
+#include "queryparser.h"
 #include <iostream>
 using namespace std;
-
-Query query;
+using namespace Strigi;
 
 void 
 setModifier(char c, Query& q) {
@@ -90,27 +88,27 @@ parse(const char* p, Query& q) {
     } else {
         q.term().setValue(string(p, space));
     }
-    return space;
+    return space+1;
 }
 
-void
-XesamUserParser::parse(const std::string& q) {
+Query
+QueryParser::buildQuery(const std::string& q) {
+    Query query;
     query.setType(Query::And);
     query.subQueries().clear();
 
-    int count=0;
     Query sub;
     const char* p = q.c_str();
     const char* pend = p + q.length();
-    p = ::parse(p, sub);
-    while (p < pend && ++count < 10) {
+    while (p < pend) {
+        p = ::parse(p, sub);
         query.subQueries().push_back(sub);
         sub = Query();
-        p = ::parse(p, sub);
-        cerr << (void*)p << " " << count << endl;
     }
     // normalize
     if (query.subQueries().size() == 1) {
-        query = query.subQueries()[0];
+        Query q = query.subQueries()[0];
+        query = q;
     }
+    return query;
 }

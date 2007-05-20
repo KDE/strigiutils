@@ -38,6 +38,7 @@ friend class CLuceneIndexWriter;
 private:
     CLuceneIndexManager* manager;
     class Private;
+    Private* const p;
     int32_t wordcount;
     int32_t doccount;
     const std::string dbdir;
@@ -54,7 +55,8 @@ private:
     friend class CLuceneIndexReader::Private;
 public:
     int32_t countHits(const Strigi::Query&);
-    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&,
+        int off, int max);
     std::map<std::string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();

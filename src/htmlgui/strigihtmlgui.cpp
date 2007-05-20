@@ -21,6 +21,7 @@
 #include "socketclient.h"
 #include "indexreader.h"
 #include "query.h"
+#include "queryparser.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -295,26 +296,30 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         out << "</div>";
     }
 }
-set<string>
-getTerms(const Query& q) {
-    set<string> terms;
-    if (q.occurrence() == Query::MUST_NOT) {
-        return terms;
+void
+getFields(set<string>& fields, const Query& query) {
+    copy(query.fields().begin(), query.fields().end(),
+        inserter(fields, fields.begin()));
+    for (vector<Query>::const_iterator i = query.subQueries().begin();
+            i != query.subQueries().end(); ++i) {
+        getFields(fields, *i);
     }
-    if (q.expression().size() > 0) {
-        terms.insert(q.expression());
+}
+void
+getTerms(set<string>& terms, const Query& q) {
+    if (q.term().string().size() && !q.negate()) {
+        terms.insert(q.term().string());
     }
-    list<Query>::const_iterator j;
-    for (j = q.terms().begin(); j != q.terms().end(); ++j) {
-        set<string> t = getTerms(*j);
-        copy(t.begin(), t.end(), inserter(terms, terms.begin()));
+    for (vector<Query>::const_iterator i = q.subQueries().begin();
+            i != q.subQueries().end(); ++i) {
+        getTerms(terms, *i);
     }
-    return terms;
 }
 string
 StrigiHtmlGui::Private::highlightTerms(const string& t, const Query& q) const {
     vector<string> terms;
-    set<string> termset = getTerms(q);
+    set<string> termset;
+    getTerms(termset, q);
     copy(termset.begin(), termset.end(), back_inserter(terms));
     string out = h->highlight(t, terms);
     return out;
@@ -474,7 +479,7 @@ void
 StrigiHtmlGui::Private::printSearchResults(ostream& out,
         const ClientInterface::Hits& hits, const string& q) const {
     QueryParser parser;
-    Query query = parser.buildQuery(q, 0, 0);
+    Query query = parser.buildQuery(q);
     vector<Strigi::IndexedDocument>::const_iterator i;
     for (i = hits.hits.begin(); i != hits.hits.end(); ++i) {
         printSearchResult(out, *i, query);

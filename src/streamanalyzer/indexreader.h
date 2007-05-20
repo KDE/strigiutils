@@ -52,7 +52,7 @@ public:
      * @return the set of documents that match the query and fall in the range
      *         given in the query object
      **/
-    virtual std::vector<IndexedDocument> query(const Query&) = 0;
+    virtual std::vector<IndexedDocument> query(const Query&, int off, int max) = 0;
     /**
      * Obtain the path and mtime of all files in the index that have a given
      * depth.

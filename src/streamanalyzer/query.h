@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,62 +17,80 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-
-#include <map>
-#include <string>
-#include <set>
-#include <list>
+#ifndef QUERY_H
+#define QUERY_H
 
 #include "strigiconfig.h"
+#include <vector>
+#include <string>
 
 namespace Strigi {
-#undef max
 
-/**
- * Break up a string in a query.
- * Currently very simple. Currently always combines terms with AND.
- **/
-class STREAMANALYZER_EXPORT Query {
-friend class QueryParser;
-public:
-    enum Occurrence { MUST, MUST_NOT, SHOULD };
+/** these classes capture the query capabilities of Xesam **/
+class TermPrivate;
+class STREAMANALYZER_EXPORT Term {
 private:
-    std::string m_fieldname;
-    std::string m_expression;
-    Occurrence m_occurrence;
-    std::list<Query> m_terms;
-    int m_max;
-    int m_offset;
-
-    void clear();
-    Query(int max, int offset);
+    TermPrivate* const p;
 public:
-    Query();
-    int max() const { return m_max; }
-    int offset() const { return m_offset; }
-    const std::string expression() const { return m_expression; }
-    const std::string fieldName() const { return m_fieldname; }
-    const std::list<Query>& terms() const { return m_terms; }
-    Occurrence occurrence() const { return m_occurrence; }
-    std::string highlight(const std::string& text) const;
+    enum Type { String, Integer, Date, Boolean, Float };
+
+    Term();
+    Term(const Term&);
+    ~Term();
+    void operator=(const Term&);
+
+    bool caseSensitive() const;
+    void setCaseSensitive(bool b);
+    bool diacriticSensitive() const;
+    void setDiacriticSensitive(bool b);
+    bool stemming() const;
+    void setStemming(bool b);
+    float fuzzy() const;
+    void setFuzzy(float f);
+    int slack() const;
+    void setSlack(int s);
+    int proximityDistance() const;
+    void setProximityDistance(int d);
+    bool ordered() const;
+    void setOrdered(bool b);
+    bool wordBased() const;
+    void setWordBased(bool b);
+
+    void setValue(const std::string& s);
+    void setValue(const char* s);
+
+    const std::string& string() const;
 };
 
-class STREAMANALYZER_EXPORT QueryParser {
+class QueryPrivate;
+class STREAMANALYZER_EXPORT Query {
 private:
-    std::list<std::string> m_defaultFields;
-    const char* parseQuery(const char*, Query& term) const;
-    void addQuery(Query& query, const Query& subquery) const;
+    QueryPrivate* const p;
 public:
-    QueryParser();
-    void setDefaultFields(const std::list<std::string>& df) {
-        m_defaultFields = df;
-    }
-    const std::list<std::string>& defaultFields() const {
-        return m_defaultFields;
-    }
-    Query buildQuery(const std::string& a, int32_t max, int32_t offset);
+    enum Type { And, Or,
+        Equals, Contains, LessThan, LessThanEquals,
+        GreaterThan, GreaterThanEquals, StartsWith, FullText, RegExp,
+        Proximity };
+
+    Query();
+    Query(const Query& q);
+    ~Query();
+    void operator=(const Query&);
+
+    Term& term();
+    const Term& term() const;
+    void setTerm(const Term& t);
+    float boost() const;
+    void setBoost(int i);
+    Type type() const;
+    void setType(Type t);
+    bool negate() const;
+    void setNegate(bool n);
+    std::vector<std::string>& fields();
+    const std::vector<std::string>& fields() const;
+    std::vector<Query>& subQueries();
+    const std::vector<Query>& subQueries() const;
 };
 
 }
-bool operator<(const Strigi::Query&,const Strigi::Query&);
-
+#endif
