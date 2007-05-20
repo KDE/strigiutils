@@ -5,49 +5,67 @@
 #include <string>
 
 /** these classes capture the query capabilities of Xesam **/
-
+class TermPrivate;
 class Term {
+private:
+    TermPrivate* const p;
 public:
     enum Type { String, Integer, Date, Boolean, Float };
-    Type type;
-    int64_t i_value;     // value for Integer, Date and Boolean
-    double d_value;      // value for Float
-    std::string s_value; // value for String
 
-    // flags for String terms (ordered by size)
-    std::string language;
-    float fuzzy;
-    int slack;
-    bool phrase;
-    bool caseSensitive;
-    bool diacriticSensitive;
-    bool ordered;
-    bool enableStemming;
+    Term();
+    Term(const Term&);
+    ~Term();
+    void operator=(const Term&);
+
+    bool caseSensitive() const;
+    void setCaseSensitive(bool b);
+    bool diacriticSensitive() const;
+    void setDiacriticSensitive(bool b);
+    bool stemming() const;
+    void setStemming(bool b);
+    float fuzzy() const;
+    void setFuzzy(float f);
+    int slack() const;
+    void setSlack(int s);
+    int proximityDistance() const;
+    void setProximityDistance(int d);
+    bool ordered() const;
+    void setOrdered(bool b);
+    bool wordBased() const;
+    void setWordBased(bool b);
+
+    void setValue(const std::string& s);
+    void setValue(const char* s);
 };
 
-class Selection {
+class QueryPrivate;
+class Query {
+private:
+    QueryPrivate* const p;
 public:
-    enum Type { Equals, Contains, LessThan, LessThanEquals, GreaterThan,
-        GreaterThanEquals, StartsWith, FullText, RegExp, Proximity };
-    Term first;
-    Term second;
-    Type type;
-    std::vector<std::string> fields;
-};
+    enum Type { And, Or,
+        Equals, Contains, LessThan, LessThanEquals,
+        GreaterThan, GreaterThanEquals, StartsWith, FullText, RegExp,
+        Proximity };
 
-class Collectible {
-public:
-    Selection selection;
-    std::vector<Collectible> collectibles;
-    bool combineWithAnd;
-    bool negate;
-    float boost;
-};
+    Query();
+    Query(const Query& q);
+    ~Query();
+    void operator=(const Query&);
 
-class XesamQuery {
-public:
-    std::vector<Collectible> collectibles;
-    std::string type;
+    Term& term();
+    const Term& term() const;
+    void setTerm(const Term& t);
+    float boost() const;
+    void setBoost(int i);
+    Type type() const;
+    void setType(Type t);
+    bool negate() const;
+    void setNegate(bool n);
+    std::vector<std::string>& fields();
+    const std::vector<std::string>& fields() const;
+    std::vector<Query>& subQueries();
+    const std::vector<Query>& subQueries() const;
 };
 
 #endif
