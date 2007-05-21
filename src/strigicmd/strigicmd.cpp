@@ -91,6 +91,8 @@ usage(int argc, char** argv) {
     pe("  %s get -t backend -d indexdir files\n");
     pe("  %s listFiles -t backend -d indexdir\n");
     pe("  %s listFields -t backend -d indexdir\n");
+    //TODO: find a better definition for query?
+    pe("  %s query -t backend -d indexdir query\n");
     pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
     return 1; 
 }
@@ -346,6 +348,74 @@ get(int argc, char** argv) {
     return 0;
 }
 int
+query(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    // check arguments: dirs
+    if (dirs.size() == 0) {
+        pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
+        pe("Provide one or more files to search.\n");
+        return usage(argc, argv);
+    }
+    
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    IndexReader* reader = manager->indexReader();
+    QueryParser parser;
+    
+    for (vector<string>::iterator iter = dirs.begin();
+         iter != dirs.end(); iter++)
+    {
+        unsigned int results = 0;
+        Query query = parser.buildQuery( *iter);
+        vector<IndexedDocument> matches = reader->query(query, 0, 10);
+
+        if (matches.size()!= 0)
+            printf ("Results for search \"%s\"\n", (*iter).c_str());
+        else
+            printf ("No results for search \"%s\"\n", (*iter).c_str());
+        
+        while (matches.size() != 0)
+        {
+            for (vector<IndexedDocument>::iterator it = matches.begin();
+                 it != matches.end(); it++)
+            {
+                printf ("\"%s\" matched\n", it->uri.c_str());
+                printIndexedDocument(*it);
+            }
+
+            results += matches.size();
+            
+            if (matches.size() % 10 == 0)
+            {
+                // maybe there're other results
+                matches = reader->query(query, results + 1, 10);
+            }
+            else
+                matches.clear(); // force while() exit
+        }
+
+        if (results != 0)
+            printf ("Query \"%s\" returned %i results\n", (*iter).c_str(),
+                                                           results);
+    }
+    
+    delete manager;
+    return 0;
+}
+int
 deindex(int argc, char** argv) {
     // parse arguments
     parseArguments(argc, argv);
@@ -460,6 +530,8 @@ main(int argc, char** argv) {
         return get(argc, argv);
     } else if (!strcmp(cmd,"deindex")) {
         return deindex(argc, argv);
+    } else if (!strcmp(cmd,"query")) {
+        return query(argc, argv);
     } else {
         return usage(argc, argv);
     }
