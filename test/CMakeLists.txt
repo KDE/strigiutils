@@ -18,4 +18,4 @@ include_directories (. ${CPPUNIT_INCLUDE_DIR} )
 add_library(test_runner test_runner.cpp)
 target_link_libraries(test_runner ${CPPUNIT_LIBRARIES})
 
-subdirs (${TESTINGDIRS})
+# subdirs (${TESTINGDIRS})
