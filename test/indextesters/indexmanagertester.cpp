@@ -122,7 +122,10 @@ void IndexManagerTester::testNumberQuery()
     }
     writer->commit();
     Strigi::QueryParser parser;
-    Strigi::Query q = parser.buildQuery("size>0");
+
+    //TODO: ask Jos if it is correct
+    // BEFORE: Strigi::Query q = parser.buildQuery("size:>0", -1, 0);
+    Strigi::Query q = parser.buildQuery("size:>0");
     int count = reader->countHits(q);
     
     char buff [100];

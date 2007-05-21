@@ -41,3 +41,19 @@ int main()
   // Return error code 1 if the one of test failed.
     return wasSucessful ? 0 : 1;
 }
+
+// using namespace CppUnit;
+// 
+// int main (int argc, char* argv[]) {
+//     TextTestRunner runner;
+//     TestFactoryRegistry& registry = TestFactoryRegistry::getRegistry();
+// 
+//      // run all tests if none specified on command line
+//     Test* test_to_run = registry.makeTest();
+//     if (argc>1)
+//         test_to_run = test_to_run->findTest(argv[1]);
+// 
+//     runner.addTest( test_to_run );
+//     bool failed = runner.run("", false);
+//     return !failed;
+// }

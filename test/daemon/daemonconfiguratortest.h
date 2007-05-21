@@ -23,6 +23,9 @@
 #include <TestFixture.h>
 #include <extensions/HelperMacros.h>
 
+#include "analyzerconfiguration.h"
+
+#include <set>
 #include <string>
 
 class DaemonConfigurator;
@@ -33,17 +36,42 @@ namespace strigiunittest
     {
         CPPUNIT_TEST_SUITE( DaemonConfiguratorTest );
         CPPUNIT_TEST( testDefaultConf );
+        CPPUNIT_TEST( testIndexedDirs );
+        CPPUNIT_TEST( testFilters );
+        CPPUNIT_TEST( testRepository );
+        CPPUNIT_TEST( testPollingInterval );
         CPPUNIT_TEST_SUITE_END();
         
         private:
-            std::string confFile;
+            std::string confFile1;
+            std::string confFile2;
             DaemonConfigurator* defaultConf;
+            DaemonConfigurator* savedConf;
+            
+            bool checkEq(std::set<std::string>&, std::set<std::string>&,
+                         std::string&);
+            
+            bool checkEq( Strigi::AnalyzerConfiguration&,
+                          Strigi::AnalyzerConfiguration&,
+                          std::string&);
         
         public:
             void setUp();
             void tearDown();
             
             void testDefaultConf();
+            void testIndexedDirs();
+            void testFilters();
+            void testRepository();
+            void testPollingInterval();
+            void testSave();
+            
+            /*
+            TODO: write unit test for these methods
+            std::string getWriteableIndexType() const;
+            std::string getWriteableIndexDir() const;
+            std::list<Repository> getReadOnlyRepositories() const;
+            */
     };
 }
 
