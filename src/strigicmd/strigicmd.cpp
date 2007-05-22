@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <string>
 #include <set>
+#include <iostream>
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
@@ -39,7 +40,7 @@ using namespace std;
 using namespace Strigi;
 
 map<char, string> options;
-vector<string> dirs;
+vector<string> arguments;
 
 void
 parseArguments(int argc, char** argv) {
@@ -60,7 +61,7 @@ parseArguments(int argc, char** argv) {
             }
             options[option].assign(arg);
         } else {
-            dirs.push_back(arg);
+            arguments.push_back(arg);
         }
     }
 }
@@ -92,7 +93,7 @@ usage(int argc, char** argv) {
     pe("  %s listFiles -t backend -d indexdir\n");
     pe("  %s listFields -t backend -d indexdir\n");
     //TODO: find a better definition for query?
-    pe("  %s query -t backend -d indexdir query\n");
+    pe("  %s query -t backend -d indexdir queries\n");
     pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
     return 1; 
 }
@@ -120,8 +121,7 @@ printBackends(const string& msg, const vector<string> backends) {
     pe("'%s'.\n", backends[backends.size()-1].c_str());
 }
 void
-printIndexedDocument (IndexedDocument indexedDoc)
-{
+printIndexedDocument(IndexedDocument indexedDoc) {
     printf ("\t- mimetype: %s\n", indexedDoc.mimetype.c_str());
     printf ("\t- sha1: %s\n", indexedDoc.sha1.c_str());
     printf ("\t- size: %lld\n", indexedDoc.size);
@@ -131,8 +131,7 @@ printIndexedDocument (IndexedDocument indexedDoc)
     set<string> processedProperties;
     for (multimap<string,string>::iterator iter = indexedDoc.properties.begin();
          iter != indexedDoc.properties.end();
-         iter++)
-    {
+         iter++) {
         // iter over all document properties
         
         set<string>::iterator match = processedProperties.find(iter->first);
@@ -143,11 +142,9 @@ printIndexedDocument (IndexedDocument indexedDoc)
         multimap<string,string>::iterator it;
         bool first = true;
         for (it = indexedDoc.properties.lower_bound(iter->first);
-             it != indexedDoc.properties.upper_bound(iter->first); it++)
-        {
+             it != indexedDoc.properties.upper_bound(iter->first); it++) {
             // shows all properties with the same key together
-            if (first)
-            {
+            if (first) {
                 printf ("\t- %s:\t%s\n", it->first.c_str(), it->second.c_str());
                 first = false;
             }
@@ -162,17 +159,19 @@ printIndexedDocument (IndexedDocument indexedDoc)
     files whose path starts with ref
  */
 class FindIndexedFiles {
+private:
     string m_ref;
-    public:
-        FindIndexedFiles(string ref) {m_ref = ref;}
-        ~FindIndexedFiles() {};
-        bool operator() (pair<string, time_t> indexedFile) {
-            string::size_type pos = (indexedFile.first).find (m_ref);
-            if (pos == 0)
-                return true;
-                
-            return false;
+public:
+    FindIndexedFiles(string ref) {
+        m_ref = ref;
+    }
+    bool operator()(pair<string, time_t> indexedFile) {
+        string::size_type pos = indexedFile.first.find (m_ref);
+        if (pos == 0) {
+            return true;
         }
+        return false;
+    }
 };
 
 IndexManager*
@@ -214,7 +213,7 @@ create(int argc, char** argv) {
     checkIndexdirIsEmpty(indexdir.c_str());
 
     // check arguments: dirs
-    if (dirs.size() == 0) {
+    if (arguments.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
         pe("Provide directories to index.\n");
         return usage(argc, argv);
@@ -228,7 +227,7 @@ create(int argc, char** argv) {
     AnalyzerConfiguration config;
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
     vector<string>::const_iterator j;
-    for (j = dirs.begin(); j != dirs.end(); ++j) {
+    for (j = arguments.begin(); j != arguments.end(); ++j) {
         analyzer->analyzeDir(j->c_str(), nthreads);
     }
     delete analyzer;
@@ -252,7 +251,7 @@ update(int argc, char** argv) {
     }
 
     // check arguments: dirs
-    if (dirs.size() == 0) {
+    if (arguments.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
         pe("Provide directories to index.\n");
         return usage(argc, argv);
@@ -265,7 +264,7 @@ update(int argc, char** argv) {
 
     AnalyzerConfiguration config;
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
-    analyzer->updateDirs(dirs, nthreads);
+    analyzer->updateDirs(arguments, nthreads);
     delete analyzer;
     delete manager;
 
@@ -312,7 +311,7 @@ get(int argc, char** argv) {
     }
 
     // check arguments: dirs
-    if (dirs.size() == 0) {
+    if (arguments.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
         pe("Provide one or more files to search.\n");
         return usage(argc, argv);
@@ -326,9 +325,8 @@ get(int argc, char** argv) {
     IndexReader* reader = manager->indexReader();
     QueryParser parser;
     
-    for (vector<string>::iterator iter = dirs.begin();
-         iter != dirs.end(); iter++)
-    {
+    for (vector<string>::iterator iter = arguments.begin();
+         iter != arguments.end(); iter++) {
         Query query = parser.buildQuery( "system.location:'"+ *iter + "'");
         vector<IndexedDocument> matches = reader->query(query, 0, 10);
         if (matches.size() == 0)
@@ -361,7 +359,7 @@ query(int argc, char** argv) {
     }
 
     // check arguments: dirs
-    if (dirs.size() == 0) {
+    if (arguments.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
         pe("Provide one or more files to search.\n");
         return usage(argc, argv);
@@ -375,41 +373,40 @@ query(int argc, char** argv) {
     IndexReader* reader = manager->indexReader();
     QueryParser parser;
     
-    for (vector<string>::iterator iter = dirs.begin();
-         iter != dirs.end(); iter++)
-    {
+    for (vector<string>::iterator iter = arguments.begin();
+            iter != arguments.end(); iter++) {
         unsigned int results = 0;
-        Query query = parser.buildQuery( *iter);
-        vector<IndexedDocument> matches = reader->query(query, 0, 10);
+        Query query = parser.buildQuery(*iter);
+        const uint batchsize = 10; 
+        vector<IndexedDocument> matches = reader->query(query, 0, batchsize);
 
-        if (matches.size()!= 0)
+        if (matches.size() != 0) {
             printf ("Results for search \"%s\"\n", (*iter).c_str());
-        else
+        } else {
             printf ("No results for search \"%s\"\n", (*iter).c_str());
-        
-        while (matches.size() != 0)
-        {
+        }
+
+        while (matches.size() > 0) {
             for (vector<IndexedDocument>::iterator it = matches.begin();
-                 it != matches.end(); it++)
-            {
+                 it != matches.end(); it++) {
                 printf ("\"%s\" matched\n", it->uri.c_str());
                 printIndexedDocument(*it);
             }
 
             results += matches.size();
             
-            if (matches.size() % 10 == 0)
-            {
+            if (matches.size() == batchsize) {
                 // maybe there're other results
                 matches = reader->query(query, results + 1, 10);
-            }
-            else
+            } else {
                 matches.clear(); // force while() exit
+            }
         }
 
-        if (results != 0)
+        if (results != 0) {
             printf ("Query \"%s\" returned %i results\n", (*iter).c_str(),
                                                            results);
+        }
     }
     
     delete manager;
@@ -429,7 +426,7 @@ deindex(int argc, char** argv) {
     }
 
     // check arguments: dirs
-    if (dirs.size() == 0) {
+    if (arguments.size() == 0) {
         pe("'%s' '%s'\n", backend.c_str(), indexdir.c_str());
         pe("Provide directories/files to deindex.\n");
         return usage(argc, argv);
@@ -448,8 +445,8 @@ deindex(int argc, char** argv) {
     map <string, time_t> indexedFiles = indexReader->files(0);
     vector<string> toDelete;
     
-    for (vector<string>::iterator iter = dirs.begin();
-         iter != dirs.end(); iter++)
+    for (vector<string>::iterator iter = arguments.begin();
+         iter != arguments.end(); iter++)
     {
         // find all indexed files whose path starts with *iter
         FindIndexedFiles match (*iter);
@@ -484,7 +481,6 @@ deindex(int argc, char** argv) {
     delete manager;
     return 0;
 }
-
 int
 listFields(int argc, char** argv) {
     // parse arguments
