@@ -14,20 +14,20 @@ class Repository {
 public:
 	Repository(const std::string& xml = "");
 	friend std::ostream& operator<<(std::ostream&, const Repository&);
-	std::string a_name;
-	bool a_writeable;
-	int a_pollingInterval;
-	std::string a_urlbase;
 	std::string a_indexdir;
+	std::string a_urlbase;
 	std::string a_type;
+	int a_pollingInterval;
+	bool a_writeable;
+	std::string a_name;
 	std::list<Path> e_path;
 };
 class Filter {
 public:
 	Filter(const std::string& xml = "");
 	friend std::ostream& operator<<(std::ostream&, const Filter&);
-	std::string a_pattern;
 	bool a_include;
+	std::string a_pattern;
 };
 class Filters {
 public:
