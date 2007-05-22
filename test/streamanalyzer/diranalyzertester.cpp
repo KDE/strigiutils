@@ -28,27 +28,25 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fstream>
 
 using namespace std;
 using namespace strigiunittest;
 
-void DirAnalyzerTester::setUp()
-{
-    char* temp;
-    char* dir = "tmp";
-    char* prefix = "strigi";
+void DirAnalyzerTester::setUp() {
+    // generate index name
+    char dir[13];
+    string separator;
     
     // generate index name
-    temp = tempnam (dir, prefix);
-    indexdir = temp;
-    free (temp);
+    strcpy(dir, "strigiXXXXXX");
+    mkstemp(dir);
+    indexdir.assign(dir);
     
     // initialize a directory for writing and an indexmanager
 #ifdef _WIN32
-    mkdir(indexdir.c_str());
     separator = "\\";
 #else
-    mkdir(indexdir.c_str(), S_IRUSR|S_IWUSR|S_IXUSR);
     separator = "/";
 #endif
     // prepare files to be indexed
