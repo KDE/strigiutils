@@ -129,7 +129,6 @@ HelperProgramConfig::findHelper(const char* header, int32_t headersize) const {
     }
     return 0;
 }
-const HelperProgramConfig HelperEndAnalyzer::helperconfig;
 bool
 HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return helperconfig.findHelper(header, headersize) != 0;

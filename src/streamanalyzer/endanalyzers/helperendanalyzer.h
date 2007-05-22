@@ -41,7 +41,7 @@ public:
 class HelperEndAnalyzerFactory;
 class HelperEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
-    static const HelperProgramConfig helperconfig;
+    const HelperProgramConfig helperconfig;
 
     std::string writeToTempFile(Strigi::InputStream *in) const;
     bool checkForFile(const Strigi::AnalysisResult& idx) const;
