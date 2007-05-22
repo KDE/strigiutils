@@ -1,4 +1,5 @@
-set (TESTINGDIRS ${TESTINGDIRS} utils daemon indextesters streamanalyzer)
+# set (TESTINGDIRS ${TESTINGDIRS} daemon utils indextesters streamanalyzer)
+set (TESTINGDIRS ${TESTINGDIRS} daemon indextesters streamanalyzer)
 
 # cppunit requires exception support
 IF(NOT WIN32)
@@ -18,4 +19,4 @@ include_directories (. ${CPPUNIT_INCLUDE_DIR} )
 add_library(test_runner test_runner.cpp)
 target_link_libraries(test_runner ${CPPUNIT_LIBRARIES})
 
-# subdirs (${TESTINGDIRS})
+subdirs (${TESTINGDIRS})

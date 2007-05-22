@@ -3,7 +3,8 @@ include_directories (.
                      ${strigi_SOURCE_DIR}/src/streams
                      ${strigi_BINARY_DIR}/src/streams/compat
                      ${strigi_SOURCE_DIR}/src/streams/compat
-                     ../utils
+                     ${strigi_SOURCE_DIR}/src/combinedindexer
+#                      ../utils
 )
 
 add_library(indextesters    indexmanagertester.cpp
@@ -12,4 +13,4 @@ add_library(indextesters    indexmanagertester.cpp
                             indexsearchtester.cpp
  )
 
-target_link_libraries (indextesters unittestfunctions)
+target_link_libraries (indextesters combinedindex)

@@ -23,7 +23,8 @@
 #include "diranalyzer.h"
 #include "indexmanager.h"
 #include "indexreader.h"
-#include "unittestfunctions.h"
+#include "combinedindexmanager.h"
+// #include "unittestfunctions.h"
 
 #include <sys/stat.h>
 #include <unistd.h>
@@ -90,6 +91,20 @@ void DirAnalyzerTester::tearDown()
     string cmd = "rm -r ";
     cmd += indexdir;
     system(cmd.c_str());
+}
+
+Strigi::IndexManager* DirAnalyzerTester::getIndexManager(string& backend,
+                                                         const string& indexdir)
+{
+    // check arguments: backend
+    const vector<string>& backends = CombinedIndexManager::backEnds();
+
+    vector<string>::const_iterator b
+            = find(backends.begin(), backends.end(), backend);
+    if (b == backends.end())
+        return 0;
+
+    return CombinedIndexManager::factories()[backend](indexdir.c_str());
 }
 
 void DirAnalyzerTester::testVariables()
