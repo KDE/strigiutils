@@ -18,9 +18,22 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "xesamsearch.h"
+#include "xesamsession.h"
+#include "xesamlivesearch.h"
+#include "indexmanager.h"
+#include "indexreader.h"
+#include "queryparser.h"
 #include "variant.h"
+#include "queryparser.h"
 using namespace std;
 
+XesamSearch::XesamSearch(XesamSession& s, const std::string& n,
+        const std::string& q) :name(n), queryString(q), query(Strigi::QueryParser::buildQuery(q)), session(s) {
+}
+int32_t
+XesamSearch::countHits() {
+    return session.liveSearch().indexManager()->indexReader()->countHits(query);
+}
 vector<vector<Variant> >
 XesamSearch::getHits(int32_t num) {
     vector<vector<Variant> > v;

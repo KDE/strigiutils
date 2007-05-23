@@ -22,6 +22,10 @@
 
 #include "xesamlivesearchinterface.h"
 
+namespace Strigi {
+    class IndexManager;
+}
+
 class XesamSearch;
 class XesamLiveSearch : public XesamLiveSearchInterface {
 private:
@@ -29,7 +33,7 @@ private:
     class Private;
     Private* const p;
 public:
-    XesamLiveSearch();
+    XesamLiveSearch(Strigi::IndexManager*);
     ~XesamLiveSearch();
 
     void addInterface(XesamLiveSearchInterface* i) {
@@ -57,6 +61,9 @@ public:
         const std::vector<int32_t>& hit_ids);
     void HitsModified(const std::string& search,
         const std::vector<int32_t>& hit_ids);
+
+    // access to IndexManager for searches
+    Strigi::IndexManager* indexManager() const;
 
     // internal
     void addSearch(const std::string&, XesamSearch*);

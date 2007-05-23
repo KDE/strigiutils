@@ -22,18 +22,21 @@
 
 #include <string>
 #include <vector>
+#include "query.h"
 
 class Variant;
 class XesamSession;
 class XesamSearch {
 public:
     const std::string name;
+    const std::string queryString;
+    const Strigi::Query query;
     XesamSession& session;
 
     XesamSearch(XesamSession& s, const std::string& n,
-        const std::string& query) :name(n), session(s) {}
+        const std::string& query);
     ~XesamSearch() { }
-    int32_t countHits() { return 10; }
+    int32_t countHits();
     std::vector<std::vector<Variant> > getHits(int32_t num);
     std::vector<std::vector<Variant> > getHitData(
         const std::vector<int32_t>& hit_ids,

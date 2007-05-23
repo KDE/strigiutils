@@ -203,7 +203,7 @@ main(int argc, char** argv) {
     scheduler.start(20);
 
     Interface interface(*index, scheduler);
-    XesamLiveSearch xesam;
+    XesamLiveSearch xesam(index);
 
     EventListener* listener = NULL;
 

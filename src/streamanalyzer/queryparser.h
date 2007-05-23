@@ -7,7 +7,7 @@ namespace Strigi {
 
 class STREAMANALYZER_EXPORT QueryParser {
 public:
-    Query buildQuery(const std::string& query);
+    static Query buildQuery(const std::string& query);
 };
 
 }

@@ -31,8 +31,10 @@ public:
     XesamLiveSearch& xesam;
     map<string, XesamSession*> sessions;
     map<string, XesamSearch*> searches;
+    Strigi::IndexManager* const indexManager;
 
-    Private(XesamLiveSearch& x) :xesam(x) {}
+    Private(XesamLiveSearch& x, Strigi::IndexManager* i)
+        :xesam(x), indexManager(i) {}
     ~Private();
 };
 XesamLiveSearch::Private::~Private() {
@@ -42,8 +44,8 @@ XesamLiveSearch::Private::~Private() {
         delete i->second;
     }
 }
-XesamLiveSearch::XesamLiveSearch() :XesamLiveSearchInterface(this),
-         p(new Private(*this)) {}
+XesamLiveSearch::XesamLiveSearch(Strigi::IndexManager* i)
+        :XesamLiveSearchInterface(this), p(new Private(*this, i)) {}
 XesamLiveSearch::~XesamLiveSearch() {
     delete p;
 }
@@ -162,4 +164,8 @@ XesamLiveSearch::addSearch(const std::string& name, XesamSearch* search) {
 void
 XesamLiveSearch::removeSearch(const std::string& name) {
     p->searches.erase(name);
+}
+Strigi::IndexManager*
+XesamLiveSearch::indexManager() const {
+    return p->indexManager;
 }

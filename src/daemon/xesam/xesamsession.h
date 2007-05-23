@@ -45,6 +45,8 @@ public:
     Variant getProperty(const std::string& prop);
     const std::string& newSearch(const std::string& xml_query);
     void closeSearch(const XesamSearch* search);
+
+    XesamLiveSearch& liveSearch() { return xesam; }
 };
 
 #endif
