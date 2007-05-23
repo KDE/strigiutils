@@ -25,11 +25,7 @@
 
 #include <map>
 #include <time.h>
-namespace lucene {
-    namespace index {
-        class IndexReader;
-    }
-}
+#include <CLucene.h>
 
 class CLuceneIndexManager;
 class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public Strigi::IndexReader {

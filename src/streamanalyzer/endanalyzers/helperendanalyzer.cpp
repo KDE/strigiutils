@@ -25,9 +25,9 @@
  #include <unistd.h>
 #endif
 
+#include "helperendanalyzer.h"
 #include "strigiconfig.h"
 #include "compat.h"
-#include "helperendanalyzer.h"
 #include "processinputstream.h"
 #include "textendanalyzer.h"
 #include "analysisresult.h"

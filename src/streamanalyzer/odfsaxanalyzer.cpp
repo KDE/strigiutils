@@ -19,13 +19,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "odfsaxanalyzer.h"
 #include <cassert>
 #include <cstring>
 #include <string>
 
 #include "analysisresult.h"
 #include "fieldtypes.h"
-#include "odfsaxanalyzer.h"
 
 using namespace Strigi;
 

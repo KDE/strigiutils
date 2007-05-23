@@ -12,6 +12,7 @@
 #endif
 
 #ifndef NO_PREFIX_QUERY
+#include "CLucene/StdHeader.h"
 
 #include "CLucene/index/Term.h"
 #include "CLucene/search/SearchHeader.h"

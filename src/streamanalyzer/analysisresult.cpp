@@ -22,8 +22,8 @@
 # include "config.h"
 #endif
 
-#include "strigiconfig.h"
 #include "analysisresult.h"
+#include "strigiconfig.h"
 #include "indexwriter.h"
 #include "analyzerconfiguration.h"
 #include "streamanalyzer.h"

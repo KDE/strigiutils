@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
 */
 
-#include "event.h"
 #include "eventlistenerqueue.h"
+#include "event.h"
 #include "strigi_thread.h"
 
 #include <algorithm>

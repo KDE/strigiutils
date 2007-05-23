@@ -19,13 +19,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
+#include "filelister.h"
 #include "strigiconfig.h"
 #include "strigi_thread.h"
-#include "filelister.h"
 #include "analyzerconfiguration.h"
 #include <set>
 #include <sys/types.h>

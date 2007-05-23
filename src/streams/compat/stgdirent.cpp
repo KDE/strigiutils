@@ -9,11 +9,11 @@
 # include "config.h"
 #endif
 
-#include "errno.h"
 
 #if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)
 #include "stgdirent.h"
 #include <sys/stat.h>
+#include "errno.h"
 
 DIR *
 opendir (const char *szPath)

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
 #include "zipendanalyzer.h"
+#include "strigiconfig.h"
 #include "zipinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"

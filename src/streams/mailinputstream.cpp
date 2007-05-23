@@ -22,7 +22,6 @@
 # include "config.h"
 #endif
 
-#include "strigiconfig.h"
 #include "mailinputstream.h"
 #include "subinputstream.h"
 #include "stringterminatedsubstream.h"

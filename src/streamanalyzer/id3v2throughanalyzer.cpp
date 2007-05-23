@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "strigiconfig.h"
 #include "id3v2throughanalyzer.h"
+#include "strigiconfig.h"
 #include "analysisresult.h"
 using namespace Strigi;
 using namespace std;

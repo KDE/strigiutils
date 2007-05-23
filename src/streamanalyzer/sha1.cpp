@@ -18,6 +18,7 @@
    Boston, MA 02110-1301, USA.
 */
 
+#include "sha1.h"
 #include <config.h>
 #include <sys/types.h>
 #ifdef HAVE_SYS_BITYPES_H
@@ -27,7 +28,6 @@
 #include <stdint.h>
 #endif
 
-#include "sha1.h"
 #include <string.h>
 
 // FIXME: this can be optimized to one instruction on most cpus.

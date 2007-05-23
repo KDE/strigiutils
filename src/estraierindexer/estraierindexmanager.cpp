@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
 #include "estraierindexmanager.h"
+#include "strigiconfig.h"
 #include "estraierindexreader.h"
 #include "estraierindexwriter.h"
 #include "strigi_thread.h"

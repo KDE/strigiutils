@@ -22,8 +22,8 @@
 # include "config.h"
 #endif
 
-#include "strigiconfig.h"
 #include "inputstreamreader.h"
+#include "strigiconfig.h"
 #include <cerrno>
 
 #ifdef ICONV_SECOND_ARGUMENT_IS_CONST

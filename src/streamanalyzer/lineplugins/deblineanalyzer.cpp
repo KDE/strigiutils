@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "analysisresult.h"
 #include "deblineanalyzer.h"
+#include "analysisresult.h"
 #include "streamendanalyzer.h"
 #include "strigiconfig.h"
 #include "fieldtypes.h"

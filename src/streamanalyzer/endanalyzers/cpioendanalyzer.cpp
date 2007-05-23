@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
 #include "cpioendanalyzer.h"
+#include "strigiconfig.h"
 #include "cpioinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
@@ -49,7 +49,7 @@ CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         s = cpio.nextEntry();
     }
     if (cpio.status() == Error) {
-        fprintf(stderr, cpio.error());
+        fprintf(stderr, "%s\n", cpio.error());
         m_error = cpio.error();
         return -1;
     } else {

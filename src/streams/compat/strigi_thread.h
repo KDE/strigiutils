@@ -21,7 +21,7 @@
 #ifndef STRIGI_THREAD_H
 #define STRIGI_THREAD_H
 
-#include "config.h"
+#include <config.h>
 
 #if defined(CMAKE_HAVE_PTHREAD_CREATE)
     #include <pthread.h>

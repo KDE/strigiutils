@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXWRITER_H
 #define CLUCENEINDEXWRITER_H
 
-#include <CLucene/StdHeader.h>
+#include <CLucene.h>
 #include "strigiconfig.h"
 #include "indexwriter.h"
 #include "analysisresult.h"

@@ -19,9 +19,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "pcxthroughanalyzer.h"
 #include "strigiconfig.h"
 #include "fieldtypes.h"
-#include "pcxthroughanalyzer.h"
 #include "analysisresult.h"
 #include "textutils.h"
 

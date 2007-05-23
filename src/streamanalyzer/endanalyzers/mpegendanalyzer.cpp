@@ -22,8 +22,8 @@
   * and libmpeg3.
   */   
 
-#include "strigiconfig.h"
 #include "mpegendanalyzer.h"
+#include "strigiconfig.h"
 #include "analysisresult.h"
 #include "textutils.h"
 #include <iostream>

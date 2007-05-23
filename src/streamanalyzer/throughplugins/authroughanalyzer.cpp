@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "strigiconfig.h"
 #include "authroughanalyzer.h"
+#include "strigiconfig.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "textutils.h"

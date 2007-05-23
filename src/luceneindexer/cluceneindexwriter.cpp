@@ -22,10 +22,9 @@
 # include <config.h>
 #endif
 
-#include "strigiconfig.h"
+#include "cluceneindexwriter.h"
 #include <CLucene.h>
 #include <CLucene/store/Lock.h>
-#include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include <CLucene/util/stringreader.h>

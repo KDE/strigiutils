@@ -22,12 +22,11 @@
 # include <config.h>
 #endif
 
+#include "cluceneindexreader.h"
 #include "strigiconfig.h"
 #include "query.h"
 #include "queryparser.h"
 #include "textutils.h"
-#include <CLucene.h>
-#include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include "timeofday.h"
 #include <CLucene/search/QueryFilter.h>
