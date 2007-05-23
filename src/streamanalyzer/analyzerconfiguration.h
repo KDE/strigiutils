@@ -239,7 +239,7 @@ public:
      * when indexing.
      *
      * These are used in the default implementations of indexFile() and
-     * indexDir().  They are parsed in strict order of occurence in the
+     * indexDir().  They are parsed in strict order of occurrence in the
      * vector.
      *
      * Each filter is a pair, linking a boolean to a string.  The string

@@ -1060,7 +1060,7 @@ acquire_init_state_context (reg_errcode_t *err, const re_match_context_t *mctx,
    FL_LONGEST_MATCH means we want the POSIX longest matching.
    If P_MATCH_FIRST is not NULL, and the match fails, it is set to the
    next place where we may want to try matching.
-   Note that the matcher assume that the maching starts from the current
+   Note that the matcher assume that the matching starts from the current
    index of the buffer.  */
 
 static int

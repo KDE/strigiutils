@@ -36,7 +36,7 @@ namespace Strigi {
  *
  * Note that internationalization of field name and enumerated
  * values are not done by analyzers, but are dealt with in a
- * seperate file describing the ontology.
+ * separate file describing the ontology.
  */
 class RegisteredField {
 friend class FieldRegister;
