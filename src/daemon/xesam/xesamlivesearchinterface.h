@@ -47,9 +47,10 @@ public:
             const std::string& query_xml) {
         return iface->NewSearch(session, query_xml);
     }
-    virtual int32_t CountHits(const std::string& search) {
-        return iface->CountHits(search);
+    virtual void CountHits(void* msg, const std::string& search) {
+        return iface->CountHits(msg, search);
     }
+    virtual void CountHitsResponse(void* msg, int32_t count) = 0;
     virtual std::vector<std::vector<Variant> > GetHits(
             const std::string& search, int32_t num) {
         return iface->GetHits(search, num);

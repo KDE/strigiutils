@@ -47,7 +47,8 @@ public:
     void CloseSession(const std::string& session);
     std::string NewSearch(const std::string& session,
             const std::string& query_xml);
-    int32_t CountHits(const std::string& search);
+    void CountHits(void* msg, const std::string& search);
+    void CountHitsResponse(void* msg, int32_t count);
     std::vector<std::vector<Variant> > GetHits(const std::string& search,
             int32_t num);
     std::vector<std::vector<Variant> > GetHitData(const std::string& search,

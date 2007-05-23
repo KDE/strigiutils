@@ -21,6 +21,7 @@
 #include "dbushandler.h"
 #include "dbusclientinterface.h"
 #include "dbusxesamlivesearchinterface.h"
+#include "xesamlivesearch.h"
 #include <iostream>
 #include <sys/select.h>
 #include <sys/time.h>
@@ -28,7 +29,7 @@
 #include <unistd.h>
 using namespace std;
 
-DBusServer::DBusServer(ClientInterface* iface, XesamLiveSearchInterface* x)
+DBusServer::DBusServer(ClientInterface* iface, XesamLiveSearch* x)
         :StrigiThread("DBusServer"), handler(new DBusHandler()) {
     handler->addBusName("vandenoever.strigi");
     handler->addBusName("org.freedesktop.xesam.searcher");
@@ -39,6 +40,7 @@ DBusServer::DBusServer(ClientInterface* iface, XesamLiveSearchInterface* x)
     // add xesam interface
     xesam = new DBusXesamLiveSearchInterface(
         "/org/freedesktop/xesam/searcher/main", handler->connection(), x);
+    x->addInterface(xesam);
     handler->addInterface("/org/freedesktop/xesam/searcher/main",
         xesam->interface());
 }

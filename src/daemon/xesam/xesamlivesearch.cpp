@@ -94,14 +94,21 @@ XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
     }
     return name;
 }
-int32_t
-XesamLiveSearch::CountHits(const string& search) {
+void
+XesamLiveSearch::CountHits(void* msg, const string& search) {
     int32_t count = 0;
     map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
         count = i->second->countHits();
     }
-    return count;
+    CountHitsResponse(msg, count);
+}
+void
+XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->CountHitsResponse(msg, count);
+    }
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHits(const string& search, int32_t num) {
