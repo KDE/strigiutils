@@ -155,7 +155,7 @@ if (NOT CppUnit_FOUND)
     MESSAGE(STATUS "CppUnit was not found. No unit test will be built.")
 else (NOT CppUnit_FOUND)
     MESSAGE(STATUS "CppUnit found. Unit testing suite will be built.")
-    SET (DIRS ${DIRS} test)
+   # SET (DIRS ${DIRS} test)
 endif (NOT CppUnit_FOUND)
 
 ENABLE_TESTING()

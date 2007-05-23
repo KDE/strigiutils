@@ -327,7 +327,7 @@ get(int argc, char** argv) {
     
     for (vector<string>::iterator iter = arguments.begin();
          iter != arguments.end(); iter++) {
-        Query query = parser.buildQuery( "system.location:'"+ *iter + "'");
+        Query query = parser.buildQuery( "system.location:'"+ *iter + '\'');
         vector<IndexedDocument> matches = reader->query(query, 0, 10);
         if (matches.size() == 0)
             printf ("%s: is not indexed\n", iter->c_str());

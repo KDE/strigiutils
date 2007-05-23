@@ -1,10 +1,10 @@
-#include "xesamuserparser.h"
+#include "queryparser.h"
 
 int
 main(int argc, char** argv) {
-    XesamUserParser parser;
+    Strigi::QueryParser parser;
     for (int i=1; i<argc; ++i) {
-        parser.parse(argv[i]);
+        parser.buildQuery(argv[i]);
     }
     return 0;
 }

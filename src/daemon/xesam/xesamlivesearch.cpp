@@ -21,7 +21,7 @@
 #include "xesamlivesearch.h"
 #include "xesamsession.h"
 #include "xesamsearch.h"
-#include "xesamquery.h"
+#include "query.h"
 #include <iostream>
 #include <cstdlib>
 using namespace std;
