@@ -25,6 +25,12 @@ DBusMessageWriter::DBusMessageWriter(DBusConnection* c, DBusMessage* msg)
         :conn(c), reply(dbus_message_new_method_return(msg)), error(0) {
     dbus_message_iter_init_append(reply, &it);
 }
+DBusMessageWriter::DBusMessageWriter(DBusConnection* c, const char* object,
+        const char* interface, const char* function)
+        :conn(c), reply(dbus_message_new_signal(object, interface, function)),
+         error(0) {
+    dbus_message_iter_init_append(reply, &it);
+}
 DBusMessageWriter::~DBusMessageWriter() {
     if (reply) {
         DBusMessage* msg = (error) ?error :reply;

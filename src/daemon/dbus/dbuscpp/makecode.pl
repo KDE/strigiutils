@@ -403,32 +403,25 @@ foreach (keys %responses) {
     print FH "void\n";
     print FH "$classname\::$_(".$responses{$_}.") {\n";
     print FH "    DBusMessage* m = static_cast<DBusMessage*>(msg);\n";
-    print FH "    {   DBusMessageWriter writer(conn, m);\n";
-    print FH "        writer";
+    print FH "    DBusMessageWriter writer(conn, m);\n";
+    print FH "    writer";
     my @args = parseArguments($responses{$_});
     for (my $i=3; $i <= $#args; $i += 2) {
         print FH " << ".$args[$i];
     }
     print FH ";\n";
-    print FH "    };\n";
-    print FH "    dbus_connection_send(conn, m, NULL);\n";
-    print FH "    dbus_message_unref(m);\n";
     print FH "}\n";
 }
 foreach (keys %signals) {
     print FH "void\n";
     print FH "$classname\::$_(".$signals{$_}.") {\n";
-    print FH "    DBusMessage* m = dbus_message_new_signal(object.c_str(), \"$interfacename\", \"$_\");\n";
-    print FH "    {   DBusMessageWriter writer(conn, m);\n";
-    print FH "        writer";
+    print FH "    DBusMessageWriter writer(conn, object.c_str(), \"$interfacename\", \"$_\");\n";
+    print FH "    writer";
     my @args = parseArguments($signals{$_});
-    for (my $i=3; $i <= $#args; $i += 2) {
+    for (my $i=1; $i <= $#args; $i += 2) {
         print FH " << ".$args[$i];
     }
     print FH ";\n";
-    print FH "    };\n";
-    print FH "    dbus_connection_send(conn, m, NULL);\n";
-    print FH "    dbus_message_unref(m);\n";
     print FH "}\n";
 }
 close (FH);

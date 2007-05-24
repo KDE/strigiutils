@@ -102,6 +102,7 @@ XesamLiveSearch::CountHits(void* msg, const string& search) {
         count = i->second->countHits();
     }
     CountHitsResponse(msg, count);
+    HitsAdded(search, 10);
 }
 void
 XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {

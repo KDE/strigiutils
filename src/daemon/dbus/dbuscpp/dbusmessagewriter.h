@@ -35,6 +35,8 @@ public:
     DBusMessageIter it;
 
     DBusMessageWriter(DBusConnection* conn, DBusMessage* msg);
+    DBusMessageWriter(DBusConnection* conn, const char* objectpath,
+        const char* interface, const char* function);
     DBusMessageWriter() :conn(0), reply(0) { }
     ~DBusMessageWriter();
     void setError(const std::string& error);
