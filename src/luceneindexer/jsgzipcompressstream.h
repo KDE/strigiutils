@@ -20,6 +20,7 @@
 #ifndef GZIPCOMPRESSSTREAM_H
 #define GZIPCOMPRESSSTREAM_H
 
+#include <strigiconfig.h>   // (u)int64_t
 #include <CLucene/util/streambase.h>
 #include <CLucene/util/bufferedstream.h>
 

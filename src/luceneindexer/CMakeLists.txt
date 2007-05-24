@@ -1,12 +1,15 @@
 # TODO: fix the tests in the directory 'tests' and reenable them
 subdirs(indexdump simplereader tests)
 
-include_directories( ../streamanalyzer ../streams
-	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat
-        ${CLUCENE_LIBRARY_DIR}
-        ${CLUCENE_INCLUDE_DIR}
-        ${ICONV_INCLUDE_DIR})
+include_directories(
+    ${strigi_SOURCE_DIR}/src/streamanalyzer
+    ${strigi_SOURCE_DIR}/src/streams
+    ${strigi_BINARY_DIR}/src/streams/compat
+    ${strigi_SOURCE_DIR}/src/streams/compat
+    ${CLUCENE_LIBRARY_DIR}
+    ${CLUCENE_INCLUDE_DIR}
+    ${ICONV_INCLUDE_DIR}
+)
 
 IF(WIN32)
     # why only here and not for the complete project?
