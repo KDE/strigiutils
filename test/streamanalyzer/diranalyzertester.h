@@ -47,10 +47,6 @@ namespace strigiunittest
             std::string separator;
             std::map<std::string,std::string> indexedFiles; //!< map with key = file name, and value = file contents
 
-        private:
-            Strigi::IndexManager* getIndexManager(std::string& backend,
-                                                  const std::string& indexdir);
-            
         public:
             virtual void setUp();
             virtual void tearDown();

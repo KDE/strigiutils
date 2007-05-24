@@ -20,3 +20,5 @@ target_link_libraries (lucenetest   test_runner
                                     streamanalyzertesters
                                     indextesters
                                     cluceneindex )
+
+add_test (lucenetests lucenetest)

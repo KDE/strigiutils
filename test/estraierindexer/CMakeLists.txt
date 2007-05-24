@@ -17,3 +17,4 @@ add_library(estraiertest SHARED   estraierindexmanagertest.cpp
                                 ../indextests/indexwritertester.cpp )
 
 target_link_libraries (estraiertest estraierindex)
+add_test (estraiertest estraiertest)

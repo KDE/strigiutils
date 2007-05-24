@@ -25,9 +25,9 @@
 #include <vector>
 
 using namespace std;
-using namespace strigiunittest;
 
-Strigi::IndexManager* getIndexManager(string& backend, const string& indexdir)
+Strigi::IndexManager* strigiunittest::getIndexManager(string& backend,
+                                                      const string& indexdir)
 {
     // check arguments: backend
     const vector<string>& backends = CombinedIndexManager::backEnds();
