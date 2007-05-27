@@ -25,6 +25,7 @@
 #include "fieldtypes.h"
 #include "textutils.h"
 #include <sstream>
+#include <cstring>
 using namespace Strigi;
 using namespace std;
 

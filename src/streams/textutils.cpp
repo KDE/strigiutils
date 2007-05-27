@@ -19,6 +19,8 @@
  */
 #include "textutils.h"
 
+#include <cstring>
+
 /**
  * Return the position of the first byte that is not valid
  * utf8. Return value of 0 means that the entire string is valid.

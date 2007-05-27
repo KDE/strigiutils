@@ -23,6 +23,7 @@
 #include "analysisresult.h"
 #include "textutils.h"
 #include <sstream>
+#include <cstring>
 using namespace std;
 using namespace Strigi;
 

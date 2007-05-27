@@ -1,5 +1,6 @@
 #include "queryparser.h"
 #include <iostream>
+#include <cstring>
 using namespace std;
 using namespace Strigi;
 

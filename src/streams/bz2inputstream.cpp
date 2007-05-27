@@ -20,6 +20,8 @@
 #include "strigiconfig.h"
 #include "bz2inputstream.h"
 
+#include <cstring>
+
 using namespace Strigi;
 
 bool

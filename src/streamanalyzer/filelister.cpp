@@ -26,7 +26,8 @@
 #include <set>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 #include "stgdirent.h" //dirent replacement (includes native if available)
 
 #ifdef HAVE_DIRECT_H

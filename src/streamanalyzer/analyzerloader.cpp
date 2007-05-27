@@ -21,6 +21,7 @@
 #include "analyzerplugin.h"
 #include <string>
 #include <cstdio>
+#include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stgdirent.h>

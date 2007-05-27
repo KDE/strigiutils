@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
+#include <string>
 #include <list>
 #include <unistd.h>
 #include <getopt.h>

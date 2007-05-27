@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "xmlstream.h"
+#include <cstring>
 #include <stack>
 #include <libxml/parser.h>
 using namespace std;

@@ -22,6 +22,7 @@
 #include "diranalyzer.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
+#include <cstring>
 using namespace Strigi;
 using namespace std;
 

@@ -24,6 +24,7 @@
 #include "indexwriter.h"
 #include "indexmanager.h"
 #include "fieldtypes.h"
+#include <cstring>
 
 class DummyIndexWriter : public Strigi::IndexWriter {
 private:

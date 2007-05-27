@@ -21,6 +21,7 @@
 #include "id3v2throughanalyzer.h"
 #include "strigiconfig.h"
 #include "analysisresult.h"
+#include <cstring>
 using namespace Strigi;
 using namespace std;
 

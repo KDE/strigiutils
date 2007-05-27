@@ -21,6 +21,7 @@
 #define STREAMBUFFER_H
 
 #include <cstdlib>
+#include <cstring>
 
 namespace Strigi {
 

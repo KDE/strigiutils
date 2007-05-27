@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <config.h>
 #include <cstdlib>
+#include <cstring>
 using namespace Strigi;
 using namespace std;
 

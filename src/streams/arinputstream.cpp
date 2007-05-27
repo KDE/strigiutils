@@ -22,6 +22,7 @@
 #include "subinputstream.h"
 
 #include <stdlib.h>
+#include <cstring>
 
 using namespace Strigi;
 

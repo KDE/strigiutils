@@ -23,6 +23,7 @@
 #include "textutils.h"
 #include <libxml/SAX2.h>
 #include <cassert>
+#include <cstring>
 
 using namespace Strigi;
 using namespace std;

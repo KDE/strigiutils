@@ -23,6 +23,7 @@
 #include "strigiconfig.h"
 #include "analysisresult.h"
 #include <cctype>
+#include <cstring>
 using namespace Strigi;
 using namespace std;
 

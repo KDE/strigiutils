@@ -29,6 +29,7 @@
 #include "arinputstream.h"
 #include "zipinputstream.h"
 #include <vector>
+#include <cstring>
 
 using namespace std;
 using namespace Strigi;
