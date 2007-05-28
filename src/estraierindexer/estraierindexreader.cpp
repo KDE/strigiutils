@@ -251,6 +251,10 @@ EstraierIndexReader::mTime(int64_t docid) {
     return mtime;
 
 }
+time_t
+EstraierIndexReader::mTime(const std::string& uri) {
+    return mTime(documentId(uri));
+}
 vector<string>
 EstraierIndexReader::fieldNames() {
     return vector<string>();

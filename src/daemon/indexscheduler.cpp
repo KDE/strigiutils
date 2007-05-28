@@ -128,7 +128,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
                 break;
             case Event::UPDATED:
             {
-                time_t indexTime = reader->mTime(reader->documentId(event->getPath()));
+                time_t indexTime = reader->mTime(event->getPath());
                 if (indexTime < event->getTime())
                 {
                     toindex.insert (make_pair (event->getPath(), event->getTime()));

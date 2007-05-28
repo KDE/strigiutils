@@ -399,14 +399,14 @@ CLuceneIndexReader::files(char depth) {
         TermDocs* docs = reader->termDocs(&term);
         while (docs->next()) {
             Document* d = reader->document(docs->doc());
-    
+
             const TCHAR* v = d->get(mtime);
             STRCPY_TtoA(cstr, v, CL_MAX_DIR);
             time_t mtime = atoi(cstr);
             v = d->get(_T("system.location"));
             STRCPY_TtoA(cstr, v, CL_MAX_DIR);
             files[cstr] = mtime;
-    
+
             _CLDELETE(d);
         }
         _CLDELETE(docs);
@@ -490,6 +490,14 @@ CLuceneIndexReader::mTime(int64_t docid) {
         delete d;
     }
     return mtime;
+}
+/**
+ * Retrieve the mtime of the document with id @docid. If this document
+ * is not in the index, the time 0 is returned.
+ **/
+time_t
+CLuceneIndexReader::mTime(const std::string& uri) {
+    return mTime(documentId(uri));
 }
 class Histogram {
 public:

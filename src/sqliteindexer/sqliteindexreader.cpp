@@ -229,6 +229,10 @@ time_t
 SqliteIndexReader::mTime(int64_t docid) {
     return 0;
 }
+time_t
+SqliteIndexReader::mTime(const std::string& uri) {
+    return 0;
+}
 vector<pair<string,uint32_t> >
 SqliteIndexReader::histogram( const string& query, const string& fieldname,
             const string& labeltype) {

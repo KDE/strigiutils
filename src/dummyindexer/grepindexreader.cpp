@@ -144,6 +144,13 @@ time_t
 GrepIndexReader::mTime(int64_t docid) {
     return -1;
 }
+/**
+ * This does not have to be implemented since we have not index.
+ **/
+time_t
+GrepIndexReader::mTime(const std::string& uri) {
+    return -1;
+}
 vector<string>
 GrepIndexReader::fieldNames() {
     vector<string> fieldnames;

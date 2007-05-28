@@ -44,6 +44,7 @@ public:
     int64_t indexSize();
     int64_t documentId(const std::string& uri);
     time_t mTime(int64_t docid);
+    time_t mTime(const std::string& uri);
     std::vector<std::string> fieldNames();
     std::vector<std::pair<std::string,uint32_t> > histogram(
             const std::string& query, const std::string& fieldname,

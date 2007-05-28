@@ -87,6 +87,7 @@ public:
     int64_t indexSize();
     int64_t documentId(const string& uri);
     time_t mTime(int64_t docid);
+    time_t mTime(const string& uri);
     vector<pair<string,uint32_t> > histogram(
             const string& query, const string& fieldname,
             const string& labeltype);
@@ -254,6 +255,10 @@ CombinedIndexReader::documentId(const string& uri) {
 time_t
 CombinedIndexReader::mTime(int64_t docid) {
     return m->p->writermanager->indexReader()->mTime(docid);
+}
+time_t
+CombinedIndexReader::mTime(const std::string& uri) {
+    return m->p->writermanager->indexReader()->mTime(uri);
 }
 vector<string>
 CombinedIndexReader::fieldNames() {

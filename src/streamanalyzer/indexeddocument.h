@@ -32,6 +32,7 @@ namespace Strigi {
 class IndexedDocument {
 public:
     IndexedDocument() :score(0), size(-1), mtime(0) {}
+	// FIXME: trueg: this is not a uri but a URL or even just a path.
     std::string uri;
     float score;
     std::string fragment;
@@ -39,6 +40,8 @@ public:
     std::string sha1;
     int64_t size;
     uint64_t mtime;
+    // trueg: is this intended to be restricted to strings? There could
+    // be other types, right?
     std::multimap<std::string, std::string> properties;
 };
 

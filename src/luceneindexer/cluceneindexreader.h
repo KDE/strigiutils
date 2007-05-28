@@ -59,6 +59,7 @@ public:
     int64_t indexSize();
     int64_t documentId(const std::string& uri);
     time_t mTime(int64_t docid);
+    time_t mTime(const std::string& uri);
     static void addMapping(const TCHAR* from, const TCHAR* to);
     lucene::index::IndexReader* reader;
     std::vector<std::pair<std::string,uint32_t> > histogram(
