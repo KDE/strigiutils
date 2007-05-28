@@ -87,14 +87,14 @@ usage(int argc, char** argv) {
     pe("    Program for creating and querying indices.\n");
     pe("    This program is not meant for talking to the strigi daemon.\n\n");
     pe("usage:\n");
-    pe("  %s create [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s create [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n");
     pe("  %s deindex -t backend -d indexdir files/dirs\n");
     pe("  %s get -t backend -d indexdir files\n");
     pe("  %s listFiles -t backend -d indexdir\n");
     pe("  %s listFields -t backend -d indexdir\n");
     //TODO: find a better definition for query?
     pe("  %s query -t backend -d indexdir queries\n");
-    pe("  %s update [-j num] -t backend -d indexdir files/dirs\n");
+    pe("  %s update [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n");
     return 1; 
 }
 void
@@ -201,6 +201,8 @@ create(int argc, char** argv) {
     parseArguments(argc, argv);
     string backend = options['t'];
     string indexdir = options['d'];
+    string excluded_filter = options['x'];
+    string included_filter = options['i'];
     int nthreads = atoi(options['j'].c_str());
     if (nthreads < 1) nthreads = 2;
 
@@ -224,7 +226,13 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
+    vector<pair<bool,string> >filters;
+    filters.push_back(make_pair<bool,string>(true,included_filter));
+    filters.push_back(make_pair<bool,string>(false,excluded_filter));
+    
     AnalyzerConfiguration config;
+    config.setFilters(filters);
+
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
     vector<string>::const_iterator j;
     for (j = arguments.begin(); j != arguments.end(); ++j) {
@@ -241,6 +249,8 @@ update(int argc, char** argv) {
     parseArguments(argc, argv);
     string backend = options['t'];
     string indexdir = options['d'];
+    string excluded_filter = options['x'];
+    string included_filter = options['i'];
     int nthreads = atoi(options['j'].c_str());
     if (nthreads < 1) nthreads = 2;
 
@@ -262,7 +272,13 @@ update(int argc, char** argv) {
         return usage(argc, argv);
     }
 
+    vector<pair<bool,string> >filters;
+    filters.push_back(make_pair<bool,string>(true,included_filter));
+    filters.push_back(make_pair<bool,string>(false,excluded_filter));
+    
     AnalyzerConfiguration config;
+    config.setFilters(filters);
+
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
     analyzer->updateDirs(arguments, nthreads);
     delete analyzer;
