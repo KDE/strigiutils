@@ -7,4 +7,4 @@
                     an indexer to have any numeric IDs. And in the end the only usage
                     of the id is in daemon/indexreader.cpp:
                     reader->mTime(reader->documentId(event->getPath()));
-                    That is just utterly useless.)
+                    That just seems a little useless.)
