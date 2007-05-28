@@ -26,6 +26,7 @@
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
 #include <iostream>
+#include <cstring>
 #ifdef HAVE_UNISTD_H
  #include <unistd.h>
 #endif

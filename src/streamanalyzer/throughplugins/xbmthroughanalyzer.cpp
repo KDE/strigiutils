@@ -22,6 +22,7 @@
 #include "strigiconfig.h"
 #include "analysisresult.h"
 #include "fieldtypes.h"
+#include <cstring>
 
 using namespace std;
 using namespace Strigi;

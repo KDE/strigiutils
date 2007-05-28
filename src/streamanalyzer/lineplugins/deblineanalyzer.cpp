@@ -24,6 +24,7 @@
 #include "strigiconfig.h"
 #include "fieldtypes.h"
 #include <iostream> 
+#include <cstring>
 
 using namespace Strigi;
 using namespace std;

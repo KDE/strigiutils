@@ -3,6 +3,7 @@
 #include <cstring>
 #include <string>
 #include <list>
+#include <algorithm>
 #include <unistd.h>
 #include <getopt.h>
 #include "fieldpropertiesdb.h"

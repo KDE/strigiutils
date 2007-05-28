@@ -22,6 +22,7 @@
 
 #include "streamthroughanalyzer.h"
 #include "analyzerplugin.h"
+#include <string>
 
 class PcxThroughAnalyzerFactory;
 class PcxThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
