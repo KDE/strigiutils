@@ -1,2 +1,10 @@
 * seek and replace getFoo() functions with foo() in daemon/client
 * replace the AnalyzerConfiguration* with AnalyzerConfiguration& in diranalyzer
+
+* (trueg): - remove IndexReader::documentId
+           - change mTime to take the file path as argument
+           (Reason: the document id is very implementation specific, we cannot expect
+                    an indexer to have any numeric IDs. And in the end the only usage
+                    of the id is in daemon/indexreader.cpp:
+                    reader->mTime(reader->documentId(event->getPath()));
+                    That is just utterly useless.)
