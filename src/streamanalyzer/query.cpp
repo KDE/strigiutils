@@ -39,6 +39,8 @@ public:
 };
 
 Term::Term() :p(new TermPrivate()) {
+    // FIXME (trueg): The term is completely uninitialized here. The values as well as the type are random.
+    //                Create a TermPrivate constructor that initializes all to 0 and sets the type to s.th. like "None" or "Empty"
 }
 Term::Term(const Term& t) :p(new TermPrivate(*t.p)) {
 }
