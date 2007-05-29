@@ -35,3 +35,33 @@ Name=X-Ray Resolution
 TypeUri=string
 Description=Resolution of the X-Ray data for crystal structures.
 Comment=
+
+[Field]
+Uri=chemistry.atom_count
+Name=Atom Count
+TypeUri=integer
+Description=The number of atoms.
+
+[Field]
+Uri=chemistry.bond_count
+Name=Bond Count
+TypeUri=integer
+Description=The number of bonds.
+
+[Field]
+Uri=chemistry.residue_count
+Name=Residue Count
+TypeUri=integer
+Description=The number of monomer residues.
+
+[Field]
+Uri=chemistry.strand_count
+Name=Strand Count
+TypeUri=integer
+Description=The number of polymer strands.
+
+[Field]
+Uri=chemistry.fragment_count
+Name=Fragment Count
+TypeUri=integer
+Description=The number of molecular fragments.
