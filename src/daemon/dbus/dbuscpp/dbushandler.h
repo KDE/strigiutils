@@ -23,6 +23,7 @@
 #define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <vector>
 #include <map>
+#include <string>
 #include <dbus/dbus.h>
 
 class DBusObjectInterface;
