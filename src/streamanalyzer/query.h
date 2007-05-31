@@ -32,6 +32,7 @@ class STREAMANALYZER_EXPORT Term {
 private:
     TermPrivate* const p;
 public:
+    // FIXME (trueg): there is not method to retrieve the type
     enum Type { String, Integer, Date, Boolean, Float };
 
     Term();
@@ -67,6 +68,8 @@ class STREAMANALYZER_EXPORT Query {
 private:
     QueryPrivate* const p;
 public:
+    // FIXME (trueg): why is NOT not an operator but an extra method?
+    //                it makes recursive handling of the query less clean
     enum Type { And, Or,
         Equals, Contains, LessThan, LessThanEquals,
         GreaterThan, GreaterThanEquals, StartsWith, FullText, RegExp,

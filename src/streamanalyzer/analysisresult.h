@@ -221,6 +221,8 @@ public:
      *
      * @param the depth of containment of the associated file.
      */
+    // FIXME (trueg): why is this a char and not an int? This confuses me.
+    // Do I have to interpret it as a string or as an integer?
     char depth() const;
     /**
      * @deprecated
