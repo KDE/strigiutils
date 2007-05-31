@@ -50,6 +50,7 @@
 #include <cstdio>
 #include <cerrno>
 #include <stdlib.h>
+#include <string.h>
 
 using namespace Strigi;
 using namespace std;

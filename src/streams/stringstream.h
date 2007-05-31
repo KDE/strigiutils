@@ -28,6 +28,8 @@
 
 #include "streambase.h"
 
+#include <string.h>
+
 namespace Strigi {
 
 /**

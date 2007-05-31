@@ -24,6 +24,8 @@
 #include <vector>
 #include <sstream>
 
+#include <stdlib.h>
+
 /**
  * Simple inefficient implementation of a variant type as needed by xesam
  **/
