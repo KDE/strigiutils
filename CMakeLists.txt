@@ -152,9 +152,9 @@ SET (DIRS ${DIRS} src)
 
 find_package(CppUnit)
 if (NOT CppUnit_FOUND)
-    MESSAGE("** CppUnit was not found. No unit test will be built.")
+    MESSAGE("** CppUnit was not found. Strigi unit tests will not be built.")
 else (NOT CppUnit_FOUND)
-    MESSAGE(STATUS "CppUnit found. Unit testing suite will be built.")
+    MESSAGE(STATUS "CppUnit found. Strigi unit tests will be built.")
    # SET (DIRS ${DIRS} test)
 endif (NOT CppUnit_FOUND)
 
