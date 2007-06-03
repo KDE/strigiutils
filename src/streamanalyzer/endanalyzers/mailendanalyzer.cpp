@@ -28,6 +28,8 @@ using namespace std;
 
 const string MailEndAnalyzerFactory::titleFieldName = "email.subject";
 const string MailEndAnalyzerFactory::contenttypeFieldName = "email.content_type";
+const string MailEndAnalyzerFactory::fromFieldName = "email.from";
+const string MailEndAnalyzerFactory::toFieldName = "email.to";
 
 void
 MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
@@ -35,6 +37,8 @@ MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
         = r.registerField(titleFieldName, FieldRegister::stringType, 1, 0);
     contenttypeField = r.registerField(contenttypeFieldName,
         FieldRegister::stringType, 1, 0);
+    fromField = r.registerField(fromFieldName, FieldRegister::stringType, 1, 0);
+    toField = r.registerField(toFieldName, FieldRegister::stringType, 1, 0);
 }
 
 bool
@@ -58,6 +62,8 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }*/
     idx.addValue(factory->titleField, mail.subject());
     idx.addValue(factory->contenttypeField, mail.contentType());
+    idx.addValue(factory->fromField, mail.from());
+    idx.addValue(factory->toField, mail.to());
     TextEndAnalyzer tea;
     if (s != 0 && tea.analyze(idx, s) != 0) {
         m_error = "Error reading mail body.";

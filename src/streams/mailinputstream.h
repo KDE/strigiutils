@@ -46,6 +46,8 @@ private:
 
     StringTerminatedSubStream* substream;
     std::string m_subject;
+    std::string m_from;
+    std::string m_to;
     std::string m_contenttype;
     std::string contenttransferencoding;
     std::string contentdisposition;
@@ -71,6 +73,8 @@ public:
         return new MailInputStream(input);
     }
     const std::string& subject() { return m_subject; }
+    const std::string& from() { return m_from; }
+    const std::string& to() { return m_to; }
     const std::string& contentType() { return m_contenttype; }
 };
 

@@ -375,6 +375,8 @@ void
 MailInputStream::handleHeaderLine() {
     static const char* subject = "Subject:";
     static const char* contenttype = "Content-Type:";
+    static const char* to = "To:";
+    static const char* from = "From:";
     static const char* contenttransferencoding = "Content-Transfer-Encoding:";
     static const char* contentdisposition = "Content-Disposition:";
     int32_t len = lineend - linestart;
@@ -385,6 +387,13 @@ MailInputStream::handleHeaderLine() {
         int32_t offset = 8;
         while (offset < len && isspace(linestart[offset])) offset++;
         this->m_subject = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, to, 3) == 0) {
+        int32_t offset = 3;
+        // FIXME: should split for ','
+        this->m_to = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, from, 5) == 0) {
+        int32_t offset = 5;
+        this->m_from = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
         while (offset < len && isspace(linestart[offset])) offset++;

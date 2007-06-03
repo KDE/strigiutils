@@ -39,8 +39,12 @@ friend class MailEndAnalyzer;
 private:
     static const std::string titleFieldName;
     static const std::string contenttypeFieldName;
+    static const std::string fromFieldName;
+    static const std::string toFieldName;
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* contenttypeField;
+    const Strigi::RegisteredField* fromField;
+    const Strigi::RegisteredField* toField;
 public:
     const char* name() const {
         return "MailEndAnalyzer";
