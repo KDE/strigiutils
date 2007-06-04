@@ -335,9 +335,7 @@ CLuceneIndexReader::countHits(const Strigi::Query& q) {
         ConstantScoreQuery csq(filter);*/
         printf("could not query: %s\n", err.what());
     }
-    if (hits) {
-        delete hits;
-    }
+    delete hits;
     searcher.close();
     _CLDELETE(bq);
     return s;
