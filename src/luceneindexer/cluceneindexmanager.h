@@ -38,9 +38,6 @@ namespace lucene {
         class IndexWriter;
         class IndexReader;
     }
-    namespace store {
-        class FSDirectory;
-    }
 }
 
 class CLuceneIndexReader;

@@ -41,7 +41,6 @@ class AnalyzerConfiguration;
 class StreamAnalyzer;
 class RegisteredField;
 class StreamEndAnalyzer;
-class StreamEndAnalyzerPrivate;
 
 /**
  * Indexed representation of a file.

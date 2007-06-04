@@ -26,7 +26,6 @@
 
 class QLineEdit;
 class QListWidget;
-class QListWidgetItem;
 class QStackedWidget;
 class QLabel;
 class QPushButton;

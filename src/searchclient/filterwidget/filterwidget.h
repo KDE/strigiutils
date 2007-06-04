@@ -22,7 +22,6 @@
 class QListView;
 class FilterModel;
 class QModelIndex;
-class QItemSelection;
 class QPushButton;
 class FilterWidget : public QWidget {
 Q_OBJECT

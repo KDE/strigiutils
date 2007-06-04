@@ -31,7 +31,6 @@
 namespace Strigi {
 
 template <class T> class StreamBase;
-class SubStreamProvider;
 struct EntryInfo;
 
 /**

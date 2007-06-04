@@ -27,7 +27,6 @@
 
 namespace Strigi {
 
-class SubInputStream;
 class StringTerminatedSubStream;
 
 /**
