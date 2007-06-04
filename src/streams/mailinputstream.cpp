@@ -377,6 +377,11 @@ MailInputStream::handleHeaderLine() {
     static const char* contenttype = "Content-Type:";
     static const char* to = "To:";
     static const char* from = "From:";
+    static const char* cc = "Cc:";
+    static const char* bcc = "Bcc:";
+    static const char* messageid = "Message-ID:";
+    static const char* inreplyto = "In-Reply-To:";
+    static const char* references = "References:";
     static const char* contenttransferencoding = "Content-Transfer-Encoding:";
     static const char* contentdisposition = "Content-Disposition:";
     int32_t len = lineend - linestart;
@@ -394,6 +399,21 @@ MailInputStream::handleHeaderLine() {
     } else if (strncasecmp(linestart, from, 5) == 0) {
         int32_t offset = 5;
         this->m_from = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, cc, 3) == 0) {
+        int32_t offset = 3;
+        this->m_cc = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, bcc, 4) == 0) {
+        int32_t offset = 4;
+        this->m_bcc = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, messageid, 11) == 0) {
+        int32_t offset = 11;
+        this->m_messageid = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, inreplyto, 12) == 0) {
+        int32_t offset = 12;
+        this->m_inreplyto = decodedHeaderValue(linestart+offset, len-offset);
+    } else if (strncasecmp(linestart, references, 11) == 0) {
+        int32_t offset = 11;
+        this->m_references = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
         while (offset < len && isspace(linestart[offset])) offset++;

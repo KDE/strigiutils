@@ -48,6 +48,11 @@ private:
     std::string m_subject;
     std::string m_from;
     std::string m_to;
+    std::string m_cc;
+    std::string m_bcc;
+    std::string m_messageid;
+    std::string m_inreplyto;
+    std::string m_references;
     std::string m_contenttype;
     std::string contenttransferencoding;
     std::string contentdisposition;
@@ -75,6 +80,11 @@ public:
     const std::string& subject() { return m_subject; }
     const std::string& from() { return m_from; }
     const std::string& to() { return m_to; }
+    const std::string& cc() { return m_cc; }
+    const std::string& bcc() { return m_bcc; }
+    const std::string& messageid() { return m_messageid; }
+    const std::string& inreplyto() { return m_inreplyto; }
+    const std::string& references() { return m_references; }
     const std::string& contentType() { return m_contenttype; }
 };
 
