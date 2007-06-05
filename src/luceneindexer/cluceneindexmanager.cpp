@@ -202,6 +202,7 @@ CLuceneIndexManager::setIndexMTime() {
 std::wstring
 utf8toucs2(const char*p, const char*e) {
     wstring ucs2;
+    if (e <= p) return ucs2;
     ucs2.reserve(3*(e-p));
     wchar_t w = 0;
     char nb = 0;
