@@ -40,28 +40,28 @@ Comment=
 Uri=chemistry.atom_count
 Name=Atom Count
 TypeUri=integer
-Description=The number of atoms.
+Description=The total number of atoms in the document.
 
 [Field]
 Uri=chemistry.bond_count
 Name=Bond Count
 TypeUri=integer
-Description=The number of bonds.
+Description=The total number of bonds in the document.
 
 [Field]
 Uri=chemistry.residue_count
 Name=Residue Count
 TypeUri=integer
-Description=The number of monomer residues.
+Description=The total number of monomer residues in the document.
 
 [Field]
 Uri=chemistry.strand_count
 Name=Strand Count
 TypeUri=integer
-Description=The number of polymer strands.
+Description=The total number of polymer strands in the document.
 
 [Field]
 Uri=chemistry.fragment_count
 Name=Fragment Count
 TypeUri=integer
-Description=The number of molecular fragments.
+Description=The total number of molecular fragments in the document.
