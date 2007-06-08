@@ -103,7 +103,7 @@ void DirAnalyzerTester::setUp() {
             file.close();
         }
         else
-            fprintf (stderr, "errore nella creazione del file %s\n",
+            fprintf (stderr, "error during creation of file %s\n",
                      fullpath.c_str());
     }
     
