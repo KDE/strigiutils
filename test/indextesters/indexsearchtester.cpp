@@ -29,6 +29,7 @@
 #include "unittestfunctions.h"
 
 // #include <algorithm>
+#include  <errno.h>
 #include <fstream>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -37,20 +38,49 @@ using namespace std;
 using namespace strigiunittest;
 
 void IndexSearchTester::setUp() {
-    char dir[13];
+    char buff[13];
+    char* dirname;
     string separator;
     
-    // generate index name
-    strcpy(dir, "strigiXXXXXX");
-    mkstemp(dir);
-    indexdir.assign(dir);
+    // generate index dir name
+    strcpy(buff, "strigiXXXXXX");
+    dirname = mkdtemp(buff);
     
-    // initialize a directory for writing and an indexmanager
+    if (dirname == NULL)
+    {
+      printf ("Error creating temporary directory for index because of: ");
+      printf ("%s\n", strerror (errno));
+
+      return;
+    }
+    else
+    {
+      printf ("created index dir: %s\n", dirname);
+      indexdir.assign(dirname);
+    }
+
+    // generate indexed docs name
+    strcpy(buff, "strigiXXXXXX");
+    dirname = mkdtemp(buff);
+
+    if (dirname == NULL)
+    {
+      printf ("Error creating temporary directory for indexed docs because of: ");
+      printf ("%s\n", strerror (errno));
+      return;
+    }
+    else
+    {
+      printf ("created dir for testing documents: %s\n", dirname);
+      filedir.assign(dirname);
+    }
+    
 #ifdef _WIN32
     separator = "\\";
 #else
     separator = "/";
 #endif
+
     // prepare files to be indexed
     string filename;
     string filecontents;
@@ -68,14 +98,16 @@ void IndexSearchTester::setUp() {
          iter != indexedFiles.end(); iter++)
     {
         ofstream file;
-        file.open( iter->first.c_str());
+        string fullpath = filedir + separator + iter->first;
+        file.open( fullpath.c_str());
         if (file.is_open())
         {
             file << iter->second;
             file.close();
         }
         else
-            fprintf (stderr, "errore nella creazione del file\n");
+            fprintf (stderr, "errore nella creazione del file %s\n",
+                             fullpath.c_str());
     }
     
     manager = getIndexManager(backend, indexdir);
@@ -92,9 +124,9 @@ void IndexSearchTester::setUp() {
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++)
     {
-        string temp = indexdir + separator + iter->first;
+        string temp = filedir + separator + iter->first;
         fprintf (stderr, "going to index %s\n", temp.c_str());
-//         analyzer->analyzeDir (indexdir + separator + iter->first, 1);
+//         analyzer->analyzeDir (filedir + separator + iter->first, 1);
         streamindexer->indexFile(temp);
     }
     
@@ -130,6 +162,8 @@ void IndexSearchTester::tearDown()
     // clean up data
     string cmd = "rm -r ";
     cmd += indexdir;
+    cmd += " ";
+    cmd += filedir;
     system(cmd.c_str());
 }
 
@@ -138,6 +172,7 @@ void IndexSearchTester::testVariables()
     CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
     CPPUNIT_ASSERT_MESSAGE ("backend empty", !backend.empty());
     CPPUNIT_ASSERT_MESSAGE ("indexdir empty", !indexdir.empty());
+    CPPUNIT_ASSERT_MESSAGE ("filedir empty", !filedir.empty());
     
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
     if (indexedFilesSize != indexedFiles.size())

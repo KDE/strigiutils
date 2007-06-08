@@ -25,6 +25,7 @@
 #include "indexreader.h"
 #include "unittestfunctions.h"
 
+#include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
@@ -33,21 +34,49 @@ using namespace std;
 using namespace strigiunittest;
 
 void DirAnalyzerTester::setUp() {
-    // generate index name
-    char dir[13];
+    char buff[13];
+    char* dirname;
     string separator;
     
-    // generate index name
-    strcpy(dir, "strigiXXXXXX");
-    mkstemp(dir);
-    indexdir.assign(dir);
+    // generate index dir name
+    strcpy(buff, "strigiXXXXXX");
+    dirname = mkdtemp(buff);
     
-    // initialize a directory for writing and an indexmanager
+    if (dirname == NULL)
+    {
+        printf ("Error creating temporary directory for index because of: ");
+        printf ("%s\n", strerror (errno));
+
+        return;
+    }
+    else
+    {
+        printf ("created index dir: %s\n", dirname);
+        indexdir.assign(dirname);
+    }
+    
+    // generate indexed docs name
+    strcpy(buff, "strigiXXXXXX");
+    dirname = mkdtemp(buff);
+
+    if (dirname == NULL)
+    {
+        printf ("Error creating temporary directory for indexed docs because of: ");
+        printf ("%s\n", strerror (errno));
+        return;
+    }
+    else
+    {
+        printf ("created dir for testing documents: %s\n", dirname);
+        filedir.assign(dirname);
+    }
+
 #ifdef _WIN32
     separator = "\\";
 #else
     separator = "/";
 #endif
+
     // prepare files to be indexed
     string filename;
     string filecontents;
@@ -64,15 +93,18 @@ void DirAnalyzerTester::setUp() {
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++)
     {
+        string fullpath = filedir + separator + iter->first;
+
         ofstream file;
-        file.open( iter->first.c_str());
+        file.open( fullpath.c_str());
         if (file.is_open())
         {
             file << iter->second;
             file.close();
         }
         else
-            fprintf (stderr, "errore nella creazione del file\n");
+            fprintf (stderr, "errore nella creazione del file %s\n",
+                     fullpath.c_str());
     }
     
     manager = getIndexManager(backend, indexdir);
@@ -87,6 +119,8 @@ void DirAnalyzerTester::tearDown()
     // clean up data
     string cmd = "rm -r ";
     cmd += indexdir;
+    cmd += " ";
+    cmd += filedir;
     system(cmd.c_str());
 }
 
