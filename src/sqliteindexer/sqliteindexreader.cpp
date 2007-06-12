@@ -96,11 +96,11 @@ createQuery(int n, bool filterpath) {
 int
 SqliteIndexReader::countHits(const Strigi::Query& q) {
     // very inefficient: needs refactoring
-    vector<IndexedDocument> r = query(q);
+    vector<IndexedDocument> r = query(q, 0, 1000000);
     return r.size();
 }
 vector<IndexedDocument>
-SqliteIndexReader::query(const Strigi::Query& query) {
+SqliteIndexReader::query(const Strigi::Query& query, int off, int max) {
     string q;
     // replace * by %
     size_t p = q.find('*');
@@ -135,7 +135,7 @@ SqliteIndexReader::query(const Strigi::Query& query) {
 
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, 0);
+    int r = sqlite3_prepare(db, sql.c_str(), -1, &stmt, 0);
     if (r != SQLITE_OK) {
         printf("could not prepare query '%s': %s\n", sql.c_str(),
             sqlite3_errmsg(db));
@@ -171,7 +171,7 @@ SqliteIndexReader::files(char depth) {
     sqlite3* db = manager->ref();
     printf("%p\n", db);
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare_v2(db,
+    int r = sqlite3_prepare(db,
         "select path, mtime from files where depth = ?", -1, &stmt, 0);
     if (r != SQLITE_OK) {
         fprintf(stderr, "could not prepare query: %s\n", sqlite3_errmsg(db));
@@ -197,7 +197,7 @@ int
 SqliteIndexReader::countDocuments() {
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare_v2(db, "select count(*) from files;", -1, &stmt, 0);
+    int r = sqlite3_prepare(db, "select count(*) from files;", -1, &stmt, 0);
     if (r != SQLITE_OK) {
         fprintf(stderr, "could not prepare count query: %i %s\n", r,
             sqlite3_errmsg(db));

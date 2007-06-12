@@ -62,7 +62,7 @@ SqliteIndexWriter::~SqliteIndexWriter() {
 void
 SqliteIndexWriter::prepareStmt(sqlite3* db, sqlite3_stmt*& stmt,
         const char* sql, int sqllength) {
-    int r = sqlite3_prepare_v2(db, sql, sqllength, &stmt, 0);
+    int r = sqlite3_prepare(db, sql, sqllength, &stmt, 0);
     if (r != SQLITE_OK) {
         fprintf(stderr, "could not prepare statement '%s': %s\n", sql,
             sqlite3_errmsg(db));
@@ -188,7 +188,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
 
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
-    int r = sqlite3_prepare_v2(db,
+    int r = sqlite3_prepare(db,
         "insert into tempfilewords (fileid, word, count) values(?, ?,?);",
         -1, &stmt, 0);
     if (r != SQLITE_OK) {
