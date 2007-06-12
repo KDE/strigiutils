@@ -203,20 +203,21 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     manager->closeWriter();
-    for (uint i=0; i<entries.size(); ++i) {
-        deleteEntry(entries[i]);
+    if (!manager->luceneReader()->checkReader()) {
+        fprintf(stderr,"cannot delete entry: lucene reader cannot be opened\n");
+        return;
     }
+    lucene::index::IndexReader* reader = manager->luceneReader()->reader;
+    
+    for (uint i=0; i<entries.size(); ++i) {
+        deleteEntry(entries[i], reader);
+    }
+    reader->commit();
     manager->setIndexMTime();
 }
 void
-CLuceneIndexWriter::deleteEntry(const string& entry) {
-    if (!manager->luceneReader()->checkReader()) {
-        fprintf(stderr, "CLuceneIndexWriter::deleteEntry,\
-                         error checking reader");
-        return;
-    }
-    
-    lucene::index::IndexReader* reader = manager->luceneReader()->reader;
+CLuceneIndexWriter::deleteEntry(const string& entry,
+        lucene::index::IndexReader* reader) {
 
     wstring tstr(utf8toucs2(entry));
     int32_t prefixLen = tstr.length();
@@ -298,8 +299,9 @@ bool isLuceneFile(const char* filename){
 
 void
 CLuceneIndexWriter::cleanUp() {
-    //remove all unused lucene file elements... unused elements are the result of unexpected shutdowns...
-    //this can add up to a lot of after a while.
+    // remove all unused lucene file elements...
+    // unused elements are the result of unexpected shutdowns...
+    // this can add up to a lot of after a while.
 
     lucene::index::IndexReader* reader = manager->luceneReader()->reader;
     if (!reader) {
@@ -307,10 +309,10 @@ CLuceneIndexWriter::cleanUp() {
     }
     lucene::store::Directory* directory = reader->getDirectory();
 
-    //Instantiate SegmentInfos
+    // Instantiate SegmentInfos
     lucene::store::LuceneLock* lock = directory->makeLock("commit.lock");
 #ifdef LUCENE_COMMIT_LOCK_TIMEOUT
-    //version <0.9.16
+    // version <0.9.16
     bool locked = lock->obtain(LUCENE_COMMIT_LOCK_TIMEOUT);
 #else
     bool locked = lock->obtain(lucene::index::IndexWriter::COMMIT_LOCK_TIMEOUT);
@@ -366,7 +368,6 @@ CLuceneIndexWriter::cleanUp() {
         _CLDELETE_CaARRAY(files[i]);
     }
     _CLDELETE_ARRAY(files)
-
 }
 
 void

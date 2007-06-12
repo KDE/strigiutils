@@ -130,8 +130,12 @@ CLuceneIndexManager::openWriter(bool truncate) {
 void
 CLuceneIndexManager::closeWriter() {
     if (indexwriter == 0) return;
-    indexwriter->close();
-    delete indexwriter;
+    try {
+        indexwriter->close();
+        delete indexwriter;
+    } catch (CLuceneError& err) {
+        printf("could not close writer: %s\n", err.what());
+    }
     indexwriter = 0;
     // clear the cache
     //bitsets.clear();

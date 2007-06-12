@@ -69,7 +69,8 @@ public:
     void cleanUp();
     void deleteEntries(const std::vector<std::string>& entries);
     void deleteAllEntries();
-    void deleteEntry(const std::string& entry);
+    void deleteEntry(const std::string& entry,
+        lucene::index::IndexReader* reader);
 
     static const TCHAR* mapId(const TCHAR* id);
     static void addMapping(const TCHAR* from, const TCHAR* to);
