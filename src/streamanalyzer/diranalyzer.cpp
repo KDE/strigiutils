@@ -90,27 +90,35 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
 }
 void
 DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
+    vector<string> toDelete(1);
     try {
         string path;
         time_t mtime;
+        // loop over all files that exist in the index
         int r = lister.nextFile(path, mtime);
         while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
             if (r > 0) {
+                // check if this file is new or not
                 STRIGI_MUTEX_LOCK(&updateMutex);
-                map<string, time_t>::iterator i
-                    = dbfiles.find(path);
+                map<string, time_t>::iterator i = dbfiles.find(path);
                 bool newfile = i == dbfiles.end();
                 bool updatedfile = !newfile && i->second != mtime;
 
-                // if the file is not new or updated, remove it from the list
-                // of files to be removed from the index
-                if (!newfile && !updatedfile) {
+                // if the file is update we delete it in this loop
+                // if it is new, it should not be in the list anyway
+                // otherwise we should _not_ delete it and remove it from the
+                // to be deleted list
+                if (updatedfile || !newfile) {
                     dbfiles.erase(i);
                 }
                 STRIGI_MUTEX_UNLOCK(&updateMutex);
 
                 // if the file has not yet been indexed or if the mtime has
                 // changed, index it
+                if (updatedfile) {
+                    toDelete[0].assign(path);
+                    manager.indexWriter()->deleteEntries(toDelete);
+                }
                 if (newfile || updatedfile) {
                     AnalysisResult analysisresult(path, mtime,
                         *manager.indexWriter(), *analyzer);
@@ -194,8 +202,8 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 
     // retrieve the complete list of files
     dbfiles = reader->files(0);
-    cerr << "currently " << dbfiles.size() << " files" << endl;
 
+    // create the streamanalyzers
     if (nthreads < 1) nthreads = 1;
     vector<StreamAnalyzer*> analyzers(nthreads);
     analyzers[0] = &analyzer;
@@ -206,6 +214,7 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
     vector<STRIGI_THREAD_TYPE> threads;
     threads.resize(nthreads-1);
 
+    // loop over all directories that should be updated
     for (vector<string>::const_iterator d =dirs.begin(); d != dirs.end(); ++d) {
         lister.startListing(*d);
         for (int i=1; i<nthreads; i++) {
@@ -219,19 +228,19 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
             STRIGI_THREAD_JOIN(threads[i-1]);
         }
     }
+    // clean up the analyzers
     for (int i=1; i<nthreads; i++) {
         delete analyzers[i];
     }
 
     // remove the files that were not encountered from the index
-    vector<string> todelete(dbfiles.size());
-    cerr << "to delete: " << dbfiles.size() << endl;
+    vector<string> todelete(1);
     map<string,time_t>::iterator it = dbfiles.begin();
     while (it != dbfiles.end()) {
-        todelete.push_back(it->first);
+        todelete[0].assign(it->first);
+        manager.indexWriter()->deleteEntries(todelete);
         ++it;
     }
-    manager.indexWriter()->deleteEntries(todelete);
     dbfiles.clear();
 
     return 0;

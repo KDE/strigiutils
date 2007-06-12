@@ -28,8 +28,6 @@
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include <CLucene/util/stringreader.h>
-//comment this out if you have clucene 0.9.17 or later
-#include "PrefixFilter.h"
 #include <sstream>
 #include <assert.h>
 
@@ -44,7 +42,6 @@ using lucene::index::Term;
 using lucene::index::TermDocs;
 using lucene::search::IndexSearcher;
 using lucene::search::Hits;
-using lucene::search::StrigiPrefixFilter;
 using lucene::util::BitSet;
 
 using lucene::util::Reader;
@@ -213,8 +210,7 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 }
 void
 CLuceneIndexWriter::deleteEntry(const string& entry) {
-    if (!manager->luceneReader()->checkReader())
-    {
+    if (!manager->luceneReader()->checkReader()) {
         fprintf(stderr, "CLuceneIndexWriter::deleteEntry,\
                          error checking reader");
         return;
@@ -223,28 +219,18 @@ CLuceneIndexWriter::deleteEntry(const string& entry) {
     lucene::index::IndexReader* reader = manager->luceneReader()->reader;
 
     wstring tstr(utf8toucs2(entry));
-    Term term(_T("system.location"), tstr.c_str());
-    StrigiPrefixFilter filter(&term);
-    BitSet* bits;
-    try {
-        bits = filter.bits(reader);
-    } catch (CLuceneError& err) {
-        fprintf(stderr, "error creating filter %s: %s\n", entry.c_str(),
-            err.what());
-        bits = 0;
-    }
-    if (bits) {
-        for (int32_t i = 0; i < bits->size(); ++i) {
-            try {
-                if (bits->get(i) && !reader->isDeleted(i)) {
-                    reader->deleteDocument(i);
-                }
-            } catch (CLuceneError& err) {
-                fprintf(stderr, "error deleting document %s: %s\n",
-                    entry.c_str(), err.what());
+    int32_t prefixLen = tstr.length();
+    const TCHAR* prefixText = tstr.c_str();
+    int32_t maxdoc = reader->maxDoc();
+    for (int32_t i = 0; i < maxdoc; ++i) {
+        if (!reader->isDeleted(i)) {
+            Document* d = reader->document(i);
+            const TCHAR* t = d->get(_T("system.location"));
+            if (t && _tcsncmp(t, prefixText, prefixLen) == 0) {
+                reader->deleteDocument(i);
             }
+            _CLDELETE(d);
         }
-        _CLDELETE(bits);
     }
 }
 void

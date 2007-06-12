@@ -27,7 +27,7 @@ IF(__STRIGI_HAVE_GCC_VISIBILITY)
 ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS
-        PrefixFilter.cpp
+#        PrefixFilter.cpp
         cluceneindexmanager.cpp
         cluceneindexreader.cpp
         cluceneindexwriter.cpp
