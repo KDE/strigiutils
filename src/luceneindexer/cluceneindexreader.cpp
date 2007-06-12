@@ -97,7 +97,8 @@ CLuceneIndexReader::openReader() {
 //        printf("reader at %s\n", dbdir.c_str());
         reader = lucene::index::IndexReader::open(dbdir.c_str());
     } catch (CLuceneError& err) {
-        printf("could not create reader: %s\n", err.what());
+        fprintf(stderr, "could not create reader %s: %s\n", dbdir.c_str(),
+            err.what());
         reader = 0;
     }
 }
@@ -107,7 +108,7 @@ CLuceneIndexReader::closeReader() {
     try {
         reader->close();
     } catch (CLuceneError& err) {
-        printf("could not close clucene: %s\n", err.what());
+        fprintf(stderr, "could not close clucene: %s\n", err.what());
     }
     delete reader;
     reader = 0;
