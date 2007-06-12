@@ -272,8 +272,8 @@ main(int argc, char** argv) {
         return -1;
     }
     if (n != (int32_t)out.str().length()) {
-        printf("output length differs %i instead of %i\n", out.str().length(),
-            n);
+        cout << "output length differs " << out.str().length() << " instead of "
+            << n << endl;
         return -1;
     }
 
@@ -286,7 +286,7 @@ main(int argc, char** argv) {
         p2++;
     }
     if (n1 ==0 && (*p1 || *p2)) {
-         printf("difference at position %i\n", p1-c);
+         cout << "difference at position " << p1-c << endl;
 
          int32_t m = (80 > str.length())?str.length():80;
          printf("%i %.*s\n", m, m, str.c_str());

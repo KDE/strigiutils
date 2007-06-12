@@ -40,6 +40,7 @@ using namespace std;
 int
 usage(int /*argc*/, char** argv) {
     fprintf(stderr, "Usage: %s [--mappingfile <mappingfile>] "
+        "[--lastfiletoskip FILE] "
         "[dirs-or-files-to-index]\n", argv[0]);
     fprintf(stderr, " -j [threads]  Specify the number of threads to use.\n");
     return -1;
@@ -58,6 +59,7 @@ main(int argc, char **argv) {
     vector<string> dirs;
     int nthreads = 2;
     const char* mappingfile = 0;
+    string lastFileToSkip;
     int i = 0;
     while (++i < argc) {
         const char* arg = argv[i];
@@ -78,6 +80,11 @@ main(int argc, char **argv) {
                 return usage(argc, argv);
             }
             mappingfile = argv[i];
+        } else if (!strcmp("--lastfiletoskip", arg)) {
+            if (++i == argc) {
+                return usage(argc, argv);
+            }
+            lastFileToSkip = argv[i];
         } else {
             dirs.push_back(argv[i]);
         }
@@ -95,6 +102,7 @@ main(int argc, char **argv) {
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
 
+    cerr << "nthreads: " << nthreads << endl;
     const TagMapping mapping(mappingfile);
     cout << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");
@@ -108,7 +116,7 @@ main(int argc, char **argv) {
     XmlIndexManager manager(cout, mapping);
     Strigi::DirAnalyzer analyzer(manager, ic);
     for (unsigned i = 0; i < dirs.size(); ++i) {
-        analyzer.analyzeDir(dirs[i], nthreads);
+        analyzer.analyzeDir(dirs[i], nthreads, 0, lastFileToSkip);
     }
     cout << "</" << mapping.map("metadata") << ">\n";
 

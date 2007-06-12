@@ -24,7 +24,8 @@ public:
     DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf);
     ~DirAnalyzer();
     int analyzeDir(const std::string& dir, int nthreads = 2,
-        AnalysisCaller* caller = 0);
+        AnalysisCaller* caller = 0,
+        const std::string& lastToSkip = std::string());
     int updateDir(const std::string& dir, int nthreads = 2,
         AnalysisCaller* caller = 0);
     int updateDirs(const std::vector<std::string>& dirs, int nthreads = 2,

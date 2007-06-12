@@ -36,6 +36,7 @@
 #include <errno.h>
 
 using namespace std;
+using namespace Strigi;
 
 string fixPath (string path)
 {
@@ -62,7 +63,7 @@ string fixPath (string path)
     return temp;
 }
 
-class Strigi::FileLister::Private {
+class FileLister::Private {
 public:
     char path[10000];
     STRIGI_MUTEX_DEFINE(mutex)
@@ -76,9 +77,9 @@ public:
     struct dirent* subdir;
     struct stat dirstat;
     set<string> listedDirs;
-    const Strigi::AnalyzerConfiguration* const config;
+    const AnalyzerConfiguration* const config;
 
-    Private(const Strigi::AnalyzerConfiguration* ic);
+    Private(const AnalyzerConfiguration* ic);
     ~Private();
     int nextFile(string& p, time_t& time) {
         int r;
@@ -94,8 +95,8 @@ public:
     void startListing(const std::string&);
     int nextFile();
 };
-Strigi::FileLister::Private::Private(
-            const Strigi::AnalyzerConfiguration* ic) :
+FileLister::Private::Private(
+            const AnalyzerConfiguration* ic) :
         config(ic) {
     STRIGI_MUTEX_INIT(&mutex);
     int nOpenDirs = 100;
@@ -106,7 +107,7 @@ Strigi::FileLister::Private::Private(
     curDir = dirs - 1;
 }
 void
-Strigi::FileLister::Private::startListing(const string& dir){
+FileLister::Private::startListing(const string& dir){
     listedDirs.clear();
     curDir = dirs;
     curLen = len;
@@ -130,7 +131,7 @@ Strigi::FileLister::Private::startListing(const string& dir){
         curDir--;
     }
 }
-Strigi::FileLister::Private::~Private() {
+FileLister::Private::~Private() {
     while (curDir >= dirs) {
         if (*curDir) {
             closedir(*curDir);
@@ -142,7 +143,7 @@ Strigi::FileLister::Private::~Private() {
     STRIGI_MUTEX_DESTROY(&mutex);
 }
 int
-Strigi::FileLister::Private::nextFile() {
+FileLister::Private::nextFile() {
 
     while (curDir >= dirs) {
         DIR* dir = *curDir;
@@ -193,22 +194,22 @@ Strigi::FileLister::Private::nextFile() {
     }
     return -1;
 }
-Strigi::FileLister::FileLister(const Strigi::AnalyzerConfiguration* ic)
+FileLister::FileLister(const AnalyzerConfiguration* ic)
     : p(new Private(ic)) {
 }
-Strigi::FileLister::~FileLister() {
+FileLister::~FileLister() {
     delete p;
 }
 void
-Strigi::FileLister::startListing(const string& dir) {
+FileLister::startListing(const string& dir) {
     p->startListing(dir);
 }
 int
-Strigi::FileLister::nextFile(std::string& path, time_t& time) {
+FileLister::nextFile(std::string& path, time_t& time) {
     return p->nextFile(path, time);
 }
 int
-Strigi::FileLister::nextFile(const char*& path, time_t& time) {
+FileLister::nextFile(const char*& path, time_t& time) {
     int r = p->nextFile();
     if (r >= 0) {
         time = p->mtime;
@@ -216,8 +217,15 @@ Strigi::FileLister::nextFile(const char*& path, time_t& time) {
     }
     return r;
 }
+void
+FileLister::skipTillAfter(const std::string& lastToSkip) {
+    int r = p->nextFile();
+    while (r >= 0 && p->path != lastToSkip) {
+        r = p->nextFile();
+    }
+}
 set<string>&
-Strigi::FileLister::getListedDirs()
+FileLister::getListedDirs()
 {
     return p->listedDirs;
 }

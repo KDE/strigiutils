@@ -113,8 +113,8 @@ private:
                 nb = 3;
             } else if (c < 32 && c != 9 && c != 10 && c != 12) {
                 // TODO make this into general escaping to %xx
-                fprintf(stderr, "Error writing value '%s' at %i\n",
-                    value.c_str(), p-value.c_str());
+                std::cerr << "Error writing value '" << value << "' at "
+                    << (p-value.c_str()) << std::endl;
                 value.resize(p-value.c_str());
                 return;
             } else if (c == '&') {

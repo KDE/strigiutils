@@ -124,7 +124,7 @@ void
 printIndexedDocument(IndexedDocument indexedDoc) {
     printf ("\t- mimetype: %s\n", indexedDoc.mimetype.c_str());
     printf ("\t- sha1: %s\n", indexedDoc.sha1.c_str());
-    printf ("\t- size: %lld\n", indexedDoc.size);
+    cout << "\t- size: " << indexedDoc.size << endl;
     const time_t mtime = (const time_t) indexedDoc.mtime;
     printf ("\t- mtime: %s", ctime (&mtime));
     printf ("\t- fragment: %s", indexedDoc.fragment.c_str());

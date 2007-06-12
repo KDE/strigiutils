@@ -7,6 +7,7 @@
 #include "strigi_thread.h"
 #include "fileinputstream.h"
 #include <map>
+#include <iostream>
 #include <sys/stat.h>
 
 using namespace Strigi;
@@ -30,7 +31,8 @@ public:
     ~Private() {
         STRIGI_MUTEX_DESTROY(&updateMutex);
     }
-    int analyzeDir(const string& dir, int nthreads, AnalysisCaller* caller);
+    int analyzeDir(const string& dir, int nthreads, AnalysisCaller* caller,
+        const string& lastToSkip);
     int updateDirs(const vector<string>& dir, int nthreads,
         AnalysisCaller* caller);
     void analyze(StreamAnalyzer*);
@@ -127,12 +129,13 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
     }
 }
 int
-DirAnalyzer::analyzeDir(const string& dir, int nthreads, AnalysisCaller* c) {
-    return p->analyzeDir(dir, nthreads, c);
+DirAnalyzer::analyzeDir(const string& dir, int nthreads, AnalysisCaller* c,
+        const string& lastToSkip) {
+    return p->analyzeDir(dir, nthreads, c, lastToSkip);
 }
 int
 DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
-        AnalysisCaller* c) {
+        AnalysisCaller* c, const string& lastToSkip) {
     caller = c;
     // check if the path is a file
     struct stat s;
@@ -150,6 +153,10 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
     }
 
     lister.startListing(dir);
+    if (lastToSkip.length()) {
+        lister.skipTillAfter(lastToSkip);
+    }
+
     if (nthreads < 1) nthreads = 1;
     vector<StreamAnalyzer*> analyzers(nthreads);
     analyzers[0] = &analyzer;
@@ -187,7 +194,7 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 
     // retrieve the complete list of files
     dbfiles = reader->files(0);
-    fprintf(stderr, "currently %i files\n", dbfiles.size());
+    cerr << "currently " << dbfiles.size() << " files" << endl;
 
     if (nthreads < 1) nthreads = 1;
     vector<StreamAnalyzer*> analyzers(nthreads);
@@ -218,7 +225,7 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 
     // remove the files that were not encountered from the index
     vector<string> todelete(dbfiles.size());
-    fprintf(stderr, "to delete: %i\n", dbfiles.size());
+    cerr << "to delete: " << dbfiles.size() << endl;
     map<string,time_t>::iterator it = dbfiles.begin();
     while (it != dbfiles.end()) {
         todelete.push_back(it->first);

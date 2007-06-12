@@ -75,6 +75,8 @@ public:
              an error occurred
      **/
     int nextFile(const char*& path, time_t& time);
+
+    void skipTillAfter(const std::string& lastToSkip);
     
     std::set<std::string>& getListedDirs();
 };
