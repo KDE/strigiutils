@@ -43,3 +43,21 @@ quick way to parse desktop files according to dfaure:
 [17:57] <dfaure> vandenoever: if you want to populate strigi with the list of installed apps, I suggest KService::allServices()
 [17:57] <dfaure> this will get the list of services (parts and app) out of ksycoca quite fast
 [17:57] <dfaure> much faster than parsing .desktop files.
+
+Graceful Failure Handling
+=========================
+
+The strigidaemon needs to handle gracefully problems occurring in buggy analyzers which 
+cause problems on either normal or possibly malformed data.
+
+    - Crashes when indexing files
+    - Analyzers getting stuck infinite loops when indexing a file
+    - Analyzers using large amounts of CPU time when indexing a file
+    - Analyzers using large amounts of memory when indexing a file
+
+- Remember file and modification time of last file that was being indexed and skip that
+  file in future if it causes the daemon to crash, to prevent the daemon from getting hung up on a particular file.
+
+- Log details of failures in indexing:  File being indexed, indexer being used etc.  Note that strigi may be running with multiple threads, in that case it might not be known exactly which file was being indexed at the time. 
+
+
