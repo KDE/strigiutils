@@ -91,12 +91,12 @@ void IndexManagerTester::addAndCount()
     writer->commit();
     CPPUNIT_ASSERT_ASSERTION_PASS (CPPUNIT_ASSERT(reader));
     int n = reader->countDocuments();
-    
-    char buff [100];
-    if (n != m)
-        snprintf (buff, 100 * sizeof (char), "%i != %i", n, m);
-    
-    CPPUNIT_ASSERT_MESSAGE(buff, n == m);
+
+    str.str("");
+    if (n != m) {
+        str << n << " != " << m;
+    }
+    CPPUNIT_ASSERT_MESSAGE(str.str(), n == m);
 }
 
 void IndexManagerTester::testNumberQuery()
