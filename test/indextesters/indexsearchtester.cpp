@@ -28,9 +28,9 @@
 #include "queryparser.h"
 #include "unittestfunctions.h"
 
-// #include <algorithm>
 #include  <errno.h>
 #include <fstream>
+#include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -136,20 +136,11 @@ void IndexSearchTester::setUp() {
     writer->commit();
     
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
-    if (indexedFilesSize != indexedFiles.size())
-    {
-        char buffer [50];
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFilesSize);
-        
-        string message = "There're ";
-        message += buffer;
-        message += " indexed files instead of ";
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFiles.size());
-        message += buffer;
-        
-        CPPUNIT_FAIL (message);
+    if (indexedFilesSize != indexedFiles.size()) {
+        ostringstream msg;
+        msg << "There are " << indexedFilesSize << " indexed files instead of "
+            << indexedFiles.size();
+        CPPUNIT_FAIL(msg.str());
     }
 }
 
@@ -160,10 +151,7 @@ void IndexSearchTester::tearDown()
     manager = NULL;
     
     // clean up data
-    string cmd = "rm -r ";
-    cmd += indexdir;
-    cmd += " ";
-    cmd += filedir;
+    string cmd = "rm -r " + indexdir + " " + filedir;
     system(cmd.c_str());
 }
 
@@ -175,20 +163,11 @@ void IndexSearchTester::testVariables()
     CPPUNIT_ASSERT_MESSAGE ("filedir empty", !filedir.empty());
     
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
-    if (indexedFilesSize != indexedFiles.size())
-    {
-        char buffer [50];
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFilesSize);
-        
-        string message = "There're ";
-        message += buffer;
-        message += " indexed files instead of ";
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFiles.size());
-        message += buffer;
-        
-        CPPUNIT_FAIL (message);
+    if (indexedFilesSize != indexedFiles.size()) {
+        ostringstream msg;
+        msg << "There are " << indexedFilesSize << " indexed files instead of "
+            << indexedFiles.size();
+        CPPUNIT_FAIL(msg.str());
     }
 }
 
@@ -203,15 +182,10 @@ void IndexSearchTester::testSystemLocationSearchIndexedFile()
     Strigi::Query query = parser.buildQuery("system.location:'testfile01'");
     vector<Strigi::IndexedDocument> matches = reader->query( query, 10, 0);
     
-    if (matches.size() != 1)
-    {
-        char buff[50];
-        snprintf (buff, 50 * sizeof (char), "%i", matches.size());
-        
-        message = "Search returned ";
-        message += buff;
-        message += " matches instead of 1";
-        CPPUNIT_FAIL (message);
+    if (matches.size() != 1) {
+        ostringstream msg;
+        msg << "Search returned " << matches.size() << " matches instead of 1.";
+        CPPUNIT_FAIL(msg.str());
     }
 }
 
@@ -225,15 +199,10 @@ void IndexSearchTester::testSystemLocationSearchUnindexedFile()
     
     Strigi::Query query = parser.buildQuery("system.location:'unindexed'");
     vector<Strigi::IndexedDocument> matches = reader->query( query, 10, 0);
-    if (matches.size() != 0)
-    {
-        char buff[50];
-        snprintf (buff, 50 * sizeof (char), "%i", matches.size());
-        
-        message = "Search returned ";
-        message += buff;
-        message += " matches instead of 0";
-        CPPUNIT_FAIL (message);
+    if (matches.size() != 0) {
+        ostringstream msg;
+        msg << "Search returned " << matches.size() << " matches instead of 0.";
+        CPPUNIT_FAIL(msg.str());
     }
 }
 

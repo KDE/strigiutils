@@ -127,10 +127,10 @@ void IndexManagerTester::testNumberQuery()
     // BEFORE: Strigi::Query q = parser.buildQuery("size:>0", -1, 0);
     Strigi::Query q = parser.buildQuery("size:>0");
     int count = reader->countHits(q);
-    
-    char buff [100];
-    if (count != m)
-        snprintf (buff, 100 * sizeof (char), "%i != %i", count, m);
-    
-    CPPUNIT_ASSERT_MESSAGE(buff, count == m);
+
+    str.str(""); 
+    if (count != m) {
+        str << count << " != " << m;
+    }
+    CPPUNIT_ASSERT_MESSAGE(str.str(), count == m);
 }
