@@ -1,4 +1,4 @@
-set(DIRS eventlistener events xesam)
+set(DIRS eventlistener events xesam queue)
 
 IF(ENABLE_DBUS)
   set(DIRS ${DIRS} dbus)
