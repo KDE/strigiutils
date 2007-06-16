@@ -23,6 +23,7 @@
 #include "textutils.h"
 #include "fileinputstream.h"
 #include "analysisresult.h"
+#include <config.h>
 
 // http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.12.html
 
@@ -112,6 +113,8 @@ void
 MimeEventAnalyzer::Private::parseFiles() {
     vector<string> files;
     files.push_back("/usr/share/mime/magic");
+    //When we install kde into a patch different from /usr
+    files.push_back(MIMEINSTALLDIR "/magic");
 
     vector<string>::const_iterator i;
     for (i = files.begin(); i< files.end(); ++i) {
