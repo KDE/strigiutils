@@ -25,7 +25,7 @@
 
 #if defined(CMAKE_HAVE_PTHREAD_CREATE)
     #include <pthread.h>
-    #define STRIGI_MUTEX_DEFINE(x) pthread_mutex_t x;
+    #define STRIGI_MUTEX_DEFINE(x) pthread_mutex_t x
     #define STRIGI_MUTEX_INIT(x) pthread_mutex_init(x, 0)
     #define STRIGI_MUTEX_DESTROY(x) pthread_mutex_destroy(x)
     #define STRIGI_MUTEX_LOCK(x) pthread_mutex_lock(x)
@@ -61,7 +61,7 @@
 
 class StrigiMutex{
 public:
-    STRIGI_MUTEX_DEFINE(lock)
+    STRIGI_MUTEX_DEFINE(lock);
     StrigiMutex(){
         STRIGI_MUTEX_INIT(&lock);
     }

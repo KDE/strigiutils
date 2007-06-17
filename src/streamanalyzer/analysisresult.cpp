@@ -46,7 +46,7 @@ class Latin1Converter {
     iconv_t const conv;
     char* out;
     size_t outlen;
-    STRIGI_MUTEX_DEFINE(mutex)
+    STRIGI_MUTEX_DEFINE(mutex);
 
     int32_t _fromLatin1(char*& out, const char* data, size_t len);
     Latin1Converter() :conv(iconv_open("UTF-8", "ISO-8859-1")), outlen(0) {

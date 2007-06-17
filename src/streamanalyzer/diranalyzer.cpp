@@ -20,7 +20,7 @@ public:
     AnalyzerConfiguration& config;
     StreamAnalyzer analyzer;
     map<string, time_t> dbfiles;
-    STRIGI_MUTEX_DEFINE(updateMutex)
+    STRIGI_MUTEX_DEFINE(updateMutex);
     AnalysisCaller* caller;
 
     Private(IndexManager& m, AnalyzerConfiguration& c)
