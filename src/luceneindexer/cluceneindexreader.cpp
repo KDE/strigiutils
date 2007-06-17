@@ -94,8 +94,9 @@ CLuceneIndexReader::openReader() {
     doccount = -1;
     wordcount = -1;
     try {
-//        printf("reader at %s\n", dbdir.c_str());
         reader = lucene::index::IndexReader::open(dbdir.c_str());
+        //fprintf(stderr,
+        //"reader at %s: %i\n", dbdir.c_str(), reader->numDocs());
     } catch (CLuceneError& err) {
         fprintf(stderr, "could not create reader %s: %s\n", dbdir.c_str(),
             err.what());
@@ -361,7 +362,9 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     max += off;
     if (max < 0) max = s;
     if (max > s) max = s;
-    results.reserve(max-off);
+    if (max > off) {
+        results.reserve(max-off);
+    }
     for (int i = off; i < max; ++i) {
         Document *d = &hits->doc(i);
         IndexedDocument doc;

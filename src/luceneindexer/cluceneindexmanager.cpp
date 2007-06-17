@@ -27,6 +27,7 @@
 #include <CLucene.h>
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
+#include <iostream>
 #include <sys/types.h>
 #include <time.h>
 #include "timeofday.h"
@@ -130,6 +131,8 @@ CLuceneIndexManager::openWriter(bool truncate) {
 void
 CLuceneIndexManager::closeWriter() {
     if (indexwriter == 0) return;
+    // close all readers, so they will be reopenened with the fresh data
+    refreshReaders();
     try {
         indexwriter->close();
         delete indexwriter;
@@ -139,7 +142,6 @@ CLuceneIndexManager::closeWriter() {
     indexwriter = 0;
     // clear the cache
     //bitsets.clear();
-    refreshReaders();
 }
 void
 CLuceneIndexManager::refreshReaders() {

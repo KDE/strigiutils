@@ -145,19 +145,23 @@ int
 DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         AnalysisCaller* c, const string& lastToSkip) {
     caller = c;
-    // check if the path is a file
+    // check if the path exists and if it is a file or a directory
     struct stat s;
-    if (stat(dir.c_str(), &s) == -1) return -1;
-
-    if (S_ISREG(s.st_mode)) {
-        AnalysisResult analysisresult(dir, s.st_mtime,
-            *manager.indexWriter(), analyzer);
-        FileInputStream file(dir.c_str());
-        if (file.status() == Ok) {
-            return analysisresult.index(&file);
-        } else {
-            return analysisresult.index(0);
+    int retval = stat(dir.c_str(), &s);
+    time_t mtime = (retval == -1) ?0 :s.st_mtime;
+    if (retval == -1 || S_ISREG(s.st_mode)) {
+        { // at the end of this block the analysisresult is deleted and indexed
+            AnalysisResult analysisresult(dir, mtime, *manager.indexWriter(),
+                analyzer);
+            FileInputStream file(dir.c_str());
+            if (file.status() == Ok) {
+                retval = analysisresult.index(&file);
+            } else {
+                retval = analysisresult.index(0);
+            }
         }
+        manager.indexWriter()->commit();
+        return retval;
     }
 
     lister.startListing(dir);
@@ -185,6 +189,7 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         STRIGI_THREAD_JOIN(threads[i-1]);
         delete analyzers[i];
     }
+    manager.indexWriter()->commit();
     return 0;
 }
 int
