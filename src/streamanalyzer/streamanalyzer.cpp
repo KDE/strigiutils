@@ -291,7 +291,6 @@ StreamAnalyzerPrivate::initializeEndFactories() {
         = moduleLoader->streamEndAnalyzerFactories();
     list<StreamEndAnalyzerFactory*>::iterator i;
     for (i = plugins.begin(); i != plugins.end(); ++i) {
-        fprintf(stderr, "adding %s\n", (*i)->name());
         addFactory(*i);
     }
     addFactory(new Bz2EndAnalyzerFactory());

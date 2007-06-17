@@ -1,5 +1,6 @@
 add_subdirectory(throughplugins)
 add_subdirectory(lineplugins)
+add_subdirectory(endplugins)
 add_subdirectory(tests)
 add_subdirectory(fieldproperties)
 
@@ -39,6 +40,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/gzipendanalyzer.cpp
 	endanalyzers/helperendanalyzer.cpp
 	endanalyzers/mailendanalyzer.cpp
+	endanalyzers/mpegendanalyzer.cpp   
 	endanalyzers/oleendanalyzer.cpp
 	endanalyzers/pdfendanalyzer.cpp
 	endanalyzers/pngendanalyzer.cpp
@@ -46,7 +48,6 @@ set(streamanalyzer_SRCS
 	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
-    endanalyzers/mpegendanalyzer.cpp   
 )
 
 #IF(WIN32)
