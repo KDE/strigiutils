@@ -149,6 +149,7 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
     FileInputStream f(file.c_str());
     const char* data;
     int32_t nread = f.read(data, 12, 12);
+    if (nread <= 0) return; // file does not exist or contains no data
     if (nread != 12 || memcmp(data, "MIME-Magic\0\n", 12) != 0) {
         // cannot read this magic file
         fprintf(stderr, "'%s' is not a valid magic file.\n", file.c_str());
