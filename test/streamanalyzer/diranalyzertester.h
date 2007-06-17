@@ -45,7 +45,7 @@ namespace strigiunittest
             std::string backend;
             std::string indexdir;
             std::string filedir;
-            std::string separator;
+            static const std::string separator;
             std::map<std::string,std::string> indexedFiles; //!< map with key = file name, and value = file contents
 
         public:

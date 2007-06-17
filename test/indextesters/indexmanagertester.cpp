@@ -24,6 +24,7 @@
 #include "indexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"
+#include "fieldtypes.h"
 #include "query.h"
 #include "queryparser.h"
 
@@ -36,6 +37,7 @@
 #endif
 
 using namespace std;
+using namespace Strigi;
 using namespace strigiunittest;
 
 void IndexManagerTester::setUp()
@@ -85,7 +87,7 @@ void IndexManagerTester::addAndCount()
     for (int i=0; i<m; ++i) {
         str << "/" << i;
         string s(str.str());
-        { Strigi::AnalysisResult idx(s, 0, *writer, *si); }
+        { AnalysisResult idx(s, 0, *writer, *si); }
         str.str("");
     }
     writer->commit();
@@ -115,17 +117,15 @@ void IndexManagerTester::testNumberQuery()
         string value(str.str());
         string name('/'+value);
         {
-            Strigi::AnalysisResult idx(name, 0, *writer, *si);
+            AnalysisResult idx(name, 0, *writer, *si);
             idx.addValue(idx.config().fieldRegister().sizeField, value);
         }
         str.str("");
     }
     writer->commit();
-    Strigi::QueryParser parser;
+    QueryParser parser;
 
-    //TODO: ask Jos if it is correct
-    // BEFORE: Strigi::Query q = parser.buildQuery("size:>0", -1, 0);
-    Strigi::Query q = parser.buildQuery("size:>0");
+    Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
     int count = reader->countHits(q);
 
     str.str(""); 

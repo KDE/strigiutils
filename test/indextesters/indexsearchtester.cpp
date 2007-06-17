@@ -119,8 +119,7 @@ void IndexSearchTester::setUp() {
     Strigi::IndexWriter* writer = manager->indexWriter();
     streamindexer->setIndexWriter(*writer);
 //     Strigi::DirAnalyzer* analyzer = new Strigi::DirAnalyzer(*manager, config);
-
-    
+ 
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++)
     {

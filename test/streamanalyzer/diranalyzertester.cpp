@@ -29,66 +29,59 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 using namespace strigiunittest;
 
+#ifdef _WIN32
+    const string DirAnalyzerTester::separator = "\\";
+#else
+    const string DirAnalyzerTester::separator = "/";
+#endif
+
 void DirAnalyzerTester::setUp() {
     char buff[13];
     char* dirname;
-    string separator;
-    
+
     // generate index dir name
     strcpy(buff, "strigiXXXXXX");
     dirname = mkdtemp(buff);
-    
-    if (dirname == NULL)
-    {
-        printf ("Error creating temporary directory for index because of: ");
-        printf ("%s\n", strerror (errno));
 
+    if (dirname == NULL) {
+        cerr << "Error creating temporary directory for index because of: "
+            << strerror(errno) << endl;
         return;
-    }
-    else
-    {
-        printf ("created index dir: %s\n", dirname);
+    } else {
+        //cout << "created index dir: " << dirname << endl;
         indexdir.assign(dirname);
     }
-    
+
     // generate indexed docs name
     strcpy(buff, "strigiXXXXXX");
     dirname = mkdtemp(buff);
 
-    if (dirname == NULL)
-    {
-        printf ("Error creating temporary directory for indexed docs because of: ");
-        printf ("%s\n", strerror (errno));
+    if (dirname == NULL) {
+        cerr << "Error creating temporary directory for indexed docs: "
+            << strerror(errno) << endl;
         return;
-    }
-    else
-    {
-        printf ("created dir for testing documents: %s\n", dirname);
+    } else {
+        //cout << "created dir for testing documents: " << dirname << endl;
         filedir.assign(dirname);
     }
-
-#ifdef _WIN32
-    separator = "\\";
-#else
-    separator = "/";
-#endif
 
     // prepare files to be indexed
     string filename;
     string filecontents;
-    
+
     filename = "testfile01";
     filecontents = "this is a simple test file";
     indexedFiles.insert (make_pair<string, string> (filename, filecontents));
-    
+
     filename = "testfile02";
     filecontents = "unit testing example";
     indexedFiles.insert (make_pair<string, string> (filename, filecontents));
-    
+
     // create files on file system
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++)
@@ -96,17 +89,15 @@ void DirAnalyzerTester::setUp() {
         string fullpath = filedir + separator + iter->first;
 
         ofstream file;
-        file.open( fullpath.c_str());
-        if (file.is_open())
-        {
+        file.open(fullpath.c_str());
+        if (file.is_open()) {
             file << iter->second;
             file.close();
+        } else {
+            cerr << "error during creation of file " << fullpath;
         }
-        else
-            fprintf (stderr, "error during creation of file %s\n",
-                     fullpath.c_str());
     }
-    
+
     manager = getIndexManager(backend, indexdir);
 }
 
@@ -115,7 +106,7 @@ void DirAnalyzerTester::tearDown()
     if (manager)
         delete manager;
     manager = NULL;
-    
+
     // clean up data
     string cmd = "rm -r ";
     cmd += indexdir;
@@ -129,57 +120,42 @@ void DirAnalyzerTester::testVariables()
     CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
     CPPUNIT_ASSERT_MESSAGE ("backend empty", !backend.empty());
     CPPUNIT_ASSERT_MESSAGE ("indexdir empty", !indexdir.empty());
-    
+
+    // THIS TEST IS BROKEN: you cannot expect documents without indexing them
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
-    if (indexedFilesSize != indexedFiles.size())
-    {
-        char buffer [50];
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFilesSize);
-        
-        string message = "There're ";
-        message += buffer;
-        message += " indexed files instead of ";
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFiles.size());
-        message += buffer;
-        
-        CPPUNIT_FAIL (message);
+    if (indexedFilesSize != indexedFiles.size()) {
+        ostringstream msg;
+        msg << "There are " << indexedFilesSize << " indexed files instead of "
+            << indexedFiles.size();
+        //CPPUNIT_FAIL(msg.str());
     }
 }
 
 void DirAnalyzerTester::testCreateIndex()
 {
     CPPUNIT_ASSERT_MESSAGE ("manager == null", manager);
-    
+
     Strigi::AnalyzerConfiguration config;
     Strigi::DirAnalyzer* analyzer = new Strigi::DirAnalyzer(*manager, config);
-    
+
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++)
     {
-        string temp = indexdir + separator + iter->first;
-        fprintf (stderr, "going to index %s\n", temp.c_str());
-        analyzer->analyzeDir (indexdir + separator + iter->first, 1);
+        string path = filedir + separator + iter->first;
+        // cerr << "going to index " << path << endl;
+        int retval = analyzer->analyzeDir(path, 1);
+        CPPUNIT_ASSERT_MESSAGE("Error indexing "+path, retval == 0);
     }
-    
     delete analyzer;
-    
+
+    CPPUNIT_ASSERT_MESSAGE("Not all documents were indexed.",
+        manager->indexReader()->countDocuments() == indexedFiles.size());
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
-    if (indexedFilesSize != indexedFiles.size())
-    {
-        char buffer [50];
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFilesSize);
-        
-        string message = "There're ";
-        message += buffer;
-        message += " indexed files instead of ";
-        
-        snprintf (buffer, 50*sizeof(char), "%i", indexedFiles.size());
-        message += buffer;
-        
-        CPPUNIT_FAIL (message);
+    if (indexedFilesSize != indexedFiles.size()) {
+        ostringstream msg;
+        msg << "There are " << indexedFilesSize << " indexed files instead of "
+            << indexedFiles.size();
+        CPPUNIT_FAIL(msg.str());
     }
 }
 
