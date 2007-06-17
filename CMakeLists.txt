@@ -88,6 +88,7 @@ endif (NOT LIBXML2_FOUND AND NOT Expat_FOUND)
 
 find_package(CLucene)
 find_package(HyperEstraier)
+find_package(Exiv2)
 if(ENABLE_SQLITE)
   find_package(SQLite)
 endif(ENABLE_SQLITE)
