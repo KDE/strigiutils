@@ -25,6 +25,12 @@
 	<rdfs:comment>Object comment</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&xesam;isEncrypted">
+	<rdfs:label>xesam:isEncrypted</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;DataObject"/>
+	<rdfs:comment>Is DataObject encrypted</rdfs:comment>
+</rdf:Property>
+
 
 
 
@@ -117,7 +123,7 @@
 <rdf:Property rdf:about="&xesam;contains">
 	<rdfs:label>xesam:contains</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Content"/>
-	<rdfs:subPropertyOf rdf:resource="&xesam;related"/>
+	<rdfs:subPropertyOf rdf:resource="&xesam;depends"/>
 	<rdfs:comment>Containment relation</rdfs:comment>
 </rdf:Property>
 
@@ -197,14 +203,14 @@
 	<rdfs:comment>Content ID</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;created">
-	<rdfs:label>xesam:created</rdfs:label>
+<rdf:Property rdf:about="&xesam;contentCreated">
+	<rdfs:label>xesam:contentCreated</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Content"/>
 	<rdfs:comment>Content creation time</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;modified">
-	<rdfs:label>xesam:modified</rdfs:label>
+<rdf:Property rdf:about="&xesam;contentModified">
+	<rdfs:label>xesam:contentModified</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Content"/>
 	<rdfs:comment>Content last modification time</rdfs:comment>
 </rdf:Property>
@@ -254,6 +260,12 @@
 	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
 	<rdfs:label>xesam:Archive</rdfs:label>
 	<rdfs:comment>Generic folder</rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="&xesam;Project">
+	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
+	<rdfs:label>xesam:Project</rdfs:label>
+	<rdfs:comment>Generic project</rdfs:comment>
 </rdfs:Class>
 
 <rdfs:Class rdf:about="&xesam;MediaList">
@@ -441,10 +453,10 @@
 	<rdfs:comment>Event location</rdfs:comment>
 </rdf:Property>
 
-<rdfs:Class rdf:about="&xesam;Todo">
+<rdfs:Class rdf:about="&xesam;Task">
 	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:Todo</rdfs:label>
-	<rdfs:comment>Todo</rdfs:comment>
+	<rdfs:label>xesam:Task</rdfs:label>
+	<rdfs:comment>Task</rdfs:comment>
 </rdfs:Class>
 
 <rdfs:Class rdf:about="&xesam;Journal">
@@ -694,6 +706,23 @@
 	<rdfs:comment>Visual content interlace mode</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&xesam;colorSpace">
+	<rdfs:label>xesam:colorSpace</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Visual"/>
+	<rdfs:comment>Visual content color space(RGB, CMYK etc)</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;pixelFormat">
+	<rdfs:label>xesam:pixelFormat</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Visual"/>
+	<rdfs:comment>Visual content pixel format</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;colorCount">
+	<rdfs:label>xesam:colorCount</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Visual"/>
+	<rdfs:comment>Visual content color count for palettes</rdfs:comment>
+</rdf:Property>
 
 
 
@@ -824,39 +853,29 @@
 
 <rdfs:Class rdf:about="&xesam;Video">
 	<rdfs:subClassOf rdf:resource="&xesam;Visual"/>
+	<rdfs:subClassOf rdf:resource="&xesam;Audio"/>
 	<rdfs:label>xesam:Video</rdfs:label>
 	<rdfs:comment>Video content</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&xesam;audioCodec">
-	<rdfs:label>xesam:audioCodec</rdfs:label>
+<rdf:Property rdf:about="&xesam;videoCodec">
+	<rdfs:label>xesam:videoCodec</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Video"/>
-	<rdfs:comment>Video audio codec</rdfs:comment>
+	<rdfs:comment>Video codec</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;audioCodecType">
-	<rdfs:label>xesam:audioCodecType</rdfs:label>
+<rdf:Property rdf:about="&xesam;videoCodecType">
+	<rdfs:label>xesam:videoCodecType</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Video"/>
-	<rdfs:comment>Video audio codec type</rdfs:comment>
+	<rdfs:comment>Video codec type</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;audioBitrate">
-	<rdfs:label>xesam:audioBirate</rdfs:label>
+<rdf:Property rdf:about="&xesam;videoBitrate">
+	<rdfs:label>xesam:videoBirate</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Video"/>
-	<rdfs:comment>Video audio Bitrate</rdfs:comment>
+	<rdfs:comment>Video Bitrate</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;audioChannels">
-	<rdfs:label>xesam:audioChannels</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Video"/>
-	<rdfs:comment>Video audio channels</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;audioSampleRate">
-	<rdfs:label>xesam:audioSampleRate</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Video"/>
-	<rdfs:comment>Video audio sample rate</rdfs:comment>
-</rdf:Property>
 
 
 
@@ -867,7 +886,41 @@
 	<rdfs:comment>Audio</rdfs:comment>
 </rdfs:Class>
 
+<rdf:Property rdf:about="&xesam;audioCodec">
+	<rdfs:label>xesam:audioCodec</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio codec</rdfs:comment>
+</rdf:Property>
 
+<rdf:Property rdf:about="&xesam;audioCodecType">
+	<rdfs:label>xesam:audioCodecType</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio codec type</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;audioBitrate">
+	<rdfs:label>xesam:audioBirate</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio Bitrate</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;audioChannels">
+	<rdfs:label>xesam:audioChannels</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio channels</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;audioSampleRate">
+	<rdfs:label>xesam:audioSampleRate</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio sample rate</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;audioSampleFormat">
+	<rdfs:label>xesam:audioSampleFormat</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Audio"/>
+	<rdfs:comment>Audio sample rate</rdfs:comment>
+</rdf:Property>
 
 
 
@@ -884,8 +937,8 @@
 	<rdfs:comment>Visual content</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&xesam;name">
-	<rdfs:label>xesam:name</rdfs:label>
+<rdf:Property rdf:about="&xesam;contactName">
+	<rdfs:label>xesam:contactName</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
 	<rdfs:comment>Contact name</rdfs:comment>
 </rdf:Property>
@@ -1077,6 +1130,53 @@
 
 
 
+<rdfs:Class rdf:about="&xesam;FileSystem">
+	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
+	<rdfs:label>xesam:FileSystem</rdfs:label>
+	<rdfs:comment>Generic file system</rdfs:comment>
+</rdfs:Class>
+
+<rdf:Property rdf:about="&xesam;fileSystemType">
+	<rdfs:label>xesam:fileSystemType</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;FileSystem"/>
+	<rdfs:comment>Files system type e.g. ext3</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;mountPoint">
+	<rdfs:label>xesam:mountPoint</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;FileSystem"/>
+	<rdfs:comment>Files system mount point</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;totalSpace">
+	<rdfs:label>xesam:totalSpace</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;FileSystem"/>
+	<rdfs:comment>Files system total space</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;freeSpace">
+	<rdfs:label>xesam:freeSpace</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;FileSystem"/>
+	<rdfs:comment>Files system free space</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;occupiedSpace">
+	<rdfs:label>xesam:occupiedSpace</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;FileSystem"/>
+	<rdfs:comment>Files system occupied space</rdfs:comment>
+</rdf:Property>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <rdfs:Class rdf:about="&xesam;Source">
 	<rdfs:subClassOf rdf:resource="&xesam;DataObject"/>
@@ -1084,10 +1184,34 @@
 	<rdfs:comment>Generic storage</rdfs:comment>
 </rdfs:Class>
 
+<rdf:Property rdf:about="&xesam;name">
+	<rdfs:label>xesam:name</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>Name provided by container</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;url">
+	<rdfs:label>xesam:url</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>URL to access the content</rdfs:comment>
+</rdf:Property>
+
 <rdf:Property rdf:about="&xesam;storageSize">
 	<rdfs:label>xesam:storageSize</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
 	<rdfs:comment>Space occupied by the object in the source storage</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;sourceCreated">
+	<rdfs:label>xesam:sourceCreated</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>Local copy creation time</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;sourceModified">
+	<rdfs:label>xesam:sourceModified</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>Local copy modification time</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;hash">
@@ -1116,6 +1240,57 @@
 	<rdfs:comment>MD5 hash</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&xesam;userComment">
+	<rdfs:label>xesam:userComment</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;comment"/>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>User comment</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;userKeyword">
+	<rdfs:label>xesam:userKeyword</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;keyword"/>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>User keywords</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;rating">
+	<rdfs:label>xesam:rating</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>User rating of the object</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;usageIntensity">
+	<rdfs:label>xesam:usageIntensity</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>User intensity of usage of the object</rdfs:comment>
+</rdf:Property>
+
+
+
+
+
+
+
+
+
+<rdfs:Class rdf:about="&xesam;Partition">
+	<rdfs:subClassOf rdf:resource="&xesam;Source"/>
+	<rdfs:label>xesam:Partition</rdfs:label>
+	<rdfs:comment>Generic disk partition</rdfs:comment>
+</rdfs:Class>
+
+<rdf:Property rdf:about="&xesam;device">
+	<rdfs:label>xesam:device</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Partition"/>
+	<rdfs:comment>Partition device</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;uuid">
+	<rdfs:label>xesam:uuid</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Partition"/>
+	<rdfs:comment>Partition uuid</rdfs:comment>
+</rdf:Property>
 
 
 
@@ -1150,10 +1325,10 @@
 	<rdfs:comment>File deleted to trash</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&xesam;deletionDate">
-	<rdfs:label>xesam:deletionDate</rdfs:label>
+<rdf:Property rdf:about="&xesam;deletionTime">
+	<rdfs:label>xesam:deletionTime</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;DeletedFile"/>
-	<rdfs:comment>File deletion date</rdfs:comment>
+	<rdfs:comment>File deletion time</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;originalLocation">
@@ -1186,6 +1361,7 @@
 
 <rdf:Property rdf:about="&xesam;isPasswordProtected">
 	<rdfs:label>xesam:isPasswordProtected</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;isEncrypted"/>
 	<rdfs:domain rdf:resource="&xesam;ArchiveItem"/>
 	<rdfs:comment>Is the archive item protected by a password</rdfs:comment>
 </rdf:Property>
@@ -1223,38 +1399,6 @@
 
 
 
-<rdfs:Class rdf:about="&xesam;User">
-	<rdfs:subClassOf rdf:resource="&xesam;Source"/>
-	<rdfs:label>xesam:User</rdfs:label>
-	<rdfs:comment>Generic user-specific data/annotations</rdfs:comment>
-</rdfs:Class>
-
-<rdf:Property rdf:about="&xesam;userComment">
-	<rdfs:label>xesam:userComment</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;comment"/>
-	<rdfs:domain rdf:resource="&xesam;User"/>
-	<rdfs:comment>User comment</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;userKeyword">
-	<rdfs:label>xesam:userKeyword</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;keyword"/>
-	<rdfs:domain rdf:resource="&xesam;User"/>
-	<rdfs:comment>User keywords</rdfs:comment>
-</rdf:Property>
-
-
-<rdf:Property rdf:about="&xesam;rating">
-	<rdfs:label>xesam:rating</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;User"/>
-	<rdfs:comment>User rating of the object</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;usageIntensity">
-	<rdfs:label>xesam:usageIntensity</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;User"/>
-	<rdfs:comment>User intensity of usage of the object</rdfs:comment>
-</rdf:Property>
 
 
 
