@@ -26,6 +26,7 @@ namespace Strigi {
     class IndexManager;
 }
 
+class JobQueue;
 class XesamSearch;
 class XesamLiveSearch : public XesamLiveSearchInterface {
 private:
@@ -33,7 +34,7 @@ private:
     class Private;
     Private* const p;
 public:
-    XesamLiveSearch(Strigi::IndexManager*);
+    XesamLiveSearch(Strigi::IndexManager*, JobQueue&);
     ~XesamLiveSearch();
 
     void addInterface(XesamLiveSearchInterface* i) {
@@ -69,6 +70,7 @@ public:
     // internal
     void addSearch(const std::string&, XesamSearch*);
     void removeSearch(const std::string&);
+    JobQueue& queue() const;
 };
 
 #endif

@@ -28,13 +28,14 @@ using namespace std;
 
 class XesamLiveSearch::Private {
 public:
-    XesamLiveSearch& xesam;
     map<string, XesamSession*> sessions;
     map<string, XesamSearch*> searches;
+    XesamLiveSearch& xesam;
+    JobQueue& queue;
     Strigi::IndexManager* const indexManager;
 
-    Private(XesamLiveSearch& x, Strigi::IndexManager* i)
-        :xesam(x), indexManager(i) {}
+    Private(XesamLiveSearch& x, Strigi::IndexManager* i, JobQueue& q)
+        :xesam(x), queue(q), indexManager(i) {}
     ~Private();
 };
 XesamLiveSearch::Private::~Private() {
@@ -44,8 +45,8 @@ XesamLiveSearch::Private::~Private() {
         delete i->second;
     }
 }
-XesamLiveSearch::XesamLiveSearch(Strigi::IndexManager* i)
-        :XesamLiveSearchInterface(this), p(new Private(*this, i)) {}
+XesamLiveSearch::XesamLiveSearch(Strigi::IndexManager* i, JobQueue& q)
+        :XesamLiveSearchInterface(this), p(new Private(*this, i, q)) {}
 XesamLiveSearch::~XesamLiveSearch() {
     delete p;
 }
@@ -176,4 +177,8 @@ XesamLiveSearch::removeSearch(const std::string& name) {
 Strigi::IndexManager*
 XesamLiveSearch::indexManager() const {
     return p->indexManager;
+}
+JobQueue&
+XesamLiveSearch::queue() const {
+    return p->queue;
 }

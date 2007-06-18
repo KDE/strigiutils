@@ -50,6 +50,7 @@ add_executable(strigidaemon
 	socketserver.cpp
 	strigilogging.h
 	strigithread.cpp
+	queue/jobqueue.cpp
 )
 
 #add_executable(strigiconfupdater configupdater.cpp strigilogging.h)

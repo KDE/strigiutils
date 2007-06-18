@@ -45,7 +45,7 @@ print dbusToStr(xesam.SetProperty(session, "vendor.display", "0wn3d"))
 print dbusToStr(xesam.SetProperty(session, "vendor.xesam", "3"))
 print dbusToStr(xesam.SetProperty(session, "vendor.fieldnames", ["uri", "hi"]))
 print dbusToStr(xesam.SetProperty(session, "vendor.extensions", ["uri"]))
-for i in range(10000):
+for i in range(1):
     xesam.GetHits(search, 3)
     xesam.CountHits(search)
 print xesam.GetHits(search, 3)

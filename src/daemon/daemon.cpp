@@ -25,6 +25,7 @@
 #include "indexscheduler.h"
 #include "analyzerconfiguration.h"
 #include "xesamlivesearch.h"
+#include "queue/jobqueue.h"
 
 #if defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
@@ -203,8 +204,9 @@ main(int argc, char** argv) {
 //    threads.push_back(&scheduler);
     scheduler.start(20);
 
+    JobQueue queue(10);
     Interface interface(*index, scheduler);
-    XesamLiveSearch xesam(index);
+    XesamLiveSearch xesam(index, queue);
 
     EventListener* listener = NULL;
 

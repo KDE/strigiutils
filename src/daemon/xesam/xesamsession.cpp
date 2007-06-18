@@ -20,7 +20,7 @@
 #include "xesamsession.h"
 #include "xesamsearch.h"
 #include "xesamlivesearch.h"
-#include <cstdlib>
+#include <sstream>
 using namespace std;
 
 XesamSession::XesamSession(XesamLiveSearch& x) :xesam(x),
@@ -99,8 +99,9 @@ XesamSession::~XesamSession() {
 }
 const std::string&
 XesamSession::newSearch(const std::string& query_xml) {
-    string name("XXXXXX");
-    mkstemp((char*)name.c_str());
+    ostringstream str;
+    str << "strigisession" << random();
+    string name(str.str());
     XesamSearch* search = new XesamSearch(*this, name, query_xml);
     searches.push_back(search);
     xesam.addSearch(name, search);

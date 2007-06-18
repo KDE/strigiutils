@@ -25,13 +25,17 @@
 #include "queryparser.h"
 #include "variant.h"
 #include "queryparser.h"
+#include "queue/jobqueue.h"
 using namespace std;
 
 XesamSearch::XesamSearch(XesamSession& s, const std::string& n,
-        const std::string& q) :name(n), queryString(q), query(Strigi::QueryParser::buildQuery(q)), session(s) {
+        const std::string& q)
+        :name(n), queryString(q), query(Strigi::QueryParser::buildQuery(q)),
+         session(s) {
 }
 int32_t
 XesamSearch::countHits() {
+    session.liveSearch().queue().addJob(0);
     return session.liveSearch().indexManager()->indexReader()->countHits(query);
 }
 vector<vector<Variant> >
