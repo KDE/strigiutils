@@ -7,6 +7,22 @@ Description=IUPAC International Chemical Identifier
 Comment=http://www.iupac.org/inchi/
 
 [Field]
+Uri=chemistry.pubchem_cid
+ParentUri=content.ID
+Name=Pubchem CID
+TypeUri=integer
+Description=Pubchem Compound ID
+Comment=
+
+[Field]
+Uri=chemistry.name
+ParentUri=content.title
+Name=Name
+TypeUri=string
+Description=IUPAC Name
+Comment=
+
+[Field]
 Uri=chemistry.molecular_formula
 Name=Molecular Formula
 TypeUri=string
@@ -19,7 +35,7 @@ Uri=chemistry.molecular_weight
 Name=Molecular Weight
 TypeUri=string
 Description=Molecular Weight
-Comment=
+Comment=unit g/mol
 
 [Field]
 Uri=chemistry.pdbid
@@ -30,11 +46,58 @@ Description=Identifier used for proteins in the PDB database.
 Comment=
 
 [Field]
+Uri=chemistry.experimental_method
+Name=Experimental Method
+TypeUri=string
+Description=Experimental Method: NMR, X-Ray
+Comment=
+
+[Field]
+Uri=chemistry.classification
+Name=Classification
+TypeUri=string
+Description=Classification of the molecule
+Comment=e.g. it could be a protein class
+
+[Field]
 Uri=chemistry.xray_resolution
 Name=X-Ray Resolution
 TypeUri=string
 Description=Resolution of the X-Ray data for crystal structures.
 Comment=
+
+[Field]
+Uri=chemistry.ph
+Name=pH
+TypeUri=float
+Description=experimental pH value
+Comment=
+
+[Field]
+Uri=chemistry.temperature
+Name=Temperature
+TypeUri=float
+Description=Experimental temperature
+Comment=in degrees Kelvin
+
+[Field]
+Uri=chemistry.crystal_space_group
+Name=Crystal Space Group
+TypeUri=string
+Description=
+Comment=
+
+[Field]
+Uri=chemistry.conformer_count
+Name=Conformer Count
+TypeUri=integer
+Description=The total number of conformers in the document.
+
+[Field]
+Uri=chemistry.chain_count
+Name=Chain Count
+TypeUri=integer
+Description=The total number of polymer chains in the document.
 
 [Field]
 Uri=chemistry.atom_count
