@@ -36,7 +36,7 @@ public:
     XesamSearch(XesamSession& s, const std::string& n,
         const std::string& query);
     ~XesamSearch() { }
-    int32_t countHits();
+    void countHits(void* msg);
     std::vector<std::vector<Variant> > getHits(int32_t num);
     std::vector<std::vector<Variant> > getHitData(
         const std::vector<int32_t>& hit_ids,

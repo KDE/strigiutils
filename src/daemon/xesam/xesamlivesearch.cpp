@@ -52,7 +52,9 @@ XesamLiveSearch::~XesamLiveSearch() {
 }
 string
 XesamLiveSearch::NewSession() {
-    string name("XXXXXX");
+    ostringstream str;
+    str << "strigisession" << random();
+    string name(str.str());
     mkstemp((char*)name.c_str());
     XesamSession* session = new XesamSession(*this);
     p->sessions.insert(make_pair(name, session));
@@ -97,13 +99,12 @@ XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
 }
 void
 XesamLiveSearch::CountHits(void* msg, const string& search) {
-    int32_t count = 0;
     map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        count = i->second->countHits();
+        i->second->countHits(msg);
     }
-    CountHitsResponse(msg, count);
-    HitsAdded(search, 10);
+    //CountHitsResponse(msg, count);
+    //HitsAdded(search, 10);
 }
 void
 XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {

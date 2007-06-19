@@ -100,7 +100,7 @@ XesamSession::~XesamSession() {
 const std::string&
 XesamSession::newSearch(const std::string& query_xml) {
     ostringstream str;
-    str << "strigisession" << random();
+    str << "strigisearch" << random();
     string name(str.str());
     XesamSearch* search = new XesamSearch(*this, name, query_xml);
     searches.push_back(search);

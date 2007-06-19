@@ -104,7 +104,11 @@ JobThread::waitTillFinished() {
 }
 JobQueue::JobQueue(uint nthreads) :p(new Private(nthreads)) {}
 JobQueue::~JobQueue() { delete p; }
-void JobQueue::addJob(Job* job) { p->addJob(job); }
+bool
+JobQueue::addJob(Job* job) {
+    p->addJob(job);
+    return true;
+}
 
 JobQueue::Private::Private(uint nthreads) :keeprunning(true) {
     pthread_cond_init(&cond, 0);

@@ -26,17 +26,39 @@
 #include "variant.h"
 #include "queryparser.h"
 #include "queue/jobqueue.h"
+#include "queue/job.h"
+#include <iostream>
 using namespace std;
+
+class CountJob : public Job {
+public:
+    XesamSearch& search;
+    void* msg;
+    CountJob(XesamSearch& s, void* m) :search(s), msg(m) {}
+    ~CountJob() {
+    }
+    void run() {
+        //int count = search.session.liveSearch().indexManager()->indexReader()
+        //    ->countHits(search.query);
+        sleep(5);
+        cerr << "going to reply" << endl;
+        search.session.liveSearch().CountHitsResponse(msg, 10);
+    }
+};
 
 XesamSearch::XesamSearch(XesamSession& s, const std::string& n,
         const std::string& q)
         :name(n), queryString(q), query(Strigi::QueryParser::buildQuery(q)),
          session(s) {
 }
-int32_t
-XesamSearch::countHits() {
-    session.liveSearch().queue().addJob(0);
-    return session.liveSearch().indexManager()->indexReader()->countHits(query);
+void
+XesamSearch::countHits(void* msg) {
+    CountJob* job = new CountJob(*this, msg);
+    if (!session.liveSearch().queue().addJob(job)) {
+        delete job;
+    }
+    //session.liveSearch().CountHitsResponse(msg, 10);
+//    return session.liveSearch().indexManager()->indexReader()->countHits(query);
 }
 vector<vector<Variant> >
 XesamSearch::getHits(int32_t num) {

@@ -29,7 +29,7 @@ private:
 public:
    JobQueue(unsigned int n=20);
    ~JobQueue();
-   void addJob(Job* job);
+   bool addJob(Job* job);
 };
 
 #endif
