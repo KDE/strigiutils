@@ -23,7 +23,7 @@ MACRO(ADD_STRIGIEA libname files)
 ENDMACRO(ADD_STRIGIEA)
 
 if(EXIV2_FOUND)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXIV2_DEFINITIONS} -fexceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
   include_directories(${EXIV2_INCLUDE_DIR})
   ADD_STRIGIEA(jpeg jpegendanalyzer.cpp)
   target_link_libraries(jpeg ${EXIV2_LIBRARIES})
