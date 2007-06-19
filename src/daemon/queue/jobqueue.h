@@ -25,11 +25,13 @@ class JobQueue {
 public:
    class Private;
 private:
-   Private* const p;
+   Private* p;
 public:
    JobQueue(unsigned int n=20);
    ~JobQueue();
+   void stop();
    bool addJob(Job* job);
+   void nudge();
 };
 
 #endif

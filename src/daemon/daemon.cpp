@@ -202,9 +202,10 @@ main(int argc, char** argv) {
 
     // start the indexer thread
 //    threads.push_back(&scheduler);
+    // start with low priority
     scheduler.start(20);
 
-    JobQueue queue(10);
+    JobQueue queue(2);
     Interface interface(*index, scheduler);
     XesamLiveSearch xesam(index, queue);
 
@@ -245,7 +246,11 @@ main(int argc, char** argv) {
     server.setSocketName(socketpath.c_str());
 
     server.listen();
+    // stop the listener threads
     StrigiThread::stopThreads();
+
+    // stop the queue, so it will free memory and stop accepting new jobs
+    queue.stop();
 
     //save indexed dirs
     dirs = scheduler.getIndexedDirectories();

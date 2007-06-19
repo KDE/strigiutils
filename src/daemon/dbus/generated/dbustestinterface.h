@@ -2,6 +2,7 @@
 #ifndef DBUSTESTINTERFACE_H
 #define DBUSTESTINTERFACE_H
 #include "/home/oever/code/strigi/src/daemon/dbus/testinterface.h"
+#define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <dbus/dbus.h>
 class DBusObjectInterface;
 class DBusTestInterface : public TestInterface {

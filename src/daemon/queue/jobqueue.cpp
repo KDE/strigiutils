@@ -60,12 +60,13 @@ private:
 public:
    Private(uint n);
    ~Private();
-   void addJob(Job* job);
+   bool addJob(Job* job);
    /**
     * Function for JobThreads to call to wait until a new job is available.
     * This function may return 0, but that does not mean the thread is ready.
     **/
    Job* getNextJob();
+   void nudge();
 };
 void
 JobThread::workloop() {
@@ -87,6 +88,7 @@ JobThread::workloop() {
         run = keeprunning;
         STRIGI_MUTEX_UNLOCK(&mutex);
     }
+    cerr << "stopping" << endl;
     STRIGI_THREAD_EXIT(&thread);
 }
 void
@@ -103,11 +105,19 @@ JobThread::waitTillFinished() {
     STRIGI_THREAD_JOIN(thread);
 }
 JobQueue::JobQueue(uint nthreads) :p(new Private(nthreads)) {}
-JobQueue::~JobQueue() { delete p; }
+JobQueue::~JobQueue() {
+    stop();
+}
 bool
 JobQueue::addJob(Job* job) {
-    p->addJob(job);
-    return true;
+    return (p) ?p->addJob(job) :false;
+}
+void
+JobQueue::stop() {
+    if (p) {
+       delete p;
+       p = 0;
+    }
 }
 
 JobQueue::Private::Private(uint nthreads) :keeprunning(true) {
@@ -147,31 +157,53 @@ JobQueue::Private::~Private() {
     STRIGI_MUTEX_DESTROY(&mutex);
     pthread_cond_destroy(&cond);
 }
-void
+bool
 JobQueue::Private::addJob(Job* job) {
     STRIGI_MUTEX_LOCK(&mutex);
+
     // check if we can merge this job with a job from the waiting queue
     list<Job*>::iterator i, end = jobs.end();
-    for (i = jobs.begin(); i != end; ++i) {
+    for (i = jobs.begin(); i != end; i++) {
         if ((*i)->merge(job)) {
             STRIGI_MUTEX_UNLOCK(&mutex);
-            return;
+            return true;
         }
         if (job > *i) {
             break;
         }
     }
-    // insert behind the previous job
-    jobs.insert(i, job);
+    // insert in front of position i
+    if (i == end) {
+        jobs.push_back(job);
+    } else {
+        jobs.insert(i, job);
+    }
+    // signal a couple of times to make sure
+    //pthread_cond_signal(&cond);
+    STRIGI_MUTEX_UNLOCK(&mutex);
+    pthread_cond_broadcast(&cond);
+    //pthread_cond_signal(&cond);
+    return true;
+}
+void
+JobQueue::nudge() {
+    if (p) p->nudge();
+}
+void
+JobQueue::Private::nudge() { 
+    STRIGI_MUTEX_LOCK(&mutex);
     pthread_cond_signal(&cond);
     STRIGI_MUTEX_UNLOCK(&mutex);
 }
+#include <errno.h>
 Job*
 JobQueue::Private::getNextJob() {
     Job* j = 0;
     STRIGI_MUTEX_LOCK(&mutex);
     if (keeprunning && jobs.size() == 0) {
-        pthread_cond_wait(&cond, &mutex);
+        if (pthread_cond_wait(&cond, &mutex)) {
+            cerr <<  "Error in cond_wait: " << strerror(errno) << endl;
+        }
     }
     if (jobs.size()) {
         j = jobs.front();

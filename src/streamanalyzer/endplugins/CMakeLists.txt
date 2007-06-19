@@ -28,3 +28,4 @@ if(EXIV2_FOUND)
   ADD_STRIGIEA(jpeg jpegendanalyzer.cpp)
   target_link_libraries(jpeg ${EXIV2_LIBRARIES})
 endif(EXIV2_FOUND)
+

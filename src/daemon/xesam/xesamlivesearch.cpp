@@ -22,6 +22,7 @@
 #include "xesamsession.h"
 #include "xesamsearch.h"
 #include "query.h"
+#include "queue/jobqueue.h"
 #include <iostream>
 #include <cstdlib>
 using namespace std;
@@ -102,8 +103,9 @@ XesamLiveSearch::CountHits(void* msg, const string& search) {
     map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
         i->second->countHits(msg);
+    } else {
+        CountHitsResponse(msg, -1);
     }
-    //CountHitsResponse(msg, count);
     //HitsAdded(search, 10);
 }
 void

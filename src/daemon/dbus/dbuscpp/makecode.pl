@@ -144,7 +144,8 @@ sub printASyncFunctionDefinition {
         }
         print FH ";\n";
     }
-    print FH "    if (reader.isOk()) {\n        ";
+    print FH "    if (reader.isOk()) {\n";
+    print FH "        dbus_message_ref(dbm);\n        ";
     print FH "impl.$name(dbm, ";
     for ($i=3; $i < @a; $i+=2) {
         print FH $a[$i];
@@ -410,6 +411,7 @@ foreach (keys %responses) {
         print FH " << ".$args[$i];
     }
     print FH ";\n";
+    print FH "    dbus_message_unref(m);\n";
     print FH "}\n";
 }
 foreach (keys %signals) {

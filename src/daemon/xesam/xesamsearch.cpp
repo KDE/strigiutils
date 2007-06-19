@@ -34,15 +34,19 @@ class CountJob : public Job {
 public:
     XesamSearch& search;
     void* msg;
-    CountJob(XesamSearch& s, void* m) :search(s), msg(m) {}
+    bool replied;
+
+    CountJob(XesamSearch& s, void* m) :search(s), msg(m), replied(false) {}
     ~CountJob() {
+        if (!replied) {
+            search.session.liveSearch().CountHitsResponse(msg, -1);
+        }
     }
     void run() {
-        //int count = search.session.liveSearch().indexManager()->indexReader()
-        //    ->countHits(search.query);
-        sleep(5);
-        cerr << "going to reply" << endl;
-        search.session.liveSearch().CountHitsResponse(msg, 10);
+        int count = search.session.liveSearch().indexManager()->indexReader()
+            ->countHits(search.query);
+        search.session.liveSearch().CountHitsResponse(msg, count);
+        replied = true;
     }
 };
 
@@ -57,8 +61,7 @@ XesamSearch::countHits(void* msg) {
     if (!session.liveSearch().queue().addJob(job)) {
         delete job;
     }
-    //session.liveSearch().CountHitsResponse(msg, 10);
-//    return session.liveSearch().indexManager()->indexReader()->countHits(query);
+    //session.liveSearch().CountHitsResponse(msg, count++);
 }
 vector<vector<Variant> >
 XesamSearch::getHits(int32_t num) {

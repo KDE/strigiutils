@@ -92,13 +92,15 @@ DBusHandler::handle() {
     if (!dbus_connection_get_unix_fd(conn, &fd)) {
         printf("could not get connection fd\n");
     }
+    //dbus_connection_set_exit_on_disconnect(conn, FALSE);
+    //printf("exit on disconnect: %i\n", conn->exit_on_disconnect);
 
     // loop, testing for new messages
     fd_set rfds;
     int retval;
     struct timeval tv;
     int max = ((fd>*quitpipe) ?fd :*quitpipe)+1;
-    while (1) {
+    while (dbus_connection_get_is_connected(conn)) {
         FD_ZERO(&rfds);
         FD_SET(fd, &rfds);
         FD_SET(*quitpipe, &rfds);
