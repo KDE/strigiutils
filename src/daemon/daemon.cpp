@@ -205,7 +205,7 @@ main(int argc, char** argv) {
     // start with low priority
     scheduler.start(20);
 
-    JobQueue queue(2);
+    JobQueue queue(1);
     Interface interface(*index, scheduler);
     XesamLiveSearch xesam(index, queue);
 

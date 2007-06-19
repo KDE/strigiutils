@@ -22,6 +22,7 @@
 #include "strigi_thread.h"
 #include <iostream>
 #include <list>
+#include <errno.h>
 using namespace std;
 
 class JobThread {
@@ -119,7 +120,6 @@ JobQueue::stop() {
        p = 0;
     }
 }
-
 JobQueue::Private::Private(uint nthreads) :keeprunning(true) {
     pthread_cond_init(&cond, 0);
     STRIGI_MUTEX_INIT(&mutex);
@@ -179,10 +179,8 @@ JobQueue::Private::addJob(Job* job) {
         jobs.insert(i, job);
     }
     // signal a couple of times to make sure
-    //pthread_cond_signal(&cond);
+    pthread_cond_signal(&cond);
     STRIGI_MUTEX_UNLOCK(&mutex);
-    pthread_cond_broadcast(&cond);
-    //pthread_cond_signal(&cond);
     return true;
 }
 void
@@ -195,7 +193,6 @@ JobQueue::Private::nudge() {
     pthread_cond_signal(&cond);
     STRIGI_MUTEX_UNLOCK(&mutex);
 }
-#include <errno.h>
 Job*
 JobQueue::Private::getNextJob() {
     Job* j = 0;

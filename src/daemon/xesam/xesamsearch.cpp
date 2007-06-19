@@ -43,9 +43,10 @@ public:
         }
     }
     void run() {
-        int count = search.session.liveSearch().indexManager()->indexReader()
+        static int c = 0;
+        search.session.liveSearch().indexManager()->indexReader()
             ->countHits(search.query);
-        search.session.liveSearch().CountHitsResponse(msg, count);
+        search.session.liveSearch().CountHitsResponse(msg, c++);
         replied = true;
     }
 };
@@ -61,7 +62,6 @@ XesamSearch::countHits(void* msg) {
     if (!session.liveSearch().queue().addJob(job)) {
         delete job;
     }
-    //session.liveSearch().CountHitsResponse(msg, count++);
 }
 vector<vector<Variant> >
 XesamSearch::getHits(int32_t num) {

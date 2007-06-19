@@ -92,6 +92,7 @@ DBusHandler::handle() {
     if (!dbus_connection_get_unix_fd(conn, &fd)) {
         printf("could not get connection fd\n");
     }
+    dbus_threads_init_default();
     //dbus_connection_set_exit_on_disconnect(conn, FALSE);
     //printf("exit on disconnect: %i\n", conn->exit_on_disconnect);
 
