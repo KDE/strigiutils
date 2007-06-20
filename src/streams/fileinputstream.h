@@ -33,10 +33,10 @@ private:
     FILE *file;
     std::string filepath;
     int32_t fillBuffer(char* start, int32_t space);
-
-public:
     /** The default buffer size, only used as a default argument to the constructor */
     static const int32_t defaultBufferSize;
+
+public:
     /**
      * @brief Create an InputStream to access a file
      *

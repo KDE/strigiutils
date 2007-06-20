@@ -27,22 +27,22 @@ RegisteredField::RegisteredField(const string& k, const string& t, int m,
         : m_key(k), m_type(t), m_maxoccurs(m), m_parent(p), m_writerdata(0) {
 }
 
-STREAMANALYZER_EXPORT const string FieldRegister::floatType = "float";
-STREAMANALYZER_EXPORT const string FieldRegister::integerType = "integer";
-STREAMANALYZER_EXPORT const string FieldRegister::binaryType = "binary";
-STREAMANALYZER_EXPORT const string FieldRegister::stringType = "string";
-STREAMANALYZER_EXPORT const string FieldRegister::datetimeType = "datetime";
+const string FieldRegister::floatType = "float";
+const string FieldRegister::integerType = "integer";
+const string FieldRegister::binaryType = "binary";
+const string FieldRegister::stringType = "string";
+const string FieldRegister::datetimeType = "datetime";
 
-STREAMANALYZER_EXPORT const string FieldRegister::pathFieldName = "system.location";
-STREAMANALYZER_EXPORT const string FieldRegister::encodingFieldName = "content.charset";
-STREAMANALYZER_EXPORT const string FieldRegister::mimetypeFieldName = "content.mime_type";
-STREAMANALYZER_EXPORT const string FieldRegister::filenameFieldName = "system.file_name";
-STREAMANALYZER_EXPORT const string FieldRegister::extensionFieldName = "system.file_extension";
-STREAMANALYZER_EXPORT const string FieldRegister::embeddepthFieldName = "system.depth";
-STREAMANALYZER_EXPORT const string FieldRegister::mtimeFieldName = "system.last_modified_time";
-STREAMANALYZER_EXPORT const string FieldRegister::sizeFieldName = "system.size";
+const string FieldRegister::pathFieldName = "system.location";
+const string FieldRegister::encodingFieldName = "content.charset";
+const string FieldRegister::mimetypeFieldName = "content.mime_type";
+const string FieldRegister::filenameFieldName = "system.file_name";
+const string FieldRegister::extensionFieldName = "system.file_extension";
+const string FieldRegister::embeddepthFieldName = "system.depth";
+const string FieldRegister::mtimeFieldName = "system.last_modified_time";
+const string FieldRegister::sizeFieldName = "system.size";
 
-STREAMANALYZER_EXPORT const string FieldRegister::defaultNamespace = "strigi.";
+const string FieldRegister::defaultNamespace = "strigi.";
 
 FieldRegister::FieldRegister() {
     pathField = registerField(pathFieldName, stringType, 1, 0);

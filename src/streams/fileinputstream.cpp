@@ -24,7 +24,7 @@
 
 using namespace Strigi;
 
-STREAMS_EXPORT const int32_t FileInputStream::defaultBufferSize = 1048576;
+const int32_t FileInputStream::defaultBufferSize = 1048576;
 
 FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
     if (filepath == 0) {
