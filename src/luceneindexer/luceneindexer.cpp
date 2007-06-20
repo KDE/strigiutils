@@ -22,8 +22,11 @@
 #include "diranalyzer.h"
 #include "cluceneindexmanager.h"
 #include "analyzerconfiguration.h"
+#include <iostream>
 #include <sys/types.h>
 #include <stgdirent.h>
+
+using namespace std;
 
 bool
 containsHelp(int argc, char **argv) {
@@ -61,8 +64,12 @@ main(int argc, char **argv) {
     filters.push_back(make_pair<bool,string>(false,".*"));
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
-    CLuceneIndexManager manager(argv[1]);
-    Strigi::DirAnalyzer analyzer(manager, ic);
-    analyzer.analyzeDir(argv[2]);
+    try {
+        CLuceneIndexManager manager(argv[1]);
+        Strigi::DirAnalyzer analyzer(manager, ic);
+        analyzer.analyzeDir(argv[2]);
+    } catch (...) {
+        cerr << "error while creating index" << endl;
+    }
     return 0;
 }

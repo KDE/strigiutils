@@ -20,6 +20,7 @@
 #include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
 #include <sstream>
+#include <iostream>
 #include "cluceneindexmanager.h"
 
 using lucene::search::Hits;
@@ -70,8 +71,12 @@ indexdump(const char* dir) {
 }
 int
 main(int argc, char** argv) {
-    for (int i=1; i<argc; ++i) {
-         indexdump(argv[i]);
+    try {
+        for (int i=1; i<argc; ++i) {
+            indexdump(argv[i]);
+        }
+    } catch (...) {
+        cerr << "error while dumping index" << endl;
     }
     return 0;
 }
