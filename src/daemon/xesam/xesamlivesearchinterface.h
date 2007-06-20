@@ -47,6 +47,9 @@ public:
             const std::string& query_xml) {
         return iface->NewSearch(session, query_xml);
     }
+    virtual void StartSearch(const std::string& search) {
+        iface->StartSearch(search);
+    }
     virtual void CountHits(void* msg, const std::string& search) {
         return iface->CountHits(msg, search);
     }

@@ -14,6 +14,7 @@ private:
     DBusHandlerResult handleCall(DBusConnection*c,DBusMessage* m);
     std::string getIntrospectionXML();
     void GetState(DBusMessage* msg, DBusConnection* conn);
+    void StartSearch(DBusMessage* msg, DBusConnection* conn);
     void GetHits(DBusMessage* msg, DBusConnection* conn);
     void NewSession(DBusMessage* msg, DBusConnection* conn);
     void CloseSession(DBusMessage* msg, DBusConnection* conn);
@@ -29,6 +30,7 @@ public:
 PrivateDBusXesamLiveSearchInterface::PrivateDBusXesamLiveSearchInterface(DBusXesamLiveSearchInterface& i)
         :DBusObjectInterface("org.freedesktop.xesam.search"), impl(i) {
     handlers["GetState"] = &PrivateDBusXesamLiveSearchInterface::GetState;
+    handlers["StartSearch"] = &PrivateDBusXesamLiveSearchInterface::StartSearch;
     handlers["GetHits"] = &PrivateDBusXesamLiveSearchInterface::GetHits;
     handlers["NewSession"] = &PrivateDBusXesamLiveSearchInterface::NewSession;
     handlers["CloseSession"] = &PrivateDBusXesamLiveSearchInterface::CloseSession;
@@ -57,6 +59,9 @@ PrivateDBusXesamLiveSearchInterface::getIntrospectionXML() {
     xml << "  <interface name='"+getInterfaceName()+"'>\n"
     << "    <method name='GetState'>\n"
     << "      <arg name='out' type='as' direction='out'/>\n"
+    << "    </method>\n"
+    << "    <method name='StartSearch'>\n"
+    << "      <arg name='search' type='s' direction='in'/>\n"
     << "    </method>\n"
     << "    <method name='GetHits'>\n"
     << "      <arg name='search' type='s' direction='in'/>\n"
@@ -119,6 +124,16 @@ PrivateDBusXesamLiveSearchInterface::GetState(DBusMessage* msg, DBusConnection* 
     DBusMessageWriter writer(conn, msg);
     if (reader.isOk()) {
         writer << impl.GetState();
+    }
+}
+void
+PrivateDBusXesamLiveSearchInterface::StartSearch(DBusMessage* msg, DBusConnection* conn) {
+    DBusMessageReader reader(msg);
+    DBusMessageWriter writer(conn, msg);
+    std::string search;
+    reader >> search;
+    if (reader.isOk()) {
+        impl.StartSearch(search);
     }
 }
 void

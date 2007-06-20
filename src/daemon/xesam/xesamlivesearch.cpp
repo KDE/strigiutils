@@ -99,6 +99,9 @@ XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
     return name;
 }
 void
+XesamLiveSearch::StartSearch(const string& search) {
+}
+void
 XesamLiveSearch::CountHits(void* msg, const string& search) {
     map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
