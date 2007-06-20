@@ -20,8 +20,8 @@
 #ifndef STRIGIASYNCCLIENT
 #define STRIGIASYNCCLIENT
 
-#include <qtdbus/strigitypes.h>
-#include <QMutex>
+#include "strigitypes.h"
+#include <QtCore/QMutex>
 #include "strigiconfig.h"
 
 /**

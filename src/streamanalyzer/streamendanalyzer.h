@@ -35,7 +35,7 @@ public:
     virtual ~StreamEndAnalyzer() {}
     virtual bool checkHeader(const char* header, int32_t headersize) const = 0;
     virtual char analyze(Strigi::AnalysisResult& idx, InputStream* in)=0;
-    const std::string& error() const { return m_error; }
+    const std::string error() const { return m_error; }
     virtual const char* name() const = 0;
 };
 

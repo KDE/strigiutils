@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1989, 1993, 1994
+ * Copyright (c) 1989, 1993, 1994 Guido van Rossum <guido@python.org>
  *      The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by

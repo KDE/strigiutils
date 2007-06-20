@@ -24,7 +24,6 @@
 #include "indexreader.h"
 #include "queryparser.h"
 #include "variant.h"
-#include "queryparser.h"
 #include "queue/jobqueue.h"
 #include "queue/job.h"
 #include <iostream>

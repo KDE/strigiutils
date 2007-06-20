@@ -149,7 +149,7 @@ void IndexSearchTester::tearDown()
         delete manager;
     manager = NULL;
     
-    // clean up data
+    // clean up data (does not work on windows)
     string cmd = "rm -r " + indexdir + " " + filedir;
     system(cmd.c_str());
 }
@@ -179,7 +179,7 @@ void IndexSearchTester::testSystemLocationSearchIndexedFile()
     Strigi::QueryParser parser;
 
     Strigi::Query query = parser.buildQuery("system.location:'testfile01'");
-    vector<Strigi::IndexedDocument> matches = reader->query( query, 10, 0);
+    vector<Strigi::IndexedDocument> matches = reader->query(query, 10, 0);
     
     if (matches.size() != 1) {
         ostringstream msg;

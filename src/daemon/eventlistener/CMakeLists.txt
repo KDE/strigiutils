@@ -9,7 +9,6 @@ INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../../streams/compat ..
 
 ADD_LIBRARY(eventlistener
 	event.cpp
-	eventlistener.cpp
 	eventlistenerqueue.cpp
 	pollinglistener.cpp
 	${inotify_SRC})

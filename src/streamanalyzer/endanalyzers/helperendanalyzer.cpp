@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "helperendanalyzer.h"
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -25,7 +26,6 @@
  #include <unistd.h>
 #endif
 
-#include "helperendanalyzer.h"
 #include "strigiconfig.h"
 #include "compat.h"
 #include "processinputstream.h"

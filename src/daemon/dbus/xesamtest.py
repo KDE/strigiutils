@@ -29,7 +29,8 @@ for field in xesamSessionFields:
     p = xesam.GetProperty(session, field)
     print field + ":\t" + dbusToStr(p)
 
-search = xesam.NewSearch(session, "<somexml/>")
+for i in range (100000):
+    search = xesam.NewSearch(session, "<somexml/>")
 
 print session+"\t"+search
 print dbusToStr(xesam.SetProperty(session, "search.live", True))

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
 #include "rpminputstream.h"
+#include "strigiconfig.h"
 #include "cpioinputstream.h"
 #include "gzipinputstream.h"
 #include "bz2inputstream.h"

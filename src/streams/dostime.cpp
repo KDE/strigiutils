@@ -17,13 +17,10 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-// #include <config.h>
-
-#include <time.h>
+#include "dostime.h"
 
 #include <stddef.h>
 
-#include "dostime.h"
 
 /*
  * The specification to which this was written.  From Joe Buck.

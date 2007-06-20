@@ -20,8 +20,8 @@
 #ifndef UNIT_TEST_INDEX_MANAGER_TESTER_H
 #define UNIT_TEST_INDEX_MANAGER_TESTER_H
 
-#include <TestFixture.h>
-#include <extensions/HelperMacros.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
 namespace Strigi {

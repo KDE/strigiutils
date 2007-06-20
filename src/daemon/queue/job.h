@@ -36,7 +36,7 @@ public:
     virtual void stop() {}
     /*
      * Merge job @p j into this job and take ownership of @p j.
-     * @return true if the merge was successfull, false otherwise, in which case
+     * @return true if the merge was successful, false otherwise, in which case
      * the ownership is not transferred.
      */
     virtual bool merge(Job* j) { return false; }

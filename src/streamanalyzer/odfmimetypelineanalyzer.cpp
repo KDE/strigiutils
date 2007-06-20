@@ -1,7 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
- * Copyright (C) 2007 Arend van Beelen jr. <www.arendjr.nl>
+ * Copyright (C) 2007 Arend van Beelen jr. <arend@auton.nl>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,12 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "odfmimetypelineanalyzer.h"
 #include <cassert>
 #include <cstring>
 
 #include "analysisresult.h"
 #include "fieldtypes.h"
-#include "odfmimetypelineanalyzer.h"
 
 using namespace Strigi;
 

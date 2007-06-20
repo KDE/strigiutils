@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <TestCaller.h>
-#include <extensions/TestFactoryRegistry.h>
-#include <TestResult.h>
-#include <TextTestRunner.h>
+#include <cppunit/TestCaller.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TextTestRunner.h>
 
 int main()
 {

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "strigiconfig.h"
 #include "processinputstream.h"
+#include "strigiconfig.h"
 #include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>
