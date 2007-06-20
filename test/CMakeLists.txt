@@ -1,4 +1,8 @@
-set (TESTINGDIRS ${TESTINGDIRS} daemon utils indextesters streamanalyzer)
+set (TESTINGDIRS ${TESTINGDIRS} utils indextesters streamanalyzer)
+
+if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
+  set(TESTINGDIRS ${TESTINGDIRS} daemon)
+endif (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
 
 # cppunit requires exception support
 IF(NOT WIN32)

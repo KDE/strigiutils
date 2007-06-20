@@ -16,12 +16,14 @@ endif (SQLite_FOUND)
 
 if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
   if(NOT WIN32)
-     set(DIRS ${DIRS} daemon htmlgui)
+     set(DIRS ${DIRS} htmlgui)
   endif(NOT WIN32)
   # searchclient needs htmlgui which is not compilable on win32
   if (QT_QTDBUS_FOUND AND NOT WIN32)
      set(DIRS ${DIRS} searchclient)
   endif (QT_QTDBUS_FOUND AND NOT WIN32)
+  # make sure we build the daemon on all architectures
+  set(DIRS ${DIRS} daemon)
   message(STATUS "Index libraries were found. strigidaemon will be built.")
 else (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
   message("** No index libraries were found. strigidaemon will not be built.")
