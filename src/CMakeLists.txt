@@ -22,8 +22,10 @@ if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
   if (QT_QTDBUS_FOUND AND NOT WIN32)
      set(DIRS ${DIRS} searchclient)
   endif (QT_QTDBUS_FOUND AND NOT WIN32)
-  # make sure we build the daemon on all architectures
-  set(DIRS ${DIRS} daemon)
+  # make sure we build the daemon on all architectures - not as long as sys/socket.h is used
+  if(NOT WIN32)
+    set(DIRS ${DIRS} daemon)
+  endif(NOT WIN32)
   message(STATUS "Index libraries were found. strigidaemon will be built.")
 else (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
   message("** No index libraries were found. strigidaemon will not be built.")
