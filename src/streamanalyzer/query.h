@@ -84,7 +84,7 @@ public:
     const Term& term() const;
     void setTerm(const Term& t);
     float boost() const;
-    void setBoost(int i);
+    void setBoost(float i);
     Type type() const;
     void setType(Type t);
     bool negate() const;

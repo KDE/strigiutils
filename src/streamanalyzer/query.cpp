@@ -172,7 +172,7 @@ Query::boost() const {
     return p->boost;
 }
 void
-Query::setBoost(int b) {
+Query::setBoost(float b) {
     p->boost = b;
 }
 Query::Type
