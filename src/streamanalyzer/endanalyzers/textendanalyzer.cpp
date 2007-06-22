@@ -23,7 +23,9 @@
 #include "inputstreamreader.h"
 #include "analysisresult.h"
 #include "textutils.h"
+#include <iostream>
 using namespace Strigi;
+using namespace std;
 
 void
 TextEndAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -31,30 +33,9 @@ TextEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 
 bool
 TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    return checkUtf8(header, headersize);
-/*    const char* end = header + headersize;
-    const char* p = header;
-    // check if the text is valid UTF-8
-    char nb = 0;
-    while (p < end) {
-        char c = *p;
-        if (nb) {
-            if ((0xC0 & c) != 0x80) {
-                return false;
-            }
-            nb--;
-        } else if ((0xE0 & c) == 0xC0) {
-            nb = 1;
-        } else if ((0xF0 & c) == 0xE0) {
-            nb = 2;
-        } else if ((0xF8 & c) == 0xF0) {
-            nb = 3;
-        } else if (c <= 8) {
-            return false;
-        }
-        p++;
-    }
-    return true;*/
+    char nb;
+    const char* last = checkUtf8(header, headersize, nb);
+    return last == 0 || nb != 0;
 }
 
 char
@@ -62,22 +43,26 @@ TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;
 
-    if (idx.encoding().length()) {
-//        fprintf(stderr, "%s\n", idx.encoding().c_str());
-    }
     // pass a piece of text to the indexer. it's up to the indexer to break
     // it down into words
     const char* b;
     // store and index the first 20k of a text file
     int32_t nread = in->read(b, 20*1024, 0);
-    if (nread > 0 && checkUtf8(b, nread)) {
-        idx.addText(b, nread);
+    char retval = -1;
+    if (nread > 0) {
+        char nb;
+        const char* last = checkUtf8(b, nread, nb);
+        if (last == 0) {
+            retval = 0;
+            idx.addText(b, nread);
+        } else if (nb) {
+            retval = 0;
+            idx.addText(b, last-b);
+        }
     }
     if (in->status() == Error) {
         m_error = in->error();
         return -1;
     }
-//    InputStreamReader reader(in);
-//    i->addStream("content", &reader);
-    return 0;
+    return retval;
 }

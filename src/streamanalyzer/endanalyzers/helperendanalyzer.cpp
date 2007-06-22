@@ -31,6 +31,7 @@
 #include "processinputstream.h"
 #include "textendanalyzer.h"
 #include "analysisresult.h"
+#include <iostream>
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -40,6 +41,7 @@ using namespace std;
 
 void
 HelperEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    // we extract only text, no other fields
 }
 
 class HelperProgramConfig::HelperRecord {
@@ -69,8 +71,8 @@ HelperProgramConfig::HelperProgramConfig() {
     if (path[0] == '/') {
         paths.push_back(path);
     }
-/*
-    string exepath = findPath("pdftotext", paths);
+
+/*    string exepath = findPath("pdftotext", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = (unsigned char*)"%PDF-1.";
@@ -82,9 +84,9 @@ HelperProgramConfig::HelperProgramConfig() {
         h->arguments.push_back("-");
         h->readfromstdin = false;
         helpers.push_back(h);
-    }
+    }*/
     // this  does not work atm because it requires help programs itself
-    exepath = findPath("wvWare", paths);
+/*    exepath = findPath("wvWare", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = wordmagic;
@@ -171,6 +173,7 @@ HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
                 ProcessInputStream pis(args);
                 TextEndAnalyzer t;
                 state = t.analyze(idx, &pis);
+
                 if (!fileisondisk) {
                     unlink(filepath.c_str());
                 }
