@@ -17,33 +17,38 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef XESAMSESSION_H
-#define XESAMSESSION_H
+#include "strigi_thread.h"
+#include <iostream>
 
-#include <string>
-#include <list>
-#include "variant.h"
-
-class XesamLiveSearch;
-class XesamSearch;
-class XesamSession {
+class XesamClass {
 private:
-    class Private;
-    Private* p;
+    STRIGI_MUTEX_DEFINE(mutex);
+    int n;
 
-    XesamSession();
+    XesamClass(const XesamClass& x);
+    void operator=(const XesamClass& );
 public:
-    XesamSession(XesamLiveSearch& x);
-    XesamSession(const XesamSession& xs);
-    ~XesamSession();
-    void operator=(const XesamSession& xs);
-    bool operator==(const XesamSession& xs) { return p == xs.p; }
-    Variant setProperty(const std::string& prop, const Variant& v);
-    Variant getProperty(const std::string& prop);
-    std::string newSearch(const std::string& xml_query);
-    void closeSearch(const XesamSearch& search);
-
-    XesamLiveSearch& liveSearch() const;
+    XesamClass() :n(1) {
+        STRIGI_MUTEX_INIT(&mutex);
+    }
+    virtual ~XesamClass() {
+        std::cerr << "delete " << this << std::endl;
+        STRIGI_MUTEX_UNLOCK(&mutex);
+        STRIGI_MUTEX_DESTROY(&mutex);
+    }
+    void ref() {
+        STRIGI_MUTEX_LOCK(&mutex);
+        n++;
+        STRIGI_MUTEX_UNLOCK(&mutex);
+    }
+    void unref() {
+        int m;
+        STRIGI_MUTEX_LOCK(&mutex);
+        m = --n;
+        if (m == 0) {
+            delete this;
+        } else {
+            STRIGI_MUTEX_UNLOCK(&mutex);
+        }
+    }
 };
-
-#endif

@@ -38,6 +38,8 @@ private:
     std::vector<XesamLiveSearchInterface*> ifaces;
     class Private;
     Private* const p;
+    XesamLiveSearch(const XesamLiveSearch&);
+    void operator=(const XesamLiveSearch&);
 public:
     XesamLiveSearch(Strigi::IndexManager*, JobQueue&);
     ~XesamLiveSearch();
@@ -144,7 +146,7 @@ public:
     Strigi::IndexManager* indexManager() const;
 
     // internal
-    void addSearch(const std::string&, XesamSearch*);
+    void addSearch(const std::string&, XesamSearch&);
     void removeSearch(const std::string&);
     JobQueue& queue() const;
 };

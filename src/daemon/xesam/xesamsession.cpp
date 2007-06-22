@@ -20,19 +20,61 @@
 #include "xesamsession.h"
 #include "xesamsearch.h"
 #include "xesamlivesearch.h"
+#include "xesamclass.h"
 #include <sstream>
 using namespace std;
 
-XesamSession::XesamSession(XesamLiveSearch& x) :xesam(x),
+class XesamSession::Private : public XesamClass {
+public:
+    std::list<XesamSearch> searches;
+    XesamLiveSearch& xesam;
+    bool searchLive;
+    bool searchBlocking;
+    std::vector<std::string> hitFields;
+    std::vector<std::string> hitFieldsExtended;
+    int32_t hitSnippetLength;
+    std::string sortPrimary;
+    std::string sortSecondary;
+    bool sortAscending;
+
+    Private(XesamLiveSearch& x);
+    ~Private();
+    Variant setProperty(const std::string& prop, const Variant& v);
+    Variant getProperty(const std::string& prop);
+};
+XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
     searchLive(false),
     searchBlocking(true),
     hitSnippetLength(200),
     sortPrimary("score"),
     sortAscending(false) {
 }
-
+XesamSession::Private::~Private() {
+    for (std::list<XesamSearch>::const_iterator i = searches.begin();
+            i != searches.end(); ++i) {
+        xesam.removeSearch(i->name());
+    }
+}
+XesamSession::XesamSession(XesamLiveSearch& x) :p(new Private(x)) {
+}
+XesamSession::XesamSession(const XesamSession& xs) :p(xs.p) {
+    p->ref();
+}
+XesamSession::~XesamSession() {
+    p->unref();
+}
+void
+XesamSession::operator=(const XesamSession& xs) {
+    p->unref();
+    p = xs.p;
+    p->ref();
+}
 Variant
 XesamSession::setProperty(const std::string& prop, const Variant& v) {
+    return p->setProperty(prop, v);
+}
+Variant
+XesamSession::Private::setProperty(const std::string& prop, const Variant& v) {
     Variant o;
     if (prop == "search.live") {
          o = searchLive = v.b();
@@ -58,6 +100,10 @@ XesamSession::setProperty(const std::string& prop, const Variant& v) {
 }
 Variant
 XesamSession::getProperty(const std::string& prop) {
+    return p->getProperty(prop);
+}
+Variant
+XesamSession::Private::getProperty(const std::string& prop) {
     Variant o;
     if (prop == "search.live") {
          o = searchLive;
@@ -90,26 +136,22 @@ XesamSession::getProperty(const std::string& prop) {
     }
     return o;
 }
-XesamSession::~XesamSession() {
-    for (std::list<const XesamSearch*>::const_iterator i = searches.begin();
-            i != searches.end(); ++i) {
-        xesam.removeSearch((*i)->name);
-        delete *i;
-    }
-}
-const std::string&
+std::string
 XesamSession::newSearch(const std::string& query_xml) {
     ostringstream str;
     str << "strigisearch" << random();
     string name(str.str());
-    XesamSearch* search = new XesamSearch(*this, name, query_xml);
-    searches.push_back(search);
-    xesam.addSearch(name, search);
-    return search->name;
+    XesamSearch search(*this, name, query_xml);
+    p->searches.push_back(search);
+    p->xesam.addSearch(name, search);
+    return search.name();
 }
 void
-XesamSession::closeSearch(const XesamSearch* search) {
-    xesam.removeSearch(search->name);
-    searches.remove(search);
-    delete search;
+XesamSession::closeSearch(const XesamSearch& search) {
+    p->xesam.removeSearch(search.name());
+    p->searches.remove(search);
+}
+XesamLiveSearch&
+XesamSession::liveSearch() const {
+    return p->xesam;
 } 

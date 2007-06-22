@@ -29,8 +29,8 @@ using namespace std;
 
 class XesamLiveSearch::Private {
 public:
-    map<string, XesamSession*> sessions;
-    map<string, XesamSearch*> searches;
+    map<string, XesamSession> sessions;
+    map<string, XesamSearch> searches;
     XesamLiveSearch& xesam;
     JobQueue& queue;
     Strigi::IndexManager* const indexManager;
@@ -40,11 +40,6 @@ public:
     ~Private();
 };
 XesamLiveSearch::Private::~Private() {
-    // delete all remaining session
-    for (map<string, XesamSession*>::const_iterator i = sessions.begin();
-            i != sessions.end(); ++i) {
-        delete i->second;
-    }
 }
 XesamLiveSearch::XesamLiveSearch(Strigi::IndexManager* i, JobQueue& q)
         :XesamLiveSearchInterface(this), p(new Private(*this, i, q)) {}
@@ -57,7 +52,7 @@ XesamLiveSearch::NewSession() {
     str << "strigisession" << random();
     string name(str.str());
     mkstemp((char*)name.c_str());
-    XesamSession* session = new XesamSession(*this);
+    XesamSession session(*this);
     p->sessions.insert(make_pair(name, session));
     return name;
 }
@@ -65,9 +60,9 @@ Variant
 XesamLiveSearch::SetProperty(const std::string& session,
         const std::string& prop, const Variant& v) {
     Variant out;
-    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    map<string, XesamSession>::iterator i = p->sessions.find(session);
     if (i != p->sessions.end()) {
-        out = i->second->setProperty(prop, v);
+        out = i->second.setProperty(prop, v);
     }
     return out;
 }
@@ -75,26 +70,25 @@ Variant
 XesamLiveSearch::GetProperty(const std::string& session,
         const std::string& prop) {
     Variant out;
-    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    map<string, XesamSession>::iterator i = p->sessions.find(session);
     if (i != p->sessions.end()) {
-        out = i->second->getProperty(prop);
+        out = i->second.getProperty(prop);
     }
     return out;
 }
 void
 XesamLiveSearch::CloseSession(const string& session) {
-    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    map<string, XesamSession>::const_iterator i = p->sessions.find(session);
     if (i != p->sessions.end()) {
-        delete i->second;
         p->sessions.erase(i->first);
     }
 }
 string
 XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
-    map<string, XesamSession*>::const_iterator i = p->sessions.find(session);
+    map<string, XesamSession>::iterator i = p->sessions.find(session);
     string name;
     if (i != p->sessions.end()) {
-        name = i->second->newSearch(query_xml);
+        name = i->second.newSearch(query_xml);
     }
     return name;
 }
@@ -103,9 +97,9 @@ XesamLiveSearch::StartSearch(const string& search) {
 }
 void
 XesamLiveSearch::CountHits(void* msg, const string& search) {
-    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        i->second->countHits(msg);
+        i->second.countHits(msg);
     } else {
         CountHitsResponse(msg, -1);
     }
@@ -120,26 +114,26 @@ XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHits(const string& search, int32_t num) {
-    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        return i->second->getHits(num);
+        return i->second.getHits(num);
     }
     return vector<vector<Variant> >();
 }
 vector<vector<Variant> >
 XesamLiveSearch::GetHitData(const string& search,
         const vector<int32_t>& hit_ids, const vector<string>& properties) {
-    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        return i->second->getHitData(hit_ids, properties);
+        return i->second.getHitData(hit_ids, properties);
     }
     return vector<vector<Variant> >();
 }
 void
 XesamLiveSearch::CloseSearch(const string& search) {
-    map<string, XesamSearch*>::const_iterator i = p->searches.find(search);
+    map<string, XesamSearch>::const_iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        i->second->session.closeSearch(i->second); 
+        i->second.session().closeSearch(i->second); 
     }
 }
 vector<string>
@@ -173,7 +167,7 @@ XesamLiveSearch::HitsModified(const std::string& search,
     }
 }
 void
-XesamLiveSearch::addSearch(const std::string& name, XesamSearch* search) {
+XesamLiveSearch::addSearch(const std::string& name, XesamSearch& search) {
     p->searches.insert(make_pair(name, search));
 }
 void

@@ -22,25 +22,38 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include "query.h"
+#include "strigi_thread.h"
 
 class Variant;
 class XesamSession;
 class XesamSearch {
 public:
-    const std::string name;
-    const std::string queryString;
-    const Strigi::Query query;
-    XesamSession& session;
+    class Private;
+    Private* p;
 
+    XesamSearch();
+public:
     XesamSearch(XesamSession& s, const std::string& n,
         const std::string& query);
-    ~XesamSearch() { }
+    XesamSearch(const XesamSearch&);
+    XesamSearch(Private* p);
+    ~XesamSearch();
+    void operator=(const XesamSearch& xs);
+    bool operator==(const XesamSearch& xs) { return p == xs.p; }
+    void startSearch();
     void countHits(void* msg);
     std::vector<std::vector<Variant> > getHits(int32_t num);
     std::vector<std::vector<Variant> > getHitData(
         const std::vector<int32_t>& hit_ids,
         const std::vector<std::string>& properties);
+
+    // once the count has been determined, send out the messages
+    void setCount(int count);
+    XesamSession session() const;
+    std::string name() const;
+    Strigi::Query query() const;
 };
 
 #endif

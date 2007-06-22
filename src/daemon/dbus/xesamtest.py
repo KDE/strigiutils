@@ -29,10 +29,7 @@ for field in xesamSessionFields:
     p = xesam.GetProperty(session, field)
     print field + ":\t" + dbusToStr(p)
 
-for i in range (100000):
-    search = xesam.NewSearch(session, "<somexml/>")
-
-print session+"\t"+search
+#for i in range (100000):
 print dbusToStr(xesam.SetProperty(session, "search.live", True))
 print dbusToStr(xesam.SetProperty(session, "search.blocking", True))
 print dbusToStr(xesam.SetProperty(session, "hit.fields", ["uri"]))
@@ -46,8 +43,15 @@ print dbusToStr(xesam.SetProperty(session, "vendor.display", "0wn3d"))
 print dbusToStr(xesam.SetProperty(session, "vendor.xesam", "3"))
 print dbusToStr(xesam.SetProperty(session, "vendor.fieldnames", ["uri", "hi"]))
 print dbusToStr(xesam.SetProperty(session, "vendor.extensions", ["uri"]))
+
+search = xesam.NewSearch(session, "<somexml/>")
+xesam.StartSearch(search);
+
+print session+"\t"+search
 for i in range(1):
     xesam.GetHits(search, 3)
     xesam.CountHits(search)
 print xesam.GetHits(search, 3)
 print xesam.CountHits(search)
+xesam.CloseSearch(search)
+xesam.CloseSession(session)

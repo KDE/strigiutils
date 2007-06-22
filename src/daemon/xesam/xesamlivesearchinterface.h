@@ -26,6 +26,8 @@
 class XesamLiveSearchInterface {
 private:
     XesamLiveSearchInterface* const iface;
+    XesamLiveSearchInterface(const XesamLiveSearchInterface&);
+    void operator=(const XesamLiveSearchInterface&);
 public:
     XesamLiveSearchInterface(XesamLiveSearchInterface* x) :iface(x) {}
     virtual ~XesamLiveSearchInterface() {}
