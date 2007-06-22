@@ -148,8 +148,8 @@ XesamSession::newSearch(const std::string& query_xml) {
 }
 void
 XesamSession::closeSearch(const XesamSearch& search) {
-    p->xesam.removeSearch(search.name());
     p->searches.remove(search);
+    p->xesam.removeSearch(search.name());
 }
 XesamLiveSearch&
 XesamSession::liveSearch() const {
