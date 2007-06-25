@@ -20,7 +20,7 @@
 #include "ArchiveEngineHandlerTest.h"
 #include "archiveenginehandler.h"
 #include <QtTest/QtTest>
-#include <QDebug>
+#include <QtCore/QDebug>
 void
 ArchiveEngineHandlerTest::testFile() {
     ArchiveEngineHandler engine;

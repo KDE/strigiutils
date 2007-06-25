@@ -19,7 +19,7 @@
  */
 #include "strigiasyncclient.h"
 #include "strigidbus.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 
 StrigiAsyncClient::StrigiAsyncClient() {
     // register the custom types

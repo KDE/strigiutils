@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "streamengine.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 using namespace Strigi;
 
 StreamEngine::StreamEngine(const FileEntry* e, ArchiveEngineBase* engine)

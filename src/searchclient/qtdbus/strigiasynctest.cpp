@@ -19,7 +19,7 @@
  */
 #include "strigiasyncwidget.h"
 #include <QApplication>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 int
 main(int argc, char **argv) {

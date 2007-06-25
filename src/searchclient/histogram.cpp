@@ -21,7 +21,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QScrollBar>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 class HistogramArea : public QWidget {
 private:

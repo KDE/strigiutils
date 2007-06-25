@@ -21,7 +21,7 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QVBoxLayout>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 StrigiAsyncWidget::StrigiAsyncWidget() {
     QVBoxLayout *layout = new QVBoxLayout();

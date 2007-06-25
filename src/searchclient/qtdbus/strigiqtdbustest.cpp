@@ -20,7 +20,7 @@
 #include "strigiclient.h"
 #include "strigiasyncclient.h"
 #include <QCoreApplication>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 void
 printStrigiStatus(StrigiClient& strigi) {

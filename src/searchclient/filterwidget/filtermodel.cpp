@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "filtermodel.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 using namespace std;
 
 void

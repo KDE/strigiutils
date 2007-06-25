@@ -19,7 +19,7 @@
  */
 #include "archivedirengine.h"
 #include "streamengine.h"
-#include <QDebug>
+#include <QtCore/QDebug>
 using namespace Strigi;
 
 ArchiveDirEngine::ArchiveDirEngine(ArchiveEngineBase* p, const FileEntry*e)

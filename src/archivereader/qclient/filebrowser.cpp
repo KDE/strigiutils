@@ -23,7 +23,7 @@
 #include <QtGui/QTextBrowser>
 #include <QtGui/QHeaderView>
 #include <QtGui/QPixmap>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 FileBrowser::FileBrowser() : QSplitter(Qt::Vertical) {
     model = new QDirModel();

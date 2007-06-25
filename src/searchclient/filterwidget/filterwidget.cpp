@@ -24,7 +24,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QAbstractListModel>
-#include <QDebug>
+#include <QtCore/QDebug>
 
 FilterWidget::FilterWidget(QWidget* p) :QWidget(p) {
 
