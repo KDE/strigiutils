@@ -23,6 +23,8 @@
 #include <iostream>
 #include <list>
 #include <errno.h>
+#include <string.h>
+
 using namespace std;
 
 class JobThread {
