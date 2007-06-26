@@ -24,6 +24,7 @@
 #include "strigi_thread.h"
 #include "analyzerconfiguration.h"
 #include <set>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdlib>
@@ -168,12 +169,12 @@ FileLister::Private::nextFile() {
             if (lstat(path, &dirstat) == 0) {
 #endif
                 if (S_ISREG(dirstat.st_mode)) {
-                    if (config == 0 || config->indexFile(path, path+sl)) {
+                    if (config == 0 || config->indexFile(path, path+l)) {
                         mtime = dirstat.st_mtime;
                         return sl;
                     }
                 } else if (dirstat.st_mode & S_IFDIR && (config == 0
-                        || config->indexDir(path, path+sl))) {
+                        || config->indexDir(path, path+l))) {
                     mtime = dirstat.st_mtime;
                     strcpy(this->path+sl, "/");
                     DIR* d = opendir(path);
