@@ -87,6 +87,7 @@ GifThroughAnalyzer::setIndexable(AnalysisResult* i) {
 
 InputStream*
 GifThroughAnalyzer::connectInputStream(InputStream* in) {
+    if (in == 0) return 0;
     const char* buf;
     int32_t nread = in->read(buf, 12, -1);
     in->reset(0);
