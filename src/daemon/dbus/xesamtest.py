@@ -20,7 +20,7 @@ def dbusToStr(p):
 bus = dbus.SessionBus()
 obj = bus.get_object('org.freedesktop.xesam.searcher',
 	'/org/freedesktop/xesam/searcher/main')
-xesam = dbus.Interface(obj, 'org.freedesktop.xesam.search')
+xesam = dbus.Interface(obj, 'org.freedesktop.xesam.Search')
 print xesam.GetState()
 
 # create a session and print the properties of the new session

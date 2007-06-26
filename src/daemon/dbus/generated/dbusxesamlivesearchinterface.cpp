@@ -28,7 +28,7 @@ public:
     PrivateDBusXesamLiveSearchInterface(DBusXesamLiveSearchInterface& i);
 };
 PrivateDBusXesamLiveSearchInterface::PrivateDBusXesamLiveSearchInterface(DBusXesamLiveSearchInterface& i)
-        :DBusObjectInterface("org.freedesktop.xesam.search"), impl(i) {
+        :DBusObjectInterface("org.freedesktop.xesam.Search"), impl(i) {
     handlers["GetState"] = &PrivateDBusXesamLiveSearchInterface::GetState;
     handlers["StartSearch"] = &PrivateDBusXesamLiveSearchInterface::StartSearch;
     handlers["GetHits"] = &PrivateDBusXesamLiveSearchInterface::GetHits;
@@ -245,16 +245,16 @@ DBusXesamLiveSearchInterface::CountHitsResponse(void* msg, int32_t count) {
 }
 void
 DBusXesamLiveSearchInterface::HitsModified(const std::string& search,         const std::vector<int32_t>& hit_ids) {
-    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.search", "HitsModified");
+    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.Search", "HitsModified");
     writer << search << hit_ids;
 }
 void
 DBusXesamLiveSearchInterface::HitsRemoved(const std::string& search,         const std::vector<int32_t>& hit_ids) {
-    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.search", "HitsRemoved");
+    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.Search", "HitsRemoved");
     writer << search << hit_ids;
 }
 void
 DBusXesamLiveSearchInterface::HitsAdded(const std::string& search, const int32_t count) {
-    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.search", "HitsAdded");
+    DBusMessageWriter writer(conn, object.c_str(), "org.freedesktop.xesam.Search", "HitsAdded");
     writer << search << count;
 }
