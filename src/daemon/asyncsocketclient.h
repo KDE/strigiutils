@@ -23,7 +23,7 @@
 #include "asyncsocket.h"
 #include "clientinterface.h"
 
-class AsyncSocketClient {
+class SEARCHCLIENT_EXPORT AsyncSocketClient {
 private:
     AsyncSocket socket;
     std::string method;

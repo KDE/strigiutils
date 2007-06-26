@@ -20,9 +20,10 @@
 #ifndef ASYNCSOCKET_H
 #define ASYNCSOCKET_H
 
+#include "strigiconfig.h"
 #include <string>
 
-class AsyncSocket {
+class SEARCHCLIENT_EXPORT AsyncSocket {
 public:
     enum Status { Idle, Writing, Reading, Error };
 private:
