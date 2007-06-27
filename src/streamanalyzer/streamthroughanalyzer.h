@@ -47,7 +47,9 @@ public:
      * inputstream that is returned by this function. Every time
      * a read call is performed on this class, the data read
      * is used in the analysis before being passed on to the
-     * caller.
+     * caller. The InputStream pointer maybe 0 for special filetypes that have
+     * no content, so any implementation must always check the pointer before
+     * reading from the stream.
      **/
     virtual InputStream *connectInputStream(InputStream *in) = 0;
     /**
