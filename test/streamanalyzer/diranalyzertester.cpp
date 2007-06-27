@@ -150,7 +150,8 @@ void DirAnalyzerTester::testCreateIndex()
     delete analyzer;
 
     CPPUNIT_ASSERT_MESSAGE("Not all documents were indexed.",
-        manager->indexReader()->countDocuments() == indexedFiles.size());
+        manager->indexReader()->countDocuments()
+            == (int32_t)indexedFiles.size());
     unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
     if (indexedFilesSize != indexedFiles.size()) {
         ostringstream msg;

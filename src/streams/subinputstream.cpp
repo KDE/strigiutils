@@ -19,8 +19,10 @@
  */
 #include "subinputstream.h"
 #include "strigiconfig.h"
+#include <iostream>
 #include <cassert>
 
+using namespace std;
 using namespace Strigi;
 
 SubInputStream::SubInputStream(InputStream *i, int64_t length)
@@ -79,7 +81,8 @@ SubInputStream::reset(int64_t newpos) {
 //        newpos, m_offset);
     m_position = m_input->reset(newpos + m_offset);
     if (m_position < m_offset) {
-        fprintf(stderr, "########### m_position %lli newpos %lli\n", m_position, newpos);
+        cerr << "########### m_position " << m_position << " newpos " << newpos
+            << endl;
         m_status = Error;
         m_error = m_input->error();
     } else {

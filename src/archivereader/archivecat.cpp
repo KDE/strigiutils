@@ -21,10 +21,11 @@
 #include "archivereader.h"
 #include "fileinputstream.h"
 #include "substreamprovider.h"
-using namespace Strigi;
-using namespace std;
+#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+using namespace Strigi;
+using namespace std;
 
 int
 main(int argc, char** argv) {
@@ -57,7 +58,7 @@ main(int argc, char** argv) {
                 total += n;
                 n = s->read(c, 1, 0);
             }
-            printf("read %lli bytes.\n", total);
+            cout << "read " << total << " bytes." << endl;
             if (s->status() == Error) {
                 printf("Error: %s\n", s->error());
             }

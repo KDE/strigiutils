@@ -29,6 +29,7 @@
 #include "arinputstream.h"
 #include "zipinputstream.h"
 #include <vector>
+#include <iostream>
 #include <cstring>
 
 using namespace std;
@@ -295,7 +296,7 @@ ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
 }
 ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
     if (openstreams.size() > 0) {
-        fprintf(stderr, "%i streams were not closed.\n", openstreams.size());
+        cerr << openstreams.size() << " streams were not closed." << endl;
         openstreamsType::iterator i;
         for (i = openstreams.begin(); i != openstreams.end(); ++i) {
             free(i->second);

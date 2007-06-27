@@ -57,6 +57,7 @@
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
 #endif
+#include <iostream>
 #include <config.h>
 
 using namespace std;
@@ -227,7 +228,7 @@ StreamAnalyzerPrivate::initializeEventFactories() {
     list<StreamEventAnalyzerFactory*> plugins
         = moduleLoader->streamEventAnalyzerFactories();
     list<StreamEventAnalyzerFactory*>::iterator i;
-    addFactory(new DigestEventAnalyzerFactory());
+//    addFactory(new DigestEventAnalyzerFactory());
     addFactory(new MimeEventAnalyzerFactory());
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
@@ -371,8 +372,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     if (input) {
         headersize = input->read(header, headersize, headersize);
         if (input->reset(0) != 0) {
-            fprintf(stderr, "resetting is impossible!! pos: %lli status: %i\n",
-                input->position(), input->status());
+            cerr << "resetting is impossible!! pos: " << input->position()
+                << " status: " << input->status() << endl;
         }
         if (headersize < 0) finished = true;
     } else {
@@ -389,10 +390,10 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             if (ar) {
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
-                    fprintf(stderr, "could not reset stream of %s from pos "
-                        "%lli to 0 after reading with %s: %s\n",
-                        idx.path().c_str(), input->position(),
-                        sea->name(), sea->error().c_str());
+                    cerr << "could not reset stream of " << idx.path().c_str()
+                        << " from pos " << input->position()
+                        << " to 0 after reading with " << sea->name()
+                        << ": " << sea->error().c_str() << endl;
                     finished = true;
                 } else {
                     // refresh the pointer to the start of the data

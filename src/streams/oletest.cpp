@@ -19,6 +19,8 @@
  */
 #include "fileinputstream.h"
 #include "oleinputstream.h"
+#include <iostream>
+using namespace std;
 using namespace Strigi;
 
 int
@@ -36,7 +38,7 @@ main(int argc, char** argv) {
                 s += n;
                 n = j->read(data, 11111111, 11111);
             }
-            fprintf(stderr, "out %lli %lli %i\n", s, j->size(), n);
+            cerr << "out " << s << " " << j->size() << " " << n << endl;
             j = o.nextEntry();
         }
     }

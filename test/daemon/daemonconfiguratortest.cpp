@@ -75,15 +75,13 @@ bool DaemonConfiguratorTest::checkEq(set<string>& ori, set<string>& last,
         }
     }
     
-    if (ori.size() == last.size())
+    if (ori.size() == last.size()) {
         return true;
-    else
-    {
-        char buff [50];
-        errMsg = "Found different size (";
-        snprintf (buff, sizeof (char) * 10, "%i != %i)\n", 
-                  ori.size(), last.size());
-        errMsg += buff;
+    } else {
+        ostringstream str;
+        str << "Found different size (" << ori.size() << " != " << last.size()
+            << ")" << endl;
+        errMsg += str.str();
         return false;
     }
 }
@@ -120,15 +118,13 @@ bool DaemonConfiguratorTest::checkEq(Strigi::AnalyzerConfiguration& oriConf,
         }
     }
     
-    if (filtersOri.size() == filtersLast.size())
+    if (filtersOri.size() == filtersLast.size()) {
         return true;
-    else
-    {
-        char buff [50];
-        errMsg = "Found different size (";
-        snprintf (buff, sizeof (char) * 10, "%i != %i)\n", 
-                  filtersOri.size(), filtersLast.size());
-        errMsg += buff;
+    } else {
+        ostringstream str;
+        str << "Found different size (" << filtersOri.size() << " != "
+            << filtersLast.size() << ")" << endl;
+        errMsg += str.str();
         return false;
     }
 }

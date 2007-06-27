@@ -20,6 +20,7 @@
 #include "oleinputstream.h"
 #include "textutils.h"
 #include "bufferedstream.h"
+#include <iostream>
 using namespace Strigi;
 using namespace std;
 
@@ -73,8 +74,8 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     if (d < parent->data || d - parent->data + n > parent->size) {
         m_status = Error;
         m_error = "Invalid OLE stream.";
-        fprintf(stderr, "not 0 < %i < %lli %i\n", d-parent->data, m_size,
-            blocksize);
+        cerr << "not 0 < " << d-parent->data << " < " << m_size << " "
+            << blocksize << endl;
         return -1;
     }
     memcpy(start, d+blockoffset, n);

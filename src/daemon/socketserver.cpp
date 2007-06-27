@@ -21,6 +21,7 @@
 #include "socketserver.h"
 #include "interface.h"
 #include <sstream>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -235,8 +236,8 @@ SocketServer::handleRequest() {
         }
         return;
     }
-    printf("unknown request '%s' of size %i\n",
-        request[0].c_str(), request.size());
+    cerr << "unknown request '" << request[0] << "' of size "
+        << request.size() << endl;
     response.push_back("error");
     response.push_back("no valid request");
 }

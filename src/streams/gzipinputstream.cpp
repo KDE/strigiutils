@@ -110,7 +110,7 @@ GZipInputStream::readFromStream() {
         m_error = input->error();
     } else if (nread < 1) {
         m_status = Error;
-        m_error = "unexpected end of stream";
+        m_error.assign("unexpected end of stream");
     } else {
         zstream->next_in = (Bytef*)inStart;
         zstream->avail_in = nread;
@@ -136,15 +136,15 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
     int32_t nwritten = space - zstream->avail_out;
     switch (r) {
     case Z_NEED_DICT:
-        m_error = "Z_NEED_DICT while inflating stream.";
+        m_error.assign("Z_NEED_DICT while inflating stream.");
         m_status = Error;
         break;
     case Z_DATA_ERROR:
-        m_error = "Z_DATA_ERROR while inflating stream.";
+        m_error.assign("Z_DATA_ERROR while inflating stream.");
         m_status = Error;
         break;
     case Z_MEM_ERROR:
-        m_error = "Z_MEM_ERROR while inflating stream.";
+        m_error.assign("Z_MEM_ERROR while inflating stream.");
         m_status = Error;
         break;
     case Z_STREAM_END:
