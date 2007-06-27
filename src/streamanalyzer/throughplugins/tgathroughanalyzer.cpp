@@ -56,6 +56,8 @@ TgaThroughAnalyzer::setIndexable(AnalysisResult* i) {
 
 InputStream*
 TgaThroughAnalyzer::connectInputStream(InputStream* in) {
+    if (in == 0) return 0;
+
     const int32_t nreq = 18;
     const char* buf;
     int32_t nread = in->read(buf, nreq, -1);
