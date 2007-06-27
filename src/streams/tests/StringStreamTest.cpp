@@ -24,10 +24,13 @@
 using namespace Strigi;
 
 int
-StringStreamTest(int, char*[]) {
+StringStreamTest(int argc, char** argv) {
+    if (argc < 2) return 0;
+    VERIFY(chdir(argv[1]) == 0);
+
     founderrors = 0;
     for (int i=0; i<ninputstreamtests; ++i) {
-        StringStream<char> s1("a.zip", 5);
+        StringStream<char> s1("p.zip", 5);
         charinputstreamtests[i](&s1);
     }
     return founderrors;

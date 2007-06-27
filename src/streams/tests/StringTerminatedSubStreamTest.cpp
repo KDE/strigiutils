@@ -21,7 +21,9 @@
 #include "../stringstream.h"
 #include "../stringterminatedsubstream.h"
 #include "inputstreamtests.h"
+#include <iostream>
 
+using namespace std;
 using namespace Strigi;
 
 int
@@ -31,7 +33,7 @@ StringTerminatedSubStreamTest(int, char*[]) {
     StringTerminatedSubStream sub(&sr, "b");
     const char* start;
     int64_t nread = sub.read(start, 10, 10);
-    printf("read %lli\n", nread);
+    cout << "read " << nread << endl;
 /*
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
