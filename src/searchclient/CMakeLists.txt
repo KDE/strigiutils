@@ -31,6 +31,9 @@ add_executable(strigiclient ${strigiclient_SRCS} ${strigiclient_MOC_SRCS})
 
 target_link_libraries(strigiclient strigiqtdbusclient strigihtmlgui filterwidget)
 
+add_executable(cmdlinestrigi cmdlinestrigi.cpp)
+target_link_libraries(cmdlinestrigi searchclient)
+
 install(TARGETS strigiclient RUNTIME DESTINATION bin)
 
 

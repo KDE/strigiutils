@@ -33,7 +33,7 @@ set_quit_on_signal(int signum) {
     quitaction.sa_handler = quit_daemon;
     sigaction(signum, &quitaction, 0);
 }
-
+AsyncSocket s;
 int
 main(int argc, char** argv) {
     if (argc < 2) return -1;
