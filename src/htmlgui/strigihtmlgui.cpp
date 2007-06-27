@@ -214,10 +214,10 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         bool doother = true;
         tabs = readTabQueries();
         if (tabs.size() == 0) {
-            tabs["Images"] = "mimetype:image*";
-            tabs["Mail"] = "mimetype:message/*";
-            tabs["Web"] = "mimetype:text/html";
-            tabs["Text"] = "mimetype:text/*";
+            tabs["Images"] = "content.mime_type:image*";
+            tabs["Mail"] = "content.mime_type:message/*";
+            tabs["Web"] = "content.mime_type:text/html";
+            tabs["Text"] = "content.mime_type:text/*";
         }
         map<string, string>::const_iterator j;
         string otherq = query;

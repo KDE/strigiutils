@@ -102,12 +102,12 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
 
     tabs = new SearchTabs();
     tabs->addTab("kde", "kde");
-    tabs->addTab("msg", "mimetype:message/*");
-    tabs->addTab("irc", "path:*konversation*log");
-    tabs->addTab("mail", "mimetype:text/x-mail");
-    tabs->addTab("audio", "mimetype:audio/*");
+    tabs->addTab("msg", "content.mime_type:message/*");
+    tabs->addTab("irc", "system.location:*konversation*log");
+    tabs->addTab("mail", "content.mime_type:text/x-mail");
+    tabs->addTab("audio", "content.mime_type:audio/*");
     tabs->addTab("other",
-        "-kde -mimetype:message/* -mimetype:text/x-mail -mimetype:audio/*");
+        "-kde -system.location:*konversation*log -content.mime_type:message/* -content.mime_type:text/x-mail -content.mime_type:audio/*");
     tabs->addTab("all", "");
     mainview->addWidget(tabs);
     mainview->addWidget(statuswidget);
