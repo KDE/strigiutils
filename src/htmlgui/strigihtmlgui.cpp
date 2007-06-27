@@ -423,7 +423,10 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         icon = "<div class='iconbox'><img class='icon' src='"+icon;
         icon += "'/></div>\n";
     }
-    t = doc.properties.find("title");
+    t = doc.properties.find("audio.title");
+    if (t == doc.properties.end()) {
+        t = doc.properties.find("email.subject");
+    }
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
         name = t->second.c_str();
