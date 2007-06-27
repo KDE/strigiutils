@@ -1,0 +1,28 @@
+[Field]
+Uri=ole.category
+Name=OLE category
+TypeUri=string
+Description=Category
+Comment=OLE is temporary. Not a part of Strigi ontology
+
+[Field]
+Uri=ole.presentationtarget
+Name=OLE Presentation Target
+TypeUri=string
+Description=Presenation Target
+Comment=OLE is temporary. Not a part of Strigi ontology
+
+[Field]
+Uri=ole.manager
+Name=OLE manager
+TypeUri=string
+Description=OLE manager
+Comment=OLE is temporary. Not a part of Strigi ontology
+
+[Field]
+Uri=ole.company
+Name=OLE company
+TypeUri=string
+Description=OLE company
+Comment=OLE is temporary. Not a part of Strigi ontology
+

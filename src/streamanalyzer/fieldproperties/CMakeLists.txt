@@ -14,7 +14,7 @@ install(FILES
 	strigi_video.fieldproperties
 	strigi_software.fieldproperties
 	strigi_chemistry.fieldproperties
-
+	strigi_ole.fieldproperties
 	strigi_font.fieldproperties
 	strigi_trash.fieldproperties
 	strigi_photo.fieldproperties
