@@ -52,18 +52,22 @@ using namespace std;
 class SelectedAnalyzerConfiguration : public Strigi::AnalyzerConfiguration {
 public:
     const set<string> requiredAnalyzers;
+    set<string> obligatoryAnalyzers;
     mutable set<string> usedAnalyzers;
     mutable set<string> availableAnalyzers;
 
     explicit SelectedAnalyzerConfiguration(const set<string> an)
-        : requiredAnalyzers(an) {}
+            : requiredAnalyzers(an) {
+        obligatoryAnalyzers.insert("EventThroughAnalyzer");
+    }
 
     bool valid() const {
-        return requiredAnalyzers.size() == usedAnalyzers.size()
+        return requiredAnalyzers.size() + 1 == usedAnalyzers.size()
             || requiredAnalyzers.size() == 0;
     }
     bool useFactory(const string& name) const {
         bool use = requiredAnalyzers.find(name) != requiredAnalyzers.end()
+            || obligatoryAnalyzers.find(name) != obligatoryAnalyzers.end()
             || requiredAnalyzers.size() == 0;
         if (use) {
             usedAnalyzers.insert(name);
