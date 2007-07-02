@@ -25,13 +25,51 @@
 using namespace std;
 using namespace Strigi;
 
+class Strigi::AnalyzerConfigurationPrivate {
+public:
+    /**
+     * @brief Describes a pattern to be applied when deciding whether to
+     * index a file or directory.
+     */
+    struct Pattern {
+        std::string pattern; /**< The pattern itself. */
+        bool matchfullpath; /**< Apply the pattern to the full path, rather
+                                 than just the file/directory name. */
+        bool include; /**< True: a match to this pattern should cause the file
+                           or directory to be indexed.
+                           False: a match to this pattern should prevent the
+                           file or directory from being indexed. */
+    };
+    /**
+     * @brief Patterns to be applied to file names or paths.
+     */
+    std::vector<Pattern> m_patterns;
+    /**
+     * @brief Patterns to be applied to directory names or paths.
+     */
+    std::vector<Pattern> m_dirpatterns;
+    /**
+     * @brief The original filters from which @c m_patterns and
+     * @c m_dirpatterns were constructed.
+     */
+    std::vector<std::pair<bool,std::string> > m_filters;
+    FieldRegister m_fieldregister;
+
+    AnalyzerConfigurationPrivate() {
+    }
+};
+
 AnalyzerConfiguration::FieldType
 operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b){
     return static_cast<AnalyzerConfiguration::FieldType>((int)a|(int)b);
 }
-AnalyzerConfiguration::AnalyzerConfiguration() {
+AnalyzerConfiguration::AnalyzerConfiguration()
+        :p(new AnalyzerConfigurationPrivate()) {
 //    fprintf(stderr, "AnalyzerConfiguration\n");
     FieldPropertiesDb::db();
+}
+AnalyzerConfiguration::~AnalyzerConfiguration() {
+    delete p;
 }
 /**
  * Placeholder implementation that agrees to everything and only makes a
@@ -44,8 +82,8 @@ AnalyzerConfiguration::indexType(const RegisteredField* field)
 }
 bool
 AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
-    vector<Pattern>::const_iterator i;
-    for (i = m_patterns.begin(); i != m_patterns.end(); ++i) {
+    vector<AnalyzerConfigurationPrivate::Pattern>::const_iterator i;
+    for (i = p->m_patterns.begin(); i != p->m_patterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
             match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
@@ -62,8 +100,8 @@ AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
 }
 bool
 AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
-    vector<Pattern>::const_iterator i;
-    for (i = m_dirpatterns.begin(); i != m_dirpatterns.end(); ++i) {
+    vector<AnalyzerConfigurationPrivate::Pattern>::const_iterator i;
+    for (i = p->m_dirpatterns.begin(); i != p->m_dirpatterns.end(); ++i) {
         bool match;
         if (i->matchfullpath) {
             match = FNM_NOMATCH != fnmatch(i->pattern.c_str(), path,
@@ -80,8 +118,8 @@ AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
 }
 void
 AnalyzerConfiguration::printFilters() const {
-    vector<Pattern>::const_iterator i;
-    for (i = m_patterns.begin(); i != m_patterns.end(); ++i) {
+    vector<AnalyzerConfigurationPrivate::Pattern>::const_iterator i;
+    for (i = p->m_patterns.begin(); i != p->m_patterns.end(); ++i) {
     }
 }
 /**
@@ -94,16 +132,16 @@ AnalyzerConfiguration::printFilters() const {
 void
 AnalyzerConfiguration::setFilters(
         const std::vector<std::pair<bool,std::string> >& f) {
-    m_filters = f;
+    p->m_filters = f;
     vector<pair<bool,string> >::const_iterator i;
-    m_patterns.clear();
-    m_dirpatterns.clear();
+    p->m_patterns.clear();
+    p->m_dirpatterns.clear();
     bool hadinclude = false;
-    for (i = m_filters.begin(); i != m_filters.end(); ++i) {
+    for (i = p->m_filters.begin(); i != p->m_filters.end(); ++i) {
         string s = i->second;
         if (s.length()) {
             hadinclude = hadinclude || i->first;
-            Pattern p;
+            AnalyzerConfigurationPrivate::Pattern p;
             p.include = i->first;
             size_t sp = s.rfind('/');
             if (sp == string::npos) {
@@ -114,7 +152,7 @@ AnalyzerConfiguration::setFilters(
                     if (!hadinclude) { // can exclude entire directory
                         p.matchfullpath = sp != string::npos;
                         p.pattern = s.substr(0, s.length()-1);
-                        m_dirpatterns.push_back(p);
+                        this->p->m_dirpatterns.push_back(p);
                         continue;
                     }
                     if (s.length() == 1 || s[s.length()-2] != '*') {
@@ -128,7 +166,19 @@ AnalyzerConfiguration::setFilters(
                 p.matchfullpath = true;
             }
             p.pattern = s;
-            m_patterns.push_back(p);
+            this->p->m_patterns.push_back(p);
         }
     }
+}
+const std::vector<std::pair<bool,std::string> >&
+AnalyzerConfiguration::filters() const {
+    return p->m_filters;
+}
+FieldRegister&
+AnalyzerConfiguration::fieldRegister() {
+    return p->m_fieldregister;
+}
+const FieldRegister&
+AnalyzerConfiguration::fieldRegister() const {
+    return p->m_fieldregister;
 }

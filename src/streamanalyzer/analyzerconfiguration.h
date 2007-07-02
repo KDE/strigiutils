@@ -28,7 +28,7 @@
 #include "fieldtypes.h"
 
 namespace Strigi {
-
+class AnalyzerConfigurationPrivate;
 /**
  * @brief This class provides information and functions to control
  * the analysis.
@@ -67,37 +67,10 @@ enum FieldType {
                              should be tokenized. */
 };
 private:
-    /**
-     * @brief Describes a pattern to be applied when deciding whether to
-     * index a file or directory.
-     */
-    struct Pattern {
-        std::string pattern; /**< The pattern itself. */
-        bool matchfullpath; /**< Apply the pattern to the full path, rather
-                                 than just the file/directory name. */
-        bool include; /**< True: a match to this pattern should cause the file
-                           or directory to be indexed.
-                           False: a match to this pattern should prevent the
-                           file or directory from being indexed. */
-    };
-    /**
-     * @brief Patterns to be applied to file names or paths.
-     */
-    std::vector<Pattern> m_patterns;
-    /**
-     * @brief Patterns to be applied to directory names or paths.
-     */
-    std::vector<Pattern> m_dirpatterns;
-    /**
-     * @brief The original filters from which @c m_patterns and
-     * @c m_dirpatterns were constructed.
-     */
-    std::vector<std::pair<bool,std::string> > m_filters;
-    FieldRegister m_fieldregister;
-
+    AnalyzerConfigurationPrivate* p;
 public:
     AnalyzerConfiguration();
-    virtual ~AnalyzerConfiguration() {}
+    virtual ~AnalyzerConfiguration();
     /**
      * @brief Whether a given file should be indexed.
      *
@@ -267,9 +240,7 @@ public:
      *
      * See setFilters() for more details.
      */
-    const std::vector<std::pair<bool,std::string> >& filters() const {
-        return m_filters;
-    }
+    const std::vector<std::pair<bool,std::string> >& filters() const;
     /**
      * @brief Get the field register.
      *
@@ -285,13 +256,13 @@ public:
      *
      * @return the field register
      */
-    FieldRegister& fieldRegister() { return m_fieldregister; }
+    FieldRegister& fieldRegister();
     /**
      * @brief Get the field register.
      *
      * See the documentation for the non-const version of this function.
      */
-    const FieldRegister& fieldRegister() const { return m_fieldregister; }
+    const FieldRegister& fieldRegister() const;
 };
 
 /*
