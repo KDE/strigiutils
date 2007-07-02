@@ -19,17 +19,18 @@
  */
 #include "gzipcompressstream.h"
 #include <zlib.h>
+#include <iostream>
 
 using namespace Strigi;
-
-
+using namespace std;
 
 GZipCompressInputStream::GZipCompressInputStream(InputStream* input, int level) {
     // initialize values that signal state
     m_status = Ok;
     zstream = 0;
-	if ( level < 0 || level > 9 )
-		level = Z_DEFAULT_COMPRESSION;
+    if ( level < 0 || level > 9 ) {
+        level = Z_DEFAULT_COMPRESSION;
+    }
 
     this->input = input;
 
@@ -38,10 +39,10 @@ GZipCompressInputStream::GZipCompressInputStream(InputStream* input, int level) 
     zstream->zalloc = Z_NULL;
     zstream->zfree = Z_NULL;
     zstream->opaque = Z_NULL;
-	zstream->avail_in = 0;
+    zstream->avail_in = 0;
 
     // initialize for writing gzip streams
-	int r = deflateInit(zstream, level);
+    int r = deflateInit(zstream, level);
     if (r != Z_OK) {
         m_error = "Error initializing GZipCompressInputStream.";
         dealloc();
@@ -81,43 +82,54 @@ GZipCompressInputStream::readFromStream() {
 }
 int32_t
 GZipCompressInputStream::fillBuffer(char* start, int32_t space) {
+    cerr << "GZCI " << this << " " << zstream << endl;
     if (zstream == 0) return -1;
-    // make sure there is data to decompress
-    if (zstream->avail_in==0) {
-        readFromStream();
-        if (m_status == Error) {
-            // no data was read
-            return -1;
-        }else if ( zstream->avail_in == 0 ){
-			if (deflate(zstream, Z_FINISH) != Z_STREAM_END) {
-				fprintf(stderr, "deflate should report Z_STREAM_END\n");
-				return -1;
-			}
-			int32_t nwritten = space - zstream->avail_out;
-			dealloc();
-			return nwritten;
-		}
-    }
+
     // make sure we can write into the buffer
     zstream->avail_out = space;
     zstream->next_out = (Bytef*)start;
 
-	int r = deflate(zstream, Z_NO_FLUSH);
-	// inform the buffer of the number of bytes that was read
-	int32_t nwritten = space - zstream->avail_out;
-	switch (r) {
-	case Z_NEED_DICT:
-		m_error = "Z_NEED_DICT while inflating stream.";
-		m_status = Error;
-		break;
-	case Z_DATA_ERROR:
-		m_error = "Z_DATA_ERROR while inflating stream.";
-		m_status = Error;
-		break;
-	case Z_MEM_ERROR:
-		m_error = "Z_MEM_ERROR while inflating stream.";
-		m_status = Error;
-		break;
-	}
+    int r;
+    // make sure there is data to decompress
+    if (zstream->avail_in == 0) {
+        readFromStream();
+        if (m_status == Error) {
+            cerr << "error " << endl;
+            // no data was read
+            return -1;
+        } else if (zstream->avail_in == 0) {
+            r = deflate(zstream, Z_FINISH);
+            int32_t nwritten = space - zstream->avail_out;
+            cerr << "GZCI end " << this << " " << nwritten << " " << m_status
+<< endl;
+            if (r != Z_OK) {
+                cerr << "GZCI streamend " << r << endl;
+                dealloc();
+                if (r != Z_STREAM_END) {
+                    fprintf(stderr, "deflate should report Z_STREAM_END\n");
+                    return -1;
+                }
+            }
+            return nwritten;
+        }
+    }
+    r = deflate(zstream, Z_NO_FLUSH);
+    // inform the buffer of the number of bytes that was read
+    int32_t nwritten = space - zstream->avail_out;
+    switch (r) {
+    case Z_NEED_DICT:
+        m_error = "Z_NEED_DICT while inflating stream.";
+        m_status = Error;
+        break;
+    case Z_DATA_ERROR:
+        m_error = "Z_DATA_ERROR while inflating stream.";
+        m_status = Error;
+        break;
+    case Z_MEM_ERROR:
+        m_error = "Z_MEM_ERROR while inflating stream.";
+        m_status = Error;
+        break;
+    }
+    cerr << "GZCI more " << this << " " << nwritten << endl;
     return nwritten;
 }

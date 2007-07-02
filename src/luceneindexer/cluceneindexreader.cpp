@@ -212,7 +212,7 @@ CLuceneIndexReader::Private::createQuery(const Strigi::Query& query) {
 Query*
 CLuceneIndexReader::Private::createSimpleQuery(const Strigi::Query& query) {
     switch (query.fields().size()) {
-    case 0:  return createNoFieldQuery(query);
+    case 0:  return createSingleFieldQuery("content", query);//return createNoFieldQuery(query);
     case 1:  return createSingleFieldQuery(query.fields()[0], query);
     default: return createMultiFieldQuery(query);
     }

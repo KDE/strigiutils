@@ -20,6 +20,7 @@
 #ifndef GZIPCOMPRESSSTREAM_H
 #define GZIPCOMPRESSSTREAM_H
 
+#include "strigiconfig.h"
 #include "streambase.h"
 #include "bufferedstream.h"
 
@@ -27,7 +28,7 @@ struct z_stream_s;
 
 namespace Strigi {
 
-class GZipCompressInputStream : public BufferedInputStream {
+class STREAMS_EXPORT GZipCompressInputStream : public BufferedInputStream {
 private:
     z_stream_s* zstream;
     InputStream* input;
