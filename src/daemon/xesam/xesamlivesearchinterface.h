@@ -34,11 +34,11 @@ public:
     virtual std::string NewSession() {
         return iface->NewSession();
     }
-    virtual Variant SetProperty(const std::string& session,
-            const std::string& prop, const Variant& v) {
+    virtual Strigi::Variant SetProperty(const std::string& session,
+            const std::string& prop, const Strigi::Variant& v) {
         return iface->SetProperty(session, prop, v);
     }
-    virtual Variant GetProperty(const std::string& session,
+    virtual Strigi::Variant GetProperty(const std::string& session,
             const std::string& prop) {
         return iface->GetProperty(session, prop);
     }
@@ -53,19 +53,22 @@ public:
         iface->StartSearch(search);
     }
     virtual void CountHits(void* msg, const std::string& search) {
-        return iface->CountHits(msg, search);
+        iface->CountHits(msg, search);
     }
     virtual void CountHitsResponse(void* msg, int32_t count) = 0;
-    virtual std::vector<std::vector<Variant> > GetHits(
-            const std::string& search, int32_t num) {
-        return iface->GetHits(search, num);
+    virtual void GetHits(void* msg, const std::string& search, int32_t num) {
+        iface->GetHits(msg, search, num);
     }
-    virtual std::vector<std::vector<Variant> > GetHitData(
+    virtual void GetHitsResponse(void* msg,
+            const std::vector<std::vector<Strigi::Variant> >& hits) = 0;
+    virtual void GetHitData(void* msg,
             const std::string& search,
             const std::vector<int32_t>& hit_ids,
             const std::vector<std::string>& properties) {
-        return iface->GetHitData(search, hit_ids, properties);
+        iface->GetHitData(msg, search, hit_ids, properties);
     }
+    virtual void GetHitDataResponse(void* msg,
+            const std::vector<std::vector<Strigi::Variant> >& v) = 0;
     virtual void CloseSearch(const std::string& search) {
         return iface->CloseSearch(search);
     }

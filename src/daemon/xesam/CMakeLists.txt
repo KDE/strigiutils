@@ -1,4 +1,4 @@
-include_directories(..)
+include_directories(.. ../../streamanalyzer)
 
 add_library(xesam xesamlivesearchinterface.cpp xesamlivesearch.cpp
 	xesamsession.cpp xesamsearch.cpp)

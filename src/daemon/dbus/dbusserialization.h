@@ -24,13 +24,15 @@
 
 class DBusMessageReader;
 class DBusMessageWriter;
+namespace Strigi {
 class Variant;
+}
 
 DBusMessageWriter& operator<<(DBusMessageWriter&,
     const ClientInterface::Hits& s);
-DBusMessageWriter& operator<<(DBusMessageWriter&, const Variant& v);
+DBusMessageWriter& operator<<(DBusMessageWriter&, const Strigi::Variant& v);
 DBusMessageWriter& operator<<(DBusMessageWriter&,
-    const std::vector<std::vector<Variant> >& v);
-DBusMessageReader& operator>>(DBusMessageReader&, Variant& v);
+    const std::vector<std::vector<Strigi::Variant> >& v);
+DBusMessageReader& operator>>(DBusMessageReader&, Strigi::Variant& v);
 
 #endif

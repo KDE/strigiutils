@@ -56,12 +56,12 @@ public:
      * Change the value of a session property, return new value of the propery
      * or the old value if it did not chanege.
      **/
-    Variant SetProperty(const std::string& session, const std::string& prop,
-        const Variant& v);
+    Strigi::Variant SetProperty(const std::string& session, const std::string& prop,
+        const Strigi::Variant& v);
     /**
      * Get the value of a property.
      **/
-    Variant GetProperty(const std::string& session, const std::string& prop);
+    Strigi::Variant GetProperty(const std::string& session, const std::string& prop);
     /**
      * Close a session and all associated searches.
      **/
@@ -93,16 +93,25 @@ public:
      * should keep track of each hit's serial number if it want to use
      * GetHitData later. See below for a discussion about the return value.
      **/
-    std::vector<std::vector<Variant> > GetHits(const std::string& search,
-            int32_t num);
+    void GetHits(void* msg, const std::string& search, int32_t num);
+    /**
+     * This function is called by the implementation to sent the hit results.
+     **/
+    void GetHitsResponse(void* msg,
+            const std::vector<std::vector<Strigi::Variant> >& h);
     /**
      * Get hit metadata. Intended for snippets or modified hits. hit_ids are
      * serial numbers as obtained from GetHits. The requested properties does
      * not have to be the ones listed in in the hit.fields session property.
      **/
-    std::vector<std::vector<Variant> > GetHitData(const std::string& search,
+    void GetHitData(void* msg, const std::string& search,
             const std::vector<int32_t>& hit_ids,
             const std::vector<std::string>& properties);
+    /**
+     * This function is called by the implementation to sent the hits data.
+     **/
+    void GetHitDataResponse(void* msg,
+        const std::vector<std::vector<Strigi::Variant> >& d);
     /**
      * Close and free a search. Closing your session also closes all searches in
      * that session.

@@ -24,6 +24,7 @@
 #include "textutils.h"
 #include <iostream>
 using namespace std;
+using namespace Strigi;
 
 /* yes this is ugly, i have to change the interface */
 DBusMessageWriter&

@@ -29,6 +29,7 @@
 #include "queue/job.h"
 #include <iostream>
 using namespace std;
+using namespace Strigi;
 
 class XesamSearch::Private : public XesamClass {
 public:
@@ -46,6 +47,7 @@ public:
     ~Private();
     void countHits(void*);
     void setCount(int c);
+    void getHits(void* msg, int32_t num);
 };
 
 class CountJob : public Job {
@@ -59,6 +61,25 @@ public:
         search.setCount(count);
     }
 };
+
+class GetHitsJob : public Job {
+public:
+    XesamSearch search;
+    void* msg;
+    const int num;
+
+    GetHitsJob(XesamSearch s, void* m, int n) :search(s), msg(m), num(n) {}
+    void run() {
+        IndexReader* reader
+            = search.session().liveSearch().indexManager()->indexReader();
+        vector<vector<Variant> > v;
+        vector<Variant> vv;
+        vv.push_back("hello");
+        v.push_back(vv);
+        search.session().liveSearch().GetHitsResponse(msg, v);
+    } 
+};
+
 XesamSearch::XesamSearch(XesamSession& s, const std::string& n,
         const std::string& q) :p(new Private(s, n, q)) {
 }
@@ -117,10 +138,24 @@ XesamSearch::Private::countHits(void* msg) {
         STRIGI_MUTEX_UNLOCK(&mutex);
     }
 }
-vector<vector<Variant> >
-XesamSearch::getHits(int32_t num) {
+void
+XesamSearch::getHits(void* msg, int32_t num) {
+    cerr << "getHits" << endl;
+    p->getHits(msg, num);
+}
+void
+XesamSearch::Private::getHits(void* msg, int32_t num) {
     vector<vector<Variant> > v;
-    return v;
+    if (!valid) {
+        session.liveSearch().GetHitsResponse(msg, v);
+    } else {
+        GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, num);
+        valid = session.liveSearch().queue().addJob(job);
+        if (!valid) {
+            delete job;
+            session.liveSearch().GetHitsResponse(msg, v);
+        }
+    }
 }
 std::vector<std::vector<Variant> >
 XesamSearch::getHitData(const std::vector<int32_t>& hit_ids,

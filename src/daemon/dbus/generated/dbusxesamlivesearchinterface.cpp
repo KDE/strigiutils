@@ -66,7 +66,7 @@ PrivateDBusXesamLiveSearchInterface::getIntrospectionXML() {
     << "    <method name='GetHits'>\n"
     << "      <arg name='search' type='s' direction='in'/>\n"
     << "      <arg name='num' type='i' direction='in'/>\n"
-    << "      <arg name='out' type='aav' direction='out'/>\n"
+    << "      <arg name='hits' type='aav' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='NewSession'>\n"
     << "      <arg name='out' type='s' direction='out'/>\n"
@@ -78,7 +78,7 @@ PrivateDBusXesamLiveSearchInterface::getIntrospectionXML() {
     << "      <arg name='search' type='s' direction='in'/>\n"
     << "      <arg name='hit_ids' type='ai' direction='in'/>\n"
     << "      <arg name='properties' type='as' direction='in'/>\n"
-    << "      <arg name='out' type='aav' direction='out'/>\n"
+    << "      <arg name='v' type='aav' direction='out'/>\n"
     << "    </method>\n"
     << "    <method name='SetProperty'>\n"
     << "      <arg name='session' type='s' direction='in'/>\n"
@@ -137,14 +137,14 @@ PrivateDBusXesamLiveSearchInterface::StartSearch(DBusMessage* msg, DBusConnectio
     }
 }
 void
-PrivateDBusXesamLiveSearchInterface::GetHits(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
-    DBusMessageWriter writer(conn, msg);
+PrivateDBusXesamLiveSearchInterface::GetHits(DBusMessage* dbm, DBusConnection* conn) {
+    DBusMessageReader reader(dbm);
     std::string search;
     int32_t num;
     reader >> search >> num;
     if (reader.isOk()) {
-        writer << impl.GetHits(search,num);
+        dbus_message_ref(dbm);
+        impl.GetHits(dbm, search,num);
     }
 }
 void
@@ -166,15 +166,15 @@ PrivateDBusXesamLiveSearchInterface::CloseSession(DBusMessage* msg, DBusConnecti
     }
 }
 void
-PrivateDBusXesamLiveSearchInterface::GetHitData(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
-    DBusMessageWriter writer(conn, msg);
+PrivateDBusXesamLiveSearchInterface::GetHitData(DBusMessage* dbm, DBusConnection* conn) {
+    DBusMessageReader reader(dbm);
     std::string search;
     std::vector<int32_t> hit_ids;
     std::vector<std::string> properties;
     reader >> search >> hit_ids >> properties;
     if (reader.isOk()) {
-        writer << impl.GetHitData(search,hit_ids,properties);
+        dbus_message_ref(dbm);
+        impl.GetHitData(dbm, search,hit_ids,properties);
     }
 }
 void
@@ -183,7 +183,7 @@ PrivateDBusXesamLiveSearchInterface::SetProperty(DBusMessage* msg, DBusConnectio
     DBusMessageWriter writer(conn, msg);
     std::string session;
     std::string prop;
-    Variant v;
+    Strigi::Variant v;
     reader >> session >> prop >> v;
     if (reader.isOk()) {
         writer << impl.SetProperty(session,prop,v);
@@ -235,6 +235,20 @@ DBusXesamLiveSearchInterface::DBusXesamLiveSearchInterface(const std::string& on
         :XesamLiveSearchInterface(x), object(on), conn(c), iface(new PrivateDBusXesamLiveSearchInterface(*this)) {}
 DBusXesamLiveSearchInterface::~DBusXesamLiveSearchInterface() {
     delete iface;
+}
+void
+DBusXesamLiveSearchInterface::GetHitsResponse(void* msg,             const std::vector<std::vector<Strigi::Variant> >& hits) {
+    DBusMessage* m = static_cast<DBusMessage*>(msg);
+    DBusMessageWriter writer(conn, m);
+    writer << hits;
+    dbus_message_unref(m);
+}
+void
+DBusXesamLiveSearchInterface::GetHitDataResponse(void* msg,             const std::vector<std::vector<Strigi::Variant> >& v) {
+    DBusMessage* m = static_cast<DBusMessage*>(msg);
+    DBusMessageWriter writer(conn, m);
+    writer << v;
+    dbus_message_unref(m);
 }
 void
 DBusXesamLiveSearchInterface::CountHitsResponse(void* msg, int32_t count) {

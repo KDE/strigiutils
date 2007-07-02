@@ -33,6 +33,7 @@ set(streamanalyzer_SRCS
 	sha1.cpp
 	streamanalyzer.cpp
 	streamanalyzerfactory.cpp
+	variant.cpp
 	endanalyzers/arendanalyzer.cpp
 	endanalyzers/bmpendanalyzer.cpp
 	endanalyzers/bz2endanalyzer.cpp

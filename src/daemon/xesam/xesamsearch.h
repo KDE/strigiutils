@@ -26,7 +26,9 @@
 #include "query.h"
 #include "strigi_thread.h"
 
+namespace Strigi {
 class Variant;
+}
 class XesamSession;
 class XesamSearch {
 public:
@@ -44,16 +46,17 @@ public:
     bool operator==(const XesamSearch& xs) { return p == xs.p; }
     void startSearch();
     void countHits(void* msg);
-    std::vector<std::vector<Variant> > getHits(int32_t num);
-    std::vector<std::vector<Variant> > getHitData(
+    void getHits(void* msg, int32_t num);
+    std::vector<std::vector<Strigi::Variant> > getHitData(
         const std::vector<int32_t>& hit_ids,
         const std::vector<std::string>& properties);
 
     // once the count has been determined, send out the messages
-    void setCount(int count);
+    //void setCount(int count);
     XesamSession session() const;
     std::string name() const;
     Strigi::Query query() const;
+    void setCount(int c);
 };
 
 #endif

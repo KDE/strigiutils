@@ -41,8 +41,8 @@ my %typemapping = (
 	"std::vector<std::pair<bool,std::string> >" => "a(bs)",
 	"std::vector<std::pair<std::string, uint32_t> >" => "a(su)",
 	"uint64_t" => "t",
-	"Variant" => "v",
-	"std::vector<std::vector<Variant> >" => "aav",
+	"Strigi::Variant" => "v",
+	"std::vector<std::vector<Strigi::Variant> >" => "aav",
 	"std::vector<int32_t>" => "ai"
 );
 

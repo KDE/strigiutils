@@ -38,12 +38,13 @@ public:
     ~XesamSession();
     void operator=(const XesamSession& xs);
     bool operator==(const XesamSession& xs) { return p == xs.p; }
-    Variant setProperty(const std::string& prop, const Variant& v);
-    Variant getProperty(const std::string& prop);
+    Strigi::Variant setProperty(const std::string& prop, const Strigi::Variant& v);
+    Strigi::Variant getProperty(const std::string& prop);
     std::string newSearch(const std::string& xml_query);
     void closeSearch(const XesamSearch& search);
 
     XesamLiveSearch& liveSearch() const;
+    std::vector<std::string>& hitFields() const;
 };
 
 #endif

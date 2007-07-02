@@ -26,6 +26,7 @@
 #include <iostream>
 #include <cstdlib>
 using namespace std;
+using namespace Strigi;
 
 class XesamLiveSearch::Private {
 public:
@@ -56,20 +57,20 @@ XesamLiveSearch::NewSession() {
     p->sessions.insert(make_pair(name, session));
     return name;
 }
-Variant
+Strigi::Variant
 XesamLiveSearch::SetProperty(const std::string& session,
-        const std::string& prop, const Variant& v) {
-    Variant out;
+        const std::string& prop, const Strigi::Variant& v) {
+    Strigi::Variant out;
     map<string, XesamSession>::iterator i = p->sessions.find(session);
     if (i != p->sessions.end()) {
         out = i->second.setProperty(prop, v);
     }
     return out;
 }
-Variant
+Strigi::Variant
 XesamLiveSearch::GetProperty(const std::string& session,
         const std::string& prop) {
-    Variant out;
+    Strigi::Variant out;
     map<string, XesamSession>::iterator i = p->sessions.find(session);
     if (i != p->sessions.end()) {
         out = i->second.getProperty(prop);
@@ -112,22 +113,41 @@ XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {
         (*i)->CountHitsResponse(msg, count);
     }
 }
-vector<vector<Variant> >
-XesamLiveSearch::GetHits(const string& search, int32_t num) {
+void
+XesamLiveSearch::GetHits(void*msg, const string& search, int32_t num) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        return i->second.getHits(num);
+        i->second.getHits(msg, num);
+    } else {
+        vector<vector<Strigi::Variant> > v;
+        GetHitsResponse(msg, v);
     }
-    return vector<vector<Variant> >();
 }
-vector<vector<Variant> >
-XesamLiveSearch::GetHitData(const string& search,
+void
+XesamLiveSearch::GetHitsResponse(void* msg, const vector<vector<Strigi::Variant> >& h) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->GetHitsResponse(msg, h);
+    }
+}
+void
+XesamLiveSearch::GetHitData(void* msg, const string& search,
         const vector<int32_t>& hit_ids, const vector<string>& properties) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        return i->second.getHitData(hit_ids, properties);
+        i->second.getHitData(hit_ids, properties);
+    } else {
+        vector<vector<Strigi::Variant> > v;
+        GetHitDataResponse(msg, v);
     }
-    return vector<vector<Variant> >();
+}
+void
+XesamLiveSearch::GetHitDataResponse(void* msg,
+        const vector<vector<Strigi::Variant> >& v) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->GetHitDataResponse(msg, v);
+    }
 }
 void
 XesamLiveSearch::CloseSearch(const string& search) {

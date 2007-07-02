@@ -23,6 +23,7 @@
 #include "xesamclass.h"
 #include <sstream>
 using namespace std;
+using namespace Strigi;
 
 class XesamSession::Private : public XesamClass {
 public:
@@ -39,8 +40,9 @@ public:
 
     Private(XesamLiveSearch& x);
     ~Private();
-    Variant setProperty(const std::string& prop, const Variant& v);
-    Variant getProperty(const std::string& prop);
+    Strigi::Variant setProperty(const std::string& prop,
+        const Strigi::Variant& v);
+    Strigi::Variant getProperty(const std::string& prop);
 };
 XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
     searchLive(false),
@@ -155,3 +157,7 @@ XesamLiveSearch&
 XesamSession::liveSearch() const {
     return p->xesam;
 } 
+vector<string>&
+XesamSession::hitFields() const {
+    return p->hitFields;
+}
