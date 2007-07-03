@@ -22,6 +22,7 @@ set(streamanalyzer_SRCS
 	filelister.cpp
 	htmlsaxanalyzer.cpp
 	id3v2throughanalyzer.cpp
+        indexreader.cpp
 	lineeventanalyzer.cpp
 	mimeeventanalyzer.cpp
 	odfmimetypelineanalyzer.cpp

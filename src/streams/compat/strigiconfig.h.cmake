@@ -162,6 +162,8 @@
 
 #cmakedefine __STRIGI_HAVE_GCC_VISIBILITY
 
+#cmakedefine ENABLE_NEWXESAM
+
 /**
  * @def STRIGI_EXPORT
  *
