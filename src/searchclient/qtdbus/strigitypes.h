@@ -22,9 +22,14 @@
 
 #include <QtCore/QMap>
 #include <QtCore/QPair>
+#include <QtCore/QVector>
 #include <QtCore/QMetaType>
 #include <QtDBus/QtDBus>
 
+typedef QVector<QList<QVariant> > VariantListVector;
+Q_DECLARE_METATYPE(VariantListVector)
+typedef QList<int> IntegerList;
+Q_DECLARE_METATYPE(IntegerList)
 typedef QMap<QString, QString> StringStringMap;
 Q_DECLARE_METATYPE(StringStringMap)
 typedef QMultiMap<int, QString> IntegerStringMultiMap;
