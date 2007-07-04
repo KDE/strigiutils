@@ -68,6 +68,7 @@ install(FILES
 	stringstream.h
 	substreamprovider.h
 	substreamproviderprovider.h
+        textutils.h
 	compat/jstreamsconfig.h
 	DESTINATION include/strigi
 )
