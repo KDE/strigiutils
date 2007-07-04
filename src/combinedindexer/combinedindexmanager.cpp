@@ -195,6 +195,7 @@ void
 CombinedIndexReader::getHits(const Query& q,
         const std::vector<std::string>& fields,
         std::vector<std::vector<Variant> >& result, int off, int max) {
+#ifdef ENABLE_NEWXESAM	
     /** TODO merge the result documents by score **/
     std::vector<std::vector<Variant> > v;
     m->p->writermanager->indexReader()->getHits(q, fields, result, off, max);
@@ -205,6 +206,7 @@ CombinedIndexReader::getHits(const Query& q,
     for (i = f.begin(); i != f.end(); ++i) {
         i->second->indexReader()->getHits(q, fields, v, off, max);
     }
+#endif    
 }
 map<string, time_t>
 CombinedIndexReader::files(char depth) {
