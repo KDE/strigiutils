@@ -57,8 +57,10 @@ public:
 
 // TEMP IFDEF UNTIL MONDAY 20070711
 #ifdef ENABLE_NEWXESAM
-    virtual std::vector<std::vector<Variant> > getHits(const Query&, int off,
-        int max);
+    virtual void getHits(const Strigi::Query& query,
+        const std::vector<std::string>& fields,
+        std::vector<std::vector<Strigi::Variant> >& result,
+        int off, int max) = 0;
 #endif
     /**
      * Obtain the path and mtime of all files in the index that have a given

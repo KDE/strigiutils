@@ -66,16 +66,17 @@ class GetHitsJob : public Job {
 public:
     XesamSearch search;
     void* msg;
+    const int offset;
     const int num;
 
-    GetHitsJob(XesamSearch s, void* m, int n) :search(s), msg(m), num(n) {}
+    GetHitsJob(XesamSearch s, void* m, int off, int n) :search(s), msg(m),
+        offset(off), num(n) {}
     void run() {
         IndexReader* reader
             = search.session().liveSearch().indexManager()->indexReader();
         vector<vector<Variant> > v;
-        vector<Variant> vv;
-        vv.push_back("hello");
-        v.push_back(vv);
+        reader->getHits(search.query(), search.session().hitFields(),
+            v, offset, num);
         search.session().liveSearch().GetHitsResponse(msg, v);
     } 
 };
@@ -149,7 +150,7 @@ XesamSearch::Private::getHits(void* msg, int32_t num) {
     if (!valid) {
         session.liveSearch().GetHitsResponse(msg, v);
     } else {
-        GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, num);
+        GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, 0, num);
         valid = session.liveSearch().queue().addJob(job);
         if (!valid) {
             delete job;

@@ -20,6 +20,7 @@
 #include "grepindexreader.h"
 #include "analyzerconfiguration.h"
 #include "query.h"
+#include "variant.h"
 #include "indexwriter.h"
 #include "filelister.h"
 #include <set>
@@ -134,6 +135,12 @@ vector<IndexedDocument>
 GrepIndexReader::query(const Query&, int offset, int max) {
     vector<IndexedDocument> hits;
     return hits;
+}
+void
+GrepIndexReader::getHits(const Strigi::Query&,
+        const std::vector<std::string>& fields,
+        std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
+    result.clear();
 }
 map<string, time_t>
 GrepIndexReader::files(char depth) {

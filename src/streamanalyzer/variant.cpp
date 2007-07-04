@@ -30,12 +30,13 @@ public:
     Variant::VarType vartype;
 
     VariantPrivate() :i_value(0), vartype(Variant::b_val) {}
-    VariantPrivate(bool v) { *this = v; }
+/*    VariantPrivate(bool v) { *this = v; }
     VariantPrivate(int32_t v) { *this = v; }
     VariantPrivate(const char* v) { *this = string(v); }
     VariantPrivate(const string& v) { *this = v; }
-    VariantPrivate(const vector<string>& v) { *this = v; }
+    VariantPrivate(const vector<string>& v) { *this = v; } */
     VariantPrivate(const Variant& v) { *this = v; }
+    void operator=(const VariantPrivate& v);
     bool b() const;
     int32_t i() const;
     string s() const;
@@ -44,12 +45,12 @@ public:
     static string itos(int32_t i);
 };
 Variant::Variant() :p(new VariantPrivate()) {}
-Variant::Variant(bool v) :p(new VariantPrivate(v)) {}
-Variant::Variant(int32_t v) :p(new VariantPrivate(v)) {}
-Variant::Variant(const char* v) :p(new VariantPrivate(v)) {}
-Variant::Variant(const string& v) :p(new VariantPrivate(v)) {}
-Variant::Variant(const vector<string>& v) :p(new VariantPrivate(v)) {}
-Variant::Variant(const Variant& v) :p(new VariantPrivate(v.p)) {}
+Variant::Variant(bool v) :p(new VariantPrivate()) {*this=v;}
+Variant::Variant(int32_t v) :p(new VariantPrivate()) {*this=v;}
+Variant::Variant(const char* v) :p(new VariantPrivate()) {*this=v;}
+Variant::Variant(const string& v) :p(new VariantPrivate()) {*this=v;}
+Variant::Variant(const vector<string>& v) :p(new VariantPrivate()) {*this=v;}
+Variant::Variant(const Variant& v) :p(new VariantPrivate(*v.p)) {}
 
 Variant::~Variant() {
 }
@@ -87,11 +88,15 @@ Variant::operator=(const vector<string>& v) {
 }
 const Variant&
 Variant::operator=(const Variant& v) {
-    p->i_value = v.p->i_value;
-    p->s_value = v.p->s_value;
-    p->as_value = v.p->as_value;
-    p->vartype = v.p->vartype;
-    return *this;
+    *p = *v.p;
+    return v;
+}
+void
+VariantPrivate::operator=(const VariantPrivate& v) {
+    i_value = v.i_value;
+    s_value = v.s_value;
+    as_value = v.as_value;
+    vartype = v.vartype;
 }
 bool
 Variant::b() const {

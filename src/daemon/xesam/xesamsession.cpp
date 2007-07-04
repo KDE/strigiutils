@@ -45,11 +45,12 @@ public:
     Strigi::Variant getProperty(const std::string& prop);
 };
 XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
-    searchLive(false),
-    searchBlocking(true),
-    hitSnippetLength(200),
-    sortPrimary("score"),
-    sortAscending(false) {
+        searchLive(false),
+        searchBlocking(true),
+        hitSnippetLength(200),
+        sortPrimary("score"),
+        sortAscending(false) {
+    hitFields.push_back("uri");
 }
 XesamSession::Private::~Private() {
     for (std::list<XesamSearch>::const_iterator i = searches.begin();

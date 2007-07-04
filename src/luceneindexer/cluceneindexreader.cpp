@@ -26,6 +26,7 @@
 #include "strigiconfig.h"
 #include "query.h"
 #include "queryparser.h"
+#include "variant.h"
 #include "textutils.h"
 #include "cluceneindexmanager.h"
 #include "timeofday.h"
@@ -383,6 +384,17 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     searcher.close();
     _CLDELETE(bq);
     return results;
+}
+void
+CLuceneIndexReader::getHits(const Strigi::Query&,
+        const std::vector<std::string>& fields,
+        std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
+    result.clear();
+    cerr << "call getHits with these fields: ";
+    for (uint i = 0; i < fields.size(); ++i) {
+         cerr << "'" << fields[i] << "' ";
+    }
+    cerr << endl;
 }
 map<string, time_t>
 CLuceneIndexReader::files(char depth) {

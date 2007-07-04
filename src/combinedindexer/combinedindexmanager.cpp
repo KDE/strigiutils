@@ -19,6 +19,7 @@
  */
 #include "combinedindexmanager.h"
 #include "strigiconfig.h"
+#include "variant.h"
 
 #include "grepindexmanager.h"
 #ifdef HAVE_CLUCENE
@@ -81,6 +82,8 @@ public:
     CombinedIndexReader(CombinedIndexManager* manager) :m(manager){}
     int32_t countHits(const Query& query);
     vector<IndexedDocument> query(const Query& q, int offset, int max);
+    void getHits(const Strigi::Query&, const std::vector<std::string>& fields,
+        std::vector<std::vector<Strigi::Variant> >& result, int off, int max);
     map<string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();
@@ -187,6 +190,21 @@ CombinedIndexReader::query(const Query& q, int offset, int max) {
         v = i->second->indexReader()->query(q, offset, max);
     }
     return v;
+}
+void
+CombinedIndexReader::getHits(const Query& q,
+        const std::vector<std::string>& fields,
+        std::vector<std::vector<Variant> >& result, int off, int max) {
+    /** TODO merge the result documents by score **/
+    std::vector<std::vector<Variant> > v;
+    m->p->writermanager->indexReader()->getHits(q, fields, result, off, max);
+    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
+    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    map<string, TSSPtr<IndexManager> >::const_iterator i;
+    for (i = f.begin(); i != f.end(); ++i) {
+        i->second->indexReader()->getHits(q, fields, v, off, max);
+    }
 }
 map<string, time_t>
 CombinedIndexReader::files(char depth) {
