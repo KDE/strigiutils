@@ -45,8 +45,7 @@ public:
 };
 
 DaemonConfigurator::DaemonConfigurator (const string& confFile)
-    : m_confFile (confFile)
-{
+    : m_confFile (confFile) {
     stringbuf xml;
     ifstream f(confFile.c_str(), ios::binary);
     f.get(xml, '\0');
@@ -70,6 +69,9 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         r.a_indexdir = s + "/.strigi/clucene";
         r.a_writeable = true;
         r.a_type = "clucene";
+        // default polling interval is three minutes
+        r.a_pollingInterval = 180;
+
         Path p;
         p.a_path = s;                 r.e_path.push_back(p);
         p.a_path = s + "/.kde";       r.e_path.push_back(p);
@@ -90,16 +92,12 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         STRIGI_LOG_WARNING ("DaemonConfigurator",
                             "created default config for indexed dirs")
     }
-
-//pattern='*/.*'>
-// </patternfilter>
-// */.*
+    save();
 }
 void
 DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
                                             const string& repositoryName,
-                                            bool  merge)
-{
+                                            bool  merge) {
     FindRepository findRepository (repositoryName);
 
     list<Repository>::iterator match = find_if (e_repository.begin(),
@@ -108,10 +106,9 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
 
     Repository* r;
 
-    if (match != e_repository.end())
+    if (match != e_repository.end()) {
         r = &(*match);
-    else
-    {
+    } else {
         // create a new repository
         Repository repo;
         repo.a_name = repositoryName;
@@ -120,19 +117,19 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
     }
 
     // clear old path
-    if (!merge)
+    if (!merge) {
         r->e_path.clear();
+    }
 
-    for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end(); iter++)
-    {
+    for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end();
+            iter++) {
         Path p;
         p.a_path = *iter;
         r->e_path.push_back(p);
     }
 }
 set<string>
-DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
-{
+DaemonConfigurator::getIndexedDirectories(const string& repositoryName) {
     set<string> dirs;
 
     FindRepository findRepository (repositoryName);
@@ -141,16 +138,14 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
                                                 e_repository.end(),
                                                 findRepository);
 
-    if (match == e_repository.end())
-    {
+    if (match == e_repository.end()) {
         STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs",
                         "cannot find repository name: |" + repositoryName + '|')
         return dirs;
     }
 
     for (list<Path>::const_iterator iter = match->e_path.begin();
-         iter != match->e_path.end(); iter++)
-    {
+         iter != match->e_path.end(); iter++) {
         dirs.insert (iter->a_path);
     }
 
@@ -159,10 +154,11 @@ DaemonConfigurator::getIndexedDirectories (const string& repositoryName)
 void
 DaemonConfigurator::save(const char* file) {
     ofstream f;
-    if (file == NULL)
+    if (file == NULL) {
         f.open(m_confFile.c_str(), ios::binary);
-    else
+    } else {
         f.open(file, ios::binary);
+    }
     f << *this;
     f.close();
 }
@@ -187,8 +183,7 @@ DaemonConfigurator::getReadOnlyRepositories() const {
 }
 void
 DaemonConfigurator::setPollingInterval (unsigned int value,
-                                        const string& repositoryName)
-{
+                                        const string& repositoryName) {
     FindRepository findRepository (repositoryName);
 
     list<Repository>::iterator match = find_if (e_repository.begin(),
@@ -197,14 +192,13 @@ DaemonConfigurator::setPollingInterval (unsigned int value,
 
     Repository* r;
 
-    if (match != e_repository.end())
+    if (match != e_repository.end()) {
         r = &(*match);
-    else
-    {
+    } else {
         // create a new repository
         Repository repo;
         repo.a_name = repositoryName;
-        repo.a_pollingInterval = 3; // default 3 minutes
+        repo.a_pollingInterval = 180; // default 3 minutes
         e_repository.push_back(repo);
         r = &repo;
     }
@@ -213,8 +207,7 @@ DaemonConfigurator::setPollingInterval (unsigned int value,
 }
 
 unsigned int
-DaemonConfigurator::getPollingInterval(const string& repositoryName)
-{
+DaemonConfigurator::getPollingInterval(const string& repositoryName) {
     FindRepository findRepository (repositoryName);
 
     list<Repository>::iterator match = find_if (e_repository.begin(),
@@ -223,10 +216,9 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
 
     Repository* r;
 
-    if (match != e_repository.end())
+    if (match != e_repository.end()) {
         r = &(*match);
-    else
-    {
+    } else {
         // create a new repository
         Repository repo;
         repo.a_name = repositoryName;
@@ -235,10 +227,11 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName)
     }
 
     // minimum polling interval is 60 seconds
-    if (r->a_pollingInterval > 0 && r->a_pollingInterval < 180)
-        return 180;
-    else
+    if (r->a_pollingInterval > 0 && r->a_pollingInterval < 60) {
+        return 60;
+    } else {
         return r->a_pollingInterval;
+    }
 }
 void
 DaemonConfigurator::loadFilteringRules(AnalyzerConfiguration& config) {
