@@ -119,6 +119,15 @@ IF(ENABLE_DBUS)
     if (NOT DBUS_INCLUDE_DIR)
       MESSAGE(FATAL_ERROR "Could not find DBus")
     endif (NOT DBUS_INCLUDE_DIR)
+    
+    EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=1.0 dbus-1 RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
+    if(_return_VALUE STREQUAL "0")
+         message(STATUS "Found dbus-1 release >= 1.0")
+    else(_return_VALUE STREQUAL "0")
+         message(STATUS "Found dbus-1 release < 1.0 support for dbus client will be disable")
+         set(ENABLE_DBUS "OFF")
+    endif(_return_VALUE STREQUAL "0")
+
   ENDIF(WIN32)
 ENDIF(ENABLE_DBUS)
 
