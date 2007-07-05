@@ -34,12 +34,9 @@
 
 using namespace std;
 
-PollingListener* PollingListener::workingPoller;
-
 PollingListener::PollingListener()
     :EventListener("PollingListener")
 {
-    workingPoller = this;
     setState(Idling);
     STRIGI_MUTEX_INIT (&m_mutex);
     m_firstTime = true;
@@ -48,7 +45,6 @@ PollingListener::PollingListener()
 PollingListener::PollingListener(set<string>& dirs)
     :EventListener("PollingListener")
 {
-    workingPoller = this;
     setState(Idling);
     STRIGI_MUTEX_INIT (&m_mutex);
     m_firstTime = true;
@@ -71,12 +67,13 @@ void* PollingListener::run(void*)
         // wait m_pause seconds before polling again
         if (!m_watches.empty())
         {
-            if (!m_firstTime)
+            if (!m_firstTime) {
                 sleep (m_pollingInterval);
+                m_firstTime = false;
+            }
             if (getState() != Stopping) {
                 poll();
             }
-            m_firstTime = false;
         }
 
         if (getState() == Working)
@@ -92,13 +89,13 @@ void PollingListener::poll ()
 {
     if (!m_pIndexReader) {
         STRIGI_LOG_ERROR ("strigi.PollingListener.poll",
-            "m_pEventQueue == NULL!")
+                          "m_pEventQueue == NULL!");
         return;
     }
     if (m_pEventQueue == NULL)
     {
         STRIGI_LOG_ERROR ("strigi.PollingListener.poll",
-            "m_pEventQueue == NULL!")
+                          "m_pEventQueue == NULL!");
         return;
     }
 
@@ -108,7 +105,6 @@ void PollingListener::poll ()
 
     assert(m_pindexerconfiguration);
     Strigi::FileLister lister (m_pindexerconfiguration);
-//    lister.setFileCallbackFunction(&fileCallback);
 
     m_toIndex.clear();
 
@@ -117,16 +113,19 @@ void PollingListener::poll ()
     watches = m_watches;
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "going across filesystem")
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "going across filesystem");
 
     // walk through the watched dirs
-    for (set<string>::const_iterator iter = watches.begin(); iter != watches.end(); iter++)
+    for (set<string>::const_iterator iter = watches.begin();
+         iter != watches.end(); iter++)
     {
         // check if dir still exists
         DIR* dir = opendir(iter->c_str());
         if (dir == NULL)
         {
-            STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "error opening dir " + *iter + ": " + strerror (errno))
+            STRIGI_LOG_DEBUG ("strigi.PollingListener.poll",
+                              "error opening dir " + *iter + ": " +
+                               strerror (errno));
 
             // dir doesn't exists anymore, remove it for the watches list
             if ((errno == ENOENT) || (errno == ENOTDIR))
@@ -148,7 +147,8 @@ void PollingListener::poll ()
         }
     }
 
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "filesystem access finished")
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.poll",
+                      "filesystem access finished");
 
     // de-index files deleted since last polling
     map<string,time_t>::iterator mi = indexedFiles.begin();
@@ -177,7 +177,8 @@ void PollingListener::poll ()
         }
         else
         {
-            // file has NOT been changed since last polling, we keep our indexed information
+            // file has NOT been changed since last polling,
+            // we keep our indexed information
             m_toIndex.erase (it);
             mi++;
         }
@@ -201,7 +202,8 @@ PollingListener::addWatch (const string& path) {
 
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 
-    STRIGI_LOG_DEBUG ("strigi.PollingListener.addWatch", "successfully added polling watch for " + path)
+    STRIGI_LOG_DEBUG ("strigi.PollingListener.addWatch",
+                      "successfully added polling watch for " + path);
 
     return true;
 }
@@ -220,13 +222,15 @@ void PollingListener::rmWatch (const string& path)
 
 void PollingListener::addWatches (const set<string> &watches)
 {
-    for (set<string>::iterator iter = watches.begin(); iter != watches.end(); iter++)
+    for (set<string>::iterator iter = watches.begin();
+         iter != watches.end(); iter++)
     {
         string temp = fixPath (*iter);
         bool match = false;
 
         // try to reduce watches number
-        for (set<string>::iterator it = m_watches.begin(); it != m_watches.end(); it++)
+        for (set<string>::iterator it = m_watches.begin();
+             it != m_watches.end(); it++)
         {
             if ((temp.length() >= it->length()) && (temp.find(*it) == 0))
             {
@@ -259,8 +263,4 @@ void PollingListener::setIndexedDirectories (const set<string>& dirs)
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 
     addWatches (dirs);
-}
-void
-PollingListener::fileCallback(const char* path, uint dirlen, uint len, time_t mtime)
-{
 }

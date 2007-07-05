@@ -50,8 +50,6 @@ public:
 
     void* run(void*);
 
-    static void fileCallback(const char* path, unsigned dirlen, unsigned len,
-        time_t mtime);
 private:
     void poll ();
     void clearWatches();
@@ -60,7 +58,6 @@ private:
     std::set<std::string> m_watches;
     std::map<std::string, time_t> m_toIndex;
     pthread_mutex_t m_mutex; //!< mutex on m_watches
-    static PollingListener* workingPoller; //!<pointer to current PollingListener instance, used with FileLister's callbacks
 };
 
 #endif
