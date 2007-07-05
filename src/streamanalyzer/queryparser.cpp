@@ -58,6 +58,8 @@ parse(const char* p, Query& q) {
     // set defaults
     q.setType(Query::Contains);
 
+    while (*p && isspace(*p)) p++;
+
     // check if we must include or exclude
     if (*p == '+') {
         p++;
