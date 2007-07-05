@@ -280,30 +280,84 @@ void DaemonConfiguratorTest::testRepository()
     setDirs.insert ("/foobar");
     defaultConf->setIndexedDirectories( setDirs, "newRepository", false);
     dirs = defaultConf->getIndexedDirectories( "newRepository");
-    
-    set<string> localhostRepoEntries = defaultConf->getIndexedDirectories();
-    equal = checkEq (localhostRepoEntriesIni, localhostRepoEntries, errMsg);
+    equal = checkEq (setDirs, dirs, errMsg);
     CPPUNIT_ASSERT_MESSAGE (errMsg, equal);
     
-    equal = checkEq (setDirs, dirs, errMsg);
+    // default repository dirs must be the same
+    set<string> localhostRepoEntries = defaultConf->getIndexedDirectories();
+    equal = checkEq (localhostRepoEntriesIni, localhostRepoEntries, errMsg);
     CPPUNIT_ASSERT_MESSAGE (errMsg, equal);
 }
 
 void DaemonConfiguratorTest::testPollingInterval()
 {
-    defaultConf->setPollingInterval( 4);
-    CPPUNIT_ASSERT (defaultConf->getPollingInterval() == 4);
-    
-    defaultConf->setPollingInterval( 9, "newRepository");
-    CPPUNIT_ASSERT (defaultConf->getPollingInterval("newRepository") == 9);
-    
+    char buffer [10];
+    int ret;
+    string message;
+
+    // test polling interval configuration for default repository
+    int defRepVal= DaemonConfigurator::DEFAULT_POLLING_INTERVAL + 1;
+    defaultConf->setPollingInterval( defRepVal);
+    ret = defaultConf->getPollingInterval();
+
+    if (ret != defRepVal)
+    {
+        message = "Failed to set polling interval for default repository: set ";
+        snprintf (buffer, 10, "%i", defRepVal);
+        message += buffer;
+        message += ", got ";
+        snprintf (buffer, 10, "%i", ret);
+        message += buffer;
+        CPPUNIT_FAIL (message);
+    }
+
+    // test polling interval configuration for another repository
+    int newRepVal= DaemonConfigurator::DEFAULT_POLLING_INTERVAL + 10;
+    defaultConf->setPollingInterval( newRepVal, "newRepository");
+    ret = defaultConf->getPollingInterval("newRepository");
+
+    if (ret != newRepVal)
+    {
+        message = "Failed to set polling interval for \"newRepository\"";
+        message += "repository: set ";
+        snprintf (buffer, 10, "%i", newRepVal);
+        message += buffer;
+        message += ", got ";
+        snprintf (buffer, 10, "%i", ret);
+        message += buffer;
+        CPPUNIT_FAIL (message);
+    }
+
     // polling interval associated to the default repository
     // should not have been changed
-    CPPUNIT_ASSERT (defaultConf->getPollingInterval() == 4);
+    ret = defaultConf->getPollingInterval();
+
+    if (ret != defRepVal)
+    {
+        message = "After configuration of polling interval for \"newRepository\"";
+        message += "repository, default repository polling interval changed!\n";
+        message += "Expected ";
+        snprintf (buffer, 10, "%i", defRepVal);
+        message += buffer;
+        message += ", got ";
+        snprintf (buffer, 10, "%i", ret);
+        message += buffer;
+        CPPUNIT_FAIL (message);
+    }
     
     // test minimum polling interval value
-    defaultConf->setPollingInterval( 1);
-    CPPUNIT_ASSERT (defaultConf->getPollingInterval() >= 3);
+    defaultConf->setPollingInterval( 0);
+    ret = defaultConf->getPollingInterval();
+    if (ret != DaemonConfigurator::DEFAULT_POLLING_INTERVAL)
+    {
+        message = "Test minimum polling interval failed, expected ";
+        snprintf (buffer, 10,"%i",DaemonConfigurator::DEFAULT_POLLING_INTERVAL);
+        message += buffer;
+        message += ", got ";
+        snprintf (buffer, 10, "%i", ret);
+        message += buffer;
+        CPPUNIT_FAIL (message);
+    }
 }
 
 void DaemonConfiguratorTest::testSave()

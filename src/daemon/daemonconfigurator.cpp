@@ -69,8 +69,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         r.a_indexdir = s + "/.strigi/clucene";
         r.a_writeable = true;
         r.a_type = "clucene";
-        // default polling interval is three minutes
-        r.a_pollingInterval = 180;
+        r.a_pollingInterval = DEFAULT_POLLING_INTERVAL;
 
         Path p;
         p.a_path = s;                 r.e_path.push_back(p);
@@ -113,7 +112,7 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
         Repository repo;
         repo.a_name = repositoryName;
         e_repository.push_back(repo);
-        r = &repo;
+        return setIndexedDirectories (dirs, repositoryName, merge);
     }
 
     // clear old path
@@ -144,8 +143,10 @@ DaemonConfigurator::getIndexedDirectories(const string& repositoryName) {
         return dirs;
     }
 
-    for (list<Path>::const_iterator iter = match->e_path.begin();
-         iter != match->e_path.end(); iter++) {
+    Repository* r = &(*match);
+    
+    for (list<Path>::const_iterator iter = r->e_path.begin();
+         iter != r->e_path.end(); iter++) {
         dirs.insert (iter->a_path);
     }
 
@@ -190,20 +191,16 @@ DaemonConfigurator::setPollingInterval (unsigned int value,
                                                 e_repository.end(),
                                                 findRepository);
 
-    Repository* r;
-
     if (match != e_repository.end()) {
-        r = &(*match);
+        Repository* r = &(*match);
+        r->a_pollingInterval = value;
     } else {
         // create a new repository
         Repository repo;
         repo.a_name = repositoryName;
-        repo.a_pollingInterval = 180; // default 3 minutes
+        repo.a_pollingInterval = value;
         e_repository.push_back(repo);
-        r = &repo;
     }
-
-    r->a_pollingInterval = value;
 }
 
 unsigned int
@@ -226,9 +223,11 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName) {
         r = &repo;
     }
 
-    // minimum polling interval is 60 seconds
-    if (r->a_pollingInterval > 0 && r->a_pollingInterval < 60) {
-        return 60;
+    // check minimum polling interval
+    if (r->a_pollingInterval < DEFAULT_POLLING_INTERVAL)
+    {
+        r->a_pollingInterval = DEFAULT_POLLING_INTERVAL;
+        return DEFAULT_POLLING_INTERVAL;
     } else {
         return r->a_pollingInterval;
     }

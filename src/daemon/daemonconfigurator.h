@@ -28,6 +28,9 @@
 
 class DaemonConfigurator : public StrigiDaemonConfiguration {
 public:
+    // default polling interval is three minutes
+    static const int DEFAULT_POLLING_INTERVAL = 180;
+    
     explicit DaemonConfigurator (const std::string& confFile);
 
     void setIndexedDirectories(std::set<std::string>& dirs,
