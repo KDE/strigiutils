@@ -113,13 +113,15 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     map<string, time_t> toindex;
     vector<string> toDelete;
 
-    STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events")
+    STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events");
 
-    for(vector<Event*>::iterator iter = events.begin(); iter != events.end(); iter++)
+    for(vector<Event*>::iterator iter = events.begin();
+        iter != events.end(); iter++)
     {
         Event* event = *iter;
 
-        STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "event infos: " + event->toString())
+        STRIGI_LOG_DEBUG ("strigi.IndexScheduler",
+                          "event infos: " + event->toString());
 
         switch (event->getType())
         {
@@ -129,13 +131,16 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
             case Event::UPDATED:
             {
                 time_t indexTime = reader->mTime(event->getPath());
+
                 if (indexTime < event->getTime())
                 {
-                    toindex.insert (make_pair (event->getPath(), event->getTime()));
+                    toindex.insert (make_pair (event->getPath(),
+                                               event->getTime()));
                     toDelete.push_back (event->getPath());
                 }
                 else
-                    STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "ignoring last event")
+                    STRIGI_LOG_DEBUG ("strigi.IndexScheduler",
+                                      "ignoring last event");
                 break;
             }
             case Event::DELETED:
