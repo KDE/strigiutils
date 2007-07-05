@@ -36,10 +36,10 @@ void
 StrigiThread::stopThreads() {
     vector<StrigiThread*>::const_iterator i;
     for (i=threads.begin(); i!=threads.end(); ++i) {
-        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread")
+        STRIGI_LOG_INFO ("strigi.daemon", string("stopping thread ")
             + (*i)->name);
         (*i)->stop();
-        STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread");
+        STRIGI_LOG_INFO ("strigi.daemon", "stopped another thread ");
     }
 }
 
@@ -50,11 +50,11 @@ quit_daemon(int signum) {
     vector<StrigiThread*>::const_iterator i;
     switch (++interruptcount) {
     case 1:
-        STRIGI_LOG_INFO ("strigi.daemon", "stopping threads");
+        STRIGI_LOG_INFO ("strigi.daemon", "stopping threads ");
         StrigiThread::stopThreads();
         break;
     case 2:
-        STRIGI_LOG_INFO ("strigi.daemon", "terminating threads");
+        STRIGI_LOG_INFO ("strigi.daemon", "terminating threads ");
         for (i=threads.begin(); i!=threads.end(); ++i) {
             (*i)->terminate();
         }
@@ -97,13 +97,13 @@ threadstarter(void *d) {
         if (r != 0) {
             STRIGI_LOG_ERROR (string("strigi.daemon.") + thread->name
                 + ".threadstarter",
-                string("error setting priority: ") + strerror(errno))
+                string("error setting priority: ") + strerror(errno));
         }
         r = sched_setscheduler(0, SCHED_BATCH, &param);
         if (r != 0) {
             STRIGI_LOG_INFO (string("strigi.daemon.") + thread->name
                 + ".threadstarter",
-                string("error setting to batch: ") + strerror(errno))
+                string("error setting to batch: ") + strerror(errno));
         }
 #ifdef HAVE_LINUXIOPRIO
     sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
@@ -169,7 +169,8 @@ StrigiThread::start(int prio) {
     // start the indexer thread
     int r = STRIGI_THREAD_CREATE(&thread, threadstarter, this);
     if (r < 0) {
-        STRIGI_LOG_ERROR ("strigi.daemon." + string(name), "cannot create thread")
+        STRIGI_LOG_ERROR ("strigi.daemon." + string(name),
+                          "cannot create thread");
         return 1;
     }
     return 0;
