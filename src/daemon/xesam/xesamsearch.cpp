@@ -34,8 +34,8 @@ using namespace Strigi;
 class XesamSearch::Private : public XesamClass {
 public:
     const std::string name;
-    const std::string queryString;
-    const Strigi::Query query;
+    std::string queryString;
+    Strigi::Query query;
     XesamSession session;
     // list of requests to count to which we should reply
     std::list<void *> countMessages;
@@ -105,9 +105,26 @@ XesamSearch::operator=(const XesamSearch& xs) {
     p->ref();
 }
 XesamSearch::Private::Private(XesamSession& s, const std::string& n,
-        const std::string& q)
-        :name(n), queryString(q), query(Strigi::QueryParser::buildQuery(q)),
-         session(s) {
+        const std::string& q) :name(n), session(s) {
+
+    int userLangStart = q.find("<userQuery");
+    if (userLangStart == -1) {
+        valid = false;
+        return;
+    }
+    userLangStart = q.find(">", userLangStart)+1;
+    if (userLangStart == -1) {
+        valid = false;
+        return;
+    }
+    int userLangEnd = q.find("</userQuery", userLangStart);
+    if (userLangEnd == -1) {
+        valid = false;
+        return;
+    }
+    queryString.assign(q.substr(userLangStart, userLangEnd-userLangStart));
+    query = Strigi::QueryParser::buildQuery(queryString);
+
     hitcount = -1;
     valid = true;
     STRIGI_MUTEX_INIT(&mutex);
