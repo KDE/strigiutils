@@ -35,7 +35,7 @@ class VariantPrivate;
  **/
 class STREAMANALYZER_EXPORT Variant {
 public:
-    enum VarType {b_val, i_val, s_val, as_val};
+    enum Type {b_val, i_val, s_val, as_val};
 private:
     VariantPrivate* p;
 public:
@@ -47,13 +47,14 @@ public:
     Variant(const std::vector<std::string>& v);
     Variant(const Variant& v);
     ~Variant();
-    VarType type() const;
+    Type type() const;
     const Variant& operator=(bool v);
     const Variant& operator=(int32_t v);
     const Variant& operator=(const char* v);
     const Variant& operator=(const std::string& v);
     const Variant& operator=(const std::vector<std::string>& v);
     const Variant& operator=(const Variant& v);
+    bool isValid() const;
     bool b() const;
     int32_t i() const;
     std::string s() const;

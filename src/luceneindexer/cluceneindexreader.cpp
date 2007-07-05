@@ -52,6 +52,7 @@ using lucene::search::HitCollector;
 using lucene::util::BitSet;
 using lucene::document::DocumentFieldEnumeration;
 using Strigi::IndexedDocument;
+using Strigi::Variant;
 
 class HitCounter : public HitCollector {
 private:
@@ -77,6 +78,7 @@ public:
     Query* createMultiFieldQuery(const Strigi::Query& query);
     BooleanQuery* createBooleanQuery(const Strigi::Query& query);
     static void addField(lucene::document::Field* field, IndexedDocument&);
+    Variant getFieldValue(lucene::document::Field* field, Variant::Type) const;
 };
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
@@ -299,6 +301,20 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
             wchartoutf8(name), value));
     }
 }
+Variant
+CLuceneIndexReader::Private::getFieldValue(lucene::document::Field* field,
+        Variant::Type type) const {
+    if (field->stringValue() == 0) return Variant();
+    Variant v(wchartoutf8(field->stringValue()));
+    if (type == Variant::b_val) {
+         v = v.b();
+    } else if (type == Variant::i_val) {
+         v = v.i();
+    } else if (type == Variant::as_val) {
+         v = v.as();
+    }
+    return v;
+}
 int32_t
 CLuceneIndexReader::countHits(const Strigi::Query& q) {
     if (!checkReader()) return -1;
@@ -386,15 +402,56 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     return results;
 }
 void
-CLuceneIndexReader::getHits(const Strigi::Query&,
+CLuceneIndexReader::getHits(const Strigi::Query& q,
         const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
     result.clear();
-    cerr << "call getHits with these fields: ";
-    for (uint i = 0; i < fields.size(); ++i) {
-         cerr << "'" << fields[i] << "' ";
+    if (!checkReader() || types.size() < fields.size()) {
+        return;
     }
-    cerr << endl;
+
+    Query* bq = p->createQuery(q);
+    IndexSearcher searcher(reader);
+    Hits* hits = 0;
+    int s = 0;
+    try {
+        hits = searcher.search(bq);
+        s = hits->length();
+    } catch (CLuceneError& err) {
+        printf("could not query: %s\n", err.what());
+    }
+    if (off < 0) off = 0;
+    max += off;
+    if (max < 0) max = s;
+    if (max > s) max = s;
+    if (max > off) {
+        result.reserve(max-off);
+    }
+    result.resize(max-off);
+    for (int i = off; i < max; ++i) {
+        Document *d = &hits->doc(i);
+        vector<Variant>& doc = result[i-off];
+        doc.clear();
+        doc.resize(fields.size());
+
+        DocumentFieldEnumeration* e = d->fields();
+        while (e->hasMoreElements()) {
+            Field* field = e->nextElement();
+            string name(wchartoutf8(field->name()));
+            for (uint j = 0; j < fields.size(); ++j) {
+                if (fields[j] == name) {
+                    doc[j] = p->getFieldValue(field, types[j]);
+                }
+            }
+        }
+        _CLDELETE(e);
+    }
+    if (hits) {
+        _CLDELETE(hits);
+    }
+    searcher.close();
+    _CLDELETE(bq);
 }
 map<string, time_t>
 CLuceneIndexReader::files(char depth) {

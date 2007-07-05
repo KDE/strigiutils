@@ -76,8 +76,10 @@ public:
 
         IndexReader* reader
             = search.session().liveSearch().indexManager()->indexReader();
+        vector<Variant::Type> types(search.session().hitFields().size(),
+            Variant::s_val);
         vector<vector<Variant> > v;
-        reader->getHits(search.query(), search.session().hitFields(),
+        reader->getHits(search.query(), search.session().hitFields(), types,
             v, offset, num);
         search.session().liveSearch().GetHitsResponse(msg, v);
 #endif	
@@ -144,7 +146,6 @@ XesamSearch::Private::countHits(void* msg) {
 }
 void
 XesamSearch::getHits(void* msg, int32_t num) {
-    cerr << "getHits" << endl;
     p->getHits(msg, num);
 }
 void

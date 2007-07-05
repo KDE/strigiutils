@@ -35,8 +35,8 @@ public:
         return iface->NewSession();
     }
     virtual Strigi::Variant SetProperty(const std::string& session,
-            const std::string& prop, const Strigi::Variant& v) {
-        return iface->SetProperty(session, prop, v);
+            const std::string& prop, const Strigi::Variant& val) {
+        return iface->SetProperty(session, prop, val);
     }
     virtual Strigi::Variant GetProperty(const std::string& session,
             const std::string& prop) {

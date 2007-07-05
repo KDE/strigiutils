@@ -130,5 +130,7 @@ QueryParser::buildQuery(const std::string& q) {
         Query q = query.subQueries()[0];
         query = q;
     }
+    cerr << "query: '" << q << "' : " << query.subQueries().size() << "'"
+        << query.term().string() << "'" << endl;
     return query;
 }

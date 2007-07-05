@@ -50,7 +50,7 @@ XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
         hitSnippetLength(200),
         sortPrimary("score"),
         sortAscending(false) {
-    hitFields.push_back("uri");
+    hitFields.push_back("system.location");
 }
 XesamSession::Private::~Private() {
     for (std::list<XesamSearch>::const_iterator i = searches.begin();

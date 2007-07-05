@@ -22,11 +22,11 @@
 
 #include "strigiconfig.h"
 #include "indexeddocument.h"
+#include "variant.h"
 #include <vector>
 
 namespace Strigi {
 class Query;
-class Variant;
 
 /**
  * Abstract class that provides read access to a Strigi index.
@@ -59,6 +59,7 @@ public:
 #ifdef ENABLE_NEWXESAM
     virtual void getHits(const Strigi::Query& query,
         const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result,
         int off, int max) = 0;
 #endif

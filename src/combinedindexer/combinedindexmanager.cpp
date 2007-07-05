@@ -83,6 +83,7 @@ public:
     int32_t countHits(const Query& query);
     vector<IndexedDocument> query(const Query& q, int offset, int max);
     void getHits(const Strigi::Query&, const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max);
     map<string, time_t> files(char depth);
     int32_t countDocuments();
@@ -194,17 +195,19 @@ CombinedIndexReader::query(const Query& q, int offset, int max) {
 void
 CombinedIndexReader::getHits(const Query& q,
         const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Variant> >& result, int off, int max) {
 #ifdef ENABLE_NEWXESAM	
     /** TODO merge the result documents by score **/
     std::vector<std::vector<Variant> > v;
-    m->p->writermanager->indexReader()->getHits(q, fields, result, off, max);
+    m->p->writermanager->indexReader()->getHits(q, fields, types,
+        result, off, max);
     STRIGI_MUTEX_LOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
     STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
-        i->second->indexReader()->getHits(q, fields, v, off, max);
+        i->second->indexReader()->getHits(q, fields, types, v, off, max);
     }
 #endif    
 }

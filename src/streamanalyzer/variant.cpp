@@ -27,9 +27,10 @@ public:
     int32_t i_value;
     string s_value;
     vector<string> as_value;
-    Variant::VarType vartype;
+    Variant::Type vartype;
+    bool valid;
 
-    VariantPrivate() :i_value(0), vartype(Variant::b_val) {}
+    VariantPrivate() :i_value(0), vartype(Variant::b_val), valid(false) {}
 /*    VariantPrivate(bool v) { *this = v; }
     VariantPrivate(int32_t v) { *this = v; }
     VariantPrivate(const char* v) { *this = string(v); }
@@ -45,43 +46,58 @@ public:
     static string itos(int32_t i);
 };
 Variant::Variant() :p(new VariantPrivate()) {}
-Variant::Variant(bool v) :p(new VariantPrivate()) {*this=v;}
-Variant::Variant(int32_t v) :p(new VariantPrivate()) {*this=v;}
-Variant::Variant(const char* v) :p(new VariantPrivate()) {*this=v;}
-Variant::Variant(const string& v) :p(new VariantPrivate()) {*this=v;}
-Variant::Variant(const vector<string>& v) :p(new VariantPrivate()) {*this=v;}
-Variant::Variant(const Variant& v) :p(new VariantPrivate(*v.p)) {}
-
+Variant::Variant(bool v) :p(new VariantPrivate()) {
+    *this=v;
+}
+Variant::Variant(int32_t v) :p(new VariantPrivate()) {
+    *this=v;
+}
+Variant::Variant(const char* v) :p(new VariantPrivate()) {
+    *this=v;
+}
+Variant::Variant(const string& v) :p(new VariantPrivate()) {
+    *this=v;
+}
+Variant::Variant(const vector<string>& v) :p(new VariantPrivate()) {
+    *this=v;
+}
+Variant::Variant(const Variant& v) :p(new VariantPrivate(*v.p)) {
+}
 Variant::~Variant() {
 }
-Variant::VarType
+Variant::Type
 Variant::type() const { return p->vartype; }
 const Variant&
 Variant::operator=(bool v) {
+    p->valid = true;
     p->i_value = v;
     p->vartype = b_val;
     return *this;
 } 
 const Variant&
 Variant::operator=(int32_t v) {
+    p->valid=true;
     p->i_value = v;
     p->vartype = i_val;
     return *this;
 } 
 const Variant&
 Variant::operator=(const char* v) {
+    p->valid=true;
     p->s_value.assign(v);
     p->vartype = s_val;
     return *this;
 }
 const Variant&
 Variant::operator=(const string& v) {
+    p->valid=true;
     p->s_value.assign(v);
     p->vartype = s_val;
     return *this;
 }
 const Variant&
 Variant::operator=(const vector<string>& v) {
+    p->valid=true;
     p->as_value = v;
     p->vartype = as_val;
     return *this;
@@ -97,6 +113,7 @@ VariantPrivate::operator=(const VariantPrivate& v) {
     s_value = v.s_value;
     as_value = v.as_value;
     vartype = v.vartype;
+    valid = v.valid;
 }
 bool
 Variant::b() const {
@@ -174,4 +191,8 @@ VariantPrivate::as() const {
         v.push_back(s());
     }
     return v;
+}
+bool
+Variant::isValid() const {
+    return p->valid;    
 }

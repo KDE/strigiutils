@@ -139,6 +139,7 @@ GrepIndexReader::query(const Query&, int offset, int max) {
 void
 GrepIndexReader::getHits(const Strigi::Query&,
         const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
     result.clear();
 }

@@ -87,6 +87,12 @@ operator<<(DBusMessageWriter& w,
 DBusMessageWriter&
 operator<<(DBusMessageWriter& w, const Variant& v) {
     DBusMessageWriter sub;
+    if (!v.isValid()) {
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "s",&sub.it);
+        sub << string();
+        dbus_message_iter_close_container(&w.it, &sub.it);
+        return w;
+    }
     switch (v.type()) {
     case Variant::b_val:
         dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "b",&sub.it);
