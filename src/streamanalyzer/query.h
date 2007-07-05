@@ -21,6 +21,7 @@
 #define QUERY_H
 
 #include "strigiconfig.h"
+#include <ostream>
 #include <vector>
 #include <string>
 
@@ -94,6 +95,8 @@ public:
     std::vector<Query>& subQueries();
     const std::vector<Query>& subQueries() const;
 };
-
 }
+
+std::ostream &operator<<(std::ostream &stream, Strigi::Term term);
+std::ostream &operator<<(std::ostream &stream, Strigi::Query query);
 #endif
