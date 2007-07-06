@@ -53,6 +53,7 @@ class Event
         void setType(Type type) { m_type = type; }
         const std::string &getPath() { return m_path; }
         time_t getTime() { return m_time; }
+        void   setTime(time_t time) {m_time = time;}
 
         /*!
         * @return a string containing event's resume
