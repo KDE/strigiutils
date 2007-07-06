@@ -36,75 +36,6 @@ class PollingListener;
 class InotifyListener : public EventListener
 {
     public:
-
-        /*!
-        * @class ReindexDirsThread
-        * @brief Simple thread called when user changes indexed dirs
-        *
-        * It's a separate thread that takes care of updating inotify watches and indexed files according to the new directories specified by the user
-.        */
-        class ReindexDirsThread : public StrigiThread
-        {
-            friend class InotifyListener;
-
-            public:
-                explicit ReindexDirsThread (const char* name, const std::set<std::string> &newdirs, const std::set<std::string> &olddirs) : StrigiThread (name) {
-                    m_pIndexReader = NULL;
-                    m_pindexerconfiguration = NULL;
-                    m_newDirs = newdirs;
-                    m_oldDirs = olddirs;
-                    m_bfinished = false;
-                    STRIGI_MUTEX_INIT (&m_nextJobLock);
-                    STRIGI_MUTEX_INIT (&m_resourcesLock);
-                }
-
-                ~ReindexDirsThread();
-
-                void* run(void*);
-
-                void setIndexReader (Strigi::IndexReader* ireader) {
-                    m_pIndexReader = ireader;
-                }
-                
-                void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic)
-                {
-                    m_pindexerconfiguration = ic;
-                }
-                
-                void setIndexedDirs (const std::set<std::string>& dirs);
-
-            protected:
-                void reindex();
-
-                /*!
-                * Method called by FileLister on every dir.
-                * Used for adding files to db
-                * @sa FileLister
-                */
-                static void indexFileCallback(const char* path, uint dirlen, uint len, time_t mtime);
-
-                /*!
-                * Method called by FileLister on every dir.
-                * Used for adding watches over dirs.
-                * @sa FileLister
-                */
-                static void watchDirCallback(const char* path, uint len);
-
-                Strigi::IndexReader* m_pIndexReader;
-                Strigi::AnalyzerConfiguration* m_pindexerconfiguration;
-                std::map<std::string, time_t> m_toIndex; //!< new files to index
-                std::set<std::string> m_toWatch; //!< new directories to watch
-                std::vector<Event*> m_events;
-                std::set<std::string> m_newDirs; //!< new indexed dirs specified by the user
-                std::set<std::string> m_oldDirs; //!< old indexed dirs
-                std::set<std::string> m_nextJobDirs; //!< new dirs to index, user changed indexed dirs more than one time
-                std::set<std::string> m_nomoreIndexedDirs; //!< dirs no more indexed
-                bool m_bfinished; //!< true if thread has nothing left to do
-                pthread_mutex_t m_nextJobLock;//!< mutex lock over m_nextJobDirs
-                pthread_mutex_t m_resourcesLock; //!< mutex lock over all variables (excluding m_nextJobDirs)
-                static ReindexDirsThread* workingReindex; //!<pointer to current ReindexDirsThread instance, used with FileLister's callbacks
-        };
-
         explicit InotifyListener(std::set<std::string>& indexedDirs);
 
         ~InotifyListener();
@@ -112,32 +43,13 @@ class InotifyListener : public EventListener
         bool init();
 
         bool addWatch (const std::string& path);
-        void addWatches (const std::set<std::string>& watches);
+        void addWatches (const std::set<std::string>& watches,
+                         bool enableInterrupt = false);
         void setIndexedDirectories (const std::set<std::string>& dirs);
 
         void* run(void*);
 
     protected:
-        /*!
-        * Method called by FileLister on every dir.
-        * Used for adding files to db
-        * @sa FileLister
-        */
-        static void indexFileCallback(const char* path, uint dirlen, uint len,
-                                 time_t mtime);
-        /*!
-        * Method called by FileLister on every dir.
-        * Used for adding watches over dirs.
-        * @sa FileLister
-        */
-        static void watchDirCallback(const char* path, uint len);
-
-        /*!
-        * @param dirs all dirs to watch over, to scan recursively
-        * initialization procedure, used at startup
-        */
-        void bootstrap (const std::set<std::string>& dirs);
-
         /*!
         * @param event inotify's event mask
         * returns a string containing the event description
@@ -155,13 +67,17 @@ class InotifyListener : public EventListener
         */
         void watch ();
 
+        
+        void processReindexDirThreadData();
         /*!
         * @param dir removed dir
         * Removes all db entries of files contained into the removed dir.
         * Removes also all inotify watches related to removed dir (including watches over subdirs), there's <b>no need</b> to call rmWatch after invoking that method
         * Updates also m_watches
         */
-        void dirRemoved (std::string dir, std::vector<Event*>& events);
+        void dirRemoved (std::string dir,
+                         std::vector<Event*>& events,
+                         bool enableInterrupt = false);
 
         /*!
         * @param dirs removed dirs
@@ -170,7 +86,9 @@ class InotifyListener : public EventListener
         * Optimized for large removal
         * Updates also m_watches
         */
-        void dirsRemoved (std::set<std::string> dirs, std::vector<Event*>& events);
+        void dirsRemoved (std::set<std::string> dirs,
+                          std::vector<Event*>& events,
+                          bool enableInterrupt = false);
 
         /*!
         * @param wd inotify watch descriptor
@@ -180,23 +98,35 @@ class InotifyListener : public EventListener
         */
         void rmWatch(int wd, std::string path);
 
+        void rmWatches(std::map<int, std::string>& watchesToRemove,
+                       bool enableInterrupt = false);
+        
+        void rmWatches(std::set<std::string>& watchesToRemove,
+                       bool enableInterrupt = false);
+        
         /*!
         * removes and release all inotify watches
         */
         void clearWatches();
+        
+        void setInterrupt (bool value);
+        bool testInterrupt();
 
         PollingListener* m_pollingListener;
         int m_iInotifyFD;
         int m_iEvents;
         std::map<int, std::string> m_watches; //!< map containing all inotify watches added by InotifyListener. Key is watch descriptor, value is dir path
         bool m_bMonitor;
+        bool m_bInterrupt;
         bool m_bInitialized;
         std::map<std::string, time_t> m_toIndex;
         std::set<std::string> m_toWatch;
         std::set<std::string> m_indexedDirs;
         pthread_mutex_t m_watchesLock;
-        ReindexDirsThread* m_reindexDirThread;
-        static InotifyListener* workingInotifyListener; //!<pointer to current InotifyListener instance, used with FileLister's callbacks
+        pthread_mutex_t m_interruptLock;
+
+        class ReindexDirsThread;
+        ReindexDirsThread* m_pReindexDirThread;
 };
 
 #endif
