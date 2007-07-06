@@ -45,7 +45,8 @@ public:
 
     bool addWatch (const std::string& path);
     void rmWatch (const std::string& path);
-    void addWatches (const std::set<std::string>& watches);
+    void addWatches (const std::set<std::string>& watches,
+                     bool enableInterrupt = false);
     void setIndexedDirectories (const std::set<std::string>& dirs);
 
     void* run(void*);

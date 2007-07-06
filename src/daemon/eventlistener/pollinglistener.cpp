@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <cassert>
 
+#include "combinedindexmanager.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "filelister.h"
@@ -87,7 +88,7 @@ void* PollingListener::run(void*)
 
 void PollingListener::poll ()
 {
-    if (!m_pIndexReader) {
+    if (!m_pManager) {
         STRIGI_LOG_ERROR ("strigi.PollingListener.poll",
                           "m_pEventQueue == NULL!");
         return;
@@ -100,7 +101,7 @@ void PollingListener::poll ()
     }
 
     vector<Event*> events;
-    map <string, time_t> indexedFiles = m_pIndexReader->files(0);
+    map <string, time_t> indexedFiles = m_pManager->indexReader()->files(0);
     set<string> watches;
 
     assert(m_pindexerconfiguration);
@@ -212,15 +213,25 @@ void PollingListener::rmWatch (const string& path)
 {
     STRIGI_MUTEX_LOCK (&m_mutex);
 
-    set<string>::iterator iter = m_watches.find (path);
-
-    if (iter != m_watches.end())
-        m_watches.erase (iter);
+    set <string>::iterator iter = m_watches.begin();
+    while ( iter != m_watches.end())
+    {
+        if ((*iter).find (path,0) == 0)
+        {
+            // directory name begins with param dir --> it's a subfolder of dir
+            set<string>::iterator rmIt = iter;
+            iter++;
+            m_watches.erase (rmIt);
+        }
+        else
+            iter++;
+    }
 
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 }
 
-void PollingListener::addWatches (const set<string> &watches)
+void PollingListener::addWatches (const set<string> &watches,
+                                  bool enableInterrupt)
 {
     for (set<string>::iterator iter = watches.begin();
          iter != watches.end(); iter++)
