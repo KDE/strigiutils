@@ -27,9 +27,10 @@
 class EventListenerQueue;
 
 namespace Strigi {
-    class IndexReader;
     class AnalyzerConfiguration;
 }
+
+class CombinedIndexManager;
 
 /*!
 * @class EventListener
@@ -41,7 +42,7 @@ public:
     explicit EventListener(const char* name) :StrigiThread(name) {
         m_pEventQueue = NULL;
         m_pindexerconfiguration = NULL;
-        m_pIndexReader = NULL;
+        m_pManager = NULL;
         m_pollingInterval = 180;
     }
 
@@ -49,7 +50,8 @@ public:
 
     virtual bool init() { return true; }
     virtual bool addWatch (const std::string& path) = 0;
-    virtual void addWatches (const std::set<std::string>& watches) = 0;
+    virtual void addWatches (const std::set<std::string>& watches,
+                             bool enableInterrupt = false) = 0;
     virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_pEventQueue = eventQueue;
@@ -57,8 +59,8 @@ public:
     void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
         m_pindexerconfiguration = ic;
     }
-    void setIndexReader (Strigi::IndexReader* ireader) {
-        m_pIndexReader = ireader;
+    void setCombinedIndexManager (CombinedIndexManager* m) {
+        m_pManager = m;
     }
     unsigned int getPollingInterval() {
         return m_pollingInterval;
@@ -74,7 +76,7 @@ public:
 protected:
     EventListenerQueue* m_pEventQueue;
     Strigi::AnalyzerConfiguration* m_pindexerconfiguration;
-    Strigi::IndexReader* m_pIndexReader;
+    CombinedIndexManager* m_pManager;
     unsigned int m_pollingInterval;//!< pause time between each polling operation
 };
 
