@@ -197,8 +197,9 @@ main(int argc, char** argv) {
     scheduler.setIndexManager(index);
     scheduler.setIndexedDirectories(dirs);
 
-    EventListenerQueue listenerEventQueue;
-    scheduler.setEventListenerQueue (&listenerEventQueue);
+    EventListenerQueue* listenerEventQueue = new EventListenerQueue();
+    listenerEventQueue->start();
+    scheduler.setEventListenerQueue (listenerEventQueue);
 
     // start the indexer thread
 //    threads.push_back(&scheduler);
@@ -224,9 +225,9 @@ main(int argc, char** argv) {
 
     // configure & start inotfy's watcher thread
     if (listener  && listener->init()) {
-        listener->setEventListenerQueue (&listenerEventQueue);
+        listener->setEventListenerQueue (listenerEventQueue);
         listener->setIndexerConfiguration(&ic);
-        listener->setIndexReader (index->indexReader());
+        listener->setCombinedIndexManager (index);
         listener->setPollingInterval (config.getPollingInterval());
         // do not start scanning until execution is in the thread!
         // inotifyListener.setIndexedDirectories(dirs);
@@ -272,7 +273,10 @@ main(int argc, char** argv) {
 
     //delete listener
     delete listener;
-
+    
+    //delete listener event queue
+    delete listenerEventQueue;
+    
     // release lock
     releaseLock(lockfile, lock);
 }
