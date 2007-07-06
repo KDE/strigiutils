@@ -22,8 +22,8 @@
 
 #include <map>
 #include <vector>
-#include <string>
-#include <pthread.h>
+#include <strigithread.h>
+#include <time.h>
 
 class Event;
 
@@ -31,14 +31,16 @@ class Event;
 * @class EventListenerQueue
 * @brief A collector of all event instances
 *
-* All Event occurrencies are stored here. Interested classes can retrieve them using getEvents method.
+* All Event occurrencies are stored here.
+* Interested classes can retrieve them using getEvents method.
 *
-* In a producer-consumer pattern EventListenerQueue is the place where all producer store the products
+* In a producer-consumer pattern EventListenerQueue is the place where all
+* producer store the products
 */
-class EventListenerQueue
+class EventListenerQueue : public StrigiThread
 {
     public:
-        explicit EventListenerQueue();
+        explicit EventListenerQueue(const char* name = "EventListenerQueue");
         ~EventListenerQueue();
 
         /*!
@@ -49,21 +51,43 @@ class EventListenerQueue
         /*!
         * @return the number of events availables
         */
-        unsigned int size() { return m_events.size(); }
+        unsigned int size();
 
         /*!
         * @return a vector containing all events, after that m_events is cleared
         */
         std::vector <Event*> getEvents();
+        
+        void* run(void*);
 
     protected:
         /*!
         * deallocate all events stored into m_events. In the end m_events will be empty.
         */
-        void clear();
+        void   clear();
+        void   clearEvents( std::map<std::string, Event*>& events);
+        void   purgeProcessedEvents ();
+        
+        void   updateEventType (Event* oldEvent, Event* newEvent,
+                                std::map <std::string, Event*>& eventMap);
+        void   putInWaiting (Event* event);
+        void   putInProcessed (Event* event);
+        
+        Event* searchInToProcess (Event* event);
+        Event* searchInProcessed (Event* event);
+        Event* searchInWaiting (Event* event);
+        
+        bool   checkElapsedTime (Event* event, time_t now, double delta);
 
-        std::map <std::string, Event*> m_events; //!< all event instances
-        pthread_mutex_t m_mutex;//!< mutex lock over m_events
+        std::map <std::string, Event*> m_toProcess;
+        std::map <std::string, Event*> m_processed;
+        std::map <std::string, Event*> m_waiting;
+
+        unsigned int m_toProcessOldCount;
+        unsigned int m_processedOldCount;
+        unsigned int m_waitingOldCount;
+        
+        pthread_mutex_t m_mutex;
 };
 
 #endif
