@@ -193,8 +193,8 @@ public:
      * @param name   the name to add
      * @param value  the value to add
      **/
-    void addValue(RegisteredField*field, const std::string&name,
-        const std::string&value);
+    void addValue(RegisteredField*field, const std::string& name,
+        const std::string& value);
     /**
      * @brief Get the filename of the associated file.
      *

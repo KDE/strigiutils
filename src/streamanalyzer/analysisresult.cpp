@@ -33,6 +33,10 @@
 #include <string>
 #include <cstdlib>
 #include <iconv.h>
+
+#include <iostream>
+#include <map>
+
 #ifdef ICONV_SECOND_ARGUMENT_IS_CONST
      #define ICONV_CONST const
 #else
@@ -103,11 +107,14 @@ public:
     AnalyzerConfiguration& m_analyzerconfig;
     AnalysisResult* const m_parent;
     const StreamEndAnalyzer* m_endanalyzer;
+    std::map<const Strigi::RegisteredField*, int> occurences;
 
     Private(const std::string& p, const char* name, time_t mt,
         AnalysisResult& parent);
     Private(const std::string& p, time_t mt, IndexWriter& w,
         StreamAnalyzer& indexer);
+
+    bool checkCardinality(const RegisteredField* field);
 };
 
 AnalysisResult::Private::Private(const std::string& p, const char* name,
@@ -217,7 +224,9 @@ AnalysisResult::extension() const {
     return "";
 }
 void
-AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
+AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {    
+    if (!p->checkCardinality(field))
+	return;
     if (checkUtf8(val)) {
         p->m_writer.addValue(this, field, val);
     } else {
@@ -236,6 +245,8 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
 void
 AnalysisResult::addValue(const RegisteredField* field,
         const char* data, uint32_t length) {
+    if (!p->checkCardinality(field))
+	return;
     if (checkUtf8(data, length)) {
         p->m_writer.addValue(this, field, (const unsigned char*)data, length);
     } else {
@@ -253,18 +264,34 @@ AnalysisResult::addValue(const RegisteredField* field,
 }
 void
 AnalysisResult::addValue(const RegisteredField* field, int32_t value) {
+    if (!p->checkCardinality(field))
+	return;
     p->m_writer.addValue(this, field, value);
 }
 void
 AnalysisResult::addValue(const RegisteredField* field, uint32_t value) {
+    if (!p->checkCardinality(field))
+	return;
     p->m_writer.addValue(this, field, value);
 }
 void
 AnalysisResult::addValue(const RegisteredField* field, double value) {
+    if (!p->checkCardinality(field))
+	return;
     p->m_writer.addValue(this, field, value);
 }
-void
-AnalysisResult::addValue(RegisteredField*field, const std::string&name,
-        const std::string&value) {
-    p->m_writer.addValue(this, field, name, value);
+bool
+AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
+    std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurences.find(field);
+    if (i != occurences.end()) {
+	if (i->second >= field->maxOccurs() && field->maxOccurs() >= 0) {
+	    return false;
+	} else {
+	    occurences[field]++;
+	}
+    } else {
+	occurences[field] = 1;
+    }
+    return true;
 }
+
