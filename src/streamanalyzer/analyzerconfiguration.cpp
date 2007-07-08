@@ -72,13 +72,19 @@ AnalyzerConfiguration::~AnalyzerConfiguration() {
     delete p;
 }
 /**
- * Placeholder implementation that agrees to everything and only makes a
- * difference for text, because it should be tokenized.
+ * Returns indexing flags from the fieldproperties DB associated to 
+ * the registered field.
  **/
 AnalyzerConfiguration::FieldType
-AnalyzerConfiguration::indexType(const RegisteredField* field)
-        const {
-    return Tokenized|Stored|Indexed;
+AnalyzerConfiguration::indexType(const RegisteredField* field) const {
+    AnalyzerConfiguration::FieldType type = None;
+    const FieldProperties& prop = field->properties();
+    if (prop.binary())		{ type = type|Binary;		}
+    if (prop.compressed())	{ type = type|Compressed;	}
+    if (prop.indexed())		{ type = type|Indexed;		}
+    if (prop.stored())		{ type = type|Stored;		}
+    if (prop.tokenized())	{ type = type|Tokenized;	}
+    return type;
 }
 bool
 AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
