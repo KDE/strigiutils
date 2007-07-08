@@ -69,17 +69,19 @@ parse(const char* p, Query& q) {
     }
  
     // find the starts of the different parts
-    const char* rel = p + strcspn(p, "=:<>");
+    const char* rel = p + strcspn(p, "=:<>#");
     const char* quote = p + strcspn(p, "'\"");
     const char* space = p + strcspn(p, "\t \r\n");
 
     // do we have a field name?
-    if (rel < quote && rel < space) {
+    if (*rel) {
         q.fields().push_back(string(p, rel));
         p = rel+1;
         if (*rel == '=') {
             q.setType(Query::Equals);
-        } else if (*rel == '<') {
+        } else if (*rel == '#') {
+	    q.setType(Query::Keyword);
+	} else if (*rel == '<') {
             if (*p == '=') {
                 p++;
                 q.setType(Query::LessThanEquals);
@@ -95,20 +97,26 @@ parse(const char* p, Query& q) {
             }
         }
     }
-    // do we have a phrase or a word?
-    if (quote < space) { // phrase
-        // find closing quote
-        const char* end = strchr(quote+1, *quote);
-        if (end) {
-            q.term().setValue(string(quote+1, end-1));
-        } else { // invalid: no closing quote
-            return space;
-        }
-        // find the first space after the closing quote
-        space = end + strcspn(end, "\t \r\n");
-        setModifiers(end+1, space, q); 
+    
+    if (*quote && *(quote+1)) {
+	const char* pairquote = strchr(quote+1, *quote);
+	if (pairquote != NULL) {
+	    pairquote++;
+	    // quoted phrase, could be with spaces
+	    q.term().setValue(string(quote+1, pairquote-1));
+	    if (*space) {
+		if (space < pairquote) {
+		    // everything between pairquote and next space is a modifier
+		    space = pairquote + strcspn(pairquote, "\t \r\n");
+		}
+		if (space - pairquote + 1 > 0) {
+		    // avoid empty modifiers
+		    setModifiers(pairquote+1, space, q);
+		}
+	    }
+	}
     } else {
-        q.term().setValue(string(p, space));
+	q.term().setValue(string(p, space));
     }
     return space+1;
 }
@@ -132,7 +140,7 @@ QueryParser::buildQuery(const std::string& q) {
         Query q = query.subQueries()[0];
         query = q;
     }
-    cerr << "query: '" << q << "' : " << query.subQueries().size() << "'"
-        << query.term().string() << "'" << endl;
+    //cerr << "query: '" << q << "' : " << query.subQueries().size() << "'"
+    //    << query.term().string() << "'" << endl;
     return query;
 }

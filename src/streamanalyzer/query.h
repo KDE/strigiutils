@@ -74,7 +74,7 @@ public:
     enum Type { And, Or,
         Equals, Contains, LessThan, LessThanEquals,
         GreaterThan, GreaterThanEquals, StartsWith, FullText, RegExp,
-        Proximity };
+        Proximity, Keyword };
 
     Query();
     Query(const Query& q);

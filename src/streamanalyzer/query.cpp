@@ -300,6 +300,10 @@ operator<< ( ostream &stream, Strigi::Query query )
             stream << "<FullText>" << endl;
             typeTag = "FullText";
             break;
+        case Strigi::Query::Keyword:
+            stream << "<Keyword>" << endl;
+            typeTag = "Keyword";
+            break;
     }
     
     if (!query.subQueries().empty())
