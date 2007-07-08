@@ -21,6 +21,7 @@
 #define POLLINGLISTENER_H
 
 #include "eventlistener.h"
+#include "diranalyzer.h"
 
 #include <map>
 #include <pthread.h>
@@ -29,14 +30,21 @@ class Event;
 
 /**
 * @class PollingListener
-* @brief A simple class that polls periodically the filesystem looking for changes
+* @brief A simple class that periodically polls the filesystem looking for
+* changes.
 *
-* It's used when InotifyListener reaches max user watches limit, all remaining dirs to watch are checked by PollingListener.
-* Update interval is configurable by the user.
+* The polling listener walks through all the subdirectories of the set
+* directories and reports on files that have been modified since the last time
+* the polling was performed.
+*
+* This class is used when inotify is not available on a system or when
+* InotifyListener reaches max user watches limit. All the remaining directories
+* that need to be watched are checked by PollingListener.
+*
+* The update interval is configurable by the user.
 * @sa Filter
 */
-
-class PollingListener : public EventListener {
+class PollingListener : public EventListener, Strigi::AnalysisCaller {
 public:
     PollingListener();
     PollingListener(std::set<std::string>& dirs);
@@ -56,9 +64,11 @@ private:
     void clearWatches();
 
     bool m_firstTime;
-    std::set<std::string> m_watches;
+    std::vector<std::string> m_watches;
     std::map<std::string, time_t> m_toIndex;
     pthread_mutex_t m_mutex; //!< mutex on m_watches
+
+    bool continueAnalysis();
 };
 
 #endif

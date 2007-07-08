@@ -66,8 +66,9 @@ public:
         return m_pollingInterval;
     }
     /*!
-    * configure the polling interval. The time elapsed between each polling
-    * operation (expressed in seconds)
+    * configure the polling interval. This is the time to wait between the end
+    * of one polling operation and the start of the next polling operation
+    * expressed in seconds.
     */
     void setPollingInterval(unsigned int value) {
         m_pollingInterval = value;
