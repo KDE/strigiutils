@@ -1,6 +1,5 @@
 
 install(FILES
-#	test.fieldproperties
 	strigi_audio.fieldproperties
 	strigi_av.fieldproperties
 	strigi_content.fieldproperties
