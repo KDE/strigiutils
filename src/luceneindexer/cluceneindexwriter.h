@@ -46,13 +46,13 @@ protected:
         const Strigi::RegisteredField* field, const std::string& value);
     void addValue(const Strigi::AnalysisResult*,
         const Strigi::RegisteredField* fieldname,
-        const unsigned char* data, uint32_t size) {}
+        const unsigned char* data, uint32_t size);
     void addValue(const Strigi::AnalysisResult*,
         const Strigi::RegisteredField* fieldname, uint32_t value);
     void addValue(const Strigi::AnalysisResult*,
         const Strigi::RegisteredField* fieldname, int32_t value);
     void addValue(const Strigi::AnalysisResult*,
-        const Strigi::RegisteredField* fieldname, double value) {}
+        const Strigi::RegisteredField* fieldname, double value);
     void addTriplet(const std::string& subject,
         const std::string& predicate, const std::string& object) {}
     void addValue(const Strigi::AnalysisResult*,

@@ -35,6 +35,8 @@
 #include "jsgzipcompressstream.h"
 #endif
 
+#include <iostream>
+
 using lucene::document::Document;
 using lucene::document::Field;
 using lucene::index::IndexWriter;
@@ -95,8 +97,7 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
     Field* field = new Field(name, value,
         (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored,
         (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed,
-         true);
-        //type & AnalyzerConfiguration::Tokenized);
+         type & AnalyzerConfiguration::Tokenized);
     doc->doc.add(*field);
 }
 void
@@ -132,6 +133,19 @@ CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
 void
 CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
         const Strigi::RegisteredField* field, int32_t value) {
+    ostringstream o;
+    o << value;
+    addValue(idx, field, o.str());
+}
+void
+CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field,
+        const unsigned char* data, uint32_t size) {
+    addValue(idx, field, string((const char*)data, (string::size_type)size));
+}
+void
+CLuceneIndexWriter::addValue(const Strigi::AnalysisResult* idx,
+        const Strigi::RegisteredField* field, double value) {
     ostringstream o;
     o << value;
     addValue(idx, field, o.str());
