@@ -14,6 +14,11 @@ Values[$LANG]=$LOCALIZED_VALUES
 Range=$RANGE
 MinCardinality=$MIN_CARDINALITY
 MaxCardinality=$MAX_CARDINALITY
+Binary=$BINARY
+Compressed=$COMPRESSED
+Indexed=$INDEXED
+Stored=$STORED
+Tokenized=$TOKENIZED
 Indexing=$INDEXING
 Relevance=$RELEVANCE
 Comment=$COMMENT
@@ -64,7 +69,41 @@ $MAX_CARDINALITY
 
 $INDEXING
   Values=fulltext, atomic, none, TBD. Default = TBD.
+  This is now replaced by $INDEXED, $BINARY, $COMPRESSED, $STORED, $TOKENIZED
 
+$INDEXED
+  Boolean property.
+  Optional control over indexing procedure. Can be ignored or respected by certain search engine backends.
+  Defines whether the field is indexed by the backed or not.
+    Default=true
+
+$BINARY
+  Boolean property.
+  Optional control over indexing procedure. Can be ignored or respected by certain search engine backends.
+  Defines whether the field should be stored as binary data (true) or text (false)
+    Default=false
+
+$COMPRESSED
+  Boolean property.
+  Optional control over indexing procedure. Can be ignored or respected by certain search engine backends.
+  Defines whether the field should be compressed.
+    Default=false
+
+$STORED
+  Boolean property.
+  Optional control over indexing procedure. Can be ignored or respected by certain search engine backends.
+  Defines if the contents of the field value should be stored (true) or just indexed and not stored (false).
+  If it is not stored, it can not be further retrieved from the backend.
+    Default=true
+
+$TOKENIZED
+  Boolean property.
+  Optional control over indexing procedure. Can be ignored or respected by certain search engine backends.
+  Defines whether the field value is tokenized or indexed as an atomic string.
+  Very important for identifiers which contain space delimiters or any other special characters which could 
+  facilitate tokenizing. Identifiers should have it set to false.
+    Default=true
+  
 $RELEVANCE
   Defines how relevance of the file is affected if a match is found in this field. Default = 1.0
 
