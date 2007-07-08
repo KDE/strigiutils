@@ -61,7 +61,12 @@ FieldPropertiesDb::~FieldPropertiesDb() {
 }
 const FieldProperties&
 FieldPropertiesDb::properties(const std::string& uri) const {
-    return FieldPropertiesDb::Private::empty;
+    map<std::string, FieldProperties>::const_iterator j = p->properties.find(uri);
+    if (j == p->properties.end()) {
+	return FieldPropertiesDb::Private::empty;
+    } else {
+	return j->second;
+    }
 }
 const map<string, FieldProperties>&
 FieldPropertiesDb::allProperties() const {
@@ -229,6 +234,51 @@ FieldPropertiesDb::Private::handlePropertyLine(FieldProperties::Private& p,
         }
     } else if (strcmp(name, "ParentUri") == 0) {
         p.parentUris.push_back(value);
+    } else if (strcmp(name, "Binary") == 0) {
+	if (strcasecmp(value,"false") == 0) {
+    	    p.binary = false;
+	} else if (strcasecmp(value,"true") == 0) {
+	    p.binary = true;
+	} else {
+	    fprintf(stderr, "Binary flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
+	    value, p.uri.c_str());
+	}	
+    } else if (strcmp(name, "Compressed") == 0) {
+	if (strcasecmp(value,"false") == 0) {
+    	    p.compressed = false;
+	} else if (strcasecmp(value,"true") == 0) {
+	    p.compressed = true;
+	} else {
+	    fprintf(stderr, "compressed flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
+	    value, p.uri.c_str());
+	}	
+    } else if (strcmp(name, "Indexed") == 0) {
+	if (strcasecmp(value,"false") == 0) {
+    	    p.indexed = false;
+	} else if (strcasecmp(value,"true") == 0) {
+	    p.indexed = true;
+	} else {
+	    fprintf(stderr, "Indexed flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
+	    value, p.uri.c_str());
+	}	
+    } else if (strcmp(name, "Stored") == 0) {
+	if (strcasecmp(value,"false") == 0) {
+    	    p.stored = false;
+	} else if (strcasecmp(value,"true") == 0) {
+	    p.stored = true;
+	} else {
+	    fprintf(stderr, "Stored flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
+	    value, p.uri.c_str());
+	}	
+    } else if (strcmp(name, "Tokenized") == 0) {
+	if (strcasecmp(value,"false") == 0) {
+    	    p.tokenized = false;
+	} else if (strcasecmp(value,"true") == 0) {
+	    p.tokenized = true;
+	} else {
+	    fprintf(stderr, "Tokenized flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
+	    value, p.uri.c_str());
+	}	
     }
 }
 void
@@ -257,4 +307,14 @@ FieldProperties::Private::clear() {
     localized.clear();
     typeuri.clear();
     parentUris.clear();
+
+    resetIndexFlags();
+}
+void 
+FieldProperties::Private::resetIndexFlags() {
+    indexed = true;
+    stored = true;
+    tokenized = true;
+    compressed = false;
+    binary = false;    
 }

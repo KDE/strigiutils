@@ -19,12 +19,14 @@
  */
 #include "fieldtypes.h"
 #include "fieldpropertiesdb.h"
+#include <iostream>
 using namespace Strigi;
 using namespace std;
 
 RegisteredField::RegisteredField(const string& k, const string& t, int m,
         const RegisteredField* p)
-        : m_key(k), m_type(t), m_maxoccurs(m), m_parent(p), m_writerdata(0) {
+        : m_key(k), m_type(t), m_maxoccurs(m), m_parent(p), m_writerdata(0),
+	  m_properties(FieldPropertiesDb::db().properties(k)) {
 }
 
 const string FieldRegister::floatType = "float";
@@ -67,28 +69,21 @@ FieldRegister::registerField(const string& fieldname,
     map<string, RegisteredField*>::iterator i = m_fields.find(fieldname);
     if (i == m_fields.end()) {
         // check with the fieldpropertiesdb
-        const map<string, FieldProperties>& props = 
-            FieldPropertiesDb::db().allProperties();
-        map<std::string, FieldProperties>::const_iterator j
-            = props.find(fieldname);
-        if (j == props.end()) {
-            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties files.\n", fieldname.c_str());
+        const FieldProperties& props = FieldPropertiesDb::db().properties(fieldname);
+        if (!props.valid()) {
+            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties files.\n",
+		fieldname.c_str());
             // register this property with the propertiesdatabase
             string parentname;
             if (parent) {
                 parentname.assign(parent->key());
             }
             FieldPropertiesDb::db().addField(fieldname, type, parentname);
-        } else {
-            // check that this field is compatible with what's in the database
         }
-        RegisteredField* f = new RegisteredField(fieldname, type,
-            maxoccurs, parent);
+        RegisteredField* f = new RegisteredField(fieldname, type, maxoccurs, parent);
         m_fields[fieldname] = f;
         return f;
     } else {
-        // check that the field being registered is the same as the one that
-        // has already been registered
-    }
-    return i->second;
+	return i->second;
+    }    
 }

@@ -43,6 +43,11 @@ public:
     ~FieldProperties();
     const FieldProperties& operator=(const FieldProperties&);
     bool valid() const;
+    bool binary() const;
+    bool compressed() const;
+    bool indexed() const;
+    bool stored() const;
+    bool tokenized() const;
     const std::string& uri() const;
     const std::string& name() const;
     const std::string& typeUri() const;

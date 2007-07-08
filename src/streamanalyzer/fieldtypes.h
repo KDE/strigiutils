@@ -21,6 +21,7 @@
 #define REGISTEREDFIELD_H
 
 #include "strigiconfig.h"
+#include "fieldproperties.h"
 #include <map>
 #include <string>
 
@@ -46,6 +47,7 @@ private:
     const int m_maxoccurs;
     const RegisteredField* m_parent;
     void* m_writerdata;
+    const FieldProperties& m_properties;
 
     RegisteredField();
     /**
@@ -108,6 +110,10 @@ public:
      * given resource.
      */
     int maxOccurs() const { return m_maxoccurs; }
+    /**
+     * @brief Get the pointer to FieldProperties associated with this field.
+     */
+    const FieldProperties& properties() const { return m_properties; }
     /**
      * @brief The type of the data in this field.
      */

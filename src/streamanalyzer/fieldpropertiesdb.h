@@ -72,11 +72,17 @@ public:
     std::string description;
     std::map<std::string,FieldProperties::Localized> localized;
     std::vector<std::string> parentUris;
+    bool binary;	/**< The field should be stored as binary data. (0x0001) 		*/
+    bool compressed;	/**< If the field is stored, the data should be compressed. (0x0002)	*/
+    bool indexed;	/**< The field should be indexed. (0x0004)				*/
+    bool stored;	/**< The field should be stored. (0x0020)				*/
+    bool tokenized;	/**< If the field contains text, it should be tokenized. (0x0040)	*/
 
     Private() {}
     Private(const Private&p) { *this = p; }
-    Private(const std::string& i) :uri(i) {}
+    Private(const std::string& i) :uri(i) { }
     void clear();
+    void resetIndexFlags();
 };
 
 }

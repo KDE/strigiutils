@@ -30,7 +30,7 @@ FieldProperties::FieldProperties(const Private& pr) :p(new Private(pr)) {}
 FieldProperties::FieldProperties(const string& k)
         :p(new Private(k)) {
     const FieldProperties& fp = FieldPropertiesDb::db().properties(k);
-    if (fp.uri().size()) {
+    if (fp.valid()) {
         *this = fp;
     }
 }
@@ -64,6 +64,26 @@ FieldProperties::typeUri() const {
 const string&
 FieldProperties::description() const {
     return p->description;
+}
+bool
+FieldProperties::binary() const {
+    return p->binary;
+}
+bool
+FieldProperties::compressed() const {
+    return p->compressed;
+}
+bool
+FieldProperties::indexed() const {
+    return p->indexed;
+}
+bool
+FieldProperties::stored() const {
+    return p->stored;
+}
+bool
+FieldProperties::tokenized() const {
+    return p->tokenized;
 }
 const std::map<std::string, FieldProperties::Localized>&
 FieldProperties::localized() const {
