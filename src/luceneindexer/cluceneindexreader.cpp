@@ -69,6 +69,7 @@ public:
     Private(CLuceneIndexReader& r) :reader(r) {}
 
     static Term* createTerm(const wchar_t* name, const string& value);
+    static Term* createKeywordTerm(const wchar_t* name, const string& value);
     static Term* createWildCardTerm(const wchar_t* name, const string& value);
     Query* createQuery(const Strigi::Query& query);
     Query* createSimpleQuery(const Strigi::Query& query);
@@ -194,6 +195,13 @@ CLuceneIndexReader::Private::createTerm(const wchar_t* name,
     _CLDELETE(ts);
     return t;
 }
+Term*
+CLuceneIndexReader::Private::createKeywordTerm(const wchar_t* name,
+        const string& value) {
+    wstring v = utf8toucs2(value);
+    Term* t = _CLNEW Term(name, v.c_str());
+    return t;
+}
 BooleanQuery*
 CLuceneIndexReader::Private::createBooleanQuery(const Strigi::Query& query) {
     BooleanQuery* bq = _CLNEW BooleanQuery();
@@ -244,6 +252,10 @@ CLuceneIndexReader::Private::createSingleFieldQuery(const string& field,
           t = createTerm(fieldname.c_str(), query.term().string());
           q = _CLNEW RangeQuery(t, 0, true);
           break;
+    case Strigi::Query::Keyword:
+          t = createKeywordTerm(fieldname.c_str(), query.term().string());
+          q = _CLNEW TermQuery(t);
+          break;	  
     default:
           if (strpbrk(val.c_str(), "*?")) {
                t = createWildCardTerm(fieldname.c_str(), val);
