@@ -123,7 +123,7 @@ public:
     /**
      * Associate a value for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * @param field  the registered field
@@ -133,7 +133,7 @@ public:
     /**
      * Associate a value for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * @param field   the registered field
@@ -145,7 +145,7 @@ public:
     /**
      * Associate a value for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * @param field  the registered field
@@ -155,7 +155,7 @@ public:
     /**
      * Associate a value for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * @param field  the registered field
@@ -165,7 +165,7 @@ public:
     /**
      * Associate a value for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * @param field  the registered field
@@ -184,7 +184,7 @@ public:
     /**
      * Associate a name/value pair for a field with the file.
      *
-     * addValue() may only be called <tt>field->maxOccurs()</tt> times
+     * addValue() may only be called <tt>field->properties.maxCardinality()</tt> times
      * for any given field on any given AnalysisResult.
      *
      * WARNING: this is currently not implemented.

@@ -284,7 +284,7 @@ bool
 AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
     std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurences.find(field);
     if (i != occurences.end()) {
-	if (i->second >= field->maxOccurs() && field->maxOccurs() >= 0) {
+	if (i->second >= field->properties().maxCardinality() && field->properties().maxCardinality() >= 0) {
 	    return false;
 	} else {
 	    occurences[field]++;

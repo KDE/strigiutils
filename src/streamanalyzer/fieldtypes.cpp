@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +28,15 @@ RegisteredField::RegisteredField(const string& k, const string& t, int m,
         const RegisteredField* p)
         : m_key(k), m_type(t), m_maxoccurs(m), m_parent(p), m_writerdata(0),
 	  m_properties(FieldPropertiesDb::db().properties(k)) {
+}
+
+RegisteredField::RegisteredField(const string& fieldname):
+    m_key(fieldname),
+    m_type(FieldPropertiesDb::db().properties(fieldname).typeUri()), // obsolete - is never used
+    m_maxoccurs(FieldPropertiesDb::db().properties(fieldname).maxCardinality()), // obsolete - is never used
+    m_parent(0), // obsolete - is never used
+    m_writerdata(0),
+    m_properties(FieldPropertiesDb::db().properties(fieldname)) {
 }
 
 const string FieldRegister::floatType = "float";
@@ -66,24 +76,37 @@ FieldRegister::~FieldRegister() {
 const RegisteredField*
 FieldRegister::registerField(const string& fieldname,
         const string& type, int maxoccurs, const RegisteredField* parent) {
+	
+    //TODO (neksa) uncomment the warning.
+    // fprintf(stderr, "WARNING: this FieldRegister::registerField call is obsolete. Use registerField(\"%s\") instead.\n",
+    //		fieldname.c_str());
+		
+    // passed parameters type, maxoccurs and parent are just ignored
+    // in exchange, properties loaded from fieldproperties database are used
+    return registerField(fieldname);
+}
+const RegisteredField*
+FieldRegister::registerField(const string& fieldname) {
     map<string, RegisteredField*>::iterator i = m_fields.find(fieldname);
     if (i == m_fields.end()) {
-        // check with the fieldpropertiesdb
+	// if an instance of the RegisteredField has never been created before:
+        //  - check with the fieldpropertiesdb first
+	//  	- if not in the DB, then db().(addField)
+	//  - create an instance of RegisteredField, remember it for the future calls,
+	//    and return the pointer
         const FieldProperties& props = FieldPropertiesDb::db().properties(fieldname);
         if (!props.valid()) {
-            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties files.\n",
+            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties ontology database.\n",
 		fieldname.c_str());
-            // register this property with the propertiesdatabase
-            string parentname;
-            if (parent) {
-                parentname.assign(parent->key());
-            }
-            FieldPropertiesDb::db().addField(fieldname, type, parentname);
+	    // creates a field with defaults (should be stringType and no parents)
+            FieldPropertiesDb::db().addField(fieldname);
         }
-        RegisteredField* f = new RegisteredField(fieldname, type, maxoccurs, parent);
+        RegisteredField* f = new RegisteredField(fieldname);
         m_fields[fieldname] = f;
         return f;
     } else {
+	// if an instance of the RegisteredField has already been associated
+	// with the fieldname then return pointer to it
 	return i->second;
     }    
 }

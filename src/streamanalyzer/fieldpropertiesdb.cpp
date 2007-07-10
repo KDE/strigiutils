@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,6 +20,7 @@
  */
 #include "fieldpropertiesdb.h"
 #include "fieldproperties.h"
+#include "fieldtypes.h"
 #include <vector>
 #include <sys/types.h>
 #ifdef HAVE_DIRENT_H
@@ -279,6 +281,10 @@ FieldPropertiesDb::Private::handlePropertyLine(FieldProperties::Private& p,
 	    fprintf(stderr, "Tokenized flag value[%s] for %s is unrecognized. Should be in set {True,False}.\n",
 	    value, p.uri.c_str());
 	}	
+    } else if (strcmp(name, "MinCardinality") == 0) {
+	p.min_cardinality = atoi(value);
+    } else if (strcmp(name, "MaxCardinality") == 0) {
+	p.max_cardinality = atoi(value);
     }
 }
 void
@@ -300,6 +306,13 @@ FieldPropertiesDb::addField(const std::string& key, const std::string& type,
     p->properties[key] = props;
 }
 void
+FieldPropertiesDb::addField(const std::string& key) {
+    FieldProperties::Private props;
+    props.uri = key;
+    props.typeuri = FieldRegister::stringType;
+    p->properties[key] = props;
+}
+void
 FieldProperties::Private::clear() {
     uri.clear();
     name.clear();
@@ -308,13 +321,12 @@ FieldProperties::Private::clear() {
     typeuri.clear();
     parentUris.clear();
 
-    resetIndexFlags();
-}
-void 
-FieldProperties::Private::resetIndexFlags() {
     indexed = true;
     stored = true;
     tokenized = true;
     compressed = false;
-    binary = false;    
+    binary = false;
+    
+    min_cardinality = -1; /** unlimited */
+    max_cardinality = -1; /** unlimited */
 }

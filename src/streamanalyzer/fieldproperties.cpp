@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -84,6 +85,14 @@ FieldProperties::stored() const {
 bool
 FieldProperties::tokenized() const {
     return p->tokenized;
+}
+int
+FieldProperties::minCardinality() const {
+    return p->min_cardinality;
+}
+int
+FieldProperties::maxCardinality() const {
+    return p->max_cardinality;
 }
 const std::map<std::string, FieldProperties::Localized>&
 FieldProperties::localized() const {

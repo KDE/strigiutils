@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -42,12 +43,12 @@ namespace Strigi {
 class RegisteredField {
 friend class FieldRegister;
 private:
-    const std::string m_key;
-    const std::string m_type;
-    const int m_maxoccurs;
-    const RegisteredField* m_parent;
-    void* m_writerdata;
-    const FieldProperties& m_properties;
+    const std::string m_key;	/**< TODO (neksa): should stay or go? **/
+    const std::string m_type;   /**< TODO (neksa): should go! **/
+    const int m_maxoccurs;	/**< TODO (neksa): should go! **/
+    const RegisteredField* m_parent; /**< TODO (neksa): should go! **/
+    void* m_writerdata;		/**< to be used by a Strigi::IndexWriter to store data*/
+    const FieldProperties& m_properties; /**< reference to the object holding all FieldProperties for this field **/
 
     RegisteredField();
     /**
@@ -61,6 +62,14 @@ private:
      */
     RegisteredField(const std::string& key, const std::string& type,
         int maxoccurs, const RegisteredField* parent);
+    /**
+     * @brief Create a RegisteredField, loading all the properties from
+     * the fieldproperties ontology database
+     *
+     * @param fieldname a (unique) name for what this field represents
+     *   the same name should be used in .fieldproperties files in [] brackets
+     */
+    RegisteredField(const std::string& key);
 public:
     /**
      * @brief Get the key for this field.
@@ -106,11 +115,6 @@ public:
      */
     const RegisteredField* parent() const { return m_parent; }
     /**
-     * @brief Get the maximum number of types a field will occur in any
-     * given resource.
-     */
-    int maxOccurs() const { return m_maxoccurs; }
-    /**
      * @brief Get the pointer to FieldProperties associated with this field.
      */
     const FieldProperties& properties() const { return m_properties; }
@@ -134,7 +138,9 @@ public:
     FieldRegister();
     ~FieldRegister();
     /**
-     * @brief Register a field with the FieldRegister.
+     * @brief (OBSOLETE) Register a field with the FieldRegister.
+     *
+     * TODO (neksa): this call should go or become obsolete
      *
      * The returned pointer can be used for calls to
      * Strigi::AnalysisResult::addValue().
@@ -153,6 +159,27 @@ public:
      */
     const RegisteredField* registerField(const std::string& fieldname,
         const std::string& type, int maxoccurs, const RegisteredField* parent);
+    /**
+     * @brief Register a field with the FieldRegister.
+     *
+     * It reads the attributes of the field from the fieldproperties 
+     * ontology database.
+     *
+     * If field is not present in the database a warning would be issued,
+     * but the field would be registered with the FieldRegister with @p fieldname
+     * key and all other parameters reset to default.
+     *
+     * The returned pointer can be used for calls to
+     * Strigi::AnalysisResult::addValue().
+     *
+     * Note that no i18n should be applied to either the field
+     * name nor the field value.  i18n is the responsibility of
+     * the client, based on the ontology of the field.
+     *
+     * @param fieldname a unique name for this field
+     * @return a pointer to a RegisteredField representing this field
+     */
+    const RegisteredField* registerField(const std::string& fieldname);
     /**
      * @brief Get list of fields that have been registered with this object
      * as a map from field names to registered fields.

@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,7 +28,6 @@
 
 namespace Strigi {
 
-class FieldProperties;
 class FieldProperties;
 /**
  * This class is the default implementation for getting at metadata related to
@@ -60,6 +60,18 @@ public:
      **/
     void addField(const std::string& key, const std::string& type,
         const std::string& parent);
+    /**
+     * This method reflects the change in API when all field properties are
+     * loaded from the .fieldproperties database and not specified in runtime
+     * by calling plugins.
+     * This call is a stub for those who want to add values for the field,
+     * which is not addded to the central ontology database.
+     * 
+     * NOTE: the default type is stringType
+     *       and there is no parent by default
+     *       the only property which is set is key or fieldname
+     **/
+    void addField(const std::string& key);
 };
 
 class FieldProperties::Private {
@@ -77,12 +89,13 @@ public:
     bool indexed;	/**< The field should be indexed. (0x0004)				*/
     bool stored;	/**< The field should be stored. (0x0020)				*/
     bool tokenized;	/**< If the field contains text, it should be tokenized. (0x0040)	*/
+    int min_cardinality;
+    int max_cardinality;
 
     Private() {}
     Private(const Private&p) { *this = p; }
     Private(const std::string& i) :uri(i) { }
     void clear();
-    void resetIndexFlags();
 };
 
 }

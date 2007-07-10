@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Alexandr Goncearenco <neksa@neksa.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,6 +49,8 @@ public:
     bool indexed() const;
     bool stored() const;
     bool tokenized() const;
+    int minCardinality() const;
+    int maxCardinality() const;
     const std::string& uri() const;
     const std::string& name() const;
     const std::string& typeUri() const;
