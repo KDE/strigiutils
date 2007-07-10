@@ -286,6 +286,7 @@ MimeEventAnalyzer::handleData(const char* data, uint32_t length) {
     for (i = p->mimes.begin(); i < p->mimes.end(); ++i) {
         if (i->matches(data, length)) {
             p->analysisResult->addValue(p->factory->mimetypefield, i->mimetype);
+	    p->analysisResult->setMimeType(i->mimetype);
         }
     }
 }
