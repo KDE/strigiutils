@@ -45,9 +45,17 @@ private:
     static const std::string titleFieldName;
     static const std::string artistFieldName;
     static const std::string albumFieldName;
+    static const std::string composerFieldName;
+    static const std::string genreFieldName;
+    static const std::string trackNumberFieldName;
+    static const std::string discNumberFieldName;
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* albumField;
+    const Strigi::RegisteredField* composerField;
+    const Strigi::RegisteredField* genreField;
+    const Strigi::RegisteredField* trackNumberField;
+    const Strigi::RegisteredField* discNumberField;
     const char* name() const {
         return "ID3V2ThroughAnalyzer";
     }

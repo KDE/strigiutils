@@ -35,6 +35,9 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
         1, 0);
     fields["genre"] = r.registerField("content.genre", FieldRegister::stringType, 1, 0);
     fields["codec"] = r.registerField("media.codec", FieldRegister::stringType, 1, 0);
+    fields["composer"] = r.registerField("content.author", FieldRegister::stringType, 1, 0);
+    fields["date"] = r.registerField("content.creation_time", FieldRegister::datetimeType, 1, 0);
+    fields["description"] = r.registerField("content.comment", FieldRegister::stringType, 1, 0);
 }
 
 void

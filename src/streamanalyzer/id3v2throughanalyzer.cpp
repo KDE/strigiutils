@@ -28,6 +28,10 @@ using namespace std;
 const string ID3V2ThroughAnalyzerFactory::titleFieldName("audio.title");
 const string ID3V2ThroughAnalyzerFactory::artistFieldName("audio.artist");
 const string ID3V2ThroughAnalyzerFactory::albumFieldName("audio.album");
+const string ID3V2ThroughAnalyzerFactory::composerFieldName("content.author");
+const string ID3V2ThroughAnalyzerFactory::genreFieldName("content.genre");
+const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName("TODO_trackNumber");
+const string ID3V2ThroughAnalyzerFactory::discNumberFieldName("TODO_discNumber");
 
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
@@ -37,6 +41,14 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
         1, 0);
     albumField = r.registerField(albumFieldName, FieldRegister::stringType,
         1, 0);
+    genreField = r.registerField(genreFieldName, FieldRegister::stringType,
+        1, 0);
+    composerField = r.registerField(composerFieldName, FieldRegister::stringType,
+        1, 0);
+    trackNumberField = r.registerField(trackNumberFieldName, FieldRegister::stringType,
+        1, 0);  //id3 track numbers can look like this: 1/10
+    discNumberField = r.registerField(discNumberFieldName, FieldRegister::stringType,
+        1, 0);  //id3 disc numbers can looklike this: 1/2
 }
 
 void
@@ -99,6 +111,18 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
                         string(p+11, size-1));
                 } else if (strncmp("TALB", p, 4) == 0) {
                     indexable->addValue(factory->albumField,
+                        string(p+11, size-1));
+                } else if (strncmp("TCON", p, 4) == 0) {
+                    indexable->addValue(factory->genreField,
+                        string(p+11, size-1));
+                } else if (strncmp("TCOM", p, 4) == 0) {
+                    indexable->addValue(factory->composerField,
+                        string(p+11, size-1));
+                } else if (strncmp("TRCK", p, 4) == 0) {
+                    indexable->addValue(factory->trackNumberField,
+                        string(p+11, size-1));
+                } else if (strncmp("TPOS", p, 4) == 0) {
+                    indexable->addValue(factory->discNumberField,
                         string(p+11, size-1));
                 }
             }
