@@ -74,7 +74,7 @@ public:
     }
     void init(const char* data, int32_t len) {
         error = false;
-        int initlen = (1024 > len) ?len :1024;
+        int initlen = (512 > len) ?len :512;
         const char* name = result->fileName().c_str();
         xmlKeepBlanksDefault(0);
         if (ctxt) {
@@ -89,10 +89,14 @@ public:
         }
     }
     void push(const char* data, int32_t len) {
-        xmlParseChunk(ctxt, data, len, 0);
+        if (xmlParseChunk(ctxt, data, len, 0)) {
+            error = true;
+        }
     }
     void finish() {
-        xmlParseChunk(ctxt, 0, 0, 1);
+        if (xmlParseChunk(ctxt, 0, 0, 1)) {
+            error = true;
+        }
     }
 };
 void
