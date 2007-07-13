@@ -1,3 +1,28 @@
+# This file is part of Strigi Desktop Search
+#
+# Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this library; see the file COPYING.LIB.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301, USA.
+
+# A plugin for Gnome's Deskbar panel applet to talk to strigi.
+# Can be tested on the command line with `python strigi.py <searchquery>`
+# Or by turning on the plugin in deskbar's preferences
+
+# Bugs: returns a bad result when strigidaemon is not running
+
 from gettext import gettext as _
 
 import gnomevfs
@@ -29,7 +54,7 @@ class StrigiMatch(Match):
         def get_verb(self):
                 if self.name == "Error":
                     return self.dir
-                return _("<b>%(name)s</b>"+self.url)
+                return _("<b>%(name)s</b> "+self.url)
 
         def get_hash(self, text=None):
                 return self.url
@@ -39,7 +64,7 @@ class StrigiMatch(Match):
 
 class StrigiHandler(Handler):
     def __init__(self):
-        Handler.__init__(self, "gnome-mime-application-x-python.png")
+        Handler.__init__(self, "gnome-fs-regular")
         self.strigi = None
 
     def connect(self):
@@ -87,7 +112,7 @@ class StrigiHandler(Handler):
 
 def main(args):
     h = StrigiHandler()
-    rs = h.query('strigi')
+    rs = h.query(args[0])
     for r in rs:
         print r.url
 
