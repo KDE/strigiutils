@@ -23,6 +23,7 @@
 #include "saxeventanalyzer.h"
 #include "lineeventanalyzer.h"
 #include "streamlineanalyzer.h"
+#include <iostream>
 
 using namespace std;
 using namespace Strigi;
@@ -65,10 +66,13 @@ bool
 EventThroughAnalyzer::handleData(const char* data, uint32_t size) {
     if (ready) return false;
     vector<StreamEventAnalyzer*>::iterator i;
-    bool more = true;
+    bool more = false;
     for (i = event.begin(); i != event.end(); ++i) {
         (*i)->handleData(data, size);
         more = more || !(*i)->isReadyWithStream();
+        //if (!(*i)->isReadyWithStream()) {
+        //     cerr << "hungry analyzer: " << (*i)->name() << endl;
+        //}
     }
     ready = !more;
     return more;

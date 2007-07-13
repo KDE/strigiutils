@@ -49,6 +49,7 @@ public:
     void setIndexable(Strigi::AnalysisResult* i);
     Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
+    const char* name() const { return "GifThroughAnalyzer"; }
 };
 
 class GifThroughAnalyzerFactory

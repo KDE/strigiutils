@@ -35,6 +35,7 @@ public:
     void setIndexable(Strigi::AnalysisResult*);
     Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
     bool isReadyWithStream();
+    const char* name() const { return "PcxThroughAnalyzer"; }
 };
 
 class PcxThroughAnalyzerFactory

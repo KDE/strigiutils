@@ -48,6 +48,7 @@ private:
     bool isReadyWithStream();
     bool handleData(const char* data, uint32_t size);
     void handleEnd();
+    const char* name() const { return "EventThroughAnalyzer"; }
 public:
     EventThroughAnalyzer(std::vector<StreamEventAnalyzer*>& e)
             : event(e), datastream(0), result(0), ready(true){}
