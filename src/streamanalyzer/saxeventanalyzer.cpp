@@ -22,6 +22,7 @@
 #include "analysisresult.h"
 #include "textutils.h"
 #include <libxml/SAX2.h>
+#include <iostream>
 #include <cassert>
 #include <cstring>
 
@@ -103,7 +104,6 @@ SaxEventAnalyzer::Private::charactersSAXFunc(void* ctx, const xmlChar* ch,
         (*i)->characters((const char*)ch, len);
     }
 }
-#include <iostream>
 void
 SaxEventAnalyzer::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     Private* p = (Private*)ctx;

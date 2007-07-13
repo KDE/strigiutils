@@ -359,6 +359,18 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     tIter = through.begin() + idx.depth();
     eIter = end.begin() + idx.depth();
 
+    // read the headersize size before connecting the throughanalyzers
+    // This ensures that the first read is at least this size, even if the
+    // throughanalyzers read smaller chunks.
+    bool finished = false;
+    const char* header = 0;
+    int32_t headersize = 1024;
+    if (input) {
+        headersize = input->read(header, headersize, headersize);
+        input->reset(0);
+        if (headersize < 0) finished = true;
+    }
+
     // insert the through analyzers
     vector<StreamThroughAnalyzer*>::iterator ts;
     for (ts = tIter->begin(); (input == 0 || input->status() == Ok)
@@ -366,9 +378,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         (*ts)->setIndexable(&idx);
         input = (*ts)->connectInputStream(input);
     }
-    bool finished = false;
-    int32_t headersize = 1024;
-    const char* header = 0;
+
+    // reread the header so we can use it for the endanalyzers
     if (input) {
         headersize = input->read(header, headersize, headersize);
         if (input->reset(0) != 0) {
@@ -412,14 +423,21 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         // make sure the entire stream is read if the size is not known
         bool ready;
         tIter = through.begin() + idx.depth();
+        uint32_t skipsize = 4096;
         do {
             ready = input->size() != -1;
             vector<StreamThroughAnalyzer*>::iterator ts;
             for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
+                //if (!(*ts)->isReadyWithStream()) {
+                //    cerr << "not ready " << (*ts)->name() << endl;
+                //}
                 ready = (*ts)->isReadyWithStream();
             }
             if (!ready) {
-                input->skip(1000000);
+                input->skip(skipsize);
+                if (skipsize < 131072) {
+                    skipsize *= 4;
+                }
             }
         } while (!ready && input->status() == Ok);
         if (input->status() == Error) {

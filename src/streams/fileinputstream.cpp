@@ -19,10 +19,12 @@
  */
 #include "fileinputstream.h"
 #include "strigiconfig.h"
+#include <iostream>
 #include <cerrno>
 #include <cstring>
 
 using namespace Strigi;
+using namespace std;
 
 const int32_t FileInputStream::defaultBufferSize = 1048576;
 
@@ -95,5 +97,6 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
         fclose(file);
         file = 0;
     }
+    // cerr << "read " << nwritten << " bytes of\t" << filepath << endl;
     return nwritten;
 }

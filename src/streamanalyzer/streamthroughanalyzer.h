@@ -57,6 +57,11 @@ public:
      * with the current stream.
      **/
     virtual bool isReadyWithStream() = 0;
+    /**
+     * Return the name of this throughanalyzer.
+     **/
+    // TODO
+    virtual const char* name() const = 0;
 };
 class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory
         : public StreamAnalyzerFactory {
