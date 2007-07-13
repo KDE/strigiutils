@@ -22,6 +22,8 @@
 #include "oggthroughanalyzer.h"
 #include "strigiconfig.h"
 #include "analysisresult.h"
+#include "textutils.h"
+#include <iostream>
 #include <cctype>
 #include <cstring>
 using namespace Strigi;
@@ -44,11 +46,6 @@ void
 OggThroughAnalyzer::setIndexable(AnalysisResult* i) {
     indexable = i;
 }
-int32_t
-readSize(const char*b) {
-    return (int32_t)b[0] + (int32_t)(b[1]<<8) + (int32_t)(b[2]<<16)
-        + (int32_t)(b[3]<<24);
-}
 InputStream*
 OggThroughAnalyzer::connectInputStream(InputStream* in) {
     if(!in) {
@@ -60,59 +57,74 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
     int32_t nreq = 1024;
     int32_t nread = in->read(buf, nreq, nreq);
     in->reset(0);
+    // check the header for signatures
+    // the first ogg page starts at position 0, the second at position 58
     if (nread < nreq || strcmp("OggS", buf) || strcmp("vorbis", buf+29)
             || strcmp("OggS", buf+58)) {
         return in;
     }
-    unsigned char packets = (unsigned char)buf[84];
-    if (85 + packets >= nread) {
-        // this cannot be a good vorbis file
+    // read the number of page segments at 58 + 26
+    unsigned char segments = (unsigned char)buf[84];
+    if (85 + segments >= nread) {
+        // this cannot be a good vorbis file: the initial page is too large
         return in;
     }
- 
+
+    // read the sum of page segment sizes 
     int psize = 0;
-    for (int i=0; i<packets; ++i) {
+    for (int i=0; i<segments; ++i) {
         psize += (unsigned char)buf[85+i];
     }
-    nreq = psize + 85 + packets;
+    // read the entire first two pages
+    nreq = 85 + segments + psize;
     nread = in->read(buf, nreq, nreq);
     in->reset(0);
     if (nread < nreq) {
         return in;
     }
     // we have now read the second Ogg Vorbis header containing the comments
-    const char* p2 = buf + 85 + packets;
-    const char* end = p2 + psize;
+    // get a pointer to the first page segment in the second page
+    const char* p2 = buf + 85 + segments;
+    // check the header of the 'vorbis' page
     if (psize < 15 || strncmp(p2 + 1, "vorbis", 6)) {
         return in;
     }
-    int32_t size = readSize(p2+7);
+    // get a pointer to the end of the second page
+    const char* end = p2 + psize;
+    uint32_t size = readLittleEndianUInt32(p2+7);
+    // advance to the position of the number of fields and read it
     p2 += size + 11;
     if (p2 + 4 > end) {
         return in;
     }
-    int32_t nfields = readSize(p2);
+    uint32_t nfields = readLittleEndianUInt32(p2);
+    // read all the comments
     p2 += 4;
-    for (int32_t i = 0; p2 < end && i < nfields; ++i) {
-        size = readSize(p2);
+    for (uint32_t i = 0; p2 < end && i < nfields; ++i) {
+        // read the comment length
+        size = readLittleEndianUInt32(p2);
         p2 += 4;
-        if (p2 + size < end) {
-            int32_t eq = 1;
+        if (size <= (uint32_t)(end - p2)) {
+            uint32_t eq = 1;
             while (eq < size && p2[eq] != '=') eq++;
-            if (eq < size - 1) {
+            if (size > eq) {
                 string name(p2, eq);
-                string value(p2+eq+1, size-eq-1);
                 // convert field name to lower case
                 const int length = name.length();
                 for(int k=0; k!=length; ++k) {
                     name[k] = std::tolower(name[k]);
                 }
+                // check if we can handle this field and if so handle it
                 map<string, const RegisteredField*>::const_iterator iter
                     = factory->fields.find(name);
                 if (iter != factory->fields.end()) {
+                    string value(p2+eq+1, size-eq-1);
                     indexable->addValue(iter->second, value);
                 }
             }
+        } else {
+            cerr << "problem with tag size of " << size << endl;
+            return in;
         }
         p2 += size;
     }

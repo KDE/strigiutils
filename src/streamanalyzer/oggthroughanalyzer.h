@@ -26,6 +26,8 @@
 #include <map>
 
 // ogg according to http://tools.ietf.org/html/rfc3533
+// and http://xiph.org/ogg/doc/rfc3534.txt
+// and http://xiph.org/vorbis/doc/v-comment.html
 
 class OggThroughAnalyzerFactory;
 class OggThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
