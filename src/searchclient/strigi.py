@@ -18,8 +18,9 @@
 # Boston, MA 02110-1301, USA.
 
 # A plugin for Gnome's Deskbar panel applet to talk to strigi.
-# Can be tested on the command line with `python strigi.py <searchquery>`
-# Or by turning on the plugin in deskbar's preferences
+# Can be tested on the command line by installing deskbar and run `python strigi.py <searchquery>`.
+# Or for full use install to /usr/lib/deskbar-applet/handlers/ (or appropriate for your install) 
+# and turning on the plugin in deskbar's preferences.
 
 # Bugs: returns a bad result when strigidaemon is not running
 
