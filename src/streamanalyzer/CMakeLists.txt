@@ -34,6 +34,7 @@ set(streamanalyzer_SRCS
 	sha1.cpp
 	streamanalyzer.cpp
 	streamanalyzerfactory.cpp
+	streamsaxanalyzer.cpp
 	variant.cpp
 	endanalyzers/arendanalyzer.cpp
 	endanalyzers/bmpendanalyzer.cpp

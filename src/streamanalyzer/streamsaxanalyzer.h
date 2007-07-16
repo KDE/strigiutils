@@ -31,11 +31,17 @@ class AnalysisResult;
  * SVG files.
  */
 class STREAMANALYZER_EXPORT StreamSaxAnalyzer {
+    class Private;
+    Private* const p;
 public:
+    /**
+     * Constructor.
+     */
+    StreamSaxAnalyzer();
     /**
      * Destructor. Clean up your room, if dirty :-)
      */
-    virtual ~StreamSaxAnalyzer() {}
+    virtual ~StreamSaxAnalyzer();
     /**
      * Returns the name of this analyzer. Taking the class name is fine
      * for this purpose.
@@ -54,7 +60,7 @@ public:
      * cleanups here, if necessary. Note: This is also called if, while
      * parsing the XML document, non-well-formedness is detected.
      */
-    virtual void endAnalysis() {}
+    virtual void endAnalysis();
     /**
      * This is called when an opening XML tag was detected. For documentation
      * purposes, let's suppose we have
@@ -89,7 +95,7 @@ public:
      */
     virtual void startElement(const char* localname, const char* prefix,
         const char* uri, int nb_namespaces, const char** namespaces,
-        int nb_attributes,int nb_defaulted, const char** attributes) {}
+        int nb_attributes,int nb_defaulted, const char** attributes);
     /**
      * This is called when a closing XML tag was detected. For documentation
      * purposes, let's suppose we have
@@ -104,14 +110,14 @@ public:
      *  "http://www.w3.org/1999/XSL/Transform"), to 0 otherwise
      */
     virtual void endElement(const char* localname, const char* prefix,
-        const char* uri) {}
+        const char* uri);
     /**
      * Is called to pass some XML data to the analyzer. No assumptions like
      * "all data until the next opening or closing tag" etc. can be made!
      * \param data character data of the line
      * \param length number of characters in that line
      */
-    virtual void characters(const char* data, uint32_t length) {}
+    virtual void characters(const char* data, uint32_t length);
     /**
      * Tells the caller whether you are finished with your analysis or not.
      * If this returns true, this Analyzer will receive no more data from
