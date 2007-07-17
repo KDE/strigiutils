@@ -74,7 +74,7 @@ parse(const char* p, Query& q) {
     const char* space = p + strcspn(p, "\t \r\n");
 
     // do we have a field name?
-    if (*rel) {
+    if (*rel && rel < space && rel < quote) {
         q.fields().push_back(string(p, rel));
         p = rel+1;
         if (*rel == '=') {
@@ -97,8 +97,8 @@ parse(const char* p, Query& q) {
             }
         }
     }
-    
-    if (*quote && *(quote+1)) {
+
+    if (*quote && *(quote+1) && quote < space) {
 	const char* pairquote = strchr(quote+1, *quote);
 	if (pairquote != NULL) {
 	    pairquote++;
