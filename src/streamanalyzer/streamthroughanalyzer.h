@@ -62,6 +62,10 @@ public:
      **/
     virtual const char* name() const = 0;
 };
+
+/**
+ * The factory class for the StreamThroughAnalyzer
+ */
 class STREAMANALYZER_EXPORT StreamThroughAnalyzerFactory
         : public StreamAnalyzerFactory {
 public:

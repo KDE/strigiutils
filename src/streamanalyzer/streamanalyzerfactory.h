@@ -30,6 +30,9 @@ namespace Strigi {
 class FieldRegister;
 class RegisteredField;
 
+/**
+ * The StreamAnalyzerFactory class
+ */
 class STREAMANALYZER_EXPORT StreamAnalyzerFactory {
 private:
     class Private;
