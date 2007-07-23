@@ -28,7 +28,7 @@ namespace Strigi {
 class IndexManager;
 class AnalyzerConfiguration;
 
-class AnalysisCaller {
+class STREAMANALYZER_EXPORT AnalysisCaller {
 public:
     virtual ~AnalysisCaller() {}
     virtual bool continueAnalysis() = 0;
@@ -38,7 +38,7 @@ class STREAMANALYZER_EXPORT DirAnalyzer {
 public:
     class Private;
 private:
-    Private* p;
+    Private* const p;
 public:
     DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf);
     ~DirAnalyzer();
