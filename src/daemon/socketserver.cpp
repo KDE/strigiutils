@@ -174,7 +174,7 @@ SocketServer::handleRequest() {
             oss << i->mtime;
             response.push_back(oss.str());
             oss.str("");
-            map<string, string>::const_iterator j;
+            multimap<string, string>::const_iterator j;
             for (j = i->properties.begin(); j != i->properties.end(); ++j) {
                  response.push_back(j->first+':'+j->second);
             }
