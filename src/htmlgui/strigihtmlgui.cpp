@@ -410,7 +410,7 @@ toSizeString(int s) {
 void
 StrigiHtmlGui::Private::printSearchResult(ostream& out,
         const Strigi::IndexedDocument& doc, const Query& query) const {
-    map<string, string>::const_iterator t;
+    multimap<string, string>::const_iterator t;
     string link, icon, name, folder;
     int depth = 0;
     t = doc.properties.find("depth");
