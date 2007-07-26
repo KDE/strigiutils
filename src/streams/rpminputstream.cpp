@@ -73,7 +73,11 @@ RpmInputStream::RpmInputStream(InputStream* input)
     if (sz%8) {
         sz+=8-sz%8;
     }
-    m_input->read(b, sz, sz);
+    if (m_input->read(b, sz, sz) != sz) {
+        m_status = Error;
+        m_error = "RPM seems to be truncated or corrupted.";
+        return;
+    }
 
     // read header
     if (m_input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
