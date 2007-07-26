@@ -171,7 +171,8 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
         const char* lpos = data;
         while (lpos < pos && *lpos != ':') lpos++;
         Mime mime;
-        mime.mimetype.assign(lpos+1, pos-1);
+        if (lpos+1 < pos-1)
+            mime.mimetype.assign(lpos+1, pos-1);
         pos++;
 
         do {
