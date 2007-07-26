@@ -167,7 +167,7 @@ tryThumbsdbEntry(const string& name, AnalysisResult& ar, InputStream* in) {
     return true;
 }
 /**
- * Exctract images from a 'Pictures' field from a ppt file.
+ * Extract images from a 'Pictures' field from a ppt file.
  * http://jakarta.apache.org/poi/apidocs/org/apache/poi/hslf/model/Picture.html
  **/
 void
@@ -181,6 +181,10 @@ tryPictures(AnalysisResult& ar, InputStream* in) {
         SubInputStream sub(in, size);
         s << "Pictures/" << pos++;
         ar.indexChild(s.str(), 0, &sub);
+        const char* dummy;
+        while (sub.read(dummy, 1, 0) > 0) {
+            // skip to the end
+        }
         s.str("");
         nread = in->read(d, 25, 25);
     }
@@ -217,11 +221,19 @@ OleEndAnalyzer::tryPropertyStream(AnalysisResult& idx,
 }
 void
 OleEndAnalyzer::handleProperty(const RegisteredField* field, const char* data) {
+    // unused function
+}
+void
+handleProperty(AnalysisResult* result, const RegisteredField* field,
+        const char* data, const char* end) {
+    if (end-data < 8) {
+        return;
+    }
     int32_t datatype = readLittleEndianInt32(data);
     // currently we only support null-terminated strings
     if (datatype == 30) {
         int32_t len = readLittleEndianInt32(data+4);
-        if (len > 0) {
+        if (len > 0 && len-8 <= end-data) {
             result->addValue(field, data+8, len-1);
         }
     }
@@ -248,7 +260,9 @@ OleEndAnalyzer::handlePropertyStream(const char* key, const char* data,
         field = table->find(id);
         if (field != table->end()) {
             int32_t offset = readLittleEndianInt32(p+4);
-            handleProperty(field->second, data+offset);
+            if (offset > 0) {
+                ::handleProperty(result, field->second, data+offset, end);
+            }
         }
         p += 8;
     }

@@ -448,7 +448,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     }
 
     // store the size of the stream
-    if (input) {
+    if (input && input->status() != Error && input->size() >= 0) {
         // TODO remove cast
         idx.addValue(sizefield, (uint32_t)input->size());
     }

@@ -71,7 +71,7 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     } else {
         d = parent->data+(1+parent->currentDataBlock)*512;
     }
-    if (d < parent->data || d - parent->data + n > parent->size) {
+    if (d < parent->data || d + n > parent->data + parent->size) {
         m_status = Error;
         m_error = "Invalid OLE stream.";
         cerr << "not 0 < " << d-parent->data << " < " << m_size << " "
@@ -222,7 +222,10 @@ OleInputStream::nextBlock(int32_t in) {
         fprintf(stderr, "error: input block out of range %i\n", in);
         return -4;
     }
-    bid = batIndex[bid]+1;
+    int32_t newbid = batIndex[bid];
+    // mark block as read
+    batIndex[bid] = -1;
+    bid = newbid+1;
     int32_t next = in%128*4;
     next += 512*bid;
     if (next < 0 || next > size-4) {
@@ -274,7 +277,10 @@ OleInputStream::readEntryInfo() {
         return;
     }
     string name;
-    int32_t namesize = ((d[0x40]>0x40) ?0x40 :d[0x40])/2 - 1;
+    int32_t namesize = d[0x40];
+    if (namesize < 2) namesize = 2;
+    if (namesize > 0x40) namesize = 0x40;
+    namesize = namesize/2 - 1;
     name.resize(namesize);
     for (int i=0; i < namesize; ++i) {
         name[i] = d[2*i];
