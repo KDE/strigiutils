@@ -1,0 +1,2 @@
+nice way of thoroughly testing:
+zuf -S -E/etc -E/usr -s0:65536 -q --  ./xmlindexer $HOME
