@@ -15,6 +15,7 @@ set(streamtests
 #	GZipCompressInputStreamTest.cpp
 	InputStreamReaderTest.cpp
 	InputStreamTest.cpp
+	KmpSearcherTest.cpp
 	MailInputStreamTest.cpp
 	RpmInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
