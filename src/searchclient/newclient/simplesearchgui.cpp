@@ -68,7 +68,6 @@ using namespace std;
 
     m_histogramWidget->setWidget( his );
 
-
     indexing = false;
     running = false;
     starting = true;
@@ -88,6 +87,7 @@ using namespace std;
     ui.queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
     createActions();
+    addDockWidget( Qt::LeftDockWidgetArea, m_histogramWidget );
     
     connect(ui.queryfield, SIGNAL(textChanged(const QString&)),
             this, SLOT(query(const QString&)));
@@ -256,7 +256,8 @@ SimpleSearchGui::toggleIndexing() {
 
 void SimpleSearchGui::toggleHistogram()
 {
-    m_histogramWidget->toggleViewAction();
+    qDebug() << "SimpleSearchGui::toggleHistogram()";
+    m_histogramWidget->toggleViewAction()->toggle(); //I really wonder why this is not working
 }
 
 void SimpleSearchGui::addDirectory() {
