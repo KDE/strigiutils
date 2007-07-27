@@ -63,6 +63,9 @@ class SimpleSearchGui : public QMainWindow
     
     public:
         explicit SimpleSearchGui(QWidget * parent = 0, Qt::WFlags flags = 0);
+
+    signals:
+        void queryChanged( QString );
 };
 
 #endif // SIMPLESEARCHGUI_H

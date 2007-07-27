@@ -25,6 +25,9 @@
 #include <QStringList>
 #include "ui_histogramwidget.h"
 
+/**
+ * @author Carsten Niehaus
+ */
 class histogramWidget_Impl : public QWidget
 {
     Q_OBJECT
@@ -34,8 +37,14 @@ class histogramWidget_Impl : public QWidget
 
         void setItems( const QStringList& items );
 
+    public Q_SLOTS:
+        void refresh();
+        void setQuery( QString );
+    
     private:
         Ui_histogramWidget ui;
+
+        QString m_query;
 };
 
 #endif // HISTOGRAM_IMPL_H

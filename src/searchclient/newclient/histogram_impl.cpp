@@ -18,16 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "histogram_impl.h"
-#include "dlgfilters.h"
-#include "dlglistindexedfiles.h"
-#include "searchtabs.h"
-#include "histogram.h"
-#include "searchview.h"
 
 #include <QDebug>
-
-#include "strigiclient.h"
-#include "strigiasyncclient.h"
 
 histogramWidget_Impl::histogramWidget_Impl(QWidget * parent)
     : QWidget( parent )
@@ -35,11 +27,33 @@ histogramWidget_Impl::histogramWidget_Impl(QWidget * parent)
     ui.setupUi( this );
 
     ui.histogram->setOrientation( Qt::Vertical );
+
+    connect(ui.refreshHistogram, SIGNAL(clicked()),
+            this, SLOT(refresh()));
+    connect(ui.fieldnames, SIGNAL(currentIndexChanged(const QString&)),
+            ui.histogram, SLOT(setFieldName(const QString&)));
+}
+
+void histogramWidget_Impl::setQuery( QString query )
+{
+    qDebug() << "histogramWidget_Impl::setQuery: " << query ;
+
+    m_query = query;
+
+    refresh();
+}
+
+
+void histogramWidget_Impl::refresh()
+{
+    qDebug() << "histogramWidget_Impl::refresh()";
+
+    ui.histogram->setQuery(m_query);
 }
 
 void histogramWidget_Impl::setItems( const QStringList& items )
 {
-    qDebug() << "setItems()";
+    qDebug() << "histogramWidget_Impl::setItems()";
     ui.fieldnames->addItems( items );
 
     //FIXME this is of course a hack

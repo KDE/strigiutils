@@ -63,6 +63,9 @@ using namespace std;
 
     histogramWidget_Impl * his = new histogramWidget_Impl();
     his->setItems( strigi.getFieldNames() );
+    connect( this, SIGNAL(queryChanged(QString)),
+            his, SLOT(setQuery(QString)));
+
     m_histogramWidget->setWidget( his );
 
 
@@ -98,23 +101,20 @@ using namespace std;
             this, SLOT(removeDirectory()));
     connect(&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
             this, SLOT(updateStatus(const QMap<QString, QString>& )));
-//X     connect(ui.tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
-//X             ui.histogram, SLOT(setQuery(const QString&)));
-//X     connect(ui.refreshHistogram, SIGNAL(clicked()),
-//X             this, SLOT(refresh()));
-//X     connect(ui.fieldnames, SIGNAL(currentIndexChanged(const QString&)),
-//X             ui.histogram, SLOT(setFieldName(const QString&)));
+    connect(ui.tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
+            his, SLOT(setQuery(const QString&)));
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+    connect(timer, SIGNAL(timeout()), 
+            this, SLOT(updateStatus()));
     timer->start(2000);
     asyncstrigi.updateStatus();
 }
 void
 SimpleSearchGui::refresh() 
 {
-    qDebug() << "refresh()";
-//X     ui.histogram->setQuery(ui.queryfield->text());
+    qDebug() << "SimpleSearchGui::refresh()";
+    emit(ui.queryfield->text());
 }
 
 void SimpleSearchGui::createActions() 
@@ -136,25 +136,30 @@ void SimpleSearchGui::createActions()
     connect(ui.actionDisplay_Histogram, SIGNAL(triggered()),
             this, SLOT(toggleHistogram()));
 }
-void
-SimpleSearchGui::query(const QString& item) {
-    qDebug() << "query()";
+
+void SimpleSearchGui::query(const QString& item) {
     QString query = item.trimmed();
     if (query.length() == 0) {
         ui.tabs->setQuery(QString());
         asyncstrigi.updateStatus();
         ui.mainview->setCurrentIndex(0);
     } else {
+        emit queryChanged( item );
         ui.mainview->setCurrentIndex(1);
         ui.tabs->setQuery(query);
     }
+    //FIXME this isn't this easy anymore because I cannot 
+    //access ui.refreshHistogram from here (by (good) design).
 //X     ui.refreshHistogram->setEnabled(query.length());
 }
+
 void SimpleSearchGui::updateStatus() {
     qDebug() << "updateStatus()";
     if (ui.statusview->isVisible()) {
         asyncstrigi.updateStatus();
     }
+    //FIXME this isn't this easy anymore because I cannot 
+    //access ui.fieldnames from here (by (good) design).
 //X     if (ui.fieldnames->count() == 0) {
 //X         ui.fieldnames->addItems(strigi.getFieldNames());
 //X         ui.fieldnames->setCurrentIndex(
@@ -162,8 +167,8 @@ void SimpleSearchGui::updateStatus() {
 //X                 );
 //X     }
 }
-void
-SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
+
+void SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     qDebug() << "updateStatus( const QMap<QString, QString>& s  )";
     //    static bool first = true;
     static bool attemptedstart = false;
