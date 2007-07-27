@@ -93,18 +93,38 @@ ArInputStream::readHeader() {
         }
     }
 
-    m_entryinfo.size = atoi(b+48);
-    m_entryinfo.mtime = atoi(b+16);
+    // we must copy this string to safely call atoi
+    char bc[61];
+    memcpy(bc, b, 60);
+    bc[60] = '\0';
+    m_entryinfo.size = atoi(bc+48);
+    if (m_entryinfo.size < 0) {
+        m_error = "Error: negative file size.";
+        m_status = Error;
+        return;
+    }
+    m_entryinfo.mtime = atoi(bc+16);
     if (len == 0) {
         if (b[1] == '/') {
+            fprintf(stderr, "SIZE: %lli\n", m_entryinfo.size);
             nread = m_input->read(b, m_entryinfo.size, m_entryinfo.size);
-            gnufilenames = std::string(b, m_entryinfo.size);
+            if (nread != m_entryinfo.size) {
+                m_error = "premature end of stream";
+                m_status = Error;
+                return;
+            }
+            gnufilenames.assign(b, m_entryinfo.size);
             readHeader();
         } else if (b[1] == ' ') {
             m_input->skip(m_entryinfo.size);
             readHeader();
         } else {
-            int p = atoi(b+1);
+            int p = atoi(bc+1);
+            if (gnufilenames.length() <= p) {
+                m_error = "Invalid name field.";
+                m_status = Error;
+                return;
+            }
             const char* c = gnufilenames.c_str() + p;
             const char* e = strchr(c, '/');
             if (e) {
