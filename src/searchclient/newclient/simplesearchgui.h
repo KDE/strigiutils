@@ -25,12 +25,17 @@
 #include "strigiasyncclient.h"
 
 #include "ui_searchdialog.h"
+#include "ui_histogramwidget.h"
+
+class QDockWidget;
 
 class SimpleSearchGui : public QMainWindow 
 {
     Q_OBJECT
     private:
         Ui::SearchDialog ui;
+
+        QDockWidget * m_histogramWidget;
 
         bool starting;
         bool indexing;
@@ -48,6 +53,7 @@ class SimpleSearchGui : public QMainWindow
         void updateStatus(const QMap<QString, QString>& s);
         void toggleDaemon();
         void toggleIndexing();
+        void toggleHistogram();
         void query(const QString&);
         void addDirectory();
         void removeDirectory();

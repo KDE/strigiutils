@@ -14,27 +14,6 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
-    <item rowspan="2" row="0" column="0" >
-     <widget class="QDockWidget" name="dockWidget" >
-      <widget class="QWidget" name="dockWidgetContents" >
-       <layout class="QGridLayout" >
-        <item row="0" column="0" >
-         <widget class="QComboBox" name="fieldnames" />
-        </item>
-        <item row="1" column="0" >
-         <widget class="Histogram" native="1" name="histogram" />
-        </item>
-        <item row="2" column="0" >
-         <widget class="QPushButton" name="refreshHistogram" >
-          <property name="text" >
-           <string>Refresh Histogram</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
     <item row="0" column="1" >
      <widget class="QStackedWidget" name="mainview" >
       <property name="currentIndex" >
@@ -142,8 +121,15 @@
     <addaction name="actionEdit_filters" />
     <addaction name="actionList_indexed_files" />
    </widget>
+   <widget class="QMenu" name="menuDisplay" >
+    <property name="title" >
+     <string>Display</string>
+    </property>
+    <addaction name="actionDisplay_Histogram" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
+   <addaction name="menuDisplay" />
    <addaction name="menuAbout" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -167,18 +153,20 @@
     <string>List indexed files</string>
    </property>
   </action>
+  <action name="actionDisplay_Histogram" >
+   <property name="text" >
+    <string>Display &amp;Histogram</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+H</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>SearchTabs</class>
    <extends>QWidget</extends>
    <header>searchtabs.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Histogram</class>
-   <extends>QWidget</extends>
-   <header>histogram.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

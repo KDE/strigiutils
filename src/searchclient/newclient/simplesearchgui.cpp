@@ -24,6 +24,8 @@
 #include "searchtabs.h"
 #include "histogram.h"
 #include "searchview.h"
+#include "histogram_impl.h"
+
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QLineEdit>
@@ -55,16 +57,20 @@ using namespace std;
     qDebug() << "QMainWindow ()";
     ui.setupUi( this );
 
+    m_histogramWidget = new QDockWidget( this );
+    m_histogramWidget->setObjectName( QLatin1String( "searchclient-histogram" ) );
+    m_histogramWidget->setFeatures( QDockWidget::AllDockWidgetFeatures );
+
+    histogramWidget_Impl * his = new histogramWidget_Impl();
+    his->setItems( strigi.getFieldNames() );
+    m_histogramWidget->setWidget( his );
+
+
     indexing = false;
     running = false;
     starting = true;
 
     ui.indexeddirs->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    ui.histogram->setOrientation(Qt::Vertical);
-    ui.histogram->setFieldName("system.last_modified_time");
-
-    ui.fieldnames->addItems(strigi.getFieldNames());
-    ui.fieldnames->setCurrentIndex(ui.fieldnames->findText("system.last_modified_time"));
 
     ui.tabs->addTab("kde", "kde");
     ui.tabs->addTab("msg", "content.mime_type:message/*");
@@ -76,7 +82,6 @@ using namespace std;
     ui.tabs->addTab("all", "");
     asyncstrigi.updateStatus();
     ui.mainview->setCurrentIndex(0);
-    ui.dockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     ui.queryfield->setFocus(Qt::ActiveWindowFocusReason);
 
     createActions();
@@ -93,12 +98,12 @@ using namespace std;
             this, SLOT(removeDirectory()));
     connect(&asyncstrigi,SIGNAL(statusUpdated(const QMap<QString, QString>& )),
             this, SLOT(updateStatus(const QMap<QString, QString>& )));
-    connect(ui.tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
-            ui.histogram, SLOT(setQuery(const QString&)));
-    connect(ui.refreshHistogram, SIGNAL(clicked()),
-            this, SLOT(refresh()));
-    connect(ui.fieldnames, SIGNAL(currentIndexChanged(const QString&)),
-            ui.histogram, SLOT(setFieldName(const QString&)));
+//X     connect(ui.tabs->getSearchView(), SIGNAL(gotHits(const QString&)),
+//X             ui.histogram, SLOT(setQuery(const QString&)));
+//X     connect(ui.refreshHistogram, SIGNAL(clicked()),
+//X             this, SLOT(refresh()));
+//X     connect(ui.fieldnames, SIGNAL(currentIndexChanged(const QString&)),
+//X             ui.histogram, SLOT(setFieldName(const QString&)));
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateStatus()));
@@ -106,13 +111,14 @@ using namespace std;
     asyncstrigi.updateStatus();
 }
 void
-SimpleSearchGui::refresh() {
+SimpleSearchGui::refresh() 
+{
     qDebug() << "refresh()";
-    ui.histogram->setQuery(ui.queryfield->text());
+//X     ui.histogram->setQuery(ui.queryfield->text());
 }
 
-void
-SimpleSearchGui::createActions() {
+void SimpleSearchGui::createActions() 
+{
     ui.actionExit->setShortcut(tr("Ctrl+Q"));
     ui.actionExit->setStatusTip(tr("Quit the program"));
     connect(ui.actionExit, SIGNAL(triggered()), 
@@ -125,6 +131,10 @@ SimpleSearchGui::createActions() {
     ui.actionList_indexed_files->setStatusTip(tr("Show files indexed by strigi"));
     connect(ui.actionList_indexed_files, SIGNAL(triggered()), 
             this, SLOT(editListIndexedFiles()));
+
+    ui.actionDisplay_Histogram->setStatusTip(tr("Show the Histrogram"));
+    connect(ui.actionDisplay_Histogram, SIGNAL(triggered()),
+            this, SLOT(toggleHistogram()));
 }
 void
 SimpleSearchGui::query(const QString& item) {
@@ -138,19 +148,19 @@ SimpleSearchGui::query(const QString& item) {
         ui.mainview->setCurrentIndex(1);
         ui.tabs->setQuery(query);
     }
-    ui.refreshHistogram->setEnabled(query.length());
+//X     ui.refreshHistogram->setEnabled(query.length());
 }
 void SimpleSearchGui::updateStatus() {
     qDebug() << "updateStatus()";
     if (ui.statusview->isVisible()) {
         asyncstrigi.updateStatus();
     }
-    if (ui.fieldnames->count() == 0) {
-        ui.fieldnames->addItems(strigi.getFieldNames());
-        ui.fieldnames->setCurrentIndex(
-                ui.fieldnames->findText("system.last_modified_time")
-                );
-    }
+//X     if (ui.fieldnames->count() == 0) {
+//X         ui.fieldnames->addItems(strigi.getFieldNames());
+//X         ui.fieldnames->setCurrentIndex(
+//X                 ui.fieldnames->findText("system.last_modified_time")
+//X                 );
+//X     }
 }
 void
 SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
@@ -238,8 +248,13 @@ SimpleSearchGui::toggleIndexing() {
         strigi.startIndexing();
     }
 }
-void
-SimpleSearchGui::addDirectory() {
+
+void SimpleSearchGui::toggleHistogram()
+{
+    m_histogramWidget->toggleViewAction();
+}
+
+void SimpleSearchGui::addDirectory() {
     // open file dialog
     QString dir = QFileDialog::getExistingDirectory (this);
     if (dir.size() <= 0) return;

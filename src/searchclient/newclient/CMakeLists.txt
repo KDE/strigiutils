@@ -12,6 +12,7 @@ set(strigiclient_SRCS
 	searchview.cpp
 	simplesearchgui.cpp
 	strigiclient.cpp
+   histogram_impl.cpp
 )
 set(strigiclient_MOC_HDRS
 	dlgfilters.h
@@ -20,9 +21,11 @@ set(strigiclient_MOC_HDRS
 	searchtabs.h
 	searchview.h
 	simplesearchgui.h
+   histogram_impl.h
 )
 set(strigiclient_UIS
    searchdialog.ui
+   histogramwidget.ui
 )
 
 qt4_wrap_cpp(strigiclient_MOC_SRCS ${strigiclient_MOC_HDRS})
