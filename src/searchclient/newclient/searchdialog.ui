@@ -14,7 +14,7 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
-    <item row="0" column="0" >
+    <item rowspan="2" row="0" column="0" >
      <widget class="QDockWidget" name="dockWidget" >
       <widget class="QWidget" name="dockWidgetContents" >
        <layout class="QGridLayout" >
@@ -86,9 +86,6 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0" colspan="2" >
-         <widget class="QLineEdit" name="queryfield" />
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="page_2" >
@@ -111,6 +108,9 @@
        </layout>
       </widget>
      </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QLineEdit" name="queryfield" />
     </item>
    </layout>
   </widget>
