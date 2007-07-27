@@ -133,9 +133,9 @@ SimpleSearchGui::query(const QString& item) {
     if (query.length() == 0) {
         ui.tabs->setQuery(QString());
         asyncstrigi.updateStatus();
-        ui.mainview->setCurrentIndex(1);
-    } else {
         ui.mainview->setCurrentIndex(0);
+    } else {
+        ui.mainview->setCurrentIndex(1);
         ui.tabs->setQuery(query);
     }
     ui.refreshHistogram->setEnabled(query.length());
