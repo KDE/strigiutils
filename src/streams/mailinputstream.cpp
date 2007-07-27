@@ -325,10 +325,10 @@ MailInputStream::value(const char* n, const string& headerline) const {
     if (vend == 0) {
         vend = hl + headerline.length();
     }
-    if (*v == '"') {
-        value = string(v+1, vend-v-2);
+    if (*v == '"' && vend-v > 2) {
+        value.assign(v+1, vend-v-2);
     } else {
-        value = string(v, vend-v);
+        value.assign(v, vend-v);
     }
     return value;
 }
