@@ -92,8 +92,8 @@ private:
         }
     }
     static void escape(std::string& value) {
-        int namp, nlt, ngt, napos;
-        namp = nlt = ngt = napos = 0;
+        int namp, nlt, ngt, napos, nexcept;
+        namp = nlt = ngt = napos = nexcept = 0;
         const char* p = value.c_str();
         const char* end = p + value.size();
         char nb = 0;
@@ -112,11 +112,7 @@ private:
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
             } else if (c < 32 && c != 9 && c != 10 && c != 12) {
-                // TODO make this into general escaping to %xx
-                std::cerr << "Error writing value '" << value << "' at "
-                    << (p-value.c_str()) << std::endl;
-                value.resize(p-value.c_str());
-                return;
+                nexcept++;
             } else if (c == '&') {
                 namp++;
             } else if (c == '<') {
@@ -129,14 +125,14 @@ private:
             p++;
         }
         // if no character has to be escaped, just return
-        if (!(namp||nlt||ngt|napos)) {
+        if (!(namp||nlt||ngt|napos|nexcept)) {
             return;
         }
 
         std::string ov(value);
         p = ov.c_str();
         end = p + ov.size();
-        int newsize = value.size()+4*namp+3*(nlt+ngt)+5*napos;
+        int newsize = value.size()+4*namp+3*(nlt+ngt)+5*napos+3*nexcept;
         value.clear();
         value.reserve(newsize);
         while (p < end) {
@@ -157,9 +153,10 @@ private:
             } else if ((0xF8 & c) == 0xF0) {
                 nb = 3;
                 value += c;
-            } else if (c <= 8) {
-                value = "";
-                return;
+            } else if (c < 32 && c != 9 && c != 10 && c != 12) {
+                char s[4];
+                snprintf(s, 4, "%%%2x", (unsigned char)c);
+                value += s;
             } else if (c == '&') {
                 value += "&amp;";
             } else if (c == '<') {
