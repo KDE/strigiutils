@@ -202,10 +202,6 @@ protected:
             << (int)ar->mTime()
             << "'>\n";
 
-        if (ar->mimeType().size()) {
-            v.assign(ar->mimeType());
-            printValue(fr.mimetypeField, v);
-        }
         if (ar->encoding().size()) {
             v.assign(ar->encoding());
             printValue(fr.encodingField, v);
