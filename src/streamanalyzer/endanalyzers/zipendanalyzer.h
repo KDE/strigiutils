@@ -23,8 +23,12 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 
+class ZipEndAnalyzerFactory;
 class ZipEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
+    const ZipEndAnalyzerFactory* const factory;
+
+    ZipEndAnalyzer(const ZipEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "ZipEndAnalyzer"; }
@@ -35,8 +39,9 @@ public:
     const char* name() const {
         return "ZipEndAnalyzer";
     }
+    const Strigi::RegisteredField* mimetypefield;
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new ZipEndAnalyzer();
+        return new ZipEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);

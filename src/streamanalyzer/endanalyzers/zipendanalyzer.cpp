@@ -22,10 +22,12 @@
 #include "zipinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
 using namespace Strigi;
 
 void
 ZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    mimetypefield = reg.mimetypeField;
 }
 
 bool
@@ -43,7 +45,6 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "error: %s\n", zip.error());
 //        exit(1);
     }
-    idx.setMimeType("application/zip");
     while (s) {
 //        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
         idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
@@ -54,6 +55,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         m_error = zip.error();
         return -1;
     } else {
+        idx.addValue(factory->mimetypefield, "application/zip");
         m_error.resize(0);
     }
     return 0;
