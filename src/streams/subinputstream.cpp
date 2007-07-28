@@ -42,8 +42,7 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
         if (max <= 0 || max > left) {
             max = (int32_t)left;
         }
-        if (min > max) min = max;
-        if (left < min) min = (int32_t)left;
+        if (min > left) min = (int32_t)left;
     }
     int32_t nread = m_input->read(start, min, max);
     if (nread < -1) {
