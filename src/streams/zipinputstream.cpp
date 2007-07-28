@@ -107,7 +107,8 @@ ZipInputStream::nextEntry() {
     if (m_status) return 0;
     if (compressionMethod == 8) {
         if (m_entryinfo.size >= 0) {
-            compressedEntryStream = new SubInputStream(m_input, entryCompressedSize);
+            compressedEntryStream
+                = new SubInputStream(m_input, entryCompressedSize);
             if (uncompressionStream) {
                 delete uncompressionStream;
             }
@@ -171,6 +172,11 @@ ZipInputStream::readHeader() {
     m_entryinfo.size = readLittleEndianUInt32(hb + 22);
     // read 4 bytes into the length of the compressed size
     entryCompressedSize = readLittleEndianUInt32(hb + 18);
+    if (entryCompressedSize < 0) {
+        m_status = Error;
+        m_error = "Corrupt zip file with negative compressed size.";
+        return;
+    }
     compressionMethod = readLittleEndianUInt16(hb + 8);
     int32_t generalBitFlags = readLittleEndianUInt16(hb+6);
     if (generalBitFlags & 8) { // is bit 3 set?
