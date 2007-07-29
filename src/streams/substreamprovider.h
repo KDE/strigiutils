@@ -37,7 +37,7 @@ struct EntryInfo {
      */
     std::string filename;
     /** The size of the substream */
-    int32_t size;
+    int64_t size;
     /** The last modification time of the substream */
     unsigned mtime;
     /** Represents the type of the substream */
