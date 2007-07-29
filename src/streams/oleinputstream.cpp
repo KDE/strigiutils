@@ -21,17 +21,46 @@
 #include "textutils.h"
 #include "bufferedstream.h"
 #include <iostream>
+#include <set>
 using namespace Strigi;
 using namespace std;
 
-class Strigi::OleEntryStream : public BufferedInputStream {
+class OleEntryStream;
+class OleInputStream::Private {
 public:
-    OleInputStream* const parent;
+    const char* data;
+    std::vector<int32_t> batIndex;
+    std::vector<int32_t> sbatIndex;
+    std::vector<int32_t> sbatbIndex;
+    std::set<int32_t> usedSBlocks;
+    std::set<int32_t> usedBlocks;
+    int32_t size;
+    int32_t maxindex;
+    int32_t maxsindex;
+    int32_t currentTableBlock;
+    int32_t currentTableIndex;
+    int32_t currentDataBlock;
+    int32_t currentStreamSize;
+    OleEntryStream* const entrystream;
+    OleInputStream* stream;
+
+    Private(OleInputStream* s, InputStream* input);
+    ~Private();
+    void readEntryInfo();
+    int32_t nextBlock(int32_t);
+    int32_t nextSmallBlock(int32_t);
+    const char* getCurrentSmallBlock();
+    InputStream* nextEntry();
+};
+
+class OleEntryStream : public BufferedInputStream {
+public:
+    OleInputStream::Private* const parent;
     int64_t done;
     int32_t blockoffset;
     int32_t blocksize;
 
-    OleEntryStream(OleInputStream* f) :parent(f), blockoffset(0) {
+    OleEntryStream(OleInputStream::Private* f) :parent(f), blockoffset(0) {
         setMinBufSize(512);
         done = 0;
         blockoffset = 0;
@@ -118,13 +147,16 @@ printEntry(const char* d) {
 }
 
 OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
-        entrystream(new OleEntryStream(this)) {
+    p(new Private(this, input)) {
+}
+OleInputStream::Private::Private(OleInputStream* s, InputStream* input)
+        :entrystream(new OleEntryStream(this)), stream(s) {
     currentTableBlock = -1;
     // read start
     size = input->read(data, 512, 512);
     if (size != 512) {
-        m_status = Error;
-        m_error = "File is too small.";
+        stream->m_status = Error;
+        stream->m_error = "File is too small.";
         return;
     }
     input->reset(0);
@@ -135,8 +167,8 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
     //int32_t xBatOffset = readLittleEndianInt32(data+0x44);
     int32_t nXBat = readLittleEndianInt32(data+0x48);
     if (!checkHeader(data, size) || nBat < 0 || nBat > 109 || nXBat < 0) {
-        m_status = Error;
-        m_error = "Invalid OLE file.";
+        stream->m_status = Error;
+        stream->m_error = "Invalid OLE file.";
         return;
     }
 //    fprintf(stderr, "%i %i %i %i\n", nBat, ptOffset, sBatOffset, nXBat);
@@ -153,16 +185,17 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
 
     int32_t toread = (max+2)*512;
     if (input->size() >= 0 && input->size() < toread) {
-        m_status = Error;
-        m_error = "File is incomplete.";
+        stream->m_status = Error;
+        stream->m_error = "File is incomplete.";
         return;
     }
     toread = (input->size() > 0) ?input->size() :10000000;
     size = input->read(data, toread, toread);
     input->reset(0);
     if (size != input->size()) {
-        m_status = Error;
-        m_error = string("File cannot be read completely: ")+input->error();
+        stream->m_status = Error;
+        stream->m_error
+            = string("File cannot be read completely: ")+input->error();
         return;
     }
     maxindex = size/512-2;
@@ -176,8 +209,8 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
             fprintf(stderr, "%4.i ", p);
             if (j%16 == 15) {fprintf(stderr, "\n");}
         }
-    }*/
-
+    }
+*/
     // collect all sbat blocks
 //    fprintf(stderr, "sbat blocks\n");
     while (sBatOffset >= 0 && sbatIndex.size() < 1000) {
@@ -196,8 +229,8 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
     // read the info for the root entry
     currentDataBlock = (1+ptOffset)*512 + 0x74;
     if (currentDataBlock + 4 > size) {
-        m_status = Error;
-        m_error = "Invalid header.";
+        stream->m_status = Error;
+        stream->m_error = "Invalid header.";
         return;
     }
     currentDataBlock = readLittleEndianInt32(data + currentDataBlock);
@@ -211,54 +244,70 @@ OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
     currentTableIndex = 0;
 }
 OleInputStream::~OleInputStream() {
+    delete p;
+}
+OleInputStream::Private::~Private() {
     delete entrystream;
 }
 int32_t
-OleInputStream::nextBlock(int32_t in) {
-//    fprintf(stderr, "nextBlock(%i)\n", in);
+OleInputStream::Private::nextBlock(int32_t in) {
+    //fprintf(stderr, "nextBlock(%i)\n", in);
     // get the number of the bat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)batIndex.size()) {
-        fprintf(stderr, "error: input block out of range %i\n", in);
+        fprintf(stderr, "error 5: input block out of range %i\n", in);
         return -4;
     }
-    int32_t newbid = batIndex[bid];
-    // mark block as read
-    batIndex[bid] = -1;
-    bid = newbid+1;
+    bid = batIndex[bid]+1;
     int32_t next = in%128*4;
     next += 512*bid;
     if (next < 0 || next > size-4) {
-        fprintf(stderr, "error: output block out of range %i\n", next);
+        fprintf(stderr, "error 3: output block out of range %i\n", next);
         return -4;
     }
-    next = readLittleEndianInt32(data+next);
-    bool error = next < -2 || next == -1 || next > maxindex;
+    bid = next;
+    next = readLittleEndianInt32(data+bid);
+    bool error = next < -2 || next == -1 || next > maxindex
+        || usedBlocks.count(next) > 0;
     if (error) {
-        fprintf(stderr, "error: output block out of range %i\n", next);
+        fprintf(stderr, "error 4: output block out of range %i\n", next);
+        next = -4;
+    } else if (next >= 0) {
+        // mark block as read
+        usedBlocks.insert(next);
     }
-    return (error) ?-4 :next;
+    return next;
 }
 int32_t
-OleInputStream::nextSmallBlock(int32_t in) {
+OleInputStream::Private::nextSmallBlock(int32_t in) {
 //    fprintf(stderr, "nextSmallBlock(%i)\n", in);
     // get the number of the sbat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)sbatIndex.size()) {
-        fprintf(stderr, "error: input block out of range %i\n", in);
+        fprintf(stderr, "error 6: input block out of range %i\n", in);
         return -4;
     }
     bid = sbatIndex[bid]+1;
     int32_t next = in%128*4;
-    next = readLittleEndianInt32(data+512*bid+next);
-    bool error = next < -2 || next == -1 || next > maxsindex;
-    if (error) {
-        fprintf(stderr, "error: output block out of range %i\n", next);
+    next += 512*bid;
+    if (next < 0 || next > size-4) {
+        fprintf(stderr, "error 1: output block out of range %i\n", next);
+        return -4;
     }
-    return (error) ?-4 :next;
+    next = readLittleEndianInt32(data+next);
+    bool error = next < -2 || next == -1 || next > maxsindex
+        || usedSBlocks.count(next) > 0;
+    if (error) {
+        fprintf(stderr, "error 2: output block out of range %i\n", next);
+        next = -4;
+    } else if (next >= 0) {
+        // mark block as read
+        usedSBlocks.insert(next);
+    }
+    return next;
 }
 const char*
-OleInputStream::getCurrentSmallBlock() {
+OleInputStream::Private::getCurrentSmallBlock() {
     const char* d = data;
     // each block of 512 has 8 blocks of 64
     int32_t i = currentDataBlock/8;
@@ -269,7 +318,7 @@ OleInputStream::getCurrentSmallBlock() {
     return (i > size-64) ?0 :d+i;
 }
 void
-OleInputStream::readEntryInfo() {
+OleInputStream::Private::readEntryInfo() {
     const char* d = data + (1+currentTableBlock)*512 + 128*currentTableIndex;
     char entryType = d[0x42];
     if (entryType != 2) {
@@ -282,8 +331,13 @@ OleInputStream::readEntryInfo() {
     if (namesize > 0x40) namesize = 0x40;
     namesize = namesize/2 - 1;
     name.resize(namesize);
+    bool badname = false;
     for (int i=0; i < namesize; ++i) {
+        badname = badname || d[2*i+1];
         name[i] = d[2*i];
+    }
+    if (badname) {
+        name.assign("");
     }
     // only allow valid Utf8 names or names that start with the value 5
     // TODO: handle names that start with 0x1
@@ -294,16 +348,20 @@ OleInputStream::readEntryInfo() {
         return;
     }*/
     
-    m_entryinfo.filename.assign(name);
+    stream->m_entryinfo.filename.assign(name);
     currentDataBlock = readLittleEndianInt32(d+0x74);
     currentStreamSize = readLittleEndianInt32(d+0x78);
-    m_entryinfo.size = currentStreamSize;
+    stream->m_entryinfo.size = currentStreamSize;
     if (currentDataBlock > maxindex || currentStreamSize <= 0) {
         currentDataBlock = -1;
     }
 }
 InputStream*
 OleInputStream::nextEntry() {
+    return p->nextEntry();
+}
+InputStream*
+OleInputStream::Private::nextEntry() {
     if (currentTableBlock < 0) return 0;
 //    fprintf(stderr, "nextEntry()\n");
     do {
