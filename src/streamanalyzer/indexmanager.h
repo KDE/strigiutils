@@ -23,7 +23,6 @@
 namespace Strigi {
 class IndexReader;
 class IndexWriter;
-class QueryBitsetCache;
 
 /**
  * Abstract interface that manages access to the IndexReader and IndexWriter
@@ -57,7 +56,6 @@ public:
      *         managed by this instance of IndexManager
      **/
     virtual IndexWriter* indexWriter() = 0;
-//    virtual QueryBitsetCache* bitSets() = 0;
 };
 }
 
