@@ -26,9 +26,95 @@
 #include "textutils.h"
 #include <sstream>
 #include <cstring>
+#include <cmath>
 using namespace Strigi;
 using namespace std;
 
+#ifdef ICONV_SECOND_ARGUMENT_IS_CONST
+     #define ICONV_CONST const
+#else
+     #define ICONV_CONST
+#endif
+
+WordText::WordText() :windows1252(iconv_open("UTF-8", "WINDOWS-1252")),
+        utf16(iconv_open("UTF-8", "UTF-16")), out(0), len(0), capacity(0) {
+}
+WordText::~WordText() {
+    if (out) free(out);
+    iconv_close(windows1252);
+    iconv_close(utf16);
+}
+void
+WordText::addText(const char* d, size_t l) {
+    // check if the block contains a '\0' character
+    const char* zeroPtr = (const char*)memchr(d, 0, l);
+    // if it does, check if the block is all 0's from there
+    if (zeroPtr) {
+        while (++zeroPtr < d+l && *zeroPtr == '\0');
+    }
+    if (zeroPtr && zeroPtr < d+l) {
+        addText(d, l, utf16);
+    } else {
+        addText(d, l, windows1252);
+    }
+}
+void
+WordText::addText(const char* d, size_t l, iconv_t conv) {
+    // try to add text from windows codepage 1252
+    // we need free space 3x the length of the incoming string
+    if (capacity-len < 3*l) {
+        capacity = len + 3*l;
+        out = (char*)realloc(out, capacity);
+    }
+
+    ICONV_CONST char* inbuf = (char*)d;
+    size_t inbytesleft = l;
+    char* outbuf = out + len;
+    size_t outbytesleft = capacity - len;
+    size_t r = iconv(conv, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+     
+    //fprintf(stderr, "%x %i %i added %i bytes %p\n", *d, r, inbytesleft,
+    //    capacity-outbytesleft-len, conv);
+    len += capacity - len - outbytesleft;
+    out[len] = '\0';
+}
+void
+WordText::cleanText() {
+    char* c = out;
+    char* end = out+len;
+    while (c < end && *c) {
+        switch (*c) {
+        case 1: // ?
+        case 7: // cell/row end
+        case 8: // ?
+        case 11: // vertical tab?
+        case 12: // Page break / Section mark
+        case 13: // Paragraph end
+        case 14: // Column end
+        case 19: // Field start
+        case 20: // ?
+            *c = '\n';
+	    break;
+        case 21: // Field end
+            *c = ' '; // removing it would be better?
+	    break;
+        case 30: // Non-breakn hyphen
+            *c = '-';
+            break;
+        case 31: // Non-required hyphen
+            *c = '-';
+	    break;
+        case 160: // Non-breaking space
+            *c = ' ';
+            break;
+        case 194: // beats me, might be artifact from decoding windows 1252
+            *c = ' ';
+        default:;
+        }
+        c++;
+    }
+    len = c - out;
+}
 void
 OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     static const char summaryKey[] = {0xE0,0x85,0x9F,0xF2,0xF9,0x4F,0x68,0x10,
@@ -73,9 +159,9 @@ OleEndAnalyzerFactory::getFieldMap(const string& key) const {
 }
 // parse with info from http://www.wotsit.org/getfile.asp?file=wword8&sc=230027800
 bool
-tryFIB(AnalysisResult& ar, InputStream* in) {
+OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
     const char* d;
-    int32_t size = 34;
+    int32_t size = 426;
     int32_t nread = in->read(d, size, size);
     in->reset(0);
     if (nread != size
@@ -86,67 +172,36 @@ tryFIB(AnalysisResult& ar, InputStream* in) {
     if (complex) return false;
     int32_t fcMin = readLittleEndianInt32(d+24);
     int32_t fcMac = readLittleEndianInt32(d+28);
-    // for some reason we need to add 512 here. No clue why.
-    fcMin += 512;
-    fcMac += 512;
-    uint16_t csw = readLittleEndianUInt16(d+32);
-    size += 2*csw + 2;
+
+    // for some reason we sometimes need to add 512 here. No clue why.
+    // if the first 512 bytes are 0 we do this
+    size = fcMin+512;
     nread = in->read(d, size, size);
     in->reset(0);
-    if (nread != size) return false;
-    csw = readLittleEndianUInt16(d+size-2);
-    size += 4*csw + 2;
-    nread = in->read(d, size, size);
-    in->reset(0);
-    if (nread != size) return false;
-    csw = readLittleEndianUInt16(d+size-2);
-    size += 8*csw;
-    
-    nread = in->read(d, fcMac, fcMac);
-    in->reset(0);
-    if (nread != fcMac) {
+    if (nread != size) {
         return false;
     }
-    const char *end = d+fcMac;
-    d += fcMin;
-    const char *p = d;
-    string text;
-    while (p < end) {
-        switch (*p) {
-        case 7: // cell/row end
-        case 11: // ?
-        case 12: // Page break / Section mark
-        case 13: // Paragraph end
-        case 14: // Column end
-        case 19: // Field start
-        case 20: // ?
-            if (p > d) {
-                text.append(d, p-d);
-	        ar.addText(text.c_str(), text.size());
-	    }
-            text.assign("");
-            d = p+1;
-	    break;
-        case 21: // Field end
-            text.assign("");
-            d = p+1;
-	    break;
-        case 30: // Non-breaken hyphen
-            if (p > d) text.append(d, p-d);
-            text.append("-");
-            d = p+1;
-        case 31: // Non-required hyphen
-            if (p > d) text.append(d, p-d);
-            d = p+1;
-	    break;
-        case 160: // Non-breaking space
-            if (p > d) text.append(d, p-d);
-            text.append(" ");
-            d = p+1;
-        default:;
-        }
-	++p;
+    int i;
+    for (i=0; i<512 && d[i+fcMin] == 0; i++);
+    if (i == 512) {
+        fcMin += 512;
+        fcMac += 512;
     }
+
+    size = fcMac;
+    nread = in->read(d, size, size);
+    in->reset(0);
+    if (nread != size) {
+        return false;
+    }
+
+    for (int32_t dp = fcMin; dp < fcMac; dp += size) {
+        size = fcMac-dp;
+        if (size > 512) size = 512;
+        wordtext.addText(d+dp, size);
+    }
+    wordtext.cleanText();
+    ar.addText(wordtext.text(), wordtext.length());
     return true;
 }
 bool
@@ -220,10 +275,6 @@ OleEndAnalyzer::tryPropertyStream(AnalysisResult& idx,
     return true;
 }
 void
-OleEndAnalyzer::handleProperty(const RegisteredField* field, const char* data) {
-    // unused function
-}
-void
 handleProperty(AnalysisResult* result, const RegisteredField* field,
         const char* data, const char* end) {
     if (end-data < 8) {
@@ -267,6 +318,25 @@ OleEndAnalyzer::handlePropertyStream(const char* key, const char* data,
         p += 8;
     }
 }
+/**
+ * Store the table stream for later reference when parsing the text stream.
+ **/
+string
+OleEndAnalyzer::getStreamString(InputStream* in) const {
+    const char* d;
+    int32_t n = 512;
+    int32_t m = in->read(d, n+1, 0);
+    in->reset(0);
+    while (m > n) {
+        n = m;
+        m = in->read(d, n+1, 0);
+        in->reset(0);
+    }
+    if (m > 0) {
+        return string(d, m);
+    }
+    return string();
+}
 char
 OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
     if(!in)
@@ -293,6 +363,8 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
                 tryPropertyStream(ar, s);
             } else if (name == "Pictures") {
                 tryPictures(ar, s);
+            //} else if (name == "1Table" || name == "0Table") {
+            //    word1Table.assign(getStreamString(s));
             } else {
                 ar.indexChild(name, ole.entryInfo().mtime, s);
             }

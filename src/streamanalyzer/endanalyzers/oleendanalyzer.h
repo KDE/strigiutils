@@ -23,15 +23,43 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 #include <map>
+#include <set>
+#include <iconv.h>
+
+class WordText {
+private:
+    std::map<std::string, std::set<std::string> > linkmap;
+    iconv_t const windows1252;
+    iconv_t const utf16;
+    char* out;
+    size_t len;
+    size_t capacity;
+
+    void addText(const char* d, size_t len, iconv_t conv);
+public:
+    WordText();
+    ~WordText();
+    void reset() { len = 0; linkmap.clear(); }
+    void addText(const char* d, size_t len);
+    void cleanText();
+    const char* text() const { return out; }
+    size_t length() const { return len; }
+    const std::map<std::string, std::set<std::string> >& links() const {
+        return linkmap;
+    }
+};
 
 class OleEndAnalyzerFactory;
 class OleEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
     const OleEndAnalyzerFactory* const factory;
     Strigi::AnalysisResult* result;
+    WordText wordtext;
 
-    void handleProperty(const Strigi::RegisteredField* field, const char* data);
-    void handlePropertyStream(const char* key, const char* data, const char* end);
+    void handlePropertyStream(const char* key, const char* data,
+        const char* end);
+    std::string getStreamString(Strigi::InputStream*) const;
+    bool tryFIB(Strigi::AnalysisResult& ar, Strigi::InputStream* in);
 public:
     OleEndAnalyzer(const OleEndAnalyzerFactory* const f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
