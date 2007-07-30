@@ -106,7 +106,7 @@ ArInputStream::readHeader() {
     m_entryinfo.mtime = atoi(bc+16);
     if (len == 0) {
         if (b[1] == '/') {
-            fprintf(stderr, "SIZE: %lli\n", m_entryinfo.size);
+            // fprintf(stderr, "SIZE: %lli\n", m_entryinfo.size);
             nread = m_input->read(b, m_entryinfo.size, m_entryinfo.size);
             if (nread != m_entryinfo.size) {
                 m_error = "premature end of stream";
