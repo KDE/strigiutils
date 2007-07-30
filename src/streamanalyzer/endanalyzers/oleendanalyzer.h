@@ -58,6 +58,9 @@ private:
 
     void handlePropertyStream(const char* key, const char* data,
         const char* end);
+    void handleProperty(Strigi::AnalysisResult* result,
+        const Strigi::RegisteredField* field,
+        const char* data, const char* end);
     std::string getStreamString(Strigi::InputStream*) const;
     bool tryFIB(Strigi::AnalysisResult& ar, Strigi::InputStream* in);
 public:

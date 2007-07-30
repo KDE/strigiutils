@@ -85,6 +85,7 @@ WordText::cleanText() {
     while (c < end && *c) {
         switch (*c) {
         case 1: // ?
+        case 2: // ?
         case 7: // cell/row end
         case 8: // ?
         case 11: // vertical tab?
@@ -108,6 +109,11 @@ WordText::cleanText() {
             *c = ' ';
             break;
         case 194: // beats me, might be artifact from decoding windows 1252
+            *c = ' ';
+        case 0xa7: // ?
+        case 3: // ? but should be removed, not replaced
+        case 4: // ? but should be removed, not replaced
+        case 5: // ? but should be removed, not replaced
             *c = ' ';
         default:;
         }
@@ -195,6 +201,7 @@ OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
         return false;
     }
 
+    wordtext.reset();
     for (int32_t dp = fcMin; dp < fcMac; dp += size) {
         size = fcMac-dp;
         if (size > 512) size = 512;
@@ -202,6 +209,7 @@ OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
     }
     wordtext.cleanText();
     ar.addText(wordtext.text(), wordtext.length());
+    wordtext.reset();
     return true;
 }
 bool
@@ -275,8 +283,8 @@ OleEndAnalyzer::tryPropertyStream(AnalysisResult& idx,
     return true;
 }
 void
-handleProperty(AnalysisResult* result, const RegisteredField* field,
-        const char* data, const char* end) {
+OleEndAnalyzer::handleProperty(AnalysisResult* result,
+        const RegisteredField* field, const char* data, const char* end) {
     if (end-data < 8) {
         return;
     }
@@ -285,7 +293,10 @@ handleProperty(AnalysisResult* result, const RegisteredField* field,
     if (datatype == 30) {
         int32_t len = readLittleEndianInt32(data+4);
         if (len > 0 && len-8 <= end-data) {
-            result->addValue(field, data+8, len-1);
+            wordtext.reset();
+            wordtext.addText(data+8, len-1);
+            wordtext.cleanText();
+            result->addValue(field, wordtext.text(), wordtext.length());
         }
     }
 }
@@ -312,7 +323,7 @@ OleEndAnalyzer::handlePropertyStream(const char* key, const char* data,
         if (field != table->end()) {
             int32_t offset = readLittleEndianInt32(p+4);
             if (offset > 0) {
-                ::handleProperty(result, field->second, data+offset, end);
+                handleProperty(result, field->second, data+offset, end);
             }
         }
         p += 8;
