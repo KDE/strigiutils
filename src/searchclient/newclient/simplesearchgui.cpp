@@ -250,15 +250,16 @@ SimpleSearchGui::toggleIndexing() {
 
 void SimpleSearchGui::toggleHistogram()
 {
-    qDebug() << "SimpleSearchGui::toggleHistogram()";
+    //Question: Why is the hide() and show() needed? I _think_ 
+    //is shouldn't be needed...
     if (m_histogramWidget->toggleViewAction()->isChecked()) {
-        qDebug() << "Checked!!!";
         m_histogramWidget->toggleViewAction()->setChecked( false );
         m_histogramWidget->hide();
+        ui.actionDisplay_Histogram->setText(tr("Show Histrogram"));
     } else{
-        qDebug() << "NOT   NOT    NOT   Checked!!!";
         m_histogramWidget->toggleViewAction()->setChecked( true );
         m_histogramWidget->show();
+        ui.actionDisplay_Histogram->setText(tr("Hide Histrogram"));
     }
 }
 

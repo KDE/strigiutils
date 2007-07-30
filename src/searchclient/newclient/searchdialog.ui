@@ -155,7 +155,7 @@
   </action>
   <action name="actionDisplay_Histogram" >
    <property name="text" >
-    <string>Display &amp;Histogram</string>
+    <string>Hide &amp;Histogram</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+H</string>
