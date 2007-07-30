@@ -45,7 +45,6 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QProcess>
 #include <QtCore/QTimer>
-#include <QDebug>
 #include <string>
 #include <map>
 #include <vector>
@@ -56,10 +55,12 @@ using namespace std;
 {
     qDebug() << "QMainWindow ()";
     ui.setupUi( this );
+        
 
     m_histogramWidget = new QDockWidget( this );
     m_histogramWidget->setObjectName( QLatin1String( "searchclient-histogram" ) );
     m_histogramWidget->setFeatures( QDockWidget::AllDockWidgetFeatures );
+    m_histogramWidget->toggleViewAction()->setChecked( false );
 
     histogramWidget_Impl * his = new histogramWidget_Impl();
     his->setItems( strigi.getFieldNames() );
@@ -113,7 +114,7 @@ using namespace std;
 void
 SimpleSearchGui::refresh() 
 {
-    qDebug() << "SimpleSearchGui::refresh()";
+    //qDebug() << "SimpleSearchGui::refresh()";
     emit(ui.queryfield->text());
 }
 
@@ -148,28 +149,21 @@ void SimpleSearchGui::query(const QString& item) {
         ui.mainview->setCurrentIndex(1);
         ui.tabs->setQuery(query);
     }
-    //FIXME this isn't this easy anymore because I cannot 
-    //access ui.refreshHistogram from here (by (good) design).
-//X     ui.refreshHistogram->setEnabled(query.length());
+    
+    emit(ui.queryfield->text());
 }
 
 void SimpleSearchGui::updateStatus() {
-    qDebug() << "updateStatus()";
+    //qDebug() << "updateStatus()";
     if (ui.statusview->isVisible()) {
         asyncstrigi.updateStatus();
     }
-    //FIXME this isn't this easy anymore because I cannot 
-    //access ui.fieldnames from here (by (good) design).
-//X     if (ui.fieldnames->count() == 0) {
-//X         ui.fieldnames->addItems(strigi.getFieldNames());
-//X         ui.fieldnames->setCurrentIndex(
-//X                 ui.fieldnames->findText("system.last_modified_time")
-//X                 );
-//X     }
+    
+    emit(ui.queryfield->text());
 }
 
 void SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
-    qDebug() << "updateStatus( const QMap<QString, QString>& s  )";
+    //qDebug() << "updateStatus( const QMap<QString, QString>& s  )";
     //    static bool first = true;
     static bool attemptedstart = false;
     //    if (!first && !ui.statusview->isVisible()) return;
@@ -215,7 +209,7 @@ void SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
 }
 void
 SimpleSearchGui::startDaemon() {
-    qDebug() << "startDaemon() ";
+    //qDebug() << "startDaemon() ";
 
     ui.toggledaemon->setEnabled(false);
     starting = true;
@@ -257,7 +251,15 @@ SimpleSearchGui::toggleIndexing() {
 void SimpleSearchGui::toggleHistogram()
 {
     qDebug() << "SimpleSearchGui::toggleHistogram()";
-    m_histogramWidget->toggleViewAction()->toggle(); //I really wonder why this is not working
+    if (m_histogramWidget->toggleViewAction()->isChecked()) {
+        qDebug() << "Checked!!!";
+        m_histogramWidget->toggleViewAction()->setChecked( false );
+        m_histogramWidget->hide();
+    } else{
+        qDebug() << "NOT   NOT    NOT   Checked!!!";
+        m_histogramWidget->toggleViewAction()->setChecked( true );
+        m_histogramWidget->show();
+    }
 }
 
 void SimpleSearchGui::addDirectory() {

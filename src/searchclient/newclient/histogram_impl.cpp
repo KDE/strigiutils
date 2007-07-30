@@ -48,6 +48,14 @@ void histogramWidget_Impl::refresh()
 {
     qDebug() << "histogramWidget_Impl::refresh()";
 
+    //I wonder why Jos wanted to updated the fieldnames...
+    //FIXME ???
+//X     if (ui.fieldnames->count() == 0) 
+//X     {
+//X         ui.fieldnames->addItems(strigi.getFieldNames());
+//X         ui.fieldnames->setCurrentIndex( ui.fieldnames->findText("system.last_modified_time") );
+//X     }
+
     ui.histogram->setQuery(m_query);
 }
 
