@@ -46,7 +46,7 @@ Strigi::checkUtf8(const char* p, int32_t length) {
                     return false;
                 }
             }
-        } else if ((0xE0 & c) == 0xC0) {
+        } else if (c >= 0xC2 && c <= 0xDF) {
             nb = 1;
             val = c & 0x1F;
         } else if ((0xF0 & c) == 0xE0) {
@@ -101,7 +101,7 @@ Strigi::checkUtf8(const char* p, int32_t length, char& nb) {
                     return p;
                 }
             }
-        } else if ((0xE0 & c) == 0xC0) {
+        } else if (c >= 0xC2 && c <= 0xDF) {
             cs = p;
             val = c & 0x1F;
             nb = 1;
@@ -145,7 +145,7 @@ Strigi::convertNewLines(char* p) {
                 return;
             }
             nb--;
-        } else if ((0xE0 & c) == 0xC0) {
+        } else if (c >= 0xC2 && c <= 0xDF) {
             nb = 1;
         } else if ((0xF0 & c) == 0xE0) {
             nb = 2;
