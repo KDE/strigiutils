@@ -14,6 +14,13 @@ add_executable(xmlindexer
 
 target_link_libraries(xmlindexer streamanalyzer)
 
+add_executable(cgixmlindexer
+        tagmapping.cpp
+	xmlindexwriter.cpp
+	cgixmlindexer.cpp)
+
+target_link_libraries(cgixmlindexer streamanalyzer)
+
 install(TARGETS xmlindexer RUNTIME DESTINATION bin)
 
 add_executable(peranalyzerxml
