@@ -1,5 +1,6 @@
-#include "fileinputstream.h"
+#include "stringstream.h"
 #include "stringterminatedsubstream.h"
+#include "subinputstream.h"
 #include "xmlindexwriter.h"
 #include <iostream>
 using namespace Strigi;
@@ -24,9 +25,9 @@ readHeader(InputStream* f) {
  **/
 bool
 parseFile(StreamAnalyzer& sa, XmlIndexManager& manager,
-        FileInputStream& f, const string& delim) {
+        InputStream* f, const string& delim) {
 
-    string header = readHeader(&f);
+    string header = readHeader(f);
     string filename;
     const char* start = header.c_str();
     start = strstr(start, "filename=");
@@ -46,7 +47,7 @@ parseFile(StreamAnalyzer& sa, XmlIndexManager& manager,
     }
 
     // analyzer the stream
-    StringTerminatedSubStream stream(&f, delim);
+    StringTerminatedSubStream stream(f, delim);
     if (filename.size()) {
         AnalysisResult result(filename, time(0), *manager.indexWriter(), sa);
         sa.analyze(result, &stream);
@@ -59,7 +60,7 @@ parseFile(StreamAnalyzer& sa, XmlIndexManager& manager,
     }
 
     // check if this is the last file
-    nread = f.read(d, 2, 2);
+    nread = f->read(d, 2, 2);
     return nread == 2 && *d == '\r' && d[1] == '\n';
 }
 
@@ -70,14 +71,30 @@ main() {
         "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata") << ">\n";
 
+    long len;
+    const char* lenstr = getenv("CONTENT_LENGTH");
+    if (lenstr == NULL || sscanf(lenstr,"%ld", &len) != 1 || len < 0) {
+        cout << " <error>input too small</error>\n</"
+            << mapping.map("metadata") << ">\n" << flush;
+        return 0;
+    }
+    cerr << "len " << len << endl;
+    char* e = new char[len];
+    if (e == 0 || fread(e, 1, len, stdin) != len) {
+        cout << " <error>cannot allocate memory</error>\n</"
+            << mapping.map("metadata") << ">\n" << flush;
+        return 0;
+    }
+
     // read from stdin
-    FileInputStream f(stdin, "");
+    StringInputStream stream(e, len);
 
     // read the first line
     const char* d;
     const int32_t maxlength = 1024;
-    int32_t nread = f.read(d, maxlength, maxlength);
-    f.reset(0);
+    int32_t nread = stream.read(d, maxlength, maxlength);
+    stream.reset(0);
+
     if (nread < 1) {
         cout << " <error>input too small</error>\n</"
             << mapping.map("metadata") << ">\n" << flush;
@@ -97,14 +114,14 @@ main() {
     delim.append(d, p-d);
 
     // skip the delimiter + '\r\n'
-    f.reset(delim.length() + 2);
+    stream.reset(delim.length() + 2);
 
     // parse all files
     XmlIndexManager manager(cout, mapping);
     AnalyzerConfiguration ac;
     StreamAnalyzer sa(ac);
     sa.setIndexWriter(*manager.indexWriter());
-    while (parseFile(sa, manager, f, delim));
+    while (parseFile(sa, manager, &stream, delim));
     cout << "</" << mapping.map("metadata") << ">\n" << flush;
 
     return 0;
