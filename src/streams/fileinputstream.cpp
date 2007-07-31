@@ -28,16 +28,25 @@ using namespace std;
 
 const int32_t FileInputStream::defaultBufferSize = 1048576;
 
-FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
+FileInputStream::FileInputStream(const char* filepath, int32_t buffersize) {
     if (filepath == 0) {
         file = 0;
         m_error = "No filename was provided.";
         m_status = Error;
         return;
     }
+    FILE* f = fopen(filepath, "rb");
+    open(f, filepath, buffersize);
+}
+FileInputStream::FileInputStream(FILE* file, const char* filepath,
+        int32_t buffersize) {
+    open(file, filepath, buffersize);
+}
+void
+FileInputStream::open(FILE* file, const char* filepath, int32_t buffersize) {
     // try to open the file for reading
-    file = fopen(filepath, "rb");
-    this->filepath = filepath;
+    this->file = file;
+    this->filepath.assign(filepath);
     if (file == 0) {
         // handle error
         m_error = "Could not read file '";
@@ -48,23 +57,25 @@ FileInputStream::FileInputStream(const char *filepath, int32_t buffersize) {
         return;
     }
     // determine file size. if the stream is not seekable, the size will be -1
-    fseek(file, 0, SEEK_END);
-    m_size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    // if the file has size 0, make sure that it's really empty
-    // this is useful for filesystems like /proc that report files as size 0
-    // for files that do contain content
-    if (m_size == 0) {
-        char dummy[1];
-        size_t n = fread(dummy, 1, 1, file);
-        if (n == 1) {
-            m_size = -1;
-            fseek(file, 0, SEEK_SET);
-        } else {
-            fclose(file);
-            file = 0;
-            return;
+    if (fseek(file, 0, SEEK_END) == -1) {
+        m_size = -1;
+    } else {
+        m_size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        // if the file has size 0, make sure that it's really empty
+        // this is useful for filesystems like /proc that report files as size 0
+        // for files that do contain content
+        if (m_size == 0) {
+            char dummy[1];
+            size_t n = fread(dummy, 1, 1, file);
+            if (n == 1) {
+                m_size = -1;
+                fseek(file, 0, SEEK_SET);
+            } else {
+                fclose(file);
+                file = 0;
+                return;
+            }
         }
     }
 
@@ -97,6 +108,6 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
         fclose(file);
         file = 0;
     }
-    // cerr << "read " << nwritten << " bytes of\t" << filepath << endl;
+    //cerr << "read " << nwritten << " bytes of\t" << filepath << endl;
     return nwritten;
 }

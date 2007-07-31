@@ -25,6 +25,7 @@
 #include "xmlindexwriter.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
+#include "fileinputstream.h"
 #include <iostream>
 #include <cstring>
 #ifdef HAVE_UNISTD_H
@@ -36,13 +37,16 @@
 #include <stdlib.h>
 
 using namespace std;
+using namespace Strigi;
 
 int
 usage(int /*argc*/, char** argv) {
-    fprintf(stderr, "Usage: %s [--mappingfile <mappingfile>] "
-        "[--lastfiletoskip FILE] "
-        "[dirs-or-files-to-index]\n", argv[0]);
-    fprintf(stderr, " -j [threads]  Specify the number of threads to use.\n");
+    fprintf(stderr, "Usage: %s\n    [--mappingfile <mappingfile>]\n"
+        "    [--lastfiletoskip FILE]\n"
+        "    [--stdinmtime mtime]\n    [--stdinfilename filename]\n"
+        "    [dirs-or-files-to-index]\n"
+        "    [-j nthreads]\n",
+        argv[0]);
     return -1;
 }
 bool
@@ -53,6 +57,15 @@ containsHelp(int argc, char **argv) {
     }
     return false;
 }
+void
+analyzeFromStdin(XmlIndexManager& manager, AnalyzerConfiguration& ac,
+        const string& filename, time_t mtime) {
+    StreamAnalyzer sa(ac);
+    sa.setIndexWriter(*manager.indexWriter());
+    FileInputStream in(stdin, filename.c_str());
+    AnalysisResult result(filename, mtime, *manager.indexWriter(), sa);
+    sa.analyze(result, &in);
+}
 
 int
 main(int argc, char **argv) {
@@ -60,6 +73,8 @@ main(int argc, char **argv) {
     int nthreads = 2;
     const char* mappingfile = 0;
     string lastFileToSkip;
+    time_t stdinMTime = time(0);
+    string stdinFilename = "-";
     int i = 0;
     while (++i < argc) {
         const char* arg = argv[i];
@@ -85,6 +100,20 @@ main(int argc, char **argv) {
                 return usage(argc, argv);
             }
             lastFileToSkip = argv[i];
+        } else if (!strcmp("--stdinmtime", arg)) {
+            if (++i == argc) {
+                return usage(argc, argv);
+            }
+            char* end;
+            stdinMTime = strtol(argv[i], &end, 10);
+            if (end == argv[i] || stdinMTime < 1) {
+                return usage(argc, argv);
+            }
+        } else if (!strcmp("--stdinfilename", arg)) {
+            if (++i == argc) {
+                return usage(argc, argv);
+            }
+            stdinFilename = argv[i];
         } else {
             dirs.push_back(argv[i]);
         }
@@ -99,7 +128,7 @@ main(int argc, char **argv) {
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
     filters.push_back(make_pair<bool,string>(false,".*"));
-    Strigi::AnalyzerConfiguration ic;
+    AnalyzerConfiguration ic;
     ic.setFilters(filters);
 
     cerr << "nthreads: " << nthreads << endl;
@@ -114,9 +143,13 @@ main(int argc, char **argv) {
     cout << ">\n";
 
     XmlIndexManager manager(cout, mapping);
-    Strigi::DirAnalyzer analyzer(manager, ic);
+    DirAnalyzer analyzer(manager, ic);
     for (unsigned i = 0; i < dirs.size(); ++i) {
-        analyzer.analyzeDir(dirs[i], nthreads, 0, lastFileToSkip);
+        if (dirs[i] == "-") {
+            analyzeFromStdin(manager, ic, stdinFilename, stdinMTime);
+        } else {
+            analyzer.analyzeDir(dirs[i], nthreads, 0, lastFileToSkip);
+        }
     }
     cout << "</" << mapping.map("metadata") << ">\n";
 

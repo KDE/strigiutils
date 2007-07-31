@@ -32,9 +32,13 @@ class STREAMS_EXPORT FileInputStream : public BufferedInputStream {
 private:
     FILE *file;
     std::string filepath;
+
     int32_t fillBuffer(char* start, int32_t space);
     /** The default buffer size, only used as a default argument to the constructor */
     static const int32_t defaultBufferSize;
+protected:
+    void open(FILE* file, const char* filepath,
+        int32_t buffersize=defaultBufferSize);
 
 public:
     /**
@@ -43,7 +47,9 @@ public:
      * @param filepath the name of the file to open
      * @param buffersize the size of the buffer to use
      */
-    explicit FileInputStream(const char *filepath,
+    explicit FileInputStream(const char* filepath,
+        int32_t buffersize=defaultBufferSize);
+    FileInputStream(FILE* file, const char* filepath,
         int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
 };
