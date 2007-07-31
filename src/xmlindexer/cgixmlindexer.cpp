@@ -25,6 +25,7 @@ readHeader(InputStream* f) {
 bool
 parseFile(StreamAnalyzer& sa, XmlIndexManager& manager,
         FileInputStream& f, const string& delim) {
+
     string header = readHeader(&f);
     string filename;
     const char* start = header.c_str();
@@ -92,7 +93,8 @@ main() {
             << mapping.map("metadata") << ">\n" << flush;
         return 0;
     }
-    string delim(d, p-d);
+    string delim("\r\n");
+    delim.append(d, p-d);
 
     // skip the delimiter + '\r\n'
     f.reset(delim.length() + 2);
