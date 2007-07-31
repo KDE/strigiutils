@@ -79,7 +79,7 @@ main() {
     f.reset(0);
     if (nread < 1) {
         cout << " <error>input too small</error>\n</"
-            << mapping.map("metadata") << "\n" << flush;
+            << mapping.map("metadata") << ">\n" << flush;
         return 0;
     }
 
