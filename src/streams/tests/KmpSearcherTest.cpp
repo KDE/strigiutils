@@ -19,6 +19,7 @@
  */
 #include "../kmpsearcher.h"
 #include "inputstreamtests.h"
+#include <cstring>
 
 using namespace Strigi;
 

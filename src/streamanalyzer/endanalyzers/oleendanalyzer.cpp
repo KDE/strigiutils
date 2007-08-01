@@ -26,6 +26,7 @@
 #include "textutils.h"
 #include <sstream>
 #include <cstring>
+#include <cstdlib>
 #include <cmath>
 using namespace Strigi;
 using namespace std;
@@ -50,7 +51,7 @@ WordText::addText(const char* d, size_t l) {
     const char* zeroPtr = (const char*)memchr(d, 0, l);
     // if it does, check if the block is all 0's from there
     if (zeroPtr) {
-        while (++zeroPtr < d+l && *zeroPtr == '\0');
+        while (++zeroPtr < d+l && *zeroPtr == '\0') ;
     }
     if (zeroPtr && zeroPtr < d+l) {
         addText(d, l, utf16);
@@ -188,7 +189,7 @@ OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
         return false;
     }
     int i;
-    for (i=0; i<512 && d[i+fcMin] == 0; i++);
+    for (i=0; i<512 && d[i+fcMin] == 0; i++) ;
     if (i == 512) {
         fcMin += 512;
         fcMac += 512;
