@@ -43,10 +43,10 @@ FileInputStream::FileInputStream(FILE* file, const char* filepath,
     open(file, filepath, buffersize);
 }
 void
-FileInputStream::open(FILE* file, const char* filepath, int32_t buffersize) {
+FileInputStream::open(FILE* f, const char* path, int32_t buffersize) {
     // try to open the file for reading
-    this->file = file;
-    this->filepath.assign(filepath);
+    file = f;
+    filepath.assign(path);
     if (file == 0) {
         // handle error
         m_error = "Could not read file '";
