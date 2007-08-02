@@ -1,12 +1,14 @@
 include_directories(
     ../combinedindexer
     ../streamanalyzer
+    ../streamanalyzer/xesam
 	${strigi_BINARY_DIR}/src/streams/compat
     ${strigi_SOURCE_DIR}/src/streams/compat
+    ${LIBXML2_INCLUDE_DIR}
 )
 
 add_executable(strigicmd strigicmd.cpp)
 
-target_link_libraries(strigicmd streamanalyzer combinedindex)
+target_link_libraries(strigicmd streamanalyzer combinedindex strigi_xesam)
 
 install(TARGETS strigicmd RUNTIME DESTINATION bin)

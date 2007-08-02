@@ -1,6 +1,7 @@
 /* This file is part of Strigi Desktop Search
  *
  * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +27,8 @@
 #include "strigiconfig.h"
 #include "query.h"
 #include "queryparser.h"
+#include "XesamQLParser.h"
+#include "StrigiQueryBuilder.h"
 #include <algorithm>
 #include <string>
 #include <set>
@@ -127,6 +130,8 @@ usage(int argc, char** argv) {
     pe("  %s listFields -t backend -d indexdir\n");
     //TODO: find a better definition for query?
     pe("  %s query -t backend -d indexdir queries\n");
+    pe("  %s xesamquery -t backend -d indexdir [-u xesam_user_language_file] ");
+    pe("[-q xesam_query_language_file]\n");
     pe("  %s update [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n");
     return 1; 
 }
@@ -463,6 +468,102 @@ query(int argc, char** argv) {
     return 0;
 }
 int
+xesamquery(int argc, char** argv) {
+    // parse arguments
+    parseArguments(argc, argv);
+    string backend = options['t'];
+    string indexdir = options['d'];
+    string ulfile = options['u'];
+    string qlfile = options['q'];
+
+    // check arguments: indexdir
+    if (indexdir.length() == 0) {
+        pe("Provide the directory with the index.\n");
+        return usage(argc, argv);
+    }
+
+    if ((ulfile.length() == 0) && (qlfile.length() == 0)) {
+        pe ("Provide at last one file containing the xesam query formulated ");
+        pe ("with query language or user language.\n");
+        return usage(argc, argv);
+    }
+    
+    if (arguments.size() != 0) {
+        pe("You don't have to provide other arguments.\n");
+        return usage(argc, argv);
+        return 1;
+    }
+
+    Dijon::StrigiQueryBuilder strigiQueryBuilder;
+
+    if (qlfile.length() != 0) {
+        printf ("processing query from file %s\n", qlfile.c_str());
+
+        Dijon::XesamQLParser xesamQlParser;
+
+        if (xesamQlParser.parse_file ( qlfile, strigiQueryBuilder))
+            printf ("Xesam query parsed successfully\n");
+        else
+        {
+            pe ("error parsing query\n");
+            return 1;
+        }
+    }
+    else if (ulfile.length() != 0) {
+        pe ("xesam user language queries are not yet supported\n");
+//         Dijon::XesamULParser xesamUlParser;
+// 
+//         if (xesamUlParser.parse_file ( ulfile, strigiQueryBuilder))
+//             printf ("query parsed successfully\n");
+//         else
+//         {
+//             pe ("error parsing query\n");
+//             return 1;
+//         }
+    }
+    
+    // create an index manager
+    IndexManager* manager = getIndexManager(backend, indexdir);
+    if (manager == 0) {
+        return usage(argc, argv);
+    }
+    IndexReader* reader = manager->indexReader();
+
+    unsigned int results = 0;
+    const uint batchsize = 10;
+    Query query = strigiQueryBuilder.get_query();
+    vector<IndexedDocument> matches = reader->query(query, 0, batchsize);
+
+    if (matches.size() != 0) {
+        printf ("Search results:\n");
+    } else {
+        printf ("No results for search\n");
+    }
+
+    while (matches.size() > 0) {
+        for (vector<IndexedDocument>::iterator it = matches.begin();
+            it != matches.end(); it++) {
+                printf ("\"%s\" matched\n", it->uri.c_str());
+                printIndexedDocument(*it);
+            }
+
+        results += matches.size();
+
+        if (matches.size() == batchsize) {
+            // maybe there're other results
+            matches = reader->query(query, results + 1, 10);
+        } else {
+            matches.clear(); // force while() exit
+        }
+    }
+
+    if (results != 0)
+        printf ("Query returned %i results\n", results);
+
+    delete manager;
+    return 0;
+}
+int
 deindex(int argc, char** argv) {
     // parse arguments
     parseArguments(argc, argv);
@@ -578,6 +679,8 @@ main(int argc, char** argv) {
         return deindex(argc, argv);
     } else if (!strcmp(cmd,"query")) {
         return query(argc, argv);
+    } else if (!strcmp(cmd,"xesamquery")) {
+        return xesamquery(argc, argv);
     } else {
         return usage(argc, argv);
     }
