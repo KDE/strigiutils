@@ -3,6 +3,7 @@ add_subdirectory(lineplugins)
 add_subdirectory(endplugins)
 add_subdirectory(tests)
 add_subdirectory(fieldproperties)
+add_subdirectory(xesam)
 
 include_directories( ./ ../streams ../streams/pdf ${BZIP2_INCLUDE_DIR}
 	endanalyzers ${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
