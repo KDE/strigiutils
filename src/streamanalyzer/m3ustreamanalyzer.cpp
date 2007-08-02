@@ -20,7 +20,7 @@
  */
 
 #include "m3ustreamanalyzer.h"
-
+#include <string.h>
 #include <fieldtypes.h>
 #include <analysisresult.h>
 #include <streamlineanalyzer.h>

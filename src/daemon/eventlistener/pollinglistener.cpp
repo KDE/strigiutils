@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <algorithm>
 #include <cassert>
 
 #include "diranalyzer.h"
