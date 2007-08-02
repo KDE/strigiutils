@@ -37,6 +37,7 @@
 #include "pdfendanalyzer.h"
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
+#include "m3ustreamanalyzer.h"
 #include "mailendanalyzer.h"
 #include "mpegendanalyzer.h"
 #include "helperendanalyzer.h"
@@ -222,6 +223,7 @@ StreamAnalyzerPrivate::initializeLineFactories() {
         addFactory(*i);
     }
     addFactory(new OdfMimeTypeLineAnalyzerFactory());
+    addFactory(new M3uLineAnalyzerFactory());
 }
 void
 StreamAnalyzerPrivate::initializeEventFactories() {

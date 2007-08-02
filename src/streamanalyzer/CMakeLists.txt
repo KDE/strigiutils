@@ -25,6 +25,7 @@ set(streamanalyzer_SRCS
 	id3v2throughanalyzer.cpp
         indexreader.cpp
 	lineeventanalyzer.cpp
+	m3ustreamanalyzer.cpp
 	mimeeventanalyzer.cpp
 	odfmimetypelineanalyzer.cpp
 	odfsaxanalyzer.cpp
