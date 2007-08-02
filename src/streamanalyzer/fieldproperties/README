@@ -1,0 +1,26 @@
+How to add fields/classes:
+
+Fieldproperties file name must look like this: namespace_class.fieldproperties
+
+If you introduce a new namespace, there must be a corresponding file [namespace].namespace.
+
+xesam namespace is used for xesam-provided ontology.
+
+strigi namespace is to be used only for strigi custom extensions over xesam.
+
+You should consider having your own namespace if the analyzers you provide are not typically distributed with strigi and instead are installed along with your app.
+
+Important:
+
+Field names should be namespace-unique, not class-unique
+Classes must be namespace-unique.
+Of course, the less naming clashes we have, the better. These are absolute minimums.
+
+Naming:
+
+Class names are CamelCased. Field names are camelCased, that is first letter is lowercase.
+Namespaces start with lowercase.
+
+Note:
+
+The file format itself is temporary. Strigi will adopt whatever format xesam comes up with.
