@@ -19,10 +19,13 @@
  */
 
 #include <iostream>
+#include <sstream>
 
 #include "StrigiQueryBuilder.h"
+#include "strigilogging.h"
 
 using std::string;
+using std::stringstream;
 using std::set;
 using std::cout;
 using std::cerr;
@@ -45,9 +48,7 @@ StrigiQueryBuilder::~StrigiQueryBuilder()
 
 void StrigiQueryBuilder::set_collector(const Collector &collector)
 {
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::set_collector\n";
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.set_collector", "called")
 
     XesamQueryBuilder::set_collector( collector);
 
@@ -56,14 +57,14 @@ void StrigiQueryBuilder::set_collector(const Collector &collector)
 
 void StrigiQueryBuilder::on_query(const char *type)
 {
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::on_query: called";
+    
+    string msg = "called with type ";
     if (type != NULL)
-    {
-        cout << " with " << type;
-    }
-    cout << endl;
-#endif
+        msg += type;
+    else
+        msg += "NULL";
+
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_query", msg)
 }
 
 void StrigiQueryBuilder::on_selection(SelectionType selection,
@@ -72,113 +73,81 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
                                       SimpleType field_type,
                                       const Modifiers &modifiers)
 {
-#ifdef DEBUG
-    cout << " ---- START ---- " << endl;
-    cout << "StrigiQueryBuilder::on_selection: called on "
-            << field_names.size() << " fields" << endl;
-    cout << "first selection: " << (m_firstSelection ? "TRUE" : "FALSE")<< endl;
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "---- START ---- ")
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection",
+                      "called on " + field_names.size() + " fields")
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection",
+                     "first selection: "+ (m_firstSelection ? "TRUE" : "FALSE"))
 
     Strigi::Query parsedQuery;
-
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::on_selection: selection type\n |";
-#endif
+    string msg = "selection type |";
+    
     switch (selection)
     {
         case None:
             //TODO: Jos, is this right?
-#ifdef DEBUG
-            cout << "None";
-#endif
+            msg += "None";
             break;
         case RegExp:
             parsedQuery.setType(Strigi::Query::RegExp);
-#ifdef DEBUG
-            cout << "RegExp";
-#endif
+            msg += "RegExp";
             break;
         case Equals:
             parsedQuery.setType(Strigi::Query::Equals);
-#ifdef DEBUG
-            cout << "Equals";
-#endif
+            msg += "Equals";
             break;
         case Contains:
             parsedQuery.setType(Strigi::Query::Contains);
-#ifdef DEBUG
-            cout << "Contains";
-#endif
+            msg += "Contains";
             break;
         case LessThan:
             parsedQuery.setType(Strigi::Query::LessThan);
-#ifdef DEBUG
-            cout << "LessThan";
-#endif
+            msg += "LessThan";
             break;
         case LessThanEquals:
             parsedQuery.setType(Strigi::Query::LessThanEquals);
-#ifdef DEBUG
-            cout << "LessThanEquals";
-#endif
+            msg += "LessThanEquals";
             break;
         case GreaterThan:
             parsedQuery.setType(Strigi::Query::GreaterThan);
-#ifdef DEBUG
-            cout << "GreaterThan";
-#endif
+            msg += "GreaterThan";
             break;
         case GreaterThanEquals:
             parsedQuery.setType(Strigi::Query::GreaterThanEquals);
-#ifdef DEBUG
-            cout << "GreaterThanEquals";
-#endif
+            msg += "GreaterThanEquals";
             break;
         case StartsWith:
             parsedQuery.setType(Strigi::Query::StartsWith);
-#ifdef DEBUG
-            cout << "StartsWith";
-#endif
+            msg += "StartsWith";
             break;
         case FullText:
             parsedQuery.setType(Strigi::Query::FullText);
-#ifdef DEBUG
-            cout << "FullText";
-#endif
+            msg += "FullText";
             break;
         case InSet:
             //TODO: hanlde!
-#ifdef DEBUG
-            cout << "InSet, NOT YET HANLDED";
-#endif
+            msg += "InSet, NOT YET HANLDED";
             break;
         case Proximity:
             //TODO: hanlde!
-#ifdef DEBUG
-            cout << "Proximity, NOT YET HANLDED";
-#endif
+            msg += "Proximity, NOT YET HANLDED";
             break;
     }
-#ifdef DEBUG
-    cout << "|" << endl;
-#endif
+    
+    msg += "|";
 
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
 
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::on_selection: field names are " << endl;;
-#endif
+    msg = "field names are ";
 
     for (set<string>::iterator iter = field_names.begin();
          iter != field_names.end(); iter++)
     {
-#ifdef DEBUG
-        cout << " |" << *iter << "| ";
-#endif
+        msg +=  " |" + *iter + "| ";
+
         parsedQuery.fields().push_back (*iter);
     }
-#ifdef DEBUG
-    cout << endl;
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
 
     parsedQuery.setBoost(modifiers.m_boost);
     parsedQuery.term().setCaseSensitive(modifiers.m_caseSensitive);
@@ -192,33 +161,28 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
     //TODO: handle modifiers.m_phrase
     parsedQuery.term().setSlack(modifiers.m_slack);
 
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::on_selection: there're " <<
-            field_values.size() << " field values" << endl;
-    cout << "StrigiQueryBuilder::on_selection: field values are " << endl;
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "there're " + 
+            field_values.size() + " field values")
+
+    msg = "field values are ";
 
     for (vector<string>::const_iterator valueIter = field_values.begin();
          valueIter != field_values.end(); ++valueIter)
     {
         string fieldValue(*valueIter);
 
-#ifdef DEBUG
-        cout << " |" << *valueIter << "| ";
-#endif
+        msg += " |" + *valueIter + "| ";
 
         parsedQuery.term().setValue( *valueIter);
     }
-#ifdef DEBUG
-    cout << endl;
-#endif
+
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
 
     parsedQuery.setNegate(modifiers.m_negate);
     
-#ifdef DEBUG
-    cout << "StrigiQueryBuilder::on_selection: collector is\n| "
-         << (m_collector.m_collector == And ? "AND" : "OR" ) << " |" << endl;
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "collector is | "
+         + (m_collector.m_collector == And ? "AND" : "OR" ) + " |")
+
     if (m_firstSelection == true)
     {
         m_fullQuery = parsedQuery;
@@ -250,25 +214,27 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
             m_fullQuery.subQueries().push_back (parsedQuery);
     }
 
-#ifdef DEBUG
-    cout << " ---- END ---- " << endl;
-#endif
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", " ---- END ---- ")
 
     /* More debugging infos, be careful: it's really verbose */
-/*#ifdef DEBUG
-//     cout << "StrigiQueryBuilder::on_selection: query now " << m_fullQuery.get_description() << endl;
-    cout << endl << endl << "StrigiQueryBuilder::on_selection: query now " << endl;
-    cout << m_fullQuery;
-    cout << endl << endl;
-#endif*/
+    /*
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "query now "
+                      + m_fullQuery.get_description())
+    stringstream res;
+    res << m_fullQuery;
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "query now " +
+                      res.str())
+    */
 }
 
 Strigi::Query StrigiQueryBuilder::get_query(void) const
 {
-#ifdef DEBUG
-    cout << "<results>" << endl;
-    cout << m_fullQuery;
-    cout << "</results>" << endl;
-#endif
+    stringstream result;
+    result << "<results>\n";
+    result << m_fullQuery;
+    result << "</results>\n";
+
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.get_query", result.str())
+    
     return m_fullQuery;
 }
