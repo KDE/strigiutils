@@ -17,6 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "oleendanalyzer.h"
 #include "strigiconfig.h"
 #include "oleinputstream.h"
@@ -28,7 +33,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
-#include "config.h"
+
 using namespace Strigi;
 using namespace std;
 
