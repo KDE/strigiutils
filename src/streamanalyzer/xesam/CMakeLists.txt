@@ -8,5 +8,7 @@ set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
 add_library (strigi_xesam ${strigi_xesam_SRCS})
 target_link_libraries(strigi_xesam ${LIBXML2_LIBRARIES} )
 
-add_executable (xesamquerybuildertest test.cpp ../query.cpp)
-target_link_libraries(xesamquerybuildertest strigi_xesam)
+if(NOT WIN32)
+add_executable (xesamquerybuildertest test.cpp )
+target_link_libraries(xesamquerybuildertest streamanalyzer strigi_xesam)
+endif(NOT WIN32)
