@@ -28,6 +28,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include "config.h"
 using namespace Strigi;
 using namespace std;
 
