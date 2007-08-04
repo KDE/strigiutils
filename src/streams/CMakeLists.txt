@@ -17,8 +17,8 @@ set(streams_SRCS
 	cpioinputstream.cpp
         dataeventinputstream.cpp
 	dostime.cpp
+	encodinginputstream.cpp
 	fileinputstream.cpp
-	filereader.cpp
 	filestreamopener.cpp
 	gzipcompressstream.cpp
 	gzipinputstream.cpp
@@ -59,12 +59,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libstreams.pc.cmake ${CMAKE_CURRENT_B
 install(FILES
 	archivereader.h
 	bufferedstream.h
+	encodinginputstream.h
 	fileinputstream.h
 	inputstream.h
 	inputstreamreader.h
 	streambase.h
 	streambuffer.h
-	stringreader.h
 	stringstream.h
 	substreamprovider.h
 	substreamproviderprovider.h
@@ -88,5 +88,3 @@ if(NOT WIN32)
   add_executable(testpt testpt.cpp processinputstream.cpp)
 endif(NOT WIN32)
 
-add_executable(decodebase64 decodebase64.cpp base64inputstream.cpp)
-set_target_properties(decodebase64 PROPERTIES COMPILE_FLAGS "-DMAKE_STREAMS_LIB")
