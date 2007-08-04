@@ -205,7 +205,6 @@ main(int argc, char** argv) {
     }
     // check that the result file is ok
     FileInputStream f(referenceFile);
-//    BZ2InputStream bz2(&f);
     if (referenceFile != 0 && f.status() != Ok) {
         cerr << "The file '" << referenceFile << "' cannot be read." << endl;
         return 1;
@@ -243,7 +242,8 @@ main(int argc, char** argv) {
             cerr << " were not found." << endl;
         }
         fprintf(stderr, "Choose from:\n");
-        for (i = ic.availableAnalyzers.begin(); i != ic.availableAnalyzers.end(); ++i) {
+        for (i = ic.availableAnalyzers.begin();
+                i != ic.availableAnalyzers.end(); ++i) {
             cerr << " " << *i << endl;
         }
         return 1;
