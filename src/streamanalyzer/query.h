@@ -97,6 +97,6 @@ public:
 };
 }
 
-std::ostream &operator<<(std::ostream &stream, Strigi::Term term);
-std::ostream &operator<<(std::ostream &stream, Strigi::Query query);
+STREAMANALYZER_EXPORT std::ostream &operator<<(std::ostream &stream, Strigi::Term term);
+STREAMANALYZER_EXPORT std::ostream &operator<<(std::ostream &stream, Strigi::Query query);
 #endif

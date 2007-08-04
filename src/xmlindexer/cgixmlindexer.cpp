@@ -2,6 +2,7 @@
 #include "stringterminatedsubstream.h"
 #include "subinputstream.h"
 #include "xmlindexwriter.h"
+#include <time.h>
 #include <iostream>
 using namespace Strigi;
 using namespace std;

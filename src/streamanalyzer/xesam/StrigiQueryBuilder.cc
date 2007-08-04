@@ -140,7 +140,7 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
 
     msg = "field names are ";
 
-    for (set<string>::iterator iter = field_names.begin();
+    for (set<string>::const_iterator iter = field_names.begin();
          iter != field_names.end(); iter++)
     {
         msg +=  " |" + *iter + "| ";
