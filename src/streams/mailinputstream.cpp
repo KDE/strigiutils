@@ -29,6 +29,7 @@
 #include "iconv.h"
 #include <cstring>
 #include <sstream>
+#include <iostream>
 
 #ifdef ICONV_SECOND_ARGUMENT_IS_CONST
      #define ICONV_CONST const
@@ -395,24 +396,31 @@ MailInputStream::handleHeaderLine() {
     } else if (strncasecmp(linestart, to, 3) == 0) {
         int32_t offset = 3;
         // FIXME: should split for ','
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_to = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, from, 5) == 0) {
         int32_t offset = 5;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_from = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, cc, 3) == 0) {
         int32_t offset = 3;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_cc = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, bcc, 4) == 0) {
         int32_t offset = 4;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_bcc = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, messageid, 11) == 0) {
         int32_t offset = 11;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_messageid = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, inreplyto, 12) == 0) {
         int32_t offset = 12;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_inreplyto = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, references, 11) == 0) {
         int32_t offset = 11;
+        while (offset < len && isspace(linestart[offset])) offset++;
         this->m_references = decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
