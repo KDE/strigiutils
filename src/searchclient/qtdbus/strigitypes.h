@@ -27,19 +27,19 @@
 #include <QtDBus/QtDBus>
 
 typedef QVector<QList<QVariant> > VariantListVector;
-Q_DECLARE_METATYPE(VariantListVector)
+Q_DECLARE_METATYPE(VariantListVector);
 typedef QList<int> IntegerList;
-Q_DECLARE_METATYPE(IntegerList)
+Q_DECLARE_METATYPE(IntegerList);
 typedef QMap<QString, QString> StringStringMap;
-Q_DECLARE_METATYPE(StringStringMap)
+Q_DECLARE_METATYPE(StringStringMap);
 typedef QMultiMap<int, QString> IntegerStringMultiMap;
-Q_DECLARE_METATYPE(IntegerStringMultiMap)
+Q_DECLARE_METATYPE(IntegerStringMultiMap);
 typedef QPair<bool, QString> BoolStringPair;
-Q_DECLARE_METATYPE(BoolStringPair)
-Q_DECLARE_METATYPE(QList<BoolStringPair>)
+Q_DECLARE_METATYPE(BoolStringPair);
+Q_DECLARE_METATYPE(QList<BoolStringPair>);
 typedef QPair<QString, quint32> StringUIntPair;
-Q_DECLARE_METATYPE(StringUIntPair)
-Q_DECLARE_METATYPE(QList<StringUIntPair>)
+Q_DECLARE_METATYPE(StringUIntPair);
+Q_DECLARE_METATYPE(QList<StringUIntPair>);
 
 // sdsssxxa{sas}
 struct StrigiHit {
@@ -52,8 +52,8 @@ struct StrigiHit {
    qint64 mtime;
    QMap<QString, QStringList> properties;
 };
-Q_DECLARE_METATYPE(StrigiHit)
-Q_DECLARE_METATYPE(QList<StrigiHit>)
+Q_DECLARE_METATYPE(StrigiHit);
+Q_DECLARE_METATYPE(QList<StrigiHit>);
 
 QDBusArgument& operator<<(QDBusArgument &a, const StrigiHit &hit);
 const QDBusArgument& operator>>(const QDBusArgument &a, StrigiHit& hit);
