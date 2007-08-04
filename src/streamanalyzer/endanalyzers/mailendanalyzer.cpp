@@ -20,9 +20,11 @@
 #include "mailendanalyzer.h"
 #include "strigiconfig.h"
 #include "mailinputstream.h"
+#include "encodinginputstream.h"
 #include "analysisresult.h"
 #include "textendanalyzer.h"
 #include "fieldtypes.h"
+#include <iostream>
 using namespace Strigi;
 using namespace std;
 
@@ -45,13 +47,30 @@ MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
     toField = r.registerField(toFieldName, FieldRegister::stringType, 1, 0);
     ccField = r.registerField(ccFieldName, FieldRegister::stringType, 1, 0);
     bccField = r.registerField(bccFieldName, FieldRegister::stringType, 1, 0);
-    contentidField = r.registerField(contentidFieldName, FieldRegister::stringType, 1, 0);
-    contentlinkField = r.registerField(contentlinkFieldName, FieldRegister::stringType, 1, 0);    
+    contentidField = r.registerField(contentidFieldName,
+        FieldRegister::stringType, 1, 0);
+    contentlinkField = r.registerField(contentlinkFieldName,
+        FieldRegister::stringType, 1, 0);    
 }
 
 bool
 MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return MailInputStream::checkHeader(header, headersize);
+}
+string
+charset(const string& contenttype) {
+    char* s = strstr(contenttype.c_str(), "charset");
+    if (s) {
+        char c = s[8];
+        if (c == '\'' || c == '"') {
+            s += 9;
+            char* e = strchr(s, c);
+            if (e) {
+                return string(s, e-s);
+            }
+        }
+    }
+    return string();
 }
 char
 MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
@@ -64,25 +83,32 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         m_error = mail.error();
         return -1;
     }
-/*    if (s == 0) {
-        m_error = "mail contains no body";
-        return -1;
-    }*/
+    string enc(charset(mail.contentType()));
+    if (enc.length()) {
+        idx.setEncoding(enc.c_str());
+    }
     idx.addValue(factory->titleField, mail.subject());
     idx.addValue(factory->contenttypeField, mail.contentType());
     idx.addValue(factory->fromField, mail.from());
     idx.addValue(factory->toField, mail.to());
     if (mail.cc().length() > 0) idx.addValue(factory->ccField, mail.cc());
     if (mail.bcc().length() > 0) idx.addValue(factory->bccField, mail.bcc());
-    if (mail.messageid().length() > 0) idx.addValue(factory->contentidField, mail.messageid());
-    if (mail.inreplyto().length() > 0) idx.addValue(factory->contentlinkField, mail.inreplyto());
+    if (mail.messageid().length() > 0)
+        idx.addValue(factory->contentidField, mail.messageid());
+    if (mail.inreplyto().length() > 0)
+        idx.addValue(factory->contentlinkField, mail.inreplyto());
     // FIXME: the ontologies do not have a way to distinguish between the two
     //   types of links yet. Phreedom will come up with something better.
-    if (mail.references().length() > 0) idx.addValue(factory->contentlinkField, mail.references());
-    TextEndAnalyzer tea;
-    if (s != 0 && tea.analyze(idx, s) != 0) {
-        m_error = "Error reading mail body.";
-        return -1;
+    if (mail.references().length() > 0)
+        idx.addValue(factory->contentlinkField, mail.references());
+    if (s != 0) {
+        TextEndAnalyzer tea;
+        if (enc.length()) {
+            EncodingInputStream eis(s, enc.c_str());
+            tea.analyze(idx, &eis);
+        } else {
+            tea.analyze(idx, s);
+        }
     }
     s = mail.nextEntry();
     int n = 1;
