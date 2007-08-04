@@ -300,10 +300,9 @@ OleEndAnalyzer::handleProperty(AnalysisResult* result,
     if (datatype == 30) {
         int32_t len = readLittleEndianInt32(data+4);
         if (len > 0 && len-8 <= end-data) {
-            wordtext.reset();
-            wordtext.addText(data+8, len-1);
-            wordtext.cleanText();
-            result->addValue(field, wordtext.text(), wordtext.length());
+            // TODO perhaps we should use the encoding fixer here too
+            // but, check the unit tests if you do
+            result->addValue(field, data+8, len-1);
         }
     }
 }
