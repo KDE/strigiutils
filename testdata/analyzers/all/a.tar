@@ -1,21 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='a.tar/file1' mtime='1139008378'>
-  <value name='system.hash.sha1'>56ac1c08fa5479fd57c4a5c65861c4ed3ed93ff8</value>
   <value name='system.size'>6</value>
   <value name='system.depth'>1</value>
   <text>hallo
 </text>
  </file>
  <file uri='a.tar/file2' mtime='1139008383'>
-  <value name='system.hash.sha1'>63f982e9e4bff72858424f9336a2089987f1c2e4</value>
   <value name='system.size'>7</value>
   <value name='system.depth'>1</value>
   <text>hallo!
 </text>
  </file>
  <file uri='a.tar' mtime='1162936777'>
-  <value name='system.hash.sha1'>c1f8d66a5e20ca70756344649f5a6be195ac35e5</value>
   <value name='system.size'>10240</value>
   <value name='system.depth'>0</value>
  </file>

@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='test014.eml/peter-ja.html' mtime='1162936788'>
-  <value name='system.hash.sha1'>ce9b1d1dea5af96546355e80b2929f4bdc035eea</value>
   <value name='system.size'>790</value>
   <value name='system.depth'>1</value>
   <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -23,9 +22,12 @@
 </text>
  </file>
  <file uri='test014.eml' mtime='1162936788'>
-  <value name='system.hash.sha1'>8a865ff220ee717189a824eb1ae361d3a1306d73</value>
   <value name='system.size'>2348</value>
   <value name='email.subject'>美しい日本語を話そう</value>
-  <value name='contenttype'>text/plain; charset=ISO-2022-JP</value>
+  <value name='email.content_type'>text/plain; charset=ISO-2022-JP</value>
+  <value name='email.from'>Mikio Hirabayashi &lt;mikio@users.sourceforge.net&gt;</value>
+  <value name='email.to'>Peter &lt;peter@rabbit.sand-bank.gov&gt;</value>
+  <value name='email.cc'>Flopsy &lt;flopsy@rabbit.sand-bank.gov&gt;, Mopsy &lt;mopsy@rabbit.sand-bank.gov&gt;, Cotton-tail &lt;cotton-tail@rabbit.sand-bank.gov&gt;</value>
+  <value name='content.ID'>&lt;20040610150806.36dc6a91.mikio@users.sourceforge.net&gt;</value>
   <value name='system.depth'>0</value>
  </file>

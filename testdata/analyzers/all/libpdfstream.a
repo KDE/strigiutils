@@ -1,17 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='libpdfstream.a/pdfparser.o' mtime='1156285480'>
-  <value name='system.hash.sha1'>1525c4252eaf7060c81df413927af161a6b0a1b4</value>
   <value name='system.size'>82596</value>
   <value name='system.depth'>1</value>
  </file>
  <file uri='libpdfstream.a/pdfinputstream.o' mtime='1156530931'>
-  <value name='system.hash.sha1'>7a18d9acf3eb02fbdd6f6f96e46d62b61b5acfa1</value>
   <value name='system.size'>52688</value>
   <value name='system.depth'>1</value>
  </file>
  <file uri='libpdfstream.a' mtime='1162936784'>
-  <value name='system.hash.sha1'>4ca0b0153899c900194c1650d1773e57ebcde5ed</value>
   <value name='system.size'>138184</value>
   <value name='system.depth'>0</value>
  </file>
