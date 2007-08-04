@@ -381,7 +381,7 @@ CLuceneIndexWriter::cleanUp() {
     for (i = 0; files[i] != NULL; i++) {
         _CLDELETE_CaARRAY(files[i]);
     }
-    _CLDELETE_ARRAY(files)
+    _CLDELETE_ARRAY(files);
 }
 
 void
