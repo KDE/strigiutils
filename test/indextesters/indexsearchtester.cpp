@@ -179,7 +179,7 @@ void IndexSearchTester::testSystemLocationSearchIndexedFile()
     Strigi::QueryParser parser;
 
     Strigi::Query query = parser.buildQuery("system.location:'testfile01'");
-    vector<Strigi::IndexedDocument> matches = reader->query(query, 10, 0);
+    vector<Strigi::IndexedDocument> matches = reader->query(query, 0, 10);
     
     if (matches.size() != 1) {
         ostringstream msg;
@@ -197,7 +197,7 @@ void IndexSearchTester::testSystemLocationSearchUnindexedFile()
     Strigi::QueryParser parser;
     
     Strigi::Query query = parser.buildQuery("system.location:'unindexed'");
-    vector<Strigi::IndexedDocument> matches = reader->query( query, 10, 0);
+    vector<Strigi::IndexedDocument> matches = reader->query(query, 0, 10);
     if (matches.size() != 0) {
         ostringstream msg;
         msg << "Search returned " << matches.size() << " matches instead of 0.";
