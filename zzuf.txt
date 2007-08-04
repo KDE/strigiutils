@@ -1,2 +1,3 @@
 nice way of thoroughly testing:
-zuf -S -E/etc -E/usr -s0:65536 -q --  ./xmlindexer $HOME
+zzuf -S -E/etc -E/usr -s0:65535 -r0.04 --  src/xmlindexer/xmlindexer -j 1 
+zzuf -S -E/etc -E/usr -s0:65536 -q --  ./xmlindexer $HOME
