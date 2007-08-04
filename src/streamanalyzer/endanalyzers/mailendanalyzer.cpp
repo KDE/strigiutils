@@ -59,12 +59,12 @@ MailEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 string
 charset(const string& contenttype) {
-    char* s = strstr(contenttype.c_str(), "charset");
+    const char* s = strstr(contenttype.c_str(), "charset");
     if (s) {
         char c = s[8];
         if (c == '\'' || c == '"') {
             s += 9;
-            char* e = strchr(s, c);
+            const char* e = strchr(s, c);
             if (e) {
                 return string(s, e-s);
             }

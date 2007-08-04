@@ -181,7 +181,7 @@ OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
             || (unsigned char)d[0] != 0xec || (unsigned char)d[1] != 0xa5) {
         return false;
     }
-    bool complex = d[10] & 4;
+    bool complex = (d[10] & 4) == 4;
     if (complex) return false;
     int32_t fcMin = readLittleEndianInt32(d+24);
     int32_t fcMac = readLittleEndianInt32(d+28);
