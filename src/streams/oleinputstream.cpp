@@ -100,7 +100,7 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     } else {
         d = parent->data+(1+parent->currentDataBlock)*512;
     }
-    if (d < parent->data || d + n > parent->data + parent->size) {
+    if (d < parent->data || parent->data + parent->size < d + n) {
         m_status = Error;
         m_error = "Invalid OLE stream.";
         cerr << "not 0 < " << d-parent->data << " < " << m_size << " "
@@ -261,7 +261,7 @@ OleInputStream::Private::nextBlock(int32_t in) {
     bid = batIndex[bid]+1;
     int32_t next = in%128*4;
     next += 512*bid;
-    if (next < 0 || next > size-4) {
+    if (next < 0 || size - 4 < next) {
         fprintf(stderr, "error 3: output block out of range %i\n", next);
         return -4;
     }
@@ -290,7 +290,7 @@ OleInputStream::Private::nextSmallBlock(int32_t in) {
     bid = sbatIndex[bid]+1;
     int32_t next = in%128*4;
     next += 512*bid;
-    if (next < 0 || next > size-4) {
+    if (next < 0 || size - 4 < next) {
         fprintf(stderr, "error 1: output block out of range %i\n", next);
         return -4;
     }
