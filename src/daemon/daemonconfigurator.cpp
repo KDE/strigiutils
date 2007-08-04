@@ -89,7 +89,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         e_filters.e_filter.push_back(f);
 
         STRIGI_LOG_WARNING ("DaemonConfigurator",
-                            "created default config for indexed dirs")
+                            "created default config for indexed dirs");
     }
     save();
 }
@@ -139,7 +139,7 @@ DaemonConfigurator::getIndexedDirectories(const string& repositoryName) {
 
     if (match == e_repository.end()) {
         STRIGI_LOG_WARNING ("DaemonConfigurator.getIndexedDirs",
-                        "cannot find repository name: |" + repositoryName + '|')
+                       "cannot find repository name: |" + repositoryName + '|');
         return dirs;
     }
 
