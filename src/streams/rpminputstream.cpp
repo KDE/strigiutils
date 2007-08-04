@@ -18,7 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "rpminputstream.h"
-#include "strigiconfig.h"
 #include "cpioinputstream.h"
 #include "gzipinputstream.h"
 #include "bz2inputstream.h"
