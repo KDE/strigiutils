@@ -121,7 +121,7 @@ int main(int argc,char *argv[])
 
     // init logging
     checkLogConf(logconffile);
-    STRIGI_LOG_INIT(logconffile)
+    STRIGI_LOG_INIT(logconffile);
 
     while (1)
      {
