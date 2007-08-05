@@ -20,29 +20,20 @@
 #ifndef GZIPINPUTSTREAM_H
 #define GZIPINPUTSTREAM_H
 
-#include "strigiconfig.h"
-#include "streambase.h"
 #include "bufferedstream.h"
-
-struct z_stream_s;
 
 namespace Strigi {
 
 class STREAMS_EXPORT GZipInputStream : public BufferedInputStream {
 private:
-    z_stream_s* zstream;
-    InputStream* input;
-
-    void dealloc();
-    void readFromStream();
-    void decompressFromStream();
-    bool checkMagic();
+    class Private;
+    Private* const p;
+    int32_t fillBuffer(char* start, int32_t space);
 public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
     explicit GZipInputStream(InputStream* input,
         ZipFormat format=GZIPFORMAT);
     ~GZipInputStream();
-    int32_t fillBuffer(char* start, int32_t space);
 };
 
 } // end namespace Strigi

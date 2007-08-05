@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "archivereader.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streambase.h"
 #include "substreamprovider.h"
 #include "tarinputstream.h"

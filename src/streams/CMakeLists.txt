@@ -5,8 +5,8 @@ include_directories(
 	${ZLIB_INCLUDE_DIR}
 	${BZIP2_INCLUDE_DIR}
 	${ICONV_INCLUDE_DIR}
-	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat
+	${strigi_BINARY_DIR}/src/streams
+	${strigi_SOURCE_DIR}/src/streams/strigi
 )
 
 set(streams_SRCS
@@ -42,7 +42,7 @@ set(streams_SRCS ${streams_SRCS}
 endif(NOT WIN32)
 
 #add the compatibility files
-set(streams_SRCS ${streams_SRCS} compat/compat.cpp compat/fnmatch.cpp compat/stgdirent.cpp)
+set(streams_SRCS ${streams_SRCS} strigi/compat.cpp strigi/fnmatch.cpp strigi/stgdirent.cpp)
 
 add_library(streams SHARED ${streams_SRCS})
 
@@ -69,7 +69,7 @@ install(FILES
 	substreamprovider.h
 	substreamproviderprovider.h
         textutils.h
-	compat/jstreamsconfig.h
+	strigi/jstreamsconfig.h
 	DESTINATION include/strigi
 )
 install(TARGETS streams

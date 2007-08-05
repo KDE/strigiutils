@@ -18,27 +18,42 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "bz2inputstream.h"
-#include "strigiconfig.h"
-
+#include <bzlib.h>
 #include <cstring>
 
 using namespace Strigi;
 
+class BZ2InputStream::Private {
+public:
+    BZ2InputStream* const p;
+    InputStream *input;
+    bz_stream* bzstream;
+    bool allocatedBz;
+
+    Private(BZ2InputStream* p, InputStream* i);
+    ~Private();
+    void dealloc();
+    void readFromStream();
+    bool checkMagic();
+};
 bool
 BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
     static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
     if (datasize < 5) return false;
     return memcmp(data, magic, 5) == 0;
 }
-BZ2InputStream::BZ2InputStream(InputStream* input) {
+BZ2InputStream::BZ2InputStream(InputStream* input) :p(new Private(this, input)){
+}
+BZ2InputStream::Private::Private(BZ2InputStream* bis, InputStream* i)
+        :p(bis), input(i) {
     // initialize values that signal state
     this->input = input;
 
     // TODO: check first bytes of stream before allocating buffer
     // 0x42 0x5a 0x68 0x39 0x31
     if (!checkMagic()) {
-        m_error = "Magic bytes are wrong.";
-        m_status = Error;
+        p->m_error = "Magic bytes are wrong.";
+        p->m_status = Error;
         allocatedBz = false;
         return;
     }
@@ -52,10 +67,10 @@ BZ2InputStream::BZ2InputStream(InputStream* input) {
     int r;
     r = BZ2_bzDecompressInit(bzstream, 1, 0);
     if (r != BZ_OK) {
-        m_error = "Error initializing BZ2InputStream.";
+        p->m_error = "Error initializing BZ2InputStream.";
         fprintf(stderr, "Error initializing BZ2InputStream.\n");
         dealloc();
-        m_status = Error;
+        p->m_status = Error;
         return;
     }
     allocatedBz = true;
@@ -63,13 +78,16 @@ BZ2InputStream::BZ2InputStream(InputStream* input) {
     bzstream->avail_out = 1;
 
     // set the minimum size for the output buffer
-    setMinBufSize(262144);
+    p->setMinBufSize(262144);
 }
 BZ2InputStream::~BZ2InputStream() {
+    delete p;
+}
+BZ2InputStream::Private::~Private() {
     dealloc();
 }
 void
-BZ2InputStream::dealloc() {
+BZ2InputStream::Private::dealloc() {
     if (allocatedBz) {
         BZ2_bzDecompressEnd(bzstream);
         free(bzstream);
@@ -77,7 +95,7 @@ BZ2InputStream::dealloc() {
     }
 }
 bool
-BZ2InputStream::checkMagic() {
+BZ2InputStream::Private::checkMagic() {
     const char* begin;
     int32_t nread;
 
@@ -91,17 +109,17 @@ BZ2InputStream::checkMagic() {
     return checkHeader(begin, 5);
 }
 void
-BZ2InputStream::readFromStream() {
+BZ2InputStream::Private::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
     nread = input->read(inStart, 1, 0);
     if (nread <= -1) {
-        m_status = Error;
-        m_error = input->error();
+        p->m_status = Error;
+        p->m_error = input->error();
     } else if (nread < 1) {
-        m_status = Error;
-        m_error = "unexpected end of stream";
+        p->m_status = Error;
+        p->m_error = "unexpected end of stream";
     } else {
         bzstream->next_in = (char*)inStart;
         bzstream->avail_in = nread;
@@ -109,10 +127,11 @@ BZ2InputStream::readFromStream() {
 }
 int32_t
 BZ2InputStream::fillBuffer(char* start, int32_t space) {
+    bz_stream* bzstream = p->bzstream;
     if (bzstream == 0) return -1;
     // make sure there is data to decompress
     if (bzstream->avail_out != 0) {
-        readFromStream();
+        p->readFromStream();
         if (m_status != Ok) {
             // no data was read
             return -1;
@@ -144,11 +163,11 @@ BZ2InputStream::fillBuffer(char* start, int32_t space) {
         return -1;
     case BZ_STREAM_END:
         if (bzstream->avail_in) {
-            input->reset(input->position()-bzstream->avail_in);
+            p->input->reset(p->input->position()-bzstream->avail_in);
         }
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        dealloc();
+        p->dealloc();
     }
     return nwritten;
 }

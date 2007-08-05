@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "dataeventinputstream.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <iostream>
 #include <cassert>
 

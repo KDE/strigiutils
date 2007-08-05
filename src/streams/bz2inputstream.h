@@ -20,24 +20,14 @@
 #ifndef BZ2INPUTSTREAM_H
 #define BZ2INPUTSTREAM_H
 
-#include "strigiconfig.h"
-#include "streambase.h"
 #include "bufferedstream.h"
-
-#include <bzlib.h>
 
 namespace Strigi {
 
 class STREAMS_EXPORT BZ2InputStream : public BufferedInputStream {
 private:
-    bool allocatedBz;
-    bz_stream* bzstream;
-    InputStream *input;
-
-    void dealloc();
-    void readFromStream();
-    bool checkMagic();
-protected:
+    class Private;
+    Private* const p;
     int32_t fillBuffer(char* start, int32_t space);
 public:
     BZ2InputStream(InputStream* input);

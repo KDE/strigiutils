@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "kmpsearcher.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 /* This is not the KMP algorigthm. We're now using the faster (turbo)
    Boyer-Moore algorithm:

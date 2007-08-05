@@ -20,7 +20,7 @@
 #ifndef MAILINPUTSTREAM_H
 #define MAILINPUTSTREAM_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streambase.h"
 #include "substreamprovider.h"
 #include <stack>

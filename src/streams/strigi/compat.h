@@ -25,7 +25,7 @@
 # include "config.h"
 #endif
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #ifndef HAVE_ISBLANK
 STREAMS_EXPORT int isblank(char c);

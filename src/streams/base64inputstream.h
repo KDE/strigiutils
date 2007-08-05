@@ -20,32 +20,18 @@
 #ifndef BASE64INPUTSTREAM_H
 #define BASE64INPUTSTREAM_H
 
-#include "strigiconfig.h"
-#include "streambase.h"
 #include "bufferedstream.h"
 
 namespace Strigi {
 
 class STREAMS_EXPORT Base64InputStream : public BufferedInputStream {
 private:
-    int32_t bits;
-    char bytestodo;
-    char char_count;
-    const char* pos, * pend;
-    int32_t nleft;
-
-    InputStream* input;
-
-    static const unsigned char alphabet[];
-    static bool inalphabet[256];
-    static unsigned char decoder[133];
-    static bool initializedAlphabet;
-    static void initialize();
-
-    bool moreData();
+    class Private;
+    Private* const p;
+    int32_t fillBuffer(char* start, int32_t space);
 public:
     explicit Base64InputStream(InputStream* i);
-    int32_t fillBuffer(char* start, int32_t space);
+    ~Base64InputStream();
     static std::string decode(const char* in, std::string::size_type length);
 };
 

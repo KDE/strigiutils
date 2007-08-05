@@ -28,14 +28,33 @@ using namespace Strigi;
    http://www.tug.org/ftp/vm/base64-decode.c
 */
 
-const unsigned char Base64InputStream::alphabet[]
+class Base64InputStream::Private {
+public:
+    Base64InputStream* const p;
+    InputStream* input;
+    const char* pos, * pend;
+    int32_t bits;
+    int32_t nleft;
+    char bytestodo;
+    char char_count;
+
+    Private(Base64InputStream* p, InputStream* i);
+    bool moreData();
+    int32_t fillBuffer(char* start, int32_t space);
+};
+
+
+const unsigned char alphabet[]
     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-bool Base64InputStream::inalphabet[256];
-unsigned char Base64InputStream::decoder[133];
-bool Base64InputStream::initializedAlphabet = false;
+bool inalphabet[256];
+unsigned char decoder[133];
+bool initializedAlphabet = false;
+void initialize();
+string decode(const char* in, string::size_type length);
+
 
 void
-Base64InputStream::initialize() {
+initialize() {
     if (!initializedAlphabet) {
         initializedAlphabet = true;
         // initialize the translation arrays
@@ -49,7 +68,12 @@ Base64InputStream::initialize() {
     }
 }
 
-Base64InputStream::Base64InputStream(InputStream* i) :input(i) {
+Base64InputStream::Base64InputStream(InputStream* i) :p(new Private(this, i)) {
+}
+Base64InputStream::~Base64InputStream() {
+}
+Base64InputStream::Private::Private(Base64InputStream* bi, InputStream* i)
+        :p(bi), input(i) {
     initialize();
     nleft = 0;
     char_count = 0;
@@ -58,12 +82,12 @@ Base64InputStream::Base64InputStream(InputStream* i) :input(i) {
     pos = pend = 0;
 }
 bool
-Base64InputStream::moreData() {
+Base64InputStream::Private::moreData() {
     if (pos == pend) {
         int32_t nread = input->read(pos, 1, 0);
         if (nread < -1) {
-            m_status = Error;
-            m_error = input->error();
+            p->m_status = Error;
+            p->m_error = input->error();
             input = 0;
             return false;
         }
@@ -77,6 +101,10 @@ Base64InputStream::moreData() {
 }
 int32_t
 Base64InputStream::fillBuffer(char* start, int32_t space) {
+    return p->fillBuffer(start, space);
+}
+int32_t
+Base64InputStream::Private::fillBuffer(char* start, int32_t space) {
     if (input == 0 && bytestodo == 0) return -1;
     // handle the  bytes that were left over from the last call
     if (bytestodo) {
@@ -152,6 +180,7 @@ Base64InputStream::fillBuffer(char* start, int32_t space) {
 }
 string
 Base64InputStream::decode(const char* in, string::size_type length) {
+    initialize();
     string d;
     if (length%4) return d;
     initialize();

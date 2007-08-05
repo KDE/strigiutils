@@ -25,7 +25,6 @@
  *         Ben van Klinken
  **/
 
-
 #include "streambase.h"
 
 #include <string.h>

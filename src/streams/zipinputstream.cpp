@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "zipinputstream.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "gzipinputstream.h"
 #include "subinputstream.h"
 

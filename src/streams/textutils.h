@@ -21,7 +21,7 @@
 #define TEXTUTILS_H
 
 #include <string>
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #ifdef __MINGW32__
  #define STREAMS_INLINE_EXPORT

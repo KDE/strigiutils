@@ -20,7 +20,7 @@
 #ifndef SUBINPUTSTREAM_H
 #define SUBINPUTSTREAM_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streambase.h"
 
 namespace Strigi {

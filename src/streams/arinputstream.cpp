@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "arinputstream.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "subinputstream.h"
 
 #include <stdlib.h>
@@ -119,7 +119,7 @@ ArInputStream::readHeader() {
             m_input->skip(m_entryinfo.size);
             readHeader();
         } else {
-            int p = atoi(bc+1);
+            uint p = atoi(bc+1);
             if (gnufilenames.length() <= p) {
                 m_error = "Invalid name field.";
                 m_status = Error;

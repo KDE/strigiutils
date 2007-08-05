@@ -23,7 +23,7 @@
 #endif
 
 #include "inputstreamreader.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <cerrno>
 
 #ifdef ICONV_SECOND_ARGUMENT_IS_CONST

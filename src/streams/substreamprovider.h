@@ -21,7 +21,7 @@
 #define SUBSTREAMPROVIDER
 
 #include <string>
-#include "strigiconfig.h"
+#include <map>
 #include "streambase.h"
 
 namespace Strigi {
@@ -36,6 +36,10 @@ struct EntryInfo {
      * This will be a file name in almost all cases
      */
     std::string filename;
+    /**
+     * @brief Extendable property map
+     **/
+    std::map<std::string, std::string> properties;
     /** The size of the substream */
     int64_t size;
     /** The last modification time of the substream */

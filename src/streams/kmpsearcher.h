@@ -23,7 +23,7 @@
 #include <string>
 #include <stdlib.h>
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 namespace Strigi {
 /**

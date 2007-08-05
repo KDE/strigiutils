@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <string>
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #define INT32MAX 0x7FFFFFFFL
 

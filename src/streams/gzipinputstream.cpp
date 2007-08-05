@@ -18,22 +18,36 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "gzipinputstream.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <zlib.h>
 
 using namespace Strigi;
 
-GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format) {
-    // initialize values that signal state
-    m_status = Ok;
-    zstream = 0;
+class GZipInputStream::Private {
+public:
+    GZipInputStream* const p;
+    InputStream* input;
+    z_stream_s* zstream;
 
-    this->input = input;
+    Private(GZipInputStream* gi, InputStream* input, ZipFormat format);
+    ~Private();
+    void dealloc();
+    void readFromStream();
+    void decompressFromStream();
+    bool checkMagic();
+};
+GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format)
+        :p(new Private(this, input, format)) {
+}
+GZipInputStream::Private::Private(GZipInputStream* gi,
+        InputStream* i, ZipFormat format) :p(gi), input(i), zstream(0) {
+    // initialize values that signal state
+    p->m_status = Ok;
 
     // check first bytes of stream before allocating buffer
     if (format == GZIPFORMAT && !checkMagic()) {
-        m_error = "Magic bytes are wrong.";
-        m_status = Error;
+        p->m_error = "Magic bytes are wrong.";
+        p->m_status = Error;
         return;
     }
 
@@ -60,9 +74,9 @@ GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format) {
         break;
     }
     if (r != Z_OK) {
-        m_error = "Error initializing GZipInputStream.";
+        p->m_error = "Error initializing GZipInputStream.";
         dealloc();
-        m_status = Error;
+        p->m_status = Error;
         return;
     }
 
@@ -70,13 +84,16 @@ GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format) {
     zstream->avail_out = 1;
 
     // initialize the buffer
-    setMinBufSize(262144);
+    p->setMinBufSize(262144);
 }
 GZipInputStream::~GZipInputStream() {
+    delete p;
+}
+GZipInputStream::Private::~Private() {
     dealloc();
 }
 void
-GZipInputStream::dealloc() {
+GZipInputStream::Private::dealloc() {
     if (zstream) {
         inflateEnd(zstream);
         free(zstream);
@@ -84,7 +101,7 @@ GZipInputStream::dealloc() {
     }
 }
 bool
-GZipInputStream::checkMagic() {
+GZipInputStream::Private::checkMagic() {
     const unsigned char* buf;
     const char* begin;
     int32_t nread;
@@ -100,17 +117,17 @@ GZipInputStream::checkMagic() {
     return buf[0] == 0x1f && buf[1] == 0x8b;
 }
 void
-GZipInputStream::readFromStream() {
+GZipInputStream::Private::readFromStream() {
     // read data from the input stream
     const char* inStart;
     int32_t nread;
     nread = input->read(inStart, 1, 0);
     if (nread < -1) {
-        m_status = Error;
-        m_error = input->error();
+        p->m_status = Error;
+        p->m_error = input->error();
     } else if (nread < 1) {
-        m_status = Error;
-        m_error.assign("unexpected end of stream");
+        p->m_status = Error;
+        p->m_error.assign("unexpected end of stream");
     } else {
         zstream->next_in = (Bytef*)inStart;
         zstream->avail_in = nread;
@@ -118,10 +135,11 @@ GZipInputStream::readFromStream() {
 }
 int32_t
 GZipInputStream::fillBuffer(char* start, int32_t space) {
+    z_stream_s* zstream = p->zstream;
     if (zstream == 0) return -1;
     // make sure there is data to decompress
     if (zstream->avail_out) {
-        readFromStream();
+        p->readFromStream();
         if (m_status == Error) {
             // no data was read
             return -1;
@@ -149,11 +167,11 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
         break;
     case Z_STREAM_END:
         if (zstream->avail_in) {
-            input->reset(input->position()-zstream->avail_in);
+            p->input->reset(p->input->position()-zstream->avail_in);
         }
         // we are finished decompressing,
         // (but this stream is not yet finished)
-        dealloc();
+        p->dealloc();
     }
     return nwritten;
 }

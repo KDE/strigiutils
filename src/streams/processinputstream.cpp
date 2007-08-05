@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "processinputstream.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>

@@ -20,7 +20,7 @@
 #ifndef GZIPCOMPRESSSTREAM_H
 #define GZIPCOMPRESSSTREAM_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streambase.h"
 #include "bufferedstream.h"
 

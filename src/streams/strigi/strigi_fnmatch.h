@@ -20,7 +20,7 @@
 #if defined(HAVE_FNMATCH_H)
 
 #elif !defined(STRIGI_FNMATCH_H_)
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
     #define STRIGI_FNMATCH_H
 
 

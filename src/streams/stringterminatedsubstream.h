@@ -20,9 +20,8 @@
 #ifndef STRINGTERMINATEDSUBSTREAM
 #define STRINGTERMINATEDSUBSTREAM
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streambase.h"
-#include "kmpsearcher.h"
 
 namespace Strigi {
 
@@ -35,9 +34,8 @@ namespace Strigi {
  */
 class STREAMS_EXPORT StringTerminatedSubStream : public InputStream {
 private:
-    const int64_t m_offset;
-    InputStream* m_input;
-    KmpSearcher m_searcher;
+    class Private;
+    Private* const p;
 public:
     /**
      * @brief Create a stream from an InputStream that stops when it reaches
@@ -46,10 +44,8 @@ public:
      * @param i the underlying InputStream to read the data from
      * @param terminator the terminator indicating the end of this substream
      */
-    StringTerminatedSubStream(InputStream* i, const std::string& terminator)
-        : m_offset(i->position()), m_input(i) {
-        m_searcher.setQuery(terminator);
-    }
+    StringTerminatedSubStream(InputStream* i, const std::string& terminator);
+    ~StringTerminatedSubStream();
     int32_t read(const char*& start, int32_t min=0, int32_t max=0);
     int64_t reset(int64_t pos);
     /**
@@ -70,7 +66,7 @@ public:
      * @return the different between the start of the underlying stream
      * and the start of this stream
      */
-    int64_t offset() const { return m_offset; }
+    int64_t offset() const;
 };
 
 } //end namespace Strigi

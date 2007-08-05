@@ -22,7 +22,7 @@
 
 #include <string>
 #include <iconv.h>
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "bufferedstream.h"
 #include "streambase.h"
 

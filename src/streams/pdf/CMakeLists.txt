@@ -1,8 +1,8 @@
 #add_subdirectory(txlib)
 
 include_directories(..
-	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat
+	${strigi_BINARY_DIR}/src/streams
+	${strigi_SOURCE_DIR}/src/streams/strigi
 )
 if (Magic_FOUND)
 include_directories(${MAGIC_INCLUDE_DIR})
