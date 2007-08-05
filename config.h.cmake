@@ -54,7 +54,7 @@
 //////////////////////////////
 //missing functions
 //////////////////////////////
-#include "src/streams/compat/compat.h"
+#include "src/streams/strigi/compat.h"
 
 //////////////////////////////
 //misc
@@ -126,7 +126,7 @@
 	#endif
 #endif
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #define KDELIBSUFF "${KDELIBSUFF}"
 
