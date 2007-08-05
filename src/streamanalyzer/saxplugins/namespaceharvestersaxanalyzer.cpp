@@ -61,7 +61,9 @@ void NamespaceHarvesterSaxAnalyzer::startElement(const char *localname, const ch
                                   const char *uri, int nb_namespaces, const char **namespaces,
                                   int nb_attributes, int nb_defaulted, const char **attributes) {
     assert(analysisResult != 0);
-    usedNamespaces.insert(uri);
+    if (uri) {
+        usedNamespaces.insert(uri);
+    }
 }
 
 void NamespaceHarvesterSaxAnalyzer::endElement(const char *localname, const char *prefix,
