@@ -1,12 +1,12 @@
 #need to find a few default headers:
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(direct.h HAVE_DIRECT_H)          # src/streamindexer/filelister.cpp
-CHECK_INCLUDE_FILE_CXX(dirent.h HAVE_DIRENT_H)          # src/streams/compat/stgdirent.cpp/.h
+CHECK_INCLUDE_FILE_CXX(dirent.h HAVE_DIRENT_H)          # src/streams/strigi/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(dlfcn.h HAVE_DLFCN_H)            # src/streamindexer/analyzerloader.cpp/.h - do we really need it in .h?
-CHECK_INCLUDE_FILE_CXX(ndir.h HAVE_NDIR_H)              # src/streams/compat/stgdirent.cpp/.h
+CHECK_INCLUDE_FILE_CXX(ndir.h HAVE_NDIR_H)              # src/streams/strigi/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)          # unused !
-CHECK_INCLUDE_FILE_CXX(sys/dir.h HAVE_SYS_DIR_H)        # src/streams/compat/stgdirent.cpp/.h
-CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)      # src/streams/compat/stgdirent.cpp/.h
+CHECK_INCLUDE_FILE_CXX(sys/dir.h HAVE_SYS_DIR_H)        # src/streams/strigi/stgdirent.cpp/.h
+CHECK_INCLUDE_FILE_CXX(sys/ndir.h HAVE_SYS_NDIR_H)      # src/streams/strigi/stgdirent.cpp/.h
 CHECK_INCLUDE_FILE_CXX(windows.h HAVE_WINDOWS_H)        # src/streamindexer/filelister.cpp
 
 # files that may define the u?int{8,16,32,54}_t types
@@ -20,8 +20,8 @@ CHECK_INCLUDE_FILE_CXX(regex.h HAVE_REGEX_H)            # src/dummyindexer/*
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)               # unused !
-CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)   # src/luceneindexer/cluceneindexmanager.cpp, src/luceneindexer/cluceneindexreader.cpp, src/streams/compat/timeofday.h
-CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)             # src/streams/mailinputstream.cpp, src/streams/compat/compat.cpp
+CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)   # src/luceneindexer/cluceneindexmanager.cpp, src/luceneindexer/cluceneindexreader.cpp, src/streams/strigi/timeofday.h
+CHECK_FUNCTION_EXISTS(isblank HAVE_ISBLANK)             # src/streams/mailinputstream.cpp, src/streams/strigi/compat.cpp
 CHECK_FUNCTION_EXISTS(mkstemp HAVE_MKSTEMP)             # src/streamanalyzer/helperendanalyzer.cpp
 CHECK_FUNCTION_EXISTS(nanosleep HAVE_NANOSLEEP)         # src/storage/sqlitestorage.cpp, src/daemon/indexscheduler.cpp, src/searchclient/cmdlinestrigi.cpp
 CHECK_FUNCTION_EXISTS(strcasecmp HAVE_STRCASECMP)       # src/streamindexer/expatsaxendanalyzer.cpp, src/streamindexer/saxendanalyzer.cpp
@@ -106,22 +106,22 @@ CONFIGURE_FILE(
 # this is needed to be able to build a combined mingw/msvc strigi package
 if(WIN32)
   if(MINGW)
-    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig_mingw.h)
+    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_mingw.h)
   else(MINGW) # msvc
-    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig_msvc.h)
+    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_msvc.h)
   endif(MINGW)
-  SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
+  SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig.h)
 
   CONFIGURE_FILE(
-    ${strigi_SOURCE_DIR}/src/streams/compat/strigiconfig.h.win32.cmake
+    ${strigi_SOURCE_DIR}/src/streams/strigi/strigiconfig.h.win32.cmake
     ${strigi_extra_config_output}
   )
 else(WIN32)
-  SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/compat/strigiconfig.h)
+  SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig.h)
 endif(WIN32)
 
 CONFIGURE_FILE(
-  ${strigi_SOURCE_DIR}/src/streams/compat/strigiconfig.h.cmake
+  ${strigi_SOURCE_DIR}/src/streams/strigi/strigiconfig.h.cmake
   ${strigi_config_output}
 )
 
