@@ -56,8 +56,9 @@ public:
     /**
      * Is called when the analysis of a stream is finished. You can do
      * cleanups here, if necessary.
+     * \param complete  This parameter tell whether all of the file was read.
      */
-    virtual void endAnalysis() {}
+    virtual void endAnalysis(bool complete) = 0;
     /**
      * Is called for every line in the stream. Here, the actual analysis
      * takes place.

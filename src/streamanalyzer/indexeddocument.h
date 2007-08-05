@@ -25,7 +25,7 @@
 #ifdef HAVE_STDINT_H
  #include <stdint.h>
 #endif
-#include "strigiconfig.h"
+#include "strigi/strigiconfig.h"
 
 namespace Strigi {
 

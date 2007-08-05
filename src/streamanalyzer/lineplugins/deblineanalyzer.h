@@ -29,6 +29,7 @@ class DebLineAnalyzer : public Strigi::StreamLineAnalyzer {
 private:
     const DebLineAnalyzerFactory* factory;
     virtual void startAnalysis(Strigi::AnalysisResult*);
+    virtual void endAnalysis(bool complete);
     virtual void handleLine(const char* data, uint32_t length);
     virtual bool isReadyWithStream();
     const char* name() const { return "DebLineAnalyzer"; }

@@ -19,7 +19,7 @@
  */
 
 #include "xpmlineanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include <cstring>

@@ -39,7 +39,7 @@ public:
     ~DigestEventAnalyzer();
     const char* name() const { return "DigestEventAnalyzer"; }
     void startAnalysis(Strigi::AnalysisResult*);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void handleData(const char* data, uint32_t length);
     bool isReadyWithStream();
 };

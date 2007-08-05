@@ -19,7 +19,7 @@
  */
 
 #include "id3v2throughanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include <iostream>
 #include <cstring>

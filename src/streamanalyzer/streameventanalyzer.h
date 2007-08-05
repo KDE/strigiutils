@@ -30,7 +30,12 @@ public:
     virtual ~StreamEventAnalyzer() {}
     virtual const char* name() const = 0;
     virtual void startAnalysis(AnalysisResult*) = 0;
-    virtual void endAnalysis() {}
+    /**
+     * Is called when the analysis of a stream is finished. You can do
+     * cleanups here, if necessary.
+     * \param complete  This parameter tell whether all of the file was read.
+     */
+    virtual void endAnalysis(bool complete) = 0;
     virtual void handleData(const char* data, uint32_t length) = 0;
     virtual bool isReadyWithStream() = 0;
 };

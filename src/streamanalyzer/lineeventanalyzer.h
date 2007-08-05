@@ -21,7 +21,7 @@
 #ifndef LINEEVENTANALYZER
 #define LINEEVENTANALYZER
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streameventanalyzer.h"
 #include <vector>
 #include <string>
@@ -50,7 +50,7 @@ private:
 
     const char* name() const { return "LineEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void handleData(const char* data, uint32_t length);
     void handleUtf8Data(const char* data, uint32_t length);
     bool isReadyWithStream();

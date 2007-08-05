@@ -21,7 +21,7 @@
 #ifndef STREAMANALYZERFACTORY
 #define STREAMANALYZERFACTORY
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #include <vector>
 

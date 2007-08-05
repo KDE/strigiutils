@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streamanalyzer.h"
 
 namespace Strigi {

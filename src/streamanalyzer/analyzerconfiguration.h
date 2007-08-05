@@ -103,13 +103,6 @@ public:
      */
     virtual bool indexDir(const char* path, const char* filename) const;
     /**
-     * @internal
-     * @brief Print a list of the filters to stdout
-     *
-     * For debugging.
-     */
-    void printFilters() const;
-    /**
      * @brief Whether to use the given factory.
      *
      * Allows you to prevent the analyzers produced by a particular
@@ -117,7 +110,9 @@ public:
      *
      * The default implementation allows all factories.
      */
-    virtual bool useFactory(StreamAnalyzerFactory*) const { return true; }
+    virtual bool useFactory(StreamAnalyzerFactory*) const {
+        return true;
+    }
     /**
      * @brief Whether to use the given factory.
      *
@@ -198,7 +193,28 @@ public:
      * @return true if more text should be added to the index, false
      * if no more text should be added
      */
-    virtual bool addMoreText() const {return true;}
+    virtual bool addMoreText() const {
+        return true;
+    }
+    /**
+     * @brief Return the maximal number of bytes that may be read from the
+     * stream whose results are being written into @p ar.
+     *
+     * This function allows one to do analyses that only look at the first
+     * bytes of streams for performance reasons. A scenario could be for getting
+     * metadata for showing in a file manager.
+     *
+     * The individual analyzers should honour the value that is returned from
+     * this function. They should also not assume that this value is constant
+     * during the analysis and should regularly check whether they have not
+     * read too much.
+     *
+     * @return the maximal number of bytes that may be read, or -1 if there is
+     *         no limit
+     **/
+    virtual int64_t maximalStreamReadLength(const Strigi::AnalysisResult& ar) {
+        return -1;
+    }
     /**
      * @brief Determine the field indexing properties of a field.
      *

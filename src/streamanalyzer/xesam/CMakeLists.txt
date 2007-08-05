@@ -1,7 +1,7 @@
 include_directories (${LIBXML2_INCLUDE_DIR}
                      ../
                      ${strigi_SOURCE_DIR}/src/daemon
-                     ${strigi_BINARY_DIR}/src/streams/compat)
+                     ${strigi_BINARY_DIR}/src/streams)
 
 set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
              StrigiQueryBuilder.cc)

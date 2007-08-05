@@ -24,7 +24,7 @@ void
 HtmlSaxAnalyzer::startAnalysis(AnalysisResult*) {
 }
 void
-HtmlSaxAnalyzer::endAnalysis() {
+HtmlSaxAnalyzer::endAnalysis(bool /*complete*/) {
 }
 void
 HtmlSaxAnalyzer::startElement(const char* localname, const char* prefix,

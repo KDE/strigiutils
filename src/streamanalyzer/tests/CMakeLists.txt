@@ -1,4 +1,4 @@
-include_directories( ..  ${strigi_BINARY_DIR}/src/streams/compat )
+include_directories( ..  ${strigi_BINARY_DIR}/src/streams )
 CREATE_TEST_SOURCELIST(Tests streamanalyzertests.cpp querytests.cpp)
 
 ADD_EXECUTABLE(streamanalyzertest ${Tests})

@@ -277,7 +277,7 @@ MimeEventAnalyzer::startAnalysis(AnalysisResult* ar) {
     wasCalled = false;
 }
 void
-MimeEventAnalyzer::endAnalysis() {
+MimeEventAnalyzer::endAnalysis(bool complete) {
 }
 void
 MimeEventAnalyzer::handleData(const char* data, uint32_t length) {

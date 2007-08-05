@@ -20,7 +20,7 @@
 
 #ifndef ANALYZERPLUGIN_H
 #define ANALYZERPLUGIN_H
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 #include <list>
 

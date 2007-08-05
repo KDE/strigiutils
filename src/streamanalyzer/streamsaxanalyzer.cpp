@@ -37,7 +37,7 @@ StreamSaxAnalyzer::~StreamSaxAnalyzer() {
 }
 
 void
-StreamSaxAnalyzer::endAnalysis() {
+StreamSaxAnalyzer::endAnalysis(bool /*complete*/) {
 }
 
 void

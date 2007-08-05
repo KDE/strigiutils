@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "tarendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"

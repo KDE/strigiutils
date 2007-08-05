@@ -21,7 +21,7 @@
 #include "deblineanalyzer.h"
 #include "analysisresult.h"
 #include "streamendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "fieldtypes.h"
 #include <iostream> 
 #include <cstring>
@@ -70,11 +70,14 @@ DebLineAnalyzer::startAnalysis(AnalysisResult* res)
     result=res;
     finished=0;
 }
+void
+DebLineAnalyzer::endAnalysis(bool /*complete*/) {
+}
 
 void 
 DebLineAnalyzer::handleLine(const char* data, uint32_t length)
 {
-	std::string line(data,length);
+	string line(data,length);
 	if (line.find("Package: ",0)==0) { result->addValue(factory->nameField, line.substr(9,line.size())); finished++; }
 	if (line.find("Description: ",0)==0) { result->addValue(factory->summaryField, line.substr(13,line.size())); finished++; }
 	if (line.find("Version: ")==0) { result->addValue(factory->versionField, line.substr(9,line.size())); finished++; }
@@ -85,7 +88,7 @@ DebLineAnalyzer::handleLine(const char* data, uint32_t length)
 	    size_t end;
 	    do {
 		end=line.find(", ",start);
-		if (end==std::string::npos) end=length;
+		if (end==string::npos) end=length;
 		result->addValue(factory->dependsField, line.substr(start, end-start));
 		start=end+2;
 	    } while (start<length);
@@ -102,9 +105,9 @@ DebLineAnalyzer::isReadyWithStream()
 
 class Factory : public AnalyzerFactoryFactory {
 public:
-    std::list<StreamLineAnalyzerFactory*> 
+    list<StreamLineAnalyzerFactory*> 
     streamLineAnalyzerFactories() const {
-        std::list<StreamLineAnalyzerFactory*> af;
+        list<StreamLineAnalyzerFactory*> af;
         af.push_back(new DebLineAnalyzerFactory());
         return af;
     }

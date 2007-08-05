@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "mailendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "mailinputstream.h"
 #include "encodinginputstream.h"
 #include "analysisresult.h"

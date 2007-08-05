@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "rpmendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "rpminputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"

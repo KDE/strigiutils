@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "analyzerconfiguration.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "strigi_fnmatch.h"
 #include "fieldproperties.h"
 #include "fieldpropertiesdb.h"
@@ -121,12 +121,6 @@ AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
         }
     }
     return true;
-}
-void
-AnalyzerConfiguration::printFilters() const {
-    vector<AnalyzerConfigurationPrivate::Pattern>::const_iterator i;
-    for (i = p->m_patterns.begin(); i != p->m_patterns.end(); ++i) {
-    }
 }
 /**
  * We need to transform the incoming patterns like this: */

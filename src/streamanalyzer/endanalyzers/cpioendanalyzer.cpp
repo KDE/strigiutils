@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "cpioendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "cpioinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"

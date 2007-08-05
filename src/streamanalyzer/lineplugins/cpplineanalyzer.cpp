@@ -19,7 +19,7 @@
  */
 
 #include "cpplineanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "fieldtypes.h"
 
@@ -90,9 +90,9 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
     if (line.find("*/") != string::npos) inComment = false;
 }
 void
-CppLineAnalyzer::endAnalysis() {
+CppLineAnalyzer::endAnalysis(bool complete) {
     // we assume all cpp files must have includes
-    if (includes) {
+    if (includes && complete) {
         analysisResult->addValue(factory->codeLinesField, codeLines);
         analysisResult->addValue(factory->commentLinesField, commentLines);
         analysisResult->addValue(factory->totalLinesField, totalLines);

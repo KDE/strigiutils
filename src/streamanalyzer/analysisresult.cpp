@@ -23,7 +23,7 @@
 #endif
 
 #include "analysisresult.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexwriter.h"
 #include "analyzerconfiguration.h"
 #include "streamanalyzer.h"

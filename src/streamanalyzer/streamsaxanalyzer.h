@@ -60,7 +60,7 @@ public:
      * cleanups here, if necessary. Note: This is also called if, while
      * parsing the XML document, non-well-formedness is detected.
      */
-    virtual void endAnalysis();
+    virtual void endAnalysis(bool complete) = 0;
     /**
      * This is called when an opening XML tag was detected. For documentation
      * purposes, let's suppose we have

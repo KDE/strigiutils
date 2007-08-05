@@ -40,6 +40,7 @@ public:
     ~XpmLineAnalyzer() {}
     const char* name() const { return "XpmLineAnalyzer"; }
     void startAnalysis(Strigi::AnalysisResult*);
+    void endAnalysis(bool complete) {}
     void handleLine(const char* data, uint32_t length);
     bool isReadyWithStream();
 };

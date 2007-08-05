@@ -21,7 +21,7 @@
 #ifndef SAXEVENTANALYZER
 #define SAXEVENTANALYZER
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streameventanalyzer.h"
 #include <vector>
 
@@ -36,7 +36,7 @@ private:
 
     const char* name() const { return "SaxEventAnalyzer"; }
     void startAnalysis(AnalysisResult*);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void handleData(const char* data, uint32_t length);
     bool isReadyWithStream();
 public:

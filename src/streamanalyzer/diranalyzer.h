@@ -20,7 +20,7 @@
 #ifndef DIRANALYZER_H
 #define DIRANALYZER_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <string>
 #include <vector>
 

@@ -74,7 +74,7 @@ void OdfSaxAnalyzer::startAnalysis(AnalysisResult *result) {
     }
 }
 
-void OdfSaxAnalyzer::endAnalysis() {
+void OdfSaxAnalyzer::endAnalysis(bool /*complete*/) {
     m_result = 0;
 }
 

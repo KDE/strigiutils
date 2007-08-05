@@ -19,7 +19,7 @@
  */
 
 #include "namespaceharvestersaxanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "fieldtypes.h"
 
@@ -46,7 +46,7 @@ NamespaceHarvesterSaxAnalyzer::startAnalysis(AnalysisResult *i) {
     usedNamespaces.clear();
 }
 
-void NamespaceHarvesterSaxAnalyzer::endAnalysis() {
+void NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
     set<string>::iterator siter; // Iterator for looping over list elements
     for ( siter = usedNamespaces.begin(); siter != usedNamespaces.end(); ++siter ) {
         analysisResult->addValue(factory->usesNamespaceField, *siter);

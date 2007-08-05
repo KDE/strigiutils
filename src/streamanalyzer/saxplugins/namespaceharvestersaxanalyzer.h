@@ -22,7 +22,7 @@
 
 #include "streamsaxanalyzer.h"
 #include "analyzerplugin.h"
-#include <iostream>;
+#include <iostream>
 #include <set>
 #include <string>
 
@@ -41,7 +41,7 @@ public:
     const char* name() const { return "NamespaceHarvesterSaxAnalyzer"; }
 
     void startAnalysis(Strigi::AnalysisResult *result);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void startElement(const char *localname, const char *prefix,
                       const char *uri, int nb_namespaces, const char **namespaces,
                       int nb_attributes, int nb_defaulted, const char **attributes);

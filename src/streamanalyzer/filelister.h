@@ -23,7 +23,7 @@
 #include <sys/types.h>
 #include <string>
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 
 namespace Strigi {
     class AnalyzerConfiguration;

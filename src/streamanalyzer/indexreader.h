@@ -20,7 +20,7 @@
 #ifndef INDEXREADER_H
 #define INDEXREADER_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexeddocument.h"
 #include "variant.h"
 #include <vector>

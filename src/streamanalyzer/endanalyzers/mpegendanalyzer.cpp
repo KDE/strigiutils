@@ -23,7 +23,7 @@
   */   
 
 #include "mpegendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "textutils.h"
 #include <iostream>

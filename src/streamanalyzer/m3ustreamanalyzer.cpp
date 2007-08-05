@@ -37,20 +37,16 @@ void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg)
 // Analyzer
 void M3uLineAnalyzer::startAnalysis(Strigi::AnalysisResult* i) 
 {
-    if (i->extension() != "m3u")
-        extensionOk = false;
-    else
-        extensionOk = true;
+    extensionOk = i->extension() == "m3u" || i->extension() == "M3U";
 
     analysisResult = i;
-    ready = false;
     line = 0;
     count = 0;
 }
 
 void M3uLineAnalyzer::handleLine(const char* data, uint32_t length) 
 {
-    if (ready || !extensionOk) 
+    if (!extensionOk) 
         return;
     
     ++line;
@@ -67,21 +63,20 @@ void M3uLineAnalyzer::handleLine(const char* data, uint32_t length)
         // TODO: Add the url to the trackPathField
 
         ++count;
-    } else {
-        if (line == 1)
-            if (strncmp(data, "#EXTM3U", 7) == 0)
-                analysisResult->addValue(factory->m3uTypeField, "extended");
+    } else if (line == 1 && strncmp(data, "#EXTM3U", 7) == 0) {
+        analysisResult->addValue(factory->m3uTypeField, "extended");
     } 
 }
 
 bool M3uLineAnalyzer::isReadyWithStream() 
 {
-    return ready;
+    // we can analyze each line and are only done if the extension is not ok
+    return !extensionOk;
 }
 
-void M3uLineAnalyzer::endAnalysis()
+void M3uLineAnalyzer::endAnalysis(bool complete)
 {
-    if (extensionOk)
+    if (complete && extensionOk)
         analysisResult->addValue(factory->tracksField, count);
 }
 

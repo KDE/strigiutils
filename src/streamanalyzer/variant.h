@@ -20,7 +20,7 @@
 #ifndef VARIANT_H
 #define VARIANT_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <string>
 #include <vector>
 #include <sstream>

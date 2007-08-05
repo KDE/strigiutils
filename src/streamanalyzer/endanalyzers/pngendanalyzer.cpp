@@ -20,7 +20,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "pngendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <time.h>
 
 #include "analysisresult.h"

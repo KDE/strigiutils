@@ -60,7 +60,7 @@ public:
     }
 
     void startAnalysis(Strigi::AnalysisResult *result);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void startElement(const char *localname, const char *prefix,
                       const char *uri, int nb_namespaces, const char **namespaces,
                       int nb_attributes, int nb_defaulted, const char **attributes);

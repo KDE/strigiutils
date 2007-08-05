@@ -8,8 +8,8 @@ add_subdirectory(xesam)
 
 include_directories( ./ ../streams ../streams/pdf ${BZIP2_INCLUDE_DIR}
 	endanalyzers ${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
-	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat ${CMAKE_BINARY_DIR} )
+	${strigi_BINARY_DIR}/src/streams
+	${strigi_SOURCE_DIR}/src/streams/strigi ${CMAKE_BINARY_DIR} )
 
 set(streamanalyzer_SRCS
 	analysisresult.cpp

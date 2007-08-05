@@ -96,16 +96,16 @@ LineEventAnalyzer::initEncoding(std::string enc) {
     }
 }
 void
-LineEventAnalyzer::endAnalysis() {
+LineEventAnalyzer::endAnalysis(bool complete) {
     // flush the last line if it did not end with a newline character
-    if(lineBuffer.size() > 0) {
+    if(complete && lineBuffer.size() > 0) {
         emitData(lineBuffer.c_str(), lineBuffer.size());
         lineBuffer.assign("");
     }
 
     for (uint i=0; i < numAnalyzers; ++i) {
         if (started[i]) {
-            line[i]->endAnalysis();
+            line[i]->endAnalysis(complete);
         }
     }
 }

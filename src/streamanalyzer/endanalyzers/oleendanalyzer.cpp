@@ -23,7 +23,7 @@
 #endif
 
 #include "oleendanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "oleinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"

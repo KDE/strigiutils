@@ -1,4 +1,4 @@
-include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams/compat)
+include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
 
 MACRO(ADD_STRIGITA libname files)
   if(WIN32)

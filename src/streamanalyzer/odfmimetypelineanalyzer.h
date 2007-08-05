@@ -46,7 +46,7 @@ public:
     }
 
     void startAnalysis(Strigi::AnalysisResult *result);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void handleLine(const char *data, uint32_t length);
     bool isReadyWithStream();
 

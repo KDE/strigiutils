@@ -20,7 +20,7 @@
  */
 
 #include "filelister.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "strigi_thread.h"
 #include "analyzerconfiguration.h"
 #include <set>

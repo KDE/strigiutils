@@ -26,7 +26,7 @@
  #include <unistd.h>
 #endif
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "compat.h"
 #include "processinputstream.h"
 #include "textendanalyzer.h"

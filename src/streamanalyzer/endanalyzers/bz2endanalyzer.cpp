@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "bz2endanalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "bz2inputstream.h"
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"

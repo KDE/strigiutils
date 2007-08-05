@@ -160,10 +160,10 @@ SaxEventAnalyzer::startAnalysis(AnalysisResult* result) {
     }
 }
 void
-SaxEventAnalyzer::endAnalysis() {
+SaxEventAnalyzer::endAnalysis(bool complete) {
     vector<StreamSaxAnalyzer*>::iterator i;
     for (i = p->sax.begin(); i != p->sax.end(); ++i) {
-        (*i)->endAnalysis();
+        (*i)->endAnalysis(complete);
     }
 }
 void

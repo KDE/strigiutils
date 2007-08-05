@@ -20,6 +20,7 @@
 #include "analyzerloader.h"
 #include "analyzerplugin.h"
 #include <string>
+#include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <sys/types.h>
@@ -141,7 +142,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
         // module was already loaded
         return;
     }
-    fprintf(stderr, "%s\n", lib);
+    cerr << lib << endl;
     StgModuleType handle;
 #ifdef HAVE_DLFCN_H
     // do not use RTLD_GLOBAL here
@@ -150,6 +151,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     handle = LoadLibrary(lib);
 #endif
     if (!handle) {
+        cerr << "Could not load '" << lib << "':" << dlerror() << endl;
         return;
     }
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())

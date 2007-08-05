@@ -101,11 +101,18 @@ public:
 
 } // namespace Strigi
 
-StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c) :conf(c), writer(0) {
+StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
+        :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.fieldRegister().sizeField;
 
-    moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
+    // load the plugins from the environment setting
+    const char* strigipluginpath(getenv("STRIGI_PLUGIN_PATH"));
+    if (strigipluginpath) {
+        moduleLoader->loadPlugins(strigipluginpath);
+    } else {
+        moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
+    }
     
     initializeSaxFactories();
     initializeLineFactories();
@@ -345,11 +352,6 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 }
 char
 StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
-//    static int count = 1;
-//    if (++count % 1000 == 0) {
-//        fprintf(stderr, "file #%i: %s\n", count, path.c_str());
-//    }
-    //printf("depth #%i: %s\n", depth, path.c_str());
 
     // retrieve or construct the through analyzers and end analyzers
     vector<vector<StreamThroughAnalyzer*> >::iterator tIter;

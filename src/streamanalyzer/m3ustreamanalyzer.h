@@ -34,9 +34,8 @@ private:
     Strigi::AnalysisResult* analysisResult;
     const M3uLineAnalyzerFactory* factory;
     int32_t line;
-    bool ready;
     bool extensionOk;
-    int count;
+    int32_t count;
 
 public:
     M3uLineAnalyzer(const M3uLineAnalyzerFactory* f) : factory(f) {}
@@ -49,7 +48,7 @@ public:
     void startAnalysis(Strigi::AnalysisResult*);
     void handleLine(const char* data, uint32_t length);
     bool isReadyWithStream();
-    void endAnalysis();
+    void endAnalysis(bool complete);
 };
 
 class M3uLineAnalyzerFactory : public Strigi::StreamLineAnalyzerFactory 

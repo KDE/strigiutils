@@ -21,7 +21,7 @@
 #ifndef FIELDPROPERIESDB_H
 #define FIELDPROPERIESDB_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "fieldproperties.h"
 #include <map>
 #include <vector>

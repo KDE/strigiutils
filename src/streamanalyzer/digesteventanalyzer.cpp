@@ -43,7 +43,7 @@ DigestEventAnalyzer::handleData(const char* data, uint32_t length) {
     sha1.process(data, length);
 }
 void
-DigestEventAnalyzer::endAnalysis() {
+DigestEventAnalyzer::endAnalysis(bool complete) {
 //fprintf(stderr, "end\n");
     const unsigned char* digest = sha1.hash();
     char d[41];

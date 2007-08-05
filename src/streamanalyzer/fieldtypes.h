@@ -21,7 +21,7 @@
 #ifndef REGISTEREDFIELD_H
 #define REGISTEREDFIELD_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "fieldproperties.h"
 #include <map>
 #include <string>

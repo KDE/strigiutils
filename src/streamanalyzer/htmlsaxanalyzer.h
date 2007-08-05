@@ -21,7 +21,7 @@
 #ifndef HTMLSAXANALYZER
 #define HTMLSAXANALYZER
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "streamsaxanalyzer.h"
 #include <vector>
 
@@ -31,7 +31,7 @@ class HtmlSaxAnalyzer : public StreamSaxAnalyzer {
 public:
     const char* name() const { return "HtmlSaxAnalyzer"; }
     void startAnalysis(AnalysisResult*);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     void startElement(const char* localname, const char* prefix,
         const char* uri, int nb_namespaces, const char** namespaces,
         int nb_attributes,int nb_defaulted,const char** attributes);

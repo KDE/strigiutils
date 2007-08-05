@@ -20,7 +20,7 @@
 #ifndef QUERY_H
 #define QUERY_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <ostream>
 #include <vector>
 #include <string>

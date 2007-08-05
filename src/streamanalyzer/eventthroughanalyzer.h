@@ -21,7 +21,7 @@
 #ifndef EVENTTHROUGHANALYZER
 #define EVENTTHROUGHANALYZER
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "dataeventinputstream.h"
 #include "streamthroughanalyzer.h"
 #include <vector>
@@ -47,7 +47,7 @@ private:
     InputStream* connectInputStream(InputStream* in);
     bool isReadyWithStream();
     bool handleData(const char* data, uint32_t size);
-    void handleEnd();
+    void handleEnd(bool complete);
     const char* name() const { return "EventThroughAnalyzer"; }
 public:
     EventThroughAnalyzer(std::vector<StreamEventAnalyzer*>& e)

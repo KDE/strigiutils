@@ -45,7 +45,7 @@ public:
     const char* name() const { return "CppLineAnalyzer"; }
     void startAnalysis(Strigi::AnalysisResult*);
     void handleLine(const char* data, uint32_t length);
-    void endAnalysis();
+    void endAnalysis(bool complete);
     bool isReadyWithStream();
 };
 
