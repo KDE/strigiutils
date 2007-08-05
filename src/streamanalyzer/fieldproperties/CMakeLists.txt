@@ -23,5 +23,6 @@ install(FILES
 	strigi_text.fieldproperties
 	strigi_compressed.fieldproperties
 	strigi_diff.fieldproperties
+	strigi_xml.fieldproperties
 	DESTINATION share/strigi/fieldproperties
 )
