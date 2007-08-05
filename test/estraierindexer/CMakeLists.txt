@@ -4,8 +4,8 @@ include_directories (. .. ${INC_DIR}
                      ../indextests
                      ${strigi_SOURCE_DIR}/src/streamanalyzer
                      ${strigi_SOURCE_DIR}/src/streams
-                     ${strigi_BINARY_DIR}/src/streams/compat
-                     ${strigi_SOURCE_DIR}/src/streams/compat
+                     ${strigi_BINARY_DIR}/src/streams
+                     ${strigi_SOURCE_DIR}/src/streams/strigi
                      ${EST_INCLUDE_DIR}
 )
 

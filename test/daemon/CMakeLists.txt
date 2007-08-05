@@ -10,8 +10,8 @@ include_directories (.  ${INC_DIR}
                         ${strigi_SOURCE_DIR}/src/xsd
                         ${strigi_SOURCE_DIR}/src/daemon
                         ${strigi_SOURCE_DIR}/src/streamanalyzer
-                        ${strigi_SOURCE_DIR}/src/streams/compat 
-                        ${strigi_BINARY_DIR}/src/streams/compat
+                        ${strigi_SOURCE_DIR}/src/streams/strigi
+                        ${strigi_BINARY_DIR}/src/streams
 )
 
 add_executable(daemonconfiguratortest daemonconfiguratortest.cpp)
