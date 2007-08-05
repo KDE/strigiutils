@@ -21,7 +21,7 @@
  #include <config.h>
 #endif
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "xmlindexwriter.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"

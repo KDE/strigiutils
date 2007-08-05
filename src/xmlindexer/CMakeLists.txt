@@ -1,8 +1,8 @@
 include_directories(
         ../streamanalyzer
         ../streams
-	../streams/compat
-	${strigi_BINARY_DIR}/src/streams/compat
+	../streams/strigi
+	${strigi_BINARY_DIR}/src/streams
 	${BZIP2_INCLUDE_DIR}
 )
 

@@ -23,7 +23,7 @@
 #include "indexwriter.h"
 #include "diranalyzer.h"
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "event.h"
 #include "eventlistenerqueue.h"
 #include "analyzerconfiguration.h"

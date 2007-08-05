@@ -1,8 +1,8 @@
 subdirs(tests)
 
-include_directories( ../streamanalyzer ../streams ../streams/compat
+include_directories( ../streamanalyzer ../streams ../streams/strigi
 	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR}
-	${strigi_BINARY_DIR}/src/streams/compat)
+	${strigi_BINARY_DIR}/src/streams)
 
 add_library(sqliteindex
 	sqliteindexmanager.cpp

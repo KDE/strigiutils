@@ -1,4 +1,4 @@
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "cluceneindexmanager.h"
 #include "indexmanagertests.h"
 #include "indexwritertests.h"

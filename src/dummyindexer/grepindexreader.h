@@ -20,7 +20,7 @@
 #ifndef GREPINDEXREADER_H
 #define GREPINDEXREADER_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexreader.h"
 
 #include <map>

@@ -1,5 +1,5 @@
 include_directories( ../daemon ../streamanalyzer ../streams
-	${strigi_BINARY_DIR}/src/streams/compat)
+	${strigi_BINARY_DIR}/src/streams)
 
 add_library(strigihtmlgui SHARED strigihtmlgui.cpp)
 set_target_properties(strigihtmlgui PROPERTIES

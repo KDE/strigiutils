@@ -20,7 +20,7 @@
 #ifndef CLUCENEINDEXREADER_H
 #define CLUCENEINDEXREADER_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexreader.h"
 
 #include <map>

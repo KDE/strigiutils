@@ -1,5 +1,5 @@
 if(NOT HAVE_REGEX_H)
-  set(REGEX_INCLUDE_DIR ${strigi_SOURCE_DIR}/src/streams/compat/regex)
+  set(REGEX_INCLUDE_DIR ${strigi_SOURCE_DIR}/src/streams/strigi/regex)
   set(REGEX_SOURCES ${REGEX_INCLUDE_DIR}/regex.c)
   # TODO: install copyright file !
 endif(NOT HAVE_REGEX_H)
@@ -8,7 +8,7 @@ include_directories(
   ../streamanalyzer
   ../streams
   ${REGEX_INCLUDE_DIR}
-  ${strigi_BINARY_DIR}/src/streams/compat
+  ${strigi_BINARY_DIR}/src/streams
 )
 
 add_executable(dummyindexer dummyindexer.cpp)

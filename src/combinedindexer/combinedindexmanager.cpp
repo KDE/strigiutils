@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "combinedindexmanager.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "variant.h"
 
 #include "grepindexmanager.h"

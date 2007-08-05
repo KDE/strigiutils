@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexreadertests.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexreader.h"
 using namespace Strigi;
 

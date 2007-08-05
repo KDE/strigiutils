@@ -21,7 +21,7 @@
 #define CLUCENEINDEXWRITER_H
 
 #include <CLucene.h>
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexwriter.h"
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"

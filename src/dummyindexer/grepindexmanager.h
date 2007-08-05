@@ -20,7 +20,7 @@
 #ifndef GREPINDEXMANAGER_H
 #define GREPINDEXMANAGER_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexmanager.h"
 
 class GrepIndexManager : public Strigi::IndexManager {

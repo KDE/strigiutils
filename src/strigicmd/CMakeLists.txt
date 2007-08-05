@@ -2,8 +2,8 @@ include_directories(
     ../combinedindexer
     ../streamanalyzer
     ../streamanalyzer/xesam
-	${strigi_BINARY_DIR}/src/streams/compat
-    ${strigi_SOURCE_DIR}/src/streams/compat
+	${strigi_BINARY_DIR}/src/streams
+    ${strigi_SOURCE_DIR}/src/streams/strigi
     ${LIBXML2_INCLUDE_DIR}
 )
 

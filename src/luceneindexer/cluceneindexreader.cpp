@@ -23,7 +23,7 @@
 #endif
 
 #include "cluceneindexreader.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "query.h"
 #include "queryparser.h"
 #include "variant.h"

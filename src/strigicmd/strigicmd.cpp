@@ -24,7 +24,7 @@
 #include "indexeddocument.h"
 #include "analyzerconfiguration.h"
 #include "diranalyzer.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "query.h"
 #include "queryparser.h"
 #include "XesamQLParser.h"

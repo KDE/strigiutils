@@ -1,6 +1,6 @@
 
 include_directories( ../streamanalyzer ../combinedindexer ../streams ../xsd dbus
-	${strigi_BINARY_DIR}/src/streams/compat ../streams/compat)
+	${strigi_BINARY_DIR}/src/streams/strigi ../streams/strigi)
 
 add_executable(newdaemon main.cpp jobqueue.cpp)
 

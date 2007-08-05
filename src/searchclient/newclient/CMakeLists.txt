@@ -1,5 +1,5 @@
 include_directories(../../streamanalyzer ../../htmlgui ../../streams ../../daemon
-	qtdbus ${strigi_BINARY_DIR}/src/streams/compat filterwidget)
+	qtdbus ${strigi_BINARY_DIR}/src/streams/strigi filterwidget)
 
 include(${QT_USE_FILE})
 

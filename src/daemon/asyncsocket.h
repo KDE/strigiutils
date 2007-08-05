@@ -20,7 +20,7 @@
 #ifndef ASYNCSOCKET_H
 #define ASYNCSOCKET_H
 
-#include "strigiconfig.h"
+#include "strigi/strigiconfig.h"
 #include <string>
 
 class SEARCHCLIENT_EXPORT AsyncSocket {

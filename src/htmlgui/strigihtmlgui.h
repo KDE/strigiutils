@@ -20,7 +20,7 @@
 #ifndef STRIGIHTMLGUI_H
 #define STRIGIHTMLGUI_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "clientinterface.h"
 #include <ostream>
 #include <map>

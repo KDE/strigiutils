@@ -20,9 +20,9 @@
 #ifndef STRIGIASYNCCLIENT
 #define STRIGIASYNCCLIENT
 
+#include <strigi/strigiconfig.h>
 #include "strigitypes.h"
 #include <QtCore/QMutex>
-#include "strigiconfig.h"
 
 /**
  * Wrapper class for accessing the Strigi search client.

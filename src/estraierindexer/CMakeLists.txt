@@ -1,8 +1,8 @@
 subdirs(tests)
 
 include_directories( ../streamanalyzer ../streams ${EST_INCLUDE_DIR}
-	${strigi_BINARY_DIR}/src/streams/compat
-	${strigi_SOURCE_DIR}/src/streams/compat)
+	${strigi_BINARY_DIR}/src/streams
+	${strigi_SOURCE_DIR}/src/streams/strigi)
 
 add_library(estraierindex
 	estraierindexmanager.cpp

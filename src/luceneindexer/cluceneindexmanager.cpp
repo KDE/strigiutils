@@ -23,7 +23,7 @@
 #endif
 
 #include "cluceneindexmanager.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include <CLucene.h>
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"

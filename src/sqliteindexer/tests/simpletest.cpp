@@ -1,4 +1,4 @@
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "sqliteindexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"

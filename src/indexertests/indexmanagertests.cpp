@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexmanagertests.h"
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "indexreader.h"
 #include "indexwriter.h"
 #include "analysisresult.h"

@@ -20,7 +20,7 @@
 #ifndef SOCKETCLIENT_H
 #define SOCKETCLIENT_H
 
-#include "strigiconfig.h"
+#include <strigi/strigiconfig.h>
 #include "clientinterface.h"
 
 class SEARCHCLIENT_EXPORT SocketClient : public ClientInterface {
