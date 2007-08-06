@@ -5,10 +5,7 @@
 #  XATTR_INCLUDE_DIR - the xattr include directory 
 # 
  
-FIND_PATH(XATTR_INCLUDE_DIR attr/xattr.h 
-  /usr/include 
-  /usr/local/include 
-) 
+FIND_PATH(XATTR_INCLUDE_DIR attr/xattr.h) 
  
 IF(XATTR_INCLUDE_DIR) 
    SET(XATTR_FOUND TRUE) 

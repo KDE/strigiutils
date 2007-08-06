@@ -9,10 +9,7 @@ include (MacroEnsureVersion)
 
 SET(CPPUNIT_MIN_VERSION 1.12.0)
 
-FIND_PROGRAM(CPPUNIT_CONFIG_EXECUTABLE cppunit-config PATHS
-    /usr/bin
-    /usr/local/bin
-)
+FIND_PROGRAM(CPPUNIT_CONFIG_EXECUTABLE cppunit-config )
 
 IF(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 

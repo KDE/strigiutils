@@ -23,8 +23,6 @@ ENDIF(EXISTS ${PROJECT_CMAKE}/CLuceneConfig.cmake)
   SET(TRIAL_INCLUDE_PATHS
     $ENV{CLUCENE_HOME}/include
     ${CMAKE_INSTALL_PREFIX}/include
-    /usr/include
-    /usr/local/include
     /sw/include
   ) 
 

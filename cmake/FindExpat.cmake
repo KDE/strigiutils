@@ -19,14 +19,10 @@ ELSE(Expat_INCLUDE_DIRS)
 
   SET(TRIAL_LIBRARY_PATHS
     $ENV{EXPAT_HOME}/lib/
-    /usr/lib/
-    /usr/local/lib/
     /sw/lib/
   ) 
   SET(TRIAL_INCLUDE_PATHS
     $ENV{EXPAT_HOME}/include
-    /usr/include
-    /usr/local/include
     /sw/include
   ) 
 

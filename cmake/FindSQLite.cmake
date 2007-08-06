@@ -4,8 +4,8 @@
 # SQLite_FOUND - system has libsqlite
 # SQLITE_INCLUDE_DIR - the libsqlite include directory
 # SQLITE_LIBRARIES - libsqlite library
-FIND_PATH(SQLITE_INCLUDE_DIR sqlite3.h /usr/include /usr/local/include )
-FIND_LIBRARY(SQLITE_LIBRARIES NAMES sqlite3 PATHS /usr/lib /usr/local/lib )
+FIND_PATH(SQLITE_INCLUDE_DIR sqlite3.h)
+FIND_LIBRARY(SQLITE_LIBRARIES NAMES sqlite3)
 if(SQLITE_INCLUDE_DIR AND SQLITE_LIBRARIES)
  set(SQLite_FOUND TRUE)
 endif(SQLITE_INCLUDE_DIR AND SQLITE_LIBRARIES)

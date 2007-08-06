@@ -22,8 +22,6 @@ FIND_PROGRAM(XSD_EXECUTABLE
   PATHS
 #    "[HKEY_CURRENT_USER\\xsd\\bin"
     $ENV{XSDDIR}/bin 
-    /usr/local/bin
-    /usr/bin
 )
 
 # if the include a the library are found then we have it

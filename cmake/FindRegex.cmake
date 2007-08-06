@@ -4,8 +4,8 @@
 # Regex_FOUND - system has libregex
 # REGEX_INCLUDE_DIR - the libregex include directory
 # REGEX_LIBRARIES - libregex library
-FIND_PATH(REGEX_INCLUDE_DIR regex.h /usr/include /usr/local/include )
-FIND_LIBRARY(REGEX_LIBRARIES NAMES libregex PATHS /usr/lib /usr/local/lib )
+FIND_PATH(REGEX_INCLUDE_DIR regex.h )
+FIND_LIBRARY(REGEX_LIBRARIES NAMES libregex)
 if(REGEX_INCLUDE_DIR AND REGEX_LIBRARIES)
  set(Regex_FOUND TRUE)
 endif(REGEX_INCLUDE_DIR AND REGEX_LIBRARIES)
