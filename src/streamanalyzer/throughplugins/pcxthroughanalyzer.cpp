@@ -107,4 +107,4 @@ public:
     }
 };
 
-STRIGI_ANALYZER_FACTORY(Factory);
+STRIGI_ANALYZER_FACTORY(Factory)
