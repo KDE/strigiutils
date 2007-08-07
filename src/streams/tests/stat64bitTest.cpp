@@ -34,7 +34,8 @@ stat64bitTest(int argc, char* argv[]) {
     // create a file of 5 GB
     FILE* file = tmpfile();
     if (file == 0) return 1;
-    if (fseek(file, 1073741824, SEEK_SET)) return 1;
+    off_t size = 5368709120ll;
+    if (fseeko(file, size, SEEK_SET)) return 1;
     if (fwrite("hi", 1, 2, file) != 2) return 1;
     if (fflush(file)) return 1;
 
@@ -43,7 +44,7 @@ stat64bitTest(int argc, char* argv[]) {
     if (fd == -1) return 1;
     struct stat s;
     if (fstat(fd, &s)) return 1;
-    if (s.st_size != 1073741826) return 1;
+    if (s.st_size != 5368709122ll) return 1;
     if (fclose(file)) return 1;
     return 0;
 }
