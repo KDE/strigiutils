@@ -99,7 +99,7 @@ removefiles(const string& d, bool rmd = false) {
     // remove all entries from the subdir
     DIR* dir = opendir(d.c_str());
     if (dir == 0) {
-        fprintf(stderr, "could not open index directory.\n");
+        fprintf(stderr, "could not open index directory %s (%s)\n", d.c_str(), strerror(errno));
         return;
     }
     // delete all the index files
@@ -126,7 +126,7 @@ removefiles(const string& d, bool rmd = false) {
                 unlink(filename.c_str());
             }
         } else {
-            fprintf(stderr, "could not open file %s\n", filename.c_str());
+            fprintf(stderr, "could not open file %s (%s)\n", filename.c_str(), strerror(errno));
         }
         e = readdir(dir);
     }

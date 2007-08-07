@@ -162,7 +162,7 @@ CLuceneIndexManager::indexSize() {
     // loop over directory entries
     DIR* dir = opendir(dbdir.c_str());
     if (dir == 0) {
-        fprintf(stderr, "could not open index directory.\n");
+        fprintf(stderr, "could not open index directory %s (%s)\n", dbdir.c_str(), strerror(errno));
         return -1;
     }
     struct dirent* e = readdir(dir);
@@ -176,7 +176,7 @@ CLuceneIndexManager::indexSize() {
                 size += s.st_size;
             }
         } else {
-            fprintf(stderr, "could not open file %s\n", filename.c_str());
+            fprintf(stderr, "could not open file %s (%s)\n", filename.c_str(), strerror(errno));
         }
         e = readdir(dir);
     }
