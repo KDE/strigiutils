@@ -22,6 +22,7 @@ set(streamtests
 	SubInputStreamTest.cpp
 	TarInputStreamTest.cpp
 	ZipInputStreamTest.cpp
+	stat64bitTest.cpp
 )
 if(NOT WIN32)
         set(streamtests ${streamtests}
