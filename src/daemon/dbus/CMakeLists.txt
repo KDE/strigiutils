@@ -46,7 +46,7 @@ MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
                     "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
             COMMAND ${CMAKE_COMMAND}
             ARGS    -E copy_if_different
-                    "${CMAKE_CURRENT_SOURCE_DIR}/generated/${INAME}.cpp"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/generated/dbus${INAME}.cpp"
                     "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
         )
     ENDIF (PERL_FOUND)
