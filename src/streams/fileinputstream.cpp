@@ -57,11 +57,11 @@ FileInputStream::open(FILE* f, const char* path, int32_t buffersize) {
         return;
     }
     // determine file size. if the stream is not seekable, the size will be -1
-    if (fseek(file, 0, SEEK_END) == -1) {
+    if (fseeko(file, 0, SEEK_END) == -1) {
         m_size = -1;
     } else {
-        m_size = ftell(file);
-        fseek(file, 0, SEEK_SET);
+        m_size = ftello(file);
+        fseeko(file, 0, SEEK_SET);
         // if the file has size 0, make sure that it's really empty
         // this is useful for filesystems like /proc that report files as size 0
         // for files that do contain content
@@ -70,7 +70,7 @@ FileInputStream::open(FILE* f, const char* path, int32_t buffersize) {
             size_t n = fread(dummy, 1, 1, file);
             if (n == 1) {
                 m_size = -1;
-                fseek(file, 0, SEEK_SET);
+                fseeko(file, 0, SEEK_SET);
             } else {
                 fclose(file);
                 file = 0;
