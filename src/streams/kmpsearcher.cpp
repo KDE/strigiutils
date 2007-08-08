@@ -42,7 +42,8 @@ preBmBc(const char* x, int32_t m, int32_t* bmBc) {
 void
 suffixes(const char* x, int32_t m, int32_t* suff) {
     int32_t f, g, i;
- 
+
+    f = 0; 
     suff[m - 1] = m;
     g = m - 1;
     for (i = m - 2; i >= 0; --i) {
