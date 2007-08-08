@@ -26,6 +26,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <dbus/dbus.h>
+
 using namespace std;
 
 DBusHandler::DBusHandler() {
