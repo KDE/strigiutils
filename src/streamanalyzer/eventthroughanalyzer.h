@@ -47,7 +47,7 @@ private:
     InputStream* connectInputStream(InputStream* in);
     bool isReadyWithStream();
     bool handleData(const char* data, uint32_t size);
-    void handleEnd(bool complete);
+    void handleEnd();
     const char* name() const { return "EventThroughAnalyzer"; }
 public:
     EventThroughAnalyzer(std::vector<StreamEventAnalyzer*>& e)

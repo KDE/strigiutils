@@ -78,10 +78,10 @@ EventThroughAnalyzer::handleData(const char* data, uint32_t size) {
     return more;
 }
 void
-EventThroughAnalyzer::handleEnd(bool complete) {
+EventThroughAnalyzer::handleEnd() {
     vector<StreamEventAnalyzer*>::iterator i;
     for (i = event.begin(); i != event.end(); ++i) {
-        (*i)->endAnalysis(complete);
+        (*i)->endAnalysis(datastream->status() == Eof);
     }
 }
 StreamThroughAnalyzer*
