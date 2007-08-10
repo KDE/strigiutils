@@ -97,7 +97,7 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
     Field* field = new Field(name, value,
         (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored,
         (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed,
-         type & AnalyzerConfiguration::Tokenized);
+        (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized);
     doc->doc.add(*field);
 }
 void

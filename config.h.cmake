@@ -87,6 +87,8 @@
  #if !defined(snprintf) && !defined(__MINGW32__)
     #define snprintf _snprintf
  #endif
+ #define fseeko fseek
+ #define ftello ftell
 #endif
 
 #ifndef S_ISREG

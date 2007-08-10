@@ -151,7 +151,11 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     handle = LoadLibrary(lib);
 #endif
     if (!handle) {
+#ifdef HAVE_DLFCN_H
         cerr << "Could not load '" << lib << "':" << dlerror() << endl;
+#else
+        cerr << "Could not load '" << lib << "': GetLastError(): " << GetLastError() << endl;
+#endif
         return;
     }
     const AnalyzerFactoryFactory* (*f)() = (const AnalyzerFactoryFactory* (*)())
