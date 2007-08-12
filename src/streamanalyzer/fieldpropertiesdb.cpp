@@ -327,6 +327,6 @@ FieldProperties::Private::clear() {
     compressed = false;
     binary = false;
     
-    min_cardinality = -1; /** unlimited */
+    min_cardinality = 0; 
     max_cardinality = -1; /** unlimited */
 }
