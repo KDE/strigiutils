@@ -146,7 +146,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     StgModuleType handle;
 #ifdef HAVE_DLFCN_H
     // do not use RTLD_GLOBAL here
-    handle = dlopen(lib, RTLD_LAZY);
+    handle = dlopen(lib, RTLD_LAZY|RTLD_LOCAL);
 #else
     handle = LoadLibrary(lib);
 #endif
