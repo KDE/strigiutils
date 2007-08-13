@@ -76,7 +76,8 @@ bool M3uLineAnalyzer::isReadyWithStream()
 
 void M3uLineAnalyzer::endAnalysis(bool complete)
 {
-    if (complete && extensionOk)
-        analysisResult->addValue(factory->tracksField, count);
+    // tracksField has not been initialized, so don't use it
+    //if (complete && extensionOk)
+        //analysisResult->addValue(factory->tracksField, count);
 }
 
