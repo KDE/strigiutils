@@ -352,6 +352,7 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 }
 char
 StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
+    cerr << "StreamAnalyzerPrivate::analyze " << idx.path().c_str() << endl;
 
     // retrieve or construct the through analyzers and end analyzers
     vector<vector<StreamThroughAnalyzer*> >::iterator tIter;
