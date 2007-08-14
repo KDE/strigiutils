@@ -81,7 +81,7 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     while (s) {
         inputStreamTest1<char>(s);
         printf("%s %li\n", ssp->entryInfo().filename.c_str(),
-            ssp->entryInfo().size);
+            (long)ssp->entryInfo().size);
         s = ssp->nextEntry();
     }
     if (ssp->status() == Strigi::Error) {
