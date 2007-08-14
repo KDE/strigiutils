@@ -80,7 +80,7 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
     while (s) {
         inputStreamTest1<char>(s);
-        printf("%s %i\n", ssp->entryInfo().filename.c_str(),
+        printf("%s %li\n", ssp->entryInfo().filename.c_str(),
             ssp->entryInfo().size);
         s = ssp->nextEntry();
     }

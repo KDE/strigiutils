@@ -107,21 +107,21 @@ void* EventListenerQueue::run(void*)
             char buff [50];
 
             if (m_processed.size() != m_processedOldCount) {
-                snprintf (buff, 50*sizeof(char), "%i", m_processed.size());
+                snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_processed.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                             string(buff) + " events in \"processed\" queue");
                 m_processedOldCount = m_processed.size();
             }
 
             if (m_toProcess.size() != m_toProcessOldCount) {
-                snprintf (buff, 50*sizeof(char), "%i", m_toProcess.size());
+                snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_toProcess.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                             string(buff) + " events in \"to process\" queue");
                 m_toProcessOldCount = m_toProcess.size();
             }
 
             if (m_waiting.size() != m_waitingOldCount) {
-                snprintf (buff, 50*sizeof(char), "%i", m_waiting.size());
+                snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_waiting.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                                 string(buff) + " events in \"waiting\" queue");
                 m_waitingOldCount = m_waiting.size();

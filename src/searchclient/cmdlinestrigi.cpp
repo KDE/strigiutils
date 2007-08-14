@@ -57,7 +57,7 @@ main(int argc, char** argv) {
             sleeptime.tv_nsec = 1;
             nanosleep(&sleeptime, 0);
         }
-        printf("hits: %i\n", client.getHits().hits.size());
+        printf("hits: %lu\n", (unsigned long)client.getHits().hits.size());
     }
 
     return 0;
