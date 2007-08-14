@@ -285,6 +285,8 @@ AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
     std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurences.find(field);
     if (i != occurences.end()) {
 	if (i->second >= field->properties().maxCardinality() && field->properties().maxCardinality() >= 0) {
+	    fprintf(stderr, "%s hit the maxCardinality limit (%d)\n",
+		field->properties().name().c_str(), field->properties().maxCardinality());
 	    return false;
 	} else {
 	    occurences[field]++;
