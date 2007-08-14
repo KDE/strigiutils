@@ -72,7 +72,7 @@ EncodingInputStream::EncodingInputStream(InputStream* s, const char* inenc,
         m_error = "conversion from '";
         m_error.append(inenc);
         m_error.append("' to '");
-        m_error.append(outenc);
+        m_error.append(outenc ? outenc : "(null)");
         m_error.append(" not available.");
         m_status = Error;
         return;
