@@ -236,7 +236,7 @@ protected:
             const Strigi::RegisteredField* field, const std::string& value) {
         Data* d = static_cast<Data*>(ar->writerData());
         d->values.insert(
-            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField* const, std::string>(
             field, value));
     }
     void addValue(const Strigi::AnalysisResult* ar,
@@ -244,7 +244,7 @@ protected:
             const unsigned char* data, uint32_t size) {
         Data* d = static_cast<Data*>(ar->writerData());
         d->values.insert(
-            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField* const, std::string>(
             field, std::string((const char*)data, size)));
     }
     void addValue(const Strigi::AnalysisResult* ar,
@@ -254,7 +254,7 @@ protected:
         v.str("");
         v << value;
         d->values.insert(
-            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField* const, std::string>(
             field, v.str()));
     }
     void addValue(const Strigi::AnalysisResult* ar,
@@ -264,7 +264,7 @@ protected:
         v.str("");
         v << value;
         d->values.insert(
-            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField* const, std::string>(
             field, v.str()));
     }
     void addValue(const Strigi::AnalysisResult* ar,
@@ -274,7 +274,7 @@ protected:
         v.str("");
         v << value;
         d->values.insert(
-            std::make_pair<const Strigi::RegisteredField*, std::string>(
+            std::make_pair<const Strigi::RegisteredField* const, std::string>(
             field, v.str()));
     }
     void addTriplet(const std::string& subject,
