@@ -53,6 +53,10 @@ add_executable(strigidaemon
 	queue/jobqueue.cpp
 )
 
+IF (CMAKE_LIB_SOCKET_HAS_CONNECT)
+    target_link_libraries(strigidaemon socket nsl)
+ENDIF (CMAKE_LIB_SOCKET_HAS_CONNECT)
+
 #add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
 
 set(strigidaemon_LIBS
@@ -76,9 +80,6 @@ set_target_properties(searchclient PROPERTIES
     DEFINE_SYMBOL MAKE_SEARCHCLIENT_LIB
 )
 
-# On Solaris, we need -lsocket and -lnsl for networking in the client lib;
-# Check copied from kdelibs FindX11.cmake.
-CHECK_LIBRARY_EXISTS("socket" "connect" "" CMAKE_LIB_SOCKET_HAS_CONNECT)
 IF(CMAKE_LIB_SOCKET_HAS_CONNECT)
     target_link_libraries(searchclient socket nsl)
 ENDIF(CMAKE_LIB_SOCKET_HAS_CONNECT)

@@ -1,3 +1,8 @@
+# On Solaris, we need -lsocket and -lnsl for networking in libraries;
+# Check copied from kdelibs FindX11.cmake.
+CHECK_LIBRARY_EXISTS("socket" "connect" "" CMAKE_LIB_SOCKET_HAS_CONNECT)
+
+
 set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer combinedindexer indexertests strigicmd)
 
 if (CLucene_FOUND)
