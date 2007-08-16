@@ -190,7 +190,7 @@ DBusMessageReader::operator>>(multimap<int, string>& m) {
                 return *this;
             }
             dbus_message_iter_get_basic(&ssub, &value);
-            m.insert(make_pair<int,string>(n,value));
+            m.insert(make_pair<const int,string>(n,value));
             if (!dbus_message_iter_has_next(&sub)) {
                 break;
             }
