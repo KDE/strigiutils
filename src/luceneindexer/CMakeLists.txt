@@ -1,3 +1,5 @@
+include (CheckCXXCompilerFlag)
+
 # TODO: fix the tests in the directory 'tests' and reenable them
 subdirs(indexdump simplereader tests)
 
@@ -20,7 +22,9 @@ ENDIF(WIN32)
 # CLucene requires exception support and has no support for visibility=hidden
 # so we must use the default (i.e. public) value for -fvisibility
 IF(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+    IF (CMAKE_COMPILER_IS_GNUCXX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT WIN32)
 IF(__STRIGI_HAVE_GCC_VISIBILITY)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
