@@ -55,7 +55,7 @@ TarInputStream::readHeader() {
     return begin;
 }
 bool
-TarInputStream::checkHeader(const char* h, const int32_t hsize) {
+TarInputStream::checkHeader(const char* h, int32_t hsize) {
     if (hsize < 257) {
         // header is too small to check
         return false;
