@@ -49,7 +49,7 @@ DBusMessageWriter::setError(const std::string &e) {
     dbus_message_set_error_name(error, e.c_str());
 }
 DBusMessageWriter&
-operator<<(DBusMessageWriter& w, const bool b) {
+operator<<(DBusMessageWriter& w, bool b) {
     dbus_bool_t db = b;
     dbus_message_iter_append_basic(&w.it, DBUS_TYPE_BOOLEAN, &db);
     return w;
