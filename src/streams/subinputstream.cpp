@@ -36,6 +36,7 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
     if (m_size != -1) {
         const int64_t left = m_size - m_position;
         if (left == 0) {
+            m_status = Eof;
             return -1;
         }
         // restrict the amount of data that can be read
