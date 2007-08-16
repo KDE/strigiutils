@@ -23,6 +23,8 @@
 #include <pthread.h>
 #include <string>
 
+extern "C" void *threadstarter(void *);
+
 class StrigiThread {
 friend void* threadstarter(void *);
 public:

@@ -43,7 +43,7 @@ StrigiThread::stopThreads() {
     }
 }
 
-void
+extern "C" void
 quit_daemon(int signum) {
     STRIGI_LOG_INFO("strigi.daemon", "quit_daemon");
     static int interruptcount = 0;
@@ -73,14 +73,14 @@ set_quit_on_signal(int signum) {
     sigaction(signum, &quitaction, 0);
 }
 struct sigaction dummyaction;
-void nothing(int) {}
+extern "C" void nothing(int) {}
 void
 set_wakeup_on_signal(int signum) {
     dummyaction.sa_handler = nothing;
     sigaction(signum, &dummyaction, 0);
 }
 
-void*
+extern "C" void*
 threadstarter(void *d) {
     // give this thread job batch job priority
     struct sched_param param;
