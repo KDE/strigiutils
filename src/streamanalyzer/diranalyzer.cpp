@@ -63,12 +63,15 @@ struct DA {
     DirAnalyzer::Private* diranalyzer;
 };
 
+extern "C" // Linkage for functions passed to pthread_create matters
+{
 void*
 analyzeInThread(void* d) {
     DA* a = static_cast<DA*>(d);
     a->diranalyzer->analyze(a->streamanalyzer);
     delete a;
     STRIGI_THREAD_EXIT(0);
+    return 0; // Return bogus value
 }
 void*
 updateInThread(void* d) {
@@ -76,6 +79,8 @@ updateInThread(void* d) {
     a->diranalyzer->update(a->streamanalyzer);
     delete a;
     STRIGI_THREAD_EXIT(0);
+    return 0; // Return bogus value
+}
 }
 
 DirAnalyzer::DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf)
