@@ -203,7 +203,7 @@ public:
     FindIndexedFiles(string ref) {
         m_ref = ref;
     }
-    bool operator()(pair<string, time_t> indexedFile) {
+    bool operator()(pair<const string, time_t> indexedFile) {
         string::size_type pos = indexedFile.first.find (m_ref);
         if (pos == 0) {
             return true;
