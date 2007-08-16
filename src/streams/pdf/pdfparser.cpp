@@ -456,7 +456,7 @@ PdfParser::parseObjectStreamObject() {
 StreamStatus
 PdfParser::parseContentStreamObject() {
     StreamStatus r = read(2, 0);
-    if (r == Error) return r;
+    if (r != Ok) return r;
 //    fprintf(stderr, "parseContentStreamObject %.*s\n",
 //        (5>end-pos)?end-pos:5, pos);
 //    fprintf(stderr, "pos: %lli\n", stream->position());
