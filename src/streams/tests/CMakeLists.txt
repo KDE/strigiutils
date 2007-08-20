@@ -20,6 +20,7 @@ set(streamtests
 	RpmInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	SubInputStreamTest.cpp
+	SdfInputStreamTest.cpp
 	TarInputStreamTest.cpp
 	ZipInputStreamTest.cpp
 	stat64bitTest.cpp

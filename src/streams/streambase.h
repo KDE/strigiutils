@@ -179,7 +179,7 @@ public:
      * @code
      * int64_t start = stream.position();
      * if ( stream.read(data, min, max) > 0 ) {
-     *     reset(start);
+     *     stream.reset(start);
      *     // The data pointer is still valid here
      * }
      * @endcode

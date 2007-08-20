@@ -27,6 +27,7 @@ set(streams_SRCS
 	mailinputstream.cpp
 	oleinputstream.cpp
 	rpminputstream.cpp
+	sdfinputstream.cpp
 	stringterminatedsubstream.cpp
 	subinputstream.cpp
 	substreamproviderprovider.cpp
@@ -63,11 +64,14 @@ install(FILES
 	fileinputstream.h
 	inputstream.h
 	inputstreamreader.h
+	sdfinputstream.h
 	streambase.h
 	streambuffer.h
 	stringstream.h
 	substreamprovider.h
 	substreamproviderprovider.h
+	stringterminatedsubstream.h
+	subinputstream.h
         textutils.h
 	strigi/jstreamsconfig.h
 	DESTINATION include/strigi

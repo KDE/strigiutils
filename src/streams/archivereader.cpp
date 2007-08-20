@@ -21,6 +21,7 @@
 #include <strigi/strigiconfig.h>
 #include "streambase.h"
 #include "substreamprovider.h"
+#include "sdfinputstream.h"
 #include "tarinputstream.h"
 #include "gzipinputstream.h"
 #include "bz2inputstream.h"
@@ -293,6 +294,7 @@ ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
     subs.insert(SubsPair(ArInputStream::checkHeader,ArInputStream::factory) );
     subs.insert(SubsPair(ZipInputStream::checkHeader,ZipInputStream::factory) );
     subs.insert(SubsPair(TarInputStream::checkHeader,TarInputStream::factory) );
+    subs.insert(SubsPair(SdfInputStream::checkHeader,SdfInputStream::factory) );
 }
 ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
     if (openstreams.size() > 0) {

@@ -22,6 +22,7 @@
 #include "mailinputstream.h"
 #include "tarinputstream.h"
 #include "zipinputstream.h"
+#include "sdfinputstream.h"
 
 using namespace Strigi;
 
@@ -44,6 +45,10 @@ SubStreamProviderProvider::subStreamProvider(InputStream* input) {
     if (ZipInputStream::checkHeader(header, headersize)) {
         fprintf(stderr, "zip!\n");
         return new ZipInputStream(input);
+    }
+    if (SdfInputStream::checkHeader(header, headersize)) {
+        fprintf(stderr, "sdf!\n");
+        return new SdfInputStream(input);
     }
     fprintf(stderr, "no match %i\n", headersize);
     return 0;
