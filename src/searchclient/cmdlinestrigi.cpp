@@ -22,6 +22,7 @@
 #include <stdlib.h>
 using namespace std;
 
+extern "C"
 void
 quit_daemon(int i) {
     printf("signal %i\n", i);
