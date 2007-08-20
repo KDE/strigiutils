@@ -54,7 +54,14 @@
 //////////////////////////////
 //support large files
 //////////////////////////////
-#define _FILE_OFFSET_BITS 64
+#if defined(_FILE_OFFSET_BITS) 
+# if (_FILE_OFFSET_BITS<64)
+#  undef _FILE_OFFSET_BITS
+#  define _FILE_OFFSET_BITS 64
+# endif
+#else
+# define _FILE_OFFSET_BITS 64
+#endif
 
 //////////////////////////////
 //missing functions
