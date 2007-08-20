@@ -1,6 +1,5 @@
 include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
 
-
 MACRO(ADD_STRIGIEA libname files)
   if(WIN32)
     # this is needed to have mingw and msvc libs installed in one directory
@@ -28,4 +27,3 @@ if(EXIV2_FOUND)
   ADD_STRIGIEA(jpeg jpegendanalyzer.cpp)
   target_link_libraries(jpeg ${EXIV2_LIBRARIES})
 endif(EXIV2_FOUND)
-

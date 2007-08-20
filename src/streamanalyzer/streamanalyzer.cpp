@@ -35,6 +35,7 @@
 #include "rpmendanalyzer.h"
 #include "cpioendanalyzer.h"
 #include "pdfendanalyzer.h"
+#include "sdfendanalyzer.h"
 #include "pngendanalyzer.h"
 #include "gzipendanalyzer.h"
 #include "m3ustreamanalyzer.h"
@@ -317,6 +318,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new BmpEndAnalyzerFactory());
     addFactory(new OdfSaxAnalyzerFactory());
     addFactory(new PdfEndAnalyzerFactory());
+    addFactory(new SdfEndAnalyzerFactory());
 #ifdef WIN32
 #ifdef __GNUC__
 #warning FIXME - IFilterEndAnalyzerFactory is pure virtual!

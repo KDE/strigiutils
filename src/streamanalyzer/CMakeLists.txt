@@ -51,6 +51,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/pdfendanalyzer.cpp
 	endanalyzers/pngendanalyzer.cpp
 	endanalyzers/rpmendanalyzer.cpp
+	endanalyzers/sdfendanalyzer.cpp
 	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
