@@ -20,6 +20,7 @@
 #include "gzipinputstream.h"
 #include <strigi/strigiconfig.h>
 #include <zlib.h>
+#include <stdlib.h>
 
 using namespace Strigi;
 

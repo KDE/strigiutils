@@ -115,7 +115,7 @@ StreamBuffer<T>::StreamBuffer() {
 }
 template <class T>
 StreamBuffer<T>::~StreamBuffer() {
-    free(start);
+    std::free(start);
 }
 template <class T>
 void
@@ -124,7 +124,7 @@ StreamBuffer<T>::setSize(int32_t size) {
     int32_t offset = readPos - start;
 
     // allocate memory in the buffer
-    start = (T*)realloc(start, size*sizeof(T));
+    start = (T*)std::realloc(start, size*sizeof(T));
     this->size = size;
 
     // restore pointer information
@@ -144,7 +144,7 @@ StreamBuffer<T>::makeSpace(int32_t needed) {
         if (readPos != start) {
 //            printf("moving\n");
             // move data to the start of the buffer
-            memmove(start, readPos, avail*sizeof(T));
+            std::memmove(start, readPos, avail*sizeof(T));
             space += readPos - start;
             readPos = start;
         }

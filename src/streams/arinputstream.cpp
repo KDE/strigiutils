@@ -30,7 +30,7 @@ bool
 ArInputStream::checkHeader(const char* data, int32_t datasize) {
     static const char magic[] = {0x21,0x3c,0x61,0x72,0x63,0x68,0x3e,0x0a};
     if (datasize < 8) return false;
-    bool ok = memcmp(data, magic, 8) == 0;
+    bool ok = std::memcmp(data, magic, 8) == 0;
     return ok;
 }
 ArInputStream::ArInputStream(InputStream* input)
@@ -95,7 +95,7 @@ ArInputStream::readHeader() {
 
     // we must copy this string to safely call atoi
     char bc[61];
-    memcpy(bc, b, 60);
+    std::memcpy(bc, b, 60);
     bc[60] = '\0';
     m_entryinfo.size = atoi(bc+48);
     if (m_entryinfo.size < 0) {
@@ -126,7 +126,7 @@ ArInputStream::readHeader() {
                 return;
             }
             const char* c = gnufilenames.c_str() + p;
-            const char* e = strchr(c, '/');
+            const char* e = std::strchr(c, '/');
             if (e) {
                 m_entryinfo.filename = std::string(c, e-c);
             } else {

@@ -19,6 +19,7 @@
  */
 #include "bz2inputstream.h"
 #include <bzlib.h>
+#include <stdlib.h>
 #include <cstring>
 
 using namespace Strigi;
@@ -40,7 +41,7 @@ bool
 BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
     static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
     if (datasize < 5) return false;
-    return memcmp(data, magic, 5) == 0;
+    return std::memcmp(data, magic, 5) == 0;
 }
 BZ2InputStream::BZ2InputStream(InputStream* input) :p(new Private(this, input)){
 }

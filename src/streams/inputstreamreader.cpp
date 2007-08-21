@@ -87,7 +87,7 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
         case EINVAL: // last character is incomplete
             // move from inbuf to the end to the start of
             // the buffer
-            memmove(charbuf.start, inbuf, inbytesleft);
+            std::memmove(charbuf.start, inbuf, inbytesleft);
             charbuf.readPos = charbuf.start;
             charbuf.avail = inbytesleft;
             nwritten = ((wchar_t*)outbuf) - start;
@@ -140,7 +140,7 @@ InputStreamReader::fillBuffer(wchar_t* start, int32_t space) {
             return -1;
         }
         // copy data into other buffer
-        memmove(charbuf.start + charbuf.avail, begin, numRead);
+        std::memmove(charbuf.start + charbuf.avail, begin, numRead);
         charbuf.avail = numRead + charbuf.avail;
     }
     // decode

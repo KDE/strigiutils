@@ -101,7 +101,7 @@ EncodingInputStream::Private::decode(char* start, int32_t space) {
         case EINVAL: // last character is incomplete
             // move from inbuf to the end to the start of
             // the buffer
-            memmove(charbuf.start, inbuf, inbytesleft);
+            std::memmove(charbuf.start, inbuf, inbytesleft);
             charbuf.readPos = charbuf.start;
             charbuf.avail = inbytesleft;
             nwritten = outbuf - start;
@@ -154,7 +154,7 @@ EncodingInputStream::fillBuffer(char* start, int32_t space) {
             return -1;
         }
         // copy data into other buffer
-        memmove(p->charbuf.start + p->charbuf.avail, begin, numRead);
+        std::memmove(p->charbuf.start + p->charbuf.avail, begin, numRead);
         p->charbuf.avail = numRead + p->charbuf.avail;
     }
     // decode
