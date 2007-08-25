@@ -85,8 +85,8 @@ char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     std::map<std::string, const Strigi::RegisteredField*>tempfields
         = factory->fields;
     idx.addValue(tempfields["frame rate"], this->frame_rate);
-    idx.addValue(tempfields["dimensions.y"], this->vertical_size);
-    idx.addValue(tempfields["dimensions.x"], this->horizontal_size);
+    idx.addValue(tempfields["dimensions.y"], (int32_t)this->vertical_size);
+    idx.addValue(tempfields["dimensions.x"], (int32_t)this->horizontal_size);
     
     if (this->mpeg_version == 1) {
         idx.addValue(tempfields["video codec"], "MPEG-1");

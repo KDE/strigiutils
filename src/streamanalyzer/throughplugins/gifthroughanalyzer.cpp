@@ -100,12 +100,12 @@ GifThroughAnalyzer::connectInputStream(InputStream* in) {
 
     uint16_t width = readLittleEndianUInt16(buf+6);
     uint16_t height = readLittleEndianUInt16(buf+8);
-    analysisResult->addValue(factory->widthField, width);
-    analysisResult->addValue(factory->heightField, height);
+    analysisResult->addValue(factory->widthField, (uint32_t)width);
+    analysisResult->addValue(factory->heightField, (uint32_t)height);
 
     if (buf[4] == 7) {
         uint8_t colorDepth = (buf[9] & 0x07) + 1;
-        analysisResult->addValue(factory->colorDepthField, colorDepth);
+        analysisResult->addValue(factory->colorDepthField, (uint32_t)colorDepth);
     }
 
     return in;

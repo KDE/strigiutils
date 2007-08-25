@@ -112,8 +112,10 @@ AnalyzerLoader::loadPlugins(const char* d) {
                 || strncmp(ent->d_name + iOffset, "strigila_", 9) == 0)
 #ifdef WIN32
                 && strcmp(ent->d_name+len-4, ".dll") == 0
-# ifdef _MSC_VER
+# if defined(_MSC_VER)
                 && strncmp(ent->d_name, "msvc_", 5) == 0) {
+#elif defined(__CYGWIN__)
+                && strncmp(ent->d_name, "cyg_", 4) == 0) {
 # else
                 && strncmp(ent->d_name, "mingw_", 6) == 0) {
 # endif
@@ -146,7 +148,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     StgModuleType handle;
 #ifdef HAVE_DLFCN_H
     // do not use RTLD_GLOBAL here
-    handle = dlopen(lib, RTLD_LAZY|RTLD_LOCAL);
+    handle = dlopen(lib, RTLD_LAZY); //note: If neither RTLD_GLOBAL nor RTLD_LOCAL are specified, the default is RTLD_LOCAL.
 #else
     handle = LoadLibrary(lib);
 #endif

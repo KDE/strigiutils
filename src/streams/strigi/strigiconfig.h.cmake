@@ -24,7 +24,7 @@
 
 /* use the same includes for types finding as in ConfigureChecks.cmake */
 #if @STRIGI_HAVE_SOCKET_H@
-#  include <sys/types.h>
+#  include <socket.h>
 #endif
 #if @STRIGI_HAVE_SYS_SOCKET_H@
 #  include <sys/socket.h>

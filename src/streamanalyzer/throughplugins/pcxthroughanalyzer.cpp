@@ -78,16 +78,16 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     int h = ( readLittleEndianUInt16(header+10)-readLittleEndianUInt16(header+6) ) + 1;
     int bpp = header[3]*header[65];
 
-    indexable->addValue(factory->widthField, w);
-    indexable->addValue(factory->heightField, h);
-    indexable->addValue(factory->colorDepthField, bpp);
+    indexable->addValue(factory->widthField, (int32_t)w);
+    indexable->addValue(factory->heightField, (int32_t)h);
+    indexable->addValue(factory->colorDepthField, (int32_t)bpp);
     if ( header[2] == 1 ) {
 	indexable->addValue(factory->compressionField, "RLE");
     } else {
 	indexable->addValue(factory->compressionField, "None");
     }
-    indexable->addValue(factory->hResolutionField, readLittleEndianUInt16(header+12));
-    indexable->addValue(factory->vResolutionField, readLittleEndianUInt16(header+14));
+    indexable->addValue(factory->hResolutionField, (int32_t)readLittleEndianUInt16(header+12));
+    indexable->addValue(factory->vResolutionField, (int32_t)readLittleEndianUInt16(header+14));
 
     return in;
 }

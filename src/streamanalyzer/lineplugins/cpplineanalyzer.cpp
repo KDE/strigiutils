@@ -93,9 +93,9 @@ void
 CppLineAnalyzer::endAnalysis(bool complete) {
     // we assume all cpp files must have includes
     if (includes && complete) {
-        analysisResult->addValue(factory->codeLinesField, codeLines);
-        analysisResult->addValue(factory->commentLinesField, commentLines);
-        analysisResult->addValue(factory->totalLinesField, totalLines);
+        analysisResult->addValue(factory->codeLinesField, (int32_t)codeLines);
+        analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
+        analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
 //        analysisResult->addValue(factory->includesField, includes);
     }
     ready = true;

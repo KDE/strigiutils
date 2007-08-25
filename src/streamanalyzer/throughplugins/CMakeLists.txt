@@ -2,11 +2,12 @@ include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
 
 MACRO(ADD_STRIGITA libname files)
   if(WIN32)
-    # this is needed to have mingw and msvc libs installed in one directory
+    # this is needed to have mingw, cygwin and msvc libs installed in one directory
     if(MSVC)
       set(prefix msvc_strigita_)
-    else(MSVC)
-      # mingw
+    elseif(CYGWIN)
+      set(prefix cyg_strigita_)
+    elseif(MINGW)
       set(prefix mingw_strigita_)
     endif(MSVC)
   else(WIN32)

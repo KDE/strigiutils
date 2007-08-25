@@ -107,7 +107,9 @@ CONFIGURE_FILE(
 if(WIN32)
   if(MINGW)
     SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_mingw.h)
-  else(MINGW) # msvc
+  elseif(CYGWIN)
+    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_cygwin.h)
+  else(MINGW)
     SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_msvc.h)
   endif(MINGW)
   SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig.h)
