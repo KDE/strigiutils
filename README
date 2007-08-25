@@ -10,7 +10,7 @@ History
 
 For my personal use I've written the jstreams classes that allow one to easily read nested files. These have proven very fast and have been included in the clucene c++ search engine. These classes would also be a cool extension to the kio plugins for allowing the user to browse e.g. files in a zip file that is stored in an email attachment. Another use would be to write a crawler that can gather information from all files in the filesystem even if they are hidden in emails or archives. I intended to add this feature to Kat, but because of the slowdown in the Kat project the latest Kat development version is not complete and does not build.
 
-So I developed a small daemon that can index information using the new crawler. Now i've reached a point that the crawler is very stable and fast. How fast exactly depends on you system. It comes complete with a simple gui to controll the daemon and to search. I've named the thing Strigi, because I hope it grows into a Kat.
+So I developed a small daemon that can index information using the new crawler. Now i've reached a point that the crawler is very stable and fast. How fast exactly depends on your system. It comes complete with a simple gui to controll the daemon and to search. I've named the thing Strigi, because I hope it grows into a Kat.
 
 Here are the main features of Strigi:
 - very fast crawling
