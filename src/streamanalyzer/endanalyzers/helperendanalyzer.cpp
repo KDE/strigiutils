@@ -28,7 +28,7 @@
 
 #include <strigi/strigiconfig.h>
 #include "compat.h"
-#if defined(_WIN32) || defined(_WIN64)
+#if !defined(_WIN32) && !defined(_WIN64)
  #include "processinputstream.h"
 #endif
 #include "textendanalyzer.h"
@@ -152,7 +152,7 @@ HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
         if (h) {
 //            fprintf(stderr, "calling %s on %s\n", h->arguments[0].c_str(),
 //                idx.path().c_str());
-#if defined(_WIN32) || defined(_WIN64)
+#if !defined(_WIN32) && !defined(_WIN64)
 #warning this does not work on windows because processinputstream does not compile!
             if (h->readfromstdin) {
                 ProcessInputStream pis(h->arguments, in);
