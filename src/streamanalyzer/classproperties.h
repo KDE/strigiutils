@@ -18,8 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef FIELDPROPERTIES_H
-#define FIELDPROPERTIES_H
+#ifndef CLASSPROPERTIES_H
+#define CLASSPROPERTIES_H
 #include <strigi/strigiconfig.h>
 #include <string>
 #include <vector>
@@ -27,7 +27,7 @@
 
 namespace Strigi {
 
-class STREAMANALYZER_EXPORT FieldProperties {
+class STREAMANALYZER_EXPORT ClassProperties {
 public:
     class Private;
 private:
@@ -37,31 +37,22 @@ public:
         std::string name;
         std::string description;
     };
-    FieldProperties();
-    FieldProperties(const FieldProperties&);
-    FieldProperties(const Private&);
-    FieldProperties(const std::string& key);
-    ~FieldProperties();
-    const FieldProperties& operator=(const FieldProperties&);
+    ClassProperties();
+    ClassProperties(const ClassProperties&);
+    ClassProperties(const Private&);
+    ClassProperties(const std::string& key);
+    ~ClassProperties();
+    const ClassProperties& operator=(const ClassProperties&);
     bool valid() const;
-    bool binary() const;
-    bool compressed() const;
-    bool indexed() const;
-    bool stored() const;
-    bool tokenized() const;
-    int minCardinality() const;
-    int maxCardinality() const;
     const std::string& uri() const;
     const std::string& name() const;
-    const std::string& typeUri() const;
     const std::string& description() const;
     const std::vector<std::string>& locales() const;
     const std::string& localizedName(const std::string& locale) const;
     const std::string& localizedDescription(const std::string& locale) const;
     const std::vector<std::string>& parentUris() const;
     const std::vector<std::string>& childUris() const;
-    const std::vector<std::string>& applicableClasses() const;
-
+    const std::vector<std::string>& applicableProperties() const;
 };
 
 }

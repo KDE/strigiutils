@@ -18,105 +18,73 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "fieldproperties.h"
+#include "classproperties.h"
 #include "fieldpropertiesdb.h"
 #include <map>
 using namespace Strigi;
 using namespace std;
 
-const string FieldProperties::Private::empty;
-FieldProperties::FieldProperties() :p(new Private()) {
+const string ClassProperties::Private::empty;
+ClassProperties::ClassProperties() :p(new Private()) {
 }
-FieldProperties::FieldProperties(const Private& pr) :p(new Private(pr)) {}
-FieldProperties::FieldProperties(const string& k)
+ClassProperties::ClassProperties(const Private& pr) :p(new Private(pr)) {}
+ClassProperties::ClassProperties(const string& k)
         :p(new Private(k)) {
-    const FieldProperties& fp = FieldPropertiesDb::db().properties(k);
+    const ClassProperties& fp = FieldPropertiesDb::db().classes(k);
     if (fp.valid()) {
         *this = fp;
     }
 }
-FieldProperties::FieldProperties(const FieldProperties& p)
+ClassProperties::ClassProperties(const ClassProperties& p)
     :p(new Private(*p.p)) {
 }
-FieldProperties::~FieldProperties() {
+ClassProperties::~ClassProperties() {
     delete p;
 }
-const FieldProperties&
-FieldProperties::operator=(const FieldProperties& f) {
+const ClassProperties&
+ClassProperties::operator=(const ClassProperties& f) {
     *p = *f.p;
     return f;
 }
 bool
-FieldProperties::valid() const {
+ClassProperties::valid() const {
     return p->uri.size() != 0;
 }
 const string&
-FieldProperties::uri() const {
+ClassProperties::uri() const {
     return p->uri;
 }
 const string&
-FieldProperties::name() const {
+ClassProperties::name() const {
     return p->name;
 }
 const string&
-FieldProperties::typeUri() const {
-    return p->typeuri;
-}
-const string&
-FieldProperties::description() const {
+ClassProperties::description() const {
     return p->description;
 }
-bool
-FieldProperties::binary() const {
-    return p->binary;
-}
-bool
-FieldProperties::compressed() const {
-    return p->compressed;
-}
-bool
-FieldProperties::indexed() const {
-    return p->indexed;
-}
-bool
-FieldProperties::stored() const {
-    return p->stored;
-}
-bool
-FieldProperties::tokenized() const {
-    return p->tokenized;
-}
-int
-FieldProperties::minCardinality() const {
-    return p->min_cardinality;
-}
-int
-FieldProperties::maxCardinality() const {
-    return p->max_cardinality;
-}
 const std::vector<std::string>&
-FieldProperties::locales() const {
+ClassProperties::locales() const {
     return p->locales;
 }
 const string&
-FieldProperties::localizedName(const string& locale) const {
+ClassProperties::localizedName(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
     return (i == p->localized.end()) ?Private::empty :i->second.name;
 }
 const string&
-FieldProperties::localizedDescription(const string& locale) const {
+ClassProperties::localizedDescription(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
     return (i == p->localized.end()) ?Private::empty :i->second.description;
 }
 const vector<string>&
-FieldProperties::parentUris() const {
+ClassProperties::parentUris() const {
     return p->parentUris;
 }
 const vector<string>&
-FieldProperties::childUris() const {
+ClassProperties::childUris() const {
     return p->childUris;
 }
 const vector<string>&
-FieldProperties::applicableClasses() const {
-    return p->applicableClasses;
+ClassProperties::applicableProperties() const {
+    return p->applicableProperties;
 }

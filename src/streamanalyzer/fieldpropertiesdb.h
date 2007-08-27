@@ -23,6 +23,7 @@
 
 #include <strigi/strigiconfig.h>
 #include "fieldproperties.h"
+#include "classproperties.h"
 #include <map>
 #include <vector>
 
@@ -31,8 +32,7 @@ namespace Strigi {
 class FieldProperties;
 /**
  * This class is the default implementation for getting at metadata related to
- * properties. It loads the information from files with a similar syntax to
- * the freedesktop desktop files.
+ * properties. It loads the information from RDF/XML files.
  * There is one instance of the class per running application.
  * The implemntation of this class might use a performance enhanced binary cache
  * of the property files.
@@ -46,8 +46,12 @@ public:
 
     FieldPropertiesDb();
     ~FieldPropertiesDb();
+
     const FieldProperties& properties(const std::string& uri) const;
     const std::map<std::string, FieldProperties>& allProperties() const;
+
+    const ClassProperties& classes(const std::string& uri) const;
+    const std::map<std::string, ClassProperties>& allClasses() const;
 
     /**
      * This is a simple method for adding fields programatically instead of
@@ -83,7 +87,11 @@ public:
     std::string typeuri;
     std::string description;
     std::map<std::string,FieldProperties::Localized> localized;
+    std::vector<std::string> locales;
     std::vector<std::string> parentUris;
+    std::vector<std::string> childUris;
+    std::vector<std::string> applicableClasses;
+
     bool binary;	/**< The field should be stored as binary data. (0x0001) 		*/
     bool compressed;	/**< If the field is stored, the data should be compressed. (0x0002)	*/
     bool indexed;	/**< The field should be indexed. (0x0004)				*/
@@ -91,6 +99,25 @@ public:
     bool tokenized;	/**< If the field contains text, it should be tokenized. (0x0040)	*/
     int min_cardinality;
     int max_cardinality;
+
+    Private() {}
+    Private(const Private&p) { *this = p; }
+    Private(const std::string& i) :uri(i) { }
+    void clear();
+};
+
+class ClassProperties::Private {
+friend class FieldPropertiesDb;
+public:
+    static const std::string empty;
+    std::string uri;
+    std::string name;
+    std::string description;
+    std::map<std::string,ClassProperties::Localized> localized;
+    std::vector<std::string> locales;
+    std::vector<std::string> parentUris;
+    std::vector<std::string> childUris;
+    std::vector<std::string> applicableProperties;
 
     Private() {}
     Private(const Private&p) { *this = p; }

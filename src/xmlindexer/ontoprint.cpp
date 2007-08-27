@@ -68,17 +68,49 @@ printRdfsProperties(ostream& out, const FieldProperties& p) {
     for (j = parents.begin(); j != parents.end(); ++j){
         out << "  <rdfs:subPropertyOf rdf:resource='" << *j << "'/>\n";
     }
-    out << "  <rdfs:range rdf:resource='" << p.typeUri() << "'/>\n";
-    const map<string, FieldProperties::Localized>& l = p.localized();
-    map<string, FieldProperties::Localized>::const_iterator k;
-    for (k = l.begin(); k != l.end(); ++k) {
-        out << "  <rdfs:label xml:lang='" << k->first << "'>" << k->second.name
-            << "</rdfs:label>\n";
-        out << "  <rdfs:comment xml:lang='" << k->first << "'>"
-            << k->second.description << "</rdfs:comment>\n";
+    const vector<string>& classes = p.applicableClasses();
+    for (j = classes.begin(); j != classes.end(); ++j){
+        out << "  <rdfs:domain rdf:resource='" << *j << "'/>\n";
     }
-    out << "  <rdfs:domain rdf:resource='&strigi;file'/>\n"
-        << " </rdf:Property>\n";
+
+    out << "  <rdfs:range rdf:resource='" << p.typeUri() << "'/>\n";
+    const vector<string>& locales = p.locales();
+    for (j = locales.begin(); j != locales.end(); ++j) {
+        const string& name = p.localizedName(*j);
+	if (name.size()) {
+            out << "  <rdfs:label xml:lang='" << *j << "'>" << name << "</rdfs:label>\n";
+        }
+        const string& description = p.localizedDescription(*j);
+	if (description.size()) {
+            out << "  <rdfs:comment xml:lang='" << *j << "'>" << description << "</rdfs:comment>\n";
+        }
+    }
+    out << " </rdf:Property>\n";
+}
+
+void
+printRdfsClasses(ostream& out, const ClassProperties& p) {
+    out << " <rdfs:Class rdf:about='" << p.uri() << "'>\n"
+        << "  <rdfs:label>" << p.name() << "</rdfs:label>\n"
+        << "  <rdfs:comment>" << p.description() << "</rdfs:comment>\n";
+    const vector<string>& parents = p.parentUris();
+    vector<string>::const_iterator j;
+    for (j = parents.begin(); j != parents.end(); ++j){
+        out << "  <rdfs:subClassOf rdf:resource='" << *j << "'/>\n";
+    }
+
+    const vector<string>& locales = p.locales();
+    for (j = locales.begin(); j != locales.end(); ++j) {
+        const string& name = p.localizedName(*j);
+	if (name.size()) {
+            out << "  <rdfs:label xml:lang='" << *j << "'>" << name << "</rdfs:label>\n";
+        }
+        const string& description = p.localizedDescription(*j);
+	if (description.size()) {
+            out << "  <rdfs:comment xml:lang='" << *j << "'>" << description << "</rdfs:comment>\n";
+        }
+    }
+    out << " </rdfs:Class>\n";
 }
 
 void
@@ -98,6 +130,14 @@ printRdfs(ostream& out) {
     for (i = p.begin(); i != p.end(); ++i) {
         printRdfsProperties(out, i->second);
     }
+
+    const map<string, ClassProperties>& c
+        = FieldPropertiesDb::db().allClasses();
+    map<string, ClassProperties>::const_iterator j;
+    for (j = c.begin(); j != c.end(); ++j) {
+        printRdfsClasses(out, j->second);
+    }
+
     out << "</rdf:RDF>" << endl;
 }
 void

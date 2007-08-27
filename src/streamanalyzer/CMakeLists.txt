@@ -15,6 +15,7 @@ set(streamanalyzer_SRCS
 	analysisresult.cpp
 	analyzerconfiguration.cpp
 	analyzerloader.cpp
+	classproperties.cpp
 	digesteventanalyzer.cpp
 	diranalyzer.cpp
 	eventthroughanalyzer.cpp
