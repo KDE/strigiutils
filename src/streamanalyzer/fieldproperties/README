@@ -1,10 +1,7 @@
 How to add fields/classes:
 
-Fieldproperties file name must look like this: namespace_class.fieldproperties
-
-If you introduce a new namespace, there must be a corresponding file [namespace].namespace.
-
-xesam namespace is used for xesam-provided ontology.
+xesam namespace and xesam.rdfs is used for xesam-provided ontology ONLY. Please don't change the file.
+If you want to fix something, submit patches/requests.
 
 strigi namespace is to be used only for strigi custom extensions over xesam.
 
@@ -20,7 +17,3 @@ Naming:
 
 Class names are CamelCased. Field names are camelCased, that is first letter is lowercase.
 Namespaces start with lowercase.
-
-Note:
-
-The file format itself is temporary. Strigi will adopt whatever format xesam comes up with.
