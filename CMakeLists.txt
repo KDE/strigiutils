@@ -103,6 +103,8 @@ if (NOT QT4_FOUND)
     MESSAGE("** Qt4 was not found. No GUI will be built.")
 endif (NOT QT4_FOUND)
 
+check_include_files(strings.h     HAVE_STRINGS_H)                      # various
+
 IF(ENABLE_DBUS)
   IF(WIN32)
     file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _program_FILES_DIR)

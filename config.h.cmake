@@ -18,6 +18,7 @@
 #cmakedefine HAVE_SOCKET_H 1
 #cmakedefine HAVE_STDDEF_H 1
 #cmakedefine HAVE_STDINT_H 1
+#cmakedefine HAVE_STRINGS_H 1
 #cmakedefine HAVE_UNISTD_H 1
 #cmakedefine HAVE_WINDOWS_H 1
 
