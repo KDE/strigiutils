@@ -32,8 +32,8 @@ setModifier(char c, Query& q) {
     case 'D': q.term().setDiacriticSensitive(false); break;
     case 'l': q.term().setStemming(false);           break;
     case 'L': q.term().setStemming(true);            break;
-    case 'e': q.term().setCaseSensitive(true);       break;
-              q.term().setDiacriticSensitive(true);  break;
+    case 'e': q.term().setCaseSensitive(true);
+              q.term().setDiacriticSensitive(true);
               q.term().setStemming(false);           break;
     case 'f': q.term().setFuzzy(0.5);                break; // TODO: sane value
     case 'b': q.setBoost(2);                         break; // TODO: sane value
@@ -41,8 +41,8 @@ setModifier(char c, Query& q) {
               q.term().setProximityDistance(10);     break;
     case 's': q.term().setSlack(1);                  break; // TODO: sane value
     case 'w': break; // TODO
-    case 'o': q.term().setOrdered(true);
-    case 'r': q.setType(Query::RegExp);
+    case 'o': q.term().setOrdered(true);             break;
+    case 'r': q.setType(Query::RegExp);              break;
     }
 }
 void
