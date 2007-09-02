@@ -28,7 +28,6 @@ namespace Strigi {
 
 class STREAMS_EXPORT SdfInputStream : public SubStreamProvider {
 private:
-    //StringTerminatedSubStream* substream;
     SubInputStream* substream;
     int32_t entrynumber;
     int64_t previousStartOfDelimiter;
