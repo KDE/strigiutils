@@ -78,52 +78,6 @@ public:
     void addField(const std::string& key);
 };
 
-class FieldProperties::Private {
-friend class FieldPropertiesDb;
-public:
-    static const std::string empty;
-    std::string uri;
-    std::string name;
-    std::string typeuri;
-    std::string description;
-    std::map<std::string,FieldProperties::Localized> localized;
-    std::vector<std::string> locales;
-    std::vector<std::string> parentUris;
-    std::vector<std::string> childUris;
-    std::vector<std::string> applicableClasses;
-
-    bool binary;	/**< The field should be stored as binary data. (0x0001) 		*/
-    bool compressed;	/**< If the field is stored, the data should be compressed. (0x0002)	*/
-    bool indexed;	/**< The field should be indexed. (0x0004)				*/
-    bool stored;	/**< The field should be stored. (0x0020)				*/
-    bool tokenized;	/**< If the field contains text, it should be tokenized. (0x0040)	*/
-    int min_cardinality;
-    int max_cardinality;
-
-    Private() {}
-    Private(const Private&p) { *this = p; }
-    Private(const std::string& i) :uri(i) { }
-    void clear();
-};
-
-class ClassProperties::Private {
-friend class FieldPropertiesDb;
-public:
-    static const std::string empty;
-    std::string uri;
-    std::string name;
-    std::string description;
-    std::map<std::string,ClassProperties::Localized> localized;
-    std::vector<std::string> locales;
-    std::vector<std::string> parentUris;
-    std::vector<std::string> childUris;
-    std::vector<std::string> applicableProperties;
-
-    Private() {}
-    Private(const Private&p) { *this = p; }
-    Private(const std::string& i) :uri(i) { }
-    void clear();
-};
 
 }
 

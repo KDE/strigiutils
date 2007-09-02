@@ -19,7 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "fieldpropertiesdb.h"
-#include "fieldproperties.h"
+#include "fieldproperties_private.h"
 #include "fieldtypes.h"
 #include <vector>
 #include <sys/types.h>

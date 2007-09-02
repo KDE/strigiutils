@@ -20,6 +20,7 @@
  */
 #include "classproperties.h"
 #include "fieldpropertiesdb.h"
+#include "fieldproperties_private.h"
 #include <map>
 using namespace Strigi;
 using namespace std;
