@@ -242,7 +242,11 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
             Document* d = reader->document(i);
             const TCHAR* t = d->get(_T("system.location"));
             if (t && _tcsncmp(t, prefixText, prefixLen) == 0) {
-                reader->deleteDocument(i);
+                try {
+                    reader->deleteDocument(i);
+                } catch (...) {
+                    fprintf(stderr, "could not delete document");
+                }
             }
             _CLDELETE(d);
         }
