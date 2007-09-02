@@ -17,9 +17,7 @@ MACRO(ADD_STRIGIEA libname files)
   endif(WIN32)
   add_library(${libname} MODULE ${files})
   set_target_properties(${libname} PROPERTIES
-    PREFIX ${prefix}
-    VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR})
+    PREFIX ${prefix})
   target_link_libraries(${libname} streamanalyzer)
   install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 ENDMACRO(ADD_STRIGIEA)
