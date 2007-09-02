@@ -43,13 +43,38 @@ public:
     FieldProperties(const std::string& key);
     ~FieldProperties();
     const FieldProperties& operator=(const FieldProperties&);
+    /**
+     * Is this field property object valid?
+     **/
     bool valid() const;
+    /**
+     * Does this field contain binary values?
+     **/
     bool binary() const;
+    /**
+     * Hint: should an indexer store this field in a compressed way to save
+     * space?
+     **/
     bool compressed() const;
+    /**
+     * Hint: Should this field be indexed?
+     **/
     bool indexed() const;
+    /**
+     * Hint: Should this field be stored?
+     **/
     bool stored() const;
+    /**
+     * Hint: Should the value of this field be tokenized?
+     **/
     bool tokenized() const;
+    /**
+     * The minimal required number of instances of this field.
+     **/
     int minCardinality() const;
+    /**
+     * The maximal number of required instances of this field.
+     **/
     int maxCardinality() const;
     const std::string& uri() const;
     const std::string& name() const;
