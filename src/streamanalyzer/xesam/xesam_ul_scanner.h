@@ -35,9 +35,19 @@ namespace yy {
 class XesamUlScanner
 {
     public:
-        XesamUlScanner() {};
+        XesamUlScanner();
         virtual ~XesamUlScanner() {};
-        virtual int yylex(YYSTYPE* yylval) = 0;
+        int yylex(YYSTYPE* yylval);
+        
+    protected:
+        virtual bool is_open() = 0;
+        virtual char getCh() = 0;
+        virtual char peekCh() = 0;
+        virtual bool eof() = 0;
+      
+        bool m_modifier;
+        bool m_quotmarkClosed;
+        unsigned int m_quotmarkCount;
 };
 
 #endif

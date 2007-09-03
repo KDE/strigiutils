@@ -30,13 +30,15 @@ class XesamUlFileScanner : public XesamUlScanner
   public:
     XesamUlFileScanner(std::string filename);
     virtual ~XesamUlFileScanner();
-    int yylex(YYSTYPE* yylval);
+
+  protected:
+    bool is_open();
+    char getCh();
+    char peekCh();
+    bool eof();
 
   private:
     std::ifstream m_ifstream;
-    bool m_modifier;
-    bool m_quotmarkClosed;
-    unsigned int m_quotmarkCount;
 };
 
 #endif
