@@ -14,7 +14,7 @@ endif (BISON)
 
 set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
             StrigiQueryBuilder.cc xesam_ul_driver.cc
-            xesam_ul_scanner.cpp xesam_ul_file_scanner.cpp 
+            xesam_ul_scanner.cpp xesam_ul_file_scanner.cpp xesam_ul_string_scanner.cpp 
             xesam_ul_parser.cc xesam2strigi.cpp)
 
 add_library (strigi_xesam ${strigi_xesam_SRCS})
