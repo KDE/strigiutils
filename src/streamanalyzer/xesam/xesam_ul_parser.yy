@@ -28,6 +28,8 @@
 #include "xesam_ul_driver.hh"
 #include "xesam_ul_scanner.h"
 #include "query.h"
+#include "strigilogging.h"
+
 class XesamUlDriver;
 class XesamUlScanner;
 
@@ -64,19 +66,20 @@ using std::endl;
 
 // regole grammaticali
 
-start: query END {cout << "query building finished" << endl;};
+start: query END {STRIGI_LOG_DEBUG ("xesam_ul_parser", "query building finished")};
 
 query:  symbol select r_query;
 
 symbol: /* empty */ { driver->setNegate (false); }
         | MINUS
           {//TODO: hanlde
-            cout << "symbol minus" << endl;
+            STRIGI_LOG_DEBUG ("xesam_ul_parser::symbol",
+                              "minus --> negation enabled")
             driver->setNegate (true);
           };
 
 select: text {
-          cout << "select1\n";
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::select", "just text case")
           // just set term
           Strigi::Query* query = new Strigi::Query();
           query->term().setValue($1);
@@ -94,7 +97,8 @@ select: text {
           driver->addQuery (query);
         }
         | KEYWORD RELATION text {
-          cout << "select2\n";
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::select",
+                            "KEYWORD RELATION text case")
           Strigi::Query* query =new Strigi::Query();
 
           // set symbol value
@@ -131,7 +135,8 @@ text: WORD | phrase;
 
 r_query:  /*empty*/
           | collector {
-              cout << "r_query1\n";
+              STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
+                            "collector specified")
               Strigi::Query::Type collectorType;
 
               if ($1.compare("OR" == 0))
@@ -160,7 +165,8 @@ r_query:  /*empty*/
               driver->resetModifiers();
             }query
           | {
-              cout << "r_query2\n";
+              STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
+                                "no collector specified")
 
               Strigi::Query* query = driver->query();
               if ((query) && (query->type() != Strigi::Query::And)){
@@ -185,9 +191,6 @@ r_query:  /*empty*/
 
 phrase: QUOTMARKOPEN phrase_arg QUOTMARKCLOSE modifiers {
           $$ = $2;
-          
-          cout << "result phrase: " << $$ << endl;
-          cout << "modifiers: " << $4 << endl;
           driver->setModifiers ($4);
         };
 
@@ -198,7 +201,6 @@ phrase_arg: /*empty */ {$$ = ""; }
                 if (!$1.empty())
                   $$ = $1 + " ";
                 $$ += $2;
-                cout << "result phrase_arg: |" << $$ << "|\n";
               };
 
 modifiers:  /* empty */ { $$ = ""}
@@ -219,7 +221,8 @@ int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, X
   XesamUlScanner* scanner = driver->scanner();
   yylval->clear();
   int ret = scanner->yylex(yylval);
-  cout << "calling scanner yylval==|" << *yylval << "|, ret==|" << ret << "|\n";
+  STRIGI_LOG_DEBUG ("xesam_ul_parser::yylex",
+                    "calling scanner yylval==|" + *yylval + "|, ret==|" + ret)
   
   return ret;
 }
@@ -227,6 +230,7 @@ int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, X
 void yy::xesam_ul_parser::error (const yy::location& yyloc,
                                  const std::string& error)
 {
-  std::cerr << "error: " << error << endl;
+  STRIGI_LOG_ERROR ("xesam_ul_parser::error",
+                    error)
   driver->setError();
 }

@@ -384,27 +384,28 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 67 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
-    {cout << "query building finished" << endl;;}
+#line 69 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+    {STRIGI_LOG_DEBUG ("xesam_ul_parser", "query building finished");}
     break;
 
   case 4:
-#line 71 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 73 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     { driver->setNegate (false); ;}
     break;
 
   case 5:
-#line 73 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 75 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {//TODO: hanlde
-            cout << "symbol minus" << endl;
+            STRIGI_LOG_DEBUG ("xesam_ul_parser::symbol",
+                              "minus --> negation enabled")
             driver->setNegate (true);
           ;}
     break;
 
   case 6:
-#line 78 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 81 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
-          cout << "select1\n";
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::select", "just text case")
           // just set term
           Strigi::Query* query = new Strigi::Query();
           query->term().setValue((yysemantic_stack_[(1) - (1)]));
@@ -424,9 +425,10 @@ namespace yy
     break;
 
   case 7:
-#line 96 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 99 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
-          cout << "select2\n";
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::select",
+                            "KEYWORD RELATION text case")
           Strigi::Query* query =new Strigi::Query();
 
           // set symbol value
@@ -461,9 +463,10 @@ namespace yy
     break;
 
   case 11:
-#line 133 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 137 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
-              cout << "r_query1\n";
+              STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
+                            "collector specified")
               Strigi::Query::Type collectorType;
 
               if ((yysemantic_stack_[(1) - (1)]).compare("OR" == 0))
@@ -494,9 +497,10 @@ namespace yy
     break;
 
   case 13:
-#line 162 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 167 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
-              cout << "r_query2\n";
+              STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
+                                "no collector specified")
 
               Strigi::Query* query = driver->query();
               if ((query) && (query->type() != Strigi::Query::And)){
@@ -521,39 +525,35 @@ namespace yy
     break;
 
   case 15:
-#line 186 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 192 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
           (yyval) = (yysemantic_stack_[(4) - (2)]);
-          
-          cout << "result phrase: " << (yyval) << endl;
-          cout << "modifiers: " << (yysemantic_stack_[(4) - (4)]) << endl;
           driver->setModifiers ((yysemantic_stack_[(4) - (4)]));
         ;}
     break;
 
   case 16:
-#line 194 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 197 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {(yyval) = ""; ;}
     break;
 
   case 17:
-#line 196 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 199 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
                   (yyval) = (yysemantic_stack_[(2) - (1)]) + " ";
                 (yyval) += (yysemantic_stack_[(2) - (2)]);
-                cout << "result phrase_arg: |" << (yyval) << "|\n";
               ;}
     break;
 
   case 18:
-#line 204 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 206 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     { (yyval) = "";}
     break;
 
   case 19:
-#line 205 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 207 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
@@ -563,12 +563,12 @@ namespace yy
     break;
 
   case 20:
-#line 212 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 214 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     { (yyval)="AND"; ;}
     break;
 
   case 21:
-#line 213 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 215 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
     {(yyval) = "OR";}
     break;
 
@@ -914,9 +914,9 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yyrline_[] =
   {
-         0,    67,    67,    69,    71,    72,    78,    96,   130,   130,
-     132,   133,   133,   162,   162,   186,   194,   195,   204,   205,
-     212,   213
+         0,    69,    69,    71,    73,    74,    81,    99,   134,   134,
+     136,   137,   137,   167,   167,   192,   197,   198,   206,   207,
+     214,   215
   };
 
   // Print the state stack on the debug stream.
@@ -1004,7 +1004,7 @@ namespace yy
 
 } // namespace yy
 
-#line 215 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 217 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
 
 
 int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, XesamUlDriver* driver)
@@ -1012,7 +1012,8 @@ int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, X
   XesamUlScanner* scanner = driver->scanner();
   yylval->clear();
   int ret = scanner->yylex(yylval);
-  cout << "calling scanner yylval==|" << *yylval << "|, ret==|" << ret << "|\n";
+  STRIGI_LOG_DEBUG ("xesam_ul_parser::yylex",
+                    "calling scanner yylval==|" + *yylval + "|, ret==|" + ret)
   
   return ret;
 }
@@ -1020,7 +1021,8 @@ int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, X
 void yy::xesam_ul_parser::error (const yy::location& yyloc,
                                  const std::string& error)
 {
-  std::cerr << "error: " << error << endl;
+  STRIGI_LOG_ERROR ("xesam_ul_parser::error",
+                    error)
   driver->setError();
 }
 

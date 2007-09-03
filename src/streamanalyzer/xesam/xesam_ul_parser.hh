@@ -55,6 +55,8 @@ namespace yy
 #include "xesam_ul_driver.hh"
 #include "xesam_ul_scanner.h"
 #include "query.h"
+#include "strigilogging.h"
+
 class XesamUlDriver;
 class XesamUlScanner;
 
@@ -67,7 +69,7 @@ using std::endl;
 
 
 /* Line 35 of lalr1.cc.  */
-#line 71 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.hh"
+#line 73 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.hh"
 
 #include "location.hh"
 
