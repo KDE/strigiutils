@@ -28,6 +28,7 @@
 
 #include "XesamQLParser.h"
 #include "StrigiQueryBuilder.h"
+#include "xesam_ul_driver.hh"
 
 using namespace std;
 using namespace Dijon;
@@ -117,53 +118,28 @@ int main(int argc, char *argv[])
             printf ("error parsing query\n");
     }
 
+    
     for (set<string>::iterator iter = ulQueries.begin();
          iter != ulQueries.end(); iter++)
     {
-        printf ("NOT YET IMPLEMENTED\n");
-/*        printf ("processing user language query from file %s\n",
+        printf ("processing user language query from file %s\n",
                 (*iter).c_str());
-        
-        ifstream queryfile;
 
-        queryfile.open ((*iter).c_str(), ifstream::in);
+        XesamUlDriver driver;
+        driver.parseFile (*iter);
+        Query* query = driver.query();
 
-        if (!queryfile.is_open())
-        {
-            fprintf (stderr, "Unable to open file %s\n", (*iter).c_str());
-            continue;
-        }
-        
-        string querytext;
-
-        char buffer [500];
-        
-        while (!queryfile.eof())
-        {
-            queryfile.getline (buffer, 500);
-            querytext += buffer;
-        }
-
-        queryfile.close();
-        
-        XesamULParser xesamUlParser;
-        StrigiQueryBuilder strigiQueryBuilder;
-
-        if (xesamUlParser.parse ( querytext, strigiQueryBuilder))
-        {
-            printf ("query parsed successfully\n");
-            Strigi::Query query = strigiQueryBuilder.get_query();
-
-            if (outfile.length() == 0)
-                continue;
-
+        if (!outfile.empty()) {
             ofstream out;
+
             out.open (outfile.c_str());
-            out << query;
-            out.close();
+            if (out.is_open()) {
+                out << *query;
+                out.close();
+            }
+            else
+              cerr << "unable to write to file " << outfile << endl;
         }
-        else
-            printf ("error parsing query\n");*/
     }
     
     return 0;
