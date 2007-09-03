@@ -20,9 +20,10 @@
 
 #include "xesam2strigi.h"
 #include "query.h"
+#include "xesam_ul_driver.hh"
 #include "XesamQLParser.h"
-//#include "XesamQueryBuilder.h"
 #include "StrigiQueryBuilder.h"
+
 
 using std::string;
 using namespace Dijon;
@@ -58,20 +59,25 @@ bool Xesam2Strigi::parse (const string& xesam_query, Type query_type)
     return true;
   }
   else if (query_type == UserLanguage) {
+    printf ("NOT YET IMPLEMENTED!\n");
+    return false;
   }
+
+  // it won't happen
+  return false;
 }
 
 bool Xesam2Strigi::parse_file (const string& xesam_query_file, Type query_type)
 {
+  if (m_query) {
+    delete m_query;
+    m_query = 0;
+  }
+  
   if (query_type == QueryLanguage) {
     XesamQLParser xesamQlParser;
     StrigiQueryBuilder strigiQueryBuilder;
 
-    if (m_query) {
-      delete m_query;
-      m_query = 0;
-    }
-    
     if (!xesamQlParser.parse_file ( xesam_query_file, strigiQueryBuilder))
       return false;
 
@@ -79,7 +85,17 @@ bool Xesam2Strigi::parse_file (const string& xesam_query_file, Type query_type)
     return true;
   }
   else if (query_type == UserLanguage) {
+    XesamUlDriver driver;
+    
+    if (!driver.parseFile (xesam_query_file))
+      return false;
+
+    m_query = new Strigi::Query (*driver.query());
+    return true;
   }
+
+  // it won't happen
+  return false;
 }
 
 Strigi::Query Xesam2Strigi::query()
