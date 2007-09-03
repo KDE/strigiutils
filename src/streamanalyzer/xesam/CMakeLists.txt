@@ -4,7 +4,7 @@ include_directories (${LIBXML2_INCLUDE_DIR}
                      ${strigi_BINARY_DIR}/src/streams)
 
 set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
-             StrigiQueryBuilder.cc)
+             StrigiQueryBuilder.cc xesam2strigi.cpp)
 
 add_library (strigi_xesam ${strigi_xesam_SRCS})
 target_link_libraries(strigi_xesam ${LIBXML2_LIBRARIES} streamanalyzer)

@@ -27,8 +27,7 @@
 #include <strigi/strigiconfig.h>
 #include "query.h"
 #include "queryparser.h"
-#include "XesamQLParser.h"
-#include "StrigiQueryBuilder.h"
+#include "xesam2strigi.h"
 #include <algorithm>
 #include <string>
 #include <set>
@@ -494,14 +493,12 @@ xesamquery(int argc, char** argv) {
         return 1;
     }
 
-    Dijon::StrigiQueryBuilder strigiQueryBuilder;
+    Xesam2Strigi xesam2strigi;
 
     if (qlfile.length() != 0) {
         printf ("processing query from file %s\n", qlfile.c_str());
 
-        Dijon::XesamQLParser xesamQlParser;
-
-        if (xesamQlParser.parse_file ( qlfile, strigiQueryBuilder))
+        if (xesam2strigi.parse_file ( qlfile, Xesam2Strigi::QueryLanguage))
             printf ("Xesam query parsed successfully\n");
         else
         {
@@ -531,7 +528,7 @@ xesamquery(int argc, char** argv) {
 
     unsigned int results = 0;
     const uint batchsize = 10;
-    Query query = strigiQueryBuilder.get_query();
+    Query query = xesam2strigi.query();
     vector<IndexedDocument> matches = reader->query(query, 0, batchsize);
 
     if (matches.size() != 0) {
