@@ -1,1 +1,1 @@
-type:music creator="Jimi Hendrix"
+type:music creator="James Marshall Hendrix"
