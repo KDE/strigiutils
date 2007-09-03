@@ -133,6 +133,17 @@ IF(ENABLE_DBUS)
   ENDIF(WIN32)
 ENDIF(ENABLE_DBUS)
 
+find_program (BISON
+              bison
+              DOC "Path to bison command, used for xesam userlanguage parser generation"
+)
+
+if (BISON)
+message ("-- Found bison: ${BISON}")
+else (BISON)
+message ("bison not found")
+endif (BISON)
+
 if (ENABLE_LOG4CXX)
     find_package (Log4cxx)
 endif (ENABLE_LOG4CXX)
