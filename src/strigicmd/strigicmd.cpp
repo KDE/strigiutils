@@ -496,7 +496,7 @@ xesamquery(int argc, char** argv) {
     Xesam2Strigi xesam2strigi;
 
     if (qlfile.length() != 0) {
-        printf ("processing query from file %s\n", qlfile.c_str());
+        printf ("processing xesam querylanguage query from file %s\n", qlfile.c_str());
 
         if (xesam2strigi.parse_file ( qlfile, Xesam2Strigi::QueryLanguage))
             printf ("Xesam query parsed successfully\n");
@@ -507,16 +507,16 @@ xesamquery(int argc, char** argv) {
         }
     }
     else if (ulfile.length() != 0) {
-        pe ("xesam user language queries are not yet supported\n");
-//         Dijon::XesamULParser xesamUlParser;
-// 
-//         if (xesamUlParser.parse_file ( ulfile, strigiQueryBuilder))
-//             printf ("query parsed successfully\n");
-//         else
-//         {
-//             pe ("error parsing query\n");
-//             return 1;
-//         }
+      printf ("processing xesam userlanguage query from file %s\n", qlfile.c_str());
+
+      if (xesam2strigi.parse_file ( qlfile, Xesam2Strigi::UserLanguage))
+        printf ("Xesam query parsed successfully\n");
+      else
+      {
+        pe ("error parsing query\n");
+        return 1;
+      }
+
     }
     
     // create an index manager
