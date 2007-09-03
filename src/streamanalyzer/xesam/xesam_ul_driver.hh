@@ -35,7 +35,7 @@ class XesamUlDriver
     XesamUlDriver();
     virtual ~XesamUlDriver();
 
-    void parseFile (const std::string &);
+    bool parseFile (const std::string &);
     XesamUlScanner* scanner() { return m_scanner; };
 
     Strigi::Query* query() { return m_query; };
@@ -50,12 +50,15 @@ class XesamUlDriver
 
     void setNegate(bool negate) { m_negate = negate; }
     bool negate() { return m_negate; }
+
+    void setError() { m_error = true; }
     
   private:
     XesamUlScanner* m_scanner;
     Strigi::Query* m_query;
     std::string m_modifiers;
     bool m_negate;
+    bool m_error;
 };
 
 #endif

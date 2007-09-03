@@ -228,4 +228,5 @@ void yy::xesam_ul_parser::error (const yy::location& yyloc,
                                  const std::string& error)
 {
   std::cerr << "error: " << error << endl;
+  driver->setError();
 }

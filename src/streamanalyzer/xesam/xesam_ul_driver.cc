@@ -33,6 +33,7 @@ XesamUlDriver::XesamUlDriver()
   m_scanner = 0;
   m_query = 0;
   m_negate = false;
+  m_error = false;
 }
 
 XesamUlDriver::~XesamUlDriver()
@@ -44,7 +45,7 @@ XesamUlDriver::~XesamUlDriver()
     delete m_query;
 }
 
-void XesamUlDriver::parseFile (const std::string &filename)
+bool XesamUlDriver::parseFile (const std::string &filename)
 {
   if (m_scanner)
     delete m_scanner;
@@ -55,6 +56,8 @@ void XesamUlDriver::parseFile (const std::string &filename)
 
   delete m_scanner;
   m_scanner = 0;
+
+  return m_error;
 }
 
 void XesamUlDriver::addQuery(Strigi::Query* query)
