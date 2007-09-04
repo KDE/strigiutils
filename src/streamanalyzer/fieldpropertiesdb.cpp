@@ -368,7 +368,7 @@ FieldPropertiesDb::Private::replaceEntities(string& value) {
     for(list< pair<string, string> >::const_iterator j = entities.begin();
             j != entities.end(); ++j) {
         string entity = '&' + j->first + ';';
-        uint pos = string::npos;
+        size_t pos = string::npos;
         while((pos = value.find(entity)) != string::npos) {
 	    value.erase(pos, entity.size());
             value.insert(pos, j->second);
