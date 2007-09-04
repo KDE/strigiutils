@@ -482,7 +482,7 @@ namespace yy
                             "collector specified")
               Strigi::Query::Type collectorType;
 
-              if ((yysemantic_stack_[(1) - (1)]).compare("OR" == 0))
+              if ((yysemantic_stack_[(1) - (1)]).compare("OR") == 0)
                 collectorType = Strigi::Query::Or;
               else
                 collectorType = Strigi::Query::And;

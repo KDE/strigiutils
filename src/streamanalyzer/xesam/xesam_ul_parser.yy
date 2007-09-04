@@ -149,7 +149,7 @@ r_query:  /*empty*/
                             "collector specified")
               Strigi::Query::Type collectorType;
 
-              if ($1.compare("OR" == 0))
+              if ($1.compare("OR") == 0)
                 collectorType = Strigi::Query::Or;
               else
                 collectorType = Strigi::Query::And;
