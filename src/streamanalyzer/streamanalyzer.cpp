@@ -416,6 +416,10 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
                 } else {
                     // refresh the pointer to the start of the data
                     headersize = input->read(header, headersize, headersize);
+    		    if (input->reset(0) != 0) {
+        		cerr << "resetting again is impossible!! pos: " << input->position()
+            		     << " status: " << input->status() << endl;
+    		    }
                     if (headersize < 0) finished = true;
                 }
             } else {
