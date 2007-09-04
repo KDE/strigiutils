@@ -29,17 +29,18 @@ XesamUlStringScanner::XesamUlStringScanner(string xesam_query)
 
 bool XesamUlStringScanner::is_open()
 {
-  return m_xesam_query.empty();
+  return !m_xesam_query.empty();
 }
 
 char XesamUlStringScanner::getCh()
 {
   char ret = m_xesam_query[0];
+
   if (m_xesam_query.length() == 1)
     m_xesam_query.clear();
   else
     m_xesam_query = m_xesam_query.substr(1);
-  
+
   return ret;
 }
 

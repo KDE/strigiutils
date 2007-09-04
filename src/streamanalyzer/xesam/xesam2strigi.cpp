@@ -59,8 +59,13 @@ bool Xesam2Strigi::parse (const string& xesam_query, Type query_type)
     return true;
   }
   else if (query_type == UserLanguage) {
-    printf ("NOT YET IMPLEMENTED!\n");
-    return false;
+    XesamUlDriver driver;
+    
+    if (!driver.parseString (xesam_query))
+      return false;
+
+    m_query = new Strigi::Query (*driver.query());
+    return true;
   }
 
   // it won't happen

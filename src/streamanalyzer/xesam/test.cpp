@@ -37,25 +37,29 @@ using namespace Strigi;
 int main(int argc, char *argv[])
 {
     int opt;
-    set<string> ulQueries, qlQueries;
+    set<string> ulQueries, qlQueries, ulStringQueries;
     string outfile;
 
     outfile.clear();
-    
+
     if (argc < 3)
     {
         fprintf(stderr,
-                "Usage: %s [-u ulQueryFile] [-q qlQueryFile] [-o outputfile]\n",
+                "Usage: %s [-u ulQueryFile] [-U XesamUserLanguageQuery ] [-q qlQueryFile] [-o outputfile]\n",
                 argv[0]);
         exit(EXIT_FAILURE);
     }
     
-    while ((opt = getopt(argc, argv, "u:q:o:")) != -1)
+    while ((opt = getopt(argc, argv, "u:U:q:o:")) != -1)
     {
         switch (opt) {
             case 'u':
                 // user language query
                 ulQueries.insert (optarg);
+                break;
+            case 'U':
+                // user language query
+                ulStringQueries.insert (optarg);
                 break;
             case 'q':
                 // query language query
@@ -139,6 +143,29 @@ int main(int argc, char *argv[])
             }
             else
               cerr << "unable to write to file " << outfile << endl;
+        }
+    }
+
+    for (set<string>::iterator iter = ulStringQueries.begin();
+         iter != ulStringQueries.end(); iter++)
+    {
+        printf ("processing user language query specified by command "
+                "line |%s|\n", (*iter).c_str());
+
+        XesamUlDriver driver;
+        driver.parseString( *iter);
+        Query* query = driver.query();
+
+        if (!outfile.empty()) {
+            ofstream out;
+
+            out.open (outfile.c_str());
+            if (out.is_open()) {
+                out << *query;
+                out.close();
+            }
+            else
+                cerr << "unable to write to file " << outfile << endl;
         }
     }
     

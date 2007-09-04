@@ -36,6 +36,7 @@ class XesamUlDriver
     virtual ~XesamUlDriver();
 
     bool parseFile (const std::string &);
+    bool parseString (const std::string &);
     XesamUlScanner* scanner() { return m_scanner; };
 
     Strigi::Query* query() { return m_query; };

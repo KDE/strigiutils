@@ -21,6 +21,7 @@
 #include "xesam_ul_driver.hh"
 #include "xesam_ul_parser.hh"
 #include "xesam_ul_file_scanner.h"
+#include "xesam_ul_string_scanner.h"
 #include "query.h"
 
 #include <fstream>
@@ -51,6 +52,21 @@ bool XesamUlDriver::parseFile (const std::string &filename)
     delete m_scanner;
 
   m_scanner = new XesamUlFileScanner (filename);
+  yy::xesam_ul_parser parser (this);
+  parser.parse ();
+
+  delete m_scanner;
+  m_scanner = 0;
+
+  return m_error;
+}
+
+bool XesamUlDriver::parseString (const std::string &query)
+{
+  if (m_scanner)
+    delete m_scanner;
+
+  m_scanner = new XesamUlStringScanner (query);
   yy::xesam_ul_parser parser (this);
   parser.parse ();
 
