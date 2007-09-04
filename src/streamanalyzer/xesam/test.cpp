@@ -130,20 +130,23 @@ int main(int argc, char *argv[])
                 (*iter).c_str());
 
         XesamUlDriver driver;
-        driver.parseFile (*iter);
-        Query* query = driver.query();
+        if (driver.parseFile (*iter)) {
+          Query* query = driver.query();
 
-        if (!outfile.empty()) {
-            ofstream out;
+          if (!outfile.empty()) {
+              ofstream out;
 
-            out.open (outfile.c_str());
-            if (out.is_open()) {
-                out << *query;
-                out.close();
-            }
-            else
-              cerr << "unable to write to file " << outfile << endl;
+              out.open (outfile.c_str());
+              if (out.is_open()) {
+                  out << *query;
+                  out.close();
+              }
+              else
+                cerr << "unable to write to file " << outfile << endl;
+          }
         }
+        else
+          cerr << "unable to parse xesam query, check syntax" << endl;
     }
 
     for (set<string>::iterator iter = ulStringQueries.begin();

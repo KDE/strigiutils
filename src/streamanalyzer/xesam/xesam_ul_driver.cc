@@ -53,12 +53,14 @@ bool XesamUlDriver::parseFile (const std::string &filename)
 
   m_scanner = new XesamUlFileScanner (filename);
   yy::xesam_ul_parser parser (this);
+  
   parser.parse ();
 
   delete m_scanner;
+
   m_scanner = 0;
 
-  return m_error;
+  return !m_error;
 }
 
 bool XesamUlDriver::parseString (const std::string &query)

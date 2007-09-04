@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 25 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 25 "xesam_ul_parser.yy"
 
 #include <string>
 
@@ -69,7 +69,7 @@ using std::endl;
 
 
 /* Line 35 of lalr1.cc.  */
-#line 73 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.hh"
+#line 73 "xesam_ul_parser.hh"
 
 #include "location.hh"
 
@@ -234,7 +234,7 @@ namespace yy
     static const signed char yytable_[];
     static const signed char yytable_ninf_;
 
-    static const unsigned char yycheck_[];
+    static const signed char yycheck_[];
 
     /// For a state, its accessing symbol.
     static const unsigned char yystos_[];

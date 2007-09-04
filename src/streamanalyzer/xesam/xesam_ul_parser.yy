@@ -66,13 +66,23 @@ using std::endl;
 
 // regole grammaticali
 
-start: query END {STRIGI_LOG_DEBUG ("xesam_ul_parser", "query building finished")};
+start: query {STRIGI_LOG_DEBUG ("xesam_ul_parser", "query building finished")};
 
-query:  symbol select r_query;
+query:  symbol select r_query END
+        | error
+          {
+            STRIGI_LOG_ERROR ("xesam_ul_parser", "syntax error found, "
+                              "forcing exit")
+            Strigi::Query* query = driver->query();
+            if (query) {
+              delete query;
+              driver->setQuery (0);
+            }
+          };
 
 symbol: /* empty */ { driver->setNegate (false); }
         | MINUS
-          {//TODO: hanlde
+          {
             STRIGI_LOG_DEBUG ("xesam_ul_parser::symbol",
                               "minus --> negation enabled")
             driver->setNegate (true);

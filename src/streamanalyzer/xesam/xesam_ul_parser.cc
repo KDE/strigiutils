@@ -39,7 +39,7 @@
 
 
 /* Line 317 of lalr1.cc.  */
-#line 43 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.cc"
+#line 43 "xesam_ul_parser.cc"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -384,26 +384,39 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 69 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 69 "xesam_ul_parser.yy"
     {STRIGI_LOG_DEBUG ("xesam_ul_parser", "query building finished");}
     break;
 
   case 4:
-#line 73 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
-    { driver->setNegate (false); ;}
+#line 73 "xesam_ul_parser.yy"
+    {
+            STRIGI_LOG_ERROR ("xesam_ul_parser", "syntax error found, "
+                              "forcing exit")
+            Strigi::Query* query = driver->query();
+            if (query) {
+              delete query;
+              driver->setQuery (0);
+            }
+          ;}
     break;
 
   case 5:
-#line 75 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
-    {//TODO: hanlde
+#line 83 "xesam_ul_parser.yy"
+    { driver->setNegate (false); ;}
+    break;
+
+  case 6:
+#line 85 "xesam_ul_parser.yy"
+    {
             STRIGI_LOG_DEBUG ("xesam_ul_parser::symbol",
                               "minus --> negation enabled")
             driver->setNegate (true);
           ;}
     break;
 
-  case 6:
-#line 81 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 7:
+#line 91 "xesam_ul_parser.yy"
     {
           STRIGI_LOG_DEBUG ("xesam_ul_parser::select", "just text case")
           // just set term
@@ -424,8 +437,8 @@ namespace yy
         ;}
     break;
 
-  case 7:
-#line 99 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 8:
+#line 109 "xesam_ul_parser.yy"
     {
           STRIGI_LOG_DEBUG ("xesam_ul_parser::select",
                             "KEYWORD RELATION text case")
@@ -462,8 +475,8 @@ namespace yy
         ;}
     break;
 
-  case 11:
-#line 137 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 12:
+#line 147 "xesam_ul_parser.yy"
     {
               STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
                             "collector specified")
@@ -496,8 +509,8 @@ namespace yy
             ;}
     break;
 
-  case 13:
-#line 167 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 14:
+#line 177 "xesam_ul_parser.yy"
     {
               STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
                                 "no collector specified")
@@ -524,21 +537,21 @@ namespace yy
             ;}
     break;
 
-  case 15:
-#line 192 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 16:
+#line 202 "xesam_ul_parser.yy"
     {
           (yyval) = (yysemantic_stack_[(4) - (2)]);
           driver->setModifiers ((yysemantic_stack_[(4) - (4)]));
         ;}
     break;
 
-  case 16:
-#line 197 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 17:
+#line 207 "xesam_ul_parser.yy"
     {(yyval) = ""; ;}
     break;
 
-  case 17:
-#line 199 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 18:
+#line 209 "xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
@@ -547,13 +560,13 @@ namespace yy
               ;}
     break;
 
-  case 18:
-#line 206 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 19:
+#line 216 "xesam_ul_parser.yy"
     { (yyval) = "";}
     break;
 
-  case 19:
-#line 207 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 20:
+#line 217 "xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
@@ -562,19 +575,19 @@ namespace yy
               ;}
     break;
 
-  case 20:
-#line 214 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 21:
+#line 224 "xesam_ul_parser.yy"
     { (yyval)="AND"; ;}
     break;
 
-  case 21:
-#line 215 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+  case 22:
+#line 225 "xesam_ul_parser.yy"
     {(yyval) = "OR";}
     break;
 
 
     /* Line 675 of lalr1.cc.  */
-#line 578 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.cc"
+#line 591 "xesam_ul_parser.cc"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -781,13 +794,13 @@ namespace yy
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char xesam_ul_parser::yypact_ninf_ = -9;
+  const signed char xesam_ul_parser::yypact_ninf_ = -7;
   const signed char
   xesam_ul_parser::yypact_[] =
   {
-        -7,    -9,    12,    14,     1,    -9,    -9,    -9,    10,    -9,
-       0,    -9,    -9,     3,    -2,    -9,    -9,    -9,    -7,    -9,
-      -9,    -9,    -9,    -9,    -7,    -3,    -9,    -9
+        -1,    -7,    -7,     1,    -7,    11,    -7,    -7,    13,    -7,
+       4,    -7,    -7,     7,     2,    -7,    -7,     6,    -1,    -7,
+      -7,    -7,    -7,    -7,    -7,    -1,    14,    -7,    -7
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -796,44 +809,46 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yydefact_[] =
   {
-         4,     5,     0,     0,     0,     1,     2,     8,     0,    16,
-      13,     6,     9,     0,     0,    20,    21,     3,     4,    11,
-       7,    17,    18,    14,     4,    15,    12,    19
+         0,     4,     6,     0,     2,     0,     1,     9,     0,    17,
+      14,     7,    10,     0,     0,    21,    22,     0,     0,    12,
+       8,    18,    19,     3,    15,     0,    16,    13,    20
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   xesam_ul_parser::yypgoto_[] =
   {
-        -9,    -9,    -8,    -9,    -9,     4,    -9,    -9,    -9,    -9,
-      -9,    -9,    -9
+        -7,    -7,    -2,    -7,    -7,    -6,    -7,    -7,    -7,    -7,
+      -7,    -7,    -7
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   xesam_ul_parser::yydefgoto_[] =
   {
-        -1,     2,     3,     4,    10,    11,    17,    24,    18,    12,
-      14,    25,    19
+        -1,     3,     4,     5,    10,    11,    17,    25,    18,    12,
+      14,    26,    19
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule which
      number is the opposite.  If zero, do what YYDEFACT says.  */
-  const signed char xesam_ul_parser::yytable_ninf_ = -11;
+  const signed char xesam_ul_parser::yytable_ninf_ = -12;
   const signed char
   xesam_ul_parser::yytable_[] =
   {
-       -10,    21,     1,    27,     7,     8,     7,    15,    16,    22,
-      23,     9,     5,     9,     6,    13,    26,    20
+         1,     6,    -5,    -5,   -11,    21,    23,    20,     2,    -5,
+       7,    15,    16,    22,     7,     8,    24,     9,    13,     0,
+      28,     9,     0,    27
   };
 
   /* YYCHECK.  */
-  const unsigned char
+  const signed char
   xesam_ul_parser::yycheck_[] =
   {
-         0,     3,     9,     6,     3,     4,     3,     7,     8,    11,
-      18,    10,     0,    10,     0,     5,    24,    13
+         1,     0,     3,     4,     0,     3,     0,    13,     9,    10,
+       3,     7,     8,    11,     3,     4,    18,    10,     5,    -1,
+       6,    10,    -1,    25
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -841,9 +856,9 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yystos_[] =
   {
-         0,     9,    13,    14,    15,     0,     0,     3,     4,    10,
+         0,     1,     9,    13,    14,    15,     0,     3,     4,    10,
       16,    17,    21,     5,    22,     7,     8,    18,    20,    24,
-      17,     3,    11,    14,    19,    23,    14,     6
+      17,     3,    11,     0,    14,    19,    23,    14,     6
   };
 
 #if YYDEBUG
@@ -861,18 +876,18 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yyr1_[] =
   {
-         0,    12,    13,    14,    15,    15,    16,    16,    17,    17,
-      18,    19,    18,    20,    18,    21,    22,    22,    23,    23,
-      24,    24
+         0,    12,    13,    14,    14,    15,    15,    16,    16,    17,
+      17,    18,    19,    18,    20,    18,    21,    22,    22,    23,
+      23,    24,    24
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   xesam_ul_parser::yyr2_[] =
   {
-         0,     2,     2,     3,     0,     1,     1,     3,     1,     1,
-       0,     0,     3,     0,     2,     4,     0,     2,     0,     2,
-       1,     1
+         0,     2,     1,     4,     1,     0,     1,     1,     3,     1,
+       1,     0,     0,     3,     0,     2,     4,     0,     2,     0,
+       2,     1,     1
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -893,11 +908,12 @@ namespace yy
   const xesam_ul_parser::rhs_number_type
   xesam_ul_parser::yyrhs_[] =
   {
-        13,     0,    -1,    14,     0,    -1,    15,    16,    18,    -1,
-      -1,     9,    -1,    17,    -1,     4,     5,    17,    -1,     3,
-      -1,    21,    -1,    -1,    -1,    24,    19,    14,    -1,    -1,
-      20,    14,    -1,    10,    22,    11,    23,    -1,    -1,    22,
-       3,    -1,    -1,    23,     6,    -1,     7,    -1,     8,    -1
+        13,     0,    -1,    14,    -1,    15,    16,    18,     0,    -1,
+       1,    -1,    -1,     9,    -1,    17,    -1,     4,     5,    17,
+      -1,     3,    -1,    21,    -1,    -1,    -1,    24,    19,    14,
+      -1,    -1,    20,    14,    -1,    10,    22,    11,    23,    -1,
+      -1,    22,     3,    -1,    -1,    23,     6,    -1,     7,    -1,
+       8,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -905,18 +921,18 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yyprhs_[] =
   {
-         0,     0,     3,     6,    10,    11,    13,    15,    19,    21,
-      23,    24,    25,    29,    30,    33,    38,    39,    42,    43,
-      46,    48
+         0,     0,     3,     5,    10,    12,    13,    15,    17,    21,
+      23,    25,    26,    27,    31,    32,    35,    40,    41,    44,
+      45,    48,    50
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   xesam_ul_parser::yyrline_[] =
   {
-         0,    69,    69,    71,    73,    74,    81,    99,   134,   134,
-     136,   137,   137,   167,   167,   192,   197,   198,   206,   207,
-     214,   215
+         0,    69,    69,    71,    72,    83,    84,    91,   109,   144,
+     144,   146,   147,   147,   177,   177,   202,   207,   208,   216,
+     217,   224,   225
   };
 
   // Print the state stack on the debug stream.
@@ -991,10 +1007,10 @@ namespace yy
   }
 
   const int xesam_ul_parser::yyeof_ = 0;
-  const int xesam_ul_parser::yylast_ = 17;
+  const int xesam_ul_parser::yylast_ = 23;
   const int xesam_ul_parser::yynnts_ = 13;
   const int xesam_ul_parser::yyempty_ = -2;
-  const int xesam_ul_parser::yyfinal_ = 5;
+  const int xesam_ul_parser::yyfinal_ = 6;
   const int xesam_ul_parser::yyterror_ = 1;
   const int xesam_ul_parser::yyerrcode_ = 256;
   const int xesam_ul_parser::yyntokens_ = 12;
@@ -1004,7 +1020,7 @@ namespace yy
 
 } // namespace yy
 
-#line 217 "/home/flavio/hacking/strigi/src/streamanalyzer/xesam/xesam_ul_parser.yy"
+#line 227 "xesam_ul_parser.yy"
 
 
 int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, XesamUlDriver* driver)
