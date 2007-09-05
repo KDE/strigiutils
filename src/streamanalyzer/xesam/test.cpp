@@ -29,6 +29,7 @@
 #include "XesamQLParser.h"
 #include "StrigiQueryBuilder.h"
 #include "xesam_ul_driver.hh"
+#include "strigilogging.h"
 
 using namespace std;
 using namespace Dijon;
@@ -36,6 +37,8 @@ using namespace Strigi;
 
 int main(int argc, char *argv[])
 {
+    STRIGI_LOG_INIT_BASIC();
+  
     int opt;
     set<string> ulQueries, qlQueries, ulStringQueries;
     string outfile;
@@ -45,7 +48,8 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
         fprintf(stderr,
-                "Usage: %s [-u ulQueryFile] [-U XesamUserLanguageQuery ] [-q qlQueryFile] [-o outputfile]\n",
+                "Usage: %s [-u ulQueryFile] [-U XesamUserLanguageQuery ] "
+                "[-q qlQueryFile] [-o outputfile]\n",
                 argv[0]);
         exit(EXIT_FAILURE);
     }
