@@ -20,6 +20,7 @@
 
 #include "xesam_ul_scanner.h"
 #include "xesam_ul_parser.hh"
+#include "strigilogging.h"
 
 #include <string>
 
@@ -79,11 +80,13 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
         return yy::xesam_ul_parser::token::MODIFIER;
       }
       else {
-        //error!
-        m_modifier = false;
-        std::cerr << "Error: unknown modifier: |" << ch << "|" << endl;
+        //error, unknown modifier
+        STRIGI_LOG_ERROR ("xesam_ul_scanner",
+                          string("unknown modifier: |") + ch + "|")
 
-        return -1;
+        // don't interrupt parsing, just provide an empty modifier
+        *yylval = "";
+        return yy::xesam_ul_parser::token::MODIFIER;
       }
     }
     
@@ -172,6 +175,13 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     // set yylval
     *yylval = read;
     return yy::xesam_ul_parser::token::MINUS;
+  }
+  else if ((ch == '+')) {
+    // yy::xesam_ul_parser::token::MINUS (-)
+    read = ch;
+    // set yylval
+    *yylval = read;
+    return yy::xesam_ul_parser::token::PLUS;
   }
   else if ((ch == '&') && (peekCh() == '&')) {
     // yy::xesam_ul_parser::token::AND (&&)
