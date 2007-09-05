@@ -26,6 +26,11 @@
 // log4cxx libraries
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/basicconfigurator.h>
+
+#define STRIGI_LOG_INIT_BASIC() { \
+    log4cxx::BasicConfigurator::configure();\
+}
 
 #define STRIGI_LOG_INIT(logconffile) { \
     log4cxx::PropertyConfigurator::configure(logconffile);\
@@ -61,7 +66,9 @@
 
 #include <iostream>
 
-#define STRIGI_LOG_INIT(logconffile);
+#define STRIGI_LOG_INIT(logconffile) { }
+
+#define STRIGI_LOG_INIT_BASIC() { }
 
 #define STRIGI_LOG(loggerName, message) { \
     std::cerr << loggerName << ": " << message << std::endl; \
