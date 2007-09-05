@@ -18,7 +18,7 @@ if (CLucene_FOUND)
   set(TESTINGDIRS ${TESTINGDIRS} luceneindexer)
 endif (CLucene_FOUND)
 
-include_directories (. ${CPPUNIT_INCLUDE_DIR} )
+include_directories (. ${CPPUNIT_INCLUDE_DIR} ${strigi_SOURCE_DIR}/src/daemon)
 
 add_library(test_runner test_runner.cpp)
 target_link_libraries(test_runner ${CPPUNIT_LIBRARIES})

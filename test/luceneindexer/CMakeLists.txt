@@ -1,5 +1,11 @@
 STRING(REGEX REPLACE /test /src INC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+    set(lucenetest_LIBS ${lucenetest_LIBS} ${LOG4CXX_LIBRARIES})
+    set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
+    add_definitions(-DHAVE_LOG4CXX)
+endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+
 include_directories (. .. ${INC_DIR}
                      ../indextesters
                      ../streamanalyzer
@@ -21,6 +27,7 @@ add_executable (lucenetest  luceneindexmanagertest.cpp
 target_link_libraries (lucenetest   test_runner
                                     streamanalyzertesters
                                     indextesters
-                                    cluceneindex )
+                                    cluceneindex
+                                    ${lucenetest_LIBS})
 
 add_test (lucenetests lucenetest)

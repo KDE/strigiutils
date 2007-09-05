@@ -4,6 +4,7 @@ if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     set(daemonconfiguratortest_LIBS ${daemonconfiguratortest_LIBS}
                                     ${LOG4CXX_LIBRARIES})
     set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
+    add_definitions(-DHAVE_LOG4CXX)
 endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 
 include_directories (.  ${INC_DIR}
