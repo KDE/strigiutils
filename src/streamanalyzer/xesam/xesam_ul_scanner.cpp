@@ -45,12 +45,12 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
   }
   
   do {
-    ch = getCh();
-
     if (eof()) {
       m_modifier = false;
       return yy::xesam_ul_parser::token::END;
     }
+    else
+      ch = getCh();
 
     if ((m_modifier) && (isspace(ch) != 0))
       m_modifier = false;
@@ -92,7 +92,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     
 
     read = ch;
-    while (isalnum (peekCh()) != 0) {
+    while (!eof() && (isalnum (peekCh()) != 0)) {
       ch = getCh();
       read += ch;
     }
@@ -124,10 +124,10 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       *yylval = read;
       return yy::xesam_ul_parser::token::OR;
     }
-    else {
+    else if (!eof()) {
       // read also symbols composing a WORD (except for ")
       char next = peekCh();
-      while ((isspace (next) == 0) && (next != '"')) {
+      while (!eof() && (isspace (next) == 0) && (next != '"')) {
         ch = getCh();
         read += ch;
         next = peekCh();
@@ -142,7 +142,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     read = ch;
 
     // we've to look after <= and >=
-    if (((ch == '<') || (ch == '>')) && (peekCh() == '=')) {
+    if (((ch == '<') || (ch == '>')) && !eof() && (peekCh() == '=')) {
       ch = getCh();
       read += ch;
     }
@@ -183,7 +183,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     *yylval = read;
     return yy::xesam_ul_parser::token::PLUS;
   }
-  else if ((ch == '&') && (peekCh() == '&')) {
+  else if ((ch == '&') && !eof() && (peekCh() == '&')) {
     // yy::xesam_ul_parser::token::AND (&&)
     ch = getCh();
     read = ch + ch;
@@ -191,7 +191,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     *yylval = read;
     return yy::xesam_ul_parser::token::AND;
   }
-  else if ((ch == '|') && (peekCh() == '|')) {
+  else if ((ch == '|') && !eof() && (peekCh() == '|')) {
     // yy::xesam_ul_parser::token::OR (||)
     ch = getCh();
     read = ch + ch;

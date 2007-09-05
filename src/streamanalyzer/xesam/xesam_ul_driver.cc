@@ -75,7 +75,7 @@ bool XesamUlDriver::parseString (const std::string &query)
   delete m_scanner;
   m_scanner = 0;
 
-  return m_error;
+  return !m_error;
 }
 
 void XesamUlDriver::addQuery(Strigi::Query* query)

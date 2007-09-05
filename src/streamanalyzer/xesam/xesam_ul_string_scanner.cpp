@@ -34,7 +34,11 @@ bool XesamUlStringScanner::is_open()
 
 char XesamUlStringScanner::getCh()
 {
-  char ret = m_xesam_query[0];
+  char ret;
+  if (m_xesam_query.empty())
+    return -1;
+  
+  ret = m_xesam_query[0];
 
   if (m_xesam_query.length() == 1)
     m_xesam_query.clear();
@@ -46,7 +50,10 @@ char XesamUlStringScanner::getCh()
 
 char XesamUlStringScanner::peekCh()
 {
-  return m_xesam_query[0];
+  if (!m_xesam_query.empty())
+    return m_xesam_query[0];
+
+  return -1;
 }
 
 bool XesamUlStringScanner::eof()
