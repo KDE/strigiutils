@@ -1,7 +1,7 @@
 if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
-    set(xesamquerybuildertest_LIBS ${xesamquerybuildertest_LIBS}
-                                    ${LOG4CXX_LIBRARIES})
+    set(xesam_LIBS ${xesam_LIBS} ${LOG4CXX_LIBRARIES})
     set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
+    add_definitions(-DHAVE_LOG4CXX)
 endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 
 include_directories (${LIBXML2_INCLUDE_DIR}
@@ -25,11 +25,10 @@ set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
             xesam_ul_parser.cc xesam2strigi.cpp)
 
 add_library (strigi_xesam ${strigi_xesam_SRCS})
-target_link_libraries(strigi_xesam ${LIBXML2_LIBRARIES} streamanalyzer)
+target_link_libraries(strigi_xesam ${LIBXML2_LIBRARIES} streamanalyzer ${xesam_LIBS})
 
 # no getopt on win32
 if(NOT WIN32)
   add_executable (xesamquerybuildertest test.cpp ../query.cpp)
-  target_link_libraries(xesamquerybuildertest strigi_xesam
-                        ${xesamquerybuildertest_LIBS})
+  target_link_libraries(xesamquerybuildertest strigi_xesam ${xesam_LIBS})
 endif(NOT WIN32)
