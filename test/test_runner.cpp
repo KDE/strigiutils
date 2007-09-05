@@ -23,8 +23,12 @@
 #include <cppunit/TestResult.h>
 #include <cppunit/TextTestRunner.h>
 
+#include "strigilogging.h"
+
 int main()
 {
+    STRIGI_LOG_INIT_BASIC()
+    
     // Get the top level suite from the registry
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
