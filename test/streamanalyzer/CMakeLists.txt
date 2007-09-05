@@ -16,3 +16,5 @@ include_directories (.
 add_library(streamanalyzertesters diranalyzertester.cpp)
 
 target_link_libraries (streamanalyzertesters unittestfunctions ${streamanalyzertesters_LIBS})
+
+subdirs (xesam)
