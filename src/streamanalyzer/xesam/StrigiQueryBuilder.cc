@@ -57,7 +57,6 @@ void StrigiQueryBuilder::set_collector(const Collector &collector)
 
 void StrigiQueryBuilder::on_query(const char *type)
 {
-    
     string msg = "called with type ";
     if (type != NULL)
         msg += type;
@@ -73,81 +72,83 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
                                       SimpleType field_type,
                                       const Modifiers &modifiers)
 {
+    stringstream msg;
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "---- START ---- ")
+    msg << "called on " << field_names.size() << " fields";
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection",
-                      "called on " + field_names.size() + " fields")
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection",
-                     "first selection: "+ (m_firstSelection ? "TRUE" : "FALSE"))
+            string("first selection: ") + (m_firstSelection ? "TRUE" : "FALSE"))
 
     Strigi::Query parsedQuery;
-    string msg = "selection type |";
+    msg << "selection type |";
     
     switch (selection)
     {
         case None:
             //TODO: Jos, is this right?
-            msg += "None";
+            msg << "None";
             break;
         case RegExp:
             parsedQuery.setType(Strigi::Query::RegExp);
-            msg += "RegExp";
+            msg << "RegExp";
             break;
         case Equals:
             parsedQuery.setType(Strigi::Query::Equals);
-            msg += "Equals";
+            msg << "Equals";
             break;
         case Contains:
             parsedQuery.setType(Strigi::Query::Contains);
-            msg += "Contains";
+            msg << "Contains";
             break;
         case LessThan:
             parsedQuery.setType(Strigi::Query::LessThan);
-            msg += "LessThan";
+            msg << "LessThan";
             break;
         case LessThanEquals:
             parsedQuery.setType(Strigi::Query::LessThanEquals);
-            msg += "LessThanEquals";
+            msg << "LessThanEquals";
             break;
         case GreaterThan:
             parsedQuery.setType(Strigi::Query::GreaterThan);
-            msg += "GreaterThan";
+            msg << "GreaterThan";
             break;
         case GreaterThanEquals:
             parsedQuery.setType(Strigi::Query::GreaterThanEquals);
-            msg += "GreaterThanEquals";
+            msg << "GreaterThanEquals";
             break;
         case StartsWith:
             parsedQuery.setType(Strigi::Query::StartsWith);
-            msg += "StartsWith";
+            msg << "StartsWith";
             break;
         case FullText:
             parsedQuery.setType(Strigi::Query::FullText);
-            msg += "FullText";
+            msg << "FullText";
             break;
         case InSet:
             //TODO: hanlde!
-            msg += "InSet, NOT YET HANLDED";
+            msg << "InSet, NOT YET HANLDED";
             break;
         case Proximity:
             //TODO: hanlde!
-            msg += "Proximity, NOT YET HANLDED";
+            msg << "Proximity, NOT YET HANLDED";
             break;
     }
     
-    msg += "|";
+    msg << "|";
 
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
-    msg = "field names are ";
+    msg.clear();
+    msg << "field names are ";
 
     for (set<string>::const_iterator iter = field_names.begin();
          iter != field_names.end(); iter++)
     {
-        msg +=  " |" + *iter + "| ";
+        msg <<  " |" + *iter + "| ";
 
         parsedQuery.fields().push_back (*iter);
     }
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
     parsedQuery.setBoost(modifiers.m_boost);
     parsedQuery.term().setCaseSensitive(modifiers.m_caseSensitive);
@@ -161,27 +162,31 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
     //TODO: handle modifiers.m_phrase
     parsedQuery.term().setSlack(modifiers.m_slack);
 
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "there're " + 
-            field_values.size() + " field values")
+    msg.clear();
+    msg << "there're " << field_values.size() << " field values";
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
-    msg = "field values are ";
+    msg.clear();
+    msg << "field values are ";
 
     for (vector<string>::const_iterator valueIter = field_values.begin();
          valueIter != field_values.end(); ++valueIter)
     {
         string fieldValue(*valueIter);
 
-        msg += " |" + *valueIter + "| ";
+        msg << " |" << *valueIter << "| ";
 
         parsedQuery.term().setValue( *valueIter);
     }
 
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg)
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
     parsedQuery.setNegate(modifiers.m_negate);
-    
-    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", "collector is | "
-         + (m_collector.m_collector == And ? "AND" : "OR" ) + " |")
+
+    msg.clear();
+    msg << "collector is | "
+        << (m_collector.m_collector == And ? "AND" : "OR" ) << " |";
+    STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
     if (m_firstSelection == true)
     {

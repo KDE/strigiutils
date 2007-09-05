@@ -482,7 +482,7 @@ namespace yy
                             "collector specified")
               Strigi::Query::Type collectorType;
 
-              if ((yysemantic_stack_[(1) - (1)]).compare("OR") == 0)
+              if ((yysemantic_stack_[(1) - (1)]).compare("OR" == 0))
                 collectorType = Strigi::Query::Or;
               else
                 collectorType = Strigi::Query::And;
@@ -1028,8 +1028,13 @@ int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, X
   XesamUlScanner* scanner = driver->scanner();
   yylval->clear();
   int ret = scanner->yylex(yylval);
+
+  char buff [50];
+  snprintf (buff, 50 * sizeof (char), "%i", ret);
+
   STRIGI_LOG_DEBUG ("xesam_ul_parser::yylex",
-                    "calling scanner yylval==|" + *yylval + "|, ret==|" + ret)
+                    std::string("calling scanner yylval==|") + *yylval
+                    + "|, ret==|" + buff + "|")
   
   return ret;
 }
