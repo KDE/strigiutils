@@ -138,8 +138,9 @@ namespace yy
      AND = 262,
      OR = 263,
      MINUS = 264,
-     QUOTMARKOPEN = 265,
-     QUOTMARKCLOSE = 266
+     PLUS = 265,
+     QUOTMARKOPEN = 266,
+     QUOTMARKCLOSE = 267
    };
 
     };
@@ -234,7 +235,7 @@ namespace yy
     static const signed char yytable_[];
     static const signed char yytable_ninf_;
 
-    static const signed char yycheck_[];
+    static const unsigned char yycheck_[];
 
     /// For a state, its accessing symbol.
     static const unsigned char yystos_[];

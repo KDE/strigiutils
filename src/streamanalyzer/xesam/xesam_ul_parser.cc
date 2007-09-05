@@ -416,7 +416,12 @@ namespace yy
     break;
 
   case 7:
-#line 91 "xesam_ul_parser.yy"
+#line 90 "xesam_ul_parser.yy"
+    { /* when PLUS is found do nothing */ ;}
+    break;
+
+  case 8:
+#line 92 "xesam_ul_parser.yy"
     {
           STRIGI_LOG_DEBUG ("xesam_ul_parser::select", "just text case")
           // just set term
@@ -437,8 +442,8 @@ namespace yy
         ;}
     break;
 
-  case 8:
-#line 109 "xesam_ul_parser.yy"
+  case 9:
+#line 110 "xesam_ul_parser.yy"
     {
           STRIGI_LOG_DEBUG ("xesam_ul_parser::select",
                             "KEYWORD RELATION text case")
@@ -475,14 +480,14 @@ namespace yy
         ;}
     break;
 
-  case 12:
-#line 147 "xesam_ul_parser.yy"
+  case 13:
+#line 148 "xesam_ul_parser.yy"
     {
               STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
                             "collector specified")
               Strigi::Query::Type collectorType;
 
-              if ((yysemantic_stack_[(1) - (1)]).compare("OR" == 0))
+              if ((yysemantic_stack_[(1) - (1)]).compare("OR") == 0)
                 collectorType = Strigi::Query::Or;
               else
                 collectorType = Strigi::Query::And;
@@ -509,8 +514,8 @@ namespace yy
             ;}
     break;
 
-  case 14:
-#line 177 "xesam_ul_parser.yy"
+  case 15:
+#line 178 "xesam_ul_parser.yy"
     {
               STRIGI_LOG_DEBUG ("xesam_ul_parser::r_query",
                                 "no collector specified")
@@ -537,21 +542,25 @@ namespace yy
             ;}
     break;
 
-  case 16:
-#line 202 "xesam_ul_parser.yy"
+  case 17:
+#line 203 "xesam_ul_parser.yy"
     {
           (yyval) = (yysemantic_stack_[(4) - (2)]);
           driver->setModifiers ((yysemantic_stack_[(4) - (4)]));
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::phrase",
+                            std::string ("phrase value = |") + (yyval) + "|")
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::phrase",
+                            std::string ("modifiers= |") + (yysemantic_stack_[(4) - (4)]) + "|")
         ;}
     break;
 
-  case 17:
-#line 207 "xesam_ul_parser.yy"
+  case 18:
+#line 212 "xesam_ul_parser.yy"
     {(yyval) = ""; ;}
     break;
 
-  case 18:
-#line 209 "xesam_ul_parser.yy"
+  case 19:
+#line 214 "xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
@@ -560,13 +569,13 @@ namespace yy
               ;}
     break;
 
-  case 19:
-#line 216 "xesam_ul_parser.yy"
+  case 20:
+#line 221 "xesam_ul_parser.yy"
     { (yyval) = "";}
     break;
 
-  case 20:
-#line 217 "xesam_ul_parser.yy"
+  case 21:
+#line 222 "xesam_ul_parser.yy"
     {
                 (yyval) = "";
                 if (!(yysemantic_stack_[(2) - (1)]).empty())
@@ -575,19 +584,19 @@ namespace yy
               ;}
     break;
 
-  case 21:
-#line 224 "xesam_ul_parser.yy"
+  case 22:
+#line 229 "xesam_ul_parser.yy"
     { (yyval)="AND"; ;}
     break;
 
-  case 22:
-#line 225 "xesam_ul_parser.yy"
+  case 23:
+#line 230 "xesam_ul_parser.yy"
     {(yyval) = "OR";}
     break;
 
 
     /* Line 675 of lalr1.cc.  */
-#line 591 "xesam_ul_parser.cc"
+#line 600 "xesam_ul_parser.cc"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -794,13 +803,13 @@ namespace yy
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char xesam_ul_parser::yypact_ninf_ = -7;
+  const signed char xesam_ul_parser::yypact_ninf_ = -6;
   const signed char
   xesam_ul_parser::yypact_[] =
   {
-        -1,    -7,    -7,     1,    -7,    11,    -7,    -7,    13,    -7,
-       4,    -7,    -7,     7,     2,    -7,    -7,     6,    -1,    -7,
-      -7,    -7,    -7,    -7,    -7,    -1,    14,    -7,    -7
+        -1,    -6,    -6,    -6,     5,    -6,     3,    -6,    -6,    12,
+      -6,    11,    -6,    -6,     9,     1,    -6,    -6,    16,    -1,
+      -6,    -6,    -6,    -6,    -6,    -6,    -1,    -5,    -6,    -6
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -809,46 +818,46 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yydefact_[] =
   {
-         0,     4,     6,     0,     2,     0,     1,     9,     0,    17,
-      14,     7,    10,     0,     0,    21,    22,     0,     0,    12,
-       8,    18,    19,     3,    15,     0,    16,    13,    20
+         0,     4,     6,     7,     0,     2,     0,     1,    10,     0,
+      18,    15,     8,    11,     0,     0,    22,    23,     0,     0,
+      13,     9,    19,    20,     3,    16,     0,    17,    14,    21
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   xesam_ul_parser::yypgoto_[] =
   {
-        -7,    -7,    -2,    -7,    -7,    -6,    -7,    -7,    -7,    -7,
-      -7,    -7,    -7
+        -6,    -6,    -4,    -6,    -6,     7,    -6,    -6,    -6,    -6,
+      -6,    -6,    -6
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   xesam_ul_parser::yydefgoto_[] =
   {
-        -1,     3,     4,     5,    10,    11,    17,    25,    18,    12,
-      14,    26,    19
+        -1,     4,     5,     6,    11,    12,    18,    26,    19,    13,
+      15,    27,    20
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule which
      number is the opposite.  If zero, do what YYDEFACT says.  */
-  const signed char xesam_ul_parser::yytable_ninf_ = -12;
+  const signed char xesam_ul_parser::yytable_ninf_ = -13;
   const signed char
   xesam_ul_parser::yytable_[] =
   {
-         1,     6,    -5,    -5,   -11,    21,    23,    20,     2,    -5,
-       7,    15,    16,    22,     7,     8,    24,     9,    13,     0,
-      28,     9,     0,    27
+         1,    29,    -5,    -5,    22,     7,     8,     9,     2,     3,
+      -5,   -12,     8,    23,    10,    25,    24,    14,    16,    17,
+      10,    21,    28
   };
 
   /* YYCHECK.  */
-  const signed char
+  const unsigned char
   xesam_ul_parser::yycheck_[] =
   {
-         1,     0,     3,     4,     0,     3,     0,    13,     9,    10,
-       3,     7,     8,    11,     3,     4,    18,    10,     5,    -1,
-       6,    10,    -1,    25
+         1,     6,     3,     4,     3,     0,     3,     4,     9,    10,
+      11,     0,     3,    12,    11,    19,     0,     5,     7,     8,
+      11,    14,    26
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -856,9 +865,9 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yystos_[] =
   {
-         0,     1,     9,    13,    14,    15,     0,     3,     4,    10,
-      16,    17,    21,     5,    22,     7,     8,    18,    20,    24,
-      17,     3,    11,     0,    14,    19,    23,    14,     6
+         0,     1,     9,    10,    14,    15,    16,     0,     3,     4,
+      11,    17,    18,    22,     5,    23,     7,     8,    19,    21,
+      25,    18,     3,    12,     0,    15,    20,    24,    15,     6
   };
 
 #if YYDEBUG
@@ -868,7 +877,7 @@ namespace yy
   xesam_ul_parser::yytoken_number_[] =
   {
          0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266
+     265,   266,   267
   };
 #endif
 
@@ -876,18 +885,18 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yyr1_[] =
   {
-         0,    12,    13,    14,    14,    15,    15,    16,    16,    17,
-      17,    18,    19,    18,    20,    18,    21,    22,    22,    23,
-      23,    24,    24
+         0,    13,    14,    15,    15,    16,    16,    16,    17,    17,
+      18,    18,    19,    20,    19,    21,    19,    22,    23,    23,
+      24,    24,    25,    25
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   xesam_ul_parser::yyr2_[] =
   {
-         0,     2,     1,     4,     1,     0,     1,     1,     3,     1,
-       1,     0,     0,     3,     0,     2,     4,     0,     2,     0,
-       2,     1,     1
+         0,     2,     1,     4,     1,     0,     1,     1,     1,     3,
+       1,     1,     0,     0,     3,     0,     2,     4,     0,     2,
+       0,     2,     1,     1
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -897,9 +906,9 @@ namespace yy
   const xesam_ul_parser::yytname_[] =
   {
     "\"end of file\"", "error", "$undefined", "WORD", "KEYWORD", "RELATION",
-  "MODIFIER", "AND", "OR", "MINUS", "QUOTMARKOPEN", "QUOTMARKCLOSE",
-  "$accept", "start", "query", "symbol", "select", "text", "r_query", "@1",
-  "@2", "phrase", "phrase_arg", "modifiers", "collector", 0
+  "MODIFIER", "AND", "OR", "MINUS", "PLUS", "QUOTMARKOPEN",
+  "QUOTMARKCLOSE", "$accept", "start", "query", "symbol", "select", "text",
+  "r_query", "@1", "@2", "phrase", "phrase_arg", "modifiers", "collector", 0
   };
 #endif
 
@@ -908,12 +917,12 @@ namespace yy
   const xesam_ul_parser::rhs_number_type
   xesam_ul_parser::yyrhs_[] =
   {
-        13,     0,    -1,    14,    -1,    15,    16,    18,     0,    -1,
-       1,    -1,    -1,     9,    -1,    17,    -1,     4,     5,    17,
-      -1,     3,    -1,    21,    -1,    -1,    -1,    24,    19,    14,
-      -1,    -1,    20,    14,    -1,    10,    22,    11,    23,    -1,
-      -1,    22,     3,    -1,    -1,    23,     6,    -1,     7,    -1,
-       8,    -1
+        14,     0,    -1,    15,    -1,    16,    17,    19,     0,    -1,
+       1,    -1,    -1,     9,    -1,    10,    -1,    18,    -1,     4,
+       5,    18,    -1,     3,    -1,    22,    -1,    -1,    -1,    25,
+      20,    15,    -1,    -1,    21,    15,    -1,    11,    23,    12,
+      24,    -1,    -1,    23,     3,    -1,    -1,    24,     6,    -1,
+       7,    -1,     8,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -921,18 +930,18 @@ namespace yy
   const unsigned char
   xesam_ul_parser::yyprhs_[] =
   {
-         0,     0,     3,     5,    10,    12,    13,    15,    17,    21,
-      23,    25,    26,    27,    31,    32,    35,    40,    41,    44,
-      45,    48,    50
+         0,     0,     3,     5,    10,    12,    13,    15,    17,    19,
+      23,    25,    27,    28,    29,    33,    34,    37,    42,    43,
+      46,    47,    50,    52
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   xesam_ul_parser::yyrline_[] =
   {
-         0,    69,    69,    71,    72,    83,    84,    91,   109,   144,
-     144,   146,   147,   147,   177,   177,   202,   207,   208,   216,
-     217,   224,   225
+         0,    69,    69,    71,    72,    83,    84,    90,    92,   110,
+     145,   145,   147,   148,   148,   178,   178,   203,   212,   213,
+     221,   222,   229,   230
   };
 
   // Print the state stack on the debug stream.
@@ -998,7 +1007,7 @@ namespace yy
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11
+       5,     6,     7,     8,     9,    10,    11,    12
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -1007,20 +1016,20 @@ namespace yy
   }
 
   const int xesam_ul_parser::yyeof_ = 0;
-  const int xesam_ul_parser::yylast_ = 23;
+  const int xesam_ul_parser::yylast_ = 22;
   const int xesam_ul_parser::yynnts_ = 13;
   const int xesam_ul_parser::yyempty_ = -2;
-  const int xesam_ul_parser::yyfinal_ = 6;
+  const int xesam_ul_parser::yyfinal_ = 7;
   const int xesam_ul_parser::yyterror_ = 1;
   const int xesam_ul_parser::yyerrcode_ = 256;
-  const int xesam_ul_parser::yyntokens_ = 12;
+  const int xesam_ul_parser::yyntokens_ = 13;
 
-  const unsigned int xesam_ul_parser::yyuser_token_number_max_ = 266;
+  const unsigned int xesam_ul_parser::yyuser_token_number_max_ = 267;
   const xesam_ul_parser::token_number_type xesam_ul_parser::yyundef_token_ = 2;
 
 } // namespace yy
 
-#line 227 "xesam_ul_parser.yy"
+#line 232 "xesam_ul_parser.yy"
 
 
 int yy::yylex(YYSTYPE *yylval, XesamUlDriver* driver)//, yy::location *yylloc, XesamUlDriver* driver)

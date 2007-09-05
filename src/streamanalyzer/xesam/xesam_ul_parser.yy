@@ -54,7 +54,7 @@ using std::endl;
 // collectors
 %token AND OR
 
-%token MINUS
+%token MINUS PLUS
 %token QUOTMARKOPEN QUOTMARKCLOSE
 
 %token END 0 "end of file"
@@ -86,7 +86,8 @@ symbol: /* empty */ { driver->setNegate (false); }
             STRIGI_LOG_DEBUG ("xesam_ul_parser::symbol",
                               "minus --> negation enabled")
             driver->setNegate (true);
-          };
+          }
+        | PLUS { /* when PLUS is found do nothing */ } ;
 
 select: text {
           STRIGI_LOG_DEBUG ("xesam_ul_parser::select", "just text case")
@@ -149,7 +150,7 @@ r_query:  /*empty*/
                             "collector specified")
               Strigi::Query::Type collectorType;
 
-              if ($1.compare("OR" == 0))
+              if ($1.compare("OR") == 0)
                 collectorType = Strigi::Query::Or;
               else
                 collectorType = Strigi::Query::And;
@@ -202,6 +203,10 @@ r_query:  /*empty*/
 phrase: QUOTMARKOPEN phrase_arg QUOTMARKCLOSE modifiers {
           $$ = $2;
           driver->setModifiers ($4);
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::phrase",
+                            std::string ("phrase value = |") + $$ + "|")
+          STRIGI_LOG_DEBUG ("xesam_ul_parser::phrase",
+                            std::string ("modifiers= |") + $4 + "|")
         };
 
 phrase_arg: /*empty */ {$$ = ""; }
