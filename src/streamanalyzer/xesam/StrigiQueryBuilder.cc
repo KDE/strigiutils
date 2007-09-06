@@ -21,6 +21,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "xesam_ul_driver.hh"
 #include "StrigiQueryBuilder.h"
 #include "strigilogging.h"
 
@@ -242,4 +243,13 @@ Strigi::Query StrigiQueryBuilder::get_query(void) const
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.get_query", result.str())
     
     return m_fullQuery;
+}
+
+void StrigiQueryBuilder::on_user_query(const char *value)
+{
+  XesamUlDriver driver;
+  Strigi::Query query;
+    
+  if (driver.parseString (value))
+    m_fullQuery = *driver.query();
 }

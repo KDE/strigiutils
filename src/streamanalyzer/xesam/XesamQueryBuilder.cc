@@ -137,19 +137,3 @@ void XesamQueryBuilder::set_collector(const Collector &collector)
 {
 	m_collector = collector;
 }
-
-void XesamQueryBuilder::on_user_query(const char *value)
-{
-#ifdef DEBUG
-	cout << "XesamQueryBuilder::on_user_query: called" << endl;
-#endif
-    //TODO: IMPLEMENT!
-/*	if (value != NULL)
-	{
-		XesamULParser ulParser;
-		string xesamULQuery(value);
-
-		ulParser.parse(xesamULQuery, *this);
-	}*/
-}
-

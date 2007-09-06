@@ -85,7 +85,7 @@ namespace Dijon
 	virtual void set_collector(const Collector &collector);
 
 	/// Called when the parser has read a userQuery element.
-	virtual void on_user_query(const char *value);
+	virtual void on_user_query(const char *value) = 0;
 
 	/// Called when the parser has read a query block.
 	virtual void on_query(const char *type) = 0;

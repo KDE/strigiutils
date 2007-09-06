@@ -46,6 +46,8 @@ namespace Dijon
                                 SimpleType field_type,
                                 const Modifiers &modifiers);
 
+            virtual void on_user_query(const char *value);
+            
             Strigi::Query get_query(void) const;
 
             virtual void set_collector(const Collector &collector);
