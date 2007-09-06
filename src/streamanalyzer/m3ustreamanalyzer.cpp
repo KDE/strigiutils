@@ -24,6 +24,7 @@
 #include <fieldtypes.h>
 #include <analysisresult.h>
 #include <streamlineanalyzer.h>
+#include <string>
 
 // AnalyzerFactory
 void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) 
@@ -60,7 +61,7 @@ void M3uLineAnalyzer::handleLine(const char* data, uint32_t length)
             analysisResult->addValue(factory->m3uTypeField, "simple");
 
         // TODO: Check for a valid url with QUrl
-        // TODO: Add the url to the trackPathField
+        analysisResult->addValue(factory->trackPathField, std::string(data, length));
 
         ++count;
     } else if (line == 1 && strncmp(data, "#EXTM3U", 7) == 0) {
