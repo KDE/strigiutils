@@ -21,6 +21,11 @@
 #include "xesam2strigitest.h"
 #include "xesam2strigi.h"
 
+#include <errno.h>
+#include <fstream>
+#include <stdlib.h>
+#include <unistd.h>
+
 using namespace std;
 using namespace strigiunittest;
 
@@ -70,3 +75,42 @@ void Xesam2StrigiTest::parseUlFromString()
     }
   }
 }
+
+void Xesam2StrigiTest::parseUlFromFile()
+{
+// create a temporary file
+  char filename[13];
+  ofstream out;
+
+    // generate index dir name
+  strcpy(filename, "strigiXXXXXX");
+
+  if (mkstemp(filename) == -1) {
+    printf ("Error creating temporary file because of: ");
+    printf ("%s\n", strerror (errno));
+    return;
+  }
+  else
+    printf ("created temporary file: %s\n", filename);
+
+  for (set<string>::iterator iter = m_ulQueries.begin();
+       iter != m_ulQueries.end(); iter++)
+  {
+    out.open(filename);
+    out << *iter;
+    out.close();
+    
+    if (!xesam2strigi->parse_file (filename, Xesam2Strigi::UserLanguage)) {
+      string msg = "Failed to parse xesam userlanguage query: |";
+      msg += *iter;
+      msg += "| from file";
+      CPPUNIT_FAIL (msg);
+    }
+  }
+
+  if( unlink (filename) == -1) {
+    fprintf (stderr, "unable to delete temporary file %s because of: ");
+    printf ("%s\n", strerror (errno));
+  }
+}
+

@@ -23,7 +23,7 @@
 #include "xesam_ul_driver.hh"
 #include "XesamQLParser.h"
 #include "StrigiQueryBuilder.h"
-
+#include "strigilogging.h"
 
 using std::string;
 using namespace Dijon;
@@ -43,6 +43,10 @@ Xesam2Strigi::~Xesam2Strigi ()
 
 bool Xesam2Strigi::parse (const string& xesam_query, Type query_type)
 {
+  STRIGI_LOG_INIT_BASIC();
+  STRIGI_LOG_DEBUG ("Xesam2Strigi::parse",
+                    string("going to parse query: |") + xesam_query + "|")
+
   if (query_type == QueryLanguage) {
     XesamQLParser xesamQlParser;
     StrigiQueryBuilder strigiQueryBuilder;

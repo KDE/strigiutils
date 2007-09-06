@@ -34,6 +34,7 @@ namespace strigiunittest
   {
     CPPUNIT_TEST_SUITE( Xesam2StrigiTest );
     CPPUNIT_TEST( parseUlFromString );
+    CPPUNIT_TEST( parseUlFromFile );
     CPPUNIT_TEST_SUITE_END();
 
     protected:
@@ -45,6 +46,7 @@ namespace strigiunittest
         void tearDown();
 
         void parseUlFromString();
+        void parseUlFromFile();
   };
 }
 
