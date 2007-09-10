@@ -73,7 +73,7 @@ DBusHandler::handle() {
             dbus_error_free(&err);
         }
         if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
-            fprintf(stderr, "Not Primary Owner of %s (%d)\n", ret);
+            fprintf(stderr, "Not Primary Owner of %s (%d)\n", i->c_str(), ret);
         }
     }
 
