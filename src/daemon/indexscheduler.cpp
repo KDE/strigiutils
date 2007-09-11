@@ -28,7 +28,6 @@
 #include "eventlistenerqueue.h"
 #include "analyzerconfiguration.h"
 
-#include "filelister.h"
 #include "streamanalyzer.h"
 #include <cerrno>
 #include <sys/resource.h>
