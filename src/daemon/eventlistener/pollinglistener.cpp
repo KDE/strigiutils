@@ -123,6 +123,35 @@ PollingListener::rmWatch(const string& path) {
 
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 }
+/*!
+* @param path string containing path to check
+* Appends the terminating char to path.
+* Under Windows that char is '\', '/' under *nix
+*/
+string fixPath (string path)
+{
+    if ( path.c_str() == NULL || path.length() == 0 )
+        return "";
+
+    string temp(path);
+
+#ifdef HAVE_WINDOWS_H
+    size_t l= temp.length();
+    char* t = (char*)temp.c_str();
+    for (size_t i=0;i<l;i++){
+        if ( t[i] == '\\' )
+            t[i] = '/';
+    }
+    temp[0] = tolower(temp.at(0));
+#endif
+
+    char separator = '/';
+
+    if (temp[temp.length() - 1 ] != separator)
+        temp += separator;
+
+    return temp;
+}
 void
 PollingListener::addWatches(const set<string>& watches, bool enableInterrupt) {
     for (set<string>::iterator iter = watches.begin();
