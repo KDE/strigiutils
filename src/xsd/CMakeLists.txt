@@ -32,7 +32,10 @@ foreach (XSDFILE ${XSDFILES})
   string(REPLACE ".xsd" "" XSDNAME ${XSDFILE})
 
   # generate the io code from the XML Schema file
-  if (JAVA_COMPILE)
+  SET(CPPFILE ${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}.cpp)
+
+  if (JAVA_COMPILE
+        AND ${CMAKE_CURRENT_SOURCE_DIR}/${XSDFILE} IS_NEWER_THAN ${CPPFILE} )
     add_custom_command(
       OUTPUT ${XSDNAME}.cpp
         ${XSDNAME}test.cpp
@@ -42,7 +45,8 @@ foreach (XSDFILE ${XSDFILES})
         xsdparser.xsdparser ${XSDFILE}
     DEPENDS xsdparser/xsdparser.java ${XSDFILE}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  endif (JAVA_COMPILE)
+  endif (JAVA_COMPILE
+        AND ${CMAKE_CURRENT_SOURCE_DIR}/${XSDFILE} IS_NEWER_THAN ${CPPFILE} )
 
   # create a library from the xml io files
   add_library(${XSDNAME} ${XSDNAME}.cpp)
