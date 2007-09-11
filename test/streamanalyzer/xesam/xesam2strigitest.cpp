@@ -108,9 +108,10 @@ void Xesam2StrigiTest::parseUlFromFile()
     }
   }
 
-  if( unlink (filename) == -1) {
-    fprintf (stderr, "unable to delete temporary file %s because of: ");
-    printf ("%s\n", strerror (errno));
-  }
+    if (unlink(filename) == -1) {
+        fprintf(stderr, "unable to delete temporary file %s because of: ",
+            filename);
+        printf ("%s\n", strerror (errno));
+    }
 }
 
