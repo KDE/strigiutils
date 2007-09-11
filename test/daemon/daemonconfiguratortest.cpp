@@ -27,6 +27,10 @@
 
 #include <unistd.h>
 
+/**
+ * This file misses documentation on how it works and what it does.
+ **/
+
 using namespace std;
 using namespace strigiunittest;
 

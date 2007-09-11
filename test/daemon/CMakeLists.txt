@@ -1,5 +1,10 @@
+# add a test for the daemon configuration loading classes
+
+# fancy way of saying set(INC_DIR test/daemon)
 string(REGEX REPLACE /test /src INC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+# if we use log4cxx, include it
+# ideally this should be abstracted away in something like STRIGILOG( ... )
 if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     set(daemonconfiguratortest_LIBS ${daemonconfiguratortest_LIBS}
                                     ${LOG4CXX_LIBRARIES})
