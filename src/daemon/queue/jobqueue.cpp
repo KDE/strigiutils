@@ -133,7 +133,7 @@ JobQueue::Private::~Private() {
     STRIGI_MUTEX_LOCK(&mutex);
     keeprunning = false;
     STRIGI_MUTEX_UNLOCK(&mutex);
-    
+
     // tell all threads to stop
     for (list<JobThread*>::const_iterator i = threads.begin();
             i != threads.end(); ++i) {
