@@ -31,7 +31,7 @@ ELSE(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
         FIND_PATH(CPPUNIT_CFLAGS cppunit/TestRunner.h PATHS /usr/include /usr/local/include )
         FIND_LIBRARY(CPPUNIT_LIBRARIES NAMES cppunit PATHS /usr/lib /usr/local/lib )
         # how can we find cppunit version?
-        message ("ensure you cppunit installed version is at least ${CPPUNIT_MIN_VERSION}")
+        MESSAGE (STATUS "Ensure you cppunit installed version is at least ${CPPUNIT_MIN_VERSION}")
         SET (CPPUNIT_INSTALLED_VERSION ${CPPUNIT_MIN_VERSION})
     ENDIF(CPPUNIT_CONFIG_EXECUTABLE)
 
@@ -39,20 +39,12 @@ ELSE(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 
 ENDIF(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 
-# IF(CPPUNIT_INCLUDE_DIR)
-#     message (STATUS "found cppunit include dir: ${CPPUNIT_INCLUDE_DIR}")
-# ENDIF (CPPUNIT_INCLUDE_DIR)
-#
-# IF(CPPUNIT_LIBRARIES)
-#     message (STATUS "found cppunit libraries: ${CPPUNIT_LIBRARIES}")
-# ENDIF (CPPUNIT_LIBRARIES)
-
 IF(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 
   SET(CppUnit_FOUND TRUE)
 
   if(NOT CppUnit_FIND_QUIETLY)
-   message(STATUS "Found cppunit: ${CPPUNIT_LIBRARIES}")
+    MESSAGE (STATUS "Found cppunit: ${CPPUNIT_LIBRARIES}")
   endif(NOT CppUnit_FIND_QUIETLY)
 
   IF(CPPUNIT_CONFIG_EXECUTABLE)
@@ -61,10 +53,10 @@ IF(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 
   macro_ensure_version( ${CPPUNIT_MIN_VERSION} ${CPPUNIT_INSTALLED_VERSION} CPPUNIT_INSTALLED_VERSION_OK )
 
-  if (NOT CPPUNIT_INSTALLED_VERSION_OK)
-   message ("CppUnit version is too old: found ${CPPUNIT_INSTALLED_VERSION} installed, ${CPPUNIT_MIN_VERSION} or major is required")
-   SET(CppUnit_FOUND FALSE)
-  endif (NOT CPPUNIT_INSTALLED_VERSION_OK)
+  IF(NOT CPPUNIT_INSTALLED_VERSION_OK)
+    MESSAGE ("** CppUnit version is too old: found ${CPPUNIT_INSTALLED_VERSION} installed, ${CPPUNIT_MIN_VERSION} or major is required")
+    SET(CppUnit_FOUND FALSE)
+  ENDIF(NOT CPPUNIT_INSTALLED_VERSION_OK)
 
 ELSE(CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARIES)
 

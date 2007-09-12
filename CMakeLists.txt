@@ -50,14 +50,16 @@ IF(MSVC)
     ADD_DEFINITIONS(-wd4786) # identifier was truncated to '255' characters in the debug information
 ELSE(MSVC)
     IF (NOT WIN32)
-      add_definitions (-fPIC)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wformat-security -fno-check-new -fno-common -fno-exceptions -Wno-unused-parameter")
+      ADD_DEFINITIONS(-fPIC)
+      IF (CMAKE_COMPILER_IS_GNUGCC)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnon-virtual-dtor -Wno-long-long -ansi -Wundef -Wcast-align -Wchar-subscripts -Wall -W -Wpointer-arith -Wformat-security -fno-check-new -fno-common -fno-exceptions -Wno-unused-parameter")
+      ENDIF(CMAKE_COMPILER_IS_GNUGCC)
     ENDIF(NOT WIN32)
 ENDIF(MSVC)
 
 IF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
-    remove_definitions(-fPIC)
-    set(CMAKE_CXX_FLAGS "")
+    # I suppose even GCC on SunOS doesn't like -fPIC
+    REMOVE_DEFINITIONS(-fPIC)
 ENDIF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
 
 OPTION(ENABLE_INOTIFY
@@ -139,9 +141,9 @@ find_program (BISON
 )
 
 if (BISON)
-message ("-- Found bison: ${BISON}")
+  MESSAGE (STATUS "Found bison: ${BISON}")
 else (BISON)
-message ("bison not found")
+  MESSAGE ("** GNU bison not found. This affects the xesam parser.")
 endif (BISON)
 
 if (ENABLE_LOG4CXX)

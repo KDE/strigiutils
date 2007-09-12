@@ -11,17 +11,17 @@ include_directories( ../streamanalyzer ../combinedindexer ../streams ../xsd dbus
 
 IF(ENABLE_INOTIFY)
   add_definitions(-DHAVE_INOTIFY)
-  MESSAGE("-- inotify support enabled")
+  MESSAGE(STATUS "inotify support enabled")
 ENDIF(ENABLE_INOTIFY)
 
 IF(ENABLE_POLLING)
   add_definitions(-DHAVE_POLLING)
-  MESSAGE("-- polling support enabled")
+  MESSAGE(STATUS "polling support enabled")
 ENDIF(ENABLE_POLLING)
 
 IF(ENABLE_DBUS)
   add_definitions(-DHAVE_DBUS)
-  MESSAGE("-- dbus support enabled")
+  MESSAGE(STATUS "dbus support enabled")
   set(strigidaemon_LIBS ${strigidaemon_LIBS} dbusserver)
 ENDIF(ENABLE_DBUS)
 
@@ -34,11 +34,11 @@ IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
     set(strigiconfupdater_LIBS ${strigiconfupdater_LIBS} ${LOG4CXX_LIBRARIES})
     include_directories( ${LOG4CXX_INCLUDE_DIR} )
-    MESSAGE("-- log4cxx support enabled")
+    MESSAGE(STATUS "log4cxx support enabled")
 ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 
 IF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
-    MESSAGE("-- log4cxx WONT be enabled")
+    MESSAGE(STATUS "log4cxx WONT be enabled")
 ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
 
 include_directories(eventlistener .)
