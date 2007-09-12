@@ -20,6 +20,8 @@
 #include "asyncsocketclient.h"
 #include <signal.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 using namespace std;
 
 extern "C"
