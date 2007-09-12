@@ -22,6 +22,7 @@
 #include "dbusobjectinterface.h"
 
 #include <iostream>
+#include <stdio.h>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
