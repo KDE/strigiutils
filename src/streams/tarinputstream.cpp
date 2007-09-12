@@ -88,7 +88,7 @@ TarInputStream::parseHeader() {
         return;
     }
 
-    int32_t len = strlen(hb);
+    int32_t len = std::strlen(hb);
     if (len == 0) {
         // ready
         m_status = Eof;

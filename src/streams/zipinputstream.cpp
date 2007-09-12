@@ -17,6 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#include <cstring>
+
 #include "zipinputstream.h"
 #include <strigi/strigiconfig.h>
 #include "gzipinputstream.h"
@@ -31,7 +34,7 @@ bool
 ZipInputStream::checkHeader(const char* data, int32_t datasize) {
     static const char magic[] = {0x50, 0x4b, 0x03, 0x04};
     if (datasize < 4) return false;
-    bool ok = memcmp(data, magic, 4) == 0 && datasize > 8;
+    bool ok = std::memcmp(data, magic, 4) == 0 && datasize > 8;
     return ok;
 }
 ZipInputStream::ZipInputStream(InputStream* input)

@@ -19,6 +19,7 @@
  */
 #include "textutils.h"
 
+#include <stdio.h>
 #include <cstring>
 
 /**
@@ -132,7 +133,7 @@ Strigi::checkUtf8(const std::string& p, char& nb) {
  **/
 void
 Strigi::convertNewLines(char* p) {
-    int32_t len = strlen(p);
+    int32_t len = std::strlen(p);
     bool ok = checkUtf8(p, len);
     if (!ok) fprintf(stderr, "string is not valid utf8\n");
 
