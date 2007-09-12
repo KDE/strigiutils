@@ -1,6 +1,6 @@
 /* This file is generated from strigidaemonconfiguration.xsd */
-#include "strigidaemonconfiguration.h"
 #include <iostream>
+#include "strigidaemonconfiguration.h"
 XMLStream&
 operator>>(XMLStream& in, Path& e) {
 	in.setFromAttribute(e.a_path,"path");
