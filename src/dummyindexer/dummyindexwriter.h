@@ -60,7 +60,7 @@ protected:
             printf("%s: setField '%s': '%s'\n", ar->path().c_str(),
                 field->key().c_str(), value.c_str());
         } else if (verbosity == -1
-                && strcmp(field->key().c_str(), "sha1") == 0) {
+                && std::strcmp(field->key().c_str(), "sha1") == 0) {
             std::string* s = static_cast<std::string*>(ar->writerData());
             *s = value;
         }

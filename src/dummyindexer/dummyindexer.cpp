@@ -37,7 +37,7 @@ main(int argc, char **argv) {
     }
     int verbosity = 0;
     if (argc == 4) {
-        if (strcmp("-v", argv[1])) {
+        if (std::strcmp("-v", argv[1])) {
             printUsage(argv);
             return -1;
         }
