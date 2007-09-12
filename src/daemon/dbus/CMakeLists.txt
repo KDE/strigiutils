@@ -70,7 +70,8 @@ add_library(dbusserver testinterface.cpp dbusserver.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
 )
-set(CMAKE_CXX_FLAGS ${DBUS_CFLAGS})
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DBUS_CFLAGS}")
 target_link_libraries(dbusserver dbuscpp)
 
 add_executable(testserver testserver.cpp ../strigithread.cpp)
