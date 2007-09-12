@@ -63,7 +63,7 @@ void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
     assert(m_result != 0);
 
     if (length < 35
-            || strncmp(data, "application/vnd.oasis.opendocument.", 35) != 0) {
+            || std::strncmp(data, "application/vnd.oasis.opendocument.", 35) != 0) {
         m_ready = true;
         return;
     }

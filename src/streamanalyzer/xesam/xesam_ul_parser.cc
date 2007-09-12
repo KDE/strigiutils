@@ -36,6 +36,7 @@
 #include "xesam_ul_parser.hh"
 
 /* User implementation prologue.  */
+#include <stdio.h>
 
 
 /* Line 317 of lalr1.cc.  */

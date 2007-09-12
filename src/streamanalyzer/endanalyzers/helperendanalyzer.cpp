@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 
 using namespace Strigi;
 using namespace std;

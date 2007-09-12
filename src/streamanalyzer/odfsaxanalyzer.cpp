@@ -83,52 +83,52 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
                                   int nb_attributes, int nb_defaulted, const char **attributes) {
     assert(m_result != 0);
 
-    if(uri && strcmp(uri, dcNS) == 0) {
-        if(strcmp(localname, "creator") == 0) {
+    if(uri && std::strcmp(uri, dcNS) == 0) {
+        if(std::strcmp(localname, "creator") == 0) {
             m_currentField = m_factory->creatorField;
-        } else if(strcmp(localname, "title") == 0) {
+        } else if(std::strcmp(localname, "title") == 0) {
             m_currentField = m_factory->titleField;
-        } else if(strcmp(localname, "subject") == 0) {
+        } else if(std::strcmp(localname, "subject") == 0) {
             m_currentField = m_factory->subjectField;
-        } else if(strcmp(localname, "description") == 0) {
+        } else if(std::strcmp(localname, "description") == 0) {
             m_currentField = m_factory->descriptionField;
-        } else if(strcmp(localname, "language") == 0) {
+        } else if(std::strcmp(localname, "language") == 0) {
             m_currentField = m_factory->languageField;
         }
-    } else if(uri && strcmp(uri, metaNS) == 0) {
-        if(strcmp(localname, "creation-date") == 0) {
+    } else if(uri && std::strcmp(uri, metaNS) == 0) {
+        if(std::strcmp(localname, "creation-date") == 0) {
             m_currentField = m_factory->creationTimeField;
-        } else if(strcmp(localname, "keyword") == 0) {
+        } else if(std::strcmp(localname, "keyword") == 0) {
             m_currentField = m_factory->keywordField;
-        } else if(strcmp(localname, "generator") == 0) {
+        } else if(std::strcmp(localname, "generator") == 0) {
 	    m_currentField = m_factory->generatorField;
-	} else if(strcmp(localname, "document-statistic")==0) {
+	} else if(std::strcmp(localname, "document-statistic")==0) {
 	   for(int i = 0 ; i < nb_attributes ;i++)
 	   	{
-		   if(strcmp(attributes[2+i*5], metaNS) ==0) {
+		   if(std::strcmp(attributes[2+i*5], metaNS) ==0) {
 			const char *attrName(attributes[0+i*5]);
-			int stringLength = strlen(attributes[3+i*5]) - strlen(attributes[4+i*5]);
+			int stringLength = std::strlen(attributes[3+i*5]) - std::strlen(attributes[4+i*5]);
 			std::string line(attributes[3+i*5],stringLength);
 
-		   	if(strcmp(attrName, "word-count") ==0 ){
+		   	if(std::strcmp(attrName, "word-count") ==0 ){
 				m_result->addValue(m_factory->wordcountField, line);
 			}
-			else if(strcmp(attrName, "paragraph-count") ==0 ){
+			else if(std::strcmp(attrName, "paragraph-count") ==0 ){
 				m_result->addValue(m_factory->paragcountField,line);
 			}
-                        else if(strcmp(attrName, "page-count") ==0 ){
+                        else if(std::strcmp(attrName, "page-count") ==0 ){
 				m_result->addValue(m_factory->pagecountField,line);
                         }
-                        else if(strcmp(attrName, "image-count") ==0 ){
+                        else if(std::strcmp(attrName, "image-count") ==0 ){
 				m_result->addValue(m_factory->imagecountField,line);
                         }
-                        else if(strcmp(attrName, "character-count") ==0 ){
+                        else if(std::strcmp(attrName, "character-count") ==0 ){
 				m_result->addValue(m_factory->charcountField,line);
                         }
-                        else if(strcmp(attrName, "object-count") ==0 ){
+                        else if(std::strcmp(attrName, "object-count") ==0 ){
 				m_result->addValue(m_factory->objectcountField,line);
                         }
-                        else if(strcmp(attrName, "table-count") ==0 ){
+                        else if(std::strcmp(attrName, "table-count") ==0 ){
 				m_result->addValue(m_factory->tablecountField,line);
                         }
 		   }

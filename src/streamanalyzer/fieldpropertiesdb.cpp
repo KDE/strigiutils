@@ -28,6 +28,9 @@
 #else
 #include "stgdirent.h"
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 #include <libxml/SAX2.h>
 #include <sys/stat.h>
 #include <config.h>

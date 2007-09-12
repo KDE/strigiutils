@@ -23,6 +23,7 @@
 %define "parser_class_name" "xesam_ul_parser"
 
 %{
+#include <stdio.h> // for snprintf
 #include <string>
 
 #include "xesam_ul_driver.hh"
