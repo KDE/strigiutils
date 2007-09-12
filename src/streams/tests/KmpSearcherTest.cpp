@@ -17,6 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include <stdio.h>
+
 #include "../kmpsearcher.h"
 #include "inputstreamtests.h"
 #include <cstring>
@@ -26,7 +28,7 @@ using namespace Strigi;
 void
 testSearch(const KmpSearcher& searcher, const char* haystack, int32_t len,
         int32_t pos) {
-    if (len < 0) len =strlen(haystack);
+    if (len < 0) len = std::strlen(haystack);
     const char *p = searcher.search(haystack, len);
     if (pos < 0) {
         VERIFY(p==0);
