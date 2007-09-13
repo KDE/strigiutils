@@ -278,7 +278,8 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
     
     for( map<std::string, xmlEntityPtr>::iterator j=xmlEntities.begin();
             j!=xmlEntities.end(); ++j) {
-        delete(j->second->content);
+        delete [ ] (j->second->name);
+        delete [ ] (j->second->content);
 	delete(j->second);
     }
     xmlEntities.clear();
