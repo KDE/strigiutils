@@ -10,14 +10,14 @@ include_directories (${LIBXML2_INCLUDE_DIR}
                      ${strigi_BINARY_DIR}/src/streams
                      ${INC_DIR})
 
-if (BISON)
-add_custom_command (OUTPUT xesam_ul_parser.cc
-                    PRE_BUILD
-                    COMMAND bison -t -o xesam_ul_parser.cc -d xesam_ul_parser.yy
-                    DEPENDS xesam_ul_parser.yy
-                    WORKING_DIRECTORY ${strigi_SOURCE_DIR}/src/streamanalyzer/xesam/
-                    )
-endif (BISON)
+#if (BISON)
+#add_custom_command (OUTPUT xesam_ul_parser.cc
+#                    PRE_BUILD
+#                    COMMAND bison -t -o xesam_ul_parser.cc -d xesam_ul_parser.yy
+#                    DEPENDS xesam_ul_parser.yy
+#                    WORKING_DIRECTORY ${strigi_SOURCE_DIR}/src/streamanalyzer/xesam/
+#                    )
+#endif (BISON)
 
 set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
             StrigiQueryBuilder.cc xesam_ul_driver.cc
