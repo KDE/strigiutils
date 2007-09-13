@@ -25,6 +25,9 @@
 %{
 #include <stdio.h> // for snprintf
 #include <string>
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
 
 #include "xesam_ul_driver.hh"
 #include "xesam_ul_scanner.h"
