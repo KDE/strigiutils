@@ -24,6 +24,7 @@
 #include "xmlindexwriter.h"
 #include <time.h>
 #include <iostream>
+#include <cstdlib>
 #include <stdlib.h> // getenv
 using namespace Strigi;
 using namespace std;

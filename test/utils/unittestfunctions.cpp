@@ -23,6 +23,7 @@
 #include "indexmanager.h"
 #include "combinedindexmanager.h"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
