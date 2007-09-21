@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DATAEVENTINPUTSTREAM_H
-#define DATAEVENTINPUTSTREAM_H
+#ifndef STRIGI_DATAEVENTINPUTSTREAM_H
+#define STRIGI_DATAEVENTINPUTSTREAM_H
 #include <strigi/strigiconfig.h>
 #include "streambase.h"
 

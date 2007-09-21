@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef XESAMSEARCH_H
-#define XESAMSEARCH_H
+#ifndef STRIGI_XESAMSEARCH_H
+#define STRIGI_XESAMSEARCH_H
 
 #include <string>
 #include <vector>

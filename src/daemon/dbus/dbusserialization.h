@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DBUSSERIALIZATION_H
-#define DBUSSERIALIZATION_H
+#ifndef STRIGI_DBUSSERIALIZATION_H
+#define STRIGI_DBUSSERIALIZATION_H
 
 #include "clientinterface.h"
 

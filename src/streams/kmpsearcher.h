@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef KMPSEARCHER_H
-#define KMPSEARCHER_H
+#ifndef STRIGI_KMPSEARCHER_H
+#define STRIGI_KMPSEARCHER_H
 
 #include <string>
 #include <stdlib.h>

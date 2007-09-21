@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef SUBSTREAMPROVIDER
-#define SUBSTREAMPROVIDER
+#ifndef STRIGI_SUBSTREAMPROVIDER
+#define STRIGI_SUBSTREAMPROVIDER
 
 #include <string>
 #include <map>

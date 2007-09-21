@@ -18,8 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMLINEANALYZER_H
-#define STREAMLINEANALYZER_H
+#ifndef STRIGI_STREAMLINEANALYZER_H
+#define STRIGI_STREAMLINEANALYZER_H
 
 #include "streamanalyzerfactory.h"
 

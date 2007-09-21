@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef BZ2INPUTSTREAM_H
-#define BZ2INPUTSTREAM_H
+#ifndef STRIGI_BZ2INPUTSTREAM_H
+#define STRIGI_BZ2INPUTSTREAM_H
 
 #include "bufferedstream.h"
 

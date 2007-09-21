@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef BASE64INPUTSTREAM_H
-#define BASE64INPUTSTREAM_H
+#ifndef STRIGI_BASE64INPUTSTREAM_H
+#define STRIGI_BASE64INPUTSTREAM_H
 
 #include "bufferedstream.h"
 

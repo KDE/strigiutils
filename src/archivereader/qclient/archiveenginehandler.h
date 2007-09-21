@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef ARCHIVEENGINEHANDLER_H
-#define ARCHIVEENGINEHANDLER_H
+#ifndef STRIGI_ARCHIVEENGINEHANDLER_H
+#define STRIGI_ARCHIVEENGINEHANDLER_H
 
 #include <QtCore/QAbstractFileEngineHandler>
 

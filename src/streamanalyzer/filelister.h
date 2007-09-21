@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef FILELISTER_H
-#define FILELISTER_H
+#ifndef STRIGI_FILELISTER_H
+#define STRIGI_FILELISTER_H
 #include <set>
 #include <sys/types.h>
 #include <string>

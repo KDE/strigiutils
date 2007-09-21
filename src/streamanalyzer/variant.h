@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef VARIANT_H
-#define VARIANT_H
+#ifndef STRIGI_VARIANT_H
+#define STRIGI_VARIANT_H
 
 #include <strigi/strigiconfig.h>
 #include <string>

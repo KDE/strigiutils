@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXEDDOCUMENT_H
-#define INDEXEDDOCUMENT_H
+#ifndef STRIGI_INDEXEDDOCUMENT_H
+#define STRIGI_INDEXEDDOCUMENT_H
 
 #include <map>
 #include <string>

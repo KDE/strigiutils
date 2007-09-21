@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef PROCESSINPUTSTREAM_H
-#define PROCESSINPUTSTREAM_H
+#ifndef STRIGI_PROCESSINPUTSTREAM_H
+#define STRIGI_PROCESSINPUTSTREAM_H
 
 #include "streambase.h"
 #include "bufferedstream.h"

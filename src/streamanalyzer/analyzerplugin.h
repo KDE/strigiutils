@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef ANALYZERPLUGIN_H
-#define ANALYZERPLUGIN_H
+#ifndef STRIGI_ANALYZERPLUGIN_H
+#define STRIGI_ANALYZERPLUGIN_H
 #include <strigi/strigiconfig.h>
 
 #include <list>

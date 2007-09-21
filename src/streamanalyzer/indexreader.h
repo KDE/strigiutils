@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXREADER_H
-#define INDEXREADER_H
+#ifndef STRIGI_INDEXREADER_H
+#define STRIGI_INDEXREADER_H
 
 #include <strigi/strigiconfig.h>
 #include "indexeddocument.h"

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef TARINPUTSTREAM_H
-#define TARINPUTSTREAM_H
+#ifndef STRIGI_TARINPUTSTREAM_H
+#define STRIGI_TARINPUTSTREAM_H
 
 #include <strigi/strigiconfig.h>
 #include "streambase.h"

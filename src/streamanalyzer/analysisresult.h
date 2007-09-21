@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef ANALYSISRESULT_H
-#define ANALYSISRESULT_H
+#ifndef STRIGI_ANALYSISRESULT_H
+#define STRIGI_ANALYSISRESULT_H
 
 #include <string>
 

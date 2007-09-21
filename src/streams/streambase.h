@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STREAMBASE_H
-#define STREAMBASE_H
+#ifndef STRIGI_STREAMBASE_H
+#define STRIGI_STREAMBASE_H
 
 #include <stdio.h>
 #include <string>

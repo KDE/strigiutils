@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef ZIPINPUTSTREAM_H
-#define ZIPINPUTSTREAM_H
+#ifndef STRIGI_ZIPINPUTSTREAM_H
+#define STRIGI_ZIPINPUTSTREAM_H
 
 #include "substreamprovider.h"
 #include "gzipinputstream.h"

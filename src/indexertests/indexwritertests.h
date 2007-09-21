@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXWRITERTESTS_H
-#define INDEXWRITERTESTS_H
+#ifndef STRIGI_INDEXWRITERTESTS_H
+#define STRIGI_INDEXWRITERTESTS_H
 
 #include "verify.h"
 

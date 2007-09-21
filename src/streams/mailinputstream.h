@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef MAILINPUTSTREAM_H
-#define MAILINPUTSTREAM_H
+#ifndef STRIGI_MAILINPUTSTREAM_H
+#define STRIGI_MAILINPUTSTREAM_H
 
 #include <strigi/strigiconfig.h>
 #include "streambase.h"

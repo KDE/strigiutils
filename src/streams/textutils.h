@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef TEXTUTILS_H
-#define TEXTUTILS_H
+#ifndef STRIGI_TEXTUTILS_H
+#define STRIGI_TEXTUTILS_H
 
 #include <string>
 #include <strigi/strigiconfig.h>

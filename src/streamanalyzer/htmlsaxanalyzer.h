@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef HTMLSAXANALYZER
-#define HTMLSAXANALYZER
+#ifndef STRIGI_HTMLSAXANALYZER
+#define STRIGI_HTMLSAXANALYZER
 
 #include <strigi/strigiconfig.h>
 #include "streamsaxanalyzer.h"

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef SDFINPUTSTREAM_H
-#define SDFINPUTSTREAM_H
+#ifndef STRIGI_SDFINPUTSTREAM_H
+#define STRIGI_SDFINPUTSTREAM_H
 
 #include "substreamprovider.h"
 #include "subinputstream.h"

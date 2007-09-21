@@ -114,7 +114,7 @@ StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
     } else {
         moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     }
-    
+
     initializeSaxFactories();
     initializeLineFactories();
     initializeEventFactories();

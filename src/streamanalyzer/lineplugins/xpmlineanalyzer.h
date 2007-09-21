@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef XPMTHROUGHANALYZER
-#define XPMTHROUGHANALYZER
+#ifndef STRIGI_XPMTHROUGHANALYZER
+#define STRIGI_XPMTHROUGHANALYZER
 
 #include "streamlineanalyzer.h"
 #include "analyzerplugin.h"

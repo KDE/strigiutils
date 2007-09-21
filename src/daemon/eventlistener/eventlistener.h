@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EVENTLISTENER_H
-#define EVENTLISTENER_H
+#ifndef STRIGI_EVENTLISTENER_H
+#define STRIGI_EVENTLISTENER_H
 
 #include <set>
 #include <string>

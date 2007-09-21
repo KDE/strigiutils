@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef BUFFEREDSTREAM_H
-#define BUFFEREDSTREAM_H
+#ifndef STRIGI_BUFFEREDSTREAM_H
+#define STRIGI_BUFFEREDSTREAM_H
 
 #include "streambase.h"
 #include "streambuffer.h"

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXWRITER_H
-#define INDEXWRITER_H
+#ifndef STRIGI_INDEXWRITER_H
+#define STRIGI_INDEXWRITER_H
 
 #include <string>
 #include <vector>

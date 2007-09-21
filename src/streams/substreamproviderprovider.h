@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef SUBSTREAMPROVIDERPROVIDER_H
-#define SUBSTREAMPROVIDERPROVIDER_H
+#ifndef STRIGI_SUBSTREAMPROVIDERPROVIDER_H
+#define STRIGI_SUBSTREAMPROVIDERPROVIDER_H
 
 #include "streambase.h"
 

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef CPIOINPUTSTREAM_H
-#define CPIOINPUTSTREAM_H
+#ifndef STRIGI_CPIOINPUTSTREAM_H
+#define STRIGI_CPIOINPUTSTREAM_H
 
 #include "substreamprovider.h"
 #include "gzipinputstream.h"

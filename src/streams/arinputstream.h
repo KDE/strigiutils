@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef ARINPUTSTREAM_H
-#define ARINPUTSTREAM_H
+#ifndef STRIGI_ARINPUTSTREAM_H
+#define STRIGI_ARINPUTSTREAM_H
 
 #include "substreamprovider.h"
 

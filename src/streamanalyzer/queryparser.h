@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef QUERYPARSER_H
-#define QUERYPARSER_H
+#ifndef STRIGI_QUERYPARSER_H
+#define STRIGI_QUERYPARSER_H
 
 #include "query.h"
 

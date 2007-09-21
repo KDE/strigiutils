@@ -18,8 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef CLASSPROPERTIES_H
-#define CLASSPROPERTIES_H
+#ifndef STRIGI_CLASSPROPERTIES_H
+#define STRIGI_CLASSPROPERTIES_H
 #include <strigi/strigiconfig.h>
 #include <string>
 #include <vector>

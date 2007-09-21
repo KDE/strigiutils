@@ -18,8 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef FIELDPROPERIESDB_H
-#define FIELDPROPERIESDB_H
+#ifndef STRIGI_FIELDPROPERIESDB_H
+#define STRIGI_FIELDPROPERIESDB_H
 
 #include <strigi/strigiconfig.h>
 #include "fieldproperties.h"

@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXERCONFIGURATION_H
-#define INDEXERCONFIGURATION_H
+#ifndef STRIGI_INDEXERCONFIGURATION_H
+#define STRIGI_INDEXERCONFIGURATION_H
 
 #include "streamendanalyzer.h"
 #include "streamsaxanalyzer.h"

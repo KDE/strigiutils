@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DIRANALYZER_H
-#define DIRANALYZER_H
+#ifndef STRIGI_DIRANALYZER_H
+#define STRIGI_DIRANALYZER_H
 
 #include <strigi/strigiconfig.h>
 #include <string>

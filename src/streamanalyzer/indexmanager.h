@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INDEXMANAGER_H
-#define INDEXMANAGER_H
+#ifndef STRIGI_INDEXMANAGER_H
+#define STRIGI_INDEXMANAGER_H
 
 namespace Strigi {
 class IndexReader;

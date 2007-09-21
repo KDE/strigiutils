@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef CPPLINEANALYZER
-#define CPPLINEANALYZER
+#ifndef STRIGI_CPPLINEANALYZER
+#define STRIGI_CPPLINEANALYZER
 
 #include "streamlineanalyzer.h"
 #include "analyzerplugin.h"

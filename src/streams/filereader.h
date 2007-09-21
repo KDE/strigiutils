@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef FILEREADER_H
-#define FILEREADER_H
+#ifndef STRIGI_FILEREADER_H
+#define STRIGI_FILEREADER_H
 
 #include "streambase.h"
 

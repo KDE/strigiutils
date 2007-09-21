@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STRINGSTREAM_H
-#define STRINGSTREAM_H
+#ifndef STRIGI_STRINGSTREAM_H
+#define STRIGI_STRINGSTREAM_H
 
 /*
  * Author: Jos van den Oever

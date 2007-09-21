@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef XESAMLIVESEARCH_H
-#define XESAMLIVESEARCH_H
+#ifndef STRIGI_XESAMLIVESEARCH_H
+#define STRIGI_XESAMLIVESEARCH_H
 
 #include "xesamlivesearchinterface.h"
 

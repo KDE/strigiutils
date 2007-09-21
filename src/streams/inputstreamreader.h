@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef INPUTSTREAMREADER_H
-#define INPUTSTREAMREADER_H
+#ifndef STRIGI_INPUTSTREAMREADER_H
+#define STRIGI_INPUTSTREAMREADER_H
 
 #include <string>
 #include <iconv.h>

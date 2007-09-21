@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef DIGESTEVENTANALYZER_H
-#define DIGESTEVENTANALYZER_H
+#ifndef STRIGI_DIGESTEVENTANALYZER_H
+#define STRIGI_DIGESTEVENTANALYZER_H
 
 #include "streameventanalyzer.h"
 #include "sha1.h"

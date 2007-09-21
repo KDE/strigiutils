@@ -18,8 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef FIELDPROPERTIES_PRIVATE_H
-#define FIELDPROPERTIES_PRIVATE_H
+#ifndef STRIGI_FIELDPROPERTIES_PRIVATE_H
+#define STRIGI_FIELDPROPERTIES_PRIVATE_H
 
 #include "fieldproperties.h"
 
