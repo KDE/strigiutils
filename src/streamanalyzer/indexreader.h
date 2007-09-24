@@ -62,21 +62,24 @@ public:
         int off, int max) = 0;
 
     /**
-     * Obtain the path and mtime of all files in the index that have a given
-     * depth.
+     * Obtain the path and mtime of all files in the index that have a parent
+     * with the given uri.
      *
-     * The usual use case for this function is to retrieve all 'real' files.
-     * Files that are indexed directly have depth 0. All files that are
-     * are contained within other files have depth > 0.
+     * When listing files in the index it wise to retrieve these files in
+     * batches. The function getChildren allows this in such a way that it fits
+     * nicely with the scenario of updating the index by traversing directories
+     * and container files.
      *
-     * @param depth The depth for the file.
-     * @return a vector with path,mtime pairs for all files with a certain
-     *         depth
+     * All files with the value @p path in the field parent.location will be
+     * returned.
+     *
+     * @param parent The uri of the parent. If it is "" (empty string), all
+     *               files without a parent will be retrieved.
+     * @param children A map in which the uri and mtime of the children of
+     *                 @p parent will be placed.
      **/
-    //virtual std::map<std::string, time_t> files(char depth) = 0;
-
     virtual void getChildren(const std::string& parent,
-            std::map<std::string, time_t>& ) {}
+            std::map<std::string, time_t>& children) {}
     /**
      * Count the number of documents indexed in the index.
      *
