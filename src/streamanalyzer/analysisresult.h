@@ -214,8 +214,6 @@ public:
      */
     time_t mTime() const;
     /**
-     * @brief
-    /**
      * @brief Get the depth of the associated files in other files.
      *
      * When a file that may contain other files (such as a tar archive)
@@ -224,10 +222,9 @@ public:
      * This function returns the depth of this containment for the file
      * associated with this AnalysisResult.
      *
-     * @param the depth of containment of the associated file.
+     * @param the depth of containment of the associated file. Since the depth
+     *        should not be too large, the type of depth is restricted to 'char'
      */
-    // FIXME (trueg): why is this a char and not an int? This confuses me.
-    // Do I have to interpret it as a string or as an integer?
     char depth() const;
     /**
      * @deprecated
