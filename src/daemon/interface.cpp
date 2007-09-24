@@ -129,16 +129,6 @@ vector<pair<bool,string> >
 Interface::getFilters() {
     return scheduler.getIndexerConfiguration().filters();
 }
-set<string>
-Interface::getIndexedFiles() {
-    map<string, time_t> indexedfiles = manager.indexReader()->files(0);
-    set<string> r;
-
-    for (map<string, time_t>::iterator iter = indexedfiles.begin(); iter != indexedfiles.end(); iter++)
-        r.insert (iter->first);
-
-    return r;
-}
 void
 Interface::indexFile(const string &path, uint64_t mtime,
         const vector<char>& content) {

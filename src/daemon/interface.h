@@ -53,7 +53,6 @@ public:
     void setFilteringRules(const std::multimap<int, std::string>&);
     void setFilters(const std::vector<std::pair<bool,std::string> >& rules);
     std::vector<std::pair<bool,std::string> > getFilters();
-    std::set<std::string> getIndexedFiles();
     void indexFile(const std::string &path, uint64_t mtime,
         const std::vector<char>&);
     std::vector<std::string> getFieldNames();
