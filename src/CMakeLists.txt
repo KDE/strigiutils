@@ -5,9 +5,9 @@ CHECK_LIBRARY_EXISTS("socket" "connect" "" CMAKE_LIB_SOCKET_HAS_CONNECT)
 
 set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer combinedindexer indexertests strigicmd)
 
-if (BUILD_CLUCENE_BACKEND)
+if (CLucene_FOUND)
   set(DIRS ${DIRS} luceneindexer)
-endif (BUILD_CLUCENE_BACKEND)
+endif (CLucene_FOUND)
 
 if (HyperEstraier_FOUND)
   set(DIRS ${DIRS} estraierindexer)
