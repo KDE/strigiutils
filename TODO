@@ -19,6 +19,7 @@
 	-- see doc/fieldproperties.txt for a possible implementation
 
 - fix strigiapplet
+- fix diff line analyzer stability
 - make sure the applet displays fine if kicker is on the top of the screen
 - monitor the free disk space and make sure the indexer does not fill up the drive. this might be done with Solid or a call to a monitor with dbus. best is probably to let the client tell the server how much space is left
 - add the option to not refresh status automatically
