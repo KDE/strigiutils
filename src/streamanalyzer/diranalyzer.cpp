@@ -107,7 +107,6 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
     IndexWriter& indexWriter = *manager.indexWriter();
     try {
         string parentpath;
-        time_t parentmtime;
         vector<pair<string, time_t> > dirfiles;
         int r = dirlister.nextDir(parentpath, dirfiles);
         cerr << "path:" << parentpath << " " << r << " " << dirfiles.size() <<
