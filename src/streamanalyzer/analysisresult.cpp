@@ -133,9 +133,10 @@ AnalysisResult::AnalysisResult(const std::string& path, const char* name,
 }
 AnalysisResult::Private::Private(const std::string& p, time_t mt,
         IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
-            :m_writerData(0), m_mtime(mt), m_path(p), m_writer(w), m_depth(0),
-             m_indexer(indexer), m_analyzerconfig(indexer.configuration()),
-             m_parentpath(parentpath), m_parent(0), m_endanalyzer(0) {
+            :m_writerData(0), m_mtime(mt), m_path(p), m_parentpath(parentpath),
+             m_writer(w), m_depth(0), m_indexer(indexer),
+             m_analyzerconfig(indexer.configuration()),
+             m_parent(0), m_endanalyzer(0) {
     size_t pos = m_path.rfind('/');
     if (pos == std::string::npos) {
         m_name = m_path;
