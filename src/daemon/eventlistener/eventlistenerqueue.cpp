@@ -73,7 +73,7 @@ void* EventListenerQueue::run(void*)
     while (getState() != Stopping)
     {
         sleep (5);
-        if (STRIGI_MUTEX_TRY_LOCK(&m_mutex))
+        if (STRIGI_MUTEX_TRY_LOCK(&m_mutex) == 0)
         {
             
             if (m_waiting.size() > 0)
@@ -439,7 +439,7 @@ unsigned int EventListenerQueue::size()
 {
     unsigned int i = 0;
     
-    if (STRIGI_MUTEX_TRY_LOCK (&m_mutex))
+    if (STRIGI_MUTEX_TRY_LOCK (&m_mutex) == 0)
     {
         i = m_toProcess.size();
         STRIGI_MUTEX_UNLOCK (&m_mutex);
