@@ -51,7 +51,7 @@ MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
         )
     ENDIF (PERL_FOUND)
     set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
-        "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp")
+        "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
         PROPERTIES GENERATED true)
 ENDMACRO(CreateDBusBinding)
 
