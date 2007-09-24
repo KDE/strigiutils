@@ -37,6 +37,13 @@
 #endif
 #include <errno.h>
 
+#ifdef _WIN32
+// windows does not have symbolic links, so stat() is fine
+#define strigi_lstat stat
+#else
+#define strigi_lstat lstat
+#endif
+
 using namespace std;
 using namespace Strigi;
 
@@ -168,12 +175,7 @@ FileLister::Private::nextFile() {
             }
             strcpy(path + l, subdir->d_name);
             int sl = l + strlen(subdir->d_name);
-#ifdef _WIN32
-            // windows does not have symbolic links, so stat() is fine
-            if (stat(path, &dirstat) == 0) {
-#else
-            if (lstat(path, &dirstat) == 0) {
-#endif
+            if (strigi_lstat(path, &dirstat) == 0) {
                 if (S_ISREG(dirstat.st_mode)) {
                     if (config == 0 || config->indexFile(path, path+l)) {
                         mtime = dirstat.st_mtime;
@@ -291,7 +293,7 @@ DirLister::Private::nextDir(std::string& path,
         if (entryname != "." && entryname != "..") {
             entrypath.resize(entrypathlength);
             entrypath.append(entryname);
-            if (lstat(entrypath.c_str(), &entrystat) == 0) {
+            if (strigi_lstat(entrypath.c_str(), &entrystat) == 0) {
                 dirs.push_back(
                     make_pair<string,time_t>(entrypath, entrystat.st_mtime));
                 if (S_ISDIR(entrystat.st_mode)) {
