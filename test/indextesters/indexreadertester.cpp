@@ -19,12 +19,8 @@
  */
 #include "indexreadertester.h"
  
-/*#include "analysisresult.h"
-#include "analyzerconfiguration.h"*/
 #include "indexmanager.h"
-// #include "indexwriter.h"
 #include "indexreader.h"
-// #include "query.h"
 
 #include <string>
 #include <sstream>
@@ -38,30 +34,36 @@
 using namespace std;
 using namespace strigiunittest;
 
-void IndexReaderTester::setUp()
-{
-    manager = NULL;
-    reader  = NULL;
+void
+IndexReaderTester::setUp() {
+    manager = 0;
+    reader = 0;
 }
 
-void IndexReaderTester::tearDown()
-{
-    delete manager;
-    reader = NULL;
+void
+IndexReaderTester::tearDown() {
+    reader = 0;
+    if (manager) {
+        delete manager;
+        manager = 0;
+    }
 }
 
-void IndexReaderTester::testVariables()
-{
+void
+IndexReaderTester::testVariables() {
     CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
     CPPUNIT_ASSERT_MESSAGE ("reader  == NULL", reader);
-/*    CPPUNIT_ASSERT_MESSAGE ("si == NULL", si);
-    CPPUNIT_ASSERT_MESSAGE ("ic == NULL", ic);*/
 }
 
-void IndexReaderTester::getFiles()
-{
+void
+IndexReaderTester::getFiles() {
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
-    
-    reader->files(0);
-    //TODO: think to a better assert
+}
+
+void
+IndexReaderTester::testChildrenRetrieval() {
+    cerr << "YAAA" << endl;
+    map<string, time_t> children;
+    reader->getChildren("/", children);
+    cerr << "children: " << children.size() << endl;
 }

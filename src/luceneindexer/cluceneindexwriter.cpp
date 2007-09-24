@@ -98,6 +98,7 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored,
         (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed,
         (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized);
+    cerr << "store: " << ((type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored) << endl;
     doc->doc.add(*field);
 }
 void
@@ -163,6 +164,11 @@ void
 CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
     const FieldRegister& fr = idx->config().fieldRegister();
     addValue(idx, fr.pathField, idx->path());
+
+    // get the parent directory and store it without trailing slash
+    addValue(idx, AnalyzerConfiguration::Indexed, L"parent.location",
+            idx->parentPath());
+
     string field = idx->encoding();
     if (field.length()) addValue(idx, fr.encodingField, field);
     field = idx->mimeType();

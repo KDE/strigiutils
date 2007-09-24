@@ -19,9 +19,9 @@
  */
 #ifndef STRIGI_FILELISTER_H
 #define STRIGI_FILELISTER_H
-#include <set>
 #include <sys/types.h>
 #include <string>
+#include <vector>
 
 #include <strigi/strigiconfig.h>
 
@@ -42,17 +42,10 @@ namespace Strigi {
       - no need to spawn a separate process
 **/
 
-/*!
-* @param path string containing path to check
-* Appends the terminating char to path.
-* Under Windows that char is '\', '/' under *nix
-*/
-STREAMANALYZER_EXPORT std::string fixPath (std::string path);
-
 namespace Strigi {
 
 
-class STREAMANALYZER_EXPORT FileLister {
+class FileLister {
 private:
     class Private;
     Private* p;
@@ -61,7 +54,6 @@ public:
     ~FileLister();
 
     void startListing(const std::string& dir);
-
     /**
      * Thread-safe function for getting the next filename.
      @return length of the path assigned to the path variable or -1 if
@@ -77,8 +69,27 @@ public:
     int nextFile(const char*& path, time_t& time);
 
     void skipTillAfter(const std::string& lastToSkip);
-    
-    std::set<std::string>& getListedDirs();
+};
+
+class DirLister {
+private:
+    class Private;
+    Private* p;
+public:
+    DirLister(const Strigi::AnalyzerConfiguration* ic=0);
+    ~DirLister();
+
+    void startListing(const std::string& dir);
+    void stopListing();
+
+    /**
+     * Thread-safe function for getting the next filename.
+     * @return 0 when no error occured or -1 if an error occurred
+     */
+    int nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs);
+
+    void skipTillAfter(const std::string& lastToSkip);
 };
 }
 #endif

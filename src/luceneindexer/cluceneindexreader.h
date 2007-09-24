@@ -74,6 +74,8 @@ public:
     std::vector<std::string> keywords(const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset);
+    void getChildren(const std::string& parent,
+            std::map<std::string, time_t>& );
 };
 
 #endif

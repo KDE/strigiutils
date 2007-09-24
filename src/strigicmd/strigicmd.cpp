@@ -118,20 +118,24 @@ pe(const char *format, ...) {
  **/
 int
 usage(int argc, char** argv) {
-    pe("%s:\n", argv[0]);
+    const char* cmd = argv[0];
+    pe("%s:\n", cmd);
     pe("    Program for creating and querying indices.\n");
     pe("    This program is not meant for talking to the strigi daemon.\n\n");
     pe("usage:\n");
-    pe("  %s create [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n");
-    pe("  %s deindex -t backend -d indexdir files/dirs\n");
-    pe("  %s get -t backend -d indexdir files\n");
-    pe("  %s listFiles -t backend -d indexdir\n");
-    pe("  %s listFields -t backend -d indexdir\n");
+    pe("  %s create [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n", cmd);
+    pe("  %s deindex -t backend -d indexdir files/dirs\n", cmd);
+    pe("  %s get -t backend -d indexdir files\n", cmd);
+    pe("  %s listFiles -t backend -d indexdir\n", cmd);
+    pe("  %s listFields -t backend -d indexdir\n", cmd);
     //TODO: find a better definition for query?
-    pe("  %s query -t backend -d indexdir queries\n");
-    pe("  %s xesamquery -t backend -d indexdir [-u xesam_user_language_file] ");
+    pe("  %s query -t backend -d indexdir queries\n", cmd);
+    pe("  %s xesamquery -t backend -d indexdir [-u xesam_user_language_file] ",
+        cmd);
     pe("[-q xesam_query_language_file]\n");
-    pe("  %s update [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n");
+    pe("  %s update [-j num] -t backend -d indexdir [-i include] [-x exclude] ",
+      cmd);
+    pe("files/dirs\n");
     return 1; 
 }
 void
@@ -263,9 +267,9 @@ create(int argc, char** argv) {
         return usage(argc, argv);
     }
 
-    vector<pair<bool,string> >filters;
-    filters.push_back(make_pair<bool,string>(true,included_filter));
-    filters.push_back(make_pair<bool,string>(false,excluded_filter));
+    vector<pair<bool,string> > filters;
+    filters.push_back(make_pair<bool,string>(true, included_filter));
+    filters.push_back(make_pair<bool,string>(false, excluded_filter));
     
     //CustomAnalyzerConfiguration config;
     AnalyzerConfiguration config;
@@ -342,8 +346,10 @@ listFiles(int argc, char** argv) {
     if (manager == 0) {
         return usage(argc, argv);
     }
+    map<string, time_t> files;
     IndexReader* reader = manager->indexReader();
-    map<string, time_t> files = reader->files(-1);
+    reader->getChildren("", files);
+cerr << "Got " << files.size() << endl;
     map<string, time_t>::const_iterator i;
     for (i=files.begin(); i!=files.end(); ++i) {
         printf("%s\n", i->first.c_str());
@@ -589,8 +595,12 @@ deindex(int argc, char** argv) {
     }
     
     // retrieve all indexed files at level 0 (archives contents aren't returned)
+    map<string, time_t> indexedFiles;
+/* TODO: make this code not use indexReader->files(0)
+
     IndexReader* indexReader = manager->indexReader();
-    map <string, time_t> indexedFiles = indexReader->files(0);
+    indexedFiles = indexReader->files(0);
+*/
     vector<string> toDelete;
     
     for (vector<string>::iterator iter = arguments.begin();

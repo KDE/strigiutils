@@ -36,6 +36,7 @@ namespace strigiunittest
         CPPUNIT_TEST_SUITE( IndexReaderTester );
         CPPUNIT_TEST( testVariables );
         CPPUNIT_TEST( getFiles );
+        CPPUNIT_TEST( testChildrenRetrieval );
         CPPUNIT_TEST_SUITE_END_ABSTRACT();
         
         protected:
@@ -50,6 +51,7 @@ namespace strigiunittest
             
             virtual void getFiles();
             virtual void testVariables();
+            virtual void testChildrenRetrieval();
     };
 }
 

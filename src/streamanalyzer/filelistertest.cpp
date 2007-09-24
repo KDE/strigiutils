@@ -22,52 +22,141 @@
 #include <strigi/strigiconfig.h>
 #include "filelister.h"
 #include "analyzerconfiguration.h"
+#include "strigi_thread.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
+#include <list>
 
 using namespace std;
 
-/**
- * This test file can be used to measure the performance of the filelister
- * class. The speed can be compared to e.g. "find [path] -printf ''".
- **/
+class TaskList {
+private:
+    list<string> tasks;
+    STRIGI_MUTEX_DEFINE(mutex);
+    unsigned int busytasks;
+public:
+    TaskList() :busytasks(0) {
+        STRIGI_MUTEX_INIT(&mutex);
+    }
+    ~TaskList() {
+        STRIGI_MUTEX_DESTROY(&mutex);
+    }
+    void addTask(const string& path);
+    void startTask(string& path);
+    void endTask();
+};
+void
+TaskList::addTask(const string& path) {
+    STRIGI_MUTEX_LOCK(&mutex);
+    if (path.length()) {
+        tasks.push_back(path);
+    }
+    STRIGI_MUTEX_UNLOCK(&mutex);
+}
+void
+TaskList::startTask(string& path) {
+    STRIGI_MUTEX_LOCK(&mutex);
+    if (!tasks.empty()) {
+        path.assign(tasks.front());
+        tasks.pop_front();
+        busytasks++;
+    }
+    STRIGI_MUTEX_UNLOCK(&mutex);
+}
+void
+TaskList::endTask() {
+    STRIGI_MUTEX_LOCK(&mutex);
+    busytasks--;
+    STRIGI_MUTEX_UNLOCK(&mutex);
+}
 
+/**
+ * Class to go through directories in a threaded fashion.
+ **/
+class DirLister {
+private:
+    TaskList tasklist;
+    const Strigi::AnalyzerConfiguration* const config;
+public:
+    DirLister(const Strigi::AnalyzerConfiguration* c = 0) :config(c) {}
+    virtual ~DirLister() {}
+    int nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs);
+};
+int
+DirLister::nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs) {
+    dirs.clear();
+    // get the next dir from the list
+    //
+    // todo: if path.length() == 0 and another thread is still in this function,
+    // wait until it is done and check again
+    tasklist.startTask(path);
+    if (path.length() <= 0) {
+        return 1;
+    }
+    DIR* dir = opendir(path.c_str());
+    if (dir == 0) {
+        return 1;
+    }
+    string fullpath(path);
+    string::size_type len = fullpath.length();
+    if (path[len-1] != '/') {
+        fullpath.append("/");
+        len++;
+    }
+    struct stat dirstat;
+    struct dirent* ent = readdir(dir);
+    string entname;
+    while (ent) {
+        // skip the directories '.' and '..'
+        char c1 = ent->d_name[0];
+        if (c1 == '.') {
+            char c2 = ent->d_name[1];
+            if (c2 == '.' || c2 == '\0') {
+                ent = readdir(dir);
+                continue;
+            }
+        }
+        entname.assign(ent->d_name);
+        fullpath.resize(len);
+        fullpath.append(entname);
+#ifdef _WIN32
+        // windows does not have symbolic links, so stat() is fine
+        if (stat(fullpath.c_str(), &dirstat) == 0) {
+#else
+        if (lstat(fullpath.c_str(), &dirstat) == 0) {
+#endif
+            if (S_ISREG(dirstat.st_mode)) {
+                if (config == 0 || config->indexFile(fullpath.c_str(),
+                        fullpath.c_str()+len)) {
+                    dirs.push_back(make_pair(entname, dirstat.st_mtime));
+                }
+            } else if (dirstat.st_mode & S_IFDIR && (config == 0
+                    || config->indexDir(fullpath.c_str(),
+                                        fullpath.c_str()+len))) {
+                tasklist.addTask(fullpath);
+            }
+        }
+        ent = readdir(dir);
+    }
+    closedir(dir);
+    tasklist.endTask();
+    return 0;
+}
 int
 main(int argc, char** argv) {
     if (argc != 2) {
         return -1;
     }
 
-//  TODO add the rules to the indexerconfiguration
+    DirLister d;
 
-
-    Strigi::AnalyzerConfiguration ic;
-    Strigi::FileLister lister(&ic);
-
-    lister.startListing(argv[1]);
-    string path;
-    time_t mtime;
-    vector<string> files;
-    vector<string> dirs;
-    int r = lister.nextFile(path, mtime);
-    while (r >= 0) {
-        if (r > 0) {
-            files.push_back(path);
-        } else {
-            dirs.push_back(path);
-        }
-        r = lister.nextFile(path, mtime);
-    }
-
-    printf ("files:\n");
-    for (unsigned int i = 0; i < files.size(); i++)
-        cout <<"\t|"<< files[i] << "|\n";
-
-    printf ("dirs:\n");
-    for (unsigned int i = 0; i < dirs.size(); i++)
-        cout <<"\t|"<< dirs[i] << "|\n";
 
     return 0;
 }

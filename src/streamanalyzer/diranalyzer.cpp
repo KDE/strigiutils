@@ -34,16 +34,16 @@ using namespace std;
 
 class DirAnalyzer::Private {
 public:
-    FileLister lister;
+    //FileLister filelister;
+    DirLister dirlister;
     IndexManager& manager;
     AnalyzerConfiguration& config;
     StreamAnalyzer analyzer;
-    map<string, time_t> dbfiles;
     STRIGI_MUTEX_DEFINE(updateMutex);
     AnalysisCaller* caller;
 
     Private(IndexManager& m, AnalyzerConfiguration& c)
-            :lister(&c), manager(m), config(c), analyzer(c) {
+            :dirlister(&c), manager(m), config(c), analyzer(c) {
         STRIGI_MUTEX_INIT(&updateMutex);
         analyzer.setIndexWriter(*manager.indexWriter());
     }
@@ -56,6 +56,7 @@ public:
         AnalysisCaller* caller);
     void analyze(StreamAnalyzer*);
     void update(StreamAnalyzer*);
+    int analyzeFile(const string& path, time_t mtime, bool realfile);
 };
 
 struct DA {
@@ -89,15 +90,105 @@ DirAnalyzer::DirAnalyzer(IndexManager& manager, AnalyzerConfiguration& conf)
 DirAnalyzer::~DirAnalyzer() {
     delete p;
 }
+int
+DirAnalyzer::Private::analyzeFile(const string& path, time_t mtime,
+        bool realfile) {
+    AnalysisResult analysisresult(path, mtime, *manager.indexWriter(),
+        analyzer);
+    if (realfile) {
+        FileInputStream file(path.c_str());
+        return analysisresult.index(&file);
+    } else {
+        return analysisresult.index(0);
+    }
+}
 void
 DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
+    IndexWriter& indexWriter = *manager.indexWriter();
+    try {
+        string parentpath;
+        time_t parentmtime;
+        vector<pair<string, time_t> > dirfiles;
+        int r = dirlister.nextDir(parentpath, dirfiles);
+        cerr << "path:" << parentpath << " " << r << " " << dirfiles.size() <<
+endl;
+
+        while (r == 0 && (caller == 0 || caller->continueAnalysis())) {
+            vector<pair<string, time_t> >::const_iterator end
+                = dirfiles.end();
+            for (vector<pair<string, time_t> >::const_iterator i
+                    = dirfiles.begin(); i != end; ++i) {
+                const string& filepath(i->first);
+        cerr << "filepath:" << filepath << endl;
+                time_t mtime = i->second;
+                AnalysisResult analysisresult(filepath, mtime,
+                    indexWriter, *analyzer, parentpath);
+                FileInputStream file(filepath.c_str());
+                if (file.status() == Ok) {
+                    analysisresult.index(&file);
+                } else {
+                    analysisresult.index(0);
+                }
+            }
+            r = dirlister.nextDir(parentpath, dirfiles);
+        }
+    } catch(...) {
+        fprintf(stderr, "Unknown error\n");
+    }
+}
+void
+DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
+    IndexReader* reader = manager.indexReader();
+    vector<pair<string, time_t> > dirfiles;
+    map<string, time_t> dbdirfiles;
+    vector<string> toDelete;
+    vector<pair<string, time_t> > toIndex;
     try {
         string path;
-        time_t mtime;
-        int r = lister.nextFile(path, mtime);
+        // loop over all files that exist in the index
+        int r = dirlister.nextDir(path, dirfiles);
         while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
-            if (r > 0) {
-                AnalysisResult analysisresult(path, mtime,
+            cerr << "r: " << r << " " << path << " " << dirfiles.size() << endl;
+            if (r < 0) {
+                continue;
+            }
+            // get the files that are in the current database
+            reader->getChildren(path, dbdirfiles);
+
+            // get all files in this directory
+            vector<pair<string, time_t> >::const_iterator end
+                = dirfiles.end();
+            for (vector<pair<string, time_t> >::const_iterator i
+                    = dirfiles.begin(); i != end; ++i) {
+                const string& filepath(i->first);
+                time_t mtime = i->second;
+
+                // check if this file is new or not
+                map<string, time_t>::iterator j = dbdirfiles.find(filepath);
+                bool newfile = j == dbdirfiles.end();
+                bool updatedfile = !newfile && j->second != mtime;
+
+                // if the file is update we delete it in this loop
+                // if it is new, it should not be in the list anyway
+                // otherwise we should _not_ delete it and remove it from the
+                // to be deleted list
+                if (updatedfile || !newfile) {
+                    dbdirfiles.erase(j);
+                }
+                // if the file has not yet been indexed or if the mtime has
+                // changed, index it
+                if (updatedfile) {
+                    toDelete.push_back(filepath);
+                }
+                if (newfile || updatedfile) {
+                    toIndex.push_back(make_pair(filepath, mtime));
+                }
+            }
+            manager.indexWriter()->deleteEntries(toDelete);
+            vector<pair<string, time_t> >::const_iterator fend = toIndex.end();
+            for (vector<pair<string, time_t> >::const_iterator i
+                    = toIndex.begin(); i != fend; ++i) {
+                AnalysisResult analysisresult(i->first, i->second,
                     *manager.indexWriter(), *analyzer);
                 FileInputStream file(path.c_str());
                 if (file.status() == Ok) {
@@ -106,55 +197,9 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
                     analysisresult.index(0);
                 }
             }
-            r = lister.nextFile(path, mtime);
-        }
-    } catch(...) {
-        fprintf(stderr, "Unknown error\n");
-    }
-}
-void
-DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
-    vector<string> toDelete(1);
-    try {
-        string path;
-        time_t mtime;
-        // loop over all files that exist in the index
-        int r = lister.nextFile(path, mtime);
-        while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
-            if (r > 0) {
-                // check if this file is new or not
-                STRIGI_MUTEX_LOCK(&updateMutex);
-                map<string, time_t>::iterator i = dbfiles.find(path);
-                bool newfile = i == dbfiles.end();
-                bool updatedfile = !newfile && i->second != mtime;
-
-                // if the file is update we delete it in this loop
-                // if it is new, it should not be in the list anyway
-                // otherwise we should _not_ delete it and remove it from the
-                // to be deleted list
-                if (updatedfile || !newfile) {
-                    dbfiles.erase(i);
-                }
-                STRIGI_MUTEX_UNLOCK(&updateMutex);
-
-                // if the file has not yet been indexed or if the mtime has
-                // changed, index it
-                if (updatedfile) {
-                    toDelete[0].assign(path);
-                    manager.indexWriter()->deleteEntries(toDelete);
-                }
-                if (newfile || updatedfile) {
-                    AnalysisResult analysisresult(path, mtime,
-                        *manager.indexWriter(), *analyzer);
-                    FileInputStream file(path.c_str());
-                    if (file.status() == Ok) {
-                        analysisresult.index(&file);
-                    } else {
-                        analysisresult.index(0);
-                    }
-                }
-            }
-            r = lister.nextFile(path, mtime);
+            toDelete.clear();
+            toIndex.clear();
+            r = dirlister.nextDir(path, dirfiles);
         }
     } catch(...) {
         fprintf(stderr, "Unknown error\n");
@@ -173,24 +218,16 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
     struct stat s;
     int retval = stat(dir.c_str(), &s);
     time_t mtime = (retval == -1) ?0 :s.st_mtime;
-    if (retval == -1 || S_ISREG(s.st_mode)) {
-        { // at the end of this block the analysisresult is deleted and indexed
-            AnalysisResult analysisresult(dir, mtime, *manager.indexWriter(),
-                analyzer);
-            FileInputStream file(dir.c_str());
-            if (file.status() == Ok) {
-                retval = analysisresult.index(&file);
-            } else {
-                retval = analysisresult.index(0);
-            }
-        }
+    retval = analyzeFile(dir, mtime, S_ISREG(s.st_mode));
+    // if the path does not point to a directory, return
+    if (!S_ISDIR(s.st_mode)) {
         manager.indexWriter()->commit();
         return retval;
     }
 
-    lister.startListing(dir);
+    dirlister.startListing(dir);
     if (lastToSkip.length()) {
-        lister.skipTillAfter(lastToSkip);
+        dirlister.skipTillAfter(lastToSkip);
     }
 
     if (nthreads < 1) nthreads = 1;
@@ -229,9 +266,6 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
     if (reader == 0) return -1;
     caller = c;
 
-    // retrieve the complete list of files
-    dbfiles = reader->files(0);
-
     // create the streamanalyzers
     if (nthreads < 1) nthreads = 1;
     vector<StreamAnalyzer*> analyzers(nthreads);
@@ -245,17 +279,19 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 
     // loop over all directories that should be updated
     for (vector<string>::const_iterator d =dirs.begin(); d != dirs.end(); ++d) {
-        lister.startListing(*d);
+        dirlister.startListing(*d);
         for (int i=1; i<nthreads; i++) {
             DA* da = new DA();
             da->diranalyzer = this;
             da->streamanalyzer = analyzers[i];
             STRIGI_THREAD_CREATE(&threads[i-1], updateInThread, da);
         }
-        update(analyzers[0]); 
+        update(analyzers[0]);
+        // wait until all threads have finished
         for (int i=1; i<nthreads; i++) {
             STRIGI_THREAD_JOIN(threads[i-1]);
         }
+        dirlister.stopListing();
     }
     // clean up the analyzers
     for (int i=1; i<nthreads; i++) {
@@ -263,19 +299,19 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
     }
 
     // remove the files that were not encountered from the index
-    vector<string> todelete(1);
+/*    vector<string> todelete(1);
     map<string,time_t>::iterator it = dbfiles.begin();
     while (it != dbfiles.end()) {
         todelete[0].assign(it->first);
         manager.indexWriter()->deleteEntries(todelete);
         ++it;
     }
-    dbfiles.clear();
+    dbfiles.clear();*/
 
     return 0;
 }
 int
-DirAnalyzer::updateDirs(const std::vector<std::string>& dirs, int nthreads,
+DirAnalyzer::updateDirs(const vector<string>& dirs, int nthreads,
         AnalysisCaller* caller) {
     return p->updateDirs(dirs, nthreads, caller);
 }

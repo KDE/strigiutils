@@ -745,3 +745,48 @@ CLuceneIndexReader::keywords(const string& keywordmatch,
     }
     return k;
 }
+void
+CLuceneIndexReader::getChildren(const std::string& parent,
+            std::map<std::string, time_t>& childs) {
+    childs.clear();
+    // build a query
+    Term* t = Private::createKeywordTerm(L"parent.location", parent);
+    Query* q = _CLNEW TermQuery(t);
+    _CLDECDELETE(t);
+
+    IndexSearcher searcher(reader);
+    Hits* hits = 0;
+    int nhits = 0;
+    try {
+        hits = searcher.search(q);
+        nhits = hits->length();
+    } catch (CLuceneError& err) {
+        printf("could not query: %s\n", err.what());
+    }
+    cerr << "got hits:" << nhits << endl;
+    const TCHAR* mtime = mapId(_T("system.last_modified_time"));
+    mtime = _T("system.last_modified_time");
+    char cstr[CL_MAX_DIR];
+    for (int i = 0; i < nhits; ++i) {
+        Document* d = &hits->doc(i);
+
+        const TCHAR* v = d->get(mtime);
+        if (v) {
+            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+            time_t mtime = atoi(cstr);
+            v = d->get(_T("system.location"));
+            if (v) {
+                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
+cerr << "hmm " << cstr << endl;
+                childs[cstr] = mtime;
+            }
+        }
+
+        _CLDELETE(d);
+    }
+    if (hits) {
+        //_CLDELETE(hits);
+    }
+    searcher.close();
+    _CLDELETE(q);
+}

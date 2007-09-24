@@ -211,7 +211,7 @@ CombinedIndexReader::getHits(const Query& q,
     }
 #endif    
 }
-map<string, time_t>
+/*map<string, time_t>
 CombinedIndexReader::files(char depth) {
     map<string, time_t> files = m->p->writermanager->indexReader()
         ->files(depth);
@@ -228,7 +228,7 @@ CombinedIndexReader::files(char depth) {
         }
     }
     return files;
-}
+}*/
 int32_t
 CombinedIndexReader::countDocuments() {
     int32_t c = m->p->writermanager->indexReader()->countDocuments();

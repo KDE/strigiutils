@@ -99,6 +99,7 @@ public:
     const time_t m_mtime;
     std::string m_name;
     const std::string m_path;
+    const std::string m_parentpath;
     std::string m_encoding;
     std::string m_mimetype;
     IndexWriter& m_writer;
@@ -112,7 +113,7 @@ public:
     Private(const std::string& p, const char* name, time_t mt,
         AnalysisResult& parent);
     Private(const std::string& p, time_t mt, IndexWriter& w,
-        StreamAnalyzer& indexer);
+        StreamAnalyzer& indexer, const string& parentpath);
 
     bool checkCardinality(const RegisteredField* field);
 };
@@ -131,10 +132,10 @@ AnalysisResult::AnalysisResult(const std::string& path, const char* name,
     p->m_writer.startAnalysis(this);
 }
 AnalysisResult::Private::Private(const std::string& p, time_t mt,
-        IndexWriter& w, StreamAnalyzer& indexer)
+        IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
             :m_writerData(0), m_mtime(mt), m_path(p), m_writer(w), m_depth(0),
              m_indexer(indexer), m_analyzerconfig(indexer.configuration()),
-             m_parent(0), m_endanalyzer(0) {
+             m_parentpath(parentpath), m_parent(0), m_endanalyzer(0) {
     size_t pos = m_path.rfind('/');
     if (pos == std::string::npos) {
         m_name = m_path;
@@ -143,8 +144,8 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
     }
 }
 AnalysisResult::AnalysisResult(const std::string& path, time_t mt,
-        IndexWriter& w, StreamAnalyzer& indexer)
-            :p(new Private(path, mt, w, indexer)) {
+        IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
+            :p(new Private(path, mt, w, indexer, parentpath)) {
     p->m_writer.startAnalysis(this);
 }
 AnalysisResult::~AnalysisResult() {
@@ -153,6 +154,7 @@ AnalysisResult::~AnalysisResult() {
 }
 const std::string& AnalysisResult::fileName() const { return p->m_name; }
 const std::string& AnalysisResult::path() const { return p->m_path; }
+const string& AnalysisResult::parentPath() const { return p->m_parentpath; }
 time_t AnalysisResult::mTime() const { return p->m_mtime; }
 char AnalysisResult::depth() const { return p->m_depth; }
 int64_t AnalysisResult::id() const { return p->m_id; }
@@ -204,6 +206,10 @@ AnalysisResult::config() const {
 }
 AnalysisResult*
 AnalysisResult::parent() {
+    return p->m_parent;
+}
+const AnalysisResult*
+AnalysisResult::parent() const {
     return p->m_parent;
 }
 const StreamEndAnalyzer*

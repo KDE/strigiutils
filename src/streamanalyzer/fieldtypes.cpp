@@ -59,14 +59,14 @@ const string FieldRegister::sizeFieldName = "system.size";
 const string FieldRegister::defaultNamespace = "strigi.";
 
 FieldRegister::FieldRegister() {
-    pathField = registerField(pathFieldName, stringType, 1, 0);
-    encodingField = registerField(encodingFieldName, stringType, 1, 0);
-    mimetypeField = registerField(mimetypeFieldName, stringType, -1, 0);
-    filenameField = registerField(filenameFieldName, stringType, 1, 0);
-    extensionField = registerField(extensionFieldName, stringType, 1, 0);
-    embeddepthField = registerField(embeddepthFieldName, integerType, 1, 0);
-    mtimeField = registerField(mtimeFieldName, integerType, 1, 0);
-    sizeField = registerField(sizeFieldName, integerType, 1, 0);
+    pathField = registerField(pathFieldName);//, stringType, 1, 0);
+    encodingField = registerField(encodingFieldName);//, stringType, 1, 0);
+    mimetypeField = registerField(mimetypeFieldName);//, stringType, -1, 0);
+    filenameField = registerField(filenameFieldName);//, stringType, 1, 0);
+    extensionField = registerField(extensionFieldName);//, stringType, 1, 0);
+    embeddepthField = registerField(embeddepthFieldName);//, integerType, 1, 0);
+    mtimeField = registerField(mtimeFieldName);//, integerType, 1, 0);
+    sizeField = registerField(sizeFieldName);//, integerType, 1, 0);
 }
 
 FieldRegister::~FieldRegister() {
@@ -94,13 +94,14 @@ FieldRegister::registerField(const string& fieldname) {
 	// if an instance of the RegisteredField has never been created before:
         //  - check with the fieldpropertiesdb first
 	//  	- if not in the DB, then db().(addField)
-	//  - create an instance of RegisteredField, remember it for the future calls,
-	//    and return the pointer
-        const FieldProperties& props = FieldPropertiesDb::db().properties(fieldname);
+	//  - create an instance of RegisteredField,
+	//    remember it for the future calls, and return the pointer
+        const FieldProperties& props
+            = FieldPropertiesDb::db().properties(fieldname);
         if (!props.valid()) {
-            fprintf(stderr, "WARNING: field \"%s\" is not defined in .fieldproperties ontology database.\n",
-		fieldname.c_str());
-	    // creates a field with defaults (should be stringType and no parents)
+            fprintf(stderr, "WARNING: field \"%s\" is not defined in "
+                ".fieldproperties ontology database.\n", fieldname.c_str());
+	    // creates a field with defaults (stringType and no parents)
             FieldPropertiesDb::db().addField(fieldname);
         }
         RegisteredField* f = new RegisteredField(fieldname);

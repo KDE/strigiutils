@@ -88,14 +88,13 @@ IndexManagerTester::testNumberQuery() {
     VERIFY(writer);
     if (writer == 0) return;
     writer->deleteAllEntries();
-    int files = reader->files(0).size();
+    /*int files = reader->files(0).size();
     VERIFY(files == 0);
-    if (files != 0) {
+    if (files) {
         fprintf(stderr, " %i files left\n", files);
         return;
-    }
-    if (files) return;
-    files = reader->countDocuments();
+    }*/
+    int files = reader->countDocuments();
     if (files != 0) {
         fprintf(stderr, " %i files left\n", files);
         return;
@@ -122,12 +121,12 @@ IndexManagerTester::testNumberQuery() {
         fprintf(stderr, "files: %i m: %i\n", files, m);
         return;
     }
-    files = reader->files(0).size();
+    /*files = reader->files(0).size();
     VERIFY(files == m);
     if (files != m) {
         fprintf(stderr, "files: %i m: %i\n", files, m);
         return;
-    }
+    }*/
     QueryParser parser;
     Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
     int count = reader->countHits(q);

@@ -68,14 +68,6 @@ void IndexManagerTester::testVariables()
     CPPUNIT_ASSERT_MESSAGE ("ic == NULL", ic);
 }
 
-// void IndexManagerTester::runUnthreadedTests()
-// {
-// }
-
-// void IndexManagerTester::runThreadedTests()
-// {
-// }
-
 void IndexManagerTester::addAndCount()
 {
     CPPUNIT_ASSERT_MESSAGE("writer == NULL", writer);

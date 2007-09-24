@@ -29,6 +29,7 @@ namespace strigiunittest
         CPPUNIT_TEST_SUB_SUITE( LuceneIndexReaderTest,  IndexReaderTester);
         CPPUNIT_TEST( testVariables );
         CPPUNIT_TEST( getFiles );
+        CPPUNIT_TEST( testChildrenRetrieval );
         CPPUNIT_TEST_SUITE_END();
         
         public:

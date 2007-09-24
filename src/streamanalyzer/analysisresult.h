@@ -82,7 +82,7 @@ public:
      *        destruction
      **/
     AnalysisResult(const std::string& p, time_t mt, IndexWriter& w,
-            StreamAnalyzer& indexer);
+            StreamAnalyzer& analyzer, const std::string& parent = "");
     /**
      * @brief Write the analysis result to the index and release the allocated resources.
      **/
@@ -206,9 +206,15 @@ public:
      **/
     const std::string& path() const;
     /**
+     * @brief Get the path of the file associated with the parent.
+     **/
+    const std::string& parentPath() const;
+    /**
      * @brief Get the last modified time of the associated file.
      */
     time_t mTime() const;
+    /**
+     * @brief
     /**
      * @brief Get the depth of the associated files in other files.
      *
@@ -263,6 +269,7 @@ public:
      * result
      */
     AnalysisResult* parent();
+    const AnalysisResult* parent() const;
     /**
      * @brief Retrieve the IndexWriter specific object
      * associated with this AnalysisResult.

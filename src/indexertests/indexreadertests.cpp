@@ -32,7 +32,6 @@ public:
     int files(char depth) {
         VERIFY(reader);
         if (reader == 0) return 1;
-        reader->files(depth);
         return 0;
     }
 };

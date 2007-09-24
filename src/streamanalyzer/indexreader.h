@@ -55,14 +55,12 @@ public:
      **/
     virtual std::vector<IndexedDocument> query(const Query&, int off, int max) = 0;
 
-// TEMP IFDEF UNTIL MONDAY 20070711
-#ifdef ENABLE_NEWXESAM
     virtual void getHits(const Strigi::Query& query,
         const std::vector<std::string>& fields,
         const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result,
         int off, int max) = 0;
-#endif
+
     /**
      * Obtain the path and mtime of all files in the index that have a given
      * depth.
@@ -75,7 +73,10 @@ public:
      * @return a vector with path,mtime pairs for all files with a certain
      *         depth
      **/
-    virtual std::map<std::string, time_t> files(char depth) = 0;
+    //virtual std::map<std::string, time_t> files(char depth) = 0;
+
+    virtual void getChildren(const std::string& parent,
+            std::map<std::string, time_t>& ) {}
     /**
      * Count the number of documents indexed in the index.
      *

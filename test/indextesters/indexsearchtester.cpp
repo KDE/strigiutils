@@ -38,7 +38,8 @@
 using namespace std;
 using namespace strigiunittest;
 
-void IndexSearchTester::setUp() {
+void
+IndexSearchTester::setUp() {
     char buff[13];
     char* dirname;
     string separator;
@@ -47,33 +48,25 @@ void IndexSearchTester::setUp() {
     strcpy(buff, "strigiXXXXXX");
     dirname = mkdtemp(buff);
     
-    if (dirname == NULL)
-    {
-      printf ("Error creating temporary directory for index because of: ");
-      printf ("%s\n", strerror (errno));
-
-      return;
-    }
-    else
-    {
-      printf ("created index dir: %s\n", dirname);
-      indexdir.assign(dirname);
+    if (dirname) {
+        cout << "created index dir: " << dirname << endl;
+        indexdir.assign(dirname);
+    } else {
+        cerr << "Error creating temporary directory for index because of: "
+            << strerror(errno) << endl;
+        return;
     }
 
     // generate indexed docs name
     strcpy(buff, "strigiXXXXXX");
     dirname = mkdtemp(buff);
-
-    if (dirname == NULL)
-    {
-      printf ("Error creating temporary directory for indexed docs because of: ");
-      printf ("%s\n", strerror (errno));
-      return;
-    }
-    else
-    {
-      printf ("created dir for testing documents: %s\n", dirname);
-      filedir.assign(dirname);
+    if (dirname) {
+        cout << "created dir for testing documents: " << dirname << endl;
+        filedir.assign(dirname);
+    } else {
+        cerr << "Error creating temporary directory for indexed docs: "
+            << strerror(errno) << endl;
+        return;
     }
     
 #ifdef _WIN32
@@ -88,27 +81,24 @@ void IndexSearchTester::setUp() {
     
     filename = "testfile01";
     filecontents = "this is a simple test file";
-    indexedFiles.insert (make_pair<string, string> (filename, filecontents));
+    indexedFiles.insert(make_pair<string, string> (filename, filecontents));
     
     filename = "testfile02";
     filecontents = "unit testing example";
-    indexedFiles.insert (make_pair<string, string> (filename, filecontents));
+    indexedFiles.insert(make_pair<string, string> (filename, filecontents));
     
     // create files on file system
     for (map<string,string>::iterator iter = indexedFiles.begin();
-         iter != indexedFiles.end(); iter++)
-    {
+            iter != indexedFiles.end(); iter++) {
         ofstream file;
         string fullpath = filedir + separator + iter->first;
         file.open( fullpath.c_str());
-        if (file.is_open())
-        {
+        if (file.is_open()) {
             file << iter->second;
             file.close();
+        } else {
+            cerr << "error during creation of file " << fullpath << endl;
         }
-        else
-            fprintf (stderr, "error during creation of file %s\n",
-                             fullpath.c_str());
     }
     
     manager = getIndexManager(backend, indexdir);
@@ -122,8 +112,7 @@ void IndexSearchTester::setUp() {
 //     Strigi::DirAnalyzer* analyzer = new Strigi::DirAnalyzer(*manager, config);
  
     for (map<string,string>::iterator iter = indexedFiles.begin();
-         iter != indexedFiles.end(); iter++)
-    {
+         iter != indexedFiles.end(); iter++) {
         string temp = filedir + separator + iter->first;
         fprintf (stderr, "going to index %s\n", temp.c_str());
 //         analyzer->analyzeDir (filedir + separator + iter->first, 1);
@@ -135,17 +124,17 @@ void IndexSearchTester::setUp() {
     
     writer->commit();
     
-    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
+/*    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
     if (indexedFilesSize != indexedFiles.size()) {
         ostringstream msg;
         msg << "There are " << indexedFilesSize << " indexed files instead of "
             << indexedFiles.size();
         CPPUNIT_FAIL(msg.str());
-    }
+    }*/
 }
 
-void IndexSearchTester::tearDown()
-{
+void
+IndexSearchTester::tearDown() {
     if (manager)
         delete manager;
     manager = NULL;
@@ -155,14 +144,14 @@ void IndexSearchTester::tearDown()
     system(cmd.c_str());
 }
 
-void IndexSearchTester::testVariables()
-{
+void
+IndexSearchTester::testVariables() {
     CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
     CPPUNIT_ASSERT_MESSAGE ("backend empty", !backend.empty());
     CPPUNIT_ASSERT_MESSAGE ("indexdir empty", !indexdir.empty());
     CPPUNIT_ASSERT_MESSAGE ("filedir empty", !filedir.empty());
     
-    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
+    unsigned int indexedFilesSize = manager->indexReader()->countDocuments();
     if (indexedFilesSize != indexedFiles.size()) {
         ostringstream msg;
         msg << "There are " << indexedFilesSize << " indexed files instead of "
@@ -171,8 +160,8 @@ void IndexSearchTester::testVariables()
     }
 }
 
-void IndexSearchTester::testSystemLocationSearchIndexedFile()
-{
+void
+IndexSearchTester::testSystemLocationSearchIndexedFile() {
     string message;
     Strigi::IndexReader* reader = manager->indexReader();
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
@@ -189,8 +178,8 @@ void IndexSearchTester::testSystemLocationSearchIndexedFile()
     }
 }
 
-void IndexSearchTester::testSystemLocationSearchUnindexedFile()
-{
+void
+IndexSearchTester::testSystemLocationSearchUnindexedFile() {
     string message;
     Strigi::IndexReader* reader = manager->indexReader();
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);

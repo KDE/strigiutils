@@ -124,7 +124,7 @@ void DirAnalyzerTester::testVariables()
     CPPUNIT_ASSERT_MESSAGE ("indexdir empty", !indexdir.empty());
 
     // THIS TEST IS BROKEN: you cannot expect documents without indexing them
-    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
+    unsigned int indexedFilesSize = manager->indexReader()->countDocuments();
     if (indexedFilesSize != indexedFiles.size()) {
         ostringstream msg;
         msg << "There are " << indexedFilesSize << " indexed files instead of "
@@ -153,7 +153,7 @@ void DirAnalyzerTester::testCreateIndex()
     CPPUNIT_ASSERT_MESSAGE("Not all documents were indexed.",
         manager->indexReader()->countDocuments()
             == (int32_t)indexedFiles.size());
-    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
+    unsigned int indexedFilesSize = manager->indexReader()->countDocuments();
     if (indexedFilesSize != indexedFiles.size()) {
         ostringstream msg;
         msg << "There are " << indexedFilesSize << " indexed files instead of "

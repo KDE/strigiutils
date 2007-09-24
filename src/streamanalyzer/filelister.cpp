@@ -24,6 +24,7 @@
 #include "strigi_thread.h"
 #include "analyzerconfiguration.h"
 #include <set>
+#include <list>
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,6 +40,11 @@
 using namespace std;
 using namespace Strigi;
 
+/*!
+* @param path string containing path to check
+* Appends the terminating char to path.
+* Under Windows that char is '\', '/' under *nix
+*/
 string fixPath (string path)
 {
     if ( path.c_str() == NULL || path.length() == 0 )
@@ -225,8 +231,90 @@ FileLister::skipTillAfter(const std::string& lastToSkip) {
         r = p->nextFile();
     }
 }
-set<string>&
-FileLister::getListedDirs()
-{
-    return p->listedDirs;
+
+class DirLister::Private {
+public:
+    STRIGI_MUTEX_DEFINE(mutex);
+    list<string> todoPaths;
+
+    Private(const AnalyzerConfiguration* ic) {}
+    int nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs);
+};
+
+DirLister::DirLister(const AnalyzerConfiguration* ic)
+    : p(new Private(ic)) {
+    STRIGI_MUTEX_INIT(&p->mutex);
+}
+DirLister::~DirLister() {
+    STRIGI_MUTEX_DESTROY(&p->mutex);
+    delete p;
+}
+void
+DirLister::startListing(const string& dir) {
+    STRIGI_MUTEX_LOCK(&p->mutex);
+    p->todoPaths.push_back(dir);
+    STRIGI_MUTEX_UNLOCK(&p->mutex);
+}
+void
+DirLister::stopListing() {
+    STRIGI_MUTEX_LOCK(&p->mutex);
+    p->todoPaths.clear();
+    STRIGI_MUTEX_UNLOCK(&p->mutex);
+}
+int
+DirLister::Private::nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs) {
+    if (todoPaths.size() == 0) {
+        return -1;
+    }
+    string entryname;
+    string entrypath;
+    size_t entrypathlength;
+    // open the directory
+    STRIGI_MUTEX_LOCK(&mutex);
+    path.assign(todoPaths.front());
+    todoPaths.pop_front();
+    STRIGI_MUTEX_UNLOCK(&mutex);
+    entrypathlength = path.length()+1;
+    entrypath.assign(path);
+    entrypath.append("/");
+    dirs.clear();
+    DIR* dir = opendir(path.c_str());
+    if (!dir) {
+        return -1;
+    }
+    struct dirent* entry = readdir(dir);
+    struct stat entrystat;
+    while (entry) {
+        entryname.assign(entry->d_name);
+        if (entryname != "." && entryname != "..") {
+            entrypath.resize(entrypathlength);
+            entrypath.append(entryname);
+            if (lstat(entrypath.c_str(), &entrystat) == 0) {
+                dirs.push_back(
+                    make_pair<string,time_t>(entrypath, entrystat.st_mtime));
+                if (S_ISDIR(entrystat.st_mode)) {
+                    STRIGI_MUTEX_LOCK(&mutex);
+                    todoPaths.push_back(entrypath);
+                    STRIGI_MUTEX_UNLOCK(&mutex);
+                }
+            }
+        }
+        entry = readdir(dir);
+    }
+    closedir(dir);
+    return 0;
+}
+int
+DirLister::nextDir(std::string& path,
+        std::vector<std::pair<std::string, time_t> >& dirs) {
+    cout << "nextDir '" << path << "'" << endl;
+    return p->nextDir(path, dirs);
+}
+void
+DirLister::skipTillAfter(const std::string& lastToSkip) {
+    string path;
+    vector<pair<string, time_t> > dirs;
+    while (nextDir(path, dirs) >= 0 && path != lastToSkip) {}
 }

@@ -8,28 +8,33 @@ function fail() {
     exit 1
 }
 
-rm -r x y
+STRIGICMD="`find -type f -name strigicmd`"
+echo Using $STRIGICMD
+
+rm -r x y 2> /dev/null
 mkdir x
 touch x/y
 touch x/z
-echo == src/strigicmd/strigicmd create -t clucene -d y x ==
-if ! src/strigicmd/strigicmd create -t clucene -d y x; then
+touch x/zz
+echo == $STRIGICMD create -t clucene -d y x ==
+if ! $STRIGICMD create -j 1 -t clucene -d y x; then
     fail
 fi
-echo == src/strigicmd/strigicmd listFiles -t clucene -d y ==
-if ! src/strigicmd/strigicmd listFiles -t clucene -d y; then
+echo == $STRIGICMD listFiles -t clucene -d y ==
+if ! $STRIGICMD listFiles -t clucene -d y; then
     fail
 fi
+exit
 rm x/y
-echo == src/strigicmd/strigicmd update -t clucene -d y x ==
-if ! src/strigicmd/strigicmd update -t clucene -d y x; then
+echo == $STRIGICMD update -t clucene -d y x ==
+if ! $STRIGICMD update -t clucene -d y x; then
     fail
 fi
-echo == src/strigicmd/strigicmd listFiles -t clucene -d y ==
-if ! src/strigicmd/strigicmd listFiles -t clucene -d y; then
+echo == $STRIGICMD listFiles -t clucene -d y ==
+if ! $STRIGICMD listFiles -t clucene -d y; then
     fail
 fi
-OUT=`src/strigicmd/strigicmd listFiles -t clucene -d y`
+OUT=`$STRIGICMD listFiles -t clucene -d y`
 if [[ $OUT == 'x/z' ]]; then
     echo Test succesfull
     exit 0
