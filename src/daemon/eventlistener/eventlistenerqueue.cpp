@@ -452,7 +452,7 @@ vector <Event*> EventListenerQueue::getEvents()
 {
     vector <Event*> result;
 
-    if (STRIGI_MUTEX_TRY_LOCK (&m_mutex))
+    if (STRIGI_MUTEX_TRY_LOCK (&m_mutex) == 0)
     {
         for (map<string, Event*>::iterator iter = m_toProcess.begin();
              iter != m_toProcess.end(); iter++)
