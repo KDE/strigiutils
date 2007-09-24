@@ -105,6 +105,8 @@ DBusHandler::handle() {
     int retval;
     struct timeval tv;
     int max = ((fd>*quitpipe) ?fd :*quitpipe)+1;
+    // handle messages in queue
+    while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS);
     while (dbus_connection_get_is_connected(conn)) {
         FD_ZERO(&rfds);
         FD_SET(fd, &rfds);
