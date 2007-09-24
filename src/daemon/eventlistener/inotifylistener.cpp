@@ -225,7 +225,7 @@ void InotifyListener::ReindexDirsThread::getData(set<string>& noMoreIndexed,
     newDirs.clear();
     events.clear();
     
-    if (!STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock))
+    if (STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock) != 0)
         return;
     
     if (m_bDataTaken) {
@@ -270,8 +270,9 @@ void* InotifyListener::ReindexDirsThread::run(void*)
         //TODO: increase value
         sleep (1);
         
-        if (STRIGI_MUTEX_TRY_LOCK (&m_nextJobLock)) {
-            if ((m_bHasWorkTodo) && STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock)) {
+        if (STRIGI_MUTEX_TRY_LOCK (&m_nextJobLock) == 0) {
+            if ((m_bHasWorkTodo)
+                    && STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock) == 0) {
                 // there's work to do, we've acquired locks over m_nextJobLock
                 // and m_resourcesLock
             
