@@ -763,7 +763,6 @@ CLuceneIndexReader::getChildren(const std::string& parent,
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    cerr << "got hits:" << nhits << endl;
     const TCHAR* mtime = mapId(_T("system.last_modified_time"));
     mtime = _T("system.last_modified_time");
     char cstr[CL_MAX_DIR];
@@ -777,7 +776,6 @@ CLuceneIndexReader::getChildren(const std::string& parent,
             v = d->get(_T("system.location"));
             if (v) {
                 STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-cerr << "hmm " << cstr << endl;
                 childs[cstr] = mtime;
             }
         }

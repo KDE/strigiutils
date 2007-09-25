@@ -328,6 +328,16 @@ update(int argc, char** argv) {
 
     return 0;
 }
+void
+listFiles(IndexReader* reader, const string& parent) {
+    map<string, time_t> files;
+    reader->getChildren(parent, files);
+    map<string, time_t>::const_iterator i;
+    for (i = files.begin(); i != files.end(); ++i) {
+        cout << i->first.c_str() << endl;
+        listFiles(reader, i->first);
+    }
+}
 int
 listFiles(int argc, char** argv) {
     // parse arguments
@@ -346,14 +356,8 @@ listFiles(int argc, char** argv) {
     if (manager == 0) {
         return usage(argc, argv);
     }
-    map<string, time_t> files;
     IndexReader* reader = manager->indexReader();
-    reader->getChildren("", files);
-cerr << "Got " << files.size() << endl;
-    map<string, time_t>::const_iterator i;
-    for (i=files.begin(); i!=files.end(); ++i) {
-        printf("%s\n", i->first.c_str());
-    }
+    listFiles(reader, "");
     delete manager;
     return 0;
 }
