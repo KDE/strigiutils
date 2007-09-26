@@ -109,8 +109,6 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
         string parentpath;
         vector<pair<string, time_t> > dirfiles;
         int r = dirlister.nextDir(parentpath, dirfiles);
-        cerr << "path:" << parentpath << " " << r << " " << dirfiles.size() <<
-endl;
 
         while (r == 0 && (caller == 0 || caller->continueAnalysis())) {
             vector<pair<string, time_t> >::const_iterator end
@@ -118,7 +116,6 @@ endl;
             for (vector<pair<string, time_t> >::const_iterator i
                     = dirfiles.begin(); i != end; ++i) {
                 const string& filepath(i->first);
-        cerr << "filepath:" << filepath << endl;
                 time_t mtime = i->second;
                 AnalysisResult analysisresult(filepath, mtime,
                     indexWriter, *analyzer, parentpath);
@@ -147,7 +144,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
         // loop over all files that exist in the index
         int r = dirlister.nextDir(path, dirfiles);
         while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
-            cerr << "r: " << r << " " << path << " " << dirfiles.size() << endl;
+//            cerr << "r: " << r << " " << path << " " << dirfiles.size() << endl;
             if (r < 0) {
                 continue;
             }

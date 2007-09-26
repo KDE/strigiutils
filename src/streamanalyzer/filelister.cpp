@@ -311,7 +311,6 @@ DirLister::Private::nextDir(std::string& path,
 int
 DirLister::nextDir(std::string& path,
         std::vector<std::pair<std::string, time_t> >& dirs) {
-    cout << "nextDir '" << path << "'" << endl;
     return p->nextDir(path, dirs);
 }
 void
