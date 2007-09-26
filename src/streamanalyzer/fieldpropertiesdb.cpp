@@ -237,19 +237,25 @@ FieldPropertiesDb::Private::addEssentialProperties() {
     FieldProperties::Private props;
     props.stored = true;
 
-    string key = "system.last_modified_time";
-    props.uri = key;
     props.typeuri = FieldRegister::integerType;
-    properties[key] = props;
+    props.uri = FieldRegister::mtimeFieldName;
+    properties[FieldRegister::mtimeFieldName] = props;
 
-    key = "system.location";
-    props.uri = key;
+    props.uri = FieldRegister::sizeFieldName;
+    properties[FieldRegister::sizeFieldName] = props;
+
+    props.uri = FieldRegister::embeddepthFieldName;
+    properties[FieldRegister::embeddepthFieldName] = props;
+
     props.typeuri = FieldRegister::stringType;
-    properties[key] = props;
+    props.uri = FieldRegister::pathFieldName;
+    properties[FieldRegister::pathFieldName] = props;
 
-    key = "parent.location";
-    props.uri = key;
-    properties[key] = props;
+    props.uri = FieldRegister::filenameFieldName;
+    properties[FieldRegister::filenameFieldName] = props;
+
+    props.uri = FieldRegister::parentLocationFieldName;
+    properties[FieldRegister::parentLocationFieldName] = props;
 }
 void
 FieldPropertiesDb::Private::loadProperties(const string& dir) {
