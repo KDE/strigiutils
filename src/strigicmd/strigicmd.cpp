@@ -276,8 +276,13 @@ create(int argc, char** argv) {
     config.setFilters(filters);
 
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
-    vector<string>::const_iterator j;
+    vector<string>::iterator j;
     for (j = arguments.begin(); j != arguments.end(); ++j) {
+        // remove trailinig '/'
+        int l = j->length();
+        if (l > 0 && (*j)[l-1] == '/') {
+            *j = j->substr(0,l-1);
+        }
         analyzer->analyzeDir(j->c_str(), nthreads);
     }
     delete analyzer;
