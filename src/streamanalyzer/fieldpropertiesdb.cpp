@@ -333,7 +333,7 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
     map<std::string, xmlEntityPtr>::const_iterator j
         = p->xmlEntities.find((const char *)name);
     if (j == p->xmlEntities.end()) {
-        cerr << "Entity declaration: " << name << " " << content << endl;
+//        cerr << "Entity declaration: " << name << " " << content << endl;
         newEntity = new xmlEntity;
         memset(newEntity, 0 , sizeof(xmlEntity));
         newEntity->type = XML_ENTITY_DECL;
@@ -350,8 +350,8 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
         newEntity->content = (xmlChar *)str;
         newEntity->etype = XML_INTERNAL_GENERAL_ENTITY;
         newEntity->URI = (xmlChar *)str;
-        cerr << "NE: " << newEntity->length << " " << newEntity->content
-            << endl;
+//        cerr << "NE: " << newEntity->length << " " << newEntity->content
+//            << endl;
 
         p->xmlEntities[(const char *)name] = newEntity;
         p->entities.push_back(
