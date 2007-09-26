@@ -106,36 +106,40 @@ public:
     const int m_depth;
     StreamAnalyzer& m_indexer;
     AnalyzerConfiguration& m_analyzerconfig;
+    AnalysisResult* const m_this;
     AnalysisResult* const m_parent;
     const StreamEndAnalyzer* m_endanalyzer;
     std::map<const Strigi::RegisteredField*, int> occurences;
 
     Private(const std::string& p, const char* name, time_t mt,
-        AnalysisResult& parent);
+        AnalysisResult& t, AnalysisResult& parent);
     Private(const std::string& p, time_t mt, IndexWriter& w,
-        StreamAnalyzer& indexer, const string& parentpath);
+        StreamAnalyzer& indexer, const string& parentpath, AnalysisResult& t);
+    void write();
 
     bool checkCardinality(const RegisteredField* field);
 };
 
 AnalysisResult::Private::Private(const std::string& p, const char* name,
-        time_t mt, AnalysisResult& parent)
+        time_t mt, AnalysisResult& t, AnalysisResult& parent)
             :m_writerData(0), m_mtime(mt), m_name(name), m_path(p),
              m_writer(parent.p->m_writer), m_depth(parent.depth()+1),
              m_indexer(parent.p->m_indexer),
-             m_analyzerconfig(parent.p->m_analyzerconfig), m_parent(&parent),
+             m_analyzerconfig(parent.p->m_analyzerconfig),
+             m_this(&t), m_parent(&parent),
              m_endanalyzer(0) {
 }
 AnalysisResult::AnalysisResult(const std::string& path, const char* name,
         time_t mt, AnalysisResult& parent)
-        :p(new Private(path, name, mt, parent)) {
+        :p(new Private(path, name, mt, *this, parent)) {
     p->m_writer.startAnalysis(this);
 }
 AnalysisResult::Private::Private(const std::string& p, time_t mt,
-        IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
+        IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath,
+        AnalysisResult& t)
             :m_writerData(0), m_mtime(mt), m_path(p), m_parentpath(parentpath),
              m_writer(w), m_depth(0), m_indexer(indexer),
-             m_analyzerconfig(indexer.configuration()),
+             m_analyzerconfig(indexer.configuration()), m_this(&t),
              m_parent(0), m_endanalyzer(0) {
     size_t pos = m_path.rfind('/');
     if (pos == std::string::npos) {
@@ -146,12 +150,37 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
 }
 AnalysisResult::AnalysisResult(const std::string& path, time_t mt,
         IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
-            :p(new Private(path, mt, w, indexer, parentpath)) {
+            :p(new Private(path, mt, w, indexer, parentpath, *this)) {
     p->m_writer.startAnalysis(this);
 }
 AnalysisResult::~AnalysisResult() {
-    p->m_writer.finishAnalysis(this);
+    p->write();
     delete p;
+}
+void
+AnalysisResult::Private::write() {
+    const FieldRegister& fr = m_analyzerconfig.fieldRegister();
+    m_writer.addValue(m_this, fr.pathField, m_path);
+    // get the parent directory and store it without trailing slash
+    m_writer.addValue(m_this, fr.parentLocationField, m_parentpath);
+
+    if (m_encoding.length()) {
+        m_writer.addValue(m_this, fr.encodingField, m_encoding);
+    }
+    if (m_mimetype.length()) {
+        m_writer.addValue(m_this, fr.mimetypeField, m_mimetype);
+    }
+    if (m_name.length()) {
+        m_writer.addValue(m_this, fr.filenameField, m_name);
+    }
+    string field = m_this->extension();
+    if (field.length()) {
+        m_writer.addValue(m_this, fr.extensionField, field);
+    }
+    m_writer.addValue(m_this, fr.embeddepthField, m_depth);
+    m_writer.addValue(m_this, fr.mtimeField, (uint32_t)m_mtime);
+
+    m_writer.finishAnalysis(m_this);
 }
 const std::string& AnalysisResult::fileName() const { return p->m_name; }
 const std::string& AnalysisResult::path() const { return p->m_path; }

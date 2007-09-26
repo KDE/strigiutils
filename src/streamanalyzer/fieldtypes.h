@@ -212,6 +212,8 @@ public:
 
     /** The name of a field for storing the path of a file */
     static const std::string pathFieldName;
+    /** The name of a field for storing the path of a the parent of file */
+    static const std::string parentLocationFieldName;
     /** The name of a field for storing the encoding of a file */
     static const std::string encodingFieldName;
     /** The name of a field for storing the mimetype of a file */
@@ -233,6 +235,8 @@ public:
 
     /** A field for storing the path of a file */
     const RegisteredField* pathField;
+    /** A field for storing the path of the parent of a file */
+    const RegisteredField* parentLocationField;
     /** A field for storing the encoding of a file */
     const RegisteredField* encodingField;
     /** A field for storing the mimetype of a file */
