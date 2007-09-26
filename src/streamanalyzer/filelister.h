@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <string>
 #include <vector>
+#include <sys/stat.h>
 
 #include <strigi/strigiconfig.h>
 
@@ -87,7 +88,7 @@ public:
      * @return 0 when no error occured or -1 if an error occurred
      */
     int nextDir(std::string& path,
-        std::vector<std::pair<std::string, time_t> >& dirs);
+        std::vector<std::pair<std::string, struct stat> >& dirs);
 
     void skipTillAfter(const std::string& lastToSkip);
 };

@@ -107,20 +107,20 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
     IndexWriter& indexWriter = *manager.indexWriter();
     try {
         string parentpath;
-        vector<pair<string, time_t> > dirfiles;
+        vector<pair<string, struct stat> > dirfiles;
         int r = dirlister.nextDir(parentpath, dirfiles);
 
         while (r == 0 && (caller == 0 || caller->continueAnalysis())) {
-            vector<pair<string, time_t> >::const_iterator end
+            vector<pair<string, struct stat> >::const_iterator end
                 = dirfiles.end();
-            for (vector<pair<string, time_t> >::const_iterator i
+            for (vector<pair<string, struct stat> >::const_iterator i
                     = dirfiles.begin(); i != end; ++i) {
                 const string& filepath(i->first);
-                time_t mtime = i->second;
-                AnalysisResult analysisresult(filepath, mtime,
+                struct stat s = i->second;
+                AnalysisResult analysisresult(filepath, s.st_mtime,
                     indexWriter, *analyzer, parentpath);
-                FileInputStream file(filepath.c_str());
-                if (file.status() == Ok) {
+                if (S_ISREG(s.st_mode)) {
+                    FileInputStream file(filepath.c_str());
                     analysisresult.index(&file);
                 } else {
                     analysisresult.index(0);
@@ -135,7 +135,7 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
 void
 DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
     IndexReader* reader = manager.indexReader();
-    vector<pair<string, time_t> > dirfiles;
+    vector<pair<string, struct stat> > dirfiles;
     map<string, time_t> dbdirfiles;
     vector<string> toDelete;
     vector<pair<string, time_t> > toIndex;
@@ -152,12 +152,12 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
             reader->getChildren(path, dbdirfiles);
 
             // get all files in this directory
-            vector<pair<string, time_t> >::const_iterator end
+            vector<pair<string, struct stat> >::const_iterator end
                 = dirfiles.end();
-            for (vector<pair<string, time_t> >::const_iterator i
+            for (vector<pair<string, struct stat> >::const_iterator i
                     = dirfiles.begin(); i != end; ++i) {
                 const string& filepath(i->first);
-                time_t mtime = i->second;
+                time_t mtime = i->second.st_mtime;
 
                 // check if this file is new or not
                 map<string, time_t>::iterator j = dbdirfiles.find(filepath);

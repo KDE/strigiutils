@@ -241,7 +241,7 @@ public:
 
     Private(const AnalyzerConfiguration* ic) {}
     int nextDir(std::string& path,
-        std::vector<std::pair<std::string, time_t> >& dirs);
+        std::vector<std::pair<std::string, struct stat> >& dirs);
 };
 
 DirLister::DirLister(const AnalyzerConfiguration* ic)
@@ -266,7 +266,7 @@ DirLister::stopListing() {
 }
 int
 DirLister::Private::nextDir(std::string& path,
-        std::vector<std::pair<std::string, time_t> >& dirs) {
+        std::vector<std::pair<std::string, struct stat> >& dirs) {
     if (todoPaths.size() == 0) {
         return -1;
     }
@@ -295,7 +295,7 @@ DirLister::Private::nextDir(std::string& path,
             entrypath.append(entryname);
             if (strigi_lstat(entrypath.c_str(), &entrystat) == 0) {
                 dirs.push_back(
-                    make_pair<string,time_t>(entrypath, entrystat.st_mtime));
+                    make_pair<string,struct stat>(entrypath, entrystat));
                 if (S_ISDIR(entrystat.st_mode)) {
                     STRIGI_MUTEX_LOCK(&mutex);
                     todoPaths.push_back(entrypath);
@@ -310,12 +310,12 @@ DirLister::Private::nextDir(std::string& path,
 }
 int
 DirLister::nextDir(std::string& path,
-        std::vector<std::pair<std::string, time_t> >& dirs) {
+        std::vector<std::pair<std::string, struct stat> >& dirs) {
     return p->nextDir(path, dirs);
 }
 void
 DirLister::skipTillAfter(const std::string& lastToSkip) {
     string path;
-    vector<pair<string, time_t> > dirs;
+    vector<pair<string, struct stat> > dirs;
     while (nextDir(path, dirs) >= 0 && path != lastToSkip) {}
 }
