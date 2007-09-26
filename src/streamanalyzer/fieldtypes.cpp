@@ -48,6 +48,7 @@ const string FieldRegister::stringType = "string";
 const string FieldRegister::datetimeType = "datetime";
 
 const string FieldRegister::pathFieldName = "system.location";
+const string FieldRegister::parentLocationFieldName = "parent.location";
 const string FieldRegister::encodingFieldName = "content.charset";
 const string FieldRegister::mimetypeFieldName = "content.mime_type";
 const string FieldRegister::filenameFieldName = "system.file_name";
@@ -59,7 +60,8 @@ const string FieldRegister::sizeFieldName = "system.size";
 const string FieldRegister::defaultNamespace = "strigi.";
 
 FieldRegister::FieldRegister() {
-    pathField = registerField(pathFieldName);//, stringType, 1, 0);
+    pathField = registerField(pathFieldName);
+    parentLocationField = registerField(parentLocationFieldName);
     encodingField = registerField(encodingFieldName);//, stringType, 1, 0);
     mimetypeField = registerField(mimetypeFieldName);//, stringType, -1, 0);
     filenameField = registerField(filenameFieldName);//, stringType, 1, 0);
@@ -99,8 +101,8 @@ FieldRegister::registerField(const string& fieldname) {
         const FieldProperties& props
             = FieldPropertiesDb::db().properties(fieldname);
         if (!props.valid()) {
-            fprintf(stderr, "WARNING: field \"%s\" is not defined in "
-                ".fieldproperties ontology database.\n", fieldname.c_str());
+            cerr << "WARNING: field '" << fieldname << "' is not defined in "
+                ".fieldproperties ontology database." << endl;
 	    // creates a field with defaults (stringType and no parents)
             FieldPropertiesDb::db().addField(fieldname);
         }
