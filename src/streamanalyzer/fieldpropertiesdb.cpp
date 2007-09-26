@@ -255,6 +255,7 @@ FieldPropertiesDb::Private::addEssentialProperties() {
     properties[FieldRegister::filenameFieldName] = props;
 
     props.uri = FieldRegister::parentLocationFieldName;
+    props.tokenized = false;
     properties[FieldRegister::parentLocationFieldName] = props;
 }
 void
