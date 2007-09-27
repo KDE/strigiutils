@@ -1,7 +1,7 @@
 
 install(FILES
 	xesam.rdfs
-	strigi.rdfs
+#	strigi.rdfs
 
 	DESTINATION share/strigi/fieldproperties
 )
