@@ -340,7 +340,6 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
     map<std::string, xmlEntityPtr>::const_iterator j
         = p->xmlEntities.find((const char *)name);
     if (j == p->xmlEntities.end()) {
-//        cerr << "Entity declaration: " << name << " " << content << endl;
         newEntity = new xmlEntity;
         memset(newEntity, 0 , sizeof(xmlEntity));
         newEntity->type = XML_ENTITY_DECL;
@@ -357,8 +356,6 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
         newEntity->content = (xmlChar *)str;
         newEntity->etype = XML_INTERNAL_GENERAL_ENTITY;
         newEntity->URI = (xmlChar *)str;
-//        cerr << "NE: " << newEntity->length << " " << newEntity->content
-//            << endl;
 
         p->xmlEntities[(const char *)name] = newEntity;
         p->entities.push_back(
@@ -397,7 +394,7 @@ FieldPropertiesDb::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     va_start(args, msg);
     e += string(" ")+va_arg(args,char*);
     va_end(args);
-    fprintf(stderr,"Error: %s\n", e.c_str());
+    cerr << "Error: " << e << endl;
 }
 
 bool
@@ -588,7 +585,6 @@ FieldPropertiesDb::Private::startElementNsSAX2Func(void * ctx,
         int nb_namespaces, const xmlChar ** namespaces, int nb_attributes,
         int nb_defaulted, const xmlChar ** attributes) {
     Private* p = (Private*)ctx;
-//    fprintf(stderr,"StartElement %s\n", localname);
 
     if (p->currentDefinition == defNone) {
         if (strcmp((const char *)localname, "Property") == 0) {
@@ -618,7 +614,6 @@ void
 FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
         const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {
     Private *p = (Private *) ctx;
-//    fprintf(stderr,"EndElement %s\n", localname);
 
     if (p->currentDefinition!=defNone) {
         if (strcmp((const char *)localname, "Property") == 0) {
