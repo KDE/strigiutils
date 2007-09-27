@@ -29,28 +29,22 @@
 using namespace Strigi;
 using namespace std;
 
-const string DebLineAnalyzerFactory::nameFieldName("software.name");
-const string DebLineAnalyzerFactory::versionFieldName("software.version");
-const string DebLineAnalyzerFactory::summaryFieldName("content.description");
-const string DebLineAnalyzerFactory::maintainerFieldName("software.maintainer");
-const string DebLineAnalyzerFactory::sectionFieldName("software.section");
-const string DebLineAnalyzerFactory::dependsFieldName("software.depends");
+const string DebLineAnalyzerFactory::nameFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
+const string DebLineAnalyzerFactory::versionFieldName("http://freedesktop.org/standards/xesam/1.0/core#version");
+const string DebLineAnalyzerFactory::summaryFieldName("http://freedesktop.org/standards/xesam/1.0/core#description");
+const string DebLineAnalyzerFactory::maintainerFieldName("http://freedesktop.org/standards/xesam/1.0/core#maintainer");
+const string DebLineAnalyzerFactory::sectionFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+const string DebLineAnalyzerFactory::dependsFieldName("http://freedesktop.org/standards/xesam/1.0/core#depends");
 
 
 void
 DebLineAnalyzerFactory::registerFields(FieldRegister& r) {
-    nameField = r.registerField(nameFieldName, FieldRegister::stringType,
-        1, 0);
-    versionField = r.registerField(versionFieldName, FieldRegister::stringType,
-        1, 0);
-    summaryField = r.registerField(summaryFieldName, FieldRegister::stringType,
-        1, 0);
-    maintainerField = r.registerField(maintainerFieldName, FieldRegister::stringType,
-        1, 0);
-    sectionField = r.registerField(sectionFieldName, FieldRegister::stringType,
-        1, 0);
-    dependsField = r.registerField(dependsFieldName, FieldRegister::stringType,
-        0, 0);
+    nameField = r.registerField(nameFieldName);
+    versionField = r.registerField(versionFieldName);
+    summaryField = r.registerField(summaryFieldName);
+    maintainerField = r.registerField(maintainerFieldName);
+    sectionField = r.registerField(sectionFieldName);
+    dependsField = r.registerField(dependsFieldName);
 }
 
 void 

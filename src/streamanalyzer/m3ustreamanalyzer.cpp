@@ -30,9 +30,9 @@
 void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) 
 {
 // track list length is easily obtained via API
-//    tracksField = reg.registerField("tracks", Strigi::FieldRegister::integerType, 1, 0);
-    trackPathField = reg.registerField("content.links", Strigi::FieldRegister::stringType, 1, 0);
-    m3uTypeField = reg.registerField("content.format_subtype", Strigi::FieldRegister::stringType, 1, 0);
+//    tracksField = reg.registerField();
+    trackPathField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#links");
+    m3uTypeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
 }
 
 // Analyzer

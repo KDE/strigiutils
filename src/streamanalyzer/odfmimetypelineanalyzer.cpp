@@ -29,7 +29,7 @@
 using namespace Strigi;
 
 void OdfMimeTypeLineAnalyzerFactory::registerFields(FieldRegister &reg) {
-    mimeTypeField = reg.registerField("content.mime_type", FieldRegister::stringType, 1, 0);
+    mimeTypeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#mimeType");
 }
 
 Strigi::StreamLineAnalyzer *OdfMimeTypeLineAnalyzerFactory::newInstance() const {

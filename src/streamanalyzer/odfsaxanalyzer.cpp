@@ -36,21 +36,21 @@ static const char *metaNS = "urn:oasis:names:tc:opendocument:xmlns:meta:1.0";
 //static const char *textNS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
 
 void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
-    creatorField = reg.registerField("content.author", FieldRegister::stringType, 1, 0);
-    creationTimeField = reg.registerField("content.creation_time", FieldRegister::stringType, 1, 0);
-    titleField = reg.registerField("content.title", FieldRegister::stringType, 1, 0);
-    subjectField = reg.registerField("content.subject", FieldRegister::stringType, 1, 0);
-    descriptionField = reg.registerField("content.description", FieldRegister::stringType, 1, 0);
-    languageField = reg.registerField("content.language", FieldRegister::stringType, 1, 0);
-    keywordField = reg.registerField("content.keyword", FieldRegister::stringType, 1, 0);
-    generatorField = reg.registerField("content.generator", FieldRegister::stringType, 1, 0);
-    tablecountField = reg.registerField("document.stats.table_count", FieldRegister::stringType, 1, 0);
-    pagecountField = reg.registerField("document.stats.page_count", FieldRegister::stringType, 1, 0);
-    paragcountField = reg.registerField("document.stats.paragraph_count", FieldRegister::stringType, 1, 0);
-    wordcountField = reg.registerField("text.stats.word_count", FieldRegister::stringType, 1, 0);
-    charcountField = reg.registerField("text.stats.char_count", FieldRegister::stringType, 1, 0);
-    objectcountField = reg.registerField("document.stats.object_count", FieldRegister::stringType, 1, 0);
-    imagecountField = reg.registerField("document.stats.image_count", FieldRegister::stringType, 1, 0);
+    creatorField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#author");
+    creationTimeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+    titleField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
+    subjectField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#subject");
+    descriptionField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#description");
+    languageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#language");
+    keywordField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+    generatorField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#generator");
+    tablecountField = reg.registerField("document.stats.table_count");
+    pagecountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#pageCount");
+    paragcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#paragraphCount");
+    wordcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#wordCount");
+    charcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#characterCount");
+    objectcountField = reg.registerField("document.stats.object_count");
+    imagecountField = reg.registerField("document.stats.image_count");
 }
 
 Strigi::StreamSaxAnalyzer *OdfSaxAnalyzerFactory::newInstance() const {

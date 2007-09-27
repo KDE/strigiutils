@@ -29,23 +29,18 @@ using namespace Strigi;
 
 // AnalyzerFactory
 const string TgaThroughAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
-const string TgaThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
-const string TgaThroughAnalyzerFactory::colorModeFieldName("image.color_space");
-const string TgaThroughAnalyzerFactory::widthFieldName("image.width");
-const string TgaThroughAnalyzerFactory::heightFieldName("image.height");
+const string TgaThroughAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+const string TgaThroughAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+const string TgaThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string TgaThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
 
 void
 TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    compressionField = reg.registerField(compressionFieldName,
-        FieldRegister::stringType, 1, 0);
-    colorDepthField = reg.registerField(colorDepthFieldName,
-        FieldRegister::integerType, 1, 0);
-    colorModeField = reg.registerField(colorModeFieldName,
-        FieldRegister::stringType, 1, 0);
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
+    compressionField = reg.registerField(compressionFieldName);
+    colorDepthField = reg.registerField(colorDepthFieldName);
+    colorModeField = reg.registerField(colorModeFieldName);
+    widthField = reg.registerField(widthFieldName);
+    heightField = reg.registerField(heightFieldName);
 }
 
 // Analyzer

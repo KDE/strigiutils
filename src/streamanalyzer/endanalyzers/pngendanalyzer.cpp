@@ -32,24 +32,24 @@
 using namespace std;
 using namespace Strigi;
 
-const string PngEndAnalyzerFactory::widthFieldName("image.width");
-const string PngEndAnalyzerFactory::heightFieldName("image.height");
-const string PngEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
-const string PngEndAnalyzerFactory::colorModeFieldName("image.color_space");
-const string PngEndAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
-const string PngEndAnalyzerFactory::interlaceModeFieldName("image.interlace");
-const string PngEndAnalyzerFactory::lastModificationTimeFieldName("content.last_modified_time");
-const string PngEndAnalyzerFactory::titleFieldName("content.title");
-const string PngEndAnalyzerFactory::authorFieldName("content.author");
-const string PngEndAnalyzerFactory::descriptionFieldName("content.description");
-const string PngEndAnalyzerFactory::copyrightFieldName("content.copyright");
-const string PngEndAnalyzerFactory::creationTimeFieldName("content.creation_time");
-const string PngEndAnalyzerFactory::softwareFieldName("content.generator");
-const string PngEndAnalyzerFactory::disclaimerFieldName("content.disclaimer");
+const string PngEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string PngEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+const string PngEndAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+const string PngEndAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+const string PngEndAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+const string PngEndAnalyzerFactory::interlaceModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#interlaceMode");
+const string PngEndAnalyzerFactory::lastModificationTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentModified");
+const string PngEndAnalyzerFactory::titleFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
+const string PngEndAnalyzerFactory::authorFieldName("http://freedesktop.org/standards/xesam/1.0/core#author");
+const string PngEndAnalyzerFactory::descriptionFieldName("http://freedesktop.org/standards/xesam/1.0/core#description");
+const string PngEndAnalyzerFactory::copyrightFieldName("http://freedesktop.org/standards/xesam/1.0/core#copyright");
+const string PngEndAnalyzerFactory::creationTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+const string PngEndAnalyzerFactory::softwareFieldName("http://freedesktop.org/standards/xesam/1.0/core#generator");
+const string PngEndAnalyzerFactory::disclaimerFieldName("http://freedesktop.org/standards/xesam/1.0/core#disclaimer");
 const string PngEndAnalyzerFactory::warningFieldName("content.warning");
  // PNG spec says Source is Device used to create the image
 const string PngEndAnalyzerFactory::sourceFieldName("photo.camera_model");
-const string PngEndAnalyzerFactory::commentFieldName("content.comment");
+const string PngEndAnalyzerFactory::commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
 
 // and for the colors
 static const char* colors[] = {
@@ -69,40 +69,23 @@ static const char* interlaceModes[] = {
 
 void
 PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
-    colorDepthField = reg.registerField(colorDepthFieldName,
-        FieldRegister::integerType, 1, 0);
-    colorModeField = reg.registerField(colorModeFieldName,
-        FieldRegister::integerType, 1, 0);
-    compressionField = reg.registerField(compressionFieldName,
-        FieldRegister::integerType, 1, 0);
-    interlaceModeField = reg.registerField(interlaceModeFieldName,
-        FieldRegister::integerType, 1, 0);
-    lastModificationTimeField = reg.registerField(lastModificationTimeFieldName,
-        FieldRegister::integerType, 1, 0);
-    titleField = reg.registerField(titleFieldName,
-        FieldRegister::stringType, 1, 0);
-    authorField = reg.registerField(authorFieldName,
-        FieldRegister::stringType, 1, 0);
-    descriptionField = reg.registerField(descriptionFieldName,
-        FieldRegister::stringType, 1, 0);
-    copyrightField = reg.registerField(copyrightFieldName,
-        FieldRegister::stringType, 1, 0);
-    creationTimeField = reg.registerField(creationTimeFieldName,
-        FieldRegister::integerType, 1, 0);
-    softwareField = reg.registerField(softwareFieldName,
-        FieldRegister::stringType, 1, 0);
-    disclaimerField = reg.registerField(disclaimerFieldName,
-        FieldRegister::stringType, 1, 0);
-    warningField = reg.registerField(warningFieldName,
-        FieldRegister::stringType, 1, 0);
-    sourceField = reg.registerField(sourceFieldName,
-        FieldRegister::stringType, 1, 0);
-    commentField = reg.registerField(commentFieldName,
-        FieldRegister::stringType, 1, 0);
+    widthField = reg.registerField(widthFieldName);
+    heightField = reg.registerField(heightFieldName);
+    colorDepthField = reg.registerField(colorDepthFieldName);
+    colorModeField = reg.registerField(colorModeFieldName);
+    compressionField = reg.registerField(compressionFieldName);
+    interlaceModeField = reg.registerField(interlaceModeFieldName);
+    lastModificationTimeField = reg.registerField(lastModificationTimeFieldName);
+    titleField = reg.registerField(titleFieldName);
+    authorField = reg.registerField(authorFieldName);
+    descriptionField = reg.registerField(descriptionFieldName);
+    copyrightField = reg.registerField(copyrightFieldName);
+    creationTimeField = reg.registerField(creationTimeFieldName);
+    softwareField = reg.registerField(softwareFieldName);
+    disclaimerField = reg.registerField(disclaimerFieldName);
+    warningField = reg.registerField(warningFieldName);
+    sourceField = reg.registerField(sourceFieldName);
+    commentField = reg.registerField(commentFieldName);
 }
 
 PngEndAnalyzer::PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {

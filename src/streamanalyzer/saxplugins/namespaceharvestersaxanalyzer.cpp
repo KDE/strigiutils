@@ -34,7 +34,7 @@ using namespace Strigi;
 
 void
 NamespaceHarvesterSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
-    usesNamespaceField = reg.registerField("xml.usesNamespace", FieldRegister::stringType, 1, 0);
+    usesNamespaceField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#usesNamespace");
 }
 
 void

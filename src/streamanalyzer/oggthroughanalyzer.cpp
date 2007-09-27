@@ -31,15 +31,14 @@ using namespace std;
 
 void
 OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["title"] = r.registerField("audio.title", FieldRegister::stringType, 1, 0);
-    fields["album"] = r.registerField("audio.album", FieldRegister::stringType, 1, 0);
-    fields["artist"] = r.registerField("audio.artist", FieldRegister::stringType,
-        1, 0);
-    fields["genre"] = r.registerField("content.genre", FieldRegister::stringType, 1, 0);
-    fields["codec"] = r.registerField("media.codec", FieldRegister::stringType, 1, 0);
-    fields["composer"] = r.registerField("content.author", FieldRegister::stringType, 1, 0);
-    fields["date"] = r.registerField("content.creation_time", FieldRegister::datetimeType, 1, 0);
-    fields["description"] = r.registerField("content.comment", FieldRegister::stringType, 1, 0);
+    fields["title"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
+    fields["album"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#album");
+    fields["artist"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#artist");
+    fields["genre"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#genre");
+    fields["codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+    fields["composer"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#composer");
+    fields["date"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+    fields["description"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#description");
 }
 
 void

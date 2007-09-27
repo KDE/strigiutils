@@ -29,13 +29,13 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    includeField = reg.registerField("content.depends", FieldRegister::stringType, 0, 0);
-    classField = reg.registerField("source_code.describes_class", FieldRegister::stringType, 0, 0);
-    codeLinesField = reg.registerField("source_code.stats.code_line_count", FieldRegister::integerType, 1, 0);
-    commentLinesField = reg.registerField("source_code.stats.comment_line_count", FieldRegister::integerType, 1, 0);
-    totalLinesField = reg.registerField("text.stats.line_count", FieldRegister::integerType, 1, 0);
+    includeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#depends");
+    classField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#definesClass");
+    codeLinesField = reg.registerField("source_code.stats.code_line_count");
+    commentLinesField = reg.registerField("source_code.stats.comment_line_count");
+    totalLinesField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#lineCount");
 // Include count not required. Include list length is easy to obtain.
-//    includesField = reg.registerField("TODO_includes", FieldRegister::integerType, 1, 0);
+//    includesField = reg.registerField();
 }
 
 // Analyzer

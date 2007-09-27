@@ -26,30 +26,23 @@
 using namespace Strigi;
 using namespace std;
 
-const string ID3V2ThroughAnalyzerFactory::titleFieldName("audio.title");
-const string ID3V2ThroughAnalyzerFactory::artistFieldName("audio.artist");
-const string ID3V2ThroughAnalyzerFactory::albumFieldName("audio.album");
-const string ID3V2ThroughAnalyzerFactory::composerFieldName("content.author");
-const string ID3V2ThroughAnalyzerFactory::genreFieldName("content.genre");
-const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName("TODO_trackNumber");
-const string ID3V2ThroughAnalyzerFactory::discNumberFieldName("TODO_discNumber");
+const string ID3V2ThroughAnalyzerFactory::titleFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
+const string ID3V2ThroughAnalyzerFactory::artistFieldName("http://freedesktop.org/standards/xesam/1.0/core#artist");
+const string ID3V2ThroughAnalyzerFactory::albumFieldName("http://freedesktop.org/standards/xesam/1.0/core#album");
+const string ID3V2ThroughAnalyzerFactory::composerFieldName("http://freedesktop.org/standards/xesam/1.0/core#composer");
+const string ID3V2ThroughAnalyzerFactory::genreFieldName("http://freedesktop.org/standards/xesam/1.0/core#genre");
+const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+const string ID3V2ThroughAnalyzerFactory::discNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#discNumber");
 
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
-    titleField = r.registerField(titleFieldName, FieldRegister::stringType,
-        1, 0);
-    artistField = r.registerField(artistFieldName, FieldRegister::stringType,
-        1, 0);
-    albumField = r.registerField(albumFieldName, FieldRegister::stringType,
-        1, 0);
-    genreField = r.registerField(genreFieldName, FieldRegister::stringType,
-        1, 0);
-    composerField = r.registerField(composerFieldName, FieldRegister::stringType,
-        1, 0);
-    trackNumberField = r.registerField(trackNumberFieldName, FieldRegister::stringType,
-        1, 0);  //id3 track numbers can look like this: 1/10
-    discNumberField = r.registerField(discNumberFieldName, FieldRegister::stringType,
-        1, 0);  //id3 disc numbers can looklike this: 1/2
+    titleField = r.registerField(titleFieldName);
+    artistField = r.registerField(artistFieldName);
+    albumField = r.registerField(albumFieldName);
+    genreField = r.registerField(genreFieldName);
+    composerField = r.registerField(composerFieldName);
+    trackNumberField = r.registerField(trackNumberFieldName);  //FIXME:id3 track numbers can look like this: 1/10
+    discNumberField = r.registerField(discNumberFieldName);  //FIXME:id3 disc numbers can looklike this: 1/2
 }
 
 void

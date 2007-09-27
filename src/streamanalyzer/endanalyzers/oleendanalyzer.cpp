@@ -141,15 +141,15 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Summary Information Stream
     key.assign(summaryKey, 16);
     m = &fieldsMaps[key];
-    r = reg.registerField("content.title", FieldRegister::stringType, 1, 0);
+    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
     if (r) (*m)[2] = r;
-    r = reg.registerField("content.subject", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#subject");
     if (r) (*m)[3] = r;
-    r = reg.registerField("content.author", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#author");
     if (r) (*m)[4] = r;
-    r = reg.registerField("content.keyword", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
     if (r) (*m)[5] = r;
-    r = reg.registerField("content.comment", FieldRegister::stringType, -1, 0);
+    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
     if (r) (*m)[6] = r;
 
     // register the fields for the Document Summary Information Stream

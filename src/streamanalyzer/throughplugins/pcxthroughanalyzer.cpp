@@ -28,28 +28,23 @@
 using namespace Strigi;
 using namespace std;
 
-const string PcxThroughAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
-const string PcxThroughAnalyzerFactory::widthFieldName("image.width");
-const string PcxThroughAnalyzerFactory::heightFieldName("image.height");
-const string PcxThroughAnalyzerFactory::colorDepthFieldName("image.color_depth");
-const string PcxThroughAnalyzerFactory::hResolutionFieldName("image.resolution.x");
-const string PcxThroughAnalyzerFactory::vResolutionFieldName("image.resolution.y");
+const string PcxThroughAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+const string PcxThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string PcxThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+const string PcxThroughAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+const string PcxThroughAnalyzerFactory::hResolutionFieldName("http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
+const string PcxThroughAnalyzerFactory::vResolutionFieldName("http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
 
 
 void
 PcxThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     compressionField = reg.registerField(compressionFieldName,
         FieldRegister::stringType, 1, 0);
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
-    hResolutionField = reg.registerField(hResolutionFieldName,
-        FieldRegister::integerType, 1, 0);
-    vResolutionField = reg.registerField(vResolutionFieldName,
-        FieldRegister::integerType, 1, 0);
-    colorDepthField = reg.registerField(colorDepthFieldName,
-        FieldRegister::integerType, 1, 0);
+    widthField = reg.registerField(widthFieldName);
+    heightField = reg.registerField(heightFieldName);
+    hResolutionField = reg.registerField(hResolutionFieldName);
+    vResolutionField = reg.registerField(vResolutionFieldName);
+    colorDepthField = reg.registerField(colorDepthFieldName);
 }
 
 void

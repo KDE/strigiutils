@@ -28,21 +28,17 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string AuThroughAnalyzerFactory::lengthFieldName("media.sample_count");
-const string AuThroughAnalyzerFactory::sampleRateFieldName("media.sample_rate");
-const string AuThroughAnalyzerFactory::channelsFieldName("audio.channel_count");
+const string AuThroughAnalyzerFactory::lengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+const string AuThroughAnalyzerFactory::sampleRateFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+const string AuThroughAnalyzerFactory::channelsFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
 const string AuThroughAnalyzerFactory::encodingFieldName("media.sample_format");
 
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    lengthField = reg.registerField(lengthFieldName,
-        FieldRegister::integerType, 1, 0);
-    sampleRateField = reg.registerField(sampleRateFieldName,
-        FieldRegister::integerType, 1, 0);
-    channelsField = reg.registerField(channelsFieldName,
-        FieldRegister::integerType, 1, 0);
-    encodingField = reg.registerField(encodingFieldName,
-        FieldRegister::stringType, 1, 0);
+    lengthField = reg.registerField(lengthFieldName);
+    sampleRateField = reg.registerField(sampleRateFieldName);
+    channelsField = reg.registerField(channelsFieldName);
+    encodingField = reg.registerField(encodingFieldName);
 }
 
 // Analyzer

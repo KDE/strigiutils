@@ -27,24 +27,19 @@
 using namespace std;
 using namespace Strigi;
 
-const string BmpEndAnalyzerFactory::typeFieldName("content.format_subtype");
-const string BmpEndAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
-const string BmpEndAnalyzerFactory::widthFieldName("image.width");
-const string BmpEndAnalyzerFactory::heightFieldName("image.height");
-const string BmpEndAnalyzerFactory::colorDepthFieldName("image.color_depth");
+const string BmpEndAnalyzerFactory::typeFieldName("http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
+const string BmpEndAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+const string BmpEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string BmpEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+const string BmpEndAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
 
 void
 BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    typeField = reg.registerField(typeFieldName, FieldRegister::stringType,
-        1, 0);
-    compressionField = reg.registerField(compressionFieldName,
-        FieldRegister::stringType, 1, 0);
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
-    colorDepthField = reg.registerField(colorDepthFieldName,
-        FieldRegister::integerType, 1, 0);
+    typeField = reg.registerField(typeFieldName);
+    compressionField = reg.registerField(compressionFieldName);
+    widthField = reg.registerField(widthFieldName);
+    heightField = reg.registerField(heightFieldName);
+    colorDepthField = reg.registerField(colorDepthFieldName);
 }
 
 bool

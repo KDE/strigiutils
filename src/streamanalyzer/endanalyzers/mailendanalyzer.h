@@ -45,6 +45,8 @@ private:
     static const std::string bccFieldName;
     static const std::string contentidFieldName;
     static const std::string contentlinkFieldName;
+    static const std::string emailInReplyToFieldName;
+
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* contenttypeField;
     const Strigi::RegisteredField* fromField;
@@ -53,6 +55,8 @@ private:
     const Strigi::RegisteredField* bccField;
     const Strigi::RegisteredField* contentidField;
     const Strigi::RegisteredField* contentlinkField;
+    const Strigi::RegisteredField* emailInReplyToField;
+
 public:
     const char* name() const {
         return "MailEndAnalyzer";

@@ -31,13 +31,13 @@ using namespace Strigi;
 using namespace std;
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["length"] = r.registerField("media.duration", FieldRegister::integerType, 1, 0);
-    fields["dimensions.y"] = r.registerField("image.height", FieldRegister::integerType, 1, 0);
-    fields["dimensions.x"] = r.registerField("image.width", FieldRegister::integerType, 1, 0);
-    fields["frame rate"] = r.registerField("video.frame_rate", FieldRegister::floatType, 1, 0);
-    fields["video codec"] = r.registerField("av.video_codec", FieldRegister::stringType, 1, 0);
-    fields["audio codec"] = r.registerField("av.audio_codec", FieldRegister::stringType, 1, 0);
-    fields["aspect ratio"] = r.registerField("image.aspect_ratio", FieldRegister::stringType, 1, 0);
+    fields["length"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+    fields["dimensions.y"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
+    fields["dimensions.x"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
+    fields["frame rate"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#frameRate");
+    fields["video codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
+    fields["audio codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+    fields["aspect ratio"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#aspectRatio");
 }
 
 bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const

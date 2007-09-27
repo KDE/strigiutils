@@ -47,15 +47,15 @@ const string FieldRegister::binaryType = "binary";
 const string FieldRegister::stringType = "string";
 const string FieldRegister::datetimeType = "datetime";
 
-const string FieldRegister::pathFieldName = "system.location";
-const string FieldRegister::parentLocationFieldName = "parent.location";
-const string FieldRegister::encodingFieldName = "content.charset";
-const string FieldRegister::mimetypeFieldName = "content.mime_type";
-const string FieldRegister::filenameFieldName = "system.file_name";
-const string FieldRegister::extensionFieldName = "system.file_extension";
-const string FieldRegister::embeddepthFieldName = "system.depth";
-const string FieldRegister::mtimeFieldName = "system.last_modified_time";
-const string FieldRegister::sizeFieldName = "system.size";
+const string FieldRegister::pathFieldName = "http://freedesktop.org/standards/xesam/1.0/core#url";
+const string FieldRegister::parentLocationFieldName = "http://strigi.sf.net/ontologies/0.9#parentUrl";
+const string FieldRegister::encodingFieldName = "http://freedesktop.org/standards/xesam/1.0/core#charset";
+const string FieldRegister::mimetypeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#mimeType";
+const string FieldRegister::filenameFieldName = "http://freedesktop.org/standards/xesam/1.0/core#name";
+const string FieldRegister::extensionFieldName = "http://freedesktop.org/standards/xesam/1.0/core#fileExtension";
+const string FieldRegister::embeddepthFieldName = "http://strigi.sf.net/ontologies/0.9#depth";
+const string FieldRegister::mtimeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#sourceModified";
+const string FieldRegister::sizeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#size";
 
 const string FieldRegister::defaultNamespace = "strigi.";
 

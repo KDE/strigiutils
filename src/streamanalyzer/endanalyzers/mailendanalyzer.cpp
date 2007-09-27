@@ -28,14 +28,15 @@
 using namespace Strigi;
 using namespace std;
 
-const string MailEndAnalyzerFactory::titleFieldName = "email.subject";
-const string MailEndAnalyzerFactory::contenttypeFieldName = "email.content_type";
-const string MailEndAnalyzerFactory::fromFieldName = "email.from";
-const string MailEndAnalyzerFactory::toFieldName = "email.to";
-const string MailEndAnalyzerFactory::ccFieldName = "email.cc";
-const string MailEndAnalyzerFactory::bccFieldName = "email.bcc";
-const string MailEndAnalyzerFactory::contentidFieldName = "content.ID";
-const string MailEndAnalyzerFactory::contentlinkFieldName = "content.links";
+const string MailEndAnalyzerFactory::titleFieldName = "http://freedesktop.org/standards/xesam/1.0/core#subject";
+const string MailEndAnalyzerFactory::contenttypeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#contentType";
+const string MailEndAnalyzerFactory::fromFieldName = "TODO.from";
+const string MailEndAnalyzerFactory::toFieldName = "http://freedesktop.org/standards/xesam/1.0/core#to";
+const string MailEndAnalyzerFactory::ccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#cc";
+const string MailEndAnalyzerFactory::bccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#bcc";
+const string MailEndAnalyzerFactory::contentidFieldName = "http://freedesktop.org/standards/xesam/1.0/core#id";
+const string MailEndAnalyzerFactory::contentlinkFieldName = "http://freedesktop.org/standards/xesam/1.0/core#links";
+const string MailEndAnalyzerFactory::emailInReplyToFieldName = "http://freedesktop.org/standards/xesam/1.0/core#inReplyTo";
 
 void
 MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
@@ -43,14 +44,13 @@ MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
         = r.registerField(titleFieldName, FieldRegister::stringType, 1, 0);
     contenttypeField = r.registerField(contenttypeFieldName,
         FieldRegister::stringType, 1, 0);
-    fromField = r.registerField(fromFieldName, FieldRegister::stringType, 1, 0);
-    toField = r.registerField(toFieldName, FieldRegister::stringType, 1, 0);
-    ccField = r.registerField(ccFieldName, FieldRegister::stringType, 1, 0);
-    bccField = r.registerField(bccFieldName, FieldRegister::stringType, 1, 0);
-    contentidField = r.registerField(contentidFieldName,
-        FieldRegister::stringType, 1, 0);
-    contentlinkField = r.registerField(contentlinkFieldName,
-        FieldRegister::stringType, 1, 0);    
+    fromField = r.registerField(fromFieldName);
+    toField = r.registerField(toFieldName);
+    ccField = r.registerField(ccFieldName);
+    bccField = r.registerField(bccFieldName);
+    contentidField = r.registerField(contentidFieldName);
+    contentlinkField = r.registerField(contentlinkFieldName);
+    emailInReplyToField = r.registerField(emailInReplyToFieldName);
 }
 
 bool
@@ -96,9 +96,7 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if (mail.messageid().length() > 0)
         idx.addValue(factory->contentidField, mail.messageid());
     if (mail.inreplyto().length() > 0)
-        idx.addValue(factory->contentlinkField, mail.inreplyto());
-    // FIXME: the ontologies do not have a way to distinguish between the two
-    //   types of links yet. Phreedom will come up with something better.
+        idx.addValue(factory->emailInReplyToField, mail.inreplyto());
     if (mail.references().length() > 0)
         idx.addValue(factory->contentlinkField, mail.references());
     if (s != 0) {
