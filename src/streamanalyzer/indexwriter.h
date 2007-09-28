@@ -58,7 +58,7 @@ class RegisteredField;
  */
 class STREAMANALYZER_EXPORT IndexWriter {
 friend class AnalysisResult;
-protected:
+public:
     /**
      * @brief Notifies the IndexWriter that a new stream is being analyzed.
      *
