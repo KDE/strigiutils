@@ -24,7 +24,9 @@
 #include <set>
 #include <map>
 #include <vector>
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 
 #include <dbus/dbus.h>
 
