@@ -770,6 +770,7 @@ CLuceneIndexReader::getChildren(const std::string& parent,
         Document* d = &hits->doc(i);
 
         const TCHAR* v = d->get(mtime);
+        // check that mtime is defined for this document
         if (v) {
             STRCPY_TtoA(cstr, v, CL_MAX_DIR);
             time_t mtime = atoi(cstr);
@@ -780,10 +781,9 @@ CLuceneIndexReader::getChildren(const std::string& parent,
             }
         }
 
-        _CLDELETE(d);
     }
     if (hits) {
-        //_CLDELETE(hits);
+        _CLDELETE(hits);
     }
     searcher.close();
     _CLDELETE(q);
