@@ -27,7 +27,7 @@
 #include "analyzerconfiguration.h"
 
 class CLuceneIndexManager;
-class CLUCENEINDEXER_EXPORT CLuceneIndexWriter : public Strigi::IndexWriter {
+class CLuceneIndexWriter : public Strigi::IndexWriter {
 private:
     CLuceneIndexManager* manager;
     int doccount;

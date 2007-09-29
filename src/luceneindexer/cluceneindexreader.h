@@ -28,7 +28,7 @@
 #include <CLucene.h>
 
 class CLuceneIndexManager;
-class CLUCENEINDEXER_EXPORT CLuceneIndexReader : public Strigi::IndexReader {
+class CLuceneIndexReader : public Strigi::IndexReader {
 friend class CLuceneIndexManager;
 friend class CLuceneIndexWriter;
 private:
