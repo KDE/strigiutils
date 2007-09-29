@@ -144,7 +144,6 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
         // loop over all files that exist in the index
         int r = dirlister.nextDir(path, dirfiles);
         while (r >= 0 && (caller == 0 || caller->continueAnalysis())) {
-//            cerr << "r: " << r << " " << path << " " << dirfiles.size() << endl;
             if (r < 0) {
                 continue;
             }
@@ -154,6 +153,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
             // get all files in this directory
             vector<pair<string, struct stat> >::const_iterator end
                 = dirfiles.end();
+            map<string, time_t>::const_iterator dbend = dbdirfiles.end();
             for (vector<pair<string, struct stat> >::const_iterator i
                     = dirfiles.begin(); i != end; ++i) {
                 const string& filepath(i->first);
@@ -161,7 +161,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
 
                 // check if this file is new or not
                 map<string, time_t>::iterator j = dbdirfiles.find(filepath);
-                bool newfile = j == dbdirfiles.end();
+                bool newfile = j == dbend;
                 bool updatedfile = !newfile && j->second != mtime;
 
                 // if the file is update we delete it in this loop
@@ -179,6 +179,12 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 if (newfile || updatedfile) {
                     toIndex.push_back(make_pair(filepath, mtime));
                 }
+            }
+            // all the files left in dbdirfiles, are not in the current
+            // directory and should be deleted
+            for (map<string, time_t>::const_iterator i = dbdirfiles.begin();
+                    i != dbend; ++i) {
+                toDelete.push_back(i->first);
             }
             manager.indexWriter()->deleteEntries(toDelete);
             vector<pair<string, time_t> >::const_iterator fend = toIndex.end();
