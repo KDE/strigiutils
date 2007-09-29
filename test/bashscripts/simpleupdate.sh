@@ -8,14 +8,14 @@ function fail() {
     exit 1
 }
 
-STRIGICMD="`find -type f -name strigicmd`"
+STRIGICMD="`find -type f -name strigicmd` "
 echo Using $STRIGICMD
+NTHREADS=1
 
 rm -r x y 2> /dev/null
 mkdir x
 touch x/y
 touch x/z
-touch x/zz
 echo == $STRIGICMD create -t clucene -d y x ==
 if ! $STRIGICMD create -j 1 -t clucene -d y x; then
     fail
@@ -24,10 +24,9 @@ echo == $STRIGICMD listFiles -t clucene -d y ==
 if ! $STRIGICMD listFiles -t clucene -d y; then
     fail
 fi
-exit
 rm x/y
-echo == $STRIGICMD update -t clucene -d y x ==
-if ! $STRIGICMD update -t clucene -d y x; then
+echo == $STRIGICMD update -j $NTHREADS -t clucene -d y x ==
+if ! $STRIGICMD update -j $NTHREADS -t clucene -d y x; then
     fail
 fi
 echo == $STRIGICMD listFiles -t clucene -d y ==
@@ -35,7 +34,7 @@ if ! $STRIGICMD listFiles -t clucene -d y; then
     fail
 fi
 OUT=`$STRIGICMD listFiles -t clucene -d y`
-if [[ $OUT == 'x/z' ]]; then
+if [[ $OUT == $'x\nx/z' ]]; then
     echo Test succesfull
     exit 0
 fi
