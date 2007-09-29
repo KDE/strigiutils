@@ -61,6 +61,11 @@ CLuceneIndexWriter::CLuceneIndexWriter(CLuceneIndexManager* m):
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
 }
+const wchar_t*
+CLuceneIndexWriter::systemlocation() {
+    const static wstring s(utf8toucs2(FieldRegister::pathFieldName));
+    return s.c_str();
+}
 void
 CLuceneIndexWriter::addText(const AnalysisResult* idx, const char* text,
         int32_t length) {
@@ -228,7 +233,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
     for (int32_t i = 0; i < maxdoc; ++i) {
         if (!reader->isDeleted(i)) {
             Document* d = reader->document(i);
-            const TCHAR* t = d->get(_T("system.location"));
+            const TCHAR* t = d->get(systemlocation());
             if (t && _tcsncmp(t, prefixText, prefixLen) == 0) {
                 try {
                     reader->deleteDocument(i);

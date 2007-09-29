@@ -31,6 +31,7 @@ class CLuceneIndexWriter : public Strigi::IndexWriter {
 private:
     CLuceneIndexManager* manager;
     int doccount;
+    static const wchar_t* systemlocation();
 
 protected:
     void startAnalysis(const Strigi::AnalysisResult*);
