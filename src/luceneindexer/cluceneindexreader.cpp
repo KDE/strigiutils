@@ -32,6 +32,7 @@
 #include "timeofday.h"
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
+#include "fieldtypes.h"
 #include <sstream>
 #include <iostream>
 
@@ -53,6 +54,7 @@ using lucene::util::BitSet;
 using lucene::document::DocumentFieldEnumeration;
 using Strigi::IndexedDocument;
 using Strigi::Variant;
+using Strigi::FieldRegister;
 
 class HitCounter : public HitCollector {
 private:
@@ -65,6 +67,11 @@ public:
 
 class CLuceneIndexReader::Private {
 public:
+    static const wchar_t* systemlocation();
+    static const wchar_t* mtime();
+    static const wchar_t* mimetype();
+    static const wchar_t* size();
+    static const wchar_t* parentlocation();
     CLuceneIndexReader& reader;
     Private(CLuceneIndexReader& r) :reader(r) {}
 
@@ -81,6 +88,31 @@ public:
     static void addField(lucene::document::Field* field, IndexedDocument&);
     Variant getFieldValue(lucene::document::Field* field, Variant::Type) const;
 };
+const wchar_t*
+CLuceneIndexReader::Private::systemlocation() {
+    const static wstring s(utf8toucs2(FieldRegister::pathFieldName));
+    return s.c_str();
+}
+const wchar_t*
+CLuceneIndexReader::Private::mtime() {
+    const static wstring s(utf8toucs2(FieldRegister::mtimeFieldName));
+    return s.c_str();
+}
+const wchar_t*
+CLuceneIndexReader::Private::mimetype() {
+    const static wstring s(utf8toucs2(FieldRegister::mimetypeFieldName));
+    return s.c_str();
+}
+const wchar_t*
+CLuceneIndexReader::Private::size() {
+    const static wstring s(utf8toucs2(FieldRegister::sizeFieldName));
+    return s.c_str();
+}
+const wchar_t*
+CLuceneIndexReader::Private::parentlocation() {
+    const static wstring s(utf8toucs2(FieldRegister::parentLocationFieldName));
+    return s.c_str();
+}
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
     const string& dir) :manager(m), p(new Private(*this)), dbdir(dir), otime(0),
@@ -295,17 +327,15 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     if (field->stringValue() == 0) return;
     string value(wchartoutf8(field->stringValue()));
     const TCHAR* name = field->name();
-//    string n(wchartoutf8(name));
-//    printf("%s\t%s\n", n.c_str(), value.c_str());
     if (wcscmp(name, L"content") == 0) {
         doc.fragment = value;
-    } else if (wcscmp(name, L"system.location") == 0) {
+    } else if (wcscmp(name, systemlocation()) == 0) {
         doc.uri = value;
-    } else if (wcscmp(name, L"content.mime_type") == 0) {
+    } else if (wcscmp(name, mimetype()) == 0) {
         doc.mimetype = value;
-    } else if (wcscmp(name, L"system.last_modified_time") == 0) {
+    } else if (wcscmp(name, mtime()) == 0) {
         doc.mtime=atol(value.c_str());
-    } else if (wcscmp(name, L"system.size") == 0) {
+    } else if (wcscmp(name, size()) == 0) {
         string size = value;
         doc.size = atoi(size.c_str());
     } else {
@@ -750,7 +780,8 @@ CLuceneIndexReader::getChildren(const std::string& parent,
             std::map<std::string, time_t>& childs) {
     childs.clear();
     // build a query
-    Term* t = Private::createKeywordTerm(L"parent.location", parent);
+    Term* t = Private::createKeywordTerm(Private::parentlocation(),
+        parent);
     Query* q = _CLNEW TermQuery(t);
     _CLDECDELETE(t);
 
@@ -763,8 +794,7 @@ CLuceneIndexReader::getChildren(const std::string& parent,
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    const TCHAR* mtime = mapId(_T("system.last_modified_time"));
-    mtime = _T("system.last_modified_time");
+    const TCHAR* mtime = mapId(Private::mtime());
     char cstr[CL_MAX_DIR];
     for (int i = 0; i < nhits; ++i) {
         Document* d = &hits->doc(i);
@@ -774,7 +804,7 @@ CLuceneIndexReader::getChildren(const std::string& parent,
         if (v) {
             STRCPY_TtoA(cstr, v, CL_MAX_DIR);
             time_t mtime = atoi(cstr);
-            v = d->get(_T("system.location"));
+            v = d->get(Private::systemlocation());
             if (v) {
                 STRCPY_TtoA(cstr, v, CL_MAX_DIR);
                 childs[cstr] = mtime;

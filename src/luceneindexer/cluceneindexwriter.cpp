@@ -99,6 +99,7 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed,
         (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized);
     doc->doc.add(*field);
+    cerr << ((type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored) << " " << ((type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed) << " " << ((type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized) << " " << wchartoutf8(name) << endl;
 }
 void
 CLuceneIndexWriter::addValue(const AnalysisResult* idx,
