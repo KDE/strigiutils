@@ -202,11 +202,6 @@ SUBDIRS (${DIRS})
 include(ConfigureChecks.cmake)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
-CONFIGURE_FILE(
-  "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-  IMMEDIATE @ONLY)
-
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
@@ -220,6 +215,15 @@ SET(CPACK_PACKAGE_VERSION_PATCH ${STRIGI_VERSION_PATCH})
 set(STRIGI_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 INCLUDE(CPack)
 INCLUDE(Dart)
+
+CONFIGURE_FILE(
+  "${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/htmlgui/strigihtmlgui.cpp.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/htmlgui/strigihtmlgui.cpp"
+  IMMEDIATE @ONLY)
 
 # code for installing an script to help cmake applications determint the Strigi
 # version number
