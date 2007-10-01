@@ -18,8 +18,8 @@
 	<rdfs:comment>Chemical Content</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&chemical;iupacname">
-	<rdfs:label>chemical:inchi</rdfs:label>
+<rdf:Property rdf:about="&chemical;iupacName">
+	<rdfs:label>chemical:iupacName</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;subject"/>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>IUPAC Name</rdfs:comment>
@@ -39,39 +39,39 @@
 	<rdfs:comment>Simplified Molecular Input Line Entry Specification</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;molecular_formula">
-	<rdfs:label>chemical:pubchemcid</rdfs:label>
+<rdf:Property rdf:about="&chemical;molecularFormula">
+	<rdfs:label>chemical:molecularFormula</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>Molecular Formula</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;pubchemcid">
-	<rdfs:label>chemical:pubchemcid</rdfs:label>
+<rdf:Property rdf:about="&chemical;pubChemCID">
+	<rdfs:label>chemical:pubChemCID</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;id"/>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>PubChem Compound IDentifier</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;molecular_weight">
-	<rdfs:label>chemical:molecular_weight</rdfs:label>
+<rdf:Property rdf:about="&chemical;molecularWeight">
+	<rdfs:label>chemical:molecularWeight</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>Molecular Weight</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;accurate_mass">
-	<rdfs:label>chemical:accurate_mass</rdfs:label>
+<rdf:Property rdf:about="&chemical;accurateMass">
+	<rdfs:label>chemical:accurateMass</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>Accurate Mass</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;atom_count">
-	<rdfs:label>chemical:atom_count</rdfs:label>
+<rdf:Property rdf:about="&chemical;atomCount">
+	<rdfs:label>chemical:atomCount</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>Atom Count</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;bond_count">
-	<rdfs:label>chemical:bond_count</rdfs:label>
+<rdf:Property rdf:about="&chemical;bondCount">
+	<rdfs:label>chemical:bondCount</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
 	<rdfs:comment>Bond Count</rdfs:comment>
 </rdf:Property>
@@ -83,21 +83,21 @@
 	<rdfs:comment>Protein Structure</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&chemical;pdbid">
-	<rdfs:label>chemical:pubchemcid</rdfs:label>
+<rdf:Property rdf:about="&chemical;pdbID">
+	<rdfs:label>chemical:pdbID</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;id"/>
 	<rdfs:domain rdf:resource="&xesam;ProteinStructure"/>
 	<rdfs:comment>ProteinDataBase Identifier</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;experimental_method">
-	<rdfs:label>chemical:experimental_method</rdfs:label>
+<rdf:Property rdf:about="&chemical;experimentalMethod">
+	<rdfs:label>chemical:experimentalMethod</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ProteinStructure"/>
 	<rdfs:comment>Experimental Method (NMR, X-Ray, Computational Modeling)</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&chemical;xray_resolution">
-	<rdfs:label>chemical:xray_resolution</rdfs:label>
+<rdf:Property rdf:about="&chemical;xrayResolution">
+	<rdfs:label>chemical:xrayResolution</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ProteinStructure"/>
 	<rdfs:comment>Resolution of the X-Ray data for crystal structures.</rdfs:comment>
 </rdf:Property>
