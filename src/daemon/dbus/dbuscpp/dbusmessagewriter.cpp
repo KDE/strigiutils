@@ -163,10 +163,10 @@ operator<<(DBusMessageWriter& w, const std::vector<std::pair<bool, std::string> 
     return w;
 }
 DBusMessageWriter&
-operator<<(DBusMessageWriter& w, const std::vector<std::pair<std::string, uint32_t> >& s) {
+operator<<(DBusMessageWriter& w, const std::vector<std::pair<std::string, dbus_uint32_t> >& s) {
     DBusMessageIter sub, ssub;
     dbus_message_iter_open_container(&w.it, DBUS_TYPE_ARRAY, "(su)", &sub);
-    vector<pair<string,uint32_t> >::const_iterator i;
+    vector<pair<string,dbus_uint32_t> >::const_iterator i;
     for (i = s.begin(); i != s.end(); ++i) {
         dbus_message_iter_open_container(&sub, DBUS_TYPE_STRUCT, 0, &ssub);
         const char* s = i->first.c_str();
