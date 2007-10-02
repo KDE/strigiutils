@@ -223,7 +223,7 @@ INCLUDE(Dart)
 
 CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/src/htmlgui/strigihtmlgui.cpp.in"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/htmlgui/strigihtmlgui.cpp"
+  "${CMAKE_CURRENT_BINARY_DIR}/src/htmlgui/strigihtmlgui.cpp"
   IMMEDIATE @ONLY)
 
 # code for installing an script to help cmake applications determint the Strigi
