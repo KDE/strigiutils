@@ -91,7 +91,7 @@ StrigiHtmlGui::printHelp(ostream& out, const string& path,
 void
 StrigiHtmlGui::printAbout(ostream& out, const string& path,
         const map<string, string> &params) {
-    out << "Strigi v@STRIGI_VERSION@<br/>";
+    out << "Strigi v"STRIGI_VERSION_STRING"<br/>";
     out << "For more details see <a href='http://www.vandenoever.info/software/strigi'>the Strigi Website</a>.";
 }
 void

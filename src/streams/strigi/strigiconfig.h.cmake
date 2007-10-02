@@ -22,6 +22,8 @@
 #ifndef STRIGICONFIG_H
 #define STRIGICONFIG_H
 
+#define STRIGI_VERSION_STRING "@STRIGI_VERSION@"
+
 /* use the same includes for types finding as in ConfigureChecks.cmake */
 #if @STRIGI_HAVE_SOCKET_H@
 #  include <socket.h>
