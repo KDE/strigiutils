@@ -22,6 +22,7 @@
 #define STRIGI_FIELDPROPERTIES_PRIVATE_H
 
 #include "fieldproperties.h"
+#include "fieldtypes.h"
 
 namespace Strigi {
 
@@ -56,8 +57,10 @@ public:
     int max_cardinality;
 
     Private() :binary(false), compressed(false), indexed(true), stored(false),
-        tokenized(true), uniquevalues(true), min_cardinality(0),
-        max_cardinality(-1) {}
+            tokenized(true), uniquevalues(true), min_cardinality(0),
+            max_cardinality(-1) {
+        typeuri = FieldRegister::stringType;
+    }
     Private(const Private&p) { *this = p; }
     Private(const std::string& i) :uri(i) { }
     void clear();
