@@ -85,7 +85,7 @@ public:
     static void endElementNsSAX2Func(void *ctx,
         const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI);
     static xmlEntityPtr getEntitySAXFunc(void * ctx, const xmlChar * name);
-    static void xmlSAX2EntityDecl(void * ctx, const xmlChar * name, int type, 
+    static void xmlSAX2EntityDecl(void * ctx, const xmlChar * name, int type,
         const xmlChar * publicId, const xmlChar * systemId, xmlChar * content);
 
     static bool isBoolValid(const char *uri, const char* name,
@@ -188,7 +188,7 @@ FieldPropertiesDb::Private::Private() {
             = pProperties.begin();
             prop != pProperties.end(); ++prop) {
         FieldProperties::Private property = prop->second;
-        
+
         for (map<string,FieldProperties::Localized>::iterator l
                 = property.localized.begin();
                 l != property.localized.end(); ++l) {
@@ -211,7 +211,7 @@ FieldPropertiesDb::Private::Private() {
             = pClasses.begin();
             aclass != pClasses.end(); ++aclass) {
         ClassProperties::Private cclass = aclass->second;
-        
+
         for (map<string,ClassProperties::Localized>::iterator l
                 = cclass.localized.begin();
                 l != cclass.localized.end(); ++l) {
@@ -237,10 +237,11 @@ FieldPropertiesDb::Private::addEssentialProperties() {
     FieldProperties::Private props;
     props.stored = true;
 
-    props.typeuri = FieldRegister::integerType;
+    props.typeuri = FieldRegister::datetimeType;
     props.uri = FieldRegister::mtimeFieldName;
     properties[FieldRegister::mtimeFieldName] = props;
 
+    props.typeuri = FieldRegister::integerType;
     props.uri = FieldRegister::sizeFieldName;
     properties[FieldRegister::sizeFieldName] = props;
 
@@ -320,7 +321,7 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
 
     xmlFreeParserCtxt(ctxt);
     entities.clear();
-    
+
     for (map<std::string, xmlEntityPtr>::iterator j=xmlEntities.begin();
             j!=xmlEntities.end(); ++j) {
         delete [] j->second->name;
@@ -694,8 +695,8 @@ FieldProperties::Private::clear() {
     tokenized = true;
     compressed = false;
     binary = false;
-    
-    min_cardinality = 0; 
+
+    min_cardinality = 0;
     max_cardinality = -1; /** unlimited */
 }
 void
