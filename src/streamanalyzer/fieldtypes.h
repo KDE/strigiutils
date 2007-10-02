@@ -220,6 +220,8 @@ public:
     static const std::string mimetypeFieldName;
     /** The name of a field for storing the name of a file */
     static const std::string filenameFieldName;
+    /** The name of a field for describing the text representation of a file */
+    static const std::string contentFieldName;
     /** The name of a field for storing the extension of a file */
     static const std::string extensionFieldName;
     /** The name of a field for storing the depth at which a file

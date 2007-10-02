@@ -52,6 +52,7 @@ const string FieldRegister::parentLocationFieldName = "http://strigi.sf.net/onto
 const string FieldRegister::encodingFieldName = "http://freedesktop.org/standards/xesam/1.0/core#charset";
 const string FieldRegister::mimetypeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#mimeType";
 const string FieldRegister::filenameFieldName = "http://freedesktop.org/standards/xesam/1.0/core#name";
+const string FieldRegister::contentFieldName = "http://freedesktop.org/standards/xesam/1.0/core#asText";
 const string FieldRegister::extensionFieldName = "http://freedesktop.org/standards/xesam/1.0/core#fileExtension";
 const string FieldRegister::embeddepthFieldName = "http://strigi.sf.net/ontologies/0.9#depth";
 const string FieldRegister::mtimeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#sourceModified";
