@@ -118,6 +118,11 @@ StrigiAsyncClient::handleHistogram(const QDBusMessage& msg) {
     }
     sendNextRequest();
 }
+void
+StrigiAsyncClient::handleError(const QDBusError& err, const QDBusMessage& msg) {
+    qDebug() << err;
+    qDebug() << msg;
+}
 int
 RequestCmp(const StrigiAsyncClient::Request& a,
         const StrigiAsyncClient::Request& b) {
@@ -183,5 +188,6 @@ StrigiAsyncClient::sendNextRequest(const Request& r) {
     QDBusMessage msg = QDBusMessage::createMethodCall("vandenoever.strigi",
         "/search", "vandenoever.strigi", method);
     msg.setArguments(argumentList);
-    QDBusConnection::sessionBus().callWithCallback(msg, this, slot);
+    QDBusConnection::sessionBus().callWithCallback(msg, this, slot,
+        SLOT(handleError(const QDBusError&, const QDBusMessage&)));
 }

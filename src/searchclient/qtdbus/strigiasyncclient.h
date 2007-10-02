@@ -54,6 +54,7 @@ private Q_SLOTS:
     void handleCount(const QDBusMessage&);
     void handleGet(const QDBusMessage&);
     void handleHistogram(const QDBusMessage&);
+    void handleError(const QDBusError&, const QDBusMessage&);
 
 public:
     StrigiAsyncClient();
