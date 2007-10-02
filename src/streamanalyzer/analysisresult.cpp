@@ -260,9 +260,11 @@ AnalysisResult::extension() const {
     return "";
 }
 void
-AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {    
-    if (!p->checkCardinality(field))
+AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
+    // make sure the field is not stored more often than allowed
+    if (!p->checkCardinality(field)) {
 	return;
+    }
     if (checkUtf8(val)) {
         p->m_writer.addValue(this, field, val);
     } else {
@@ -281,8 +283,10 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
 void
 AnalysisResult::addValue(const RegisteredField* field,
         const char* data, uint32_t length) {
-    if (!p->checkCardinality(field))
+    // make sure the field is not stored more often than allowed
+    if (!p->checkCardinality(field)) {
 	return;
+    }
     if (checkUtf8(data, length)) {
         p->m_writer.addValue(this, field, (const unsigned char*)data, length);
     } else {
