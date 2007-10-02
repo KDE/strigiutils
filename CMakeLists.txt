@@ -194,7 +194,7 @@ if (NOT CppUnit_FOUND)
     MESSAGE("** CppUnit was not found. Strigi unit tests will not be built.")
 else (NOT CppUnit_FOUND)
     MESSAGE(STATUS "CppUnit found. Strigi unit tests will be built.")
-    SET (DIRS ${DIRS} test)
+    SET (DIRS ${DIRS} tests)
 endif (NOT CppUnit_FOUND)
 
 ENABLE_TESTING()
