@@ -57,7 +57,9 @@ struct CLuceneDocData {
 
 CLuceneIndexWriter::CLuceneIndexWriter(CLuceneIndexManager* m):
     manager(m), doccount(0) {
-    addMapping(_T(""),_T("content"));
+    string contentID(FieldRegister::contentFieldName.c_str());
+    wstring cID(utf8toucs2(contentID));
+    addMapping(_T(""),cID.c_str());
 }
 CLuceneIndexWriter::~CLuceneIndexWriter() {
 }

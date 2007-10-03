@@ -71,6 +71,7 @@ public:
     static const wchar_t* mtime();
     static const wchar_t* mimetype();
     static const wchar_t* size();
+    static const wchar_t* content();
     static const wchar_t* parentlocation();
     CLuceneIndexReader& reader;
     Private(CLuceneIndexReader& r) :reader(r) {}
@@ -111,6 +112,11 @@ CLuceneIndexReader::Private::size() {
 const wchar_t*
 CLuceneIndexReader::Private::parentlocation() {
     const static wstring s(utf8toucs2(FieldRegister::parentLocationFieldName));
+    return s.c_str();
+}
+const wchar_t*
+CLuceneIndexReader::Private::content() {
+    const static wstring s(utf8toucs2(FieldRegister::contentFieldName));
     return s.c_str();
 }
 
@@ -179,7 +185,9 @@ void CLuceneIndexReader::addMapping(const TCHAR* from, const TCHAR* to){
 const TCHAR*
 CLuceneIndexReader::mapId(const TCHAR* id) {
     if (CLuceneIndexReaderFieldMap.size() == 0) {
-        addMapping(_T(""), _T("content"));
+        string contentID(FieldRegister::contentFieldName.c_str());
+        wstring cID(utf8toucs2(contentID));
+        addMapping(_T(""), cID.c_str());
     }
     if (id == 0) {
         id = _T("");
@@ -255,7 +263,8 @@ CLuceneIndexReader::Private::createQuery(const Strigi::Query& query) {
 Query*
 CLuceneIndexReader::Private::createSimpleQuery(const Strigi::Query& query) {
     switch (query.fields().size()) {
-    case 0:  return createSingleFieldQuery("content", query);//return createNoFieldQuery(query);
+    case 0:  return createSingleFieldQuery(FieldRegister::contentFieldName,
+        query);//return createNoFieldQuery(query);
     case 1:  return createSingleFieldQuery(query.fields()[0], query);
     default: return createMultiFieldQuery(query);
     }
@@ -327,7 +336,7 @@ CLuceneIndexReader::Private::addField(lucene::document::Field* field,
     if (field->stringValue() == 0) return;
     string value(wchartoutf8(field->stringValue()));
     const TCHAR* name = field->name();
-    if (wcscmp(name, L"content") == 0) {
+    if (wcscmp(name, content()) == 0) {
         doc.fragment = value;
     } else if (wcscmp(name, systemlocation()) == 0) {
         doc.uri = value;
