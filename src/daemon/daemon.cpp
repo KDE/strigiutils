@@ -134,7 +134,7 @@ releaseLock(FILE* f, struct flock& lock) {
 }
 void
 printVersion(int argc, char** argv) {
-    printf( "%s %s\n Copyright (C) 2006-2007 Jos van den Oever <jos@vandenoever.info>\n",
+    printf( "%s %s\n Copyright (C) 2006-2007 Jos van den Oever and others\n",
             argv[0],
             STRIGI_VERSION_STRING );
 }
