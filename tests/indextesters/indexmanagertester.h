@@ -28,8 +28,6 @@ namespace Strigi {
     class IndexManager;
     class IndexWriter;
     class IndexReader;
-    class StreamAnalyzer;
-    class AnalyzerConfiguration;
 }
 
 namespace strigiunittest
@@ -37,32 +35,28 @@ namespace strigiunittest
     class IndexManagerTester : public CppUnit::TestFixture
     {
         CPPUNIT_TEST_SUITE( IndexManagerTester );
-        CPPUNIT_TEST( testVariables );
-        CPPUNIT_TEST( addAndCount );
-        CPPUNIT_TEST( testNumberQuery );
-        //CPPUNIT_TEST( runUnthreadedTests );
-        //CPPUNIT_TEST( runThreadedTests );
+        CPPUNIT_TEST( testIndexReader );
+        CPPUNIT_TEST( testIndexWriter );
         CPPUNIT_TEST_SUITE_END_ABSTRACT();
+
+    private:
+	Strigi::IndexManager* m_manager;
+
+    protected:
+	virtual Strigi::IndexManager* createManager() = 0;
+
+	/**
+	 * delete the manager. The default implementation simply
+	 * calls delete.
+	 */
+	virtual void deleteManager( Strigi::IndexManager* );
         
-        protected:
-            //StrigiMutex lock;
-            Strigi::IndexManager* manager;
-            Strigi::IndexWriter* writer;
-            Strigi::IndexReader* reader;
-            Strigi::StreamAnalyzer* si;
-            Strigi::AnalyzerConfiguration* ic;
-            int m;
-            std::string path;
-        
-        public:
-            virtual void setUp();
-            virtual void tearDown();
+    public:
+	virtual void setUp();
+	virtual void tearDown();
             
-//             virtual void runUnthreadedTests();
-//             virtual void runThreadedTests();
-            virtual void addAndCount();
-            virtual void testNumberQuery();
-            virtual void testVariables();
+	virtual void testIndexReader();
+	virtual void testIndexWriter();
     };
 }
 

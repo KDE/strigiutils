@@ -39,11 +39,9 @@ using namespace strigiunittest;
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( LuceneIndexManagerTest );
 
-void LuceneIndexManagerTest::setUp()
+Strigi::IndexManager* LuceneIndexManagerTest::createManager()
 {
-    IndexManagerTester::setUp();
-    
-    path = "testcluceneindex";
+    string path = "testcluceneindex";
 
     // initialize a directory for writing and an indexmanager
 #ifdef _WIN32
@@ -52,19 +50,13 @@ void LuceneIndexManagerTest::setUp()
     mkdir(path.c_str(), S_IRUSR|S_IWUSR|S_IXUSR);
 #endif
 
-    manager = createCLuceneIndexManager(path.c_str());
-    writer = manager->indexWriter();
-    reader = manager->indexReader();
-    ic = new Strigi::AnalyzerConfiguration ();
-    si = new Strigi::StreamAnalyzer (*ic);
+    return createCLuceneIndexManager(path.c_str());
 }
 
-void LuceneIndexManagerTest::tearDown()
+void LuceneIndexManagerTest::deleteManager( Strigi::IndexManager* m )
 {
-    IndexManagerTester::tearDown();
-    
+    delete m;
+
     // clean up data
-    string cmd = "rm -r ";
-    cmd += path;
-    system(cmd.c_str());
+    system("rm -r testcluceneindex");
 }

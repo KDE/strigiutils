@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexmanagertester.h"
- 
+
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"
 #include "indexmanager.h"
@@ -42,87 +42,29 @@ using namespace strigiunittest;
 
 void IndexManagerTester::setUp()
 {
-    m = 20;
-    manager = NULL;
-    writer  = NULL;
-    reader  = NULL;
-    si      = NULL;
-    ic      = NULL;
+    m_manager = createManager();
 }
 
 void IndexManagerTester::tearDown()
 {
-    delete manager;
-    delete si;
-    delete ic;
-    writer = NULL;
-    reader = NULL;
+    deleteManager( m_manager );
 }
 
-void IndexManagerTester::testVariables()
+
+void IndexManagerTester::deleteManager( Strigi::IndexManager* m )
 {
-    CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
-    CPPUNIT_ASSERT_MESSAGE ("writer  == NULL", writer);
-    CPPUNIT_ASSERT_MESSAGE ("reader  == NULL", reader);
-    CPPUNIT_ASSERT_MESSAGE ("si == NULL", si);
-    CPPUNIT_ASSERT_MESSAGE ("ic == NULL", ic);
+    delete m;
 }
 
-void IndexManagerTester::addAndCount()
-{
-    CPPUNIT_ASSERT_MESSAGE("writer == NULL", writer);
-/*    if (writer == 0)
-        return;*/
-    
-    writer->deleteAllEntries();
-    ostringstream str;
-    for (int i=0; i<m; ++i) {
-        str << "/" << i;
-        string s(str.str());
-        { AnalysisResult idx(s, 0, *writer, *si); }
-        str.str("");
-    }
-    writer->commit();
-    CPPUNIT_ASSERT_ASSERTION_PASS (CPPUNIT_ASSERT(reader));
-    int n = reader->countDocuments();
 
-    str.str("");
-    if (n != m) {
-        str << n << " != " << m;
-    }
-    CPPUNIT_ASSERT_MESSAGE(str.str(), n == m);
+void IndexManagerTester::testIndexReader()
+{
+    Strigi::IndexReader* reader = m_manager->indexReader();
+    CPPUNIT_ASSERT_MESSAGE("reader creation failed", reader);
 }
 
-void IndexManagerTester::testNumberQuery()
+void IndexManagerTester::testIndexWriter()
 {
-    CPPUNIT_ASSERT_MESSAGE("writer == NULL", writer);
-/*    if (writer == 0)
-        return;*/
-    
-    writer->deleteAllEntries();
-    // add numbers to the database
-    int m = 200;
-    ostringstream str;
-    string size("size");
-    for (int i=1; i<=m; ++i) {
-        str << i;
-        string value(str.str());
-        string name('/'+value);
-        {
-            AnalysisResult idx(name, 0, *writer, *si);
-            idx.addValue(idx.config().fieldRegister().sizeField, value);
-        }
-        str.str("");
-    }
-    writer->commit();
-    QueryParser parser;
-
-    Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
-    int count = reader->countHits(q);
-
-    str.str(""); 
-    if (count != m) {
-        str << count << " != " << m;
-    }
-    CPPUNIT_ASSERT_MESSAGE(str.str(), count == m);
+    Strigi::IndexWriter* writer = m_manager->indexWriter();
+    CPPUNIT_ASSERT_MESSAGE("writer creation failed", writer);
 }

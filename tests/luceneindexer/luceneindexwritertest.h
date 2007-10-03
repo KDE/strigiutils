@@ -26,15 +26,12 @@ namespace strigiunittest
 {
     class LuceneIndexWriterTest : public IndexWriterTester
     {
-        CPPUNIT_TEST_SUB_SUITE( LuceneIndexWriterTest,  IndexWriterTester);
-        CPPUNIT_TEST( testVariables );
-        CPPUNIT_TEST( add );
-        CPPUNIT_TEST( optimize );
+        CPPUNIT_TEST_SUB_SUITE( LuceneIndexWriterTest, IndexWriterTester);
         CPPUNIT_TEST_SUITE_END();
         
-        public:
-            void setUp();
-            void tearDown();
+    private:
+	Strigi::IndexManager* createManager();
+	void deleteManager( Strigi::IndexManager* );
     };
 }
 

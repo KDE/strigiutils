@@ -24,11 +24,15 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
+#include "analyzerconfiguration.h"
+#include "fieldtypes.h"
+
 namespace Strigi {
     class IndexManager;
     class IndexWriter;
-    class AnalyzerConfiguration;
+    class IndexReader;
     class StreamAnalyzer;
+    class AnalysisResult;
 }
 
 namespace strigiunittest
@@ -36,25 +40,35 @@ namespace strigiunittest
     class IndexWriterTester : public CppUnit::TestFixture
     {
         CPPUNIT_TEST_SUITE( IndexWriterTester );
-        CPPUNIT_TEST( testVariables );
-        CPPUNIT_TEST( add );
-        CPPUNIT_TEST( optimize );
+        CPPUNIT_TEST( testAddText );
+        CPPUNIT_TEST( testDeleteAllEntries );
+
         CPPUNIT_TEST_SUITE_END_ABSTRACT();
-        
-        protected:
-            Strigi::IndexManager* manager;
-            Strigi::IndexWriter*  writer;
-            Strigi::StreamAnalyzer* si;
-            Strigi::AnalyzerConfiguration* ic;
-            std::string path;
-        
-        public:
-            virtual void setUp();
-            virtual void tearDown();
-            
-            virtual void add();
-            virtual void optimize();
-            virtual void testVariables();
+
+    private:
+	Strigi::IndexManager* m_manager;
+
+	Strigi::IndexWriter* m_writer;
+	Strigi::IndexReader* m_reader;
+	Strigi::StreamAnalyzer* m_streamAnalyzer;
+	Strigi::AnalyzerConfiguration m_analyzerConfiguration;
+	Strigi::FieldRegister m_fieldRegister;
+
+    protected:
+	virtual Strigi::IndexManager* createManager() = 0;
+	/**
+	 * delete the manager. The default implementation simply
+	 * calls delete.
+	 */
+	virtual void deleteManager( Strigi::IndexManager* );
+                
+    public:
+	virtual void setUp();
+	virtual void tearDown();
+
+	void testAddText();
+	void testDeleteAllEntries();
+	void testDeleteEntries();
     };
 }
 

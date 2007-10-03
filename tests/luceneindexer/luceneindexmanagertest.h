@@ -26,17 +26,12 @@ namespace strigiunittest
 {
     class LuceneIndexManagerTest : public IndexManagerTester
     {
-        CPPUNIT_TEST_SUB_SUITE( LuceneIndexManagerTest,  IndexManagerTester);
-        CPPUNIT_TEST( testVariables );
-        //CPPUNIT_TEST( runUnthreadedTests );
-        //CPPUNIT_TEST( runThreadedTests );
-        CPPUNIT_TEST( addAndCount );
-        CPPUNIT_TEST( testNumberQuery );
+        CPPUNIT_TEST_SUB_SUITE( LuceneIndexManagerTest, IndexManagerTester);
         CPPUNIT_TEST_SUITE_END();
-        
-        public:
-            void setUp();
-            void tearDown();
+
+    private:
+	Strigi::IndexManager* createManager();
+	void deleteManager( Strigi::IndexManager* );
     };
 }
 
