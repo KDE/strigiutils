@@ -138,7 +138,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
     vector<pair<string, struct stat> > dirfiles;
     map<string, time_t> dbdirfiles;
     vector<string> toDelete;
-    vector<pair<string, time_t> > toIndex;
+    vector<pair<string, struct stat> > toIndex;
     try {
         string path;
         // loop over all files that exist in the index
@@ -177,7 +177,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                     toDelete.push_back(filepath);
                 }
                 if (newfile || updatedfile) {
-                    toIndex.push_back(make_pair(filepath, mtime));
+                    toIndex.push_back(make_pair(filepath, i->second));
                 }
             }
             // all the files left in dbdirfiles, are not in the current
@@ -187,13 +187,14 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 toDelete.push_back(i->first);
             }
             manager.indexWriter()->deleteEntries(toDelete);
-            vector<pair<string, time_t> >::const_iterator fend = toIndex.end();
-            for (vector<pair<string, time_t> >::const_iterator i
+            vector<pair<string, struct stat> >::const_iterator fend
+                = toIndex.end();
+            for (vector<pair<string, struct stat> >::const_iterator i
                     = toIndex.begin(); i != fend; ++i) {
-                AnalysisResult analysisresult(i->first, i->second,
+                AnalysisResult analysisresult(i->first, i->second.st_mtime,
                     *manager.indexWriter(), *analyzer);
-                FileInputStream file(path.c_str());
-                if (file.status() == Ok) {
+                if (S_ISREG(i->second.st_mode)) {
+                    FileInputStream file(i->first.c_str());
                     analysisresult.index(&file);
                 } else {
                     analysisresult.index(0);
