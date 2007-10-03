@@ -109,28 +109,18 @@ IndexSearchTester::setUp() {
     Strigi::StreamAnalyzer* streamindexer = new Strigi::StreamAnalyzer(config);
     Strigi::IndexWriter* writer = manager->indexWriter();
     streamindexer->setIndexWriter(*writer);
-//     Strigi::DirAnalyzer* analyzer = new Strigi::DirAnalyzer(*manager, config);
  
     for (map<string,string>::iterator iter = indexedFiles.begin();
          iter != indexedFiles.end(); iter++) {
         string temp = filedir + separator + iter->first;
         fprintf (stderr, "going to index %s\n", temp.c_str());
-//         analyzer->analyzeDir (filedir + separator + iter->first, 1);
         streamindexer->indexFile(temp);
     }
     
-//     delete analyzer;
     delete streamindexer;
     
     writer->commit();
     
-/*    unsigned int indexedFilesSize = manager->indexReader()->files(0).size();
-    if (indexedFilesSize != indexedFiles.size()) {
-        ostringstream msg;
-        msg << "There are " << indexedFilesSize << " indexed files instead of "
-            << indexedFiles.size();
-        CPPUNIT_FAIL(msg.str());
-    }*/
 }
 
 void
@@ -162,36 +152,29 @@ IndexSearchTester::testVariables() {
 
 void
 IndexSearchTester::testSystemLocationSearchIndexedFile() {
-    string message;
     Strigi::IndexReader* reader = manager->indexReader();
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
     
     Strigi::QueryParser parser;
 
-    Strigi::Query query = parser.buildQuery("system.location:'testfile01'");
+    Strigi::Query query = parser.buildQuery("name:'testfile01'");
     vector<Strigi::IndexedDocument> matches = reader->query(query, 0, 10);
-    
-    if (matches.size() != 1) {
-        ostringstream msg;
-        msg << "Search returned " << matches.size() << " matches instead of 1.";
-        CPPUNIT_FAIL(msg.str());
-    }
+
+    int nhits = matches.size();
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of hits is wrong.", nhits, 1);
 }
 
 void
 IndexSearchTester::testSystemLocationSearchUnindexedFile() {
-    string message;
     Strigi::IndexReader* reader = manager->indexReader();
     CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
-    
+
     Strigi::QueryParser parser;
-    
-    Strigi::Query query = parser.buildQuery("system.location:'unindexed'");
+
+    Strigi::Query query = parser.buildQuery(
+        Strigi::FieldRegister::pathFieldName+":'unindexed'");
     vector<Strigi::IndexedDocument> matches = reader->query(query, 0, 10);
-    if (matches.size() != 0) {
-        ostringstream msg;
-        msg << "Search returned " << matches.size() << " matches instead of 0.";
-        CPPUNIT_FAIL(msg.str());
-    }
+    int nhits = matches.size();
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of hits is wrong.", nhits, 0);
 }
 

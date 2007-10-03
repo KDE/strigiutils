@@ -99,7 +99,6 @@ void IndexReaderTester::testNumberQuery()
     // add numbers to the database
     int m = 200;
     ostringstream str;
-    string size("size");
     for (int i=1; i<=m; ++i) {
         str << i;
         string value(str.str());
@@ -112,7 +111,7 @@ void IndexReaderTester::testNumberQuery()
     }
     m_writer->commit();
     QueryParser parser;
-    Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
+    Query q = parser.buildQuery("size>0");
     int count = m_reader->countHits(q);
 
     str.str("");
