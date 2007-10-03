@@ -146,6 +146,14 @@ printUsage(int argc, char** argv) {
     printf( "  --help        Display this help text.\n" );
     printf( "  -t <backend>  Override the index backend.\n" );
     printf( "  -d <indexdir> Override the index dir.\n" );
+    printf( "  --backends    List the available backends.\n" );
+}
+void
+printBackendList() {
+    std::vector<std::string> backends = CombinedIndexManager::backEnds();
+    for ( unsigned int i = 0; i < backends.size(); ++i ) {
+        printf( "%s\n", backends[i].c_str() );
+    }
 }
 void
 checkArgs(int argc, char** argv) {
@@ -157,6 +165,10 @@ checkArgs(int argc, char** argv) {
         }
         else if ( !strcmp( argv[i], "--help" ) ) {
             printUsage(argc, argv);
+            exit( 0 );
+        }
+        else if ( !strcmp( argv[i], "--backends" ) ) {
+            printBackendList();
             exit( 0 );
         }
         else if ( !strcmp( argv[i], "-t" ) ) {
@@ -177,6 +189,14 @@ checkArgs(int argc, char** argv) {
         }
 
         ++i;
+    }
+}
+void
+ensureBackend( const std::string& backendName ) {
+    std::vector<std::string> backends = CombinedIndexManager::backEnds();
+    if ( std::find( backends.begin(), backends.end(), backendName ) == backends.end() ) {
+        fprintf( stderr, "Unknown backend type: %s\n", backendName.c_str() );
+        exit( 2 );
     }
 }
 int
@@ -241,6 +261,9 @@ main(int argc, char** argv) {
     }
 
     set<string> dirs = config.getIndexedDirectories();
+
+    // before creating the indexer, check if the index backend exists
+    ensureBackend( !userForcedIndexType.empty() ? userForcedIndexType : config.getWriteableIndexType() );
 
     CombinedIndexManager* index = new CombinedIndexManager(
         !userForcedIndexType.empty() ? userForcedIndexType : config.getWriteableIndexType(),
