@@ -535,7 +535,7 @@ CLuceneIndexReader::documentId(const string& uri) {
     if (!checkReader()) return -1;
     int64_t id = -1;
 
-    Term term(mapId(_T("system.location")), utf8toucs2( uri ).c_str());
+    Term term(mapId(Private::systemlocation()), utf8toucs2( uri ).c_str());
     TermDocs* docs = reader->termDocs(&term);
     if (docs->next()) {
         id = docs->doc();
@@ -559,7 +559,7 @@ CLuceneIndexReader::mTime(int64_t docid) {
     time_t mtime = 0;
     Document *d = reader->document(docid);
     if (d) {
-        const TCHAR* v = d->get(mapId(_T("system.last_modified_time")));
+        const TCHAR* v = d->get(Private::mtime());
         mtime = atoi(wchartoutf8( v ).c_str());
         delete d;
     }
@@ -668,7 +668,7 @@ CLuceneIndexReader::histogram(const string& query,
     }
     searcher.close();
     _CLDELETE(bq);
-    if (fieldname == "system.last_modified_time" || labeltype == "time") {
+    if (fieldname == FieldRegister::mtimeFieldName || labeltype == "time") {
         return makeTimeHistogram(values);
     } else {
         return makeHistogram(values, min, max);
