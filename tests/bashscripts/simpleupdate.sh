@@ -8,7 +8,7 @@ function fail() {
     exit 1
 }
 
-STRIGICMD="`find -type f -name strigicmd` "
+STRIGICMD="`find -type f -name strigicmd -type f -perm -o+x` "
 echo Using $STRIGICMD
 NTHREADS=1
 
