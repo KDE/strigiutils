@@ -1782,7 +1782,7 @@
 <rdf:Property rdf:about="&xesam;url">
 	<rdfs:label>xesam:url</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
-	<rdfs:comment>URL to access the content</rdfs:comment>4
+	<rdfs:comment>URL to access the content</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;localRevision">
