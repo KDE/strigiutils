@@ -389,11 +389,12 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     // reread the header so we can use it for the endanalyzers
     if (input) {
         headersize = input->read(header, headersize, headersize);
-        if (input->reset(0) != 0) {
+        if (headersize <= 0) {
+            finished = true;
+        } else if (input->reset(0) != 0) {
             cerr << "resetting is impossible!! pos: " << input->position()
                 << " status: " << input->status() << endl;
         }
-        if (headersize < 0) finished = true;
     } else {
         // indicate that we have no data in the stream
         headersize = -1;
