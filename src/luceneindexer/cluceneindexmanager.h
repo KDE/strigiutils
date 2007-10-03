@@ -78,9 +78,4 @@ public:
 CLUCENEINDEXER_EXPORT Strigi::IndexManager*
 createCLuceneIndexManager(const char* path);
 
-CLUCENEINDEXER_EXPORT std::string wchartoutf8(const wchar_t*);
-CLUCENEINDEXER_EXPORT std::wstring utf8toucs2(const char*);
-CLUCENEINDEXER_EXPORT std::string wchartoutf8(const std::wstring&);
-CLUCENEINDEXER_EXPORT std::wstring utf8toucs2(const std::string&);
-
 #endif

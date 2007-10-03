@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iostream>
 #include "cluceneindexmanager.h"
+#include "../tcharutils.h"
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;

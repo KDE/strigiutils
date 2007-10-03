@@ -30,6 +30,7 @@
 #include "textutils.h"
 #include "cluceneindexmanager.h"
 #include "timeofday.h"
+#include "tcharutils.h"
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
 #include "fieldtypes.h"
@@ -296,7 +297,7 @@ CLuceneIndexReader::Private::createSingleFieldQuery(const string& field,
     case Strigi::Query::Keyword:
           t = createKeywordTerm(fieldname.c_str(), query.term().string());
           q = _CLNEW TermQuery(t);
-          break;	  
+          break;
     default:
           if (strpbrk(val.c_str(), "*?")) {
                t = createWildCardTerm(fieldname.c_str(), val);
@@ -504,51 +505,6 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
     searcher.close();
     _CLDELETE(bq);
 }
-map<string, time_t>
-CLuceneIndexReader::files(char depth) {
-    map<string, time_t> files;
-    if (!checkReader()) {
-        return files;
-    }
-
-    const TCHAR* mtime = mapId(_T("system.last_modified_time"));
-    char cstr[CL_MAX_DIR];
-    if (depth >= 0) {
-        TCHAR tstr[CL_MAX_DIR];
-        snprintf(cstr, CL_MAX_DIR, "%i", depth);
-        STRCPY_AtoT(tstr, cstr, CL_MAX_DIR);
-        Term term(mapId(_T("system.depth")), tstr);
-        TermDocs* docs = reader->termDocs(&term);
-        while (docs->next()) {
-            Document* d = reader->document(docs->doc());
-
-            const TCHAR* v = d->get(mtime);
-            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-            time_t mtime = atoi(cstr);
-            v = d->get(_T("system.location"));
-            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-            files[cstr] = mtime;
-
-            _CLDELETE(d);
-        }
-        _CLDELETE(docs);
-    } else {
-        int32_t max = reader->maxDoc();
-        for (int32_t i = 0; i < max; ++i) {
-            if (!reader->isDeleted(i)) {
-                Document* d = reader->document(i);
-                const TCHAR* v = d->get(mtime);
-                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-                time_t mtime = atoi(cstr);
-                v = d->get(_T("system.location"));
-                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-                files[cstr] = mtime;
-                _CLDELETE(d);
-            }
-        }
-    }
-    return files;
-}
 int32_t
 CLuceneIndexReader::countDocuments() {
     if (!checkReader()) return -1;
@@ -579,9 +535,7 @@ CLuceneIndexReader::documentId(const string& uri) {
     if (!checkReader()) return -1;
     int64_t id = -1;
 
-    TCHAR tstr[CL_MAX_DIR];
-    STRCPY_AtoT(tstr, uri.c_str(), CL_MAX_DIR);
-    Term term(mapId(_T("system.location")), tstr);
+    Term term(mapId(_T("system.location")), utf8toucs2( uri ).c_str());
     TermDocs* docs = reader->termDocs(&term);
     if (docs->next()) {
         id = docs->doc();
@@ -605,10 +559,8 @@ CLuceneIndexReader::mTime(int64_t docid) {
     time_t mtime = 0;
     Document *d = reader->document(docid);
     if (d) {
-        char cstr[CL_MAX_DIR];
         const TCHAR* v = d->get(mapId(_T("system.last_modified_time")));
-        STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-        mtime = atoi(cstr);
+        mtime = atoi(wchartoutf8( v ).c_str());
         delete d;
     }
     return mtime;
@@ -701,8 +653,7 @@ CLuceneIndexReader::histogram(const string& query,
         Document *d = &hits->doc(i);
         const TCHAR* v = d->get(field.c_str());
         if (v) {
-            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-            int val = (int)strtol(cstr, &end, 10);
+            int val = (int)strtol(wchartoutf8( v ).c_str(), &end, 10);
             if (end == cstr || *end != 0) {
                 _CLDELETE(hits);
                 return h;
@@ -788,6 +739,9 @@ void
 CLuceneIndexReader::getChildren(const std::string& parent,
             std::map<std::string, time_t>& childs) {
     childs.clear();
+    if ( !checkReader() ) {
+        return;
+    }
     // build a query
     Term* t = Private::createKeywordTerm(Private::parentlocation(),
         parent);
@@ -804,19 +758,16 @@ CLuceneIndexReader::getChildren(const std::string& parent,
         printf("could not query: %s\n", err.what());
     }
     const TCHAR* mtime = mapId(Private::mtime());
-    char cstr[CL_MAX_DIR];
     for (int i = 0; i < nhits; ++i) {
         Document* d = &hits->doc(i);
 
         const TCHAR* v = d->get(mtime);
         // check that mtime is defined for this document
         if (v) {
-            STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-            time_t mtime = atoi(cstr);
+            time_t mtime = atoi(wchartoutf8( v ).c_str());
             v = d->get(Private::systemlocation());
             if (v) {
-                STRCPY_TtoA(cstr, v, CL_MAX_DIR);
-                childs[cstr] = mtime;
+                childs[wchartoutf8( v )] = mtime;
             }
         }
 

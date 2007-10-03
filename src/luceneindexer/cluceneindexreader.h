@@ -56,7 +56,6 @@ public:
     void getHits(const Strigi::Query&, const std::vector<std::string>& fields,
         const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max);
-    std::map<std::string, time_t> files(char depth);
     int32_t countDocuments();
     int32_t countWords();
     int64_t indexSize();

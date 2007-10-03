@@ -23,6 +23,7 @@
 #endif
 
 #include "cluceneindexwriter.h"
+#include "tcharutils.h"
 #include <CLucene.h>
 #include <CLucene/store/Lock.h>
 #include "cluceneindexreader.h"
@@ -217,7 +218,7 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
         return;
     }
     lucene::index::IndexReader* reader = manager->luceneReader()->reader;
-    
+
     for (uint i=0; i<entries.size(); ++i) {
         deleteEntry(entries[i], reader);
     }

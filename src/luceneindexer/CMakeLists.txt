@@ -36,6 +36,7 @@ set(cluceneindex_SRCS
         cluceneindexreader.cpp
         cluceneindexwriter.cpp
         jsgzipcompressstream.cpp
+	tcharutils.cpp
 )
 
 add_library(cluceneindex SHARED ${cluceneindex_SRCS})
