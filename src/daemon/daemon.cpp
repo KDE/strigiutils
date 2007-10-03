@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2006-2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -55,6 +55,13 @@
 
 using namespace Strigi;
 using namespace std;
+
+namespace {
+    // can be set via the command line to override settings in the
+    // configuration file.
+    string userForcedIndexType;
+    string userForcedIndexDir;
+}
 
 /**
  * Initialize a directory for storing the index data and the socket.
@@ -125,6 +132,53 @@ releaseLock(FILE* f, struct flock& lock) {
     fcntl(fileno(f), F_SETLK, &lock);
     fclose(f);
 }
+void
+printVersion(int argc, char** argv) {
+    printf( "%s %s\n Copyright (C) 2006-2007 Jos van den Oever <jos@vandenoever.info>\n",
+            argv[0],
+            STRIGI_VERSION_STRING );
+}
+void
+printUsage(int argc, char** argv) {
+    printf( "%s [--version] [--help] [-t <backend>] [-d <indexdir>]\n",
+            argv[0] );
+    printf( "  --version     Display the version.\n" );
+    printf( "  --help        Display this help text.\n" );
+    printf( "  -t <backend>  Override the index backend.\n" );
+    printf( "  -d <indexdir> Override the index dir.\n" );
+}
+void
+checkArgs(int argc, char** argv) {
+    int i = 1;
+    while ( i < argc ) {
+        if ( !strcmp( argv[i], "--version" ) ) {
+            printVersion(argc, argv);
+            exit( 0 );
+        }
+        else if ( !strcmp( argv[i], "--help" ) ) {
+            printUsage(argc, argv);
+            exit( 0 );
+        }
+        else if ( !strcmp( argv[i], "-t" ) ) {
+            ++i;
+            if ( i >= argc ) {
+                printUsage(argc, argv);
+                exit( 1 );
+            }
+            userForcedIndexType = argv[i];
+        }
+        else if ( !strcmp( argv[i], "-d" ) ) {
+            ++i;
+            if ( i >= argc ) {
+                printUsage(argc, argv);
+                exit( 1 );
+            }
+            userForcedIndexDir = argv[i];
+        }
+
+        ++i;
+    }
+}
 int
 main(int argc, char** argv) {
     // set up the directory paths
@@ -141,6 +195,8 @@ main(int argc, char** argv) {
     string logconffile = daemondir+"/log.conf";
     string pathfilterfile = daemondir+"/pathfilter.conf";
     string patternfilterfile = daemondir+"/patternfilter.conf";
+
+    checkArgs( argc,argv );
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -187,7 +243,8 @@ main(int argc, char** argv) {
     set<string> dirs = config.getIndexedDirectories();
 
     CombinedIndexManager* index = new CombinedIndexManager(
-        config.getWriteableIndexType(), config.getWriteableIndexDir());
+        !userForcedIndexType.empty() ? userForcedIndexType : config.getWriteableIndexType(),
+        !userForcedIndexDir.empty() ? userForcedIndexDir : config.getWriteableIndexDir());
     list<Repository> rors = config.getReadOnlyRepositories();
     list<Repository>::const_iterator i;
     for (i = rors.begin(); i != rors.end(); ++i) {
@@ -273,10 +330,10 @@ main(int argc, char** argv) {
 
     //delete listener
     delete listener;
-    
+
     //delete listener event queue
     delete listenerEventQueue;
-    
+
     // release lock
     releaseLock(lockfile, lock);
 }
