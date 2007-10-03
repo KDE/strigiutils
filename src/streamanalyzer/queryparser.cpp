@@ -140,6 +140,13 @@ QueryParser::buildQuery(const std::string& q) {
         Query q = query.subQueries()[0];
         query = q;
     }
+
+    // prepend the field names with the xesam namespace
+    // this will be elaborated once the xesam spec continues
+    vector<string>::iterator end(query.fields().end());
+    for (vector<string>::iterator i = query.fields().begin(); i != end; ++i) {
+         *i = "http://freedesktop.org/standards/xesam/1.0/core#" + *i;
+    }
     //cerr << "query: '" << q << "' : " << query.subQueries().size() << "'"
     //    << query.term().string() << "'" << endl;
     return query;

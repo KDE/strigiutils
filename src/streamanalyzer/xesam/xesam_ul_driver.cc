@@ -72,10 +72,26 @@ bool XesamUlDriver::parseString (const std::string &query)
   yy::xesam_ul_parser parser (this);
   parser.parse ();
 
+  addNamespaces();
+
   delete m_scanner;
   m_scanner = 0;
 
   return !m_error;
+}
+
+void XesamUlDriver::addNamespaces ()
+{
+    if (m_query)
+    {
+        vector<string>::iterator end(m_query->fields().end());
+        for (vector<string>::iterator i = m_query->fields().begin(); i != end;
+                ++i)
+        {
+            *i = "http://freedesktop.org/standards/xesam/1.0/core#" + *i;
+cerr << "YAAAAY" << *i << endl;
+        }
+    }
 }
 
 void XesamUlDriver::addQuery(Strigi::Query* query)

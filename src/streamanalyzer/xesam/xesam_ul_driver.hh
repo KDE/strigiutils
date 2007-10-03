@@ -60,6 +60,13 @@ class XesamUlDriver
     std::string m_modifiers;
     bool m_negate;
     bool m_error;
+
+    /*
+     * Prepend the relevant namespaces to the field names.
+     * The rules for doing this are not quite clear at the moment. We always
+     * prepend the xesam namespace for now.
+     */
+    void addNamespaces();
 };
 
 #endif
