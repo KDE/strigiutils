@@ -24,9 +24,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
+#include "analyzerconfiguration.h"
+#include "fieldtypes.h"
+
 namespace Strigi {
     class IndexManager;
     class IndexReader;
+    class IndexWriter;
+    class StreamAnalyzer;
 }
 
 namespace strigiunittest
@@ -34,24 +39,35 @@ namespace strigiunittest
     class IndexReaderTester : public CppUnit::TestFixture
     {
         CPPUNIT_TEST_SUITE( IndexReaderTester );
-        CPPUNIT_TEST( testVariables );
-        CPPUNIT_TEST( getFiles );
         CPPUNIT_TEST( testChildrenRetrieval );
+        CPPUNIT_TEST( addAndCount );
+        CPPUNIT_TEST( testNumberQuery );
         CPPUNIT_TEST_SUITE_END_ABSTRACT();
         
-        protected:
-            //StrigiMutex lock;
-            Strigi::IndexManager* manager;
-            Strigi::IndexReader* reader;
-            std::string path;
-        
-        public:
-            virtual void setUp();
-            virtual void tearDown();
+    private:
+	Strigi::IndexManager* m_manager;
+
+	Strigi::IndexWriter* m_writer;
+	Strigi::IndexReader* m_reader;
+	Strigi::StreamAnalyzer* m_streamAnalyzer;
+	Strigi::AnalyzerConfiguration m_analyzerConfiguration;
+	Strigi::FieldRegister m_fieldRegister;
+
+    protected:
+	virtual Strigi::IndexManager* createManager() = 0;
+	/**
+	 * delete the manager. The default implementation simply
+	 * calls delete.
+	 */
+	virtual void deleteManager( Strigi::IndexManager* );
+
+    public:
+	virtual void setUp();
+	virtual void tearDown();
             
-            virtual void getFiles();
-            virtual void testVariables();
-            virtual void testChildrenRetrieval();
+	virtual void addAndCount();
+	virtual void testChildrenRetrieval();
+	virtual void testNumberQuery();
     };
 }
 

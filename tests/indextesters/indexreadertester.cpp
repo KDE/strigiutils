@@ -18,9 +18,16 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexreadertester.h"
- 
+
+#include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "indexmanager.h"
+#include "indexwriter.h"
 #include "indexreader.h"
+#include "fieldtypes.h"
+#include "analyzerconfiguration.h"
+#include "query.h"
+#include "queryparser.h"
 
 #include <string>
 #include <sstream>
@@ -31,39 +38,83 @@
 #include <direct.h>
 #endif
 
+#include <ostream>
+
 using namespace std;
 using namespace strigiunittest;
+using namespace Strigi;
 
-void
-IndexReaderTester::setUp() {
-    manager = 0;
-    reader = 0;
+void IndexReaderTester::setUp()
+{
+    m_manager = createManager();
+    m_writer = m_manager->indexWriter();
+    m_reader = m_manager->indexReader();
+
+    CPPUNIT_ASSERT_MESSAGE("writer creation failed", m_writer);
+    CPPUNIT_ASSERT_MESSAGE("reader creation failed", m_reader);
+
+    m_streamAnalyzer = new Strigi::StreamAnalyzer( m_analyzerConfiguration );
 }
 
-void
-IndexReaderTester::tearDown() {
-    reader = 0;
-    if (manager) {
-        delete manager;
-        manager = 0;
-    }
+void IndexReaderTester::tearDown()
+{
+    delete m_streamAnalyzer;
+    deleteManager( m_manager );
 }
 
-void
-IndexReaderTester::testVariables() {
-    CPPUNIT_ASSERT_MESSAGE ("manager == NULL", manager);
-    CPPUNIT_ASSERT_MESSAGE ("reader  == NULL", reader);
-}
 
-void
-IndexReaderTester::getFiles() {
-    CPPUNIT_ASSERT_MESSAGE("reader == NULL", reader);
+void IndexReaderTester::deleteManager( Strigi::IndexManager* m )
+{
+    delete m;
 }
 
 void
 IndexReaderTester::testChildrenRetrieval() {
-    cerr << "YAAA" << endl;
-    map<string, time_t> children;
-    reader->getChildren("/", children);
-    cerr << "children: " << children.size() << endl;
+    // FIXME
+}
+
+void IndexReaderTester::addAndCount()
+{
+    static const int m = 20;
+
+    m_writer->deleteAllEntries();
+    ostringstream str;
+    for (int i=0; i<m; ++i) {
+        str << "/" << i;
+        string s(str.str());
+        { AnalysisResult idx(s, 0, *m_writer, *m_streamAnalyzer); }
+        str.str("");
+    }
+    m_writer->commit();
+
+    int n = m_reader->countDocuments();
+
+    str.str("");
+    CPPUNIT_ASSERT_EQUAL_MESSAGE(str.str(), m, n);
+}
+
+void IndexReaderTester::testNumberQuery()
+{
+    m_writer->deleteAllEntries();
+    // add numbers to the database
+    int m = 200;
+    ostringstream str;
+    string size("size");
+    for (int i=1; i<=m; ++i) {
+        str << i;
+        string value(str.str());
+        string name('/'+value);
+        {
+            AnalysisResult idx(name, 0, *m_writer, *m_streamAnalyzer);
+            idx.addValue(idx.config().fieldRegister().sizeField, value);
+        }
+        str.str("");
+    }
+    m_writer->commit();
+    QueryParser parser;
+    Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
+    int count = m_reader->countHits(q);
+
+    str.str("");
+    CPPUNIT_ASSERT_EQUAL_MESSAGE(str.str(), m, count);
 }
