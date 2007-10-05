@@ -238,8 +238,9 @@ class DirLister::Private {
 public:
     STRIGI_MUTEX_DEFINE(mutex);
     list<string> todoPaths;
+    const AnalyzerConfiguration* const config;
 
-    Private(const AnalyzerConfiguration* ic) {}
+    Private(const AnalyzerConfiguration* ic) :config(ic) {}
     int nextDir(std::string& path,
         std::vector<std::pair<std::string, struct stat> >& dirs);
 };
@@ -267,6 +268,7 @@ DirLister::stopListing() {
 int
 DirLister::Private::nextDir(std::string& path,
         std::vector<std::pair<std::string, struct stat> >& dirs) {
+    // check if there are more directories to work on
     if (todoPaths.size() == 0) {
         return -1;
     }
@@ -294,12 +296,20 @@ DirLister::Private::nextDir(std::string& path,
             entrypath.resize(entrypathlength);
             entrypath.append(entryname);
             if (strigi_lstat(entrypath.c_str(), &entrystat) == 0) {
-                dirs.push_back(
-                    make_pair<string,struct stat>(entrypath, entrystat));
                 if (S_ISDIR(entrystat.st_mode)) {
-                    STRIGI_MUTEX_LOCK(&mutex);
-                    todoPaths.push_back(entrypath);
-                    STRIGI_MUTEX_UNLOCK(&mutex);
+                    if (config == 0 ||
+                            config->indexDir(
+                                entrypath.c_str(), entryname.c_str())){
+                        STRIGI_MUTEX_LOCK(&mutex);
+                        todoPaths.push_back(entrypath);
+                        STRIGI_MUTEX_UNLOCK(&mutex);
+                        dirs.push_back(make_pair<string,struct stat>(
+                            entrypath, entrystat));
+                    }
+                } else if (config == 0 || config->indexFile(entrypath.c_str(),
+                        entryname.c_str())) {
+                    dirs.push_back(
+                        make_pair<string,struct stat>(entrypath, entrystat));
                 }
             }
         }
