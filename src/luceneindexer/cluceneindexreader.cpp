@@ -739,7 +739,9 @@ void
 CLuceneIndexReader::getChildren(const std::string& parent,
             std::map<std::string, time_t>& childs) {
     childs.clear();
-    if ( !checkReader() ) {
+    // force a fresh reader. This is important because the function
+    // getChildren is essential for updating the index
+    if ( !checkReader(true) ) {
         return;
     }
     // build a query
@@ -747,7 +749,6 @@ CLuceneIndexReader::getChildren(const std::string& parent,
         parent);
     Query* q = _CLNEW TermQuery(t);
     _CLDECDELETE(t);
-
     IndexSearcher searcher(reader);
     Hits* hits = 0;
     int nhits = 0;
