@@ -42,7 +42,7 @@ namespace lucene {
 
 class CLuceneIndexReader;
 class CLuceneIndexWriter;
-class CLuceneIndexManager : public Strigi::IndexManager {
+class CLUCENEINDEXER_EXPORT CLuceneIndexManager : public Strigi::IndexManager {
 private:
     StrigiMutex writelock;
     StrigiMutex lock;
