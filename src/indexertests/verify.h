@@ -28,9 +28,9 @@ extern StrigiMutex errorlock;
 #define VERIFY(TESTBOOL) if (!(TESTBOOL)) {\
 	fprintf(stderr, "test '%s' failed at\n\t%s:%i\n", \
 		#TESTBOOL, __FILE__, __LINE__); \
-        STRIGI_MUTEX_LOCK(&errorlock.lock); \
+        errorlock.lock(); \
 	founderrors++; \
-        STRIGI_MUTEX_UNLOCK(&errorlock.lock); \
+        errorlock.unlock(); \
 }
 
 #endif
