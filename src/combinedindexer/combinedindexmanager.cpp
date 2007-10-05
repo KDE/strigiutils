@@ -89,8 +89,6 @@ public:
     int32_t countDocuments();
     int32_t countWords();
     int64_t indexSize();
-    int64_t documentId(const string& uri);
-    time_t mTime(int64_t docid);
     time_t mTime(const string& uri);
     vector<pair<string,uint32_t> > histogram(
             const string& query, const string& fieldname,
@@ -101,6 +99,8 @@ public:
     vector<string> keywords(const string& keywordmatch,
         const vector<string>& fieldnames,
         uint32_t max, uint32_t offset);
+    void getChildren(const std::string& parent,
+            std::map<std::string, time_t>& children);
 };
 
 class CombinedIndexManager::Private {
@@ -156,22 +156,22 @@ CombinedIndexManager::addReadonlyIndex(const string& indexdir,
         return;
     }
     IndexManager* im = f->second(indexdir.c_str());
-    STRIGI_MUTEX_LOCK(&p->lock.lock);
+    p->lock.lock();
     p->readmanagers[indexdir] = im;
-    STRIGI_MUTEX_UNLOCK(&p->lock.lock);
+    p->lock.unlock();
 }
 void
 CombinedIndexManager::removeReadonlyIndex(const string& indexdir) {
-    STRIGI_MUTEX_LOCK(&p->lock.lock);
+    p->lock.lock();
     p->readmanagers.erase(indexdir);
-    STRIGI_MUTEX_UNLOCK(&p->lock.lock);
+    p->lock.unlock();
 }
 int32_t
 CombinedIndexReader::countHits(const Query& query) {
     int32_t c = m->p->writermanager->indexReader()->countHits(query);
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         c += i->second->indexReader()->countHits(query);
@@ -183,9 +183,9 @@ CombinedIndexReader::query(const Query& q, int offset, int max) {
     /** TODO merge the result documents by score **/
     vector<IndexedDocument> v = m->p->writermanager->indexReader()
         ->query(q, offset, max);
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         v = i->second->indexReader()->query(q, offset, max);
@@ -202,39 +202,21 @@ CombinedIndexReader::getHits(const Query& q,
     std::vector<std::vector<Variant> > v;
     m->p->writermanager->indexReader()->getHits(q, fields, types,
         result, off, max);
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         i->second->indexReader()->getHits(q, fields, types, v, off, max);
     }
 #endif    
 }
-/*map<string, time_t>
-CombinedIndexReader::files(char depth) {
-    map<string, time_t> files = m->p->writermanager->indexReader()
-        ->files(depth);
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
-    map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
-    map<string, TSSPtr<IndexManager> >::const_iterator i;
-    for (i = f.begin(); i != f.end(); ++i) {
-        map<string, time_t> af(i->second->indexReader()->files(depth));
-        map<string, time_t>::const_iterator j;
-        for (j = af.begin(); j != af.end(); ++j) {
-            // insert entry if it does not yet occur in the map
-            files.insert(*j);
-        }
-    }
-    return files;
-}*/
 int32_t
 CombinedIndexReader::countDocuments() {
     int32_t c = m->p->writermanager->indexReader()->countDocuments();
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         c += i->second->indexReader()->countDocuments();
@@ -244,9 +226,9 @@ CombinedIndexReader::countDocuments() {
 int32_t
 CombinedIndexReader::countWords() {
     int32_t c = m->p->writermanager->indexReader()->countWords();
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         c += i->second->indexReader()->countWords();
@@ -256,9 +238,9 @@ CombinedIndexReader::countWords() {
 int64_t
 CombinedIndexReader::indexSize() {
     int64_t c = m->p->writermanager->indexReader()->indexSize();
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     map<string, TSSPtr<IndexManager> >::const_iterator i;
     for (i = f.begin(); i != f.end(); ++i) {
         c += i->second->indexReader()->indexSize();
@@ -271,24 +253,32 @@ CombinedIndexReader::histogram(const string& query, const string& fieldname,
     return m->p->writermanager->indexReader()->histogram(query,
         fieldname, labeltype);
 }
-int64_t
-CombinedIndexReader::documentId(const string& uri) {
-    return m->p->writermanager->indexReader()->documentId(uri);
-}
-time_t
-CombinedIndexReader::mTime(int64_t docid) {
-    return m->p->writermanager->indexReader()->mTime(docid);
-}
 time_t
 CombinedIndexReader::mTime(const std::string& uri) {
     return m->p->writermanager->indexReader()->mTime(uri);
 }
+void
+CombinedIndexReader::getChildren(const std::string& parent,
+            std::map<std::string, time_t>& children) {
+    children.clear();
+    m->p->writermanager->indexReader()->getChildren(parent, children);
+    m->p->lock.lock();
+    map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
+    m->p->lock.unlock();
+    map<string, TSSPtr<IndexManager> >::const_iterator i;
+    for (i = f.begin(); i != f.end(); ++i) {
+        if (children.size()) {
+            return;
+        }
+        i->second->indexReader()->getChildren(parent, children);
+    }
+}
 vector<string>
 CombinedIndexReader::fieldNames() {
     vector<string> n = m->p->writermanager->indexReader()->fieldNames();
-    STRIGI_MUTEX_LOCK(&m->p->lock.lock);
+    m->p->lock.lock();
     map<string, TSSPtr<IndexManager> > f = m->p->readmanagers;
-    STRIGI_MUTEX_UNLOCK(&m->p->lock.lock);
+    m->p->lock.unlock();
     if (f.size() == 0) return n;
 
     set<string> names;
