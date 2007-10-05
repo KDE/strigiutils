@@ -221,14 +221,6 @@ SqliteIndexReader::countDocuments() {
     manager->deref();
     return count;
 }
-int64_t
-SqliteIndexReader::documentId(const string& uri) {
-    return -1;
-}
-time_t
-SqliteIndexReader::mTime(int64_t docid) {
-    return 0;
-}
 time_t
 SqliteIndexReader::mTime(const std::string& uri) {
     return 0;

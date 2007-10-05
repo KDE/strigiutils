@@ -38,8 +38,6 @@ public:
         int off, int max);
     std::map<std::string, time_t> files(char depth);
     int32_t countDocuments();
-    int64_t documentId(const std::string& uri);
-    time_t mTime(int64_t docid);
     time_t mTime(const std::string& uri);
     std::vector<std::pair<std::string,uint32_t> > histogram(
             const std::string& query, const std::string& fieldname,

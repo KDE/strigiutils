@@ -160,20 +160,6 @@ GrepIndexReader::indexSize() {
 /**
  * This does not have to be implemented since we have not index.
  **/
-int64_t
-GrepIndexReader::documentId(const string& uri) {
-    return -1;
-}
-/**
- * This does not have to be implemented since we have not index.
- **/
-time_t
-GrepIndexReader::mTime(int64_t docid) {
-    return -1;
-}
-/**
- * This does not have to be implemented since we have not index.
- **/
 time_t
 GrepIndexReader::mTime(const std::string& uri) {
     return -1;
