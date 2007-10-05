@@ -34,7 +34,6 @@ using namespace std;
 
 class DirAnalyzer::Private {
 public:
-    //FileLister filelister;
     DirLister dirlister;
     IndexManager& manager;
     AnalyzerConfiguration& config;
@@ -94,7 +93,7 @@ int
 DirAnalyzer::Private::analyzeFile(const string& path, time_t mtime,
         bool realfile) {
     AnalysisResult analysisresult(path, mtime, *manager.indexWriter(),
-        analyzer);
+        analyzer, "");
     if (realfile) {
         FileInputStream file(path.c_str());
         return analysisresult.index(&file);
@@ -192,7 +191,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
             for (vector<pair<string, struct stat> >::const_iterator i
                     = toIndex.begin(); i != fend; ++i) {
                 AnalysisResult analysisresult(i->first, i->second.st_mtime,
-                    *manager.indexWriter(), *analyzer);
+                    *manager.indexWriter(), *analyzer, path);
                 if (S_ISREG(i->second.st_mode)) {
                     FileInputStream file(i->first.c_str());
                     analysisresult.index(&file);
@@ -213,6 +212,16 @@ DirAnalyzer::analyzeDir(const string& dir, int nthreads, AnalysisCaller* c,
         const string& lastToSkip) {
     return p->analyzeDir(dir, nthreads, c, lastToSkip);
 }
+namespace {
+string
+removeTrailingSlash(const string& path) {
+    string cleanpath(path);
+    if (path.length() && path[path.length()-1] == '/') {
+        cleanpath.resize(path.length()-1);
+    }
+    return cleanpath;
+}
+}
 int
 DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         AnalysisCaller* c, const string& lastToSkip) {
@@ -228,7 +237,7 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         return retval;
     }
 
-    dirlister.startListing(dir);
+    dirlister.startListing(removeTrailingSlash(dir));
     if (lastToSkip.length()) {
         dirlister.skipTillAfter(lastToSkip);
     }
@@ -282,7 +291,7 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
 
     // loop over all directories that should be updated
     for (vector<string>::const_iterator d =dirs.begin(); d != dirs.end(); ++d) {
-        dirlister.startListing(*d);
+        dirlister.startListing(removeTrailingSlash(*d));
         for (int i=1; i<nthreads; i++) {
             DA* da = new DA();
             da->diranalyzer = this;
