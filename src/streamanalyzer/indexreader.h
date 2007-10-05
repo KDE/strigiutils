@@ -99,16 +99,6 @@ public:
      **/
     virtual int64_t indexSize() { return -1; }
     /**
-     * Obtain the documentid for a given document path.
-     *
-     * @param the path of a document
-     * @return the id of the document or -1 if there is no document with
-     *         that id in the index or if there are more than one documents
-     *         with that id in the index
-     * @deprecated the use of the docId is now deprecated.
-     **/
-    virtual int64_t documentId(const std::string& uri) = 0;
-    /**
      * Retrieve the mtime for given document.
      *
      * @param the path of the document
@@ -116,10 +106,6 @@ public:
      *         document in the index, 0 is returned.
      **/
     virtual time_t mTime(const std::string& path) = 0;
-    /**
-     * @deprecated use mTime(const std::string&)
-     */
-    virtual time_t mTime(int64_t docid) = 0;
     /**
      * Retrieve the fieldnames in use in this index.
      **/
