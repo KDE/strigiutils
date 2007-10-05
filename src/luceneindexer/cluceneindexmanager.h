@@ -42,7 +42,7 @@ namespace lucene {
 
 class CLuceneIndexReader;
 class CLuceneIndexWriter;
-class CLUCENEINDEXER_EXPORT CLuceneIndexManager : public Strigi::IndexManager {
+class CLuceneIndexManager : public Strigi::IndexManager {
 private:
     StrigiMutex writelock;
     StrigiMutex lock;
@@ -56,7 +56,6 @@ private:
     static int numberOfManagers;
 
     void openWriter(bool truncate=false);
-    void refreshReaders();
 public:
     explicit CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();

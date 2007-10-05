@@ -82,14 +82,14 @@ CLuceneIndexManager::luceneReader() {
     // TODO check if we should update/reopen the reader
     STRIGI_THREAD_TYPE self = STRIGI_THREAD_SELF();
     CLuceneIndexReader* r;
-    STRIGI_MUTEX_LOCK(&lock.lock);
+    lock.lock();
     r = readers[self];
-    STRIGI_MUTEX_UNLOCK(&lock.lock);
+    lock.unlock();
     if (r == 0) {
         r = new CLuceneIndexReader(this, dbdir);
-        STRIGI_MUTEX_LOCK(&lock.lock);
+        lock.lock();
         readers[self] = r;
-        STRIGI_MUTEX_UNLOCK(&lock.lock);
+        lock.unlock();
     }
     return r;
 }
@@ -103,7 +103,7 @@ CLuceneIndexManager::bitSets() {
 }*/
 IndexWriter*
 CLuceneIndexManager::refWriter() {
-    STRIGI_MUTEX_LOCK(&writelock.lock);
+    writelock.lock();
     if (indexwriter == 0) {
         openWriter();
     }
@@ -111,7 +111,7 @@ CLuceneIndexManager::refWriter() {
 }
 void
 CLuceneIndexManager::derefWriter() {
-    STRIGI_MUTEX_UNLOCK(&writelock.lock);
+    writelock.unlock();
 }
 void
 CLuceneIndexManager::openWriter(bool truncate) {
@@ -130,9 +130,13 @@ CLuceneIndexManager::openWriter(bool truncate) {
 }
 void
 CLuceneIndexManager::closeWriter() {
-    if (indexwriter == 0) return;
-    // close all readers, so they will be reopenened with the fresh data
-    refreshReaders();
+    refWriter();
+    if (indexwriter == 0) {
+        derefWriter();
+        return;
+    }
+    // update the timestamp on the index, so that the readers will reopen
+    setIndexMTime();
     try {
         indexwriter->close();
         delete indexwriter;
@@ -142,15 +146,7 @@ CLuceneIndexManager::closeWriter() {
     indexwriter = 0;
     // clear the cache
     //bitsets.clear();
-}
-void
-CLuceneIndexManager::refreshReaders() {
-    map<STRIGI_THREAD_TYPE, CLuceneIndexReader*>::iterator i;
-    for (i = readers.begin(); i != readers.end(); ++i) {
-        if (i->second) {
-            i->second->closeReader();
-        }
-    }
+    derefWriter();
 }
 int
 CLuceneIndexManager::docCount() {
@@ -186,22 +182,22 @@ CLuceneIndexManager::indexSize() {
 void
 CLuceneIndexManager::deleteIndex() {
     closeWriter();
-    refreshReaders();
+    setIndexMTime();
     openWriter(true);
 }
 time_t
 CLuceneIndexManager::indexMTime() {
     time_t t;
-    STRIGI_MUTEX_LOCK(&lock.lock);
+    lock.lock();
     t = mtime;
-    STRIGI_MUTEX_UNLOCK(&lock.lock);
+    lock.unlock();
     return t;
 }
 void
 CLuceneIndexManager::setIndexMTime() {
     struct timeval t;
     gettimeofday(&t, 0);
-    STRIGI_MUTEX_LOCK(&lock.lock);
+    lock.lock();
     mtime = t.tv_sec;
-    STRIGI_MUTEX_UNLOCK(&lock.lock);
+    lock.unlock();
 }
