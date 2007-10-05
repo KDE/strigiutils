@@ -58,4 +58,3 @@ install(TARGETS cluceneindex
 	RUNTIME DESTINATION bin
 	ARCHIVE DESTINATION  ${LIB_DESTINATION}
 )
-# FIXME: no need to install headers here?
