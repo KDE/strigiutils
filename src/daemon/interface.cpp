@@ -93,10 +93,7 @@ Interface::getStatus() {
 string
 Interface::stopDaemon() {
     cerr << "stopDaemon" << endl;
-    active = false;
-    // signal to all threads to quit. Do not use raise() here, because it will
-    // cause a hang
-    kill(getpid(), SIGINT);
+    StrigiThread::stopThreads();
     return "";
 }
 string
