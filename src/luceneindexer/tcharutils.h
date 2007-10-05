@@ -23,10 +23,11 @@
 
 #include <wchar.h>
 #include <string>
+#include <strigi/strigiconfig.h>
 
-std::string wchartoutf8(const wchar_t*);
-std::wstring utf8toucs2(const char*);
-std::string wchartoutf8(const std::wstring&);
-std::wstring utf8toucs2(const std::string&);
+std::string CLUCENEINDEXER_EXPORT wchartoutf8(const wchar_t*);
+std::wstring CLUCENEINDEXER_EXPORT utf8toucs2(const char*);
+std::string CLUCENEINDEXER_EXPORT wchartoutf8(const std::wstring&);
+std::wstring CLUCENEINDEXER_EXPORT utf8toucs2(const std::string&);
 
 #endif
