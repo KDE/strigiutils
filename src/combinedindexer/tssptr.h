@@ -57,9 +57,9 @@ public:
 private:
     void deref() {
         if (p) {
-            STRIGI_MUTEX_LOCK(&p->lock.lock);
+            p->lock.lock();
             int c = --(p->count);
-            STRIGI_MUTEX_UNLOCK(&p->lock.lock);
+            p->lock.unlock();
             if (c == 0) {
                 delete p->p;
                 delete p;
@@ -69,9 +69,9 @@ private:
     }
     void set(const TSSPtr& t) {
         if (t.p) {
-            STRIGI_MUTEX_LOCK(&t.p->lock.lock);
+            t.p->lock.lock();
             t.p->count++;
-            STRIGI_MUTEX_UNLOCK(&t.p->lock.lock);
+            t.p->lock.unlock();
             p = t.p;
         } else {
             p = 0;
