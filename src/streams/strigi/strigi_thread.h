@@ -60,13 +60,20 @@
 #endif //mutex types
 
 class StrigiMutex{
+private:
+    STRIGI_MUTEX_DEFINE(m_lock);
 public:
-    STRIGI_MUTEX_DEFINE(lock);
     StrigiMutex(){
-        STRIGI_MUTEX_INIT(&lock);
+        STRIGI_MUTEX_INIT(&m_lock);
     }
     ~StrigiMutex(){
-        STRIGI_MUTEX_DESTROY(&lock);
+        STRIGI_MUTEX_DESTROY(&m_lock);
+    }
+    void lock() {
+        STRIGI_MUTEX_LOCK(&m_lock);
+    }
+    void unlock() {
+        STRIGI_MUTEX_UNLOCK(&m_lock);
     }
 };
 
