@@ -65,9 +65,10 @@ main(int argc, char **argv) {
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
     try {
-        CLuceneIndexManager manager(argv[1]);
-        Strigi::DirAnalyzer analyzer(manager, ic);
+        Strigi::IndexManager *manager = createCLuceneIndexManager(argv[1]);
+        Strigi::DirAnalyzer analyzer(*manager, ic);
         analyzer.analyzeDir(argv[2]);
+        delete manager;
     } catch (...) {
         cerr << "error while creating index" << endl;
     }
