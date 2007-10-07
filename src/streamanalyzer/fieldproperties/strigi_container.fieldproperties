@@ -1,0 +1,13 @@
+[Field]
+Uri=container.item
+Name=Contains
+TypeUri=string
+Description=Contains item
+Comment=
+
+[Field]
+Uri=container.item_count
+Name=Item count
+TypeUri=string
+Description=Contained item count
+Comment=

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.gz/a' mtime='1165946071'>
+  <value name='system.size'>23</value>
+  <value name='system.depth'>1</value>
+  <text>a multiline
+text file
+</text>
+ </file>
+ <file uri='a.gz' mtime='1165946071'>
+  <value name='system.size'>45</value>
+  <value name='system.depth'>0</value>
+ </file>

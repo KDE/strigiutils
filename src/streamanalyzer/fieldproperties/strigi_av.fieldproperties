@@ -1,0 +1,13 @@
+[Field]
+Uri=av.audio_codec
+Name=Audio codec
+TypeUri=string
+Description=Audio codec
+Comment=
+
+[Field]
+Uri=av.video_codec
+Name=Video codec
+TypeUri=string
+Description=Video codec
+Comment=

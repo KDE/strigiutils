@@ -1,0 +1,64 @@
+[Field]
+Uri=image.resolution.x
+Name=Resolution X
+TypeUri=integer
+Description=Image resolution along X axis
+Comment=
+
+[Field]
+Uri=image.resolution.y
+Name=Resolution Y
+TypeUri=integer
+Description=Image resolution along Y axis
+Comment=
+
+[Field]
+Uri=image.width
+Name=Width
+TypeUri=integer
+Description=Image width
+Comment=
+
+[Field]
+Uri=image.height
+Name=Height
+TypeUri=integer
+Description=Image height
+Comment=
+
+[Field]
+Uri=image.color_space
+Name=Color space
+TypeUri=string
+Description=Image color space
+Comment=RGB, RGBA, CMYK, Grayscale, Indexed(palette) and more exotic, for pictures. Something similar exists for video. TODO: complete list
+
+[Field]
+Uri=image.color_depth
+ParentUri=media.sample_format
+Name=Color depth
+TypeUri=string
+Description=Image color depth
+Comment=
+
+[Field]
+Uri=image.color_count
+ParentUri=media.sample_format
+Name=Color_count
+TypeUri=string
+Description=Image color count
+Comment=For palette
+
+[Field]
+Uri=image.aspect_ratio
+Name=Aspect ratio
+TypeUri=string
+Description=Image aspect ratio
+Comment=user-friendly representation of dimensions.x/dimensions.y
+
+[Field]
+Uri=image.interlace
+Name=Interlace
+TypeUri=string
+Description=Image interlace mode
+Comment=none|Adam7|

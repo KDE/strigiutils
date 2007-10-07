@@ -1,0 +1,27 @@
+[Field]
+Uri=user.tags
+Name=Tags
+TypeUri=string
+Description=User tags
+Comment=user-assigned tags. tags can be initially populated from paths(i.e. /music/rock/ballads => categories music, rock and ballads)
+
+[Field]
+Uri=user.comment
+Name=User comment
+TypeUri=string
+Description=Comment provided by user
+Comment=
+
+[Field]
+Uri=user.rating
+Name=Rating
+TypeUri=integer
+Description=User's rating of the file
+Comment=user's opinion on the quality of file. 0 to 100, 100 being best
+
+[Field]
+Uri=user.usage_intensity
+Name=Usage intensity
+TypeUri=integer
+Description=Usage intensity rating
+Comment=how often and for how long this file is used. For example play count.

@@ -1,0 +1,113 @@
+0.5.6
+ - Added Xesam User Language parser. Now it will be possible to handle Xesam UserLanguage queries (http://wiki.freedesktop.org/wiki/XesamUserSearchLanguage).
+ - Replaced .ini-based ontology parser with RDF/XML one.
+ - Updated strigicmd: now it's possible to perform searches formulated
+ following xesam userlanguage specifications.
+ - Improved ontology introspection API: properties and classes now have child lists and applicable classes/properties lists.
+ - change IndexReader::getFiles to IndexReader::getChildren.
+ - removed IndexReader::documentId and IndexReader::mTime.
+ - loads of build issues fixed
+ - added a script that helps you to find the patch that broke a unit test
+ - add fieldname for document content per the Xesam standard.
+ - lots more
+0.5.5
+ - GUI now uses a .ui file making future improvements much easier
+ - install detection script for ease of use in other cmake projects
+ - modifying the signature of endAnalysis to endAnalysis(bool complete) 
+   for StreamLineAnalyzer, StreamEventAnalyzer, and StreamSaxAnalyzer
+ - add a function to AnalyzerConfiguration that tell how many bytes can 
+   be read at most from a stream
+ - add an SAX analyzer plugin that extracts the namespaces used in XML
+   documents. With this it possible to get all XML documents that contain e.g.
+   Chemical Markup Language or Dublin Core.
+ - add a stream for changing the encoding of an incoming stream on the fly
+ - use the new encoding stream to do better email parsing
+ - add m3u stream analyzer.
+ - add simple test program for strigi xesam query builder. It loads a file
+   containing the xesam query. It converts the xesam query into a Strigi::Query
+   object. It serializes the Strigi::Query object to xml for e.g. quality
+   control.
+ - add xesamquery option to strigicmd: now it's possibile to make queries
+   using Xesam language.
+ - add XesamQueryLanguage queries support. Now is possibile to translate
+   xesam queries formulated using XesamQueryLanguage into Strigi::Query objects.
+ - add a cgi executable that takes multipart/form-data and outputs an analysis
+   of the data as xml
+ - give xmlindexer the ability to read from stdin
+ - big improvement in parsing ms word files
+ - better input sanity checking. thanks to zzuf for reporting the errors
+ - cleanup of private variables in classes by introducing a d-pointer
+
+0.5.4
+ - simplify PollingListener by letting it reuse code from DirAnalyzer
+ - improve parsing speed by reading incrementally large blocks and only if no throughanalyzer is ready yet
+ - extract more data from ogg and ID3 files
+ - new registerField(fieldname) function that gets additional data from the
+   ontology
+ - support of indexwriter calls: addValue(index, field, data, size),
+   addValue(index, field, double_value) to CLucene backend.
+ - enable passing of "Tokenized" flag parameter to CLucene backend
+ - support for the Keyword Terms which are not tokenized during queries
+ - handling of optional indexing flags, which are loaded from the ontology
+ - handling of cardinality constraint when indexing
+ - add keyword query type which allows for using keywords that are not split
+   up. e.g. chemistry.molecular_formula#"C 4 H 10". basically "#" sign tells --    do not tokenize
+ - parse the userlanguage wrapped in xesam query language xml
+ - add searialization to xml for Strigi::Query and Strigi::Term, useful for
+   debugging purposes
+ - add types from the xesam dbus interface to strigitypes.h
+ - add support for gif files
+ - add support for analyzing jpeg files.
+ - add prioritized, multithreaded queue for incoming requests
+ - add option --lastfiletoskip to diranalyzer and xmlindexer
+ - add support for Cc: Bcc: Message-ID: In-Reply-To: References: From: and To:
+ - add exclude and include filters to strigicmd create and update commands
+ - add deindex option, it can be used for removing dirs or files from an index
+   created by strigi
+
+0.3.11
+ - SunOS, BSD, 64 bit and Coverity compatibility fixes
+ - Search in a set of default fields and not just in the text content of a file, if no specific field is specified.
+ - Add histogram widget to simple search client
+ - Add support for Ogg Vorbis
+ - Better decoding of email headers
+ - Expand Query object to handle nested queryies
+ - Fix highlighting and display of title in search results.
+ - Fix path for the child indexables
+ - Fix memory problems in archivereader
+ - Check for too short file names and omit the RPM trailer from the results.
+ - Add an additional unit test for the RPM stream provider.
+ - Revert raise() to kill(getpid()) because raise hangs the thread.
+ - Install qtdbus library for strigi.
+
+0.3.10
+ - Convienience classes for using Strigi over Qt 4.2 DBus
+ - Change buildsystem to allow building of deepfind, deepgrep and xmlindexer
+   separately
+ - Speedup of deepfind by selectively using only the analyzers deepfind needs
+ - Many portability fixes (GCC 3, Forte, MSVC)
+ - New, more efficien plugin loading
+ - Add IFilter plugin for the Windows version
+ - Remove the big Strigi lock (faster indexing)
+ - Switch strigiclient to communicate of DBus instead of over a unix socket
+ - Reorganization of the indexer with a new IndexerConfiguration
+ - Improvements of file name filters
+ - New Qt widget for configuring file name filters
+ - Add file name setting to the DBus interface
+ - Move verbose unit tests
+ - Bugfixes in some streams
+
+0.3.9
+ - Added deepfind and deepgrep, programs that are enhanced versions of find
+   and grep.
+ - Added a new way of storing the configuration in an xml file.
+ - Added a way to search in multiple indexes.
+ - Added xmlindexer, a program that outputs the file parsing results as xml.
+   This is convenient for debugging and can also used by other programs that
+   do not want to write their own indexer. It makes the superior Strigi
+   indexer available to other software in a convenient way.
+ - More versatile filters that determine which files to index. (Flavio
+   Castelli)
+ - Add possibility to index files from the client by feeding the file into the
+   daemon. This opens the way to indexing email from remote servers and web
+   pages.

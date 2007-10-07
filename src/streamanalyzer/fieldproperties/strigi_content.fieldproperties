@@ -1,0 +1,265 @@
+[Field]
+Uri=content.creator
+Name=Creator
+TypeUri=string
+Description=Content creator
+Comment=abstract class, use children. List of entities who created the content(book authors, music band, artist)
+
+[Field]
+Uri=content.author
+ParentUri=content.creator
+Name=Author
+TypeUri=string
+Description=Content author
+Comment=Primary content creator(s)
+
+[Field]
+Uri=content.contributor
+ParentUri=content.creator
+Name=Contributor
+TypeUri=string
+Description=Content contributor
+Comment=Secondary content creator(s)
+
+[Field]
+Uri=content.maintainer
+ParentUri=content.creator
+Name=Maintainer
+TypeUri=string
+Description=Content maintainer
+Comment=Entity keeping the content up to date in general or for a specific purpose.
+
+
+
+[Field]
+Uri=content.creation_time
+Name=Creation time
+TypeUri=datetime
+Description=Content creation time
+Comment=this is different from system.creation_time in that this is the time when the content was actually produced. ID3 tag Year, for e-mail, this is send time etc
+
+[Field]
+Uri=content.last_modified_time
+Name=Modification time
+TypeUri=datetime
+Description=Content last modification time
+Comment=this is different from system.last_modified_time in that this is the time when the content was actually modified, while system.last_modified_time may reflect file rename or some other operation.
+
+[Field]
+Uri=content.genre
+Name=Genre
+TypeUri=string
+Description=Content genre
+Comment=music, literature, movie genre. Also can be used for pictures. Regular photos can be considered Documentary.
+
+[Field]
+Uri=content.subject
+Name=Subject
+TypeUri=string
+Description=Content subject
+Comment= message subject, ODF.subject. Author's subject of the content.
+
+[Field]
+Uri=content.title
+Name=Title
+TypeUri=string
+Description=Content title
+Comment=Author's title of the content. ODF.title, ID3.title
+
+[Field]
+Uri=content.description
+Name=Description
+TypeUri=string
+Description=Content description
+Comment=Author's description of the content.ODF.description.
+
+[Field]
+Uri=content.comment
+Name=Comment
+TypeUri=string
+Description=Content comment
+Comment=Author's comment on the content.
+
+[Field]
+Uri=content.keyword
+Name=Keyword
+TypeUri=string
+Description=Content keyword
+Comment=
+
+[Field]
+Uri=content.version
+Name=Version
+TypeUri=string
+Description=Content version
+Comment=application version. document revision
+
+[Field]
+Uri=content.mime_type
+Name=Mime type
+TypeUri=string
+Description=Content mime type
+Comment=
+
+[Field]
+Uri=content.size
+Name=Content size
+TypeUri=integer
+Description=
+Comment=unpacked size for archives. for other files this might be the same as system.size, might be actual data size w/o headers(not sure about this yet).
+
+[Field]
+Uri=content.charset
+Name=Charset
+TypeUri=string
+Description=Content character encoding
+Comment=document character encoding. This will eventually be obsolete.
+
+[Field]
+Uri=content.language
+Name=Language
+TypeUri=string
+Description=Content language
+Comment=
+
+[Field]
+Uri=content.full_text
+Name=Full text
+TypeUri=string
+Description=Content converted to plain-text
+Comment=This is indexable text body for documents, for images we might eventually do OCR, and speech recognition for audio(hopefully by the end of the century).
+
+[Field]
+Uri=content.ID
+Name=ID
+TypeUri=string
+Description=Content ID
+Comment=Generic content ID. Use subproperties.
+
+[Field]
+Uri=content.doi
+ParentUri=content.ID
+Name=DOI
+TypeUri=string
+Description=Digital Object Identifier
+Comment=http://www.doi.org/
+
+[Field]
+Uri=content.thumbnail
+Name=Thumbnail
+TypeUri=binary
+Description=Content thumbnail
+Comment=
+
+
+
+[Field]
+Uri=content.legal
+Name=Legal Info
+TypeUri=string
+Description=Content Legal Info
+Comment=
+
+[Field]
+Uri=content.license_type
+ParentUri=content.legal
+Name=License type
+TypeUri=string
+Description=Content license type
+Comment=GPL, BSD, proprietary
+
+[Field]
+Uri=content.license
+ParentUri=content.legal
+Name=License
+TypeUri=string
+Description=Content license
+Comment=
+
+[Field]
+Uri=content.copyright
+ParentUri=content.legal
+Name=Copyright
+TypeUri=string
+Description=Content copyright notice
+Comment=
+
+[Field]
+Uri=content.disclaimer
+ParentUri=content.legal
+Name=Disclaimer
+TypeUri=string
+Description=Content disclaimer
+Comment=
+
+[Field]
+Uri=content.warning
+ParentUri=content.legal
+Name=Warning
+TypeUri=string
+Description=Warning of nature of content
+Comment=
+
+
+
+[Field]
+Uri=content.generator
+Name=Generated with
+TypeUri=string
+Description=Content generator software
+Comment=
+
+[Field]
+Uri=content.generator_settings
+Name=Generator settings
+TypeUri=string
+Description=Content generator software settings
+Comment=
+
+[Field]
+Uri=content.format_subtype
+Name=Format subtype
+TypeUri=string
+Description=Content format subtype
+Comment=
+
+
+
+[Field]
+Uri=content.related
+Name=Related
+TypeUri=string
+Description=Related content
+Comment=abstract. use children.
+
+[Field]
+Uri=content.depends
+ParentUri=content.related
+Name=Depends
+TypeUri=string
+Description=Content dependency
+Comment=
+
+[Field]
+Uri=content.conflicts
+ParentUri=content.related
+Name=Conflicts
+TypeUri=string
+Description=Content conflicts with
+Comment=
+
+[Field]
+Uri=content.supercedes
+ParentUri=content.related
+Name=Supercedes
+TypeUri=string
+Description=Content supercedes
+Comment=
+
+[Field]
+Uri=content.links
+ParentUri=content.related
+Name=Links
+TypeUri=string
+Description=Content links to
+Comment=

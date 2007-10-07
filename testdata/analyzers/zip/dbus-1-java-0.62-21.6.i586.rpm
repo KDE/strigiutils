@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/lib/libdbus-gcj-1.a' mtime='1152518197'>
+  <value name='system.size'>7130</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/lib/libdbus-gcj-1.la' mtime='1152518197'>
+  <value name='system.size'>834</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/lib/libdbus-gcj-1.so' mtime='1152518197'>
+  <value name='system.size'>22</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/lib/libdbus-gcj-1.so.0' mtime='1152518197'>
+  <value name='system.size'>22</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/lib/libdbus-gcj-1.so.0.0.0' mtime='1152518197'>
+  <value name='system.size'>10463</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/share/java/dbus-1.jar/org' mtime='1152510834'>
+  <value name='system.size'>0</value>
+  <value name='system.depth'>2</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/share/java/dbus-1.jar/org/freedesktop' mtime='1152510834'>
+  <value name='system.size'>0</value>
+  <value name='system.depth'>2</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/share/java/dbus-1.jar/org/freedesktop/dbus' mtime='1152510916'>
+  <value name='system.size'>0</value>
+  <value name='system.depth'>2</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/share/java/dbus-1.jar/org/freedesktop/dbus/Message.class' mtime='1152510914'>
+  <value name='system.size'>403</value>
+  <value name='system.depth'>2</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm/usr/share/java/dbus-1.jar' mtime='1152518197'>
+  <value name='content.mime_type'>application/zip</value>
+  <value name='system.size'>879</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='dbus-1-java-0.62-21.6.i586.rpm' mtime='1162936781'>
+  <value name='system.size'>15912</value>
+  <value name='system.depth'>0</value>
+ </file>

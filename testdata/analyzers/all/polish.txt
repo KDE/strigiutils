@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='polish.txt' mtime='1163782814'>
+  <value name='system.size'>158</value>
+  <value name='system.depth'>0</value>
+  <text>Dzień dobry
+Chcę powiedzieć, że strigi jest wspaniałą aplikacją, która jednak wymaga
+dużo wysiłku i pracy, abym używał ją na swoim komputerze :)
+</text>
+ </file>

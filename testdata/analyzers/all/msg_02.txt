@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='msg_02.txt/2' mtime='1176553108'>
+  <value name='system.size'>193</value>
+  <value name='system.depth'>1</value>
+  <text>Today's Topics:
+1. testing #1 (Barry A. Warsaw)
+2. testing #2 (Barry A. Warsaw)
+3. testing #3 (Barry A. Warsaw)
+4. testing #4 (Barry A. Warsaw)
+5. testing #5 (Barry A. Warsaw)
+</text>
+ </file>
+ <file uri='msg_02.txt/3' mtime='1176553108'>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #1</value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/4' mtime='1176553108'>
+  <value name='system.size'>210</value>
+  <value name='email.subject'></value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/5' mtime='1176553108'>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #3</value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/6' mtime='1176553108'>
+  <value name='system.size'>236</value>
+  <value name='email.subject'>[Ppp] testing #4</value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/7' mtime='1176553108'>
+  <value name='system.size'>238</value>
+  <value name='email.subject'>[Ppp] testing #5</value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>1</value>
+  <text>hello
+</text>
+ </file>
+ <file uri='msg_02.txt/8' mtime='1176553108'>
+  <value name='system.size'>119</value>
+  <value name='system.depth'>1</value>
+  <text>_______________________________________________
+Ppp mailing list
+Ppp@zzz.org
+http://www.zzz.org/mailman/listinfo/ppp
+</text>
+ </file>
+ <file uri='msg_02.txt' mtime='1176553108'>
+  <value name='system.size'>2811</value>
+  <value name='email.subject'>Ppp digest, Vol 1 #2 - 5 msgs</value>
+  <value name='email.content_type'>text/plain; charset=us-ascii</value>
+  <value name='email.from'>ppp-request@zzz.org</value>
+  <value name='email.to'>ppp@zzz.org</value>
+  <value name='system.depth'>0</value>
+  <text>Send Ppp mailing list submissions to
+ppp@zzz.org
+To subscribe or unsubscribe via the World Wide Web, visit
+http://www.zzz.org/mailman/listinfo/ppp
+or, via email, send a message with subject or body 'help' to
+ppp-request@zzz.org
+You can reach the person managing the list at
+ppp-admin@zzz.org
+When replying, please edit your Subject line so it is more specific
+than "Re: Contents of Ppp digest..."
+</text>
+ </file>

@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.bz2/a/file1' mtime='1139008378'>
+  <value name='system.size'>6</value>
+  <value name='system.depth'>2</value>
+  <text>hallo
+</text>
+ </file>
+ <file uri='a.bz2/a/file2' mtime='1139008384'>
+  <value name='system.size'>7</value>
+  <value name='system.depth'>2</value>
+  <text>hallo!
+</text>
+ </file>
+ <file uri='a.bz2/a' mtime='1162936774'>
+  <value name='content.mime_type'>application/zip</value>
+  <value name='system.size'>275</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='a.bz2' mtime='1162936774'>
+  <value name='system.size'>214</value>
+  <value name='system.depth'>0</value>
+ </file>

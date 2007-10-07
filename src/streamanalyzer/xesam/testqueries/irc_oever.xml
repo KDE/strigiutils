@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<request>
+  <query>
+      <or>
+        <equals>
+          <string caseSensitive="true">Oever</string>
+        </equals>
+        <contains>
+            <string caseSensitive="false">oever</string>
+        </contains>
+    </or>
+  </query>
+</request>

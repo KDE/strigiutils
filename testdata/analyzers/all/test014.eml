@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='test014.eml/peter-ja.html' mtime='1162936788'>
+  <value name='system.size'>790</value>
+  <value name='system.depth'>1</value>
+  <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+&lt;title&gt;Estraierのサンプル文書&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Estraierのサンプル文書&lt;/h1&gt;
+&lt;div&gt;HTML編&lt;/div&gt;
+&lt;hr /&gt;
+&lt;p&gt;ONCE upon a time there were four little Rabbits, and their names were Flopsy, Mopsy, Cotton-tail, and Peter.They lived with their Mother in a sand-bank, underneath the root of a very big fir-tree.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;むかし昔、４匹の子ウサギがいました。彼らの名前は、フロプシー、モプシー、コットンテイル、そして、ピーターといいました。彼らはお母さんと一緒に、とても大きなモミの木の真下にある砂州の中に住んでいました。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</text>
+ </file>
+ <file uri='test014.eml' mtime='1162936788'>
+  <value name='system.size'>2348</value>
+  <value name='email.subject'>美しい日本語を話そう</value>
+  <value name='email.content_type'>text/plain; charset=ISO-2022-JP</value>
+  <value name='email.from'>Mikio Hirabayashi &lt;mikio@users.sourceforge.net&gt;</value>
+  <value name='email.to'>Peter &lt;peter@rabbit.sand-bank.gov&gt;</value>
+  <value name='email.cc'>Flopsy &lt;flopsy@rabbit.sand-bank.gov&gt;, Mopsy &lt;mopsy@rabbit.sand-bank.gov&gt;, Cotton-tail &lt;cotton-tail@rabbit.sand-bank.gov&gt;</value>
+  <value name='content.ID'>&lt;20040610150806.36dc6a91.mikio@users.sourceforge.net&gt;</value>
+  <value name='system.depth'>0</value>
+ </file>

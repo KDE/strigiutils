@@ -1,0 +1,14 @@
+/** @mainpage The Strigi API Reference
+
+Strigi is a Desktop Search Engine. It is very modular and uses the
+efficient JStreams classes to read files that are embedded at
+arbitrary depth in other documents.
+
+For more information, have a look at the streams and
+streamanalyzer sections.
+
+*/
+// DOXYGEN_VERSION=4.0
+// DOXYGEN_NAME=strigi
+// DOXYGEN_ENABLE=YES
+// DOXYGEN_SET_RECURSIVE = YES

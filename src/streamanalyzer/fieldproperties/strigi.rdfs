@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE rdf:RDF [
+	 <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	 <!ENTITY xesam 'http://freedesktop.org/standards/xesam/1.0/core#'>
+	 <!ENTITY strigi 'http://strigi.sf.net/ontologies/0.9#'>
+	 <!ENTITY xss 'http://freedesktop.org/standards/xesam/1.0/schema#'>
+	 <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+<rdf:RDF xmlns:rdf="&rdf;"
+	 xmlns:xesam="&xesam;"
+	 xmlns:strigi="&strigi;"
+	 xmlns:xss="&xss;"
+	 xmlns:rdfs="&rdfs;">
+
+<rdf:Property rdf:about="&strigi;depth">
+	<rdfs:label>strigi:depth</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>Embedding  depth</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&strigi;parentUrl">
+	<rdfs:label>strigi:parentUrl</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Source"/>
+	<rdfs:comment>Parent URL</rdfs:comment>
+</rdf:Property>
+
+
+
+</rdf:RDF>

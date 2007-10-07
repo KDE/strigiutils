@@ -1,0 +1,135 @@
+Strigi
+
+Overview
+
+Strigi is a fast and light desktop search engine. It can handle a large range of file formats such as emails, office documents, media files, and file archives. It can index files that are embedded in other files. This means email attachments and files in zip files are searchable as if they were normal files on your harddisk.
+
+Strigi is normally run as a background daemon that can be accessesed by many other programs at once. In addition to the daemon, Strigi comes with powerful replacements for the popular unix commands 'find' and 'grep'. These are called 'deepfind' and 'deepgrep' and can search inside files just like the strigi daemon can.
+
+History
+
+For my personal use I've written the jstreams classes that allow one to easily read nested files. These have proven very fast and have been included in the clucene c++ search engine. These classes would also be a cool extension to the kio plugins for allowing the user to browse e.g. files in a zip file that is stored in an email attachment. Another use would be to write a crawler that can gather information from all files in the filesystem even if they are hidden in emails or archives. I intended to add this feature to Kat, but because of the slowdown in the Kat project the latest Kat development version is not complete and does not build.
+
+So I developed a small daemon that can index information using the new crawler. Now i've reached a point that the crawler is very stable and fast. How fast exactly depends on your system. It comes complete with a simple gui to controll the daemon and to search. I've named the thing Strigi, because I hope it grows into a Kat.
+
+Here are the main features of Strigi:
+- very fast crawling
+- very small memory footprint
+- no hammering of the system
+- pluggable backend, currently clucene and hyperestraier, sqlite3 and xapian are in the works
+- communication between daemon and search program over an abstract interface, this is currently  a simple socket but implementation of dbus is a possibility. There's a small perl program in the code as an example of how to query. This is so easy that any KDE app could implement this.
+- simple interface for implementing plugins for extracting information. we'll try to reuse the kat plugins, although native plugins will have a large speed advantage
+- calculation of sha1 for every file crawled (allows fast finding of duplicates)
+
+Requirements
+- CLucene >= 0.9.16 (http://clucene.sf.net)
+- CMake >= 2.4.2 (http://www.cmake.org)
+- ZLib >= 1.2.3 (http://www.zlib.net)
+- BZip2 >= 1.0.3 (http://www.bzip.org)
+- LibXml2 (http://xmlsoft.org/)
+
+Optional:
+- Qt4 >= 4.2 (for a graphical interface)
+- D-Bus (http://www.freedesktop.org/wiki/Software/dbus): it is optional but is tuned on by default
+- linux kernel >= 2.6.13 (for inotify support)
+- log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
+
+Upgrading:
+If you are upgrading from a version prior of 0.3.9 you can convert your old configuration files using a simple command-line program called strigiconfupdater. Just type 'strigiconfupdater' to see the help message explaining how it works.
+
+
+How to obtain and build Strigi from SVN?
+-----------------------------------------------
+
+Execute these commands:
+
+ svn co svn://anonsvn.kde.org/home/kde/trunk/kdesupport/strigi
+ cd strigi
+ mkdir build
+ cd build
+ cmake -DCMAKE_BUILD_TYPE=DEBUG ..
+ make
+ make install
+
+Some possible cmake options:
+ -DCMAKE_INSTALL_PREFIX=${HOME}/testinstall
+   install strigi in a custom directory
+ -DCMAKE_INCLUDE_PATH=${HOME}/testinstall/include
+   include a custom include directory
+ -DCMAKE_LIBRARY_PATH=${HOME}/testinstall/lib
+   include a custom library directory
+ -DENABLE_INOTIFY:BOOL=ON
+   enable inotify support, requires kernel >= 2.6.13 with inotify support enabled 
+ -DENABLE_LOG4CXX:BOOL=ON
+   enable log4cxx support, provides advanced logging features using log4cxx lib
+ -DENABLE_DBUS:BOOL=ON
+   use DBus for communication instead of the socket based communication
+ -DLIB_DESTINATION=lib64
+   if you have a 64 bit system with separate libraries for 64 bit libraries
+
+You can't enable inotify and polling at the same time, you've to choose one of them.
+If you want to use the GUI, you need to have >= Qt 4.1.2 installed. On Debian and Kubuntu, you can do this with 'sudo apt-get install libqt4-*'.
+If the cmake call still cannot find Qt4, you can call cmake like this:
+  QTDIR=/usr/lib/qt4 PATH=$QTDIR/bin:$PATH cmake ..
+
+
+Strigi can currently use 2 different backends with 2 more in the works. Install at least CLucene or Hyper Estraier.
+
+++ CLucene        http://clucene.sf.net/
+++ Hyper Estraier http://hyperestraier.sourceforge.net/
++  Sqlite3        http://sqlite.org/
++  Xapian         http://xapian.org/
+
+You need to use a CLucene 0.9.16. It can be found here:
+ http://sourceforge.net/project/showfiles.php?group_id=80013
+
+Usage:
+Start Strigi by running 'strigiclient', then choose a backend and press 'Start daemon'. Now you can configure directories to index and start indexing.
+
+Software design:
+
+ Here's what's in the different subdirectories:
+ 
+ streams
+ A collection of stream classes that are inspired by java.io.Inputstream. These
+ classes can be nicely nested so that you can transform streams or read
+ substreams that represent a nested file. E.g. ZipStreamProvider takes a
+ stream as input and gives out substreams with the contents of the files in
+ the zipfile/zipstream.
+ 
+ streamIndexer
+ If you want to crawl nested files, you need a special crawler that can work on
+ files in different levels at the same time. This is what StreamIndexer does.
+ It takes a stream as an input and passes is through two types of analyzers:
+ TroughStreamAnalyzers and one EndStreamAnalyzer. One ThroughStreamAnalyzer
+ can e.g. calculate sha1 or md5 from a stream and another one can extract URL
+ or email addresses. An EndStreamAnalyzer is an analyzer that 'consumes' the
+ stream. Usually, these split up a stream into it's substreams and pass these
+ into the indexer again. I hope to write a plugin mechanism for these
+ analyzers. Maybe I'll just add wrappers around other efforts such as
+ kio-plugins and libextractor. These usually don't like streams very much, but
+ that may be solved.
+ 
+ All information for a document is stored into an Indexable document. This
+ calls an IndexWriter to actually store the information. An IndexReader allows
+ one to read from an index and to query. Handling of concurrency and resources
+ of the particular index implementation is done by an IndexManager. These are
+ all abstract classes that can be implemented for different types of indexes,
+ eg clucene, sqlite or xapian.
+ 
+ daemon
+ Code to run a daemon for handling indexing and client requests. Also code to
+ handle re-indexing a directory. Will have code for filtering out directories
+ and selecting which plugins to use for which files. Maybe add code for
+ merging different IndexReaders for querying multiple databases.
+ 
+ *indexer
+ Implementations of IndexManager, IndexReader and IndexWriter.
+ 
+ archivereader
+ Yeah, the original project. It has glue between jstreams and Qt4
+ QAbstractFileEngine. This allows you to let Qt4 read an arbitrarily deeply
+ nested file.
+ 
+ qclient
+ Qt4 file dialog that uses libarchivereader.

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='chinese_ucs2.txt' mtime='1162936779'>
+  <value name='system.size'>1116</value>
+  <value name='system.depth'>0</value>
+ </file>

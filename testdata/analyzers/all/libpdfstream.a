@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='libpdfstream.a/pdfparser.o' mtime='1156285480'>
+  <value name='system.size'>82596</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='libpdfstream.a/pdfinputstream.o' mtime='1156530931'>
+  <value name='system.size'>52688</value>
+  <value name='system.depth'>1</value>
+ </file>
+ <file uri='libpdfstream.a' mtime='1162936784'>
+  <value name='system.size'>138184</value>
+  <value name='system.depth'>0</value>
+ </file>

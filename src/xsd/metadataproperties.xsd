@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.vandenoever.info/strigi"
+xmlns:tns="http://www.vandenoever.info/strigi">
+
+<element name="metadataproperties">
+  <complexType>
+    <sequence>
+      <element name="metadata" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <attribute name="key" type="string"/>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+</element>
+</schema>

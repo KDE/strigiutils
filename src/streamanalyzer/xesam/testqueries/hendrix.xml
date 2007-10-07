@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<request>
+  <query type="music">
+    <and>
+      <fullText>
+        <string>hendrix</string>
+      </fullText>
+      <greaterThan>
+        <field name="dc:date"/>
+        <date>1969-08-18</date>
+      </greaterThan>
+    </and>
+  </query>
+</request>
