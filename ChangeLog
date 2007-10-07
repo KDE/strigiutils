@@ -1,3 +1,15 @@
+0.5.6
+ - Added Xesam User Language parser. Now it will be possible to handle Xesam UserLanguage queries (http://wiki.freedesktop.org/wiki/XesamUserSearchLanguage).
+ - Replaced .ini-based ontology parser with RDF/XML one.
+ - Updated strigicmd: now it's possible to perform searches formulated
+ following xesam userlanguage specifications.
+ - Improved ontology introspection API: properties and classes now have child lists and applicable classes/properties lists.
+ - change IndexReader::getFiles to IndexReader::getChildren.
+ - removed IndexReader::documentId and IndexReader::mTime.
+ - loads of build issues fixed
+ - added a script that helps you to find the patch that broke a unit test
+ - add fieldname for document content per the Xesam standard.
+ - lots more
 0.5.5
  - GUI now uses a .ui file making future improvements much easier
  - install detection script for ease of use in other cmake projects
