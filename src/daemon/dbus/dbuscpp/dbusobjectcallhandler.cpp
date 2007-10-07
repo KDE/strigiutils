@@ -73,6 +73,9 @@ IntrospectionInterface::introspect(DBusMessage* msg, DBusConnection* con) {
 const DBusObjectPathVTable DBusObjectCallHandler::vtable = {
     NULL,
     message_function,
+    NULL,
+    NULL,
+    NULL,
     NULL
 };
 DBusObjectCallHandler::DBusObjectCallHandler(const std::string& path)

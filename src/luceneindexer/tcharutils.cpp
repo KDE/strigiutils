@@ -20,6 +20,8 @@
 
 #include "tcharutils.h"
 
+#include <string.h>
+
 using namespace std;
 
 std::wstring

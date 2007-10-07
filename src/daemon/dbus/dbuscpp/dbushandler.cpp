@@ -52,7 +52,6 @@ DBusHandler::DBusHandler() {
 }
 bool
 DBusHandler::handle() {
-    DBusMessage* msg;
     DBusError err;
     int ret;
 
@@ -120,7 +119,9 @@ DBusHandler::handle() {
         }
         // blocking read of the next available message
         dbus_connection_read_write(conn, 0);
-        while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS);
+        while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS) {
+            ;
+        }
         dbus_connection_flush(conn);
     }
 

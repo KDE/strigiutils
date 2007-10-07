@@ -52,6 +52,7 @@
 #include <cerrno>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 using namespace Strigi;
 using namespace std;
