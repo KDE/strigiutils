@@ -56,7 +56,9 @@ StrigiHtmlGui::~StrigiHtmlGui() {
 }
 void
 StrigiHtmlGui::printHtmlHeader(ostream& out) {
-    out << "<?xml version='1.0' encoding='utf-8'?>\n"
+    // FIXME: extra spaces added at the beginning as a wordaround because
+    // KIO discards several first chars for unknown reason
+    out << "                           <?xml version='1.0' encoding='utf-8'?>\n"
         "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' "
         "'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>\n"
         "<html xmlns='http://www.w3.org/1999/xhtml'>"
