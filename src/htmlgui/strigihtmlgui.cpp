@@ -217,10 +217,10 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         bool doother = true;
         tabs = readTabQueries();
         if (tabs.size() == 0) {
-            tabs["Images"] = "content.mime_type:image*";
-            tabs["Mail"] = "content.mime_type:message/*";
-            tabs["Web"] = "content.mime_type:text/html";
-            tabs["Text"] = "content.mime_type:text/*";
+            tabs["Images"] = "mimeType:image*";
+            tabs["Mail"] = "mimeType:message/*";
+            tabs["Web"] = "mimeType:text/html";
+            tabs["Text"] = "mimeType:text/*";
         }
         map<string, string>::const_iterator j;
         string otherq = query;
@@ -426,9 +426,9 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         icon = "<div class='iconbox'><img class='icon' src='"+icon;
         icon += "'/></div>\n";
     }
-    t = doc.properties.find("audio.title");
+    t = doc.properties.find("title");
     if (t == doc.properties.end()) {
-        t = doc.properties.find("email.subject");
+        t = doc.properties.find("subject");
     }
     size_t l = doc.uri.rfind('/');
     if (t != doc.properties.end()) {
