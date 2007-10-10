@@ -1,5 +1,3 @@
-STRING(REGEX REPLACE /test /src INC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
 if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     set(estraiertest_LIBS ${estraiertest_LIBS} ${LOG4CXX_LIBRARIES})
     set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
@@ -12,6 +10,7 @@ include_directories (. .. ${INC_DIR}
                      ${strigi_SOURCE_DIR}/src/streams
                      ${strigi_BINARY_DIR}/src/streams
                      ${strigi_SOURCE_DIR}/src/streams/strigi
+                     ${strigi_SOURCE_DIR}/src/estraierindexer
                      ${EST_INCLUDE_DIR}
 )
 
