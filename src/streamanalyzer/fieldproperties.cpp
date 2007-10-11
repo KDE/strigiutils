@@ -25,7 +25,6 @@
 using namespace Strigi;
 using namespace std;
 
-const string FieldProperties::Private::empty;
 FieldProperties::FieldProperties() :p(new Private()) {
 }
 FieldProperties::FieldProperties(const Private& pr) :p(new Private(pr)) {}
@@ -102,12 +101,12 @@ FieldProperties::locales() const {
 const string&
 FieldProperties::localizedName(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.name;
+    return (i == p->localized.end()) ?empty() :i->second.name;
 }
 const string&
 FieldProperties::localizedDescription(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.description;
+    return (i == p->localized.end()) ?empty() :i->second.description;
 }
 const vector<string>&
 FieldProperties::parentUris() const {

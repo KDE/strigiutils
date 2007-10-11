@@ -25,7 +25,6 @@
 using namespace Strigi;
 using namespace std;
 
-const string ClassProperties::Private::empty;
 ClassProperties::ClassProperties() :p(new Private()) {
 }
 ClassProperties::ClassProperties(const Private& pr) :p(new Private(pr)) {}
@@ -70,12 +69,12 @@ ClassProperties::locales() const {
 const string&
 ClassProperties::localizedName(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.name;
+    return (i == p->localized.end()) ?empty() :i->second.name;
 }
 const string&
 ClassProperties::localizedDescription(const string& locale) const {
     map<string,Localized>::iterator i = p->localized.find(locale);
-    return (i == p->localized.end()) ?Private::empty :i->second.description;
+    return (i == p->localized.end()) ?empty() :i->second.description;
 }
 const vector<string>&
 ClassProperties::parentUris() const {

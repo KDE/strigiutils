@@ -24,12 +24,18 @@
 #include "fieldproperties.h"
 #include "fieldtypes.h"
 
+namespace {
+    const std::string& empty() {
+        static std::string e;
+        return e;
+    }
+}
+
 namespace Strigi {
 
 class FieldProperties::Private {
 friend class FieldPropertiesDb;
 public:
-    static const std::string empty;
     std::string uri;
     std::string name;
     std::string typeuri;
@@ -69,7 +75,6 @@ public:
 class ClassProperties::Private {
 friend class FieldPropertiesDb;
 public:
-    static const std::string empty;
     std::string uri;
     std::string name;
     std::string description;
