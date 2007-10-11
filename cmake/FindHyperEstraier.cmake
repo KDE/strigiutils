@@ -8,7 +8,7 @@
 #
 
 # find estconfig executable
-FIND_PROGRAM(ESTCONFIG NAMES estconfig PATHS /bin /usr/bin /usr/local/bin )
+FIND_PROGRAM(ESTCONFIG NAMES estconfig PATHS /bin )
 
 # get configuration options
 IF (ESTCONFIG)
