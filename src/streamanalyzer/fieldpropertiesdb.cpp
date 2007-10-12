@@ -47,8 +47,8 @@ class FieldPropertiesDb::Private {
 public:
     map<string, FieldProperties> properties;
     map<string, ClassProperties> classes;
-    static FieldProperties emptyField;
-    static ClassProperties emptyClass;
+    static const FieldProperties& emptyField();
+    static const ClassProperties& emptyClass();
 
     Private();
     static vector<string> getdirs(const string&);
@@ -94,8 +94,16 @@ public:
 
 };
 
-FieldProperties FieldPropertiesDb::Private::emptyField;
-ClassProperties FieldPropertiesDb::Private::emptyClass;
+const FieldProperties&
+FieldPropertiesDb::Private::emptyField() {
+    static FieldProperties e;
+    return e;
+}
+const ClassProperties&
+FieldPropertiesDb::Private::emptyClass() {
+    static ClassProperties f;
+    return f;
+}
 
 FieldPropertiesDb&
 FieldPropertiesDb::db() {
@@ -112,7 +120,7 @@ FieldPropertiesDb::properties(const std::string& uri) const {
     map<std::string, FieldProperties>::const_iterator j
         = p->properties.find(uri);
     if (j == p->properties.end()) {
-        return FieldPropertiesDb::Private::emptyField;
+        return FieldPropertiesDb::Private::emptyField();
     } else {
         return j->second;
     }
@@ -126,7 +134,7 @@ const ClassProperties&
 FieldPropertiesDb::classes(const std::string& uri) const {
     map<std::string, ClassProperties>::const_iterator j = p->classes.find(uri);
     if (j == p->classes.end()) {
-        return FieldPropertiesDb::Private::emptyClass;
+        return FieldPropertiesDb::Private::emptyClass();
     } else {
         return j->second;
     }
