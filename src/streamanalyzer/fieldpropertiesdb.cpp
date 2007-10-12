@@ -96,12 +96,12 @@ public:
 
 const FieldProperties&
 FieldPropertiesDb::Private::emptyField() {
-    static FieldProperties e;
+    static const FieldProperties e;
     return e;
 }
 const ClassProperties&
 FieldPropertiesDb::Private::emptyClass() {
-    static ClassProperties f;
+    static const ClassProperties f;
     return f;
 }
 
