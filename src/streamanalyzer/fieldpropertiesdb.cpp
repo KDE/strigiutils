@@ -263,6 +263,9 @@ FieldPropertiesDb::Private::addEssentialProperties() {
     props.uri = FieldRegister::filenameFieldName;
     properties[FieldRegister::filenameFieldName] = props;
 
+    props.uri = FieldRegister::mimetypeFieldName;
+    properties[FieldRegister::mimetypeFieldName] = props;
+
     props.uri = FieldRegister::parentLocationFieldName;
     props.tokenized = false;
     properties[FieldRegister::parentLocationFieldName] = props;
