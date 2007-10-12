@@ -241,7 +241,8 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
                 try {
                     reader->deleteDocument(i);
                 } catch (...) {
-                    fprintf(stderr, "could not delete document");
+                    cerr << "Could not delete document '" << entry
+                        << "' from the index." << endl;
                 }
             }
             _CLDELETE(d);
