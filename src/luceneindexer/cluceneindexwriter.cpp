@@ -240,9 +240,11 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
             if (t && _tcsncmp(t, prefixText, prefixLen) == 0) {
                 try {
                     reader->deleteDocument(i);
-                } catch (...) {
+                } catch (CLuceneError& err) {
                     cerr << "Could not delete document '" << entry
-                        << "' from the index." << endl;
+                        << "' from the index: " << err.what() << endl;
+                } catch (...) {
+                    cerr << "This should not happen." << endl;
                 }
             }
             _CLDELETE(d);
