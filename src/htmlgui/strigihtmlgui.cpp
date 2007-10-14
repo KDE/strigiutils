@@ -27,6 +27,7 @@
 #include <dirent.h>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
@@ -192,11 +193,14 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
     if (i != params.end()) {
         max = atoi(i->second.c_str());
     }
-    if (max == 0) max = 10;
+    if (max <= 0 || max > 1000) max = 10;
     int off = 0;
     i = params.find("o");
     if (i != params.end()) {
         off = atoi(i->second.c_str());
+    }
+    if (off < 0) {
+        off = 0;
     }
     string selectedtab;
     i = params.find("t");
@@ -225,12 +229,15 @@ StrigiHtmlGui::printSearch(ostream& out, const string& path,
         map<string, string>::const_iterator j;
         string otherq = query;
         for (j = tabs.begin(); j != tabs.end(); ++j) {
-            string q = query+' '+j->second;
+            string q = query;
+            if (q != j->second) {
+                q += ' ' + j->second;
+            }
             int c = p->strigi.countHits(q);
             if (c > 0) {
                 hitcounts[j->first] = c;
                 doother &= c < count;
-        otherq += " -" + j->second;
+                otherq += " -" + j->second;
                 if (j->first == selectedtab || activetab.size() == 0) {
                     activetab = j->first;
                     activequery = q;
