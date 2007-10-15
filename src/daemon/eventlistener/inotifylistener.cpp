@@ -39,6 +39,38 @@
 using namespace std;
 using namespace Strigi;
 
+namespace {
+    /*!
+    * @param path string containing path to check
+    * Appends the terminating char to path.
+    * Under Windows that char is '\', '/' under *nix
+    */
+    string fixPath (string path)
+    {
+        if ( path.c_str() == NULL || path.length() == 0 )
+            return "";
+
+        string temp(path);
+
+    #ifdef HAVE_WINDOWS_H
+        size_t l= temp.length();
+        char* t = (char*)temp.c_str();
+        for (size_t i=0;i<l;i++){
+            if ( t[i] == '\\' )
+                t[i] = '/';
+        }
+        temp[0] = tolower(temp.at(0));
+    #endif
+
+        char separator = '/';
+
+        if (temp[temp.length() - 1 ] != separator)
+            temp += separator;
+
+        return temp;
+    }
+}
+
 class MatchString {
     string m_fixed_val;
 
@@ -345,59 +377,38 @@ void InotifyListener::ReindexDirsThread::reindex () {
     m_toWatch.clear();
     m_toIndex.clear();
     
-    Strigi::FileLister lister (m_pindexerconfiguration);
-    
     for (set<string>::iterator iter = m_newDirs.begin();
          iter != m_newDirs.end(); iter++)
     {
-        string filename;
-        time_t mTime;
-        
-        lister.startListing( *iter);
-        
-        while (lister.nextFile( filename, mTime) != -1)
-            m_toIndex.insert (make_pair (filename, mTime));
+        DirLister lister(m_pindexerconfiguration);
+        string path;
+        vector<pair<string, struct stat> > dirs;
 
-        //TODO: look for a better solution
-        set<string> temp = lister.getListedDirs();
-        for (set<string>::iterator it = temp.begin(); it != temp.end(); it++)
-            m_toWatch.insert(*it);
-    }
-    
-    map <string, time_t> indexedFiles = m_pManager->indexReader()->files(0);
-    map<string,time_t>::iterator mi = indexedFiles.begin();
+        lister.startListing (*iter);
+        int ret = lister.nextDir(path, dirs);
 
-    while (mi != indexedFiles.end()) {
-        map<string,time_t>::iterator it = m_toIndex.find(mi->first);
+        while (ret != -1) {
+            for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
+                 iter != dirs.end(); iter++)
+            {
+                struct stat stats = iter->second;
 
-        if (it == m_toIndex.end()) {
-            // file has been deleted since last run
-            m_events.push_back (new Event (Event::DELETED, mi->first));
-
-            // no more useful, speedup into dirsRemoved
-            map<string,time_t>::iterator itrm = mi;
-            mi++;
-            indexedFiles.erase(itrm);
-        }
-        else if (mi->second < it->second) {
-            // file has been updated since last run
-            m_events.push_back (new Event (Event::UPDATED, mi->first));
-            m_toIndex.erase (it);
-            mi++;
-        }
-        else {
-            // file has NOT been changed since last run,
-            // we keep our indexed information
-            m_toIndex.erase (it);
-            mi++;
+                if (S_ISDIR(stats.st_mode)) {
+                    //dir
+                    m_toWatch.insert (iter->first);
+                }
+                else if (S_ISREG(stats.st_mode)) {
+                    //file
+                    m_events.push_back (new Event (Event::CREATED, iter->first));
+                }
+            }
+            ret = lister.nextDir(path, dirs);
         }
     }
-
-    // now m_toIndex contains only files created since the last run
-    for (mi = m_toIndex.begin(); mi != m_toIndex.end(); mi++)
-        m_events.push_back (new Event (Event::CREATED, mi->first));
 
     m_nomoreIndexedDirs.clear();
+    set<string> alreadyWatched;
+    
     for (map<int, string>::iterator it = watchedDirs.begin();
          it != watchedDirs.end(); it++)
     {
@@ -405,7 +416,68 @@ void InotifyListener::ReindexDirsThread::reindex () {
         if (match == m_toWatch.end()) // dir is no longer watched
             m_nomoreIndexedDirs.insert(it->second);
         else // dir is already watched
-            m_toWatch.erase (match);
+            alreadyWatched.insert (*match);
+    }
+
+    // look for updated dirs
+    m_toIndex.clear();
+    for (set<string>::iterator iter = alreadyWatched.begin();
+         iter != alreadyWatched.end(); iter++)
+    {
+        // retrieve files contained into the already watched dirs
+
+        Strigi::DirLister lister (m_pindexerconfiguration);
+
+        lister.startListing (*iter);
+
+        string path;
+        vector<pair<string, struct stat> > dirs;
+        int ret = lister.nextDir(path, dirs);
+
+        while (ret != -1) {
+            cout << "path = " << path << endl;
+
+            for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
+                 iter != dirs.end(); iter++)
+            {
+                struct stat stats = iter->second;
+                if (S_ISREG(stats.st_mode))
+                    m_toIndex.insert (make_pair (iter->first, stats.st_mtime));
+            }
+            ret = lister.nextDir(path, dirs);
+        }
+
+        map <string, time_t> indexedFiles;
+        m_pManager->indexReader()->getChildren (*iter, indexedFiles);
+        for (map<string, time_t>::iterator iter = m_toIndex.begin();
+             iter != m_toIndex.end(); iter++)
+        {
+            map<string, time_t>::iterator match;
+            match = indexedFiles.find(iter->first);
+            if (match == indexedFiles.end()) {
+                // new file created
+                m_events.push_back (new Event (Event::CREATED, iter->first));
+            }
+            else if (match->second < iter->second) {
+                // file has been updated
+                m_events.push_back (new Event (Event::UPDATED, iter->first));
+            }
+        }
+        m_toIndex.clear();
+    }
+
+    // remove no more indexed items
+    for (set<string>::iterator iter = m_nomoreIndexedDirs.begin();
+         iter != m_nomoreIndexedDirs.end(); iter++)
+    {
+        map <string, time_t> indexedFiles;
+        m_pManager->indexReader()->getChildren (*iter, indexedFiles);
+
+        for (map<string,time_t>::iterator mi = indexedFiles.begin();
+             mi != indexedFiles.end(); mi++)
+        {
+            m_events.push_back (new Event (Event::DELETED, mi->first));
+        }
     }
     
     if (testInterrupt()) {
@@ -738,25 +810,35 @@ void InotifyListener::watch ()
                     // a new directory has been created or an already watched
                     // directory has been moved into a watched place
                     
-                    m_toIndex.clear();
                     m_toWatch.clear();
 
-                    FileLister lister(m_pindexerconfiguration);
-                    
-                    string filename;
-                    time_t mTime;
-                    while (lister.nextFile( filename, mTime) != -1)
-                        m_toIndex.insert (make_pair (filename, mTime));
+                    DirLister lister(m_pindexerconfiguration);
+                    string path;
+                    vector<pair<string, struct stat> > dirs;
 
-                    m_toWatch = lister.getListedDirs();
+                    lister.startListing (file);
+                    int ret = lister.nextDir(path, dirs);
 
-                    for (map<string,time_t>::iterator i = m_toIndex.begin();
-                         i != m_toIndex.end(); i++)
-                    {
-                        Event* event = new Event (Event::CREATED, i->first);
-                        events.push_back (event);
+                    while (ret != -1) {
+                        for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
+                             iter != dirs.end(); iter++)
+                        {
+                            struct stat stats = iter->second;
+                            
+                            if (S_ISDIR(stats.st_mode)) {
+                                //dir
+                                m_toWatch.insert (iter->first);
+                            }
+                            else if (S_ISREG(stats.st_mode)) {
+                                //file
+                                Event* event = new Event (Event::CREATED,
+                                                          iter->first);
+                                events.push_back (event);
+                            }
+                        }
+                        ret = lister.nextDir(path, dirs);
                     }
-
+                    
                     // add new watches
                     addWatches (m_toWatch);
 
@@ -1066,8 +1148,9 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events,
     // we've to de-index all files contained into the deleted/moved directory
     if (m_pManager)
     {
-        // all indexed files
-        map<string, time_t> indexedFiles = m_pManager->indexReader()->files(0);
+        // all indexed files contained into dir
+        map<string, time_t> indexedFiles;
+        m_pManager->indexReader()->getChildren(dir, indexedFiles);
 
         // remove all entries that were contained into the removed dir
         for (map<string, time_t>::iterator it = indexedFiles.begin();
@@ -1076,12 +1159,8 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events,
             if (enableInterrupt && testInterrupt())
                 break;
             
-            string::size_type pos = (it->first).find (dir);
-            if (pos == 0)
-            {
-                Event* event = new Event (Event::DELETED, it->first);
-                newEvents.push_back (event);
-            }
+            Event* event = new Event (Event::DELETED, it->first);
+            newEvents.push_back (event);
         }
     }
     else
