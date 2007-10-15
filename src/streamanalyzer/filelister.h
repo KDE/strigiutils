@@ -45,7 +45,6 @@ namespace Strigi {
 
 namespace Strigi {
 
-
 class FileLister {
 private:
     class Private;
@@ -72,7 +71,7 @@ public:
     void skipTillAfter(const std::string& lastToSkip);
 };
 
-class DirLister {
+class STRIGI_EXPORT DirLister {
 private:
     class Private;
     Private* p;
