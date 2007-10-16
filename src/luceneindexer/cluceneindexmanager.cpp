@@ -35,7 +35,7 @@
 
 
 /* define and export the index factory */
-REGISTER_STRIGI_INDEXMANAGER(CLuceneIndexManager);
+REGISTER_STRIGI_INDEXMANAGER(CLuceneIndexManager)
 
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
