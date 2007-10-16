@@ -79,7 +79,7 @@ public:
      *                 @p parent will be placed.
      **/
     virtual void getChildren(const std::string& parent,
-            std::map<std::string, time_t>& children) {}
+            std::map<std::string, time_t>& children) {};
     /**
      * Count the number of documents indexed in the index.
      *

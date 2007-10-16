@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 using namespace std;
 using namespace Strigi;

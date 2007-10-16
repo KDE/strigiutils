@@ -37,7 +37,7 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
     // build the phrase string
 
     // write the part of the query that matches the document context
-    string inphrase, exphrase;
+/*    string inphrase, exphrase;
     set<string> terms;
     const map<string, set<string> >& includes = query.includes();
     map<string, set<string> >::const_iterator i = includes.find("");
@@ -60,9 +60,9 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
             phrase += " ANDNOT ";
         }
         phrase += *j;
-    }
+    } */
     ESTCOND* cond = est_cond_new();
-    printf("%s", phrase.c_str());
+/*    printf("%s", phrase.c_str());
     if (phrase.length() > 0) {
         est_cond_set_phrase(cond, phrase.c_str());
     }
@@ -93,7 +93,7 @@ EstraierIndexReader::createCondition(const Strigi::Query& query) {
             est_cond_add_attr(cond, att.c_str());
         }
     }
-    printf("\n");
+    printf("\n");*/ 
 
     return cond;
 }
@@ -136,7 +136,7 @@ EstraierIndexReader::countHits(const Strigi::Query& query) {
     return n;
 }
 vector<IndexedDocument>
-EstraierIndexReader::query(const Query& query) {
+EstraierIndexReader::query(const Query& query, int off, int max) {
     ESTCOND* cond = createCondition(query);
     est_cond_set_max(cond, 10);
     int n;
@@ -182,9 +182,17 @@ EstraierIndexReader::query(const Query& query) {
     free(ids);
     return results;
 }
-map<string, time_t>
-EstraierIndexReader::files(char depth) {
-    map<string, time_t> files;
+void
+EstraierIndexReader::getHits(const Strigi::Query& query,
+        const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result,
+        int off, int max) {
+}
+void
+EstraierIndexReader::getChildren(const std::string& parent,
+            std::map<std::string, time_t>& children) {
+/*    map<string, time_t> files;
     ESTCOND* cond = est_cond_new();
     string q = "depth NUMEQ 0";
     est_cond_add_attr(cond, q.c_str());
@@ -208,7 +216,7 @@ EstraierIndexReader::files(char depth) {
     // clean up
     est_cond_delete(cond);
     free(ids);
-    return files;
+    return files;*/
 }
 int32_t
 EstraierIndexReader::countDocuments() {
@@ -231,16 +239,10 @@ EstraierIndexReader::indexSize() {
     manager->deref();
     return count;
 }
-int64_t
-EstraierIndexReader::documentId(const string& uri) {
-    ESTDB* db = manager->ref();
-    int64_t id = est_db_uri_to_id(db, uri.c_str());
-    manager->deref();
-    return id;
-}
 time_t
-EstraierIndexReader::mTime(int64_t docid) {
+EstraierIndexReader::mTime(const std::string& uri) {
     ESTDB* db = manager->ref();
+    int64_t docid = est_db_uri_to_id(db, uri.c_str());
     time_t mtime = -1;
     char *cstr = est_db_get_doc_attr(db, docid, "@mdate");
     if (cstr) {
@@ -248,12 +250,7 @@ EstraierIndexReader::mTime(int64_t docid) {
         free(cstr);
     }
     manager->deref();
-    return mtime;
-
-}
-time_t
-EstraierIndexReader::mTime(const std::string& uri) {
-    return mTime(documentId(uri));
+    return docid;
 }
 vector<string>
 EstraierIndexReader::fieldNames() {
@@ -263,4 +260,15 @@ vector<pair<string,uint32_t> >
 EstraierIndexReader::histogram( const string& query, const string& fieldname,
             const string& labeltype) {
     return vector<pair<string,uint32_t> >();
+}
+int32_t
+EstraierIndexReader::countKeywords(const std::string& keywordprefix,
+        const std::vector<std::string>& fieldnames) {
+    return -1;
+}
+vector<string>
+EstraierIndexReader::keywords(const std::string& keywordmatch,
+        const std::vector<std::string>& fieldnames,
+        uint32_t max, uint32_t offset) {
+    return vector<string>();
 }

@@ -36,14 +36,14 @@ private:
     static ESTCOND* createCondition(const Strigi::Query&);
     static const char* mapId(const std::string& id);
 public:
+    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&,
+        int off, int max);
+    void getHits(const Strigi::Query& query,
+        const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result,
+        int off, int max);
     int32_t countHits(const Strigi::Query&);
-    std::vector<Strigi::IndexedDocument> query(const Strigi::Query&);
-    std::map<std::string, time_t> files(char depth);
-    int countDocuments();
-    int32_t countWords();
-    int64_t indexSize();
-    int64_t documentId(const std::string& uri);
-    time_t mTime(int64_t docid);
     time_t mTime(const std::string& uri);
     std::vector<std::string> fieldNames();
     std::vector<std::pair<std::string,uint32_t> > histogram(
@@ -54,6 +54,11 @@ public:
     std::vector<std::string> keywords(const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset);
+    void getChildren(const std::string& parent,
+            std::map<std::string, time_t>& children);
+    int countDocuments();
+    int32_t countWords();
+    int64_t indexSize();
 };
 
 #endif

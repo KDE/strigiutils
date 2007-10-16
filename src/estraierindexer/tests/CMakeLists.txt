@@ -1,9 +1,10 @@
 include_directories(.. ../../indexertests)
+link_directories(${EST_LIBDIR})
 
 CREATE_TEST_SOURCELIST(Tests testrunner.cpp EstraierTest.cpp)
 
 ADD_EXECUTABLE(testrunner ${Tests} )
-target_link_libraries(testrunner streams estraierindex indexertests)
+target_link_libraries(testrunner streams indexertests)
 
 SET (TestsToRun ${Tests})
 REMOVE (TestsToRun testrunner.cpp)

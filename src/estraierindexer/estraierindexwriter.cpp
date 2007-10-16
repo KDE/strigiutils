@@ -49,16 +49,16 @@ void
 EstraierIndexWriter::addValue(const AnalysisResult* idx,
         const RegisteredField* field, const string& value) {
     ESTDOC* doc = static_cast<ESTDOC*>(idx->writerData());
-    if (field->getKey() == "size") {
+    if (field->key() == "size") {
         est_doc_add_attr(doc, "@size", value.c_str());
-    } else if (field->getKey() == "title") {
+    } else if (field->key() == "title") {
         est_doc_add_attr(doc, "@title", value.c_str());
     } else {
-        est_doc_add_attr(doc, field->getKey().c_str(), value.c_str());
+        est_doc_add_attr(doc, field->key().c_str(), value.c_str());
     }
 }
 void
-EstraierIndexWriter::startAnalysis(AnalysisResult* idx) {
+EstraierIndexWriter::startAnalysis(const AnalysisResult* idx) {
     // allocate a new estraier document
     ESTDOC* doc = est_doc_new();
     idx->setWriterData(doc);

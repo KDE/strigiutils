@@ -31,7 +31,7 @@ private:
     const std::string indexpath;
 
 protected:
-    void startAnalysis(Strigi::AnalysisResult*);
+    void startAnalysis(const Strigi::AnalysisResult*);
     void addValue(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,
         const std::string& value);
     void addValue(const Strigi::AnalysisResult*, const Strigi::RegisteredField* field,

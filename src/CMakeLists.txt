@@ -10,12 +10,12 @@ endif (CLucene_FOUND)
 
 if (HyperEstraier_FOUND)
   set(DIRS ${DIRS} estraierindexer)
-  message("** HyperEstraier support is experimental. **")
+  message("** HyperEstraier support is broken. Do not rely on it. **")
 endif (HyperEstraier_FOUND)
 
 if (SQLite_FOUND)
   set(DIRS ${DIRS} sqliteindexer)
-  message("** SQLite support is experimental. **")
+  message("** SQLite support is broken. Do not rely on it. **")
 endif (SQLite_FOUND)
 
 if(NOT WIN32)
@@ -31,7 +31,7 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 if (NOT CLucene_FOUND)
-  message("** No index libraries were found, so Strigi cannot use indexes.")
+  message("** No CLucene libraries were found, so Strigi cannot use indexes.")
   message("** It is recommended to install CLucene >= 0.9.16.")
   message("** You will still be able to use deepfind, deepgrep and xmlindexer.")
 endif (NOT CLucene_FOUND)

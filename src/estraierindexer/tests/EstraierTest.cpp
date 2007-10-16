@@ -1,5 +1,6 @@
 #include <strigi/strigiconfig.h>
-#include "estraierindexmanager.h"
+#include "indexpluginloader.h"
+#include "indexmanager.h"
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
@@ -15,7 +16,8 @@ EstraierTest(int argc, char**argv) {
 
     // initialize a directory for writing and an indexmanager
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
-    EstraierIndexManager* manager = new EstraierIndexManager(path);
+    Strigi::IndexManager *manager
+            = Strigi::IndexPluginLoader::createIndexManager("estraier", path);
 
     Strigi::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
