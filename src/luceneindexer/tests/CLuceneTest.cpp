@@ -1,5 +1,6 @@
 #include <strigi/strigiconfig.h>
-#include "cluceneindexmanager.h"
+#include "indexpluginloader.h"
+#include "indexmanager.h"
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
@@ -23,7 +24,12 @@ CLuceneTest(int argc, char*argv[]) {
 #else
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
 #endif
-    Strigi::IndexManager* manager = createCLuceneIndexManager(path);
+    Strigi::IndexManager* manager
+        = Strigi::IndexPluginLoader::createIndexManager("clucene", path);
+    if (manager == 0) {
+        founderrors++;
+        return founderrors;
+    }
 
     Strigi::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
@@ -39,7 +45,7 @@ CLuceneTest(int argc, char*argv[]) {
     rtests.testAll();
 
     // close and clean up the manager
-    delete manager;
+    Strigi::IndexPluginLoader::deleteIndexManager(manager);
 
     // clean up data
     std::string cmd = "rm -r ";

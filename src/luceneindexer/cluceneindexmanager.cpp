@@ -33,6 +33,10 @@
 #include "timeofday.h"
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 
+
+/* define and export the index factory */
+REGISTER_STRIGI_INDEXMANAGER(CLuceneIndexManager);
+
 using namespace lucene::index;
 using lucene::analysis::standard::StandardAnalyzer;
 using lucene::store::FSDirectory;
@@ -201,3 +205,4 @@ CLuceneIndexManager::setIndexMTime() {
     mtime = t.tv_sec;
     lock.unlock();
 }
+

@@ -23,6 +23,7 @@
 #include "diranalyzer.h"
 #include "indexmanager.h"
 #include "indexreader.h"
+#include "indexpluginloader.h"
 #include "unittestfunctions.h"
 
 #include <errno.h>
@@ -105,8 +106,9 @@ void DirAnalyzerTester::setUp() {
 
 void DirAnalyzerTester::tearDown()
 {
-    if (manager)
-        delete manager;
+    if (manager) {
+        Strigi::IndexPluginLoader::deleteIndexManager(manager);
+    }
     manager = NULL;
 
     // clean up data

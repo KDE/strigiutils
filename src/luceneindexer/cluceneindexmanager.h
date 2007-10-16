@@ -22,10 +22,10 @@
 
 #include <strigi/strigiconfig.h>
 #include "indexmanager.h"
-//#include "querybitset.h"
 #include <strigi_thread.h>
 #include <string>
 #include <map>
+#include "indexplugin.h"
 
 /**
  **/
@@ -50,7 +50,6 @@ private:
     std::map<STRIGI_THREAD_TYPE, CLuceneIndexReader*> readers;
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
-    //Strigi::QueryBitsetCache bitsets;
     lucene::analysis::Analyzer* analyzer;
     time_t mtime;
     static int numberOfManagers;
@@ -65,7 +64,6 @@ public:
     Strigi::IndexReader* indexReader();
     Strigi::IndexWriter* indexWriter();
     CLuceneIndexReader* luceneReader();
-//    Strigi::QueryBitsetCache* bitSets();
     int32_t docCount();
     int64_t indexSize();
     void deleteIndex();
@@ -74,7 +72,7 @@ public:
     void setIndexMTime();
 };
 
-CLUCENEINDEXER_EXPORT Strigi::IndexManager*
-createCLuceneIndexManager(const char* path);
+//CLUCENEINDEXER_EXPORT Strigi::IndexManager*
+//createCLuceneIndexManager(const char* path);
 
 #endif

@@ -25,6 +25,7 @@
 #include "indexwriter.h"
 #include "indexreader.h"
 #include "query.h"
+#include "indexpluginloader.h"
 
 #include <string>
 #include <sstream>
@@ -52,12 +53,13 @@ Strigi::IndexManager* LuceneIndexReaderTest::createManager()
     mkdir(path.c_str(), S_IRUSR|S_IWUSR|S_IXUSR);
 #endif
 
-    return createCLuceneIndexManager(path.c_str());
+    return
+        Strigi::IndexPluginLoader::createIndexManager("clucene", path.c_str());
 }
 
 void LuceneIndexReaderTest::deleteManager( Strigi::IndexManager* m )
 {
-    delete m;
+    Strigi::IndexPluginLoader::deleteIndexManager(m);
 
     // clean up data
     system("rm -r testcluceneindex");

@@ -32,30 +32,46 @@ ENDIF(NOT WIN32)
 #ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS
-#        PrefixFilter.cpp
-        cluceneindexmanager.cpp
-        cluceneindexreader.cpp
-        cluceneindexwriter.cpp
-        jsgzipcompressstream.cpp
-	tcharutils.cpp
+    cluceneindexmanager.cpp
+    cluceneindexreader.cpp
+    cluceneindexwriter.cpp
+    jsgzipcompressstream.cpp
+    tcharutils.cpp
 )
 
-add_library(cluceneindex SHARED ${cluceneindex_SRCS})
+#add_library(cluceneindex SHARED ${cluceneindex_SRCS})
 
-set_target_properties(cluceneindex
-    PROPERTIES VERSION ${STRIGI_VERSION}
-    SOVERSION ${STRIGI_VERSION_MAJOR}
-    DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
-)
+#set_target_properties(cluceneindex
+#    PROPERTIES VERSION ${STRIGI_VERSION}
+#    SOVERSION ${STRIGI_VERSION_MAJOR}
+#    DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
+#)
 
-target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
+#target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
+
+if(WIN32)
+  # this is needed to have mingw, cygwin and msvc libs installed in one directory
+  if(MSVC)
+    set(prefix msvc_strigiindex_)
+  elseif(CYGWIN)
+    set(prefix cyg_strigiindex_)
+  elseif(MINGW)
+    set(prefix mingw_strigiindex_)
+  endif(MSVC)
+else(WIN32)
+  set(prefix strigiindex_)
+endif(WIN32)
+add_library(clucene MODULE ${cluceneindex_SRCS})
+set_target_properties(clucene PROPERTIES PREFIX ${prefix})
+target_link_libraries(clucene streamanalyzer ${CLUCENE_LIBRARY})
+install(TARGETS clucene LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
 add_executable(luceneindexer luceneindexer.cpp)
-target_link_libraries(luceneindexer cluceneindex)
+target_link_libraries(luceneindexer streamanalyzer)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)
-install(TARGETS cluceneindex
-	LIBRARY DESTINATION ${LIB_DESTINATION}
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION  ${LIB_DESTINATION}
-)
+#install(TARGETS cluceneindex
+#	LIBRARY DESTINATION ${LIB_DESTINATION}
+#	RUNTIME DESTINATION bin
+#	ARCHIVE DESTINATION  ${LIB_DESTINATION}
+#)

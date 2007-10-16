@@ -21,6 +21,7 @@
 #include "interface.h"
 #include "daemonconfigurator.h"
 #include "combinedindexmanager.h"
+#include "indexpluginloader.h"
 
 #include "indexscheduler.h"
 #include "analyzerconfiguration.h"
@@ -151,7 +152,7 @@ printUsage(int argc, char** argv) {
 }
 void
 printBackendList() {
-    std::vector<std::string> backends = CombinedIndexManager::backEnds();
+    std::vector<std::string> backends = IndexPluginLoader::indexNames();
     for ( unsigned int i = 0; i < backends.size(); ++i ) {
         printf( "%s\n", backends[i].c_str() );
     }
@@ -194,7 +195,7 @@ checkArgs(int argc, char** argv) {
 }
 void
 ensureBackend( const std::string& backendName ) {
-    std::vector<std::string> backends = CombinedIndexManager::backEnds();
+    std::vector<std::string> backends = IndexPluginLoader::indexNames();
     if ( std::find( backends.begin(), backends.end(), backendName ) == backends.end() ) {
         fprintf( stderr, "Unknown backend type: %s\n", backendName.c_str() );
         exit( 2 );

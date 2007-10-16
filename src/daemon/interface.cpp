@@ -18,9 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "interface.h"
-#include "indexreader.h"
 #include "combinedindexmanager.h"
+#include "indexreader.h"
 #include "indexwriter.h"
+#include "indexpluginloader.h"
 #include "indexscheduler.h"
 #include "eventlistener.h"
 #include "streamanalyzer.h"
@@ -69,7 +70,7 @@ Interface::getHits(const string& query, uint32_t max, uint32_t off) {
 }
 vector<string>
 Interface::getBackEnds() {
-    return manager.backEnds();
+    return IndexPluginLoader::indexNames();
 }
 map<string, string>
 Interface::getStatus() {

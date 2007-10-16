@@ -26,6 +26,7 @@ set(streamanalyzer_SRCS
 	htmlsaxanalyzer.cpp
 	id3v2throughanalyzer.cpp
         indexreader.cpp
+	indexpluginloader.cpp
 	lineeventanalyzer.cpp
 	m3ustreamanalyzer.cpp
 	mimeeventanalyzer.cpp
@@ -97,6 +98,9 @@ install(FILES
 	fieldproperties.h
 	fieldtypes.h
 	indexeddocument.h
+	indexreader.h
+	indexmanager.h
+	indexplugin.h
 	indexwriter.h
 	streamanalyzer.h
 	streamanalyzerfactory.h

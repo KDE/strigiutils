@@ -28,6 +28,7 @@
 #include "analyzerconfiguration.h"
 #include "query.h"
 #include "queryparser.h"
+#include "indexpluginloader.h"
 
 #include <string>
 #include <sstream>
@@ -65,7 +66,7 @@ void IndexReaderTester::tearDown()
 
 void IndexReaderTester::deleteManager( Strigi::IndexManager* m )
 {
-    delete m;
+    Strigi::IndexPluginLoader::deleteIndexManager(m);
 }
 
 void

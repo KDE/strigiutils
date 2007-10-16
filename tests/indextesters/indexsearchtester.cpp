@@ -27,6 +27,7 @@
 #include "query.h"
 #include "queryparser.h"
 #include "unittestfunctions.h"
+#include "indexpluginloader.h"
 
 #include  <errno.h>
 #include <fstream>
@@ -125,8 +126,9 @@ IndexSearchTester::setUp() {
 
 void
 IndexSearchTester::tearDown() {
-    if (manager)
-        delete manager;
+    if (manager) {
+        Strigi::IndexPluginLoader::deleteIndexManager(manager);
+    }
     manager = NULL;
     
     // clean up data (does not work on windows)

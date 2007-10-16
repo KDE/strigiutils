@@ -27,6 +27,7 @@
 #include "fieldtypes.h"
 #include "query.h"
 #include "queryparser.h"
+#include "indexpluginloader.h"
 
 #include <sstream>
 #include <sys/stat.h>
@@ -53,7 +54,7 @@ void IndexManagerTester::tearDown()
 
 void IndexManagerTester::deleteManager( Strigi::IndexManager* m )
 {
-    delete m;
+    Strigi::IndexPluginLoader::deleteIndexManager(m);
 }
 
 

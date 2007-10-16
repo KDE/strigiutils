@@ -21,6 +21,7 @@
 #include <strigi/strigiconfig.h>
 #include "variant.h"
 
+/*
 #include "grepindexmanager.h"
 #ifdef HAVE_CLUCENE
 #include "cluceneindexmanager.h"
@@ -34,20 +35,26 @@
 #ifdef HAVE_SQLITE
 #include "sqliteindexmanager.h"
 #endif
+*/
 
 #include "tssptr.h"
 #include "query.h"
 #include "indexeddocument.h"
 #include "indexreader.h"
+#include "indexpluginloader.h"
 #include <string>
 #include <set>
 #include <map>
 using namespace std;
 using namespace Strigi;
 
+/*
 map<string, IndexManager*(*)(const char*)>
 CombinedIndexManager::factories() {
     map<string, IndexManager*(*)(const char*)> factories;
+    //IndexPluginLoader pluginloader;
+    //factories = pluginloader.factories();
+
 #ifdef HAVE_ESTRAIER
     factories["estraier"] = createEstraierIndexManager;
 #endif
@@ -74,7 +81,7 @@ CombinedIndexManager::backEnds() {
     }
     return v;
 }
-
+*/
 class CombinedIndexReader : public IndexReader {
 private:
     CombinedIndexManager* m;
@@ -119,19 +126,21 @@ CombinedIndexManager::Private::Private(CombinedIndexManager* m) :reader(m) {
 }
 CombinedIndexManager::Private::~Private() {
     if (writermanager) {
-        delete writermanager;
+        IndexPluginLoader::deleteIndexManager(writermanager);
     }
 }
 CombinedIndexManager::CombinedIndexManager(const string& type,
         const string& indexdir) :p(new CombinedIndexManager::Private(this)) {
+    p->writermanager = IndexPluginLoader::createIndexManager(type.c_str(),
+        indexdir.c_str());
     // determine the right index manager
-    map<string, IndexManager*(*)(const char*)> l_factories = factories();
+/*    map<string, IndexManager*(*)(const char*)> l_factories = factories();
     map<string, IndexManager*(*)(const char*)>::const_iterator f
         = l_factories.find(type);
     if (f == l_factories.end()) {
         f = l_factories.begin();
     }
-    p->writermanager = f->second(indexdir.c_str());
+    p->writermanager = f->second(indexdir.c_str());*/
 }
 CombinedIndexManager::~CombinedIndexManager() {
     delete p;
@@ -148,14 +157,12 @@ void
 CombinedIndexManager::addReadonlyIndex(const string& indexdir,
         const string& type) {
     removeReadonlyIndex(indexdir);
-    // determine the right index manager
-    map<string, IndexManager*(*)(const char*)> l_factories = factories();
-    map<string, IndexManager*(*)(const char*)>::const_iterator f
-        = l_factories.find(type);
-    if (f == l_factories.end()) {
+
+    IndexManager* im = IndexPluginLoader::createIndexManager(type.c_str(),
+        indexdir.c_str());
+    if (im == 0) {
         return;
     }
-    IndexManager* im = f->second(indexdir.c_str());
     p->lock.lock();
     p->readmanagers[indexdir] = im;
     p->lock.unlock();

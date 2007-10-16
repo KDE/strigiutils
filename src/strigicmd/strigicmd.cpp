@@ -18,7 +18,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "combinedindexmanager.h"
+#include "indexpluginloader.h"
+#include "indexmanager.h"
 #include "indexreader.h"
 #include "indexwriter.h"
 #include "indexeddocument.h"
@@ -154,6 +155,10 @@ checkIndexdirIsEmpty(const char* dir) {
 }
 void
 printBackends(const string& msg, const vector<string> backends) {
+    if (backends.size() == 0) {
+        pe(" No backends are available.\n");
+        return;
+    }
     pe(msg.c_str());
     pe(" Choose one from ");
     for (uint j=0; j<backends.size()-1; ++j) {
@@ -218,7 +223,7 @@ public:
 IndexManager*
 getIndexManager(string& backend, const string& indexdir) {
     // check arguments: backend
-    const vector<string>& backends = CombinedIndexManager::backEnds();
+    const vector<string>& backends = IndexPluginLoader::indexNames();
     // if there is only one backend, the backend does not have to be specified
     if (backend.size() == 0) {
         if (backends.size() == 1) {
@@ -230,11 +235,13 @@ getIndexManager(string& backend, const string& indexdir) {
     }
     vector<string>::const_iterator b
         = find(backends.begin(), backends.end(), backend);
+cerr << "n backends: " << backends.size() << endl;
     if (b == backends.end()) {
         printBackends("Invalid index type.", backends);
         return 0;
     }
-    return CombinedIndexManager::factories()[backend](indexdir.c_str());
+    return IndexPluginLoader::createIndexManager(backend.c_str(),
+        indexdir.c_str());
 }
 int
 create(int argc, char** argv) {
@@ -286,7 +293,7 @@ create(int argc, char** argv) {
         analyzer->analyzeDir(j->c_str(), nthreads);
     }
     delete analyzer;
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
 
     return 0;
 }
@@ -329,7 +336,7 @@ update(int argc, char** argv) {
     DirAnalyzer* analyzer = new DirAnalyzer(*manager, config);
     analyzer->updateDirs(arguments, nthreads);
     delete analyzer;
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
 
     return 0;
 }
@@ -363,7 +370,7 @@ listFiles(int argc, char** argv) {
     }
     IndexReader* reader = manager->indexReader();
     listFiles(reader, "");
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int
@@ -411,7 +418,7 @@ get(int argc, char** argv) {
         }
     }
     
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int
@@ -478,7 +485,7 @@ query(int argc, char** argv) {
         }
     }
     
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int
@@ -572,7 +579,7 @@ xesamquery(int argc, char** argv) {
     if (results != 0)
         printf ("Query returned %i results\n", results);
 
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int
@@ -645,7 +652,7 @@ deindex(int argc, char** argv) {
         writer->optimize();
     }
     
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int
@@ -672,7 +679,7 @@ listFields(int argc, char** argv) {
     for (i=fields.begin(); i!=fields.end(); ++i) {
         printf("%s\n", i->c_str());
     }
-    delete manager;
+    IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
 int

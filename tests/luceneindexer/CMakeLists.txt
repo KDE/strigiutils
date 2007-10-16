@@ -25,7 +25,6 @@ add_executable (lucenetest  luceneindexmanagertest.cpp
 target_link_libraries (lucenetest   test_runner
                                     streamanalyzertesters
                                     indextesters
-                                    cluceneindex
                                     ${lucenetest_LIBS})
 
 add_test (lucenetests lucenetest)

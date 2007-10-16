@@ -18,9 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include <strigi/strigiconfig.h>
-#include <CLucene.h>
 #include "diranalyzer.h"
-#include "cluceneindexmanager.h"
+#include "indexpluginloader.h"
 #include "analyzerconfiguration.h"
 #include <iostream>
 #include <sys/types.h>
@@ -65,10 +64,13 @@ main(int argc, char **argv) {
     Strigi::AnalyzerConfiguration ic;
     ic.setFilters(filters);
     try {
-        Strigi::IndexManager *manager = createCLuceneIndexManager(argv[1]);
-        Strigi::DirAnalyzer analyzer(*manager, ic);
-        analyzer.analyzeDir(argv[2]);
-        delete manager;
+        Strigi::IndexManager *manager
+            = Strigi::IndexPluginLoader::createIndexManager("clucene", argv[1]);
+        if (manager) {
+            Strigi::DirAnalyzer analyzer(*manager, ic);
+            analyzer.analyzeDir(argv[2]);
+            Strigi::IndexPluginLoader::deleteIndexManager(manager);
+        }
     } catch (...) {
         cerr << "error while creating index" << endl;
     }

@@ -24,6 +24,9 @@ namespace Strigi {
 class IndexReader;
 class IndexWriter;
 
+class IndexManager;
+void deleteIndexManager(Strigi::IndexManager* m);
+
 /**
  * Abstract interface that manages access to the IndexReader and IndexWriter
  * instances provided by a particular index backend.
@@ -38,6 +41,7 @@ class IndexWriter;
  * be used in the active thread.
  **/
 class IndexManager {
+friend void deleteIndexManager(Strigi::IndexManager* m);
 public:
     virtual ~IndexManager() {}
     /**

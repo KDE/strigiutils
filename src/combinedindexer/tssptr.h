@@ -19,6 +19,7 @@
  */
 
 #include "strigi_thread.h"
+#include "indexpluginloader.h"
 
 // thread safe smart pointer
 template <class T>
@@ -61,7 +62,7 @@ private:
             int c = --(p->count);
             p->lock.unlock();
             if (c == 0) {
-                delete p->p;
+                Strigi::IndexPluginLoader::deleteIndexManager(p->p);
                 delete p;
             }
             p = 0;

@@ -21,22 +21,14 @@
 #include "unittestfunctions.h"
 
 #include "indexmanager.h"
-#include "combinedindexmanager.h"
+#include "indexpluginloader.h"
 #include <vector>
 #include <algorithm>
 
 using namespace std;
 
 Strigi::IndexManager* strigiunittest::getIndexManager(string& backend,
-                                                      const string& indexdir)
-{
-    // check arguments: backend
-    const vector<string>& backends = CombinedIndexManager::backEnds();
-
-    vector<string>::const_iterator b
-            = find(backends.begin(), backends.end(), backend);
-    if (b == backends.end())
-        return 0;
-
-    return CombinedIndexManager::factories()[backend](indexdir.c_str());
+                                                      const string& indexdir) {
+    return Strigi::IndexPluginLoader::createIndexManager(backend.c_str(),
+        indexdir.c_str());
 }
