@@ -25,7 +25,6 @@
 #include <strigi_thread.h>
 #include <string>
 #include <map>
-#include "indexplugin.h"
 
 /**
  **/

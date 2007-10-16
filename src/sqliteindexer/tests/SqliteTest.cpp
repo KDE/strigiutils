@@ -1,5 +1,5 @@
 #include <strigi/strigiconfig.h>
-#include "sqliteindexmanager.h"
+#include "indexpluginloader.h"
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
@@ -18,7 +18,8 @@ SqliteTest(int argc, char**argv) {
     mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
     string p(path);
     p += "/test.db";
-    Strigi::IndexManager* manager = createSqliteIndexManager(p.c_str());
+    Strigi::IndexManager* manager
+        = Strigi::IndexPluginLoader::createIndexManager("sqlite", p.c_str());
 
     Strigi::AnalyzerConfiguration ic;
     IndexManagerTests tests(manager, ic);
@@ -34,7 +35,7 @@ SqliteTest(int argc, char**argv) {
     rtests.testAll();
 */
     // close and clean up the manager
-    delete manager;
+    Strigi::IndexPluginLoader::deleteIndexManager(manager);
 
     // clean up data
     std::string cmd = "rm -r ";

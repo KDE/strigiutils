@@ -3,7 +3,7 @@ include_directories(.. ../../indexertests)
 CREATE_TEST_SOURCELIST(Tests testrunner.cpp SqliteTest.cpp simpletest.cpp)
 
 ADD_EXECUTABLE(sqlitetest ${Tests} )
-target_link_libraries(sqlitetest streams sqliteindex indexertests)
+target_link_libraries(sqlitetest streams indexertests)
 
 SET (TestsToRun ${Tests})
 REMOVE (TestsToRun testrunner.cpp)

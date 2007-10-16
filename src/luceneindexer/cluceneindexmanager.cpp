@@ -27,6 +27,7 @@
 #include <CLucene.h>
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
+#include "indexplugin.h"
 #include <iostream>
 #include <sys/types.h>
 #include <time.h>

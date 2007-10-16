@@ -22,6 +22,7 @@
 #include "estraierindexreader.h"
 #include "estraierindexwriter.h"
 #include "strigi_thread.h"
+#include "indexplugin.h"
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,6 +31,9 @@
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 using namespace std;
 using namespace Strigi;
+
+/* define and export the index factory */
+REGISTER_STRIGI_INDEXMANAGER(EstraierIndexManager)
 
 pthread_mutex_t EstraierIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 

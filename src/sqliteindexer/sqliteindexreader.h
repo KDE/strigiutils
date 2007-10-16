@@ -48,6 +48,11 @@ public:
     std::vector<std::string> keywords(const std::string& keywordmatch,
         const std::vector<std::string>& fieldnames,
         uint32_t max, uint32_t offset);
+    void getHits(const Strigi::Query& query,
+        const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result,
+        int off, int max);
 };
 
 #endif

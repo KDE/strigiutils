@@ -21,8 +21,12 @@
 #include "sqliteindexreader.h"
 #include "sqliteindexwriter.h"
 #include "strigi_thread.h"
+#include "indexplugin.h"
 using namespace std;
 using namespace Strigi;
+
+/* define and export the index factory */
+REGISTER_STRIGI_INDEXMANAGER(SqliteIndexManager)
 
 pthread_mutex_t SqliteIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
 

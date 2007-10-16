@@ -245,3 +245,10 @@ SqliteIndexReader::keywords(const string& keywordmatch,
     vector<string> k;
     return k;
 }
+void
+SqliteIndexReader::getHits(const Strigi::Query& query,
+        const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result,
+        int off, int max) {
+}
