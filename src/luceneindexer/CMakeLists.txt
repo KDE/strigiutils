@@ -39,16 +39,6 @@ set(cluceneindex_SRCS
     tcharutils.cpp
 )
 
-#add_library(cluceneindex SHARED ${cluceneindex_SRCS})
-
-#set_target_properties(cluceneindex
-#    PROPERTIES VERSION ${STRIGI_VERSION}
-#    SOVERSION ${STRIGI_VERSION_MAJOR}
-#    DEFINE_SYMBOL MAKE_CLUCENEINDEXER_LIB
-#)
-
-#target_link_libraries(cluceneindex streamanalyzer ${CLUCENE_LIBRARY})
-
 if(WIN32)
   # this is needed to have mingw, cygwin and msvc libs installed in one directory
   if(MSVC)
@@ -70,8 +60,3 @@ add_executable(luceneindexer luceneindexer.cpp)
 target_link_libraries(luceneindexer streamanalyzer)
 
 install(TARGETS luceneindexer RUNTIME DESTINATION bin)
-#install(TARGETS cluceneindex
-#	LIBRARY DESTINATION ${LIB_DESTINATION}
-#	RUNTIME DESTINATION bin
-#	ARCHIVE DESTINATION  ${LIB_DESTINATION}
-#)

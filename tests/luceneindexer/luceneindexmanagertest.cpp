@@ -21,7 +21,6 @@
 
 #include "analysisresult.h"
 #include "analyzerconfiguration.h"
-#include "cluceneindexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"
 #include "indexpluginloader.h"

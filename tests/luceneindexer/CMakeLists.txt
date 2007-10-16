@@ -8,7 +8,6 @@ include_directories (. .. ${INC_DIR}
                      ../indextesters
                      ../streamanalyzer
                      ${strigi_SOURCE_DIR}/src/streamanalyzer
-                     ${strigi_SOURCE_DIR}/src/luceneindexer
                      ${strigi_SOURCE_DIR}/src/streams
                      ${strigi_BINARY_DIR}/src/streams
                      ${strigi_SOURCE_DIR}/src/streams/strigi
