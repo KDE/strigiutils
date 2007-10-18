@@ -141,15 +141,9 @@ RpmInputStream::RpmInputStream(InputStream* input)
     m_status = cpio->status();
 }
 RpmInputStream::~RpmInputStream() {
-    if (uncompressionStream) {
-        delete uncompressionStream;
-    }
-    if (cpio) {
-        delete cpio;
-    }
-    if (headerinfo) {
-        delete headerinfo;
-    }
+    delete uncompressionStream;
+    delete cpio;
+    delete headerinfo;
 }
 InputStream*
 RpmInputStream::nextEntry() {
