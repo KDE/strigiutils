@@ -137,7 +137,11 @@ CLuceneIndexReader::openReader() {
     doccount = -1;
     wordcount = -1;
     try {
-        reader = lucene::index::IndexReader::open(dbdir.c_str());
+        if (manager->ramdirectory) {
+            reader = lucene::index::IndexReader::open(manager->ramdirectory);
+        } else {
+            reader = lucene::index::IndexReader::open(dbdir.c_str());
+        }
         //fprintf(stderr,
         //"reader at %s: %i\n", dbdir.c_str(), reader->numDocs());
     } catch (CLuceneError& err) {
@@ -585,14 +589,14 @@ makeTimeHistogram(const vector<int>& v) {
     vector<int32_t>::const_iterator i;
     struct tm t;
     for (i = v.begin(); i < v.end(); ++i) {
-         time_t ti = *i;
+        time_t ti = *i;
 #ifdef _WIN32
         t = *localtime( &ti );   // is thread-safe on win32
 #else
-         localtime_r(&ti, &t);
+        localtime_r(&ti, &t);
 #endif
-         int32_t c = 10000*t.tm_year + 100*t.tm_mon + t.tm_mday;
-         m[c]++;
+        int32_t c = 10000*t.tm_year + 100*t.tm_mon + t.tm_mday;
+        m[c]++;
     }
     vector<pair<string,uint32_t> > h;
     h.reserve(m.size());

@@ -37,6 +37,9 @@ namespace lucene {
         class IndexWriter;
         class IndexReader;
     }
+    namespace store {
+        class RAMDirectory;
+    }
 }
 
 class CLuceneIndexReader;
@@ -55,6 +58,8 @@ private:
 
     void openWriter(bool truncate=false);
 public:
+    lucene::store::RAMDirectory* ramdirectory;
+
     explicit CLuceneIndexManager(const std::string& path);
     ~CLuceneIndexManager();
 
@@ -70,8 +75,5 @@ public:
     time_t indexMTime();
     void setIndexMTime();
 };
-
-//CLUCENEINDEXER_EXPORT Strigi::IndexManager*
-//createCLuceneIndexManager(const char* path);
 
 #endif

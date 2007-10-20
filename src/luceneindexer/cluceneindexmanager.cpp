@@ -56,6 +56,11 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     indexwriter = 0;
     writer = new CLuceneIndexWriter(this);
     analyzer = new StandardAnalyzer();
+    if (path == ":memory:") {
+        ramdirectory = new lucene::store::RAMDirectory();
+    } else {
+        ramdirectory = 0;
+    }
     mtime = 0;
 
     //remove any old segments lying around from crashes, etc
@@ -72,6 +77,7 @@ CLuceneIndexManager::~CLuceneIndexManager() {
         r->second = 0;
     }
     closeWriter();
+    delete ramdirectory;
     delete analyzer;
     if (--numberOfManagers == 0) {
 // temporarily commented out because of problem with clucene
@@ -121,16 +127,22 @@ CLuceneIndexManager::derefWriter() {
 void
 CLuceneIndexManager::openWriter(bool truncate) {
     try {
-        if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
+        if (ramdirectory) {
+            indexwriter = new IndexWriter(ramdirectory, analyzer, true);
+        } else if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
             if (IndexReader::isLocked(dbdir.c_str())) {
                 IndexReader::unlock(dbdir.c_str());
             }
             indexwriter = new IndexWriter(dbdir.c_str(), analyzer, false);
         } else {
-            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true, true);
+            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true);
         }
     } catch (CLuceneError& err) {
-        printf("could not create writer: %s\n", err.what());
+        fprintf(stderr, "could not create writer: %s\n", err.what());
+        indexwriter = 0;
+    } catch (...) {
+        fprintf(stderr, "Unknown exception was thrown.");
+        indexwriter = 0;
     }
 }
 void

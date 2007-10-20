@@ -53,7 +53,7 @@ else(WIN32)
 endif(WIN32)
 add_library(clucene MODULE ${cluceneindex_SRCS})
 set_target_properties(clucene PROPERTIES PREFIX ${prefix})
-target_link_libraries(clucene streamanalyzer ${CLUCENE_LIBRARY})
+target_link_libraries(clucene ${CLUCENE_LIBRARY})
 install(TARGETS clucene LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
 add_executable(luceneindexer luceneindexer.cpp)
