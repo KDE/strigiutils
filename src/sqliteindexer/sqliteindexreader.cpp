@@ -20,6 +20,7 @@
 #include "sqliteindexreader.h"
 #include "sqliteindexmanager.h"
 #include <set>
+#include <iostream>
 #include <sstream>
 using namespace std;
 using namespace Strigi;
@@ -61,7 +62,7 @@ createQuery(int n, bool filterpath) {
         q << "f"<<a<<".count*1.0/w"<<a<<".count";
     }
     if (n > 0) {
-    q <<") p ";
+        q <<") p ";
     }
     q <<" from ";
     for (int i=0; i<n; ++i) {
@@ -93,16 +94,55 @@ createQuery(int n, bool filterpath) {
 
     return q.str();
 }
+string
+createQuery(const Query& query, int off, int max) {
+    // TODO: makeing a query with wildcards slows things down, so we must
+    // think about reordering them
+    // although we'll never be able to manage queries like 'a% b% c%'
+    ostringstream q;
+    q << "select path from ";
+    //
+    for (int i=0; i<n; ++i) {
+        q << "words w" << i << ",";
+    }
+    for (int i=0; i<n; ++i) {
+        q << "filewords f" << i << ",";
+    }
+    q <<"files where ";
+    for (int i=0; i<n; ++i) {
+        q << "w" << i << ".word like ? and w" << i << ".wordid = f" << i
+            << ".wordid and ";
+    }
+    for (int i=1; i<n; ++i) {
+        q << "f0.fileid = f" << i << ".fileid and ";
+    }
+    if (n > 0) {
+        q <<"f0.fileid = files.fileid ";
+    }
+    if (filterpath) {
+        if (n > 0) q <<"and ";
+        q <<"files.path like ? ";
+    }
+    if (n > 0) q <<"group by fa.fileid order by p ";
+    q << "limit " << max << " offset " << off;
+
+    return q.str();
+}
 int
 SqliteIndexReader::countHits(const Strigi::Query& q) {
     // very inefficient: needs refactoring
     vector<IndexedDocument> r = query(q, 0, 1000000);
     return r.size();
 }
+string
+createQuery(const Query& query) {
+    return "select path from files;";
+}
 vector<IndexedDocument>
 SqliteIndexReader::query(const Strigi::Query& query, int off, int max) {
-    string q;
-    // replace * by %
+    string sql(createQuery(query, off, max));
+    vector<IndexedDocument> results;
+/*    // replace * by %
     size_t p = q.find('*');
     while (p != string::npos) {
         q.replace(p, 1, "%");
@@ -116,7 +156,6 @@ SqliteIndexReader::query(const Strigi::Query& query, int off, int max) {
     }
     // split up in terms
     set<string> terms = split(q);
-    vector<IndexedDocument> results;
     if (terms.size() == 0) return results;
     string pathfilter;
     set<string>::iterator i = terms.begin();
@@ -132,17 +171,17 @@ SqliteIndexReader::query(const Strigi::Query& query, int off, int max) {
     if (terms.size() == 0 && pathfilter.length() == 0) return results;
 
     string sql = createQuery(terms.size(), pathfilter.length() > 0);
-
+*/
     sqlite3* db = manager->ref();
     sqlite3_stmt* stmt;
     int r = sqlite3_prepare(db, sql.c_str(), -1, &stmt, 0);
     if (r != SQLITE_OK) {
-        printf("could not prepare query '%s': %s\n", sql.c_str(),
+        fprintf(stderr, "could not prepare query '%s': %s\n", sql.c_str(),
             sqlite3_errmsg(db));
         manager->deref();
         return results;
     }
-    int j = 1;
+/*    int j = 1;
     for (i=terms.begin(); i!=terms.end(); ++i) {
         sqlite3_bind_text(stmt, j++, i->c_str(), i->length(),
             SQLITE_STATIC);
@@ -150,7 +189,7 @@ SqliteIndexReader::query(const Strigi::Query& query, int off, int max) {
     if (pathfilter.length() > 0) {
         sqlite3_bind_text(stmt, j, pathfilter.c_str(), pathfilter.length(),
             SQLITE_STATIC);
-    }
+    }*/
     r = sqlite3_step(stmt);
     while (r == SQLITE_ROW) {
         IndexedDocument doc;

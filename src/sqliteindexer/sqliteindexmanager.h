@@ -54,7 +54,5 @@ public:
     static std::string escapeSqlValue(const std::string& value);
     static sqlite3* opendb(const char*);
 };
-Strigi::IndexManager*
-createSqliteIndexManager(const char* path);
 
 #endif

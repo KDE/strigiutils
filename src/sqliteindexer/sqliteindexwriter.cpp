@@ -183,6 +183,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
         = content.find(wdata->id);
 
     if (m == content.end()) {
+        delete wdata;
         return;
     }
 
@@ -199,6 +200,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
             sqlite3_errmsg(db));
         content.erase(m->first);
         manager->deref();
+        delete wdata;
         return;
     }
     map<string, int>::const_iterator i = m->second.begin();
@@ -209,7 +211,7 @@ SqliteIndexWriter::finishAnalysis(const AnalysisResult* idx) {
             SQLITE_STATIC);
         sqlite3_bind_int(stmt, 3, i->second);
         r = sqlite3_step(stmt);
-        if (r != 21) { // what is 21?
+        if (r != SQLITE_DONE) { // what is 21?
             fprintf(stderr, "could not write content into database: %i %s\n", r,
                 sqlite3_errmsg(db));
         }

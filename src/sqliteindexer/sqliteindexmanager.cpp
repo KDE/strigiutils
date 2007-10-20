@@ -22,6 +22,7 @@
 #include "sqliteindexwriter.h"
 #include "strigi_thread.h"
 #include "indexplugin.h"
+#include <iostream>
 using namespace std;
 using namespace Strigi;
 
@@ -29,11 +30,6 @@ using namespace Strigi;
 REGISTER_STRIGI_INDEXMANAGER(SqliteIndexManager)
 
 pthread_mutex_t SqliteIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
-
-Strigi::IndexManager*
-createSqliteIndexManager(const char* path) {
-    return new SqliteIndexManager(path);
-}
 
 SqliteIndexManager::SqliteIndexManager(const char* dbfile) {
     dblock = lock;
@@ -55,6 +51,7 @@ SqliteIndexManager::~SqliteIndexManager() {
 }
 sqlite3*
 SqliteIndexManager::opendb(const char* path) {
+    // check if the database already exists
     sqlite3* db;
     int r = sqlite3_open(path, &db);
     // any value other than SQLITE_OK is an error
@@ -89,9 +86,8 @@ SqliteIndexManager::opendb(const char* path) {
 ;
     r = sqlite3_exec(db, sql, 0, 0, 0);
     if (r != SQLITE_OK) {
-        fprintf(stderr, "could not create table %i %s\n", r,
-            sqlite3_errmsg(db));
-        exit(1);
+        //fprintf(stderr, "could not create table %i %s.\n", r,
+        //    sqlite3_errmsg(db));
     }
 
     // create temporary tables
