@@ -56,7 +56,4 @@ public:
     void deleteIndex();
 };
 
-Strigi::IndexManager*
-createEstraierIndexManager(const char* path);
-
 #endif

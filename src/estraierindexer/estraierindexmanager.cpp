@@ -23,6 +23,7 @@
 #include "estraierindexwriter.h"
 #include "strigi_thread.h"
 #include "indexplugin.h"
+#include <iostream>
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -36,11 +37,6 @@ using namespace Strigi;
 REGISTER_STRIGI_INDEXMANAGER(EstraierIndexManager)
 
 pthread_mutex_t EstraierIndexManager::lock = PTHREAD_MUTEX_INITIALIZER;
-
-Strigi::IndexManager*
-createEstraierIndexManager(const char* path) {
-    return new EstraierIndexManager(path);
-}
 
 EstraierIndexManager::EstraierIndexManager(const char* dbd)
         : dblock(lock), dbdir(dbd) {
