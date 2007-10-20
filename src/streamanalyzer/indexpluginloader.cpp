@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "indexpluginloader.h" 
+#include "indexpluginloader.h"
 #include "indexmanager.h"
 #include <iostream>
 #include <stgdirent.h>
@@ -55,19 +55,48 @@ namespace {
             :mod(m) {}
         ~Module() {
 // TODO: figure out why we get segfaults when cleaning up nicely
-//            DLCLOSE(mod);
+            DLCLOSE(mod);
         }
     };
+    vector<string>
+    getdirs(const string& direnv) {
+        vector<string> dirs;
+        string::size_type lastp = 0;
+        string::size_type p = direnv.find(':');
+        while (p != string::npos) {
+            dirs.push_back(direnv.substr(lastp, p-lastp));
+            lastp = p+1;
+            p = direnv.find(':', lastp);
+        }
+        dirs.push_back(direnv.substr(lastp));
+        return dirs;
+    }
     class ModuleList {
-    public:
+    private:
         map<std::string, Module*> modules;
+    public:
+        map<std::string, Module*>& mods() {
+            if (!initialized) initialize();
+            return modules;
+        };
         map<void*, Module*> indexmanagers;
+        bool initialized;
 
         ModuleList() {
+            initialized = false;
+        }
+        void initialize() {
+            initialized = true;
             // load the plugins from the environment setting
-            const char* strigipluginpath(getenv("STRIGI_PLUGIN_PATH"));
-            if (strigipluginpath) {
-                IndexPluginLoader::loadPlugins(strigipluginpath);
+            string strigipluginpath;
+            if (getenv("STRIGI_PLUGIN_PATH")) {
+                strigipluginpath = getenv("STRIGI_PLUGIN_PATH");
+            }
+            vector<string> strigipluginpaths = getdirs(strigipluginpath);
+            if (strigipluginpath.size()) {
+                for (uint i=0; i<strigipluginpaths.size(); ++i) {
+                    IndexPluginLoader::loadPlugins(strigipluginpaths[i].c_str());
+                }
             } else {
                 IndexPluginLoader::loadPlugins( LIBINSTALLDIR "/strigi");
             }
@@ -180,8 +209,8 @@ IndexPluginLoader::loadPlugins(const char* d) {
 vector<string>
 IndexPluginLoader::indexNames() {
     vector<string> names;
-    map<string, Module*>::const_iterator i = modules.modules.begin();
-    for (; i != modules.modules.end(); ++i) {
+    map<string, Module*>::const_iterator i = modules.mods().begin();
+    for (; i != modules.mods().end(); ++i) {
         names.push_back(i->first);
     }
     return names;
@@ -189,8 +218,8 @@ IndexPluginLoader::indexNames() {
 IndexManager*
 IndexPluginLoader::createIndexManager(const char* name, const char* dir) {
     // find the right plugin
-    map<string, Module*>::iterator i = modules.modules.find(name);
-    if (i == modules.modules.end()) {
+    map<string, Module*>::iterator i = modules.mods().find(name);
+    if (i == modules.mods().end()) {
         return 0;
     }
     // create the indexmanager
