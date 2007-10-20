@@ -39,7 +39,8 @@
 #include <map>
 #include <iostream>
 #include <list>
-#include <string>
+#include <set>
+
 using namespace Strigi;
 using namespace std;
 
@@ -186,8 +187,12 @@ FieldPropertiesDb::Private::Private() {
 
     vector<string> dirs = getXdgDirs();
     vector<string>::const_iterator i;
+    set<string> done;
     for (i=dirs.begin(); i!=dirs.end(); i++) {
-        loadProperties(*i);
+        if (done.find(*i) == done.end()) {
+            done.insert(*i);
+            loadProperties(*i);
+        }
     }
 
     // Generate childUris, applicable* and locales values.
@@ -274,13 +279,23 @@ void
 FieldPropertiesDb::Private::loadProperties(const string& dir) {
     string pdir = dir + "/strigi/fieldproperties/";
     DIR* d = opendir(pdir.c_str());
-    if (!d) return;
+    if (!d) {
+        pdir = dir;
+        d = opendir(pdir.c_str());
+    }
+    if (!d) {
+        return;
+    }
+    if (pdir[pdir.length()-1] != '/') {
+        pdir.append("/");
+    }
     struct dirent* de = readdir(d);
     struct stat s;
     char* data = 0;
     while (de) {
         string path(pdir+de->d_name);
-        if (!stat(path.c_str(), &s) && S_ISREG(s.st_mode)) {
+        if (path.length() >= 5 && path.substr(path.length()-5) == ".rdfs" &&
+                !stat(path.c_str(), &s) && S_ISREG(s.st_mode)) {
             FILE* f = fopen(path.c_str(), "r");
             if (f) {
                 // read the entire file at once
