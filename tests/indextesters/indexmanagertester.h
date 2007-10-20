@@ -30,34 +30,37 @@ namespace Strigi {
     class IndexReader;
 }
 
-namespace strigiunittest
-{
-    class IndexManagerTester : public CppUnit::TestFixture
-    {
-        CPPUNIT_TEST_SUITE( IndexManagerTester );
-        CPPUNIT_TEST( testIndexReader );
-        CPPUNIT_TEST( testIndexWriter );
-        CPPUNIT_TEST_SUITE_END_ABSTRACT();
+namespace strigiunittest {
 
-    private:
-	Strigi::IndexManager* m_manager;
+class IndexManagerTest : public CppUnit::TestFixture {
+private:
+    CPPUNIT_TEST_SUITE( IndexManagerTest );
+    CPPUNIT_TEST( testIndexReader );
+    CPPUNIT_TEST( testIndexWriter );
+    CPPUNIT_TEST_SUITE_END_ABSTRACT();
 
-    protected:
-	virtual Strigi::IndexManager* createManager() = 0;
+    const std::string m_backendname;
+    const std::string m_indexpath;
+    Strigi::IndexManager* m_manager;
 
-	/**
-	 * delete the manager. The default implementation simply
-	 * calls delete.
-	 */
-	virtual void deleteManager( Strigi::IndexManager* );
-        
-    public:
-	virtual void setUp();
-	virtual void tearDown();
-            
-	virtual void testIndexReader();
-	virtual void testIndexWriter();
-    };
+protected:
+    IndexManagerTest(const std::string& backendname);
+
+public:
+    void setUp();
+    void tearDown();
+
+    void testIndexReader();
+    void testIndexWriter();
+};
+
+class CLuceneIndexManagerTest : public IndexManagerTest {
+private:
+    CPPUNIT_TEST_SUB_SUITE( CLuceneIndexManagerTest, IndexManagerTest);
+    CPPUNIT_TEST_SUITE_END();
+public:
+    CLuceneIndexManagerTest() :IndexManagerTest("clucene") {}
+};
+
 }
-
 #endif

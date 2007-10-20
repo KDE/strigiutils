@@ -20,56 +20,40 @@
 #ifndef UNIT_TEST_INDEX_WRITER_TESTER_H
 #define UNIT_TEST_INDEX_WRITER_TESTER_H
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <string>
+#include "indextest.h"
 
 #include "analyzerconfiguration.h"
 #include "fieldtypes.h"
 
 namespace Strigi {
-    class IndexManager;
-    class IndexWriter;
-    class IndexReader;
     class StreamAnalyzer;
     class AnalysisResult;
 }
 
-namespace strigiunittest
-{
-    class IndexWriterTester : public CppUnit::TestFixture
-    {
-        CPPUNIT_TEST_SUITE( IndexWriterTester );
-        CPPUNIT_TEST( testAddText );
-        CPPUNIT_TEST( testDeleteAllEntries );
+namespace strigiunittest {
 
-        CPPUNIT_TEST_SUITE_END_ABSTRACT();
+class IndexWriterTest : public IndexTest {
+private:
+    CPPUNIT_TEST_SUITE( IndexWriterTest );
+    CPPUNIT_TEST( testAddText );
+    CPPUNIT_TEST( testDeleteAllEntries );
+    CPPUNIT_TEST_SUITE_END_ABSTRACT();
 
-    private:
-	Strigi::IndexManager* m_manager;
+    Strigi::StreamAnalyzer* m_streamAnalyzer;
+    Strigi::AnalyzerConfiguration m_analyzerConfiguration;
+    Strigi::FieldRegister m_fieldRegister;
 
-	Strigi::IndexWriter* m_writer;
-	Strigi::IndexReader* m_reader;
-	Strigi::StreamAnalyzer* m_streamAnalyzer;
-	Strigi::AnalyzerConfiguration m_analyzerConfiguration;
-	Strigi::FieldRegister m_fieldRegister;
+    void testAddText();
+    void testDeleteAllEntries();
+    void testDeleteEntries();
 
-    protected:
-	virtual Strigi::IndexManager* createManager() = 0;
-	/**
-	 * delete the manager. The default implementation simply
-	 * calls delete.
-	 */
-	virtual void deleteManager( Strigi::IndexManager* );
-                
-    public:
-	virtual void setUp();
-	virtual void tearDown();
+public:
+    IndexWriterTest(const std::string& backendname) :IndexTest(backendname),
+        m_streamAnalyzer(0) {}
+    void setUp();
+    void tearDown();
+};
 
-	void testAddText();
-	void testDeleteAllEntries();
-	void testDeleteEntries();
-    };
 }
 
 #endif

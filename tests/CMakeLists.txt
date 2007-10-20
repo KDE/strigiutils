@@ -1,28 +1,21 @@
-set (TESTINGDIRS ${TESTINGDIRS} utils indextesters streamanalyzer)
+set (TESTINGDIRS utils indextesters streamanalyzer daemon)
+subdirs (${TESTINGDIRS})
 
-if (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
-  set(TESTINGDIRS ${TESTINGDIRS} daemon)
-endif (CLucene_FOUND OR HyperEstraier_FOUND OR SQLite_FOUND)
+# setting for using CPPUNIT
+
+include_directories (. ${CPPUNIT_INCLUDE_DIR}  ${CMAKE_SOURCE_DIR}/src/daemon
+    ${CMAKE_BINARY_DIR}/src/streams)
 
 # cppunit requires exception support
 IF(NOT WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 ENDIF(NOT WIN32)
 
-# disable, needs some testing
-#if (HyperEstraier_FOUND)
-#  set (TESTINGDIRS ${TESTINGDIRS} estraierindexer)
-#endif (HyperEstraier_FOUND)
-
-if (CLucene_FOUND)
-  set(TESTINGDIRS ${TESTINGDIRS} luceneindexer)
-endif (CLucene_FOUND)
-
-include_directories (. ${CPPUNIT_INCLUDE_DIR} ${strigi_SOURCE_DIR}/src/daemon)
-
+# a convenience library that adds a unified way of build a test executable
+# for testing
+# simply link this into any unit test executable
 add_library(test_runner test_runner.cpp)
 target_link_libraries(test_runner ${CPPUNIT_LIBRARIES})
 
- ENABLE_TESTING()
+ENABLE_TESTING()
 
-subdirs (${TESTINGDIRS})

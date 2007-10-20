@@ -24,11 +24,27 @@
 #include <cppunit/TextTestRunner.h>
 
 #include "strigilogging.h"
+#include "config.h"
 
-int main()
-{
+#include <iostream>
+using namespace std;
+
+int main() {
+    // set some environment variables so that the system can find the desired
+    // files
+    setenv("XDG_DATA_HOME",
+        SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
+    setenv("XDG_DATA_DIRS",
+        SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
+    setenv("STRIGI_PLUGIN_PATH",
+        BINARYDIR"/src/luceneindexer/:"
+        BINARYDIR"/src/estraierindexer:"
+        BINARYDIR"/src/sqliteindexer", 1);
+
+cerr << BINARYDIR << endl;
+
     STRIGI_LOG_INIT_BASIC()
-    
+
     // Get the top level suite from the registry
     CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
@@ -46,18 +62,3 @@ int main()
     return wasSucessful ? 0 : 1;
 }
 
-// using namespace CppUnit;
-// 
-// int main (int argc, char* argv[]) {
-//     TextTestRunner runner;
-//     TestFactoryRegistry& registry = TestFactoryRegistry::getRegistry();
-// 
-//      // run all tests if none specified on command line
-//     Test* test_to_run = registry.makeTest();
-//     if (argc>1)
-//         test_to_run = test_to_run->findTest(argv[1]);
-// 
-//     runner.addTest( test_to_run );
-//     bool failed = runner.run("", false);
-//     return !failed;
-// }

@@ -20,56 +20,32 @@
 #include "indexwritertester.h"
 
 #include "analysisresult.h"
-#include "analyzerconfiguration.h"
-#include "indexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"
 #include "fieldtypes.h"
-#include "analyzerconfiguration.h"
 #include "query.h"
 #include "queryparser.h"
-#include "indexpluginloader.h"
 
-#include <string>
 #include <sstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#ifdef _WIN32
-#include <direct.h>
-#endif
 
 using namespace std;
 using namespace strigiunittest;
 using namespace Strigi;
 
-void IndexWriterTester::setUp()
-{
-    m_manager = createManager();
-    m_writer = m_manager->indexWriter();
-    m_reader = m_manager->indexReader();
-
-    CPPUNIT_ASSERT_MESSAGE("writer creation failed", m_writer);
-    CPPUNIT_ASSERT_MESSAGE("reader creation failed", m_reader);
-
-    m_streamAnalyzer = new Strigi::StreamAnalyzer( m_analyzerConfiguration );
+void
+IndexWriterTest::setUp() {
+    IndexTest::setUp();
+    m_streamAnalyzer = new StreamAnalyzer( m_analyzerConfiguration );
 }
 
-void IndexWriterTester::tearDown()
-{
+void
+IndexWriterTest::tearDown() {
     delete m_streamAnalyzer;
-    deleteManager( m_manager );
+    IndexTest::tearDown();
 }
 
-
-void IndexWriterTester::deleteManager( Strigi::IndexManager* m )
-{
-    Strigi::IndexPluginLoader::deleteIndexManager(m);
-}
-
-
-void IndexWriterTester::testAddText()
-{
+void
+IndexWriterTest::testAddText() {
     // test adding very simple text
     string path( "/tmp/dummy.txt" );
     {
@@ -79,9 +55,12 @@ void IndexWriterTester::testAddText()
     }
     m_writer->commit();
 
-    std::vector<IndexedDocument> results = m_reader->query( QueryParser::buildQuery("dummy"), 0, 100 );
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "got invalid number of results", 1, ( int )results.size() );
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "got invalid path result", path, results[0].uri );
+    std::vector<IndexedDocument> results = m_reader->query(
+        QueryParser::buildQuery("dummy"), 0, 100 );
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( "got invalid number of results", 1,
+        (int)results.size() );
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( "got invalid path result", path,
+        results[0].uri );
 
     m_writer->deleteAllEntries();
 
@@ -89,9 +68,8 @@ void IndexWriterTester::testAddText()
 
 }
 
-
-void IndexWriterTester::testDeleteAllEntries()
-{
+void
+IndexWriterTest::testDeleteAllEntries() {
     // add some random data
     string path( "/tmp/dummy.txt" );
     {
@@ -108,18 +86,23 @@ void IndexWriterTester::testDeleteAllEntries()
     // now make sure nothing is left
     std::map<std::string, time_t> children;
     m_reader->getChildren( std::string(), children );
-    CPPUNIT_ASSERT_MESSAGE( "Still files left after calling deleteAllEntries.", children.empty() );
+    CPPUNIT_ASSERT_MESSAGE( "Still files left after calling deleteAllEntries.",
+        children.empty() );
 
-    std::vector<IndexedDocument> results = m_reader->query( QueryParser::buildQuery( FieldRegister::pathFieldName + "=\"" + path + "\"" ), 0, 100 );
-    CPPUNIT_ASSERT_MESSAGE( "Query results not empty after deleteAllEntries", results.empty() );
+    std::vector<IndexedDocument> results = m_reader->query(
+        QueryParser::buildQuery(
+            FieldRegister::pathFieldName + "=\"" + path + "\"" ), 0, 100 );
+    CPPUNIT_ASSERT_MESSAGE( "Query results not empty after deleteAllEntries",
+       results.empty() );
 
-    results = m_reader->query( QueryParser::buildQuery( FieldRegister::filenameFieldName + "=\"dummy.txt\"" ), 0, 100 );
-    CPPUNIT_ASSERT_MESSAGE( "Query results not empty after deleteAllEntries", results.empty() );
+    results = m_reader->query( QueryParser::buildQuery(
+        FieldRegister::filenameFieldName + "=\"dummy.txt\"" ), 0, 100 );
+    CPPUNIT_ASSERT_MESSAGE( "Query results not empty after deleteAllEntries",
+        results.empty() );
 }
 
-
-void IndexWriterTester::testDeleteEntries()
-{
+void
+IndexWriterTest::testDeleteEntries() {
     // add some random data
     string path1( "/tmp/dummy1.txt" );
     string path2( "/tmp/dummy2.txt" );
@@ -129,11 +112,11 @@ void IndexWriterTester::testDeleteEntries()
         AnalysisResult anaRes1( path1, 1, *m_writer, *m_streamAnalyzer );
         AnalysisResult anaRes2( path2, 1, *m_writer, *m_streamAnalyzer );
 
-        m_writer->addValue( &anaRes1, m_fieldRegister.pathField, anaRes1.path() );
-        m_writer->addValue( &anaRes1, m_fieldRegister.filenameField, filename1 );
+        m_writer->addValue(&anaRes1, m_fieldRegister.pathField, anaRes1.path());
+        m_writer->addValue(&anaRes1, m_fieldRegister.filenameField, filename1);
 
-        m_writer->addValue( &anaRes2, m_fieldRegister.pathField, anaRes2.path() );
-        m_writer->addValue( &anaRes2, m_fieldRegister.filenameField, filename2 );
+        m_writer->addValue(&anaRes2, m_fieldRegister.pathField, anaRes2.path());
+        m_writer->addValue(&anaRes2, m_fieldRegister.filenameField, filename2 );
     }
     m_writer->commit();
 

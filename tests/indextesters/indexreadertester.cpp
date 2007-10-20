@@ -20,62 +20,38 @@
 #include "indexreadertester.h"
 
 #include "analysisresult.h"
-#include "analyzerconfiguration.h"
-#include "indexmanager.h"
 #include "indexwriter.h"
 #include "indexreader.h"
 #include "fieldtypes.h"
-#include "analyzerconfiguration.h"
 #include "query.h"
 #include "queryparser.h"
-#include "indexpluginloader.h"
 
-#include <string>
 #include <sstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#ifdef _WIN32
-#include <direct.h>
-#endif
-
 #include <ostream>
 
 using namespace std;
 using namespace strigiunittest;
 using namespace Strigi;
 
-void IndexReaderTester::setUp()
-{
-    m_manager = createManager();
-    m_writer = m_manager->indexWriter();
-    m_reader = m_manager->indexReader();
-
-    CPPUNIT_ASSERT_MESSAGE("writer creation failed", m_writer);
-    CPPUNIT_ASSERT_MESSAGE("reader creation failed", m_reader);
-
+void
+IndexReaderTest::setUp() {
+    IndexTest::setUp();
     m_streamAnalyzer = new Strigi::StreamAnalyzer( m_analyzerConfiguration );
 }
 
-void IndexReaderTester::tearDown()
-{
+void
+IndexReaderTest::tearDown() {
     delete m_streamAnalyzer;
-    deleteManager( m_manager );
-}
-
-
-void IndexReaderTester::deleteManager( Strigi::IndexManager* m )
-{
-    Strigi::IndexPluginLoader::deleteIndexManager(m);
+    IndexTest::tearDown();
 }
 
 void
-IndexReaderTester::testChildrenRetrieval() {
+IndexReaderTest::testChildrenRetrieval() {
     // FIXME
 }
 
-void IndexReaderTester::addAndCount()
-{
+void
+IndexReaderTest::addAndCount() {
     static const int m = 20;
 
     m_writer->deleteAllEntries();
@@ -94,8 +70,8 @@ void IndexReaderTester::addAndCount()
     CPPUNIT_ASSERT_EQUAL_MESSAGE(str.str(), m, n);
 }
 
-void IndexReaderTester::testNumberQuery()
-{
+void
+IndexReaderTest::testNumberQuery() {
     m_writer->deleteAllEntries();
     // add numbers to the database
     int m = 200;

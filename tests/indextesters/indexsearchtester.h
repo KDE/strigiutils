@@ -20,42 +20,33 @@
 #ifndef UNIT_TEST_INDEX_SEARCH_TESTER_H
 #define UNIT_TEST_INDEX_SEARCH_TESTER_H
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "indextest.h"
 
 #include <map>
-#include <string>
 
-namespace Strigi
-{
-    class IndexManager;
-}
+namespace strigiunittest {
 
-namespace strigiunittest
-{
-    class IndexSearchTester : public CppUnit::TestFixture
-    {
-        CPPUNIT_TEST_SUITE( IndexSearchTester );
-        CPPUNIT_TEST( testVariables );
-        CPPUNIT_TEST( testSystemLocationSearchIndexedFile );
-        CPPUNIT_TEST( testSystemLocationSearchUnindexedFile );
-        CPPUNIT_TEST_SUITE_END_ABSTRACT();
-        
-        protected:
-            Strigi::IndexManager* manager;
-            std::string backend;
-            std::string indexdir;
-            std::string filedir;
-            std::map<std::string,std::string> indexedFiles; //!< map with key = file name, and value = file contents
-            
-        public:
-            virtual void setUp();
-            virtual void tearDown();
-            
-            virtual void testSystemLocationSearchIndexedFile();
-            virtual void testSystemLocationSearchUnindexedFile();
-            virtual void testVariables();
-    };
+class IndexSearchTest : public IndexTest {
+private:
+    CPPUNIT_TEST_SUITE( IndexSearchTest );
+    CPPUNIT_TEST( testVariables );
+    CPPUNIT_TEST( testSystemLocationSearchIndexedFile );
+    CPPUNIT_TEST( testSystemLocationSearchUnindexedFile );
+    CPPUNIT_TEST_SUITE_END_ABSTRACT();
+
+    std::string filedir;
+    std::map<std::string,std::string> indexedFiles; //!< map with key = file name, and value = file contents
+
+    void testSystemLocationSearchIndexedFile();
+    void testSystemLocationSearchUnindexedFile();
+    void testVariables();
+
+public:
+    IndexSearchTest(const std::string& backendname) :IndexTest(backendname){}
+    void setUp();
+    void tearDown();
+};
+
 }
 
 #endif

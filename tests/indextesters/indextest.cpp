@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "indexmanagertester.h"
+#include "indextest.h"
 #include "indexmanager.h"
 #include "indexpluginloader.h"
 
@@ -25,34 +25,28 @@ using namespace std;
 using namespace Strigi;
 using namespace strigiunittest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( CLuceneIndexManagerTest );
-
-IndexManagerTest::IndexManagerTest(const std::string& backendname)
+IndexTest::IndexTest(const string& backendname, const string& indexpath)
     :m_backendname(backendname), m_indexpath(":memory:"), m_manager(0) {
 }
 
 void
-IndexManagerTest::setUp() {
-    m_manager = Strigi::IndexPluginLoader::createIndexManager(
+IndexTest::setUp() {
+    m_manager = IndexPluginLoader::createIndexManager(
         m_backendname.c_str(), m_indexpath.c_str());
+    CPPUNIT_ASSERT_MESSAGE("manager creation failed", m_manager);
+    if (!m_manager) return;
+
+    m_writer = m_manager->indexWriter();
+    CPPUNIT_ASSERT_MESSAGE("writer creation failed", m_writer);
+
+    m_reader = m_manager->indexReader();
+    CPPUNIT_ASSERT_MESSAGE("reader creation failed", m_reader);
 }
 
 void
-IndexManagerTest::tearDown() {
-    Strigi::IndexPluginLoader::deleteIndexManager(m_manager);
+IndexTest::tearDown() {
+    IndexPluginLoader::deleteIndexManager(m_manager);
     // clean up data (if any)
     string cmd("rm -rf '" + m_indexpath + "'");
     system(cmd.c_str());
-}
-
-void
-IndexManagerTest::testIndexReader() {
-    Strigi::IndexReader* reader = m_manager->indexReader();
-    CPPUNIT_ASSERT_MESSAGE("reader creation failed", reader);
-}
-
-void
-IndexManagerTest::testIndexWriter() {
-    Strigi::IndexWriter* writer = m_manager->indexWriter();
-    CPPUNIT_ASSERT_MESSAGE("writer creation failed", writer);
 }

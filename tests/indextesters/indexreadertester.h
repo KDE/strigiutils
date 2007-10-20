@@ -20,55 +20,37 @@
 #ifndef UNIT_TEST_INDEX_READER_TESTER_H
 #define UNIT_TEST_INDEX_READER_TESTER_H
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <string>
-
+#include "indextest.h"
 #include "analyzerconfiguration.h"
-#include "fieldtypes.h"
 
 namespace Strigi {
-    class IndexManager;
-    class IndexReader;
-    class IndexWriter;
     class StreamAnalyzer;
 }
 
-namespace strigiunittest
-{
-    class IndexReaderTester : public CppUnit::TestFixture
-    {
-        CPPUNIT_TEST_SUITE( IndexReaderTester );
-        CPPUNIT_TEST( testChildrenRetrieval );
-        CPPUNIT_TEST( addAndCount );
-        CPPUNIT_TEST( testNumberQuery );
-        CPPUNIT_TEST_SUITE_END_ABSTRACT();
-        
-    private:
-	Strigi::IndexManager* m_manager;
+namespace strigiunittest {
 
-	Strigi::IndexWriter* m_writer;
-	Strigi::IndexReader* m_reader;
-	Strigi::StreamAnalyzer* m_streamAnalyzer;
-	Strigi::AnalyzerConfiguration m_analyzerConfiguration;
-	Strigi::FieldRegister m_fieldRegister;
+class IndexReaderTest : public IndexTest {
+private:
+    CPPUNIT_TEST_SUITE( IndexReaderTest );
+    CPPUNIT_TEST( testChildrenRetrieval );
+    CPPUNIT_TEST( addAndCount );
+    CPPUNIT_TEST( testNumberQuery );
+    CPPUNIT_TEST_SUITE_END_ABSTRACT();
 
-    protected:
-	virtual Strigi::IndexManager* createManager() = 0;
-	/**
-	 * delete the manager. The default implementation simply
-	 * calls delete.
-	 */
-	virtual void deleteManager( Strigi::IndexManager* );
+    Strigi::StreamAnalyzer* m_streamAnalyzer;
+    Strigi::AnalyzerConfiguration m_analyzerConfiguration;
+    Strigi::FieldRegister m_fieldRegister;
 
-    public:
-	virtual void setUp();
-	virtual void tearDown();
-            
-	virtual void addAndCount();
-	virtual void testChildrenRetrieval();
-	virtual void testNumberQuery();
-    };
+    void addAndCount();
+    void testChildrenRetrieval();
+    void testNumberQuery();
+public:
+    IndexReaderTest(const std::string& backendname) :IndexTest(backendname),
+        m_streamAnalyzer(0) {}
+    void setUp();
+    void tearDown();
+};
+
 }
 
 #endif

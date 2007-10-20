@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
+ * Copyright (C) 2007 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,21 +17,35 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "lucenediranalyzertest.h"
+#ifndef UNIT_TEST_INDEX_TEST_H
+#define UNIT_TEST_INDEX_TEST_H
 
-using namespace std;
-using namespace strigiunittest;
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <string>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( LuceneDirAnalyzerTest );
-
-void LuceneDirAnalyzerTest::setUp()
-{
-    backend = "clucene";
-    DirAnalyzerTester::setUp();
+namespace Strigi {
+    class IndexManager;
+    class IndexWriter;
+    class IndexReader;
 }
 
-void LuceneDirAnalyzerTest::tearDown()
-{
-    DirAnalyzerTester::tearDown();
+namespace strigiunittest {
+
+class IndexTest : public CppUnit::TestFixture {
+protected:
+    const std::string m_backendname;
+    const std::string m_indexpath;
+    Strigi::IndexManager* m_manager;
+    Strigi::IndexReader* m_reader;
+    Strigi::IndexWriter* m_writer;
+
+    IndexTest(const std::string& backendname,
+        const std::string& indexpath = ":memory:");
+    void setUp();
+    void tearDown();
+};
+
 }
+
+#endif
