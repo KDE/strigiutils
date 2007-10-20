@@ -73,7 +73,6 @@ install(FILES
 	stringterminatedsubstream.h
 	subinputstream.h
         textutils.h
-	strigi/jstreamsconfig.h
 	DESTINATION include/strigi
 )
 install(TARGETS streams
