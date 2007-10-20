@@ -147,7 +147,34 @@
 
 #define LIBINSTALLDIR "${LIBINSTALLDIR}"
 
+#define SOURCEDIR "${CMAKE_SOURCE_DIR}"
+
+#define BINARYDIR "${CMAKE_BINARY_DIR}"
+
 #define INSTALLDIR "${CMAKE_INSTALL_PREFIX}"
 
 #define MIMEINSTALLDIR "${MIMEINSTALLDIR}"
+
+// Definition of types that are used internally
+
+#if !@HAVE_INTPTR_T@
+ typedef int intptr_t;
+ #define HAVE_INTPTR_T 1
+#endif
+
+#if !@HAVE_SOCKLEN_T@
+ typedef int socklen_t;
+ #define HAVE_SOCKLEN_T 1
+#endif
+
+#if !@HAVE_SSIZE_T@
+ #ifndef _SSIZE_T_DEFINED 
+  #ifndef HAVE_SSIZE_T
+   typedef signed int ssize_t;
+   #define HAVE_SSIZE_T 1
+  #endif
+  #define _SSIZE_T_DEFINED 1    // kdewin32 define
+ #endif
+#endif
+
 #endif //CONFIG_H
