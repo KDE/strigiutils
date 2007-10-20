@@ -103,7 +103,7 @@ FieldRegister::registerField(const string& fieldname) {
             = FieldPropertiesDb::db().properties(fieldname);
         if (!props.valid()) {
             cerr << "WARNING: field '" << fieldname << "' is not defined in "
-                ".fieldproperties ontology database." << endl;
+                "any rdfs ontology database." << endl;
 	    // creates a field with defaults (stringType and no parents)
             FieldPropertiesDb::db().addField(fieldname);
         }
