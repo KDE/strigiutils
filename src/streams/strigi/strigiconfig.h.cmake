@@ -47,7 +47,7 @@
 // our needed types
 #if !@HAVE_INT8_T@
  #define HAVE_INT8_T 1
- #if ${SIZEOF_CHAR}==1 //is char 1bit?
+ #if ${SIZEOF_CHAR}==1 //is char one byte?
   typedef char int8_t;
  #else
   #error Could not determine type for int8_t!
@@ -56,7 +56,7 @@
 
 #if !@HAVE_UINT8_T@
  #define HAVE_UINT8_T 1
- #if ${SIZEOF_CHAR}==1 //is char 1bit?
+ #if ${SIZEOF_CHAR}==1 //is char one byte?
   typedef unsigned char uint8_t;
  #else
   #error Could not determine type for uint8_t!
@@ -65,7 +65,7 @@
 
 #if !@HAVE_INT16_T@
  #define HAVE_INT16_T 1
- #if ${SIZEOF_SHORT}==2 //is short 2bits?
+ #if ${SIZEOF_SHORT}==2 //is short two bytes?
   typedef short int16_t;
  #else
   #error Could not determine type for int16_t!
@@ -74,7 +74,7 @@
 
 #if !@HAVE_UINT16_T@
  #define HAVE_UINT16_T 1
- #if ${SIZEOF_SHORT}==2 //is short 2bits?
+ #if ${SIZEOF_SHORT}==2 //is short two bytes?
   typedef unsigned short uint16_t;
  #else
   #error Could not determine type for uint16_t!
@@ -83,9 +83,9 @@
 
 #if !@HAVE_INT32_T@
  #define HAVE_INT32_T 1
- #if ${SIZEOF_INT}==4 //is int 4bits?
+ #if ${SIZEOF_INT}==4 //is int four bytes?
   typedef int int32_t;
- #elif ${SIZEOF_LONG}==4 //is long 4bits?
+ #elif ${SIZEOF_LONG}==4 //is long four bytes?
   typedef long int32_t;
  #else
   #error Could not determine type for int32_t!
@@ -94,9 +94,9 @@
 
 #if !@HAVE_UINT32_T@
  #define HAVE_UINT32_T 1
- #if ${SIZEOF_INT}==4 //is int 4bits?
+ #if ${SIZEOF_INT}==4 //is int four bytes?
   typedef unsigned int uint32_t;
- #elif ${SIZEOF_LONG}==4 //is long 4bits?
+ #elif ${SIZEOF_LONG}==4 //is long four bytes?
   typedef unsigned long uint32_t;
  #else
   #error Could not determine type for uint32_t!
@@ -132,16 +132,6 @@
  #define HAVE_UINT 1
 #endif
 
-#if !@HAVE_INTPTR_T@
- typedef int intptr_t;
- #define HAVE_INTPTR_T 1
-#endif
-
-#if !@HAVE_SOCKLEN_T@
- typedef int socklen_t;
- #define HAVE_SOCKLEN_T 1
-#endif
-
 #if !@HAVE_SIZE_T@
  #ifndef _SIZE_T_DEFINED 
   #ifndef HAVE_SIZE_T
@@ -149,16 +139,6 @@
    #define HAVE_SIZE_T 1
   #endif
   #define _SIZE_T_DEFINED 1     // kdewin32 define
- #endif
-#endif
-
-#if !@HAVE_SSIZE_T@
- #ifndef _SSIZE_T_DEFINED 
-  #ifndef HAVE_SSIZE_T
-   typedef signed int ssize_t;
-   #define HAVE_SSIZE_T 1
-  #endif
-  #define _SSIZE_T_DEFINED 1    // kdewin32 define
  #endif
 #endif
 
@@ -175,7 +155,7 @@
  */
 #ifdef __STRIGI_HAVE_GCC_VISIBILITY
 #define STRIGI_EXPORT __attribute__ ((visibility("default")))
-#define STRIGI_IMPORT STRIGI_EXPORT
+#define STRIGI_IMPORT
 #elif defined(_WIN32) || defined(_WIN64)
 #define STRIGI_EXPORT __declspec(dllexport)
 #define STRIGI_IMPORT __declspec(dllimport)
@@ -197,14 +177,6 @@
 #  define STREAMANALYZER_EXPORT STRIGI_EXPORT
 # else
 #  define STREAMANALYZER_EXPORT STRIGI_IMPORT
-# endif
-#endif
-
-#ifndef CLUCENEINDEXER_EXPORT
-# ifdef MAKE_CLUCENEINDEXER_LIB
-#  define CLUCENEINDEXER_EXPORT STRIGI_EXPORT
-# else
-#  define CLUCENEINDEXER_EXPORT STRIGI_IMPORT
 # endif
 #endif
 
