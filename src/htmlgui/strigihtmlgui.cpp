@@ -95,7 +95,8 @@ void
 StrigiHtmlGui::printAbout(ostream& out, const string& path,
         const map<string, string> &params) {
     out << "Strigi v"STRIGI_VERSION_STRING"<br/>";
-    out << "For more details see <a href='http://www.vandenoever.info/software/strigi'>the Strigi Website</a>.";
+    out << "For more details see <a href='http://strigi.sf.net/'>"
+                "the Strigi Website</a>.";
 }
 void
 StrigiHtmlGui::printConfig(ostream& out, const string& path,
@@ -445,6 +446,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     } else {
         name = doc.uri;
     }
+    name = h->escapeString(name);
     if (l != string::npos) {
         folder = doc.uri.substr(0, l);
     }
@@ -474,7 +476,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
         p = path.find('/', pp);
     }
     subpath = path.substr(pp, path.length()-pp+1);
-    link = h->mapLinkUrl(path);
+    link = h->mapLinkUrl(doc.uri, depth);
     out << "<a href='" << link << "'>" << subpath << "</a>";
 
     out << " - "
