@@ -3,8 +3,8 @@ subdirs (${TESTINGDIRS})
 
 # setting for using CPPUNIT
 
-include_directories (. ${CPPUNIT_INCLUDE_DIR}  ${CMAKE_SOURCE_DIR}/src/daemon
-    ${CMAKE_BINARY_DIR}/src/streams)
+include_directories (. ${CPPUNIT_INCLUDE_DIR}  ${strigi_SOURCE_DIR}/src/daemon
+    ${strigi_BINARY_DIR}/src/streams)
 
 # cppunit requires exception support
 IF(NOT WIN32)
