@@ -68,8 +68,11 @@ initialize() {
     }
 }
 
-Base64InputStream::Base64InputStream(InputStream* i) :p(new Private(this, i)) {
+Base64InputStream::Base64InputStream(InputStream* i) 
+    :p(new Private(this, i)) 
+{
 }
+
 Base64InputStream::~Base64InputStream() {
     delete p;
 }
