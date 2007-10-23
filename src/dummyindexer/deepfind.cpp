@@ -66,7 +66,7 @@ main(int argc, char **argv) {
         path = argv[1];
     }
 
-    DummyIndexManager manager(0);
+    DummyIndexManager manager(1);
     FindIndexerConfiguration conf;
     DirAnalyzer analyzer(manager, conf);
     analyzer.analyzeDir(path);
