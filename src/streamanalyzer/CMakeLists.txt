@@ -102,6 +102,9 @@ install(FILES
 	indexmanager.h
 	indexplugin.h
 	indexwriter.h
+	variant.h
+	query.h
+	queryparser.h
 	streamanalyzer.h
 	streamanalyzerfactory.h
 	streamendanalyzer.h
