@@ -20,6 +20,7 @@
 #include "indexpluginloader.h"
 #include "indexmanager.h"
 #include <iostream>
+#include <stdlib.h>
 #include <stgdirent.h>
 #include <sys/stat.h>
 using namespace std;
