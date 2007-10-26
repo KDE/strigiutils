@@ -24,6 +24,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <stgdirent.h>
+#include <string.h>
 
 using namespace std;
 
