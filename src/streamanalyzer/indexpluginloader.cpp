@@ -21,6 +21,7 @@
 #include "indexmanager.h"
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
 #include <stgdirent.h>
 #include <sys/stat.h>
 using namespace std;
