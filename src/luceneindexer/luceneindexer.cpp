@@ -36,19 +36,20 @@ containsHelp(int argc, char **argv) {
     }
     return false;
 }
-void
+bool
 checkIndexdirIsEmpty(const char* dir) {
     DIR* d = opendir(dir);
-    if (!d) return;
+    if (!d) return false;
     struct dirent* de = readdir(d);
     while (de) {
         if (strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
             fprintf(stderr, "Directory %s is not empty.\n", dir);
-            exit(1);
+            return false;
         }
         de = readdir(d);
     }
     closedir(d);
+    return true;
 }
 int
 main(int argc, char **argv) {
@@ -57,7 +58,9 @@ main(int argc, char **argv) {
         return -1;
     }
 
-    checkIndexdirIsEmpty(argv[1]);
+    if (!checkIndexdirIsEmpty(argv[1])) {
+        return 1;
+    }
 
     vector<pair<bool,string> >filters;
     filters.push_back(make_pair<bool,string>(false,".*/"));
