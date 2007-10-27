@@ -64,7 +64,9 @@ Variant::Variant(const vector<string>& v) :p(new VariantPrivate()) {
 Variant::Variant(const Variant& v) :p(new VariantPrivate(*v.p)) {
 }
 Variant::~Variant() {
+  delete p;
 }
+
 Variant::Type
 Variant::type() const { return p->vartype; }
 const Variant&
