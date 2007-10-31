@@ -1,6 +1,0 @@
-[Field]
-Uri=xml.usesNamespace
-Name=XML Namespace
-TypeUri=string
-Description=XML Namespace used in the XML
-Comment=XML files may use multiple namespaces.

@@ -1,7 +1,0 @@
-[Field]
-Uri=video.frame_rate
-ParentUri=media.sample_rate
-Name=Frame rate
-TypeUri=string
-Description=Video frame rate
-Comment=
