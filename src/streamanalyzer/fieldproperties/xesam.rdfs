@@ -77,7 +77,7 @@
 <rdf:Property rdf:about="&xesam;size">
 	<rdfs:label>xesam:size</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Content"/>
-	<rdfs:comment>Content size</rdfs:comment>
+	<rdfs:comment>Content/data size in bytes. See also storageSize</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;creator">
@@ -259,7 +259,7 @@
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;asText">
-	<rdfs:label>xesam:comment</rdfs:label>
+	<rdfs:label>xesam:asText</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Content"/>
 	<rdfs:comment>Content plain-text representation for indexing purposes</rdfs:comment>
 </rdf:Property>
@@ -301,29 +301,53 @@
 
 
 
-<rdfs:Class rdf:about="&xesam;Folder">
+
+
+<rdfs:Class rdf:about="&xesam;Annotation">
 	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
-	<rdfs:label>xesam:Archive</rdfs:label>
-	<rdfs:comment>Generic folder</rdfs:comment>
+	<rdfs:label>xesam:Annotation</rdfs:label>
+	<rdfs:comment>Generic annotation. Annotation provides a set of document description properties(like subject, title, description) for a list of objects it links to. It can link to other annotations, however interpretation of this may differ between specific annotation classes..</rdfs:comment>
+</rdfs:Class>
+
+
+<rdfs:Class rdf:about="&xesam;Folder">
+	<rdfs:subClassOf rdf:resource="&xesam;Annotation"/>
+	<rdfs:label>xesam:Folder</rdfs:label>
+	<rdfs:comment>Generic folder. In general, folders represent a tree-like structure(taxonomy), however on occasion this rule may violated in cases like symlinks.</rdfs:comment>
 </rdfs:Class>
 
 <rdfs:Class rdf:about="&xesam;Project">
-	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
+	<rdfs:subClassOf rdf:resource="&xesam;Annotation"/>
 	<rdfs:label>xesam:Project</rdfs:label>
 	<rdfs:comment>Generic project</rdfs:comment>
 </rdfs:Class>
 
 <rdfs:Class rdf:about="&xesam;MediaList">
-	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
+	<rdfs:subClassOf rdf:resource="&xesam;Annotation"/>
 	<rdfs:label>xesam:MediaList</rdfs:label>
-	<rdfs:comment>Generic media file list(playlist)</rdfs:comment>
+	<rdfs:comment>Generic media content list(playlist). Linking to other content types is forbidden</rdfs:comment>
 </rdfs:Class>
 
 <rdfs:Class rdf:about="&xesam;AudioList">
 	<rdfs:subClassOf rdf:resource="&xesam;MediaList"/>
 	<rdfs:label>xesam:AudioList</rdfs:label>
-	<rdfs:comment>Generic audio file list(playlist)</rdfs:comment>
+	<rdfs:comment>Generic audio list(playlist). Linking to other content types is forbidden</rdfs:comment>
 </rdfs:Class>
+
+<rdfs:Class rdf:about="&xesam;Tag">
+	<rdfs:subClassOf rdf:resource="&xesam;Annotation"/>
+	<rdfs:label>xesam:Tag</rdfs:label>
+	<rdfs:comment>Tag/keyword. As opposed to folders, there are no limitations on the structure of tags and arbitrary overlaps are possible.</rdfs:comment>
+</rdfs:Class>
+
+<rdfs:Class rdf:about="&xesam;Bookmark">
+	<rdfs:subClassOf rdf:resource="&xesam;Annotation"/>
+	<rdfs:label>xesam:Bookmark</rdfs:label>
+	<rdfs:comment>Bookmark. Currently there's nothing that would distinguish bookmarks and tags</rdfs:comment>
+</rdfs:Class>
+
+
+
 
 
 
@@ -563,279 +587,6 @@
 
 
 
-<rdfs:Class rdf:about="&xesam;PIM">
-	<rdfs:subClassOf rdf:resource="&xesam;Content"/>
-	<rdfs:label>xesam:PIM</rdfs:label>
-	<rdfs:comment>Generic PIM</rdfs:comment>
-</rdfs:Class>
-
-<rdf:Property rdf:about="&xesam;attendee">
-	<rdfs:label>xesam:attendee</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Alarm"/>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry attendee</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionOrganizer">
-	<rdfs:label>xesam:actionOrganizer</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry organizer</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionContact">
-	<rdfs:label>xesam:actionContact</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry contact</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionURL">
-	<rdfs:label>xesam:actionURL</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry URL</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionURL">
-	<rdfs:label>xesam:actionURL</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry URL</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionTrigger">
-	<rdfs:label>xesam:actionTrigger</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Alarm"/>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry action trigger</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionEnd">
-	<rdfs:label>xesam:actionEnd</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:comment>PIM entry action end</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionDuration">
-	<rdfs:label>xesam:actionDuration</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Alarm"/>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry action duration</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionStart">
-	<rdfs:label>xesam:actionStart</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;FreeBusy"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry action start</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionPriority">
-	<rdfs:label>xesam:actionPriority</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry priority</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionLocation">
-	<rdfs:label>xesam:actionLocation</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry location</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionStatus">
-	<rdfs:label>xesam:actionStatus</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry status</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionRecurrenceID">
-	<rdfs:label>xesam:actionRecurrenceID</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry recurrence ID</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionRecurrenceDate">
-	<rdfs:label>xesam:actionRecurrenceDate</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry recurrence date</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionRecurrenceRule">
-	<rdfs:label>xesam:actionRecurrenceRule</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry recurrence rule</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionExceptionDate">
-	<rdfs:label>xesam:actionExceptionDate</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry exception date</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionExceptionRule">
-	<rdfs:label>xesam:actionExceptionRule</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry exception rule</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionAccessClassification">
-	<rdfs:label>xesam:actionAccessClassification</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Journal"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM entry access classification</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionResources">
-	<rdfs:label>xesam:actionResources</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>Equipment or resources anticipated for an activity</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;actionAlarm">
-	<rdfs:label>xesam:actionResources</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>PIM activity has alarm</rdfs:comment>
-</rdf:Property>
-
-
-
-
-
-
-<rdfs:Class rdf:about="&xesam;Alarm">
-	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:Alarm</rdfs:label>
-	<rdfs:comment>Alarm</rdfs:comment>
-</rdfs:Class>
-
-<rdf:Property rdf:about="&xesam;alarmRepeat">
-	<rdfs:label>xesam:alarmRepeat</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Alarm"/>
-	<rdfs:comment>Alarm repeat</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;alarmAction">
-	<rdfs:label>xesam:alarmAction</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Alarm"/>
-	<rdfs:comment>Alarm action</rdfs:comment>
-</rdf:Property>
-
-
-
-
-
-
-
-<rdfs:Class rdf:about="&xesam;Event">
-	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:Event</rdfs:label>
-	<rdfs:comment>Event</rdfs:comment>
-</rdfs:Class>
-
-<rdf:Property rdf:about="&xesam;eventTransparrent">
-	<rdfs:label>xesam:eventTransparrent</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:comment>Is event transparrent(makes person busy)</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;eventStart">
-	<rdfs:label>xesam:eventStart</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:comment>Event start time</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;eventEnd">
-	<rdfs:label>xesam:eventEnd</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:comment>Event end time</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;eventLocation">
-	<rdfs:label>xesam:eventLocation</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Event"/>
-	<rdfs:comment>Event location</rdfs:comment>
-</rdf:Property>
-
-
-
-
-
-
-<rdfs:Class rdf:about="&xesam;Task">
-	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:Task</rdfs:label>
-	<rdfs:comment>Task</rdfs:comment>
-</rdfs:Class>
-
-<rdf:Property rdf:about="&xesam;taskDue">
-	<rdfs:label>xesam:taskDue</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>Task due date/time</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;taskCompleted">
-	<rdfs:label>xesam:taskCompleted</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>Is task completed?</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;taskPercentComplete">
-	<rdfs:label>xesam:taskPercentComplete</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Task"/>
-	<rdfs:comment>Task completeness</rdfs:comment>
-</rdf:Property>
-
-
-
-
-
-<rdfs:Class rdf:about="&xesam;Journal">
-	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:Journal</rdfs:label>
-	<rdfs:comment>Journal</rdfs:comment>
-</rdfs:Class>
-
-
-
-<rdfs:Class rdf:about="&xesam;FreeBusy">
-	<rdfs:subClassOf rdf:resource="&xesam;PIM"/>
-	<rdfs:label>xesam:FreeBusy</rdfs:label>
-	<rdfs:comment>FreeBusy</rdfs:comment>
-</rdfs:Class>
 
 
 
@@ -903,6 +654,7 @@
 	<rdfs:comment>Document is an arrangement of various atomic data types with text being the primary data type.</rdfs:comment>
 </rdfs:Class>
 
+
 <rdf:Property rdf:about="&xesam;documentCategory">
 	<rdfs:label>xesam:documentCategory</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Document"/>
@@ -924,6 +676,11 @@
 
 
 
+<rdfs:Class rdf:about="&xesam;Documentation">
+	<rdfs:subClassOf rdf:resource="&xesam;Document"/>
+	<rdfs:label>xesam:Documentation</rdfs:label>
+	<rdfs:comment>Documentation is a document containing help, manuals, guides.</rdfs:comment>
+</rdfs:Class>
 
 
 
@@ -1514,34 +1271,10 @@
 	<rdfs:comment>Contact</rdfs:comment>
 </rdfs:Class>
 
-<rdf:Property rdf:about="&xesam;contactName">
-	<rdfs:label>xesam:contactName</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact name</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;contactPhoto">
-	<rdfs:label>xesam:contactPhoto</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact photo/avatar</rdfs:comment>
-</rdf:Property>
-
 <rdf:Property rdf:about="&xesam;contactNick">
 	<rdfs:label>xesam:contactNick</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
 	<rdfs:comment>Contact nick</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;gender">
-	<rdfs:label>xesam:gender</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact gender</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;birthDate">
-	<rdfs:label>xesam:birthDate</rdfs:label>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact birthDate</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;interests">
@@ -1570,39 +1303,11 @@
 	<rdfs:comment>Contact Jabber ID</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;icqContactMedium">
-	<rdfs:label>xesam:icqContactMedium</rdfs:label>
+<rdf:Property rdf:about="&xesam;ircContactMedium">
+	<rdfs:label>xesam:ircContactMedium</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;imContactMedium"/>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact ICQ ID</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;aimContactMedium">
-	<rdfs:label>xesam:aimContactMedium</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;imContactMedium"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact AIM ID</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;yahooContactMedium">
-	<rdfs:label>xesam:yahooContactMedium</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;imContactMedium"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact Yahoo ID</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;msnContactMedium">
-	<rdfs:label>xesam:msnContactMedium</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;imContactMedium"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact MSN ID</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;skypeContactMedium">
-	<rdfs:label>xesam:skypeContactMedium</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;imContactMedium"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact Skype ID</rdfs:comment>
+	<rdfs:comment>Contact IRC ID@server</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;postalAddress">
@@ -1610,20 +1315,6 @@
 	<rdfs:subPropertyOf rdf:resource="&xesam;contactMedium"/>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
 	<rdfs:comment>Contact postal address</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;homePostalAddress">
-	<rdfs:label>xesam:homePostalAddress</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;postalAddress"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact home address</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;workPostalAddress">
-	<rdfs:label>xesam:workPostalAddress</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;postalAddress"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact work address</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;mailingPostalAddress">
@@ -1638,20 +1329,6 @@
 	<rdfs:subPropertyOf rdf:resource="&xesam;contactMedium"/>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
 	<rdfs:comment>Contact email address</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;workEmailAddress">
-	<rdfs:label>xesam:workEmailAddress</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;emailAddress"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact work email address</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;homeEmailAddress">
-	<rdfs:label>xesam:homeEmailAddress</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;emailAddress"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact home email address</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;contactURL">
@@ -1682,25 +1359,11 @@
 	<rdfs:comment>Contact phone number</rdfs:comment>
 </rdf:Property>
 
-<rdf:Property rdf:about="&xesam;homePhoneNumber">
-	<rdfs:label>xesam:homePhoneNumber</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;phoneNumber"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact home phone number</rdfs:comment>
-</rdf:Property>
-
 <rdf:Property rdf:about="&xesam;cellPhoneNumber">
 	<rdfs:label>xesam:cellPhoneNumber</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;phoneNumber"/>
 	<rdfs:domain rdf:resource="&xesam;Contact"/>
 	<rdfs:comment>Contact cell phone number</rdfs:comment>
-</rdf:Property>
-
-<rdf:Property rdf:about="&xesam;workPhoneNumber">
-	<rdfs:label>xesam:workPhoneNumber</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&xesam;phoneNumber"/>
-	<rdfs:domain rdf:resource="&xesam;Contact"/>
-	<rdfs:comment>Contact work phone number</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;faxPhoneNumber">
@@ -1710,6 +1373,93 @@
 	<rdfs:comment>Contact fax phone number</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&xesam;knows">
+	<rdfs:label>xesam:knows</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;related"/>
+	<rdfs:domain rdf:resource="&xesam;Contact"/>
+	<rdfs:comment>FOAF:knows relation</rdfs:comment>
+</rdf:Property>
+
+
+
+
+
+
+<rdfs:Class rdf:about="&xesam;Person">
+	<rdfs:subClassOf rdf:resource="&xesam;Contact"/>
+	<rdfs:label>xesam:Person</rdfs:label>
+	<rdfs:comment>Person</rdfs:comment>
+</rdfs:Class>
+
+<rdf:Property rdf:about="&xesam;personPhoto">
+	<rdfs:label>xesam:personPhoto</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact photo/avatar</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;gender">
+	<rdfs:label>xesam:gender</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact gender</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;birthDate">
+	<rdfs:label>xesam:birthDate</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact birthDate</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;homePostalAddress">
+	<rdfs:label>xesam:homePostalAddress</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;postalAddress"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact home address</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;workPostalAddress">
+	<rdfs:label>xesam:workPostalAddress</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;postalAddress"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact work address</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;workEmailAddress">
+	<rdfs:label>xesam:workEmailAddress</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;emailAddress"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact work email address</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;homeEmailAddress">
+	<rdfs:label>xesam:homeEmailAddress</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;emailAddress"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact home email address</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;homePhoneNumber">
+	<rdfs:label>xesam:homePhoneNumber</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;phoneNumber"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact home phone number</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&xesam;workPhoneNumber">
+	<rdfs:label>xesam:workPhoneNumber</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;phoneNumber"/>
+	<rdfs:domain rdf:resource="&xesam;Person"/>
+	<rdfs:comment>Contact work phone number</rdfs:comment>
+</rdf:Property>
+
+
+
+
+
+<rdfs:Class rdf:about="&xesam;Organization">
+	<rdfs:subClassOf rdf:resource="&xesam;Contact"/>
+	<rdfs:label>xesam:Organization</rdfs:label>
+	<rdfs:comment>Organization</rdfs:comment>
+</rdfs:Class>
 
 
 
@@ -1800,7 +1550,7 @@
 <rdf:Property rdf:about="&xesam;storageSize">
 	<rdfs:label>xesam:storageSize</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
-	<rdfs:comment>Space occupied by the object in the source storage</rdfs:comment>
+	<rdfs:comment>Actual space occupied by the object in the source storage. e.g. compressed file size in archive</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;sourceCreated">
@@ -1819,20 +1569,20 @@
 	<rdfs:label>xesam:userComment</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;comment"/>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
-	<rdfs:comment>User comment</rdfs:comment>
+	<rdfs:comment>User-provided comment</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;userKeyword">
 	<rdfs:label>xesam:userKeyword</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;keyword"/>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
-	<rdfs:comment>User keywords</rdfs:comment>
+	<rdfs:comment>User-provided keywords</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;userRating">
 	<rdfs:label>xesam:userRating</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
-	<rdfs:comment>User rating of the object</rdfs:comment>
+	<rdfs:comment>User-provided rating of the object</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;autoRating">
@@ -1881,7 +1631,7 @@
 <rdfs:Class rdf:about="&xesam;OfflineMedia">
 	<rdfs:subClassOf rdf:resource="&xesam;Source"/>
 	<rdfs:label>xesam:OfflineMedia</rdfs:label>
-	<rdfs:comment>Generic offline media. e.g. USB drive that is not attached at this momeny.</rdfs:comment>
+	<rdfs:comment>Generic offline media. e.g. USB drive not attached at this moment.</rdfs:comment>
 </rdfs:Class>
 
 <rdf:Property rdf:about="&xesam;seenAttachedAs">
@@ -1994,6 +1744,12 @@
 	<rdfs:comment>File permissions</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&xesam;acl">
+	<rdfs:label>xesam:acl</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;Filelike"/>
+	<rdfs:comment>File access control list</rdfs:comment>
+</rdf:Property>
+
 <rdf:Property rdf:about="&xesam;owner">
 	<rdfs:label>xesam:owner</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Filelike"/>
@@ -2018,7 +1774,7 @@
 <rdfs:Class rdf:about="&xesam;File">
 	<rdfs:subClassOf rdf:resource="&xesam;Filelike"/>
 	<rdfs:label>xesam:File</rdfs:label>
-	<rdfs:comment>Regular file</rdfs:comment>
+	<rdfs:comment>Regular file stored in a filesystem</rdfs:comment>
 </rdfs:Class>
 
 
@@ -2116,7 +1872,7 @@
 <rdfs:Class rdf:about="&xesam;ArchivedFile">
 	<rdfs:subClassOf rdf:resource="&xesam;Filelike"/>
 	<rdfs:label>xesam:ArchivedFile</rdfs:label>
-	<rdfs:comment>Generic archived file</rdfs:comment>
+	<rdfs:comment>File stored in an archive</rdfs:comment>
 </rdfs:Class>
 
 <rdf:Property rdf:about="&xesam;isSourceEncrypted">
@@ -2149,7 +1905,7 @@
 <rdfs:Class rdf:about="&xesam;MessageboxMessage">
 	<rdfs:subClassOf rdf:resource="&xesam;Source"/>
 	<rdfs:label>xesam:MessageboxMessage</rdfs:label>
-	<rdfs:comment>Generic messagebox message</rdfs:comment>
+	<rdfs:comment>Message stored in a message box</rdfs:comment>
 </rdfs:Class>
 
 <rdf:Property rdf:about="&xesam;isRead">
@@ -2161,13 +1917,13 @@
 <rdf:Property rdf:about="&xesam;isImportant">
 	<rdfs:label>xesam:isImportant</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;MessageboxMessage"/>
-	<rdfs:comment>Is the message important(Kontact tag)</rdfs:comment>
+	<rdfs:comment>Is the message important</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;isInProgress">
 	<rdfs:label>xesam:isInProgress</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;MessageboxMessage"/>
-	<rdfs:comment>Is the message in progress(Kontact tag)</rdfs:comment>
+	<rdfs:comment>Is the message in progress</rdfs:comment>
 </rdf:Property>
 
 

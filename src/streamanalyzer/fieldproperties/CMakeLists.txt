@@ -1,7 +1,9 @@
 
 install(FILES
 	xesam.rdfs
-#	strigi.rdfs
+	xesam-convenience.rdfs
+	strigi.rdfs
+
 #	chemical.rdfs
 
 	DESTINATION share/strigi/fieldproperties
