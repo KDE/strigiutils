@@ -37,8 +37,19 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["genre"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#genre");
     fields["codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
     fields["composer"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#composer");
+    fields["performer"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#performer");
     fields["date"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
     fields["description"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#description");
+    fields["tracknumber"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+
+
+    fields["version"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#version");
+    fields["isrc"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#isrc");
+    fields["copyright"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#copyright");
+    fields["license"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#license");
+
+// fields left unimplemented: ORGANIZATION, LOCATION, CONTACT
+
 }
 
 void
