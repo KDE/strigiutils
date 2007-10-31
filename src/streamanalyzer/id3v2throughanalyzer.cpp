@@ -32,6 +32,7 @@ const string ID3V2ThroughAnalyzerFactory::albumFieldName("http://freedesktop.org
 const string ID3V2ThroughAnalyzerFactory::composerFieldName("http://freedesktop.org/standards/xesam/1.0/core#composer");
 const string ID3V2ThroughAnalyzerFactory::genreFieldName("http://freedesktop.org/standards/xesam/1.0/core#genre");
 const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+const string ID3V2ThroughAnalyzerFactory::albumTrackCountFieldName("http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
 const string ID3V2ThroughAnalyzerFactory::discNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#discNumber");
 
 void
@@ -42,6 +43,7 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     genreField = r.registerField(genreFieldName);
     composerField = r.registerField(composerFieldName);
     trackNumberField = r.registerField(trackNumberFieldName);  //FIXME:id3 track numbers can look like this: 1/10
+    albumTrackCountField = r.registerField(albumTrackCountFieldName);
     discNumberField = r.registerField(discNumberFieldName);  //FIXME:id3 disc numbers can looklike this: 1/2
 }
 
