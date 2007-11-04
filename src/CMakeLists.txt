@@ -32,7 +32,7 @@ endif(NOT WIN32)
 
 if (NOT CLucene_FOUND)
   message("** No CLucene libraries were found, so Strigi cannot use indexes.")
-  message("** It is recommended to install CLucene >= 0.9.16.")
+  message("** It is recommended to install CLucene >= 0.9.16a.")
   message("** You will still be able to use deepfind, deepgrep and xmlindexer.")
 endif (NOT CLucene_FOUND)
 

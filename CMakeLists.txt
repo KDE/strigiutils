@@ -16,6 +16,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # include general modules
 include(UsePkgConfig)
 include(MacroCheckGccVisibility)
+include(MacroFindOptionalDep)
 
 # compile in debug mode
 IF(NOT CMAKE_BUILD_TYPE)
@@ -67,23 +68,23 @@ IF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
     REMOVE_DEFINITIONS(-fPIC)
 ENDIF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
 
-OPTION(ENABLE_INOTIFY
-  "enable inotify support (unstable)"
-  OFF)
+OPTION(ENABLE_INOTIFY "enable inotify support (unstable)" OFF)
+OPTION(ENABLE_DBUS "enable dbus support" ON)
+OPTION(ENABLE_NEWXESAM "enable new xesam support" OFF)
+OPTION(ENABLE_LOG4CXX "enable log4cxx support for advanced logging" OFF)
+OPTION(ENABLE_CPPUNIT "enable CppUnit for unit tests" ON)
+OPTION(ENABLE_QT4 "enable Qt4 GUI" ON)
+OPTION(ENABLE_EXIV2
+	"enable exiv2 support. This allows you to index EXIF/IPTC metadata." ON)
 
-OPTION(ENABLE_DBUS
-  "enable dbus support"
-  ON)
+# backends
+OPTION(ENABLE_CLUCENE "enable CLucene support (recommended)" ON)
+OPTION(ENABLE_HYPERESTRAIER "enable Hyper Estraier support(unreliable)" OFF)
+OPTION(ENABLE_SQLITE "enable SQLite support(unreliable)" OFF)
 
-OPTION(ENABLE_NEWXESAM
-  "enable new xesam support"
-  OFF)
+#OPTION(ENABLE_LIBXML2 "enable libxml2 support" ON)
+OPTION(ENABLE_EXPAT "enable expat support" OFF)
 
-OPTION(ENABLE_SQLITE "enable sqlite support" OFF)
-
-OPTION(ENABLE_LOG4CXX
-  "enable log4cxx support for advanced logging"
-  OFF)
 
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
@@ -91,28 +92,24 @@ find_package(Threads REQUIRED)
 find_package(Iconv REQUIRED)
 
 # use either expat or libxml2
-find_package(Expat)
+FIND_OPTIONAL_DEP(Expat ENABLE_EXPAT Expat_FOUND "XML via Expat")
+# libxml seems to be required regardless of what because it's used by streamanalyzer
+#FIND_OPTIONAL_DEP(LibXml2 ENABLE_LIBXML2 LIBXML2_FOUND "XML via LibXml2")
 find_package(LibXml2 REQUIRED)
+
 if (NOT LIBXML2_FOUND AND NOT Expat_FOUND)
-  MESSAGE(FATAL "You need libxml2 or libexpat")
+  MESSAGE(FATAL_ERROR "You need libxml2 or libexpat")
 endif (NOT LIBXML2_FOUND AND NOT Expat_FOUND)
 
-find_package(CLucene)
-if(NOT CLucene_FOUND)
-  MESSAGE("Could not find CLucene. Please install CLucene = 0.9.16a (http://clucene.sf.net)")
-endif(NOT CLucene_FOUND)
+FIND_OPTIONAL_DEP(CLucene ENABLE_CLUCENE CLucene_FOUND "CLucene backend")
+FIND_OPTIONAL_DEP(HyperEstraier ENABLE_HYPERESTRAIER HyperEstraier_FOUND "HyperEstraier backend")
+FIND_OPTIONAL_DEP(SQLite ENABLE_SQLITE SQLite_FOUND "SQLite backend")
 
-find_package(HyperEstraier)
-find_package(Exiv2)
-if(ENABLE_SQLITE)
-  find_package(SQLite)
-endif(ENABLE_SQLITE)
+FIND_OPTIONAL_DEP(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
+
 #find_package(XAttr)
 set(QT_MIN_VERSION "4.2.0")
-find_package(Qt4)
-if (NOT QT4_FOUND)
-    MESSAGE("** Qt4 was not found. No GUI will be built.")
-endif (NOT QT4_FOUND)
+FIND_OPTIONAL_DEP(Qt4 ENABLE_QT4 QT4_FOUND "QT4 GUI client")
 
 check_include_files(strings.h     HAVE_STRINGS_H)                      # various
 
@@ -129,35 +126,40 @@ IF(ENABLE_DBUS)
   ELSE(WIN32)
     include(UsePkgConfig)
     PKGCONFIG(dbus-1 DBUS_INCLUDE_DIR DBUS_LIBRARY_DIR DBUS_LDFLAGS DBUS_CFLAGS)
-    if (NOT DBUS_INCLUDE_DIR)
-      MESSAGE(FATAL_ERROR "Could not find DBus")
-    endif (NOT DBUS_INCLUDE_DIR)
     
-    EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=1.0 dbus-1 RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
-    if(_return_VALUE STREQUAL "0")
-         message(STATUS "Found dbus-1 release >= 1.0")
-    else(_return_VALUE STREQUAL "0")
-         message(STATUS "Found dbus-1 release < 1.0 support for dbus client will be disable")
-         set(ENABLE_DBUS "OFF")
-    endif(_return_VALUE STREQUAL "0")
+    if (DBUS_INCLUDE_DIR)
+      EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=1.0 dbus-1 RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
+      if(_return_VALUE STREQUAL "0")
+        message(STATUS "Found dbus-1 release >= 1.0")
+        set(DBUS_FOUND "ON") 
+      else(_return_VALUE STREQUAL "0")
+         message(STATUS "Found dbus-1 release < 1.0. Release >=1.0 is needed")
+      endif(_return_VALUE STREQUAL "0")
+    endif (DBUS_INCLUDE_DIR)
+
+    REPORT_OPTIONAL_PACKAGE_STATUS(DBus-1 ENABLE_DBUS DBUS_FOUND "DBus interface in Strigi daemon")
+    if(NOT DBUS_FOUND)
+      set(ENABLE_DBUS "OFF")
+      if(FORCE_DEPS)
+        MESSAGE(FATAL_ERROR "Aborting")
+      endif(FORCE_DEPS)
+    endif(NOT DBUS_FOUND)
 
   ENDIF(WIN32)
 ENDIF(ENABLE_DBUS)
 
-find_program (BISON
-              bison
-              DOC "Path to bison command, used for xesam userlanguage parser generation"
-)
+# Don't delete bison section, but only micron seems to need this
+#find_program (BISON
+#              bison
+#              DOC "Path to bison command, used for xesam userlanguage parser generation")
 
-if (BISON)
-  MESSAGE (STATUS "Found bison: ${BISON}")
-else (BISON)
-  MESSAGE ("** GNU bison not found. This affects the xesam parser.")
-endif (BISON)
+#if (BISON)
+#  MESSAGE (STATUS "Found bison: ${BISON}")
+#else (BISON)
+#  MESSAGE ("** GNU bison not found. This affects the xesam parser.")
+#endif (BISON)
 
-if (ENABLE_LOG4CXX)
-    find_package (Log4cxx)
-endif (ENABLE_LOG4CXX)
+FIND_OPTIONAL_DEP(Log4cxx ENABLE_LOG4CXX LOG4CXX_FOUND "advanced logging")
 
 #
 # AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by
@@ -189,13 +191,10 @@ MACRO_CHECK_GCC_VISIBILITY(__STRIGI_HAVE_GCC_VISIBILITY)
 
 SET (DIRS ${DIRS} src)
 
-find_package(CppUnit)
-if (NOT CppUnit_FOUND)
-    MESSAGE("** CppUnit was not found. Strigi unit tests will not be built.")
-else (NOT CppUnit_FOUND)
-    MESSAGE(STATUS "CppUnit found. Strigi unit tests will be built.")
+FIND_OPTIONAL_DEP(CppUnit ENABLE_CPPUNIT CppUnit_FOUND "Strigi unit tests")
+if (CppUnit_FOUND)
     SET (DIRS ${DIRS} tests)
-endif (NOT CppUnit_FOUND)
+endif (CppUnit_FOUND)
 
 ENABLE_TESTING()
 SUBDIRS (${DIRS})

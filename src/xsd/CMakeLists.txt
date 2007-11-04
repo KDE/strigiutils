@@ -20,7 +20,8 @@ else (LIBXML2_FOUND)
 endif (LIBXML2_FOUND)
 
 # java is required to compile the xsd parser
-find_package(Java REQUIRED)
+OPTION(ENABLE_REGENERATEXSD "regenerate xsd parser from *.xsd files(not normally required)" ON)
+FIND_OPTIONAL_DEP(Java ENABLE_REGENERATEXSD JAVA_COMPILE "generating xsd parser from *.xsd files")
 
 # loop over all xsd files, the next line does not work everywhere,
 # so we dont use it currently
@@ -57,4 +58,3 @@ foreach (XSDFILE ${XSDFILES})
   target_link_libraries(${XSDNAME}test ${XSDNAME} xmlstream)
 
 endforeach (XSDFILE ${XSDFILES})
-
