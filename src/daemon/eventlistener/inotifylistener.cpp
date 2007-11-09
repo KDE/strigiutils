@@ -28,6 +28,7 @@
 #include "../strigilogging.h"
 
 #include <cerrno>
+#include <cstring>
 #include <sys/resource.h>
 #include <sys/select.h>
 #include <sys/types.h>
