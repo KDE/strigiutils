@@ -33,6 +33,7 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <vector>
+#include <algorithm>
 
 #include "local_inotify.h"
 #include "local_inotify-syscalls.h"
