@@ -24,11 +24,9 @@
 using namespace Strigi;
 using namespace std;
 
-const string SdfEndAnalyzerFactory::moleculeCountFieldName = "chemistry.molecule_count";
-
 void
 SdfEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    moleculeCountField = r.registerField(moleculeCountFieldName);
+    moleculeCountField = r.registerField("http://rdf.openmolecules.net/0.9#moleculeCount");
 }
 
 bool

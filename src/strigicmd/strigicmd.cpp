@@ -62,9 +62,9 @@ public:
 //    Tokenized  = 0x0040 /**< If the field contains text, it
 //                             should be tokenized. */
     AnalyzerConfiguration::FieldType indexType(const RegisteredField* field) const {
-	if (string("chemistry.inchi").compare(field->key()) == 0) {
+	if (string("chemistry:inchi").compare(field->key()) == 0) {
 	    return Stored|Indexed;
-	} else if (string("chemistry.molecular_formula").compare(field->key()) == 0) {
+	} else if (string("chemistry:molecularFormula").compare(field->key()) == 0) {
 	    return Stored|Indexed;
 /*	} else if (string("chemistry.").compare(field->key()) == 0) {
 	    return Binary|Stored|Indexed;
