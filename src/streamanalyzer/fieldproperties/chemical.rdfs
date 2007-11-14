@@ -76,6 +76,24 @@
 	<rdfs:comment>Bond Count</rdfs:comment>
 </rdf:Property>
 
+<rdf:Property rdf:about="&chemical;moleculeCount">
+	<rdfs:label>chemical:moleculeCount</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
+	<rdfs:comment>Molecule Count</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&chemical;classification">
+	<rdfs:label>chemical:classification</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
+	<rdfs:comment>Indication of some Chemical Class</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&chemical;isChiral">
+	<rdfs:label>chemical:isChiral</rdfs:label>
+	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
+	<rdfs:subPropertyOf rdf:resource="&xesam;classification"/>
+	<rdfs:comment>Flag that indicates if the Content contains Chiral Species</rdfs:comment>
+</rdf:Property>
 
 <rdfs:Class rdf:about="&xesam;ProteinStructure">
 	<rdfs:label>chemical:ProteinStructure</rdfs:label>
@@ -88,6 +106,13 @@
 	<rdfs:subPropertyOf rdf:resource="&xesam;id"/>
 	<rdfs:domain rdf:resource="&xesam;ProteinStructure"/>
 	<rdfs:comment>ProteinDataBase Identifier</rdfs:comment>
+</rdf:Property>
+
+<rdf:Property rdf:about="&chemical;depositionDate">
+	<rdfs:label>chemical:depositionDate</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&xesam;creationDate"/>
+	<rdfs:domain rdf:resource="&xesam;ProteinStructure"/>
+	<rdfs:comment>Date on which the PDB Entry was Added to the Database</rdfs:comment>
 </rdf:Property>
 
 <rdf:Property rdf:about="&chemical;experimentalMethod">
