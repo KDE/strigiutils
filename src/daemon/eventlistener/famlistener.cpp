@@ -52,7 +52,7 @@ bool operator< (const FAMRequest& f1, const FAMRequest& f2)
 }
 
 FamEvent::FamEvent (const string& watchName, FAMEvent event)
-    : FsEvent (watchName, event.filename)
+    : FsEvent (watchName, event.filename),
       m_event(event),
       m_watchName (watchName)
 {
