@@ -8,10 +8,24 @@
 FIND_PATH(FAM_INCLUDE_DIR fam.h PATHS /usr/include /usr/local/include )
 FIND_LIBRARY(FAM_LIBRARIES NAMES fam )
 
+FIND_LIBRARY(GAMIN_LIBRARIES NAMES gamin gamin-1 PATH /usr/lib /usr/local/lib)
+ 
+IF (NOT GAMIN_LIBRARIES AND FAM_LIBRARIES)
+  message (STATUS "Please use Gamin instead of FAM if possible") 
+ENDIF (NOT GAMIN_LIBRARIES AND FAM_LIBRARIES)
+
+if (GAMIN_LIBRARIES)
+  message(STATUS "Found Gamin: good choice, it's better then FAM")
+endif (GAMIN_LIBRARIES)
+
 IF(FAM_INCLUDE_DIR AND FAM_LIBRARIES)
   SET(FAM_FOUND 1)
   if(NOT FAM_FIND_QUIETLY)
-   message(STATUS "Found FAM: ${FAM_LIBRARIES}")
+    if (GAMIN_LIBRARIES)
+      message(STATUS "Found FAM (provided by Gamin): ${FAM_LIBRARIES}")
+    else (GAMIN_LIBRARIES)
+      message(STATUS "Found FAM: ${FAM_LIBRARIES}")
+    endif (GAMIN_LIBRARIES)
   endif(NOT FAM_FIND_QUIETLY)
 ELSE(FAM_INCLUDE_DIR AND FAM_LIBRARIES)
   SET(FAM_FOUND 0 CACHE BOOL "Not found FAM")
