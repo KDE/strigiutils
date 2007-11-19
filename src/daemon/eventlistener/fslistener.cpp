@@ -195,6 +195,8 @@ void FsListener::bootstrap()
     for (set<string>::iterator iter = bootstrapDirs.begin();
          iter != bootstrapDirs.end(); iter++)
     {
+        toWatch.insert (*iter);
+        
         DirLister lister(m_pindexerconfiguration);
         string path;
         vector<pair<string, struct stat> > dirs;
@@ -436,12 +438,21 @@ void FsListener::watch ()
                     }
                     break;
                 }
+                default:
+                    STRIGI_LOG_DEBUG ("strigi.FsListener.watch",
+                                      "unknown event type")
+                    break;
             }
+
+            delete fsevent;
         }
     }
 
-    if (events.size() > 0)
+    if (events.size() > 0) {
+        STRIGI_LOG_DEBUG ("strigi.FsListener.watch",
+                          "adding events to processing queue")
         m_pEventQueue->addEvents (events);
+    }
 }
 
 void FsListener::recursivelyMonitor (string dir, vector<Event*>& events)
