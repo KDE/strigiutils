@@ -44,6 +44,7 @@ class InotifyEvent : public FsEvent
 
         struct inotify_event* event() { return m_event;}
         char* name();
+        int watchID() { return m_watchID;}
         
     private:
         struct inotify_event* m_event;

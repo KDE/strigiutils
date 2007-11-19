@@ -57,6 +57,20 @@ InotifyEvent::InotifyEvent (int watchID, const string& watchName,
       m_watchName (watchName),
       m_watchID (watchID)
 {
+    if ( ((IN_MODIFY & m_event->mask) != 0) ||
+           ((IN_CLOSE_WRITE & m_event->mask) != 0) )
+        m_type = UPDATE;
+    else if (  ((IN_DELETE & m_event->mask) != 0) ||
+               ((IN_MOVED_FROM & m_event->mask) != 0 ) ||
+               ((IN_DELETE_SELF & m_event->mask) != 0 ) ||
+               ((IN_MOVE_SELF & m_event->mask) != 0 ))
+        m_type = DELETE;
+    else if ( ((IN_CREATE & m_event->mask) != 0) ||
+              ((IN_MOVED_TO & m_event->mask) != 0 ) )
+        m_type = CREATE;
+    else
+        STRIGI_LOG_DEBUG ("strigi.InotifyEvent.InotifyEvent",
+                          "inotify's unknown event");
 }
 
 char* InotifyEvent::name()
@@ -109,13 +123,14 @@ const string InotifyEvent::description()
 
     message += " event regarding ";
     message += string(m_event->name, m_event->len);
-    message += " with watch " + m_watchName;
+    message += " ; associated watch description: " + m_watchName;
     
     return message;
 }
 
 bool InotifyEvent::regardsDir()
 {
+    STRIGI_LOG_DEBUG("strigi.InotifyEvent.regardsDir", "hello")
     return ((IN_ISDIR & m_event->mask) != 0);
 }
 
@@ -195,7 +210,7 @@ bool InotifyListener::pendingEvent()
         int rc = select(m_iInotifyFD + 1, &read_fds, NULL, NULL, &read_timeout);
 
         if ( rc < 0 ) {
-            STRIGI_LOG_ERROR ("strigi.InotifyListener.retrieveEvent",
+            STRIGI_LOG_ERROR ("strigi.InotifyListener.pendingEvent",
                               "Select on inotify failed");
             return !m_events.empty();
         }
@@ -203,18 +218,19 @@ bool InotifyListener::pendingEvent()
             //Inotify select timeout
             return !m_events.empty();
         }
-
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.pendingEvent",
+                          "No timeout!");
         int thisBytes = read(m_iInotifyFD, &event + bytes,
                              sizeof(struct inotify_event)*MAX_EVENTS - bytes);
 
         if ( thisBytes < 0 ) {
-            STRIGI_LOG_ERROR ("strigi.InotifyListener.watch",
+            STRIGI_LOG_ERROR ("strigi.InotifyListener.pendingEvent",
                               "Read from inotify failed");
             return !m_events.empty();
         }
 
         if ( thisBytes == 0 ) {
-            STRIGI_LOG_WARNING ("strigi.InotifyListener.watch",
+            STRIGI_LOG_WARNING ("strigi.InotifyListener.pendingEvent",
                                 "Inotify reported end-of-file."
                                 "Possibly too many events occurred at once.");
             return !m_events.empty();
@@ -261,11 +277,19 @@ bool InotifyListener::pendingEvent()
         snprintf(buff, 20 * sizeof (char), "%f", (((float)remaining_bytes)/((float)sizeof(struct inotify_event))));
         message = buff;
         message += "event(s) may have been lost!";
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.watch", message);
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.pendingEvent", message);
     }
 
     fflush( NULL );
 
+    char buff [20];
+    snprintf(buff, 20 * sizeof (char), "%i", m_events.size());
+    string message = "Caught ";
+    message += buff;
+    message += " inotify's pending event(s)";
+    
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.pendingEvent", message)
+    
     return !m_events.empty();
 }
 
@@ -294,7 +318,6 @@ bool InotifyListener::isEventInteresting (FsEvent* event)
 //     }
 //     else
 //         STRIGI_LOG_WARNING ("strigi.InotifyListener.isEventInteresting", "unable to use filters, m_pFilterManager == NULL!")
-
     return true;
 }
 
@@ -305,7 +328,9 @@ bool InotifyListener::isEventValid(FsEvent* event)
     if (inotifyEvent == 0)
         return false;
 
-    
+    map<int, string>::iterator match = m_watches.find(inotifyEvent->watchID());
+
+    return (match != m_watches.end());
 }
 
 bool InotifyListener::addWatch (const string& path)
