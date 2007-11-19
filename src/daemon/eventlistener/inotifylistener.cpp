@@ -146,8 +146,7 @@ InotifyListener::InotifyListener(set<string>& indexedDirs)
 
 InotifyListener::~InotifyListener()
 {
-    //TODO: fix
-//     FsListener::~FsListener();
+    clearWatches();
     
     if (m_pollingListener != NULL) {
         m_pollingListener->stop();
@@ -187,6 +186,7 @@ FsEvent* InotifyListener:: retrieveEvent()
 
 bool InotifyListener::pendingEvent()
 {
+    unsigned int counter = 0;
     struct timeval read_timeout;
     read_timeout.tv_sec = 1;
     read_timeout.tv_usec = 0;
@@ -261,7 +261,8 @@ bool InotifyListener::pendingEvent()
         }
 
         m_events.push_back (new InotifyEvent ( watchID, watchName, this_event));
-
+        counter++;
+        
         // next event
         this_event_char += sizeof(struct inotify_event) + this_event->len;
         remaining_bytes -= sizeof(struct inotify_event) + this_event->len;
@@ -281,13 +282,15 @@ bool InotifyListener::pendingEvent()
 
     fflush( NULL );
 
-    char buff [20];
-    snprintf(buff, 20 * sizeof (char), "%i", m_events.size());
-    string message = "Caught ";
-    message += buff;
-    message += " inotify's pending event(s)";
-    
-    STRIGI_LOG_DEBUG ("strigi.InotifyListener.pendingEvent", message)
+    if (counter > 0) {
+        char buff [20];
+        snprintf(buff, 20 * sizeof (char), "%i", counter);
+        string message = "Caught ";
+        message += buff;
+        message += " inotify's pending event(s)";
+        
+        STRIGI_LOG_DEBUG ("strigi.InotifyListener.pendingEvent", message)
+    }
     
     return !m_events.empty();
 }
