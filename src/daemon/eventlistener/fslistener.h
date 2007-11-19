@@ -33,7 +33,7 @@ class PollingListener;
 class FsEvent
 {
     public:
-        FsEvent () {};
+        FsEvent (const std::string path, const std::string name);
         virtual ~FsEvent() {};
 
         enum TYPE {CREATE, UPDATE, DELETE};
@@ -91,6 +91,7 @@ class FsListener : public EventListener
         virtual bool pendingEvent() = 0;
         virtual FsEvent* retrieveEvent() = 0;
         virtual bool isEventValid(FsEvent* event) = 0;
+        void dumpEvents();
 
         // dir methods
         
@@ -114,11 +115,13 @@ class FsListener : public EventListener
                           std::vector<Event*>& events);
 
         void recursivelyMonitor (const std::string dir,
+                                 std::set<std::string>& toWatch,
                                  std::vector<Event*>& events);
 
         // watches methods
-        virtual void addWatches (const std::set<std::string>& watches) = 0;
-
+        void addWatches (const std::set<std::string>& watches);
+        virtual bool addWatch (const std::string& path) = 0;
+        
         /*!
          * removes and release all inotify watches
          */
@@ -127,13 +130,17 @@ class FsListener : public EventListener
         bool m_bMonitor;
         bool m_bInitialized;
         bool m_bBootstrapped;
+        unsigned int m_counter;
 
         std::set<std::string> m_indexedDirs;
+        std::set<std::string> m_pollingDirs;
         
         bool m_bReindexReq;
         std::set<std::string> m_reindexDirs;
         pthread_mutex_t m_reindexLock;
         std::vector<FsEvent*> m_events;
+
+        PollingListener* m_pollingListener;
 };
 
 #endif

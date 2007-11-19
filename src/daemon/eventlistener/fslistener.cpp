@@ -24,6 +24,7 @@
 #include "eventlistenerqueue.h"
 #include "filelister.h"
 #include "indexreader.h"
+#include "pollinglistener.h"
 #include "../strigilogging.h"
 
 #include <cerrno>
@@ -39,7 +40,7 @@ using namespace Strigi;
 namespace {
     /*!
     * @param path string containing path to check
-    * Appends the terminating char to path.
+    * Removes the terminating char to path.
     * Under Windows that char is '\', '/' under *nix
     */
     string fixPath (string path)
@@ -61,8 +62,8 @@ namespace {
 
         char separator = '/';
 
-        if (temp[temp.length() - 1 ] != separator)
-            temp += separator;
+        if (temp[temp.length() - 1 ] == separator)
+            return temp.substr(0, temp.size() - 1);
 
         return temp;
     }
@@ -72,16 +73,45 @@ void calculateDiff(set<string> actualDirs, set<string> reindexDirs,
                    set<string>& dirsDeleted,set<string>& dirsCreated)
 {
     set<string>::iterator iter;
+    stringstream strDirsDeleted;
+    stringstream strDirsCreated;
+    stringstream strDirsActual;
+    stringstream strDirsReindex;
+
+    strDirsDeleted << "Dirs deleted:";
+    strDirsCreated << "Dirs created:";
+    strDirsActual << "Actual dirs:";
+    strDirsReindex << "Reindex dirs:";
+
+    dirsCreated.clear();
+    dirsDeleted.clear();
+
+    for (iter = actualDirs.begin(); iter != actualDirs.end(); iter++)
+        strDirsActual << "\n\t-" << *iter;
+    
+    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); iter++)
+        strDirsReindex << "\n\t-" << *iter;
+
+    STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsActual.str())
+    STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsReindex.str())
+
     for (iter = actualDirs.begin(); iter != actualDirs.end(); iter++) {
         set<string>::iterator match = reindexDirs.find (*iter);
-        if (match == reindexDirs.end())
+        if (match == reindexDirs.end()) {
             dirsDeleted.insert (*iter);
+            strDirsDeleted << "\n\t-" << *iter;
+        }
         else
-            reindexDirs.erase (iter);
+            reindexDirs.erase (match);
     }
 
-    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); iter++)
+    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); iter++) {
         dirsCreated.insert (*iter);
+        strDirsCreated << "\n\t-" << *iter;
+    }
+
+    STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsCreated.str())
+    STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsDeleted.str())
 }
 
 class File
@@ -115,6 +145,15 @@ class MatchFile
             { return (m_name == f.m_name); }
 };
 
+FsEvent::FsEvent (const string path, const string name)
+{
+    m_file = fixPath(path);
+    if (!name.empty()) {
+        m_file += '/';
+        m_file += name;
+    }
+}
+
 // improved multimap, stl multimap class doesn't provide a method that returns
 // all the available keys
 typedef map< string, set<File> > iMultimap;
@@ -127,15 +166,24 @@ FsListener::FsListener(const char* name, set<string>& indexedDirs)
     setState(Idling);
     m_bInitialized = false;
     m_bBootstrapped = false;
-    m_indexedDirs = indexedDirs;
+    m_bReindexReq = false;
+    m_counter = 0;
+    m_pollingListener = 0;
+
+    for (set<string>::iterator iter = indexedDirs.begin();
+         iter != indexedDirs.end(); iter++)
+        m_indexedDirs.insert (fixPath (*iter));
     
     STRIGI_MUTEX_INIT (&m_reindexLock);
 }
 
 FsListener::~FsListener()
 {
-    clearWatches();
-
+    if (m_pollingListener) {
+        m_pollingListener->stop();
+        delete m_pollingListener;
+        m_pollingListener = 0;
+    }
     STRIGI_MUTEX_DESTROY (&m_reindexLock);
 }
 
@@ -197,7 +245,7 @@ void FsListener::bootstrap()
     {
         toWatch.insert (*iter);
         
-        DirLister lister(m_pindexerconfiguration);
+        DirLister lister(m_pAnalyzerConfiguration);
         string path;
         vector<pair<string, struct stat> > dirs;
 
@@ -251,6 +299,16 @@ void FsListener::bootstrap()
 
         STRIGI_LOG_DEBUG ("strigi.FsListener.bootstrap", msg.str())
 
+        if (indexedFiles.empty()) {
+            string temp = path + "/";
+            msg.str("");
+            m_pManager->indexReader()->getChildren (temp, indexedFiles);
+            msg << "there're " << indexedFiles.size();
+            msg << " indexed files associated to dir " << temp;
+
+            STRIGI_LOG_DEBUG ("strigi.FsListener.bootstrap", msg.str())
+        }
+
         if (!indexedFiles.empty()) {
             // find differences between fs files and indexed ones
             map<string, time_t>::iterator it = indexedFiles.begin();
@@ -259,7 +317,6 @@ void FsListener::bootstrap()
                 set<File>::iterator match;
                 match = find_if( (iter->second).begin(),
                                  (iter->second).end(), finder);
-
 
                 if (match == (iter->second).end()) {
                     // indexed file has been deleted from filesystem
@@ -322,7 +379,6 @@ void FsListener::reindex()
     set<string> dirsCreated;
     set<string> dirsMonitored;
     vector<Event*> events;
-    stringstream message;
     
     if (!reindexReq ())
         return;
@@ -331,14 +387,10 @@ void FsListener::reindex()
     
     calculateDiff(m_indexedDirs, reindexDirs, dirsDeleted, dirsCreated);
 
-    message << dirsCreated.size() << " new dir(s); ";
-    message << dirsDeleted.size() << " deleted dir(s)";
-    STRIGI_LOG_DEBUG ("strigi.FsListener.reindex", message.str())
-
     for (set<string>::iterator iter = dirsCreated.begin();
          iter != dirsCreated.end() && !reindexReq(); iter++)
     {
-        DirLister lister(m_pindexerconfiguration);
+        DirLister lister(m_pAnalyzerConfiguration);
         string path;
         vector<pair<string, struct stat> > dirs;
 
@@ -349,9 +401,11 @@ void FsListener::reindex()
             vector<pair<string, struct stat> >::iterator iter;
             for (iter = dirs.begin(); iter != dirs.end(); iter++) {
                 struct stat stats = iter->second;
-                if (S_ISDIR(stats.st_mode)) {
-                    //dir
-                    recursivelyMonitor (iter->first, events);
+                if (S_ISDIR(stats.st_mode)) {//dir
+                    set<string> toWatch;
+                    recursivelyMonitor (iter->first, toWatch, events);
+                    // add new watches
+                    addWatches (toWatch);
                     dirsMonitored.insert (iter->first);
                 }
                 else if (S_ISREG(stats.st_mode)) {
@@ -429,8 +483,11 @@ void FsListener::watch ()
                 }
                 case FsEvent::CREATE:
                 {
-                    if (fsevent->regardsDir())
-                        recursivelyMonitor (fsevent->file(), events);
+                    if (fsevent->regardsDir()) {
+                        set<string> toWatch;
+                        recursivelyMonitor (fsevent->file(), toWatch, events);
+                        addWatches( toWatch);
+                    }
                     else {
                         Event* event = new Event (Event::CREATED,
                                                   fsevent->file());
@@ -455,14 +512,16 @@ void FsListener::watch ()
     }
 }
 
-void FsListener::recursivelyMonitor (string dir, vector<Event*>& events)
+void FsListener::recursivelyMonitor (string dir, set<string>& toWatch,
+                                     vector<Event*>& events)
 {
     STRIGI_LOG_DEBUG ("FsListener.recursivelyMonitor","going to monitor " + dir)
-    DirLister lister(m_pindexerconfiguration);
+    DirLister lister(m_pAnalyzerConfiguration);
     string path;
     vector<pair<string, struct stat> > fsitems;
-    set<string> to_watch;
 
+    toWatch.insert (dir);
+    
     lister.startListing (dir);
     int ret = lister.nextDir(path, fsitems);
 
@@ -473,7 +532,7 @@ void FsListener::recursivelyMonitor (string dir, vector<Event*>& events)
             struct stat stats = iter->second;
             
             if (S_ISDIR(stats.st_mode)) //dir
-                to_watch.insert (iter->first);
+                recursivelyMonitor(iter->first, toWatch, events);
             else if (S_ISREG(stats.st_mode)) {
                 //file
                 Event* event = new Event (Event::CREATED, iter->first);
@@ -482,17 +541,60 @@ void FsListener::recursivelyMonitor (string dir, vector<Event*>& events)
         }
         ret = lister.nextDir(path, fsitems);
     }
-    
-    // add new watches
-    to_watch.insert (dir);
-    addWatches (to_watch);
+}
+
+void FsListener::addWatches(const set<string> &watches)
+{
+	set<string>::iterator iter;
+    set<string> toPool;
+    set<string> watched;
+	
+    if (!m_bInitialized) {
+        STRIGI_LOG_ERROR ("strigi.FsListener.addWatches",
+                          "Listener has not been initialized, unable"
+                          "to add watches!")
+        toPool = watches;
+    }
+    else {
+	    for (iter = watches.begin(); iter != watches.end(); iter++) {
+	        if (!addWatch (*iter)) {
+	            // adding watch failed, we've to use polling in order to watch it
+	            toPool.insert(*iter);
+	        }
+	        else
+	            watched.insert (*iter);
+	    }
+    }
+
+    if (!toPool.empty())
+    {
+        if (m_pollingListener == NULL)
+        {
+            m_pollingListener = new PollingListener();
+            m_pollingListener->setEventListenerQueue( m_pEventQueue);
+            m_pollingListener->setCombinedIndexManager( m_pManager);
+            m_pollingListener->setIndexerConfiguration(m_pAnalyzerConfiguration);
+            //TODO: start with a low priority?
+            m_pollingListener->start( );
+        }
+        
+        m_pollingListener->addWatches( toPool);
+        m_pollingDirs.insert (toPool.begin(), toPool.end());
+    }
 }
 
 void FsListener::dirsRemoved (set<string> dirs, vector<Event*>& events)
 {
     for (set<string>::iterator iter = dirs.begin();
          iter != dirs.end(); iter++)
-        dirRemoved (fixPath(*iter), events);
+    {
+        string path = fixPath(*iter);
+        set<string>::iterator match = m_pollingDirs.find (path);
+        if (match == m_pollingDirs.end())
+            dirRemoved (path, events);
+        else
+            m_pollingListener->rmWatch (*match);
+    }
 }
 
 void FsListener::setIndexedDirectories (const set<string> &dirs)
@@ -512,4 +614,20 @@ void FsListener::setIndexedDirectories (const set<string> &dirs)
 
     msg << fixedDirs.size() << " dirs specified";
     STRIGI_LOG_DEBUG ("FsListener.setIndexedDirectories", msg.str())
+}
+
+void FsListener::dumpEvents()
+{
+    unsigned int counter = 1;
+    for (vector<FsEvent*>::iterator iter = m_events.begin();
+         iter != m_events.end(); iter++)
+    {
+        FsEvent* event = *iter;
+        stringstream msg;
+        
+        msg << "Event " << counter << "/" << m_events.size() << ": ";
+        msg << event->description();
+        STRIGI_LOG_DEBUG("strigi.FsListener.dumpEvents", msg.str())
+        counter++;
+    }
 }
