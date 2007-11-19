@@ -28,7 +28,6 @@
 class Event;
 class PollingListener;
 
-//TODO: update documentation
 
 class FsEvent
 {
@@ -51,7 +50,7 @@ class FsEvent
 
 /*!
  * @class FsListener
- * @brief Interacts with kernel inotify monitoring recursively all changes over indexed directories
+ * @brief Interacts generic class for low level monitoring facilities
  */
 
 class FsListener : public EventListener
@@ -72,7 +71,7 @@ class FsListener : public EventListener
         void setInitialized () { m_bInitialized = true; }
 
         /*!
-         * @param event the inotify event to analyze
+         * @param event the filesystem event to analyze
          * returns true if event is to process (ergo is interesting), false otherwise
          */
         virtual bool isEventInteresting (FsEvent * event) = 0;
@@ -98,32 +97,40 @@ class FsListener : public EventListener
         /*!
          * @param dir removed dir
          * Removes all db entries of files contained into the removed dir.
-         * Removes also all inotify watches related to removed dir (including watches over subdirs), there's <b>no need</b> to call rmWatch after invoking that method
-         * Updates also m_watches
+         * Removes also all watches related to removed dir (including watches over subdirs)
          */
         virtual void dirRemoved (std::string dir,
                                  std::vector<Event*>& events) = 0;
 
         /*!
          * @param dirs removed dirs
+         * @param events all generated events 
          * Removes all db entries of files contained into the removed dirs.
-         * Removes also all inotify watches related to removed dirs (including watches over subdirs), there's <b>no need</b> to call rmWatch after invoking that method
-         * Optimized for large removal
-         * Updates also m_watches
          */
         void dirsRemoved (std::set<std::string> dirs,
                           std::vector<Event*>& events);
 
+        /*!
+         * @param dir dir to monitor
+         * @param toWatch directories to be watched
+         * @param events all generated events
+         * Index all files contained inside the directory dir, and all its subdirs
+         */
         void recursivelyMonitor (const std::string dir,
                                  std::set<std::string>& toWatch,
                                  std::vector<Event*>& events);
-
+ 
         // watches methods
+        
+        /*!
+         * @param watches directories to be watched
+         * Add a watch for each directory specified
+         */
         void addWatches (const std::set<std::string>& watches);
         virtual bool addWatch (const std::string& path) = 0;
         
         /*!
-         * removes and release all inotify watches
+         * removes and release all watches
          */
         virtual void clearWatches() {};
 

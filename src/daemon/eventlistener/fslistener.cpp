@@ -446,8 +446,6 @@ void FsListener::watch ()
         return;
     }
 
-    //some code taken from inotify-tools (http://inotify-tools.sourceforge.net/)
-
     vector <Event*> events;
 
     while (pendingEvent()) {

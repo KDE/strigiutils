@@ -162,15 +162,10 @@ class FamListener::Private
         virtual ~Private();
 
         bool init();
+        void stopMonitoring();
 
-        /*!
-         * @param event the inotify event to analyze
-         * returns true if event is to process (ergo is interesting), false otherwise
-         */
         bool isEventInteresting (FsEvent * event);
         bool isEventValid(FsEvent* event);
-
-        void stopMonitoring();
 
         // event methods
         void pendingEvent(vector<FsEvent*>& events, unsigned int& counter);
@@ -419,7 +414,7 @@ bool FamListener::isEventInteresting (FsEvent* event)
     if (famEvent == 0)
         return false;
     
-    // ignore dirs starting with '.'
+    // ignore directories starting with '.'
     if ((famEvent->regardsDir()) &&
         (strlen (famEvent->name()) > 0) && (famEvent->name())[0] == '.')
         return false;
@@ -477,11 +472,11 @@ void FamListener::dirRemoved (string dir, vector<Event*>& events)
     // we've to de-index all files contained into the deleted/moved directory
     if (m_pManager)
     {
-        // all indexed files contained into dir
+        // all indexed files contained into directory
         map<string, time_t> indexedFiles;
         m_pManager->indexReader()->getChildren(dir, indexedFiles);
 
-        // remove all entries that were contained into the removed dir
+        // remove all entries that were contained into the removed directory
         for (map<string, time_t>::iterator it = indexedFiles.begin();
              it != indexedFiles.end(); it++)
         {

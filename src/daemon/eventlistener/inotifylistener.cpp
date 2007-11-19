@@ -143,10 +143,6 @@ class InotifyListener::Private
 
         bool init();
 
-        /*!
-         * @param event the inotify event to analyze
-         * returns true if event is to process (ergo is interesting), false otherwise
-         */
         bool isEventInteresting (FsEvent * event);
         bool isEventValid(FsEvent* event);
 
@@ -445,7 +441,7 @@ void InotifyListener::Private::dirRemoved (string dir)
 {
     map <int, string> watchesToRemove;
     
-    // remove inotify watches over no more indexed dirs
+    // remove inotify watches over no more indexed directories
     for (map<int, string>::iterator mi = m_watches.begin();
          mi != m_watches.end(); mi++)
     {
@@ -586,11 +582,11 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
     // we've to de-index all files contained into the deleted/moved directory
     if (m_pManager)
     {
-        // all indexed files contained into dir
+        // all indexed files contained into directory
         map<string, time_t> indexedFiles;
         m_pManager->indexReader()->getChildren(dir, indexedFiles);
 
-        // remove all entries that were contained into the removed dir
+        // remove all entries that were contained into the removed directory
         for (map<string, time_t>::iterator it = indexedFiles.begin();
              it != indexedFiles.end(); it++)
         {

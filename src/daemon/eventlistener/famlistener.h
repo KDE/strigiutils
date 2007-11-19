@@ -50,7 +50,7 @@ class FamEvent : public FsEvent
 
 /*!
  * @class FamListener
- * @brief Interacts with kernel inotify monitoring recursively all changes over indexed directories
+ * @brief Uses FAM to keep strigi's index updated.
  */
 class FamListener : public FsListener
 {
@@ -66,33 +66,18 @@ class FamListener : public FsListener
         bool init();
 
     protected:
-        /*!
-     * @param event the inotify event to analyze
-     * returns true if event is to process (ergo is interesting), false otherwise
-         */
-        bool isEventInteresting (FsEvent * event);
-
         void stopMonitoring();
 
         // event methods
         bool pendingEvent();
         FsEvent* retrieveEvent();
         bool isEventValid(FsEvent* event);
+        bool isEventInteresting (FsEvent * event);
 
-        /*!
-         * @param dir removed dir
-         * Removes all db entries of files contained into the removed dir.
-         * Removes also all inotify watches related to removed dir (including watches over subdirs), there's <b>no need</b> to call rmWatch after invoking that method
-         * Updates also m_watches
-         */
         void dirRemoved (std::string dir, std::vector<Event*>& events);
 
         // watches methods
         bool addWatch (const std::string& path);
-
-        /*!
-         * removes and release all inotify watches
-         */
         void clearWatches();
 };
 
