@@ -55,6 +55,10 @@ class InotifyEvent : public FsEvent
  */
 class InotifyListener : public FsListener
 {
+    private:
+        class Private;
+        Private* p; 
+    
     public:
         explicit InotifyListener(std::set<std::string>& indexedDirs);
 
@@ -76,8 +80,6 @@ class InotifyListener : public FsListener
         FsEvent* retrieveEvent();
         bool isEventValid(FsEvent* event);
 
-        // dir methods
-        
         /*!
          * @param dir removed dir
          * Removes all db entries of files contained into the removed dir.
@@ -87,32 +89,12 @@ class InotifyListener : public FsListener
         void dirRemoved (std::string dir, std::vector<Event*>& events);
 
         // watches methods
-        
         bool addWatch (const std::string& path);
-        void addWatches (const std::set<std::string>& watches);
 
-        /*!
-         * @param wd inotify watch descriptor
-         * @param path path associated to inotify watch
-         * removes and release an inotify watch. Usually there's no need to use this method.
-         * @sa dirRemoved
-        */
-        void rmWatch(int wd, std::string path);
-
-        void rmWatches(std::map<int, std::string>& watchesToRemove);
-        
-        void rmWatches(std::set<std::string>& watchesToRemove);
-        
         /*!
          * removes and release all inotify watches
          */
         void clearWatches();
-
-    private:
-        PollingListener* m_pollingListener;
-        int m_iInotifyFD;
-        int m_iEvents;
-        std::map<int, std::string> m_watches; //!< map containing all inotify watches added by InotifyListener. Key is watch descriptor, value is dir path
 };
 
 #endif
