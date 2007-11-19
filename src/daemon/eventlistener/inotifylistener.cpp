@@ -41,38 +41,6 @@
 using namespace std;
 using namespace Strigi;
 
-namespace {
-    /*!
-    * @param path string containing path to check
-    * Appends the terminating char to path.
-    * Under Windows that char is '\', '/' under *nix
-    */
-    string fixPath (string path)
-    {
-        if ( path.c_str() == NULL || path.length() == 0 )
-            return "";
-
-        string temp(path);
-
-    #ifdef HAVE_WINDOWS_H
-        size_t l= temp.length();
-        char* t = (char*)temp.c_str();
-        for (size_t i=0;i<l;i++){
-            if ( t[i] == '\\' )
-                t[i] = '/';
-        }
-        temp[0] = tolower(temp.at(0));
-    #endif
-
-        char separator = '/';
-
-        if (temp[temp.length() - 1 ] != separator)
-            temp += separator;
-
-        return temp;
-    }
-}
-
 class MatchString {
     string m_fixed_val;
 
@@ -83,485 +51,94 @@ class MatchString {
         }
 };
 
-////////////////////////////////////////////
-// ReindexDirsThread class implementation //
-///////////////////////////////////////////
-
-/*!
- * @class ReindexDirsThread
- * @brief Simple thread called when user changes indexed dirs
- *
- * It's a separate thread that takes care of updating inotify watches and indexed files according to the new directories specified by the user
-*/
-class InotifyListener::ReindexDirsThread : public StrigiThread
+InotifyEvent::InotifyEvent (int watchID, const string& watchName,
+                            struct inotify_event* event)
+    : m_event(event),
+      m_watchName (watchName),
+      m_watchID (watchID)
 {
-    //friend class InotifyListener;
-
-    public:
-        explicit ReindexDirsThread (const char* name,
-                                    const std::set<std::string> &olddirs);
-
-        explicit ReindexDirsThread (const char* name);
-
-        ~ReindexDirsThread();
-
-        void* run(void*);
-
-        void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
-            m_pindexerconfiguration = ic;
-        }
-
-        void setIndexedDirs (const std::set<std::string>& dirs,
-                            const std::map<int, std::string>& watchedDirs);
-
-        void setCombinedIndexManager (CombinedIndexManager* m) {
-            m_pManager = m;
-        }
-
-        void getData(std::set<std::string>& noMoreIndexed,
-                    std::set<std::string>& toWatch,
-                    std::set<std::string>& newDirs,
-                    std::vector<Event*>& events);
-
-        bool working();
-
-    protected:
-        void cleanup();
-        void reindex();
-
-        void interrupt ();
-        bool testInterrupt();
-        void setWorking (bool value);
-
-        CombinedIndexManager* m_pManager;
-        Strigi::AnalyzerConfiguration* m_pindexerconfiguration;
-        std::map<std::string, time_t> m_toIndex; //!< new files to index
-        std::set<std::string> m_toWatch; //!< new directories to watch
-        std::vector<Event*> m_events;
-        std::set<std::string> m_newDirs; //!< new indexed dirs specified by the user
-        std::set<std::string> m_oldDirs; //!< old indexed dirs
-        std::set<std::string> m_nextJobDirs; //!< new dirs to index, user changed indexed dirs more than one time
-        std::map<int, std::string> m_nextJobWatchedDirs;
-        std::set<std::string> m_nomoreIndexedDirs; //!< dirs no more indexed
-        pthread_mutex_t m_nextJobLock;//!< mutex lock over m_nextJobDirs
-        pthread_mutex_t m_resourcesLock; //!< mutex lock over all variables (excluding m_nextJobDirs)
-        pthread_mutex_t m_interruptLock;
-        pthread_mutex_t m_workingLock;
-        bool m_bWorking;
-        bool m_bInterrupt;
-        bool m_bInterrupted;
-        bool m_bDataTaken;
-        bool m_bHasWorkTodo;
-};
-
-InotifyListener::ReindexDirsThread::ReindexDirsThread (const char* name,
-                                        const std::set<std::string> &olddirs)
-: StrigiThread (name) {
-    m_pManager = NULL;
-    m_pindexerconfiguration = NULL;
-    m_oldDirs = olddirs;
-    m_bInterrupt = false;
-    m_bInterrupted = false;
-    m_bDataTaken = true;
-    m_bHasWorkTodo = false;
-    m_bWorking = false;
-    STRIGI_MUTEX_INIT (&m_nextJobLock);
-    STRIGI_MUTEX_INIT (&m_resourcesLock);
-    STRIGI_MUTEX_INIT (&m_interruptLock);
-    STRIGI_MUTEX_INIT (&m_workingLock);
 }
 
-InotifyListener::ReindexDirsThread::ReindexDirsThread (const char* name)
-: StrigiThread (name) {
-    m_pManager = NULL;
-    m_pindexerconfiguration = NULL;
-    m_newDirs.clear();
-    m_oldDirs.clear();
-    m_bInterrupt = false;
-    m_bInterrupted = false;
-    m_bDataTaken = true;
-    m_bHasWorkTodo = false;
-    m_bWorking = false;
-    STRIGI_MUTEX_INIT (&m_nextJobLock);
-    STRIGI_MUTEX_INIT (&m_resourcesLock);
-    STRIGI_MUTEX_INIT (&m_interruptLock);
-    STRIGI_MUTEX_INIT (&m_workingLock);
-}
-
-void InotifyListener::ReindexDirsThread::cleanup() {
-    STRIGI_LOG_DEBUG( "strigi.ReindexDirsThread.cleanup",
-                      "reindexing cancelled");
-
-    //clean-up everything
-    m_newDirs.clear();
-    m_toWatch.clear();
-    m_toIndex.clear();
-    
-    // free some memory
-    for (vector<Event*>::iterator iter = m_events.begin();
-         iter != m_events.end(); iter++)
-    {
-        if (*iter != NULL) {
-            delete *iter;
-            *iter = NULL;
-        }
-    }
-    m_events.clear();
-    
-    m_bDataTaken = true;
-    m_bInterrupt = false;
-    m_bInterrupted = true;
-    setWorking (false);
-    
-    STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-}
-
-InotifyListener::ReindexDirsThread::~ReindexDirsThread()
+char* InotifyEvent::name()
 {
-    for (unsigned int i = 0; i < m_events.size(); i++)
-        delete m_events[i];
-
-    m_events.clear();
-
-    STRIGI_MUTEX_DESTROY(&m_nextJobLock);
-    STRIGI_MUTEX_DESTROY(&m_resourcesLock);
-    STRIGI_MUTEX_DESTROY(&m_interruptLock);
-    STRIGI_MUTEX_DESTROY(&m_workingLock);
+    return m_event->name;
 }
 
-void InotifyListener::ReindexDirsThread::interrupt () {
-    STRIGI_MUTEX_LOCK(&m_interruptLock);
-    m_bInterrupt = true;
-    STRIGI_MUTEX_UNLOCK(&m_interruptLock);
-}
-
-bool InotifyListener::ReindexDirsThread::testInterrupt() {
-    bool value;
-    STRIGI_MUTEX_LOCK(&m_interruptLock);
-    value = m_bInterrupt;
-    STRIGI_MUTEX_UNLOCK(&m_interruptLock);
-    
-    if (value)
-        STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.testInterrupt",
-                          "Caught interrupt event");
-    
-    return value;
-}
-
-void InotifyListener::ReindexDirsThread::getData(set<string>& noMoreIndexed,
-        set<string>& toWatch,
-        set<string>& newDirs,
-        vector<Event*>& events)
+const string InotifyEvent::description()
 {
-    // assure all arrays are empty
-    noMoreIndexed.clear();
-    toWatch.clear();
-    newDirs.clear();
-    events.clear();
+    string message;
+
+    if ( (IN_ACCESS & m_event->mask) != 0 )
+        message += "ACCESS";
+    else if ( (IN_MODIFY & m_event->mask) != 0 )
+        message += "MODIFY";
+    else if ( (IN_ATTRIB & m_event->mask) != 0 )
+        message += "ATTRIB";
+    else if ( (IN_CLOSE_WRITE & m_event->mask) != 0 )
+        message += "CLOSE_WRITE";
+    else if ( (IN_CLOSE_NOWRITE & m_event->mask) != 0 )
+        message += "CLOSE_NOWRITE";
+    else if ( (IN_OPEN & m_event->mask) != 0 )
+        message += "OPEN";
+    else if ( (IN_MOVED_FROM & m_event->mask) != 0 )
+        message += "MOVED_FROM";
+    else if ( (IN_MOVED_TO & m_event->mask) != 0 )
+        message += "MOVED_TO";
+    else if ( (IN_CREATE & m_event->mask) != 0 )
+        message += "CREATE";
+    else if ( (IN_DELETE & m_event->mask) != 0 )
+        message += "DELETE";
+    else if ( (IN_DELETE_SELF & m_event->mask) != 0 )
+        message += "DELETE_SELF";
+    else if ( (IN_UNMOUNT & m_event->mask) != 0 )
+        message += "UNMOUNT";
+    else if ( (IN_Q_OVERFLOW & m_event->mask) != 0 )
+        message += " Q_OVERFLOW";
+    else if ( (IN_IGNORED & m_event->mask) != 0 )
+        message += " IGNORED";
+    else if ( (IN_CLOSE & m_event->mask) != 0 )
+        message += "CLOSE";
+    else if ( (IN_MOVE & m_event->mask) != 0 )
+        message += "MOVE";
+    else if ( (IN_ISDIR & m_event->mask) != 0 )
+        message += " ISDIR";
+    else if ( (IN_ONESHOT & m_event->mask) != 0 )
+        message += " ONESHOT";
+    else
+        message = "UNKNOWN";
+
+    message += " event regarding ";
+    message += string(m_event->name, m_event->len);
+    message += " with watch " + m_watchName;
     
-    if (STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock) != 0)
-        return;
-    
-    if (m_bDataTaken) {
-        STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-        return;
-    }
-    
-    noMoreIndexed = m_nomoreIndexedDirs;
-    toWatch = m_toWatch;
-    events = m_events;
-    newDirs = m_newDirs;
-    
-    m_toWatch.clear();
-    m_nomoreIndexedDirs.clear();
-    m_events.clear();
-    
-    m_bDataTaken = true;
-    
-    STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-    
-    char buffer [50];
-    snprintf (buffer, 50 * sizeof (char), "%i", noMoreIndexed.size());
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.getData",
-                      string("dirs no more indexed: ") + buffer);
-    snprintf (buffer, 50 * sizeof (char), "%i", toWatch.size());
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.getData",
-                      string("dirs to watch: ") + buffer);
-    snprintf (buffer, 50 * sizeof (char), "%i", newDirs.size());
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.getData",
-                      string("dirs selected by the user: ") + buffer);
-    snprintf (buffer, 50 * sizeof (char), "%i", events.size());
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.getData",
-                      string("events to process: ") + buffer);
+    return message;
 }
 
-void* InotifyListener::ReindexDirsThread::run(void*)
+bool InotifyEvent::regardsDir()
 {
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.run","starting");
-    
-    while (getState() != Stopping)
-    {
-        //TODO: increase value
-        sleep (1);
-        
-        if (STRIGI_MUTEX_TRY_LOCK (&m_nextJobLock) == 0) {
-            if ((m_bHasWorkTodo)
-                    && STRIGI_MUTEX_TRY_LOCK (&m_resourcesLock) == 0) {
-                // there's work to do, we've acquired locks over m_nextJobLock
-                // and m_resourcesLock
-            
-                if (!m_bDataTaken) {
-                    // previous reindex() run data has to be taken
-                    STRIGI_MUTEX_UNLOCK (&m_nextJobLock);
-                    STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-                    continue;
-                }
-
-                setWorking (true);
-
-                if (!m_bInterrupted)
-                    m_oldDirs = m_newDirs;
-                
-                m_newDirs = m_nextJobDirs;
-                m_nextJobDirs.clear();
-                m_bHasWorkTodo = false;
-                STRIGI_MUTEX_UNLOCK (&m_nextJobLock);
-                
-                // clear old structures
-                m_toWatch.clear();
-                m_toIndex.clear();
-                m_events.clear();
-                m_nomoreIndexedDirs.clear();
-                
-                if (m_newDirs == m_oldDirs) {
-                    STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-                    setWorking (false);
-                    continue;
-                }
-                
-                m_bDataTaken = false;
-                
-                reindex();
-                
-                setWorking (false);
-
-                STRIGI_MUTEX_UNLOCK (&m_resourcesLock);
-            }
-            else
-                STRIGI_MUTEX_UNLOCK (&m_nextJobLock);
-        }
-        
-        if (getState() == Working)
-            setState(Idling);
-    }
-
-    STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.run",
-                      string("exit state: ") + getStringState());
-    return 0;
+    return ((IN_ISDIR & m_event->mask) != 0);
 }
-
-void InotifyListener::ReindexDirsThread::reindex () {
-    if (!m_pManager) {
-        STRIGI_LOG_ERROR ("strigi.ReindexDirsThread.reindex",
-                          "m_pManager == NULL!");
-        return;
-    }
-    
-    m_bInterrupted = false;
-    
-    map<int, string> watchedDirs = m_nextJobWatchedDirs;
-    
-    if (testInterrupt()) {
-        cleanup();
-        return;
-    }
-    
-    m_toWatch.clear();
-    m_toIndex.clear();
-    
-    for (set<string>::iterator iter = m_newDirs.begin();
-         iter != m_newDirs.end(); iter++)
-    {
-        DirLister lister(m_pindexerconfiguration);
-        string path;
-        vector<pair<string, struct stat> > dirs;
-
-        lister.startListing (*iter);
-        int ret = lister.nextDir(path, dirs);
-
-        while (ret != -1) {
-            for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
-                 iter != dirs.end(); iter++)
-            {
-                struct stat stats = iter->second;
-
-                if (S_ISDIR(stats.st_mode)) {
-                    //dir
-                    m_toWatch.insert (iter->first);
-                }
-                else if (S_ISREG(stats.st_mode)) {
-                    //file
-                    m_events.push_back (new Event (Event::CREATED, iter->first));
-                }
-            }
-            ret = lister.nextDir(path, dirs);
-        }
-    }
-
-    m_nomoreIndexedDirs.clear();
-    set<string> alreadyWatched;
-    
-    for (map<int, string>::iterator it = watchedDirs.begin();
-         it != watchedDirs.end(); it++)
-    {
-        set<string>::iterator match = m_toWatch.find(it->second);
-        if (match == m_toWatch.end()) // dir is no longer watched
-            m_nomoreIndexedDirs.insert(it->second);
-        else // dir is already watched
-            alreadyWatched.insert (*match);
-    }
-
-    // look for updated dirs
-    m_toIndex.clear();
-    for (set<string>::iterator iter = alreadyWatched.begin();
-         iter != alreadyWatched.end(); iter++)
-    {
-        // retrieve files contained into the already watched dirs
-
-        Strigi::DirLister lister (m_pindexerconfiguration);
-
-        lister.startListing (*iter);
-
-        string path;
-        vector<pair<string, struct stat> > dirs;
-        int ret = lister.nextDir(path, dirs);
-
-        while (ret != -1) {
-            cout << "path = " << path << endl;
-
-            for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
-                 iter != dirs.end(); iter++)
-            {
-                struct stat stats = iter->second;
-                if (S_ISREG(stats.st_mode))
-                    m_toIndex.insert (make_pair (iter->first, stats.st_mtime));
-            }
-            ret = lister.nextDir(path, dirs);
-        }
-
-        map <string, time_t> indexedFiles;
-        m_pManager->indexReader()->getChildren (*iter, indexedFiles);
-        for (map<string, time_t>::iterator iter = m_toIndex.begin();
-             iter != m_toIndex.end(); iter++)
-        {
-            map<string, time_t>::iterator match;
-            match = indexedFiles.find(iter->first);
-            if (match == indexedFiles.end()) {
-                // new file created
-                m_events.push_back (new Event (Event::CREATED, iter->first));
-            }
-            else if (match->second < iter->second) {
-                // file has been updated
-                m_events.push_back (new Event (Event::UPDATED, iter->first));
-            }
-        }
-        m_toIndex.clear();
-    }
-
-    // remove no more indexed items
-    for (set<string>::iterator iter = m_nomoreIndexedDirs.begin();
-         iter != m_nomoreIndexedDirs.end(); iter++)
-    {
-        map <string, time_t> indexedFiles;
-        m_pManager->indexReader()->getChildren (*iter, indexedFiles);
-
-        for (map<string,time_t>::iterator mi = indexedFiles.begin();
-             mi != indexedFiles.end(); mi++)
-        {
-            m_events.push_back (new Event (Event::DELETED, mi->first));
-        }
-    }
-    
-    if (testInterrupt()) {
-        cleanup();
-        return;
-    }
-}
-
-bool InotifyListener::ReindexDirsThread::working()
-{
-    bool value;
-    
-    STRIGI_MUTEX_LOCK (&m_workingLock);
-    value = m_bWorking;
-    STRIGI_MUTEX_UNLOCK (&m_workingLock);
-    
-    return value;
-}
-
-void InotifyListener::ReindexDirsThread::setWorking(bool value)
-{
-    STRIGI_MUTEX_LOCK (&m_workingLock);
-    m_bWorking = value;
-    STRIGI_MUTEX_UNLOCK (&m_workingLock);
-}
-
-void InotifyListener::ReindexDirsThread::setIndexedDirs (
-        const set<string>& dirs,
-        const map<int,string>& watchedDirs)
-{
-    if (working()) {
-        STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.setIndexedDirectories",
-                          "going to interrupt previous reindexing operation");
-        interrupt();
-    }
-    
-    STRIGI_MUTEX_LOCK (&m_nextJobLock);
-    m_nextJobDirs = dirs;
-    m_nextJobWatchedDirs = watchedDirs;
-    m_bHasWorkTodo = true;
-    STRIGI_MUTEX_UNLOCK (&m_nextJobLock);
-}
-
-/* ----------- End ReindexDirsThread -------------------- */
 
 InotifyListener::InotifyListener(set<string>& indexedDirs)
-    :EventListener("InotifyListener")
+    :FsListener("InotifyListener", indexedDirs)
 {
     // listen only to interesting events
     m_iEvents = IN_CLOSE_WRITE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO
         | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MOVE_SELF;
 
-    m_bMonitor = true;
-    setState(Idling);
-    m_bInitialized = false;
     m_pollingListener = NULL;
-    m_pReindexDirThread = NULL;
-    STRIGI_MUTEX_INIT (&m_watchesLock);
-
-    // fix path, all dir must end with a '/'
-    for (set<string>::iterator iter = indexedDirs.begin();
-         iter != indexedDirs.end(); iter++)
-        m_indexedDirs.insert (fixPath(*iter));
 }
 
 InotifyListener::~InotifyListener()
 {
-    clearWatches();
-
+    //TODO: fix
+//     FsListener::~FsListener();
+    
     if (m_pollingListener != NULL) {
         m_pollingListener->stop();
         delete m_pollingListener;
         m_pollingListener = NULL;
     }
-
-    if (m_pReindexDirThread != NULL) {
-        m_pReindexDirThread->stop();
-        delete m_pReindexDirThread;
-        m_pReindexDirThread = NULL;
-    }
-
-    STRIGI_MUTEX_DESTROY (&m_watchesLock);
 }
 
 bool InotifyListener::init()
@@ -581,99 +158,20 @@ bool InotifyListener::init()
     return true;
 }
 
-void* InotifyListener::run(void*)
+FsEvent* InotifyListener:: retrieveEvent()
 {
-    if (m_pReindexDirThread == NULL) {
-        m_pReindexDirThread = new ReindexDirsThread ("ReindexDirThread");
-        m_pReindexDirThread->setIndexerConfiguration(m_pindexerconfiguration);
-        m_pReindexDirThread->setCombinedIndexManager( m_pManager);
+    if (m_events.empty())
+        return 0;
 
-        m_pReindexDirThread->start();
-        
-        m_pReindexDirThread->setIndexedDirs (m_indexedDirs, m_watches);
-        // clear m_indexedDirs, ReindexDirsThread will set it by few seconds
-        m_indexedDirs.clear();
-    }
+    vector<FsEvent*>::iterator iter = m_events.begin();
     
-    while (getState() != Stopping) {
-        watch();
-
-        processReindexDirThreadData();
-
-        if (getState() == Working)
-            setState(Idling);
-    }
-
-    STRIGI_LOG_DEBUG ("strigi.InotifyListener.run",
-                      string("exit state: ") + getStringState());
-    return 0;
+    FsEvent* event = *iter;
+    m_events.erase(iter);
+    return event;
 }
 
-void InotifyListener::processReindexDirThreadData()
+bool InotifyListener::pendingEvent()
 {
-    if (m_pReindexDirThread == NULL) {
-        STRIGI_LOG_WARNING("strigi.InotifyListener.processReindexDirThreadData",
-                           "m_pReindexDirThread == NULL");
-        return;
-    }
-    
-    set<string> noMoreIndexed, toWatch, newDirs;
-    vector<Event*> events;
-    char buffer [50];
-
-    m_pReindexDirThread->getData(noMoreIndexed, toWatch, newDirs, events);
-    
-    if (events.size() > 0) {
-        snprintf (buffer, 50 * sizeof (char), "%i", events.size());
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener.processReindexDirThreadData",
-                          string("events to process (without delete events: ")
-                                  + buffer + ")");
-    }
-    
-    if (toWatch.size() > 0) {
-        snprintf (buffer, 50 * sizeof (char), "%i", toWatch.size());
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener.processReindexDirThreadData",
-                          string("dirs to watch: ") + buffer);
-        addWatches (toWatch, true);
-    }
-    
-    if (newDirs.size() > 0) {
-        snprintf (buffer, 50 * sizeof (char), "%i", newDirs.size());
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener.processReindexDirThreadData",
-                          string("dirs selected by the user: ") + buffer);
-    }
-    
-    if (noMoreIndexed.size() > 0) {
-        snprintf (buffer, 50 * sizeof (char), "%i", noMoreIndexed.size());
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener.processReindexDirThreadData",
-                          string("dirs no more indexed: ") + buffer);
-        // remove old indexed files from db (interrupt enabled)
-        rmWatches (noMoreIndexed, true);
-    }
-
-    if (!testInterrupt() && (events.size() > 0))
-        m_pEventQueue->addEvents (events);
-
-    // restore interrupt state
-    setInterrupt (false);
-    
-    // TODO: lock?
-    if (noMoreIndexed.size() != 0 || toWatch.size() != 0)
-        m_indexedDirs = newDirs;
-}
-
-void InotifyListener::watch ()
-{
-    if (m_pEventQueue == NULL) {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.watch",
-                          "m_pEventQueue == NULL!");
-        return;
-    }
-
-    // some code taken from inotify-tools (http://inotify-tools.sourceforge.net/)
-
-    vector <Event*> events;
-
     struct timeval read_timeout;
     read_timeout.tv_sec = 1;
     read_timeout.tv_usec = 0;
@@ -697,28 +195,29 @@ void InotifyListener::watch ()
         int rc = select(m_iInotifyFD + 1, &read_fds, NULL, NULL, &read_timeout);
 
         if ( rc < 0 ) {
-            STRIGI_LOG_ERROR ("strigi.InotifyListener.watch",
+            STRIGI_LOG_ERROR ("strigi.InotifyListener.retrieveEvent",
                               "Select on inotify failed");
-            return;
+            return !m_events.empty();
         }
         else if ( rc == 0 ) {
             //Inotify select timeout
-            return;
+            return !m_events.empty();
         }
 
-        int thisBytes = read(m_iInotifyFD, &event + bytes, sizeof(struct inotify_event)*MAX_EVENTS - bytes);
+        int thisBytes = read(m_iInotifyFD, &event + bytes,
+                             sizeof(struct inotify_event)*MAX_EVENTS - bytes);
 
         if ( thisBytes < 0 ) {
             STRIGI_LOG_ERROR ("strigi.InotifyListener.watch",
                               "Read from inotify failed");
-            return;
+            return !m_events.empty();
         }
 
         if ( thisBytes == 0 ) {
             STRIGI_LOG_WARNING ("strigi.InotifyListener.watch",
-                                "Inotify reported end-of-file.\
-                                Possibly too many events occurred at once.");
-            return;
+                                "Inotify reported end-of-file."
+                                "Possibly too many events occurred at once.");
+            return !m_events.empty();
         }
 
         bytes += thisBytes;
@@ -734,129 +233,21 @@ void InotifyListener::watch ()
 
     do
     {
-        string message;
-        string watchName;
-        int watchID;
-
+        string watchName = "";
+        int watchID = -1;
+        
         this_event = (struct inotify_event *)this_event_char;
-
-        STRIGI_MUTEX_LOCK (&m_watchesLock);
 
         map <int, string>::iterator watchIter = m_watches.find (this_event->wd);
 
-        if (watchIter == m_watches.end()) {
-            if ((this_event->wd && IN_IGNORED) == 0) {
-                // event wasn't marked with IGNORE flag, print some message
-
-                char buff [20];
-                snprintf(buff, 20 * sizeof (char), "%i",this_event->wd);
-
-                STRIGI_LOG_WARNING ("strigi.InotifyListener.watch",
-                    string("returned an unknown watch descriptor: ") + buff);
-
-                string eventtype = eventToString (this_event->mask);
-
-                STRIGI_LOG_WARNING ("strigi.InotifyListener.watch",
-                                    "missed event type: " + eventtype);
-            }
-            // jump to next event
-            this_event_char += sizeof(struct inotify_event) + this_event->len;
-            remaining_bytes -= sizeof(struct inotify_event) + this_event->len;
-
-            STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-
-            continue;
+        if (watchIter != m_watches.end()) {
+            watchName = watchIter->second;
+            watchID   = watchIter->first;
         }
 
-        watchName = watchIter->second;
-        watchID   = watchIter->first;
+        m_events.push_back (new InotifyEvent ( watchID, watchName, this_event));
 
-        STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-
-        if (isEventInteresting (this_event)) {
-            STRIGI_LOG_DEBUG ("strigi.InotifyListener.watch",
-                              watchName + " changed");
-            STRIGI_LOG_DEBUG ("strigi.InotifyListener.watch",
-                               string("caught inotify event: ") +
-                               eventToString( this_event->mask));
-
-            if ((this_event->len > 0))
-                STRIGI_LOG_DEBUG ("strigi.InotifyListener.watch",
-                                  "event regards " +
-                                  string(this_event->name, this_event->len));
-
-            string file (watchName + string(this_event->name));
-
-            if ( ((IN_MODIFY & this_event->mask) != 0) ||
-                 ((IN_CLOSE_WRITE & this_event->mask) != 0) )
-            {
-                Event* event = new Event (Event::UPDATED, file);
-                events.push_back (event);
-            }
-            else if (((IN_DELETE & this_event->mask) != 0) ||
-                     ((IN_MOVED_FROM & this_event->mask) != 0 ) ||
-                     ((IN_DELETE_SELF & this_event->mask) != 0 ) ||
-                     ((IN_MOVE_SELF & this_event->mask) != 0 ))
-            {
-                if ((IN_ISDIR & this_event->mask) != 0)
-                    dirRemoved (file, events);
-                else {
-                    Event* event = new Event (Event::DELETED, file);
-                    events.push_back (event);
-                }
-            }
-            else if (( (IN_CREATE & this_event->mask) != 0) ||
-                       ((IN_MOVED_TO & this_event->mask) != 0 ) )
-            {
-                if ( (IN_ISDIR & this_event->mask) != 0 ) {
-                    // a new directory has been created or an already watched
-                    // directory has been moved into a watched place
-                    
-                    m_toWatch.clear();
-
-                    DirLister lister(m_pindexerconfiguration);
-                    string path;
-                    vector<pair<string, struct stat> > dirs;
-
-                    lister.startListing (file);
-                    int ret = lister.nextDir(path, dirs);
-
-                    while (ret != -1) {
-                        for (vector<pair<string, struct stat> >::iterator iter = dirs.begin();
-                             iter != dirs.end(); iter++)
-                        {
-                            struct stat stats = iter->second;
-                            
-                            if (S_ISDIR(stats.st_mode)) {
-                                //dir
-                                m_toWatch.insert (iter->first);
-                            }
-                            else if (S_ISREG(stats.st_mode)) {
-                                //file
-                                Event* event = new Event (Event::CREATED,
-                                                          iter->first);
-                                events.push_back (event);
-                            }
-                        }
-                        ret = lister.nextDir(path, dirs);
-                    }
-                    
-                    // add new watches
-                    addWatches (m_toWatch);
-
-                    m_toWatch.clear();
-                    m_toIndex.clear();
-                }
-                else {
-                    Event* event = new Event (Event::CREATED, file);
-                    events.push_back (event);
-                }
-            }
-            else
-                STRIGI_LOG_DEBUG ("strigi.InotifyListener.watch",
-                                  "inotify's unknown event");
-        }
-
+        // next event
         this_event_char += sizeof(struct inotify_event) + this_event->len;
         remaining_bytes -= sizeof(struct inotify_event) + this_event->len;
     }
@@ -873,18 +264,26 @@ void InotifyListener::watch ()
         STRIGI_LOG_ERROR ("strigi.InotifyListener.watch", message);
     }
 
-    if (events.size() > 0)
-        m_pEventQueue->addEvents (events);
-
     fflush( NULL );
+
+    return !m_events.empty();
 }
 
-bool
-InotifyListener::isEventInteresting (struct inotify_event * event)
+bool InotifyListener::isEventInteresting (FsEvent* event)
 {
+    InotifyEvent* inotifyEvent = dynamic_cast<InotifyEvent*> (event);
+
+    if (inotifyEvent == 0)
+        return false;
+    
     // ignore files starting with '.'
-    if (((IN_ISDIR & event->mask) == 0) && (event->len > 0)
-          && ((event->name)[0] == '.'))
+    struct inotify_event* structInotify = inotifyEvent->event();
+
+    if ((structInotify->wd && IN_IGNORED) == 0)
+        return false;
+    
+    if (((IN_ISDIR & structInotify->mask) == 0) && (structInotify->len > 0)
+          && ((structInotify->name)[0] == '.'))
         return false;
 
     //TODO: FIX with AnalyzerConfiguration
@@ -899,21 +298,26 @@ InotifyListener::isEventInteresting (struct inotify_event * event)
     return true;
 }
 
+bool InotifyListener::isEventValid(FsEvent* event)
+{
+    InotifyEvent* inotifyEvent = dynamic_cast<InotifyEvent*> (event);
+
+    if (inotifyEvent == 0)
+        return false;
+
+    
+}
+
 bool InotifyListener::addWatch (const string& path)
 {
     if (!m_bInitialized)
         return false;
 
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
-
     map<int, string>::iterator iter;
     for (iter = m_watches.begin(); iter != m_watches.end(); iter++)
     {
         if ((iter->second).compare (path) == 0) // dir is already watched
-        {
-            STRIGI_MUTEX_UNLOCK (&m_watchesLock);
             return true;
-        }
     }
 
     static int wd;
@@ -921,8 +325,6 @@ bool InotifyListener::addWatch (const string& path)
 
     if (wd < 0)
     {
-        STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-
         if ((wd == -1) && ( errno == ENOSPC))
         {
             STRIGI_LOG_ERROR ("strigi.InotifyListener.addWatch",
@@ -953,8 +355,6 @@ bool InotifyListener::addWatch (const string& path)
     {
         m_watches.insert(make_pair(wd, path));
 
-        STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-
         STRIGI_LOG_INFO ("strigi.InotifyListener.addWatch",
                          "added watch for " + path);
 
@@ -962,8 +362,7 @@ bool InotifyListener::addWatch (const string& path)
     }
 }
 
-void InotifyListener::addWatches (const set<string> &watches,
-                                  bool enableInterrupt)
+void InotifyListener::addWatches (const set<string> &watches)
 {
     set<string>::iterator iter;
     set<string> toPool;
@@ -971,9 +370,6 @@ void InotifyListener::addWatches (const set<string> &watches,
 
     for (iter = watches.begin(); iter != watches.end(); iter++)
     {
-        if (enableInterrupt && testInterrupt())
-            break;
-        
         if (!addWatch (*iter))
         {
 
@@ -995,24 +391,7 @@ void InotifyListener::addWatches (const set<string> &watches,
             toPool.insert (*iter);
     }
 
-    
-    if (enableInterrupt && testInterrupt())
-    {
-        //TODO: check
-        
-        vector <Event*> events;
-        // recover from interrupt
-        for (set<string>::iterator iter = watched.begin();
-             iter != watched.end(); iter++)
-        {
-            dirRemoved (*iter, events);
-        }
-        
-        m_pEventQueue->addEvents(events);
-        
-        setInterrupt (false);
-    }
-    else if (!toPool.empty())
+    if (!toPool.empty())
     {
         if (m_pollingListener == NULL)
         {
@@ -1046,7 +425,6 @@ void InotifyListener::rmWatch(int wd, string path)
                            string("Removed watch ") + buff + 
                            " associated to path: " + path);
     
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
     map<int, string>::iterator match = m_watches.find(wd);
     
     if (match != m_watches.end() && (path.compare(match->second) == 0))
@@ -1054,94 +432,69 @@ void InotifyListener::rmWatch(int wd, string path)
     else
         STRIGI_LOG_ERROR ("strigi.InotifyListener.rmWatch",
                        "unable to remove internal watch reference for " + path);
-    
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
 }
 
-void InotifyListener::rmWatches(map<int, string>& watchesToRemove,
-                                bool enableInterrupt)
+void InotifyListener::rmWatches(map<int, string>& watchesToRemove)
 {
-    set<string> removedWatches;
-    map<int,string> watches;
-    
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
-    watches = m_watches;
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-    
     for (map<int,string>::iterator it = watchesToRemove.begin();
          it != watchesToRemove.end(); it++)
     {
-        if (enableInterrupt && testInterrupt())
-            break;
-        
-        map<int,string>::iterator match = watches.find (it->first);
-        if (match != watches.end())
-        {
+        map<int,string>::iterator match = m_watches.find (it->first);
+        if (match != m_watches.end())
             rmWatch (it->first, it->second);
-            removedWatches.insert (it->second);
-        }
         else
             STRIGI_LOG_WARNING ("strigi.InotifyListener.rmWatches", 
                         "unable to remove watch associated to " + it->second);
     }
-    
-    if (enableInterrupt && testInterrupt())
-    {
-        // undo the delete operation
-        for (set<string>::iterator it = removedWatches.begin();
-             it != removedWatches.end(); it++)
-        {
-            addWatch (*it);
-        }
-    }
 }
 
-void InotifyListener::rmWatches(set<string>& watchesToRemove,
-                                bool enableInterrupt)
+void InotifyListener::rmWatches(set<string>& watchesToRemove)
 {
     map<int, string> removedWatches;
     
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
     // find all pairs <watch-id, watch-name> that have to be removed
     for (set<string>::iterator it = watchesToRemove.begin();
          it != watchesToRemove.end(); it++)
     {
         MatchString finder (*it);
-        map<int, string>::iterator match = find_if (m_watches.begin(), m_watches.end(),
-                                         finder);
+        map<int, string>::iterator match = find_if (m_watches.begin(),
+                                                    m_watches.end(), finder);
         if (match != m_watches.end())
             removedWatches.insert (make_pair (match->first, match->second));
         else
             STRIGI_LOG_WARNING ("strigi.InotifyListener.rmWatches",
                 "unable to find the watch associated to " + *it);
     }
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-
-    if (!enableInterrupt || !testInterrupt())
-        rmWatches (removedWatches, enableInterrupt);
+    
+    rmWatches (removedWatches);
 }
 
 void InotifyListener::clearWatches ()
 {
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
+    map<int, string>::iterator iter;
+    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
+        char buff [20];
+        snprintf(buff, 20 * sizeof (char), "%i", iter->first);
 
-    for (map<int, string>::iterator iter = m_watches.begin();
-         iter != m_watches.end(); iter++) 
-    {
-        rmWatch (iter->first, iter->second);
+        if (inotify_rm_watch (m_iInotifyFD, iter->first) == -1)
+        {
+            STRIGI_LOG_ERROR ("strigi.InotifyListener.rmWatch",
+                              string("Error removing watch ") + buff +
+                                      " associated to path: " + iter->second);
+            STRIGI_LOG_ERROR ("strigi.InotifyListener.rmWatch",
+                              string("error: ") + strerror(errno));
+        }
+        else
+            STRIGI_LOG_DEBUG ("strigi.InotifyListener.rmWatch",
+                              string("Removed watch ") + buff +
+                                      " associated to path: " + iter->second);
     }
 
     m_watches.clear();
-
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
 }
 
-void InotifyListener::dirRemoved (string dir, vector<Event*>& events,
-                                  bool enableInterrupt)
+void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
 {
-    dir = fixPath (dir);
-    vector<Event*> newEvents;
-    map<int, string> watches;
     map<int, string> watchesToRemove;
 
     STRIGI_LOG_DEBUG ("strigi.InotifyListener.dirRemoved", dir +
@@ -1158,11 +511,8 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events,
         for (map<string, time_t>::iterator it = indexedFiles.begin();
              it != indexedFiles.end(); it++)
         {
-            if (enableInterrupt && testInterrupt())
-                break;
-            
             Event* event = new Event (Event::DELETED, it->first);
-            newEvents.push_back (event);
+            events.push_back (event);
         }
     }
     else
@@ -1170,195 +520,17 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events,
                             "m_pManager == NULL!");
 
     // remove inotify watches over no more indexed dirs
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
-    watches = m_watches;
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-    
-    for (map<int, string>::iterator mi = watches.begin();
-         mi != watches.end(); mi++)
+    for (map<int, string>::iterator mi = m_watches.begin();
+         mi != m_watches.end(); mi++)
     {
         if ((mi->second).find (dir,0) == 0)
             watchesToRemove.insert (make_pair (mi->first, mi->second));
-        
-        if (enableInterrupt && testInterrupt())
-            break;
     }
     
-    if (enableInterrupt && testInterrupt())
-    {
-        for (vector<Event*>::iterator iter = newEvents.begin();
-             iter != newEvents.end(); iter++)
-        {
-            delete *iter;
-        }
-        newEvents.clear();
-    }
-    else
-    {
-        rmWatches (watchesToRemove);
-        
-        for (vector<Event*>::iterator iter = newEvents.begin();
-             iter != newEvents.end(); iter++)
-        {
-            events.push_back(*iter);
-        }
-        newEvents.clear();
-    }
-    
+    rmWatches (watchesToRemove);
+
     // remove also dir watched by pollinglistener
     //FIXME: to fix, call right method
     if (m_pollingListener != NULL)
         m_pollingListener->rmWatch( dir);
-}
-
-void InotifyListener::dirsRemoved (set<string> dirs, vector<Event*>& events,
-                                   bool enableInterrupt)
-{
-    vector<Event*> newEvents;
-    
-    for (set<string>::iterator iter = dirs.begin();
-         iter != dirs.end(); iter++)
-    {
-        if (enableInterrupt && testInterrupt())
-            break;
-        
-        dirRemoved (*iter, newEvents, enableInterrupt);
-    }
-    
-    if (enableInterrupt && testInterrupt())
-    {
-        STRIGI_LOG_DEBUG ("strigi.InotifyListener.dirsRemoved",
-                          "recovering from interrupt signal");
-        
-        for (vector<Event*>::iterator iter = newEvents.begin();
-             iter != newEvents.end(); iter++)
-        {
-            delete *iter;
-        }
-        newEvents.clear();
-    }
-    else
-    {
-        printf ("newEvents.size() == %i\n",events.size());
-        for (vector<Event*>::iterator iter = newEvents.begin();
-             iter != newEvents.end(); iter++)
-        {
-            events.push_back(*iter);
-        }
-        newEvents.clear();
-    }
-}
-
-void InotifyListener::setInterrupt (bool value)
-{
-    STRIGI_MUTEX_LOCK(&m_interruptLock);
-    m_bInterrupt = value;
-    STRIGI_MUTEX_UNLOCK(&m_interruptLock);
-}
-
-bool InotifyListener::testInterrupt()
-{
-    bool value;
-    STRIGI_MUTEX_LOCK(&m_interruptLock);
-    value = m_bInterrupt;
-    STRIGI_MUTEX_UNLOCK(&m_interruptLock);
-    
-    if (value)
-        STRIGI_LOG_DEBUG ("strigi.ReindexDirsThread.testInterrupt",
-                          "Caught interrupt event");
-    
-    return value;
-}
-
-void InotifyListener::setIndexedDirectories (const set<string> &dirs) {
-    if (!m_pManager) {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.setIndexedDirectories",
-                          "m_pManager == NULL!");
-        return;
-    }
-    if (m_pEventQueue == NULL)
-    {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.setIndexedDirectories",
-                          "m_pEventQueue == NULL!");
-        return;
-    }
-
-    set<string> fixedDirs;
-
-    // fix path, all dir must end with a '/'
-    for (set<string>::iterator iter = dirs.begin(); iter != dirs.end(); iter++)
-        fixedDirs.insert (fixPath (*iter));
-
-    if (m_pReindexDirThread == NULL)
-    {
-        m_pReindexDirThread = new ReindexDirsThread ("ReindexDirThread",
-                                                     m_indexedDirs);
-        m_pReindexDirThread->setIndexerConfiguration(m_pindexerconfiguration);
-        m_pReindexDirThread->setCombinedIndexManager ( m_pManager);
-
-        m_pReindexDirThread->start();
-    }
-    
-    if (m_pReindexDirThread->working())
-        setInterrupt (true);
-    
-    STRIGI_MUTEX_LOCK (&m_watchesLock);
-    map <int, string> watches = m_watches;
-    STRIGI_MUTEX_UNLOCK (&m_watchesLock);
-    
-    m_pReindexDirThread->setIndexedDirs( fixedDirs, watches);
-
-    string newdirs;
-
-    for (set<string>::iterator iter = fixedDirs.begin(); iter != fixedDirs.end(); iter++)
-        newdirs += ('|' + *iter);
-
-    STRIGI_LOG_DEBUG ("strigi.InotifyListener.setIndexedDirectories",
-                      "new indexed dirs: " + newdirs);
-}
-
-string InotifyListener::eventToString(int events)
-{
-    string message;
-
-    if ( (IN_ACCESS & events) != 0 )
-        message += "ACCESS";
-    else if ( (IN_MODIFY & events) != 0 )
-        message += "MODIFY";
-    else if ( (IN_ATTRIB & events) != 0 )
-        message += "ATTRIB";
-    else if ( (IN_CLOSE_WRITE & events) != 0 )
-        message += "CLOSE_WRITE";
-    else if ( (IN_CLOSE_NOWRITE & events) != 0 )
-        message += "CLOSE_NOWRITE";
-    else if ( (IN_OPEN & events) != 0 )
-        message += "OPEN";
-    else if ( (IN_MOVED_FROM & events) != 0 )
-        message += "MOVED_FROM";
-    else if ( (IN_MOVED_TO & events) != 0 )
-        message += "MOVED_TO";
-    else if ( (IN_CREATE & events) != 0 )
-        message += "CREATE";
-    else if ( (IN_DELETE & events) != 0 )
-        message += "DELETE";
-    else if ( (IN_DELETE_SELF & events) != 0 )
-        message += "DELETE_SELF";
-    else if ( (IN_UNMOUNT & events) != 0 )
-        message += "UNMOUNT";
-    else if ( (IN_Q_OVERFLOW & events) != 0 )
-        message += " Q_OVERFLOW";
-    else if ( (IN_IGNORED & events) != 0 )
-        message += " IGNORED";
-    else if ( (IN_CLOSE & events) != 0 )
-        message += "CLOSE";
-    else if ( (IN_MOVE & events) != 0 )
-        message += "MOVE";
-    else if ( (IN_ISDIR & events) != 0 )
-        message += " ISDIR";
-    else if ( (IN_ONESHOT & events) != 0 )
-        message += " ONESHOT";
-    else
-        message = "UNKNOWN";
-
-    return message;
 }
