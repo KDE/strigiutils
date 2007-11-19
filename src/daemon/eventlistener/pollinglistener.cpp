@@ -106,14 +106,14 @@ PollingListener::run(void*) {
 }
 void PollingListener::poll () {
     assert(m_pManager);
-    assert(m_pindexerconfiguration);
+    assert(m_pAnalyzerConfiguration);
 
     // get a shadow copy of m_watches
     STRIGI_MUTEX_LOCK (&m_mutex);
     vector<string> watches = m_watches;
     STRIGI_MUTEX_UNLOCK (&m_mutex);
 
-    DirAnalyzer diranalyzer(*m_pManager, *m_pindexerconfiguration);
+    DirAnalyzer diranalyzer(*m_pManager, *m_pAnalyzerConfiguration);
     STRIGI_LOG_DEBUG ("strigi.PollingListener.poll", "going across filesystem");
     diranalyzer.updateDirs(watches, 1, this);
     STRIGI_LOG_DEBUG ("strigi.PollingListener.poll",

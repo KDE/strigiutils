@@ -41,7 +41,7 @@ class EventListener : public StrigiThread {
 public:
     explicit EventListener(const char* name) :StrigiThread(name) {
         m_pEventQueue = NULL;
-        m_pindexerconfiguration = NULL;
+        m_pAnalyzerConfiguration = NULL;
         m_pManager = NULL;
         m_pollingInterval = 180;
     }
@@ -56,7 +56,7 @@ public:
         m_pEventQueue = eventQueue;
     }
     void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
-        m_pindexerconfiguration = ic;
+        m_pAnalyzerConfiguration = ic;
     }
     void setCombinedIndexManager (CombinedIndexManager* m) {
         m_pManager = m;
@@ -75,7 +75,7 @@ public:
 
 protected:
     EventListenerQueue* m_pEventQueue;
-    Strigi::AnalyzerConfiguration* m_pindexerconfiguration;
+    Strigi::AnalyzerConfiguration* m_pAnalyzerConfiguration;
     CombinedIndexManager* m_pManager;
     unsigned int m_pollingInterval;//!< pause time between each polling operation
 };
