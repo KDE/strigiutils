@@ -218,8 +218,7 @@ bool InotifyListener::pendingEvent()
             //Inotify select timeout
             return !m_events.empty();
         }
-        STRIGI_LOG_ERROR ("strigi.InotifyListener.pendingEvent",
-                          "No timeout!");
+        
         int thisBytes = read(m_iInotifyFD, &event + bytes,
                              sizeof(struct inotify_event)*MAX_EVENTS - bytes);
 
