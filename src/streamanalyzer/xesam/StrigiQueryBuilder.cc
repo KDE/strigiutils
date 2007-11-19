@@ -139,7 +139,7 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
 
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
-    msg.clear();
+    msg.str("");
     msg << "field names are ";
 
     for (set<string>::const_iterator iter = field_names.begin();
@@ -163,11 +163,11 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
     //TODO: handle modifiers.m_phrase
     parsedQuery.term().setSlack(modifiers.m_slack);
 
-    msg.clear();
+    msg.str("");
     msg << "there're " << field_values.size() << " field values";
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())
 
-    msg.clear();
+    msg.str("");
     msg << "field values are ";
 
     for (vector<string>::const_iterator valueIter = field_values.begin();
@@ -184,7 +184,7 @@ void StrigiQueryBuilder::on_selection(SelectionType selection,
 
     parsedQuery.setNegate(modifiers.m_negate);
 
-    msg.clear();
+    msg.str("");
     msg << "collector is | "
         << (m_collector.m_collector == And ? "AND" : "OR" ) << " |";
     STRIGI_LOG_DEBUG ("StrigiQueryBuilder.on_selection", msg.str())

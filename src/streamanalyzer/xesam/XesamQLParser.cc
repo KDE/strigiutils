@@ -212,7 +212,7 @@ bool XesamQLParser::process_node(xmlTextReaderPtr reader,
         return true;
     }
 
-    msg.clear();
+    msg.str("");
     msg << pLocalName << " " << xmlTextReaderHasValue(reader);
     STRIGI_LOG_DEBUG ("XesamQLParser.process_node",msg.str())
 
@@ -220,7 +220,7 @@ bool XesamQLParser::process_node(xmlTextReaderPtr reader,
     {
         if (xmlStrncmp(pLocalName, BAD_CAST"request", 7) != 0)
         {
-            msg.clear();
+            msg.str("");
             msg << "expected request, found " << pLocalName;
             STRIGI_LOG_ERROR ("XesamQLParser.process_node", msg.str())
 
