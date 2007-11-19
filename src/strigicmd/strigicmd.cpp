@@ -127,7 +127,7 @@ usage(int argc, char** argv) {
     pe("  %s create [-j num] -t backend -d indexdir [-i include] [-x exclude] files/dirs\n", cmd);
     pe("  %s deindex -t backend -d indexdir files/dirs\n", cmd);
     pe("  %s get -t backend -d indexdir files\n", cmd);
-    pe("  %s listFiles -t backend -d indexdir\n", cmd);
+    pe("  %s listFiles -t backend -d indexdir [parent dir]\n", cmd);
     pe("  %s listFields -t backend -d indexdir\n", cmd);
     //TODO: find a better definition for query?
     pe("  %s query -t backend -d indexdir queries\n", cmd);
@@ -368,8 +368,17 @@ listFiles(int argc, char** argv) {
     if (manager == 0) {
         return usage(argc, argv);
     }
+
     IndexReader* reader = manager->indexReader();
-    listFiles(reader, "");
+    if (arguments.empty())
+        listFiles(reader, "");
+
+    for (vector<string>::iterator iter = arguments.begin();
+         iter != arguments.end(); iter++) {
+        cout << "indexed files under " << *iter << endl;
+        listFiles(reader, *iter);
+    }
+    
     IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
