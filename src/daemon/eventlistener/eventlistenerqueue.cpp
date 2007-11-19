@@ -292,6 +292,11 @@ void EventListenerQueue::updateEventType (Event* oldEvent, Event* newEvent,
     //     D     |     U     | IMPOSSIBLE
     //     D     |     C     |     U
     
+    /*STRIGI_LOG_DEBUG ("strigi.EventListener.Queue.updateEventType",
+                      "old event: " + oldEvent->toString())
+    STRIGI_LOG_DEBUG ("strigi.EventListener.Queue.updateEventType",
+                      "new event: " + newEvent->toString())*/
+    
     switch (oldEvent->getType())
     {
         case Event::CREATED:
@@ -300,8 +305,8 @@ void EventListenerQueue::updateEventType (Event* oldEvent, Event* newEvent,
             {
                 case Event::CREATED:
                     STRIGI_LOG_INFO("strigi.EventListenerQueue.updateEventType",
+                                    "CREATED --> CREATED - "
                                     "Maybe we've lost some filesystem event");
-                    
                     // put in update state, it's the safer solution because with
                     // update event we make a delete and a create
                     oldEvent->setType( Event::UPDATED);
@@ -328,6 +333,7 @@ void EventListenerQueue::updateEventType (Event* oldEvent, Event* newEvent,
             {
                 case Event::CREATED:
                     STRIGI_LOG_INFO("strigi.EventListenerQueue.updateEventType",
+                                    "UPDATED --> CREATED - "
                                     "Maybe we've lost some filesystem event");
                     // leave UPDATED state, it's the safer solution because with
                     // update event we make a delete and a create
@@ -357,6 +363,7 @@ void EventListenerQueue::updateEventType (Event* oldEvent, Event* newEvent,
                     break;
                 case Event::UPDATED:
                     STRIGI_LOG_INFO("strigi.EventListenerQueue.updateEventType",
+                                     "DELETED --> UPDATED - "
                                      "Maybe we've lost some filesystem event");
                     
                     // put in update state, it's the safer solution because with
@@ -365,6 +372,7 @@ void EventListenerQueue::updateEventType (Event* oldEvent, Event* newEvent,
                     break;
                 case Event::DELETED:
                     STRIGI_LOG_INFO("strigi.EventListenerQueue.updateEventType",
+                                    "DELETED -> DELETED - "
                                     "Maybe we've lost some filesystem event");
                     //leave DELETED state
                     break;
