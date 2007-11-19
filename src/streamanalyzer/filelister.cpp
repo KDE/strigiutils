@@ -51,7 +51,7 @@ namespace
 {
     /*!
     * @param path string containing path to check
-    * Appends the terminating char to path.
+    * Removes the terminating char to path.
     * Under Windows that char is '\', '/' under *nix
     */
     string fixPath (string path)
@@ -73,8 +73,8 @@ namespace
 
         char separator = '/';
 
-        if (temp[temp.length() - 1 ] != separator)
-            temp += separator;
+        if (temp[temp.length() - 1 ] == separator)
+            return temp.substr(0, temp.size() - 1);
 
         return temp;
     }
