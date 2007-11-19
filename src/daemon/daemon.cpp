@@ -28,7 +28,9 @@
 #include "xesamlivesearch.h"
 #include "queue/jobqueue.h"
 
-#if defined (HAVE_INOTIFY)
+#if defined (HAVE_FAM)
+#include "famlistener.h"
+#elif defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
 #else
 #include "pollinglistener.h"
@@ -293,8 +295,9 @@ main(int argc, char** argv) {
     XesamLiveSearch xesam(index, queue);
 
     EventListener* listener = NULL;
-
-#if defined (HAVE_INOTIFY)
+#if defined (HAVE_FAM)
+    listener = new FamListener (dirs);
+#elif defined (HAVE_INOTIFY)
     // listen for requests
     listener = new InotifyListener(dirs);
 #else

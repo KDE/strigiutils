@@ -69,6 +69,7 @@ IF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
 ENDIF(CMAKE_SYSTEM MATCHES "SunOS-5*.")
 
 OPTION(ENABLE_INOTIFY "enable inotify support (unstable)" OFF)
+OPTION(ENABLE_FAM "enable FAM support (testing)" OFF)
 OPTION(ENABLE_DBUS "enable dbus support" ON)
 OPTION(ENABLE_NEWXESAM "enable new xesam support" OFF)
 OPTION(ENABLE_LOG4CXX "enable log4cxx support for advanced logging" OFF)
@@ -160,6 +161,7 @@ ENDIF(ENABLE_DBUS)
 #endif (BISON)
 
 FIND_OPTIONAL_DEP(Log4cxx ENABLE_LOG4CXX LOG4CXX_FOUND "advanced logging")
+FIND_OPTIONAL_DEP(FAM ENABLE_FAM FAM_FOUND "FAM monitoring system")
 
 #
 # AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by

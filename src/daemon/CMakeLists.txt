@@ -14,6 +14,11 @@ IF(ENABLE_INOTIFY)
   MESSAGE(STATUS "inotify support enabled")
 ENDIF(ENABLE_INOTIFY)
 
+IF(FAM_FOUND AND ENABLE_FAM)
+  add_definitions(-DHAVE_FAM)
+  MESSAGE(STATUS "FAM support enabled")
+ENDIF(FAM_FOUND AND ENABLE_FAM)
+
 IF(ENABLE_POLLING)
   add_definitions(-DHAVE_POLLING)
   MESSAGE(STATUS "polling support enabled")
