@@ -20,6 +20,7 @@
 #include "inotifylistener.h"
 #include "pollinglistener.h"
 
+#include "analyzerconfiguration.h"
 #include "combinedindexmanager.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
@@ -130,7 +131,6 @@ const string InotifyEvent::description()
 
 bool InotifyEvent::regardsDir()
 {
-    STRIGI_LOG_DEBUG("strigi.InotifyEvent.regardsDir", "hello")
     return ((IN_ISDIR & m_event->mask) != 0);
 }
 
@@ -160,7 +160,7 @@ bool InotifyListener::init()
 {
     m_iInotifyFD = inotify_init();
     if (m_iInotifyFD < 0) {
-        STRIGI_LOG_ERROR ("strigi.InotifyListener",
+        STRIGI_LOG_ERROR ("strigi.InotifyListener.init",
                         "inotify_init() failed.  Are you running Linux 2.6.13\
                         or later? If so, something mysterious has gone wrong.");
         return false;
@@ -168,7 +168,7 @@ bool InotifyListener::init()
 
     m_bInitialized = true;
 
-    STRIGI_LOG_DEBUG ("strigi.InotifyListener", "successfully initialized");
+    STRIGI_LOG_DEBUG ("strigi.InotifyListener.init","successfully initialized");
 
     return true;
 }
@@ -299,25 +299,34 @@ bool InotifyListener::isEventInteresting (FsEvent* event)
     if (inotifyEvent == 0)
         return false;
     
-    // ignore files starting with '.'
     struct inotify_event* structInotify = inotifyEvent->event();
 
     if ((structInotify->wd && IN_IGNORED) == 0)
         return false;
-    
+
+    // ignore files starting with '.'
     if (((IN_ISDIR & structInotify->mask) == 0) && (structInotify->len > 0)
           && ((structInotify->name)[0] == '.'))
         return false;
 
-    //TODO: FIX with AnalyzerConfiguration
-//     if (m_pFilterManager != NULL)
-//     {
-//         if ((event->len > 0) && m_pFilterManager->findMatch(event->name, event->len))
-//             return false;
-//     }
-//     else
-//         STRIGI_LOG_WARNING ("strigi.InotifyListener.isEventInteresting", "unable to use filters, m_pFilterManager == NULL!")
-    return true;
+
+    if (m_pAnalyzerConfiguration == NULL) {
+        STRIGI_LOG_WARNING ("strigi.InotifyListener.isEventInteresting",
+                            "AnalyzerConfiguration == NULL")
+        return true;
+    }
+
+    string path = inotifyEvent->watchName();
+    if (path[path.length() - 1] != '/')
+        path += "/";
+    path += inotifyEvent->name();
+    
+    if (inotifyEvent->regardsDir())
+        return m_pAnalyzerConfiguration->indexDir( path.c_str(),
+                                                   inotifyEvent->name());
+    else
+        return m_pAnalyzerConfiguration->indexFile( path.c_str(),
+                                                    inotifyEvent->name());
 }
 
 bool InotifyListener::isEventValid(FsEvent* event)
@@ -422,7 +431,7 @@ void InotifyListener::addWatches (const set<string> &watches)
             m_pollingListener = new PollingListener();
             m_pollingListener->setEventListenerQueue( m_pEventQueue);
             m_pollingListener->setCombinedIndexManager( m_pManager);
-            m_pollingListener->setIndexerConfiguration(m_pindexerconfiguration);
+            m_pollingListener->setIndexerConfiguration(m_pAnalyzerConfiguration);
             //TODO: start with a low priority?
             m_pollingListener->start( );
         }

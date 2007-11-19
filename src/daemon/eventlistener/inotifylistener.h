@@ -28,11 +28,6 @@
 class Event;
 class PollingListener;
 
-/*!
-* @class InotifyListener
-* @brief Interacts with kernel inotify monitoring recursively all changes over indexed directories
-*/
-
 class InotifyEvent : public FsEvent
 {
     public:
@@ -45,6 +40,7 @@ class InotifyEvent : public FsEvent
         struct inotify_event* event() { return m_event;}
         char* name();
         int watchID() { return m_watchID;}
+        std::string watchName() { return m_watchName;}
         
     private:
         struct inotify_event* m_event;
@@ -53,8 +49,10 @@ class InotifyEvent : public FsEvent
 
 };
 
-class PollingListener;
-
+/*!
+ * @class InotifyListener
+ * @brief Interacts with kernel inotify monitoring recursively all changes over indexed directories
+ */
 class InotifyListener : public FsListener
 {
     public:
