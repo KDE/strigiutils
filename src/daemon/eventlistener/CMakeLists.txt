@@ -3,13 +3,22 @@ IF(ENABLE_INOTIFY)
     set (inotify_SRC inotifylistener.cpp)
 ENDIF(ENABLE_INOTIFY)
 
-INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../../streams/strigi .. 
-	${strigi_BINARY_DIR}/src/streams/strigi
-	${strigi_SOURCE_DIR}/src/streams/strigi)
+IF(FAM_FOUND AND ENABLE_FAM)
+    set (fam_INCLUDE inotify)
+    set (fam_SRC famlistener.cpp)
+    set (eventlistener_LIBS ${eventlistener_LIBS} ${FAM_LIBRARIES})
+ENDIF(FAM_FOUND AND ENABLE_FAM)
+
+INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../../streams/strigi ..
+    ${strigi_BINARY_DIR}/src/streams/strigi
+    ${strigi_SOURCE_DIR}/src/streams/strigi)
 
 ADD_LIBRARY(eventlistener
-	event.cpp
-	eventlistenerqueue.cpp
-	pollinglistener.cpp
+    event.cpp
+    eventlistenerqueue.cpp
+    pollinglistener.cpp
     fslistener.cpp	
-	${inotify_SRC})
+    ${inotify_SRC}
+    ${fam_SRC})
+
+TARGET_LINK_LIBRARIES (eventlistener ${eventlistener_LIBS})
