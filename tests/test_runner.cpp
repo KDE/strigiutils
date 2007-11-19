@@ -20,8 +20,12 @@
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/CompilerOutputter.h>
+#include <cppunit/TextTestProgressListener.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/TextTestRunner.h>
+#include <cppunit/TestResultCollector.h>
+#include <stdexcept>
 
 #include "strigilogging.h"
 #include "config.h"
@@ -41,24 +45,48 @@ int main() {
         BINARYDIR"/src/estraierindexer:"
         BINARYDIR"/src/sqliteindexer", 1);
 
-cerr << BINARYDIR << endl;
+    cerr << BINARYDIR << endl;
 
     STRIGI_LOG_INIT_BASIC()
 
     // Get the top level suite from the registry
-    CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+    CppUnit::Test *suite;
+    suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
     // Adds the test to the list of test to run
     CppUnit::TextTestRunner runner;
     runner.addTest( suite );
+    
+    // Create the event manager and test controller
+    CppUnit::TestResult controller;
 
-    // Change the default outputter to a compiler error format outputter
-//     runner.setOutputter( new CppUnit::CompilerOutputter( &runner.result(),
-//                          std::cerr ) );
-  // Run the tests.
-    bool wasSucessful = runner.run();
+    // Add a listener that colllects test result
+    CppUnit::TestResultCollector result;
+    controller.addListener( &result );
 
-  // Return error code 1 if the one of test failed.
-    return wasSucessful ? 0 : 1;
+    // Add a listener that print dots as test run.
+    CppUnit::TextTestProgressListener progress;
+    controller.addListener( &progress );
+
+    try
+    {
+//         std::cout << "Running "  <<  testPath;
+        runner.run( controller);
+
+        std::cerr << std::endl;
+
+     // Print test in a compiler compatible format.
+        CppUnit::CompilerOutputter outputter( &result, std::cerr );
+        outputter.write();
+    }
+    catch ( std::invalid_argument &e )  // Test path not resolved
+    {
+        std::cerr  <<  std::endl
+                <<  "ERROR: "  <<  e.what()
+                << std::endl;
+        return 0;
+    }
+
+    return result.wasSuccessful() ? 0 : 1;
 }
 
