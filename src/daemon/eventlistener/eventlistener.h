@@ -50,8 +50,7 @@ public:
 
     virtual bool init() { return true; }
     virtual bool addWatch (const std::string& path) = 0;
-    virtual void addWatches (const std::set<std::string>& watches,
-                             bool enableInterrupt = false) = 0;
+    virtual void addWatches (const std::set<std::string>& watches) = 0;
     virtual void setIndexedDirectories (const std::set<std::string>& dirs) = 0;
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_pEventQueue = eventQueue;

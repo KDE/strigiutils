@@ -11,4 +11,5 @@ ADD_LIBRARY(eventlistener
 	event.cpp
 	eventlistenerqueue.cpp
 	pollinglistener.cpp
+    fslistener.cpp	
 	${inotify_SRC})

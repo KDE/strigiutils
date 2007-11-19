@@ -157,7 +157,7 @@ PollingListener::rmWatch(const string& path) {
 }
 
 void
-PollingListener::addWatches(const set<string>& watches, bool enableInterrupt) {
+PollingListener::addWatches(const set<string>& watches) {
     for (set<string>::iterator iter = watches.begin();
             iter != watches.end(); iter++) {
         string temp = fixPath(*iter);
