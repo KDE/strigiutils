@@ -161,7 +161,7 @@ ENDIF(ENABLE_DBUS)
 #endif (BISON)
 
 FIND_OPTIONAL_DEP(Log4cxx ENABLE_LOG4CXX LOG4CXX_FOUND "advanced logging")
-FIND_OPTIONAL_DEP(FAM ENABLE_FAM FAM_FOUND "FAM monitoring system")
+FIND_OPTIONAL_DEP(FAM ENABLE_FAM FAM_FOUND "efficient file change monitoring system")
 
 #
 # AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by
