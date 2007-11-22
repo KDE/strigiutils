@@ -45,39 +45,6 @@ using namespace Strigi;
 map<char, string> options;
 vector<string> arguments;
 
-AnalyzerConfiguration::FieldType
-operator|(AnalyzerConfiguration::FieldType a, AnalyzerConfiguration::FieldType b){
-    return static_cast<AnalyzerConfiguration::FieldType>((int)a|(int)b);
-}
-
-class CustomAnalyzerConfiguration: public AnalyzerConfiguration {
-public:
-
-//    None       = 0x0000 /**< No hint. */,
-//    Binary     = 0x0001 /**< The field should be stored as binary data. */,
-//    Compressed = 0x0002 /**< If the field is stored, the data
-//                             should be compressed. */,
-//    Indexed    = 0x0004 /**< The field should be indexed. */,
-//    Stored     = 0x0020 /**< The field should be stored. */,
-//    Tokenized  = 0x0040 /**< If the field contains text, it
-//                             should be tokenized. */
-    AnalyzerConfiguration::FieldType indexType(const RegisteredField* field) const {
-	if (string("chemistry:inchi").compare(field->key()) == 0) {
-	    return Stored|Indexed;
-	} else if (string("chemistry:molecularFormula").compare(field->key()) == 0) {
-	    return Stored|Indexed;
-/*	} else if (string("chemistry.").compare(field->key()) == 0) {
-	    return Binary|Stored|Indexed;
-	} else if (string("chemistry.").compare(field->key()) == 0) {
-	    return Binary|Stored|Indexed;
-	} else if (string("chemistry.").compare(field->key()) == 0) {
-	    return Binary|Stored|Indexed; */
-	} else {
-	    return Tokenized|Stored|Indexed;
-	}
-    }
-};
-
 void
 parseArguments(int argc, char** argv) {
     // parse arguments
@@ -278,7 +245,6 @@ create(int argc, char** argv) {
     filters.push_back(make_pair<bool,string>(true, included_filter));
     filters.push_back(make_pair<bool,string>(false, excluded_filter));
     
-    //CustomAnalyzerConfiguration config;
     AnalyzerConfiguration config;
     config.setFilters(filters);
 

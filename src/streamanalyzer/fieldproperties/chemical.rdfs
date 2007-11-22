@@ -29,6 +29,7 @@
 	<rdfs:label>chemical:inchi</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&xesam;id"/>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
+	<xss:tokenized>false</xss:tokenized>
 	<rdfs:comment>IUPAC International Chemical Identifier</rdfs:comment>
 </rdf:Property>
 
@@ -42,6 +43,7 @@
 <rdf:Property rdf:about="&chemical;molecularFormula">
 	<rdfs:label>chemical:molecularFormula</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;ChemicalContent"/>
+	<xss:tokenized>false</xss:tokenized>
 	<rdfs:comment>Molecular Formula</rdfs:comment>
 </rdf:Property>
 
