@@ -12,6 +12,13 @@
 	 xmlns:xss="&xss;"
 	 xmlns:rdfs="&rdfs;">
 
+<rdf:Property rdf:about="&rdf;type">
+	<rdfs:label>rdf:type</rdfs:label>
+	<rdfs:domain rdf:resource="&rdfs;Resource"/>
+	<rdfs:range rdf:resource="&rdfs;Class"/>
+	<rdfs:comment>Declaring this here so that it's picked up by FieldPropertiesDb</rdfs:comment>
+</rdf:Property>
+
 <rdf:Property rdf:about="&strigi;depth">
 	<rdfs:label>strigi:depth</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Source"/>
