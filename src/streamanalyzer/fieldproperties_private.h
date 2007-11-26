@@ -38,6 +38,7 @@ friend class FieldPropertiesDb;
 public:
     std::string uri;
     std::string name;
+    std::string alias;
     std::string typeuri;
     std::string description;
     std::map<std::string,FieldProperties::Localized> localized;

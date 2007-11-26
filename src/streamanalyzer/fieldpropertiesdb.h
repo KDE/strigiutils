@@ -48,6 +48,7 @@ public:
     ~FieldPropertiesDb();
 
     const FieldProperties& properties(const std::string& uri) const;
+    const FieldProperties& propertiesByAlias(const std::string& alias) const;
     const std::map<std::string, FieldProperties>& allProperties() const;
 
     const ClassProperties& classes(const std::string& uri) const;

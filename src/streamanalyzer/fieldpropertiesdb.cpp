@@ -47,6 +47,7 @@ using namespace std;
 class FieldPropertiesDb::Private {
 public:
     map<string, FieldProperties> properties;
+    map<string, FieldProperties> propertiesByAlias;
     map<string, ClassProperties> classes;
     static const FieldProperties& emptyField();
     static const ClassProperties& emptyClass();
@@ -126,6 +127,18 @@ FieldPropertiesDb::properties(const std::string& uri) const {
         return j->second;
     }
 }
+
+const FieldProperties&
+FieldPropertiesDb::propertiesByAlias(const std::string& alias) const {
+    map<std::string, FieldProperties>::const_iterator j
+        = p->propertiesByAlias.find(alias);
+    if (j == p->propertiesByAlias.end()) {
+        return FieldPropertiesDb::Private::emptyField();
+    } else {
+        return j->second;
+    }
+}
+
 const map<string, FieldProperties>&
 FieldPropertiesDb::allProperties() const {
     return p->properties;
@@ -239,8 +252,23 @@ FieldPropertiesDb::Private::Private() {
     }
 
     copy(pClasses.begin(), pClasses.end(), inserter(classes, classes.end()) );
-    copy(pProperties.begin(), pProperties.end(),
-        inserter(properties, properties.end()) );
+
+    // Construct properties and propertiesByAlias lists
+    for (map<string, FieldProperties::Private>::const_iterator prop = pProperties.begin();
+            prop != pProperties.end(); ++prop) {
+        FieldProperties property(prop->second);
+        string alias = prop->second.alias;
+
+        if(alias.size()) {
+            if(propertiesByAlias.find(alias) == propertiesByAlias.end()) {
+                propertiesByAlias[alias] = property;
+            } else {
+                cerr << "Error: alias " << alias << " requested by several properties" << endl;
+            }
+        }
+
+        properties[alias] = property;
+    }
 
     pProperties.clear();
     pClasses.clear();
@@ -476,6 +504,14 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
             } else {
                 currentField.uri.assign(val);
             }
+        } else if (strcmp(name, "alias") == 0) {
+            warnIfLocale(val.c_str(), currentElementLang);
+            if (currentField.alias.size()) {
+                cerr << "alias is already defined for " << currentField.uri << "."
+                   << endl;
+            } else {
+                currentField.alias.assign(val);
+            }
         } else if(strcmp(name, "range") == 0) {
             warnIfLocale(currentField.uri.c_str(), currentElementLang);
             if (currentField.typeuri.size()) {
@@ -648,6 +684,12 @@ FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
     if (p->currentDefinition!=defNone) {
         if (strcmp((const char *)localname, "Property") == 0) {
             if (p->currentField.uri.size()) {
+                if(!p->currentField.alias.size()) {
+                    size_t pos;
+                    if( (pos = p->currentField.uri.rfind('#')) != string::npos) {
+                        p->currentField.alias = p->currentField.uri.substr(pos+1);
+                    }
+                }
                 p->pProperties[p->currentField.uri] = p->currentField;
                 p->currentField.clear();
             }

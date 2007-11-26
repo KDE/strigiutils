@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "queryparser.h"
+#include "fieldpropertiesdb.h"
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -125,8 +126,9 @@ prependXesamNamespace(Query& query) {
     // prepend the field names with the xesam namespace
     // this will be elaborated once the xesam spec continues
     vector<string>::iterator end(query.fields().end());
+    FieldPropertiesDb db = FieldPropertiesDb::db();
     for (vector<string>::iterator i = query.fields().begin(); i != end; ++i) {
-        *i = "http://freedesktop.org/standards/xesam/1.0/core#" + *i;
+        *i = db.propertiesByAlias(*i).uri();
     }
     std::vector<Query>::iterator qend(query.subQueries().end());
     for (vector<Query>::iterator i = query.subQueries().begin(); i!=qend; ++i) {
