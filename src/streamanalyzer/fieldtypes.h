@@ -231,6 +231,8 @@ public:
     static const std::string mtimeFieldName;
     /** The name of a field for storing the size of a file */
     static const std::string sizeFieldName;
+    /** The name of a field for storing rdf:type of the file/data */
+    static const std::string typeFieldName;
 
     /** Default namespace for fields */
     static const std::string defaultNamespace;
@@ -254,6 +256,9 @@ public:
     const RegisteredField* mtimeField;
     /** A field for storing the size of a file */
     const RegisteredField* sizeField;
+    /** A field for storing rdf:type of the file/data */
+    const RegisteredField* typeField;
+
 };
 
 }

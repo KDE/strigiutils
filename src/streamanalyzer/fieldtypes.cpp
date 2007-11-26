@@ -57,8 +57,9 @@ const string FieldRegister::extensionFieldName = "http://freedesktop.org/standar
 const string FieldRegister::embeddepthFieldName = "http://strigi.sf.net/ontologies/0.9#depth";
 const string FieldRegister::mtimeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#sourceModified";
 const string FieldRegister::sizeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#size";
+const string FieldRegister::typeFieldName = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
-const string FieldRegister::defaultNamespace = "strigi.";
+const string FieldRegister::defaultNamespace = "http://strigi.sf.net/ontologies/0.9#";
 
 FieldRegister::FieldRegister() {
     pathField = registerField(pathFieldName);
@@ -70,6 +71,7 @@ FieldRegister::FieldRegister() {
     embeddepthField = registerField(embeddepthFieldName);//, integerType, 1, 0);
     mtimeField = registerField(mtimeFieldName);//, integerType, 1, 0);
     sizeField = registerField(sizeFieldName);//, integerType, 1, 0);
+    typeField = registerField(typeFieldName);
 }
 
 FieldRegister::~FieldRegister() {

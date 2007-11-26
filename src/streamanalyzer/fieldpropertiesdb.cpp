@@ -245,9 +245,12 @@ FieldPropertiesDb::Private::Private() {
     pProperties.clear();
     pClasses.clear();
 }
+
+// FIXME (phreedom): should not directly fill properties[]
+//   not all properties from fieldtypes.* are created
 void
 FieldPropertiesDb::Private::addEssentialProperties() {
-    FieldProperties::Private props;
+    FieldProperties::Private props;  
     props.stored = true;
 
     props.typeuri = FieldRegister::datetimeType;
