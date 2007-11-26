@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 using namespace Strigi;
