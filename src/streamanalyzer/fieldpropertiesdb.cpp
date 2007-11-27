@@ -267,7 +267,7 @@ FieldPropertiesDb::Private::Private() {
             }
         }
 
-        properties[alias] = property;
+        properties[property.uri()] = property;
     }
 
     pProperties.clear();
@@ -753,6 +753,7 @@ void
 FieldProperties::Private::clear() {
     uri.clear();
     name.clear();
+    alias.clear();
     description.clear();
     localized.clear();
     locales.clear();
