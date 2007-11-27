@@ -23,11 +23,14 @@
 #include "tarendanalyzer.h"
 #include "tarinputstream.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
+
 using namespace Strigi;
 using namespace std;
 
 void
 GZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
 
 bool
@@ -48,6 +51,9 @@ GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         printf("Error reading gzip: %s\n", stream.error());
         return -2;
     }
+
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+
     stream.reset(0);
     if (TarInputStream::checkHeader(start, nread)) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);

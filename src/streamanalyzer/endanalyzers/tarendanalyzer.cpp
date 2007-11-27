@@ -22,10 +22,12 @@
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
 using namespace Strigi;
 
 void
 TarEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
 
 bool
@@ -34,7 +36,9 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 TarEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
-    return staticAnalyze(idx, in);
+    char result = staticAnalyze(idx, in);
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+    return result;
 }
 char
 TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,

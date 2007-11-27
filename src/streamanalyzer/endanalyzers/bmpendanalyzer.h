@@ -47,6 +47,9 @@ private:
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* compressionField;
+
+    const Strigi::RegisteredField* rdftypeField;
+
     const char* name() const {
         return "BmpEndAnalyzer";
     }

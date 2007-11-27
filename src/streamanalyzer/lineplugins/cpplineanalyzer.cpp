@@ -34,8 +34,10 @@ CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     codeLinesField = reg.registerField("source_code.stats.code_line_count");
     commentLinesField = reg.registerField("source_code.stats.comment_line_count");
     totalLinesField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#lineCount");
+    programmingLanguageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#programmingLanguage");
 // Include count not required. Include list length is easy to obtain.
 //    includesField = reg.registerField();
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -96,6 +98,8 @@ CppLineAnalyzer::endAnalysis(bool complete) {
         analysisResult->addValue(factory->codeLinesField, (int32_t)codeLines);
         analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
         analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
+        analysisResult->addValue(factory->programmingLanguageField, "C++");
+        analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SourceCode");
 //        analysisResult->addValue(factory->includesField, includes);
     }
     ready = true;

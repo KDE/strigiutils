@@ -38,6 +38,8 @@ void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["video codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
     fields["audio codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
     fields["aspect ratio"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#aspectRatio");
+
+    fields["type"] = r.typeField;
 }
 
 bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
@@ -132,6 +134,7 @@ char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
                 break;
         }
     }
+    idx.addValue(tempfields["type"], "http://freedesktop.org/standards/xesam/1.0/core#Video");
     return 0;
 }
 

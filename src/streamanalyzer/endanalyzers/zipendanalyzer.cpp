@@ -28,6 +28,7 @@ using namespace Strigi;
 void
 ZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     mimetypefield = reg.mimetypeField;
+    typeField = reg.typeField;
 }
 
 bool
@@ -45,6 +46,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "error: %s\n", zip.error());
 //        exit(1);
     }
+
     while (s) {
 //        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
         idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
@@ -56,6 +58,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return -1;
     } else {
         idx.addValue(factory->mimetypefield, "application/zip");
+        idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
         m_error.resize(0);
     }
     return 0;

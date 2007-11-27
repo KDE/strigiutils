@@ -24,11 +24,14 @@
 #include "tarinputstream.h"
 #include "streamanalyzer.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
+
 using namespace std;
 using namespace Strigi;
 
 void
 Bz2EndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
 
 bool
@@ -53,6 +56,7 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "Error reading bz2: %s\n", stream.error());
         return -2;
     }
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
     stream.reset(0);
     if (TarInputStream::checkHeader(start, nread)) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);

@@ -59,6 +59,10 @@ private:
     const Strigi::RegisteredField* commentLinesField;
     const Strigi::RegisteredField* totalLinesField;
     const Strigi::RegisteredField* includesField;
+    const Strigi::RegisteredField* programmingLanguageField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "CppLineAnalyzer";
     }

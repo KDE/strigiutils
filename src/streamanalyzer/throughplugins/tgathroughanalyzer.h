@@ -55,6 +55,9 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "TgaThroughAnalyzer";
     }

@@ -23,20 +23,29 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 
+class RpmEndAnalyzerFactory;
 class RpmEndAnalyzer : public Strigi::StreamEndAnalyzer {
+private:
+    const RpmEndAnalyzerFactory* factory;
 public:
+    RpmEndAnalyzer(const RpmEndAnalyzerFactory* f)
+        :factory(f) {}
+
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "RpmEndAnalyzer"; }
 };
 
 class RpmEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+friend class RpmEndAnalyzer;
+private:
+    const Strigi::RegisteredField* typeField;
 public:
     const char* name() const {
         return "RpmEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new RpmEndAnalyzer();
+        return new RpmEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);

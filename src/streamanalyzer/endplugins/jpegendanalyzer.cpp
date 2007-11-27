@@ -128,31 +128,34 @@ private:
     const RegisteredField* userCommentField;
     const RegisteredField* jpegProcessField;
     const RegisteredField* thumbnailField;
+
+    const RegisteredField* typeField;
+
 };
 
-const string JpegEndAnalyzerFactory::commentFieldName("content.comment");
-const string JpegEndAnalyzerFactory::manufacturerFieldName("photo.camera_manufacturer");
-const string JpegEndAnalyzerFactory::modelFieldName("photo.camera_model");
-const string JpegEndAnalyzerFactory::creationDateFieldName("content.creation_time");
-const string JpegEndAnalyzerFactory::widthFieldName("image.width");
-const string JpegEndAnalyzerFactory::heightFieldName("image.height");
-const string JpegEndAnalyzerFactory::orientationFieldName("photo.orientation");
-const string JpegEndAnalyzerFactory::colorModeFieldName("image.color_space");
-const string JpegEndAnalyzerFactory::flashUsedFieldName("photo.flash_used");
-const string JpegEndAnalyzerFactory::focalLengthFieldName("photo.focal_length");
-const string JpegEndAnalyzerFactory::_35mmEquivalentFieldName("photo.35mm_equivalent");
-const string JpegEndAnalyzerFactory::ccdWidthFieldName("photo.cdd_width");
-const string JpegEndAnalyzerFactory::exposureTimeFieldName("photo.exposure_time");
-const string JpegEndAnalyzerFactory::apertureFieldName("photo.aperture");
-const string JpegEndAnalyzerFactory::focusDistFieldName("photo.focus_distance");
-const string JpegEndAnalyzerFactory::exposureBiasFieldName("photo.exposure_bias");
-const string JpegEndAnalyzerFactory::whiteBalanceFieldName("photo.white_balance");
-const string JpegEndAnalyzerFactory::meteringModeFieldName("photo.metering_mode");
-const string JpegEndAnalyzerFactory::exposureFieldName("photo.exposure_program");
-const string JpegEndAnalyzerFactory::isoEquivFieldName("photo.iso_equivalent");
-const string JpegEndAnalyzerFactory::jpegQualityFieldName("compressed.target_quality");
-const string JpegEndAnalyzerFactory::userCommentFieldName("content.comment");
-const string JpegEndAnalyzerFactory::jpegProcessFieldName("compressed.compression_algorithm");
+const string JpegEndAnalyzerFactory::commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+const string JpegEndAnalyzerFactory::manufacturerFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
+const string JpegEndAnalyzerFactory::modelFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
+const string JpegEndAnalyzerFactory::creationDateFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+const string JpegEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string JpegEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+const string JpegEndAnalyzerFactory::orientationFieldName("http://freedesktop.org/standards/xesam/1.0/core#orientation");
+const string JpegEndAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+const string JpegEndAnalyzerFactory::flashUsedFieldName("http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
+const string JpegEndAnalyzerFactory::focalLengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#focalLength");
+const string JpegEndAnalyzerFactory::_35mmEquivalentFieldName("http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
+const string JpegEndAnalyzerFactory::ccdWidthFieldName("http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
+const string JpegEndAnalyzerFactory::exposureTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
+const string JpegEndAnalyzerFactory::apertureFieldName("http://freedesktop.org/standards/xesam/1.0/core#aperture");
+const string JpegEndAnalyzerFactory::focusDistFieldName("http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
+const string JpegEndAnalyzerFactory::exposureBiasFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
+const string JpegEndAnalyzerFactory::whiteBalanceFieldName("http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
+const string JpegEndAnalyzerFactory::meteringModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
+const string JpegEndAnalyzerFactory::exposureFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
+const string JpegEndAnalyzerFactory::isoEquivFieldName("http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
+const string JpegEndAnalyzerFactory::jpegQualityFieldName("http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
+const string JpegEndAnalyzerFactory::userCommentFieldName("http://freedesktop.org/standards/xesam/1.0/core#userComment");
+const string JpegEndAnalyzerFactory::jpegProcessFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
 const string JpegEndAnalyzerFactory::thumbnailFieldName("content.thumbnail");
 
 /*
@@ -164,22 +167,16 @@ JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     commentField = r.registerField(commentFieldName, FieldRegister::stringType,
         -1, 0);
 
-    exifFields["Exif.Image.DateTime"] = r.registerField(creationDateFieldName,
-        FieldRegister::stringType, -1, 0);
-    exifFields["Exif.Image.Make"] = r.registerField(manufacturerFieldName,
-        FieldRegister::stringType, -1, 0);
-    exifFields["Exif.Image.Model"] = r.registerField(modelFieldName,
-        FieldRegister::stringType, -1, 0);
-    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(widthFieldName,
-        FieldRegister::integerType, -1, 0);
-    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(heightFieldName,
-        FieldRegister::integerType, -1, 0);
+    exifFields["Exif.Image.DateTime"] = r.registerField(creationDateFieldName);
+    exifFields["Exif.Image.Make"] = r.registerField(manufacturerFieldName);
+    exifFields["Exif.Image.Model"] = r.registerField(modelFieldName);
+    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(widthFieldName);
+    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(heightFieldName);
     exifFields["Exif.Image.Orientation"] = r.registerField(orientationFieldName,
         FieldRegister::stringType, -1 ,0);
     exifFields["Exif.Photo.Flash"] = r.registerField(flashUsedFieldName,
         FieldRegister::integerType, -1, 0);
-    exifFields["Exif.Photo.FocalLength"] = r.registerField(focalLengthFieldName,
-        FieldRegister::floatType, -1, 0);
+    exifFields["Exif.Photo.FocalLength"] = r.registerField(focalLengthFieldName);
     exifFields["Exif.Photo.FocalLengthIn35mmFilm"] = r.registerField(
         _35mmEquivalentFieldName, FieldRegister::integerType, -1, 0);
     exifFields["Exif.Photo.ExposureTime"] =
@@ -194,15 +191,17 @@ JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
         r.registerField(meteringModeFieldName, FieldRegister::integerType,-1,0);
 
 
-    colorModeField = r.registerField(colorModeFieldName, FieldRegister::stringType,        -1, 0);
-    ccdWidthField = r.registerField(ccdWidthFieldName, FieldRegister::stringType,        -1, 0);
-    focusDistField = r.registerField(focusDistFieldName, FieldRegister::stringType,        -1, 0);
-    exposureField = r.registerField(exposureFieldName, FieldRegister::stringType,        -1, 0);
-    isoEquivField = r.registerField(isoEquivFieldName, FieldRegister::stringType,        -1, 0);
-    jpegQualityField = r.registerField(jpegQualityFieldName, FieldRegister::stringType,        -1, 0);
-    userCommentField = r.registerField(userCommentFieldName, FieldRegister::stringType,        -1, 0);
-    jpegProcessField = r.registerField(jpegProcessFieldName, FieldRegister::stringType,        -1, 0);
-    thumbnailField = r.registerField(thumbnailFieldName, FieldRegister::stringType,        -1, 0);
+    colorModeField = r.registerField(colorModeFieldName);
+    ccdWidthField = r.registerField(ccdWidthFieldName);
+    focusDistField = r.registerField(focusDistFieldName);
+    exposureField = r.registerField(exposureFieldName);
+    isoEquivField = r.registerField(isoEquivFieldName);
+    jpegQualityField = r.registerField(jpegQualityFieldName);
+    userCommentField = r.registerField(userCommentFieldName);
+    jpegProcessField = r.registerField(jpegProcessFieldName);
+    thumbnailField = r.registerField(thumbnailFieldName);
+
+    typeField = r.typeField;
 }
 
 bool
@@ -262,6 +261,13 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     }
 
     const Exiv2::ExifData& exif = img->exifData();
+    // if there's exif data, this is a photo, otherwise just an image
+    if( exif.size() ) {
+        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Photo");
+    } else {
+        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    }
+
     for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();i++){
         map<string,const RegisteredField*>::const_iterator f
             = factory->exifFields.find(i->key());

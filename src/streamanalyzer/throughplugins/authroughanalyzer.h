@@ -56,6 +56,9 @@ private:
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;
     const Strigi::RegisteredField* encodingField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "AuThroughAnalyzer";
     }

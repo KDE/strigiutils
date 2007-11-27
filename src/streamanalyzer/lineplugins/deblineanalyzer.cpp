@@ -45,6 +45,8 @@ DebLineAnalyzerFactory::registerFields(FieldRegister& r) {
     maintainerField = r.registerField(maintainerFieldName);
     sectionField = r.registerField(sectionFieldName);
     dependsField = r.registerField(dependsFieldName);
+
+    typeField = r.typeField;
 }
 
 void 
@@ -65,7 +67,10 @@ DebLineAnalyzer::startAnalysis(AnalysisResult* res)
     finished=0;
 }
 void
-DebLineAnalyzer::endAnalysis(bool /*complete*/) {
+DebLineAnalyzer::endAnalysis(bool complete) {
+    if ((finished==6) && complete) {
+        result->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
+    }
 }
 
 void 

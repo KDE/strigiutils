@@ -56,6 +56,9 @@ private:
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* xHotField;
     const Strigi::RegisteredField* yHotField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "XbmThroughAnalyzer";
     }

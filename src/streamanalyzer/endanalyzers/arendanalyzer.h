@@ -23,8 +23,14 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 
+class ArEndAnalyzerFactory;
 class ArEndAnalyzer : public Strigi::StreamEndAnalyzer {
+private:
+    const ArEndAnalyzerFactory* factory;
 public:
+    ArEndAnalyzer(const ArEndAnalyzerFactory* f)
+        :factory(f) {}
+
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     static char staticAnalyze(Strigi::AnalysisResult& idx,
@@ -33,12 +39,15 @@ public:
 };
 
 class ArEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+friend class ArEndAnalyzer;
+private:
+    const Strigi::RegisteredField* typeField;
 public:
     const char* name() const {
         return "ArEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new ArEndAnalyzer();
+        return new ArEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);

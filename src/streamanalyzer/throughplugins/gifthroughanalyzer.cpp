@@ -59,6 +59,9 @@ private:
     const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "GifThroughAnalyzer";
     }
@@ -75,6 +78,8 @@ GifThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     colorDepthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
     widthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
     heightField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
+
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -104,6 +109,8 @@ GifThroughAnalyzer::connectInputStream(InputStream* in) {
         uint8_t colorDepth = (buf[9] & 0x07) + 1;
         analysisResult->addValue(factory->colorDepthField, (uint32_t)colorDepth);
     }
+
+    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 
     return in;
 }

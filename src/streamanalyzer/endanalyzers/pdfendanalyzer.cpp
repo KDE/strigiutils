@@ -21,6 +21,7 @@
 #include "pdfendanalyzer.h"
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
+#include "fieldtypes.h"
 #include "textutils.h"
 #include <sstream>
 #include <cstring>
@@ -29,7 +30,9 @@ using namespace Strigi;
 
 void
 PdfEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
+
 PdfEndAnalyzer::PdfEndAnalyzer(const PdfEndAnalyzerFactory* f) :factory(f) {
     parser.setStreamHandler(this);
     parser.setTextHandler(this);
@@ -57,5 +60,6 @@ PdfEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     n = 0;
     StreamStatus r = parser.parse(in);
     if (r != Eof) m_error.assign(parser.error());
+    analysisresult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#TextDocument");
     return (r == Eof) ?0 :-1;
 }

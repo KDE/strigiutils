@@ -22,10 +22,13 @@
 #include "rpminputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
+
 using namespace Strigi;
 
 void
 RpmEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
 
 bool
@@ -40,6 +43,7 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "error: %s\n", rpm.error());
 //        exit(1);
     }
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
     while (s) {
         idx.indexChild(rpm.entryInfo().filename, rpm.entryInfo().mtime,
             s);

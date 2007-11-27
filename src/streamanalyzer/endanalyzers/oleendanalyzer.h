@@ -72,9 +72,11 @@ public:
 };
 
 class OleEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+friend class OleEndAnalyzer;
 private:
     std::map<std::string,
         std::map<int,const Strigi::RegisteredField*> > fieldsMaps;
+    const Strigi::RegisteredField* typeField;
 public:
     const char* name() const {
         return "OleEndAnalyzer";

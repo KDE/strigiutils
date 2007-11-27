@@ -23,20 +23,29 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 
+class GZipEndAnalyzerFactory;
 class GZipEndAnalyzer : public Strigi::StreamEndAnalyzer {
+private:
+    const GZipEndAnalyzerFactory* factory;
 public:
+    GZipEndAnalyzer(const GZipEndAnalyzerFactory* f)
+        :factory(f) {}
+
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "GZipEndAnalyzer"; }
 };
 
 class GZipEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+friend class GZipEndAnalyzer;
+private:
+    const Strigi::RegisteredField* typeField;
 public:
     const char* name() const {
         return "GZipEndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new GZipEndAnalyzer();
+        return new GZipEndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);

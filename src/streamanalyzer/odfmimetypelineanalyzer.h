@@ -27,6 +27,7 @@
 class OdfMimeTypeLineAnalyzerFactory : public Strigi::StreamLineAnalyzerFactory {
 public:
     const Strigi::RegisteredField *mimeTypeField;
+    const Strigi::RegisteredField *typeField;
 
     const char *name() const {
         return "OdfMimeTypeLineAnalyzer";

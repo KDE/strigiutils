@@ -45,6 +45,8 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     trackNumberField = r.registerField(trackNumberFieldName);  //FIXME:id3 track numbers can look like this: 1/10
     albumTrackCountField = r.registerField(albumTrackCountFieldName);
     discNumberField = r.registerField(discNumberFieldName);  //FIXME:id3 disc numbers can looklike this: 1/2
+
+    typeField = r.typeField;
 }
 
 void
@@ -92,6 +94,7 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     if (nread != size) {
         return in;
     }
+    indexable->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Music");
     const char* p = buf + 10;
     buf += size;
     while (indexable && p < buf && *p) {

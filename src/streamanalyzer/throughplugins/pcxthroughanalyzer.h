@@ -55,6 +55,9 @@ private:
     const Strigi::RegisteredField* compressionField;
     const Strigi::RegisteredField* hResolutionField;
     const Strigi::RegisteredField* vResolutionField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "PcxThroughAnalyzer";
     }

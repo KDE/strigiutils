@@ -51,6 +51,8 @@ MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
     contentidField = r.registerField(contentidFieldName);
     contentlinkField = r.registerField(contentlinkFieldName);
     emailInReplyToField = r.registerField(emailInReplyToFieldName);
+
+    typeField = r.typeField;
 }
 
 bool
@@ -87,6 +89,7 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if (enc.length()) {
         idx.setEncoding(enc.c_str());
     }
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Email");
     idx.addValue(factory->titleField, mail.subject());
     idx.addValue(factory->contenttypeField, mail.contentType());
     idx.addValue(factory->fromField, mail.from());

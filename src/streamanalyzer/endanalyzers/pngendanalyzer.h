@@ -82,6 +82,9 @@ private:
     const Strigi::RegisteredField* warningField;
     const Strigi::RegisteredField* sourceField;
     const Strigi::RegisteredField* commentField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "PngEndAnalyzer";
     }

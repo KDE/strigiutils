@@ -40,6 +40,8 @@ public:
         return "ZipEndAnalyzer";
     }
     const Strigi::RegisteredField* mimetypefield;
+    const Strigi::RegisteredField* typeField;
+
     Strigi::StreamEndAnalyzer* newInstance() const {
         return new ZipEndAnalyzer(this);
     }

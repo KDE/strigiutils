@@ -59,6 +59,7 @@ private:
     const Strigi::RegisteredField* trackNumberField;
     const Strigi::RegisteredField* albumTrackCountField;
     const Strigi::RegisteredField* discNumberField;
+    const Strigi::RegisteredField* typeField;
     const char* name() const {
         return "ID3V2ThroughAnalyzer";
     }

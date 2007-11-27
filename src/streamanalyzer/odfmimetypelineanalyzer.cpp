@@ -29,7 +29,8 @@
 using namespace Strigi;
 
 void OdfMimeTypeLineAnalyzerFactory::registerFields(FieldRegister &reg) {
-    mimeTypeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#mimeType");
+    mimeTypeField = reg.mimetypeField;
+    typeField = reg.typeField;
 }
 
 Strigi::StreamLineAnalyzer *OdfMimeTypeLineAnalyzerFactory::newInstance() const {
@@ -66,6 +67,37 @@ void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
             || std::strncmp(data, "application/vnd.oasis.opendocument.", 35) != 0) {
         m_ready = true;
         return;
+    }
+/*
+application/vnd.oasis.opendocument.text  odt
+application/vnd.oasis.opendocument.text-template  ott
+application/vnd.oasis.opendocument.text-master  odm
+application/vnd.oasis.opendocument.text-web  oth
+application/vnd.oasis.opendocument.graphics  odg
+application/vnd.oasis.opendocument.graphics-template  otg
+application/vnd.oasis.opendocument.presentation  odp
+application/vnd.oasis.opendocument.presentation-template  otp
+application/vnd.oasis.opendocument.spreadsheet  ods
+application/vnd.oasis.opendocument.spreadsheet-template  ots
+application/vnd.oasis.opendocument.chart  odc
+application/vnd.oasis.opendocument.chart-template  otc
+application/vnd.oasis.opendocument.image  odi
+application/vnd.oasis.opendocument.image-template  oti
+application/vnd.oasis.opendocument.formula  odf
+application/vnd.oasis.opendocument.formula-template  otf
+*/
+
+    char *rdftype = NULL;
+    if( length >= (35+4) && std::strncmp(data+35, "text", 4) == 0 ) {
+        rdftype = "http://freedesktop.org/standards/xesam/1.0/core#TextDocument";
+    } else if ( length >= (35+12) && std::strncmp(data+35, "presentation", 12) == 0 ) {
+        rdftype = "http://freedesktop.org/standards/xesam/1.0/core#Presentation";
+    } else if ( length >= (35+11) && std::strncmp(data+35, "spreadsheet", 11) == 0 ) {
+        rdftype = "http://freedesktop.org/standards/xesam/1.0/core#Spreadsheet";
+    }
+
+    if(rdftype) {
+        m_result->addValue(m_factory->typeField, rdftype);
     }
 
     std::string mimeType;

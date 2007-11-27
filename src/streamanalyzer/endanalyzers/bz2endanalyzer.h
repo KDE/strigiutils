@@ -23,20 +23,29 @@
 #include "streamendanalyzer.h"
 #include "streambase.h"
 
+class Bz2EndAnalyzerFactory;
 class Bz2EndAnalyzer : public Strigi::StreamEndAnalyzer {
+private:
+    const Bz2EndAnalyzerFactory* factory;
 public:
+    Bz2EndAnalyzer(const Bz2EndAnalyzerFactory* f)
+        :factory(f) {}
+
     bool checkHeader(const char* header, int32_t headersize) const;
     char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "Bz2EndAnalyzer"; }
 };
 
 class Bz2EndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
+friend class Bz2EndAnalyzer;
+private:
+    const Strigi::RegisteredField* typeField;
 public:
     const char* name() const {
         return "Bz2EndAnalyzer";
     }
     Strigi::StreamEndAnalyzer* newInstance() const {
-        return new Bz2EndAnalyzer();
+        return new Bz2EndAnalyzer(this);
     }
     bool analyzesSubStreams() const { return true; }
     void registerFields(Strigi::FieldRegister&);

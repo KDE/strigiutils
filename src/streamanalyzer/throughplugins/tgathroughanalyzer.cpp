@@ -28,7 +28,7 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string TgaThroughAnalyzerFactory::compressionFieldName("compressed.compression_algorithm");
+const string TgaThroughAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
 const string TgaThroughAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
 const string TgaThroughAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
 const string TgaThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
@@ -41,6 +41,8 @@ TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     colorModeField = reg.registerField(colorModeFieldName);
     widthField = reg.registerField(widthFieldName);
     heightField = reg.registerField(heightFieldName);
+
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -110,6 +112,7 @@ TgaThroughAnalyzer::connectInputStream(InputStream* in) {
 
     uint8_t colorDepth = *(buf+16);
     analysisResult->addValue(factory->colorDepthField, colorDepth);
+    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 
     return in;
 }

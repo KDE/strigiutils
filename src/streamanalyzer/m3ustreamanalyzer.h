@@ -60,6 +60,8 @@ private:
     const Strigi::RegisteredField* trackPathField; //The paths to the tracks in the playlist
     const Strigi::RegisteredField* m3uTypeField; //The type of the m3u file, a simple list or an extended list
 
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "M3uLineAnalyzer";
     }

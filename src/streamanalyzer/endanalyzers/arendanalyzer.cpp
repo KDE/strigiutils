@@ -21,11 +21,13 @@
 #include <strigi/strigiconfig.h>
 #include "arinputstream.h"
 #include "analysisresult.h"
+#include "fieldtypes.h"
 #include "subinputstream.h"
 using namespace Strigi;
 
 void
 ArEndAnalyzerFactory::registerFields(FieldRegister& reg) {
+    typeField = reg.typeField;
 }
 
 bool
@@ -34,7 +36,9 @@ ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 }
 char
 ArEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
-    return staticAnalyze(idx, in);
+    char result = staticAnalyze(idx, in);
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+    return  result;
 }
 char
 ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,

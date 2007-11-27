@@ -33,6 +33,8 @@ XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
     heightField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
     numberOfColorsField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#colorCount");
+
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -94,6 +96,7 @@ XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
         return;
 
     analysisResult->addValue(factory->numberOfColorsField, propertyValue);
+    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 }
 bool
 XpmLineAnalyzer::isReadyWithStream() {

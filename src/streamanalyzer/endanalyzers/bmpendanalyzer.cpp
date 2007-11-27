@@ -40,6 +40,8 @@ BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(widthFieldName);
     heightField = reg.registerField(heightFieldName);
     colorDepthField = reg.registerField(colorDepthFieldName);
+
+    rdftypeField = reg.typeField;
 }
 
 bool
@@ -114,6 +116,8 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     default :
         rs.addValue(factory->compressionField, "Unknown");
     }
+
+    rs.addValue(factory->rdftypeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 
     return 0;
 }

@@ -53,6 +53,9 @@ public:
     const Strigi::RegisteredField* maintainerField;
     const Strigi::RegisteredField* sectionField;
     const Strigi::RegisteredField* dependsField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "DebLineAnalyzer";
     }

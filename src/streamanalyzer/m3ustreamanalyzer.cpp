@@ -33,6 +33,8 @@ void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg)
 //    tracksField = reg.registerField();
     trackPathField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#links");
     m3uTypeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
+    
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -80,5 +82,8 @@ void M3uLineAnalyzer::endAnalysis(bool complete)
     // tracksField has not been initialized, so don't use it
     //if (complete && extensionOk)
         //analysisResult->addValue(factory->tracksField, count);
+    if (complete && extensionOk)
+        analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#AudioList");
+
 }
 

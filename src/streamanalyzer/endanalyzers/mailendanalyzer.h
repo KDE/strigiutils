@@ -57,6 +57,8 @@ private:
     const Strigi::RegisteredField* contentlinkField;
     const Strigi::RegisteredField* emailInReplyToField;
 
+    const Strigi::RegisteredField* typeField;
+
 public:
     const char* name() const {
         return "MailEndAnalyzer";

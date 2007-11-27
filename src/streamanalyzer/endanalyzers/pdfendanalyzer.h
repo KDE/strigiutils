@@ -46,6 +46,8 @@ public:
 class PdfEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class PdfEndAnalyzer;
 private:
+    const Strigi::RegisteredField* typeField;
+public:
     const char* name() const {
         return "PdfEndAnalyzer";
     }

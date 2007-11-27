@@ -38,13 +38,14 @@ const string PcxThroughAnalyzerFactory::vResolutionFieldName("http://freedesktop
 
 void
 PcxThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    compressionField = reg.registerField(compressionFieldName,
-        FieldRegister::stringType, 1, 0);
+    compressionField = reg.registerField(compressionFieldName);
     widthField = reg.registerField(widthFieldName);
     heightField = reg.registerField(heightFieldName);
     hResolutionField = reg.registerField(hResolutionFieldName);
     vResolutionField = reg.registerField(vResolutionFieldName);
     colorDepthField = reg.registerField(colorDepthFieldName);
+
+    typeField = reg.typeField;
 }
 
 void
@@ -84,6 +85,7 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     indexable->addValue(factory->hResolutionField, (int32_t)readLittleEndianUInt16(header+12));
     indexable->addValue(factory->vResolutionField, (int32_t)readLittleEndianUInt16(header+14));
 
+    indexable->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
     return in;
 }
 bool

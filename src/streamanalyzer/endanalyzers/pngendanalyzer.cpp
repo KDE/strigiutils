@@ -46,9 +46,10 @@ const string PngEndAnalyzerFactory::copyrightFieldName("http://freedesktop.org/s
 const string PngEndAnalyzerFactory::creationTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
 const string PngEndAnalyzerFactory::softwareFieldName("http://freedesktop.org/standards/xesam/1.0/core#generator");
 const string PngEndAnalyzerFactory::disclaimerFieldName("http://freedesktop.org/standards/xesam/1.0/core#disclaimer");
-const string PngEndAnalyzerFactory::warningFieldName("content.warning");
+ // putting warning into comment field since it's the closest equivalent
+const string PngEndAnalyzerFactory::warningFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
  // PNG spec says Source is Device used to create the image
-const string PngEndAnalyzerFactory::sourceFieldName("photo.camera_model");
+const string PngEndAnalyzerFactory::sourceFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
 const string PngEndAnalyzerFactory::commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
 
 // and for the colors
@@ -86,6 +87,8 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     warningField = reg.registerField(warningFieldName);
     sourceField = reg.registerField(sourceFieldName);
     commentField = reg.registerField(commentFieldName);
+
+    typeField = reg.typeField;
 }
 
 PngEndAnalyzer::PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {
@@ -127,6 +130,8 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     if (nread != (int32_t)chunksize || strncmp(c, "IHDR", 4)) {
         return -1;
     }
+
+    as.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 
     // read the png dimensions
     uint32_t width = readBigEndianUInt32(c+4);

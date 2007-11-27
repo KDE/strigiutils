@@ -163,6 +163,8 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     if (r) (*m)[14] = r;
     r = reg.registerField("ole.company", FieldRegister::stringType, 1, 0);
     if (r) (*m)[15] = r;
+
+    typeField = reg.typeField;
 }
 const map<int, const RegisteredField*>*
 OleEndAnalyzerFactory::getFieldMap(const string& key) const {
@@ -392,6 +394,7 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
         m_error = ole.error();
         return -1;
     } else {
+        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Document");
         m_error.resize(0);
     }
     return 0;

@@ -48,8 +48,9 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["copyright"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#copyright");
     fields["license"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#license");
 
-// fields left unimplemented: ORGANIZATION, LOCATION, CONTACT
+// ogg spec fields left unimplemented: ORGANIZATION, LOCATION, CONTACT
 
+    fields["type"] = r.typeField;
 }
 
 void
@@ -140,6 +141,8 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
     }
     // set the "codec" value
     indexable->addValue(factory->fields.find("codec")->second, "Ogg/Vorbis");
+    indexable->addValue(factory->fields.find("type")->second,
+            "http://freedesktop.org/standards/xesam/1.0/core#Music");
     return in;
 }
 bool

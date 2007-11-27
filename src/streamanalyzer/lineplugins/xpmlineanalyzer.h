@@ -52,6 +52,9 @@ private:
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* numberOfColorsField;
+
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
         return "XpmLineAnalyzer";
     }

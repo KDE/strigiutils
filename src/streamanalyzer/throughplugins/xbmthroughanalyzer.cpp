@@ -35,14 +35,12 @@ const string XbmThroughAnalyzerFactory::yHotFieldName("cursor.hot_spot.y");
 
 void
 XbmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName,
-        FieldRegister::integerType, 1, 0);
-    heightField = reg.registerField(heightFieldName,
-        FieldRegister::integerType, 1, 0);
-    xHotField = reg.registerField(xHotFieldName,
-        FieldRegister::integerType, 1, 0);
-    yHotField = reg.registerField(yHotFieldName,
-        FieldRegister::integerType, 1, 0);
+    widthField = reg.registerField(widthFieldName);
+    heightField = reg.registerField(heightFieldName);
+    xHotField = reg.registerField(xHotFieldName);
+    yHotField = reg.registerField(yHotFieldName);
+
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -140,6 +138,8 @@ XbmThroughAnalyzer::connectInputStream(InputStream* in) {
             analysisResult->addValue(factory->yHotField, yHot);
         }
     }
+
+    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
 
     return in;
 }

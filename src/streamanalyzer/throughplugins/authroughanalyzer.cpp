@@ -39,6 +39,8 @@ AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     sampleRateField = reg.registerField(sampleRateFieldName);
     channelsField = reg.registerField(channelsFieldName);
     encodingField = reg.registerField(encodingFieldName);
+
+    typeField = reg.typeField;
 }
 
 // Analyzer
@@ -123,6 +125,8 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
         uint32_t length = dataSize / channels / bytesPerSample / sampleRate;
         analysisResult->addValue(factory->lengthField, length);
     }
+
+    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Music");
 
     return in;
 }
