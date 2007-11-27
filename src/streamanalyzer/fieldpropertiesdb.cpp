@@ -280,7 +280,7 @@ void
 FieldPropertiesDb::Private::addEssentialProperties() {
     FieldProperties::Private props;  
     props.stored = true;
-
+/*
     props.typeuri = FieldRegister::datetimeType;
     props.uri = FieldRegister::mtimeFieldName;
     properties[FieldRegister::mtimeFieldName] = props;
@@ -304,7 +304,7 @@ FieldPropertiesDb::Private::addEssentialProperties() {
 
     props.uri = FieldRegister::parentLocationFieldName;
     props.tokenized = false;
-    properties[FieldRegister::parentLocationFieldName] = props;
+    properties[FieldRegister::parentLocationFieldName] = props;*/
 }
 void
 FieldPropertiesDb::Private::loadProperties(const string& dir) {
