@@ -65,12 +65,10 @@ DebLineAnalyzer::startAnalysis(AnalysisResult* res)
     // it is .deb file after all
     result=res;
     finished=0;
+    result->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
 }
 void
 DebLineAnalyzer::endAnalysis(bool complete) {
-    if ((finished==6) && complete) {
-        result->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
-    }
 }
 
 void 
