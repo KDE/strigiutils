@@ -126,7 +126,7 @@ prependXesamNamespace(Query& query) {
     // prepend the field names with the xesam namespace
     // this will be elaborated once the xesam spec continues
     vector<string>::iterator end(query.fields().end());
-    FieldPropertiesDb db = FieldPropertiesDb::db();
+    FieldPropertiesDb& db = FieldPropertiesDb::db();
     for (vector<string>::iterator i = query.fields().begin(); i != end; ++i) {
         *i = db.propertiesByAlias(*i).uri();
     }
