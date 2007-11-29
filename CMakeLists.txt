@@ -109,7 +109,7 @@ FIND_OPTIONAL_DEP(SQLite ENABLE_SQLITE SQLite_FOUND "SQLite backend")
 FIND_OPTIONAL_DEP(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
 
 #find_package(XAttr)
-set(QT_MIN_VERSION "4.2.0")
+set(QT_MIN_VERSION "4.3.0")
 FIND_OPTIONAL_DEP(Qt4 ENABLE_QT4 QT4_FOUND "QT4 GUI client")
 
 check_include_files(strings.h     HAVE_STRINGS_H)                      # various
