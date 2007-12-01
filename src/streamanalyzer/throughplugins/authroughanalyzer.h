@@ -51,11 +51,14 @@ private:
     static const std::string lengthFieldName;
     static const std::string sampleRateFieldName;
     static const std::string channelsFieldName;
-    static const std::string encodingFieldName;
+    static const std::string sampleBitDepthFieldName;
+    static const std::string sampleDataTypeFieldName;
+
     const Strigi::RegisteredField* lengthField;
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;
-    const Strigi::RegisteredField* encodingField;
+    const Strigi::RegisteredField* sampleBitDepthField;
+    const Strigi::RegisteredField* sampleDataTypeField;
 
     const Strigi::RegisteredField* typeField;
 

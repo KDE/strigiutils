@@ -31,8 +31,8 @@ void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     includeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#depends");
     classField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#definesClass");
-    codeLinesField = reg.registerField("source_code.stats.code_line_count");
-    commentLinesField = reg.registerField("source_code.stats.comment_line_count");
+    codeLinesField = reg.registerField("http://strigi.sf.net/ontologies/0.9#codeLineCount");
+    commentLinesField = reg.registerField("http://strigi.sf.net/ontologies/0.9#commentLineCount");
     totalLinesField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#lineCount");
     programmingLanguageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#programmingLanguage");
 // Include count not required. Include list length is easy to obtain.

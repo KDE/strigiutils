@@ -30,7 +30,7 @@ using namespace std;
 
 const string MailEndAnalyzerFactory::titleFieldName = "http://freedesktop.org/standards/xesam/1.0/core#subject";
 const string MailEndAnalyzerFactory::contenttypeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#contentType";
-const string MailEndAnalyzerFactory::fromFieldName = "TODO.from";
+const string MailEndAnalyzerFactory::fromFieldName = "http://freedesktop.org/standards/xesam/1.0/core#author";
 const string MailEndAnalyzerFactory::toFieldName = "http://freedesktop.org/standards/xesam/1.0/core#to";
 const string MailEndAnalyzerFactory::ccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#cc";
 const string MailEndAnalyzerFactory::bccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#bcc";

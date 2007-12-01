@@ -30,8 +30,8 @@ using namespace Strigi;
 // AnalyzerFactory
 const string XbmThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
 const string XbmThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string XbmThroughAnalyzerFactory::xHotFieldName("cursor.hot_spot.x");
-const string XbmThroughAnalyzerFactory::yHotFieldName("cursor.hot_spot.y");
+const string XbmThroughAnalyzerFactory::xHotFieldName("http://strigi.sf.net/ontologies/0.9#hotSpotX");
+const string XbmThroughAnalyzerFactory::yHotFieldName("http://strigi.sf.net/ontologies/0.9#hotSpotY");
 
 void
 XbmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -139,7 +139,7 @@ XbmThroughAnalyzer::connectInputStream(InputStream* in) {
         }
     }
 
-    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    analysisResult->addValue(factory->typeField, "http://strigi.sf.net/ontologies/0.9#Cursor");
 
     return in;
 }

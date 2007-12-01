@@ -31,14 +31,16 @@ using namespace Strigi;
 const string AuThroughAnalyzerFactory::lengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
 const string AuThroughAnalyzerFactory::sampleRateFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
 const string AuThroughAnalyzerFactory::channelsFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
-const string AuThroughAnalyzerFactory::encodingFieldName("media.sample_format");
+const string AuThroughAnalyzerFactory::sampleBitDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+const string AuThroughAnalyzerFactory::sampleDataTypeFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleDataType");
 
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     lengthField = reg.registerField(lengthFieldName);
     sampleRateField = reg.registerField(sampleRateFieldName);
     channelsField = reg.registerField(channelsFieldName);
-    encodingField = reg.registerField(encodingFieldName);
+    sampleBitDepthField = reg.registerField(sampleBitDepthFieldName);
+    sampleDataTypeField = reg.registerField(sampleDataTypeFieldName);
 
     typeField = reg.typeField;
 }
@@ -84,42 +86,44 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
     uint16_t bytesPerSample = 0;
     switch (encoding) {
     case 1 :
-        analysisResult->addValue(factory->encodingField, "8-bit ISDN u-law");
+        analysisResult->addValue(factory->sampleDataTypeField, "ISDN u-law");
         bytesPerSample = 1;
         break;
     case 2 :
-        analysisResult->addValue(factory->encodingField, "8-bit linear PCM [REF-PCM]");
+        analysisResult->addValue(factory->sampleDataTypeField, "linear PCM [REF-PCM]");
         bytesPerSample = 1;
         break;
     case 3 :
-        analysisResult->addValue(factory->encodingField, "16-bit linear PCM");
+        analysisResult->addValue(factory->sampleDataTypeField, "linear PCM");
         bytesPerSample = 2;
         break;
     case 4 :
-        analysisResult->addValue(factory->encodingField, "24-bit linear PCM");
+        analysisResult->addValue(factory->sampleDataTypeField, "linear PCM");
         bytesPerSample = 3;
         break;
     case 5 :
-        analysisResult->addValue(factory->encodingField, "32-bit linear PCM");
+        analysisResult->addValue(factory->sampleDataTypeField, "linear PCM");
         bytesPerSample = 4;
         break;
     case 6 :
-        analysisResult->addValue(factory->encodingField, "32-bit IEEE floating point");
+        analysisResult->addValue(factory->sampleDataTypeField, "IEEE floating point");
         bytesPerSample = 4;
         break;
     case 7 :
-        analysisResult->addValue(factory->encodingField, "64-bit IEEE floating point");
+        analysisResult->addValue(factory->sampleDataTypeField, "IEEE floating point");
         bytesPerSample = 8;
         break;
     case 23 :
-        analysisResult->addValue(factory->encodingField, "8-bit ISDN u-law compressed");
+        analysisResult->addValue(factory->sampleDataTypeField, "ISDN u-law compressed");
         bytesPerSample = 1;
         break;
     default :
-        analysisResult->addValue(factory->encodingField, "Unknown");
+        analysisResult->addValue(factory->sampleDataTypeField, "Unknown");
         bytesPerSample = 0;
     }
-
+    if(bytesPerSample) {
+        analysisResult->addValue(factory->sampleBitDepthField, bytesPerSample*8);
+    }
     // work out length from bytespersample + channels + size
     if ((0 < channels) && (0 < dataSize) && (dataSize != 0xFFFFFFFF) && (0 < bytesPerSample) && (0 < sampleRate)) {
         uint32_t length = dataSize / channels / bytesPerSample / sampleRate;
