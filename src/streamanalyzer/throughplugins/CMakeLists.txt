@@ -30,6 +30,7 @@ ADD_STRIGITA(pcx pcxthroughanalyzer.cpp)
 ADD_STRIGITA(xbm xbmthroughanalyzer.cpp)
 ADD_STRIGITA(au  authroughanalyzer.cpp)
 ADD_STRIGITA(gif gifthroughanalyzer.cpp)
+ADD_STRIGITA(ico icothroughanalyzer.cpp)
 
 # disabled until a good check for making sure the file is a tga
 #ADD_STRIGITA(tga  tgathroughanalyzer.cpp)
