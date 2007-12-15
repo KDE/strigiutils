@@ -25,6 +25,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 using namespace std;
 using namespace strigiunittest;

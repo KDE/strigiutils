@@ -17,6 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#include <stdlib.h>
+
 #include "indextest.h"
 #include "indexmanager.h"
 #include "indexpluginloader.h"
