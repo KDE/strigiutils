@@ -79,11 +79,14 @@ private:
                 out << "&lt;";
             } else if (c == '>') {
                 out << "&gt;";
-            } else if (isspace(c)) {
-                if (!lastwhite) {
+            } else if (isspace(c) != 0) {
+                // we've to handle dos formatting
+                //'\r' char is ignored, it isn't wroten to out and doesn't
+                //change lastwhite value (so the following '\n' will be handled)
+                if (!lastwhite && (c!= '\r')) {
                     out.put(c);
+                    lastwhite = true;
                 }
-                lastwhite = true;
             } else {
                 lastwhite = false;
                 out.put(c);
