@@ -139,6 +139,8 @@
 	#ifndef strigi_nanosleep
 	    #define strigi_nanosleep(nanoseconds) Sleep(nanoseconds/1000000)
 	#endif
+    
+    #define snprintf _snprintf
 #endif
 
 #include <strigi/strigiconfig.h>
