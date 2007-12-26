@@ -8,7 +8,9 @@ include_directories (. ${CPPUNIT_INCLUDE_DIR}  ${strigi_SOURCE_DIR}/src/daemon
 
 # cppunit requires exception support
 IF(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+    IF (CMAKE_COMPILER_IS_GNUCXX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT WIN32)
 
 # a convenience library that adds a unified way of build a test executable
