@@ -23,7 +23,7 @@ my %signals;
 my $classname;
 my $constructorargs = "";
 
-my @lines = `cat $interfaceheader`;
+my @lines = `cat "$interfaceheader"`;
 
 my %typemapping = (
 	"void" => "ignore",
