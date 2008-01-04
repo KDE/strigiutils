@@ -54,7 +54,7 @@ TxtLineAnalyzer::handleLine(const char* data, uint32_t length) {
 
     totalLines++;
     totalCharacters += length;
-    
+
     if (maxLineLength < length)
         maxLineLength = length;
 
@@ -76,7 +76,7 @@ TxtLineAnalyzer::handleLine(const char* data, uint32_t length) {
     //TODO: by now it isn't possible to detect mac formatting
     //endline should be just '\r'. I don't know if it is still true with latest
     // versions of OSX, I have tried with tiger and I got a standard unix file.
-    if (data[length-1] == '\r')
+    if (length > 0 && data[length-1] == '\r')
         dos = true;
 
 }
