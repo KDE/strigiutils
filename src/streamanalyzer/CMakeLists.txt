@@ -67,7 +67,8 @@ set(streamanalyzer_SRCS
 #	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
 #ELSE(WIN32)
 	add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
-	install(TARGETS streamanalyzer LIBRARY DESTINATION ${LIB_DESTINATION})
+	install(TARGETS streamanalyzer LIBRARY DESTINATION ${LIB_DESTINATION}
+                                   RUNTIME DESTINATION ${LIB_DESTINATION})
 #ENDIF(WIN32)
 
 set_target_properties(streamanalyzer PROPERTIES
