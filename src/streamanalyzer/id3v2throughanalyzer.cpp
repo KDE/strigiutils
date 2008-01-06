@@ -91,13 +91,13 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     // read the entire tag
     nread = in->read(buf, size, size);
     in->reset(0);
-    if (nread != size) {
+    if (nread != size || !indexable) {
         return in;
     }
     indexable->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Music");
     const char* p = buf + 10;
     buf += size;
-    while (indexable && p < buf && *p) {
+    while (p < buf && *p) {
         size = readSize((unsigned char*)p+4, async);
         if (size < 0 || size > (buf-p)-11) {
             // cerr << "size < 0: " << size << endl;
