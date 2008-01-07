@@ -32,12 +32,12 @@ using namespace Strigi;
 // AnalyzerFactory
 
 //TODO: check values!
-const string AviThroughAnalyzerFactory::lengthFieldName( "video.length" );
-const string AviThroughAnalyzerFactory::resolutionHeightFieldName( "video.resolutionHeight" );
-const string AviThroughAnalyzerFactory::resolutionWidthFieldName( "video.resolutionWidth" );
-const string AviThroughAnalyzerFactory::frameRateFieldName( "video.framerate" );
-const string AviThroughAnalyzerFactory::videoCodecFieldName( "video.videocodec" );
-const string AviThroughAnalyzerFactory::audioCodecFieldName( "video.audiocodec" );
+const string AviThroughAnalyzerFactory::lengthFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.length" );
+const string AviThroughAnalyzerFactory::resolutionHeightFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.resolutionHeight" );
+const string AviThroughAnalyzerFactory::resolutionWidthFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.resolutionWidth" );
+const string AviThroughAnalyzerFactory::frameRateFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.framerate" );
+const string AviThroughAnalyzerFactory::videoCodecFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.videocodec" );
+const string AviThroughAnalyzerFactory::audioCodecFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.audiocodec" );
 
 void
 AviThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
@@ -498,8 +498,9 @@ AviThroughAnalyzer::connectInputStream(InputStream* in) {
     // start reading stuff from it
     wantstrf = false;
 
-    /*if (!read_avi(in))
-        printf ("read_avi() failed!\n");*/
+    if (!read_avi(in)) {
+        //printf ("read_avi() failed!\n");
+    }
 
     /***************************************************/
     // set up our output
