@@ -61,10 +61,9 @@ using namespace Strigi;
 using namespace std;
 
 namespace {
-    // can be set via the command line to override settings in the
-    // configuration file.
-    string userForcedIndexType;
-    string userForcedIndexDir;
+    // The default directory from which Strigi reads the configuration file
+    // and where it stores the index can be set via the command line.
+    string userForcedStrigiDir;
 }
 
 /**
@@ -146,11 +145,9 @@ void
 printUsage(int argc, char** argv) {
     printf( "%s [--version] [--help] [-t <backend>] [-d <indexdir>]\n",
             argv[0] );
-    printf( "  --version     Display the version.\n" );
-    printf( "  --help        Display this help text.\n" );
-    printf( "  -t <backend>  Override the index backend.\n" );
-    printf( "  -d <indexdir> Override the index dir.\n" );
-    printf( "  --backends    List the available backends.\n" );
+    printf( "  --version      Display the version.\n" );
+    printf( "  --help         Display this help text.\n" );
+    printf( "  -d <strigidir> Override the default strigi directory (~/.strigi).\n" );
 }
 void
 printBackendList() {
@@ -171,25 +168,13 @@ checkArgs(int argc, char** argv) {
             printUsage(argc, argv);
             exit( 0 );
         }
-        else if ( !strcmp( argv[i], "--backends" ) ) {
-            printBackendList();
-            exit( 0 );
-        }
-        else if ( !strcmp( argv[i], "-t" ) ) {
-            ++i;
-            if ( i >= argc ) {
-                printUsage(argc, argv);
-                exit( 1 );
-            }
-            userForcedIndexType = argv[i];
-        }
         else if ( !strcmp( argv[i], "-d" ) ) {
             ++i;
             if ( i >= argc ) {
                 printUsage(argc, argv);
                 exit( 1 );
             }
-            userForcedIndexDir = argv[i];
+            userForcedStrigiDir = argv[i];
         }
 
         ++i;
@@ -205,9 +190,16 @@ ensureBackend( const std::string& backendName ) {
 }
 int
 main(int argc, char** argv) {
+    checkArgs( argc,argv );
+
     // set up the directory paths
-    string homedir = getenv("HOME");
-    string daemondir = homedir+"/.strigi";
+    string daemondir;
+    if (userForcedStrigiDir.length() == 0) {
+        string homedir = getenv("HOME");
+        daemondir = homedir+"/.strigi";
+    } else {
+        daemondir = userForcedStrigiDir;
+    }
     string lockfilename = daemondir+"/lock";
     string lucenedir = daemondir+"/clucene";
     string estraierdir = daemondir+"/estraier";
@@ -220,7 +212,6 @@ main(int argc, char** argv) {
     string pathfilterfile = daemondir+"/pathfilter.conf";
     string patternfilterfile = daemondir+"/patternfilter.conf";
 
-    checkArgs( argc,argv );
 
     // initialize the directory for the daemon data
     if (!initializeDir(daemondir)) {
@@ -267,11 +258,11 @@ main(int argc, char** argv) {
     set<string> dirs = config.getIndexedDirectories();
 
     // before creating the indexer, check if the index backend exists
-    ensureBackend( !userForcedIndexType.empty() ? userForcedIndexType : config.getWriteableIndexType() );
+    ensureBackend( config.getWriteableIndexType() );
 
     CombinedIndexManager* index = new CombinedIndexManager(
-        !userForcedIndexType.empty() ? userForcedIndexType : config.getWriteableIndexType(),
-        !userForcedIndexDir.empty() ? userForcedIndexDir : config.getWriteableIndexDir());
+        config.getWriteableIndexType(),
+        config.getWriteableIndexDir());
     list<Repository> rors = config.getReadOnlyRepositories();
     list<Repository>::const_iterator i;
     for (i = rors.begin(); i != rors.end(); ++i) {
