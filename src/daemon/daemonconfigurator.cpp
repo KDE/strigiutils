@@ -46,7 +46,16 @@ public:
 };
 
 DaemonConfigurator::DaemonConfigurator (const string& confFile)
-    : m_confFile (confFile) {
+        : m_confFile (confFile) {
+    // find the strigi directory
+    string strigidir;
+    string::size_type slashpos = confFile.rfind('/');
+    if (slashpos != string::npos) {
+        strigidir = confFile.substr(0, slashpos);
+    } else {
+        strigidir = getenv("HOME") + string("/.strigi");
+    }
+
     stringbuf xml;
     ifstream f(confFile.c_str(), ios::binary);
     f.get(xml, '\0');
@@ -66,19 +75,19 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         a_useDBus = true;
         Repository r;
         r.a_name = "localhost";
-        string s = getenv("HOME");
-        r.a_indexdir = s + "/.strigi/clucene";
+        string home = getenv("HOME");
+        r.a_indexdir = strigidir + "/clucene";
         r.a_writeable = true;
         r.a_type = "clucene";
         r.a_pollingInterval = DEFAULT_POLLING_INTERVAL;
 
         Path p;
-        p.a_path = s;                 r.e_path.push_back(p);
-        p.a_path = s + "/.kde";       r.e_path.push_back(p);
-        p.a_path = s + "/.gnome2";    r.e_path.push_back(p);
-        p.a_path = s + "/.evolution"; r.e_path.push_back(p);
-        p.a_path = s + "/.mozilla";   r.e_path.push_back(p);
-        p.a_path = s + "/.mozilla-thunderbird";   r.e_path.push_back(p);
+        p.a_path = home;                 r.e_path.push_back(p);
+        p.a_path = home + "/.kde";       r.e_path.push_back(p);
+        p.a_path = home + "/.gnome2";    r.e_path.push_back(p);
+        p.a_path = home + "/.evolution"; r.e_path.push_back(p);
+        p.a_path = home + "/.mozilla";   r.e_path.push_back(p);
+        p.a_path = home + "/.mozilla-thunderbird";   r.e_path.push_back(p);
         e_repository.push_back(r);
 
         // add pattern to ignore hidden directories and hidden files
