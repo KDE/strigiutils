@@ -1,4 +1,5 @@
 # add a test for the daemon configuration loading classes
+subdirs(dbus)
 
 # if we use log4cxx, include it
 # ideally this should be abstracted away in something like STRIGILOG( ... )
