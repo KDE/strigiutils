@@ -143,7 +143,7 @@ printVersion(int argc, char** argv) {
 }
 void
 printUsage(int argc, char** argv) {
-    printf( "%s [--version] [--help] [-t <backend>] [-d <indexdir>]\n",
+    printf( "%s [--version] [--help] [-d <strigidir>]\n",
             argv[0] );
     printf( "  --version      Display the version.\n" );
     printf( "  --help         Display this help text.\n" );
