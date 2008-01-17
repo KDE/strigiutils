@@ -29,13 +29,15 @@
 
 #include "strigilogging.h"
 #include "config.h"
-#include "config.h"
 #include "strigiclient.h"
 #include <signal.h>
+#include <sys/stat.h>
+#include <fstream>
 #include <QtCore/QProcess>
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+using namespace std;
 /**
  * Retrieve the environment settings as a QMap<QString, QString>.
  **/
@@ -117,14 +119,34 @@ stopDBusDaemon(int dbuspid) {
     if (dbuspid) kill(dbuspid, 9);
     qDebug() << "killing " << dbuspid;
 }
-const QString teststrigidir = "teststrigidir";
+std::string strigitestdir = "strigitestdir";
+std::string backend = "clucene";
+std::string testdatadir = "testdatadir";
+void
+setupTestDir() {
+    if (mkdir(strigitestdir.c_str(), 0700) != 0) {
+        // abort if we cannot create a new config dir
+        exit(1);
+    }
+    // write a config file into the dir
+    string file(strigitestdir + "/daemon.conf");
+    ofstream out(file.c_str());
+    out << "<strigiDaemonConfiguration useDBus='1'>" << endl;
+    out << " <repository name='localhost' indexdir='" + strigitestdir
+        + "/" + backend + "' type='" + backend + "'>" << endl;
+    out << "  <path path='" + testdatadir + "'/>" << endl;
+    out << " </repository>" << endl;
+    out << "</strigiDaemonConfiguration>" << endl;
+    out.close();
+}
 QProcess*
 startStrigiDaemon() {
     QString strigiDaemon = BINARYDIR"/src/daemon/strigidaemon";
+    setupTestDir();
 
     QProcess* strigiDaemonProcess = new QProcess();
     QStringList args;
-    args << "-d" << teststrigidir;
+    args << "-d" << strigitestdir.c_str();
     strigiDaemonProcess->start(strigiDaemon, args, QIODevice::ReadOnly);
     bool ok = strigiDaemonProcess->waitForStarted();
     if (!ok) {
@@ -166,7 +188,8 @@ stopStrigiDaemon(QProcess* strigiDaemonProcess) {
     qDebug() << strigiDaemonProcess->readAllStandardOutput();
     strigiDaemonProcess->close();
     delete strigiDaemonProcess;
-    removeDir(teststrigidir);
+    //removeDir(strigitestdir.c_str());
+    //removeDir(testdatadir.c_str());
 }
 int
 doTests() {
