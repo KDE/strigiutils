@@ -21,11 +21,11 @@
 #include "xesam2strigitest.h"
 #include "xesam2strigi.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <errno.h>
 #include <fstream>
-#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 
 using namespace std;
 using namespace strigiunittest;

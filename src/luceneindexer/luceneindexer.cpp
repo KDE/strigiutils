@@ -21,11 +21,11 @@
 #include "diranalyzer.h"
 #include "indexpluginloader.h"
 #include "analyzerconfiguration.h"
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <sys/types.h>
 #include <stgdirent.h>
-#include <string.h>
-#include <stdlib.h>
 
 using namespace std;
 
