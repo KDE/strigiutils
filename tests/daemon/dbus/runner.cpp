@@ -123,9 +123,34 @@ std::string strigitestdir = "strigitestdir";
 std::string backend = "clucene";
 std::string testdatadir = "testdatadir";
 void
+removeFile(QDir& dir, const QFileInfo& info) {
+    if (info.isDir()) {
+        QDir d(info.absoluteFilePath());
+        foreach(const QFileInfo& i, d.entryInfoList(
+                QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot)) {
+            removeFile(d, i);
+        }
+        if (!dir.rmdir(info.fileName())) {
+            qDebug() << "could not remove dir " << info.fileName();
+        }
+    } else {
+        if (!dir.remove(info.fileName())) {
+            qDebug() << "could not remove " << info.fileName();
+        }
+    }
+}
+void
+removeDir(const QString& path) {
+    QFileInfo i(path);
+    QDir parent(i.dir());
+    removeFile(parent, i);
+}
+void
 setupTestDir() {
+    removeDir(strigitestdir.c_str());
     if (mkdir(strigitestdir.c_str(), 0700) != 0) {
         // abort if we cannot create a new config dir
+        cerr << "cannot create directory " << strigitestdir.c_str() << endl;
         exit(1);
     }
     // write a config file into the dir
@@ -154,29 +179,6 @@ startStrigiDaemon() {
     }
 
     return strigiDaemonProcess;
-}
-void
-removeFile(QDir& dir, const QFileInfo& info) {
-    if (info.isDir()) {
-        QDir d(info.absoluteFilePath());
-        foreach(const QFileInfo& i, d.entryInfoList(QDir::AllEntries | QDir::System
-                                                    | QDir::NoDotAndDotDot)) {
-            removeFile(d, i);
-        }
-        if (!dir.rmdir(info.fileName())) {
-            qDebug() << "could not remove dir " << info.fileName();
-        }
-    } else {
-        if (!dir.remove(info.fileName())) {
-            qDebug() << "could not remove " << info.fileName();
-        }
-    }
-}
-void
-removeDir(const QString& path) {
-    QFileInfo i(path);
-    QDir parent(i.dir());
-    removeFile(parent, i);
 }
 void
 stopStrigiDaemon(QProcess* strigiDaemonProcess) {
