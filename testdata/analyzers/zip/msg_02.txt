@@ -1,6 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='msg_02.txt' mtime='1176553108'>
-  <value name='system.size'>2811</value>
-  <value name='system.depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>msg_02.txt</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>txt</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>2811</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
  </file>
