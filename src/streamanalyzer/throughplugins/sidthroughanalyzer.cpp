@@ -78,7 +78,6 @@ SidThroughAnalyzer::connectInputStream(InputStream* in) {
     
     if (strncmp((char*) &header1, "PSID", 4)) {
         in->reset(0);
-        cout << "reset\n";
         return in;
     }
 
