@@ -33,13 +33,16 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string SidThroughAnalyzerFactory::titleFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
-const string SidThroughAnalyzerFactory::artistFieldName("http://freedesktop.org/standards/xesam/1.0/core#artist");
-
-//TODO: check values!
-const string SidThroughAnalyzerFactory::trackNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
-const string SidThroughAnalyzerFactory::versionFieldName( "document.stats.version" );
-const string SidThroughAnalyzerFactory::copyrightFieldName( "document.stats.copyright" );
+const string SidThroughAnalyzerFactory::titleFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#title");
+const string SidThroughAnalyzerFactory::artistFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#artist");
+const string SidThroughAnalyzerFactory::trackNumberFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
+const string SidThroughAnalyzerFactory::versionFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#version" );
+const string SidThroughAnalyzerFactory::copyrightFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#copyright" );
 
 void
 SidThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

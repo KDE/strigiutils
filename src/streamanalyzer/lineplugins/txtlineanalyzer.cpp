@@ -29,12 +29,18 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 TxtLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    totalLinesField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#lineCount");
-    //TODO: check names
-    totalWordsField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#wordsCount");
-    totalCharactersField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#charactersCount");
-    maxLineLengthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#maxLineLength");
-    formatField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#format");
+    totalLinesField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#lineCount");
+    totalWordsField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#wordCount");
+    totalCharactersField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#characterCount");
+    maxLineLengthField = reg.registerField(
+        "maxLineLength");
+//TODO: this field should receive a proper name. What is meant is whether
+// the file uses uses unix (\n), dos (\r\n) or mac (\r) line endings
+    formatField = reg.registerField(
+        "line ending format");
 }
 
 // Analyzer

@@ -32,13 +32,16 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string IcoThroughAnalyzerFactory::widthFieldName( "image.width" );
-const string IcoThroughAnalyzerFactory::heightFieldName( "image.height" );
-
-//TODO: check values!
-const string IcoThroughAnalyzerFactory::numberFieldName( "document.stats.image_count" );
-const string IcoThroughAnalyzerFactory::bitsPerPixelFieldName( "image.color_depth" );
-const string IcoThroughAnalyzerFactory::colorCountFieldName( "image.color_count" );
+const string IcoThroughAnalyzerFactory::widthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#width");
+const string IcoThroughAnalyzerFactory::heightFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#height");
+const string IcoThroughAnalyzerFactory::numberFieldName(
+    "document.stats.image_count" );
+const string IcoThroughAnalyzerFactory::bitsPerPixelFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth" );
+const string IcoThroughAnalyzerFactory::colorCountFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#colorCount" );
 
 void
 IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

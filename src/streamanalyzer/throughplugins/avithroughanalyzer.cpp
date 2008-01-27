@@ -31,13 +31,19 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-//TODO: check values!
-const string AviThroughAnalyzerFactory::lengthFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.length" );
-const string AviThroughAnalyzerFactory::resolutionHeightFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.resolutionHeight" );
-const string AviThroughAnalyzerFactory::resolutionWidthFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.resolutionWidth" );
-const string AviThroughAnalyzerFactory::frameRateFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.framerate" );
-const string AviThroughAnalyzerFactory::videoCodecFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.videocodec" );
-const string AviThroughAnalyzerFactory::audioCodecFieldName( "http://freedesktop.org/standards/xesam/1.0/core#video.audiocodec" );
+// These are the field names according to the Xesam ontology
+const string AviThroughAnalyzerFactory::lengthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration" );
+const string AviThroughAnalyzerFactory::resolutionHeightFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution" );
+const string AviThroughAnalyzerFactory::resolutionWidthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution" );
+const string AviThroughAnalyzerFactory::frameRateFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#frameRate" );
+const string AviThroughAnalyzerFactory::videoCodecFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#videoCodec" );
+const string AviThroughAnalyzerFactory::audioCodecFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#audioCodec" );
 
 void
 AviThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

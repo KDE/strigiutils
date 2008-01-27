@@ -32,12 +32,14 @@ using namespace Strigi;
 // AnalyzerFactory
 
 
-//TODO: check values!
-const string WavThroughAnalyzerFactory::sampleSizeFieldName( "audio.sampleSize" );
-const string WavThroughAnalyzerFactory::sampleRateFieldName( "audio.sampleRate" );
-const string WavThroughAnalyzerFactory::channelsFieldName( "audio.channels" );
-const string WavThroughAnalyzerFactory::lengthFieldName ("audio.length");
-
+const string WavThroughAnalyzerFactory::sampleSizeFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+const string WavThroughAnalyzerFactory::sampleRateFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate" );
+const string WavThroughAnalyzerFactory::channelsFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
+const string WavThroughAnalyzerFactory::lengthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
 
 void
 WavThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

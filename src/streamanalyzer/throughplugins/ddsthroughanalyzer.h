@@ -50,7 +50,7 @@ friend class DdsThroughAnalyzer;
 private:
     static const std::string widthFieldName;
     static const std::string heightFieldName;
-    static const std::string depthFieldName;
+    static const std::string volumeDepthFieldName;
     static const std::string bitDepthFieldName;
     static const std::string mipmapCountFieldName;
     static const std::string typeFieldName;
@@ -59,7 +59,7 @@ private:
 
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
-    const Strigi::RegisteredField* depthField;
+    const Strigi::RegisteredField* volumeDepthField;
     const Strigi::RegisteredField* bitDepthField;
     const Strigi::RegisteredField* mipmapCountField;
     const Strigi::RegisteredField* typeField;

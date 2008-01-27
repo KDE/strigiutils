@@ -34,15 +34,20 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string RgbThroughAnalyzerFactory::widthFieldName( "image.width" );
-const string RgbThroughAnalyzerFactory::heightFieldName( "image.height" );
-
-//TODO: check values!
-const string RgbThroughAnalyzerFactory::bitDepthFieldName( "document.stats.image_bit_depth" );
-const string RgbThroughAnalyzerFactory::imageNameFieldName ( "document.stats.image_name" );
-const string RgbThroughAnalyzerFactory::sharedRowsFieldName ( "document.stats.image_shared_rows" );
-const string RgbThroughAnalyzerFactory::colorModeFieldName ( "document.stats.image_color_mode" );
-const string RgbThroughAnalyzerFactory::compressionFieldName ( "document.stats.image_compression" );
+const string RgbThroughAnalyzerFactory::widthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#width");
+const string RgbThroughAnalyzerFactory::heightFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#height");
+const string RgbThroughAnalyzerFactory::bitDepthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth" );
+const string RgbThroughAnalyzerFactory::imageNameFieldName(
+    "document.stats.image_name" );
+const string RgbThroughAnalyzerFactory::sharedRowsFieldName(
+    "document.stats.image_shared_rows" );
+const string RgbThroughAnalyzerFactory::colorModeFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#colorSpace" );
+const string RgbThroughAnalyzerFactory::compressionFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm" );
 
 void
 RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

@@ -29,6 +29,9 @@
 using namespace std;
 using namespace Strigi;
 
+// this analyzer reads the DirectDraw Surface graphics file format
+// http://www.modwiki.net/wiki/DDS_(file_format)
+// http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/graphics/reference/ddsfilereference/ddsfileformat.asp
 
 namespace {// Private.
 #if !defined(MAKEFOURCC)
@@ -246,22 +249,28 @@ namespace {// Private.
 
 // AnalyzerFactory
 
-const string DdsThroughAnalyzerFactory::widthFieldName( "image.width" );
-const string DdsThroughAnalyzerFactory::heightFieldName( "image.height" );
-
-//TODO: check values!
-const string DdsThroughAnalyzerFactory::depthFieldName( "image.color_depth" );
-const string DdsThroughAnalyzerFactory::bitDepthFieldName( "document.stats.image_bit_depth" );
-const string DdsThroughAnalyzerFactory::mipmapCountFieldName ( "document.stats.image_mipmap_count" );
-const string DdsThroughAnalyzerFactory::typeFieldName ( "document.stats.image_type" );
-const string DdsThroughAnalyzerFactory::colorModeFieldName ( "document.stats.image_color_mode" );
-const string DdsThroughAnalyzerFactory::compressionFieldName ( "document.stats.image_compression" );
+const string DdsThroughAnalyzerFactory::widthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#width");
+const string DdsThroughAnalyzerFactory::heightFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#height");
+const string DdsThroughAnalyzerFactory::bitDepthFieldName(
+    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+const string DdsThroughAnalyzerFactory::volumeDepthFieldName(
+    "dds volume depth");
+const string DdsThroughAnalyzerFactory::mipmapCountFieldName (
+    "dds mipmap count" );
+const string DdsThroughAnalyzerFactory::typeFieldName (
+    "dds image type" );
+const string DdsThroughAnalyzerFactory::colorModeFieldName (
+    "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+const string DdsThroughAnalyzerFactory::compressionFieldName (
+    "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm" );
 
 void
 DdsThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(widthFieldName);
     heightField = reg.registerField(heightFieldName);
-    depthField = reg.registerField(depthFieldName);
+    volumeDepthField = reg.registerField(volumeDepthFieldName);
     bitDepthField = reg.registerField(bitDepthFieldName);
     mipmapCountField = reg.registerField(mipmapCountFieldName);
     typeField = reg.registerField(typeFieldName);
@@ -320,7 +329,7 @@ DdsThroughAnalyzer::connectInputStream(InputStream* in) {
     }
     else if( header.caps.caps2 & DDSCAPS2_VOLUME ) {
         analysisResult->addValue( factory->typeField, "Volume Texture");
-        analysisResult->addValue( factory->depthField, header.depth);
+        analysisResult->addValue( factory->volumeDepthField, header.depth);
     }
     else {
         analysisResult->addValue( factory->typeField, "2D Texture");
