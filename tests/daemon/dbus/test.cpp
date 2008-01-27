@@ -154,8 +154,9 @@ main() {
     // This ensures we test the development version, not the installed version
     setenv("XDG_DATA_HOME", SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
     setenv("XDG_DATA_DIRS", SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
-    setenv("STRIGI_PLUGIN_PATH", BINARYDIR"/src/luceneindexer/:"
-        BINARYDIR"/src/estraierindexer:"BINARYDIR"/src/sqliteindexer", 1);
+    setenv("STRIGI_PLUGIN_PATH", BINARYDIR"/src/luceneindexer/" PATH_SEPARATOR
+        BINARYDIR"/src/estraierindexer" PATH_SEPARATOR
+        BINARYDIR"/src/sqliteindexer", 1);
     QProcess* strigiDaemonProcess = startStrigiDaemon();
     sleep(1);
 

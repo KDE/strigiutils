@@ -44,8 +44,8 @@ int main() {
     setenv("XDG_DATA_DIRS",
         SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
     setenv("STRIGI_PLUGIN_PATH",
-        BINARYDIR"/src/luceneindexer/:"
-        BINARYDIR"/src/estraierindexer:"
+        BINARYDIR"/src/luceneindexer/" PATH_SEPARATOR
+        BINARYDIR"/src/estraierindexer" PATH_SEPARATOR
         BINARYDIR"/src/sqliteindexer", 1);
 
     cerr << BINARYDIR << endl;

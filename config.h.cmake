@@ -99,6 +99,12 @@
  #define ftello ftell
 #endif
 
+#ifdef _WIN32
+#define PATH_SEPARATOR ";"
+#else
+#define PATH_SEPARATOR ":"
+#endif
+
 #ifndef S_ISREG
     #define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
 #endif
