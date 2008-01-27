@@ -43,6 +43,19 @@ typedef void* StgModuleType;
 typedef HMODULE StgModuleType;
 #endif
 
+vector<string> getdirs(const string& direnv) {
+    vector<string> dirs;
+    string::size_type lastp = 0;
+    string::size_type p = direnv.find(':');
+    while (p != string::npos) {
+        dirs.push_back(direnv.substr(lastp, p-lastp));
+        lastp = p+1;
+        p = direnv.find(':', lastp);
+    }
+    dirs.push_back(direnv.substr(lastp));
+    return dirs;
+}
+
 // anonymous namespace for static variables
 namespace {
     class Module {
@@ -60,19 +73,6 @@ namespace {
             DLCLOSE(mod);
         }
     };
-    vector<string>
-    getdirs(const string& direnv) {
-        vector<string> dirs;
-        string::size_type lastp = 0;
-        string::size_type p = direnv.find(':');
-        while (p != string::npos) {
-            dirs.push_back(direnv.substr(lastp, p-lastp));
-            lastp = p+1;
-            p = direnv.find(':', lastp);
-        }
-        dirs.push_back(direnv.substr(lastp));
-        return dirs;
-    }
     class ModuleList {
     private:
         map<std::string, Module*> modules;
@@ -131,7 +131,7 @@ namespace {
         // do not use RTLD_GLOBAL here
         // note: If neither RTLD_GLOBAL nor RTLD_LOCAL are specified,
         // the default is RTLD_LOCAL.
-        handle = dlopen(lib.c_str(), RTLD_LAZY);
+        handle = dlopen(lib.c_str(), RTLD_LOCAL | RTLD_NOW);
 #else
         handle = LoadLibrary(lib.c_str());
 #endif

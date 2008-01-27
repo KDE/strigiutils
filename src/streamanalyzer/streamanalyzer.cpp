@@ -55,6 +55,7 @@
 #include "analyzerloader.h"
 #include "eventthroughanalyzer.h"
 #include "htmlsaxanalyzer.h"
+#include "indexpluginloader.h"
 #include <sys/stat.h>
 #ifdef WIN32
  #include "ifilterendanalyzer.h"
@@ -101,7 +102,6 @@ public:
 };
 
 } // namespace Strigi
-
 StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
         :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
@@ -110,8 +110,12 @@ StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
     // load the plugins from the environment setting
     const char* strigipluginpath(getenv("STRIGI_PLUGIN_PATH"));
     if (strigipluginpath) {
-        moduleLoader->loadPlugins(strigipluginpath);
+        vector<string> strigipluginpaths = getdirs(strigipluginpath);
+        for (uint i=0; i<strigipluginpaths.size(); ++i) {
+            moduleLoader->loadPlugins(strigipluginpaths[i].c_str());
+        }
     } else {
+cerr << "FAILURE " << endl;
         moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     }
 

@@ -32,3 +32,4 @@ namespace Strigi {
     STRIGI_EXPORT void deleteIndexManager(Strigi::IndexManager* manager);
   }
 }
+std::vector<std::string> getdirs(const std::string& direnv);
