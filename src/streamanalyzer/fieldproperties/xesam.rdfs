@@ -1103,7 +1103,7 @@
 </rdf:Property>
 
 <rdf:Property rdf:about="&xesam;videoBitrate">
-	<rdfs:label>xesam:videoBirate</rdfs:label>
+	<rdfs:label>xesam:videoBitrate</rdfs:label>
 	<rdfs:domain rdf:resource="&xesam;Video"/>
 	<rdfs:subPropertyOf rdf:resource="&xesam;mediaBitrate"/>
 	<rdfs:comment>Video Bitrate</rdfs:comment>
