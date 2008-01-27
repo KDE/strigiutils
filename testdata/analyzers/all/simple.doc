@@ -1,22 +1,44 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='simple.doc/CompObj' mtime='0'>
-  <value name='system.size'>106</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>simple.doc/CompObj</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>106</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>CompObj</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
  </file>
  <file uri='simple.doc/Ole' mtime='0'>
-  <value name='system.size'>20</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>simple.doc/Ole</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>20</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>Ole</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
  </file>
  <file uri='simple.doc/1Table' mtime='0'>
-  <value name='system.size'>1617</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>simple.doc/1Table</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>1617</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>1Table</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
  </file>
  <file uri='simple.doc' mtime='1176759125'>
-  <value name='system.size'>103936</value>
-  <value name='content.title'>Strigi is übercool</value>
-  <value name='content.subject'>desktop search</value>
-  <value name='system.depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>simple.doc</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>desktop search</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176759125</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Document</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>103936</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>simple.doc</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>doc</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#title'>Strigi is übercool</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
   <text>just some text
 </text>
  </file>

@@ -1,13 +1,25 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='a.gz/a' mtime='1165946071'>
-  <value name='system.size'>23</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>a.gz/a</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1165946071</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>23</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>a multiline
 text file
 </text>
  </file>
  <file uri='a.gz' mtime='1165946071'>
-  <value name='system.size'>45</value>
-  <value name='system.depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>a.gz</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1165946071</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Archive</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>45</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.gz</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>gz</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
  </file>

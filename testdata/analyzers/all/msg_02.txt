@@ -1,8 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='msg_02.txt/2' mtime='1176553108'>
-  <value name='system.size'>193</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>193</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>Today's Topics:
 1. testing #1 (Barry A. Warsaw)
 2. testing #2 (Barry A. Warsaw)
@@ -12,58 +17,93 @@
 </text>
  </file>
  <file uri='msg_02.txt/3' mtime='1176553108'>
-  <value name='system.size'>236</value>
-  <value name='email.subject'>[Ppp] testing #1</value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/3</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>[Ppp] testing #1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>236</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>3</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>hello
 </text>
  </file>
  <file uri='msg_02.txt/4' mtime='1176553108'>
-  <value name='system.size'>210</value>
-  <value name='email.subject'></value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/4</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>210</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>4</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>hello
 </text>
  </file>
  <file uri='msg_02.txt/5' mtime='1176553108'>
-  <value name='system.size'>236</value>
-  <value name='email.subject'>[Ppp] testing #3</value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/5</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>[Ppp] testing #3</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>236</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>5</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>hello
 </text>
  </file>
  <file uri='msg_02.txt/6' mtime='1176553108'>
-  <value name='system.size'>236</value>
-  <value name='email.subject'>[Ppp] testing #4</value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/6</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>[Ppp] testing #4</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>236</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>6</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>hello
 </text>
  </file>
  <file uri='msg_02.txt/7' mtime='1176553108'>
-  <value name='system.size'>238</value>
-  <value name='email.subject'>[Ppp] testing #5</value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>barry@digicool.com (Barry A. Warsaw)</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/7</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>[Ppp] testing #5</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>238</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>7</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>barry@digicool.com (Barry A. Warsaw)</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>hello
 </text>
  </file>
  <file uri='msg_02.txt/8' mtime='1176553108'>
-  <value name='system.size'>119</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt/8</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>119</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>8</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>_______________________________________________
 Ppp mailing list
 Ppp@zzz.org
@@ -71,12 +111,19 @@ http://www.zzz.org/mailman/listinfo/ppp
 </text>
  </file>
  <file uri='msg_02.txt' mtime='1176553108'>
-  <value name='system.size'>2811</value>
-  <value name='email.subject'>Ppp digest, Vol 1 #2 - 5 msgs</value>
-  <value name='email.content_type'>text/plain; charset=us-ascii</value>
-  <value name='email.from'>ppp-request@zzz.org</value>
-  <value name='email.to'>ppp@zzz.org</value>
-  <value name='system.depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>ppp@zzz.org</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>msg_02.txt</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>Ppp digest, Vol 1 #2 - 5 msgs</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1176553108</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>2811</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>msg_02.txt</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=us-ascii</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>txt</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>ppp-request@zzz.org</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
   <text>Send Ppp mailing list submissions to
 ppp@zzz.org
 To subscribe or unsubscribe via the World Wide Web, visit

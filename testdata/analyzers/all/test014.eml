@@ -1,8 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <metadata>
  <file uri='test014.eml/peter-ja.html' mtime='1162936788'>
-  <value name='system.size'>790</value>
-  <value name='system.depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>test014.eml/peter-ja.html</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1162936788</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>790</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>peter-ja.html</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>html</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
   <text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -22,12 +28,19 @@
 </text>
  </file>
  <file uri='test014.eml' mtime='1162936788'>
-  <value name='system.size'>2348</value>
-  <value name='email.subject'>美しい日本語を話そう</value>
-  <value name='email.content_type'>text/plain; charset=ISO-2022-JP</value>
-  <value name='email.from'>Mikio Hirabayashi &lt;mikio@users.sourceforge.net&gt;</value>
-  <value name='email.to'>Peter &lt;peter@rabbit.sand-bank.gov&gt;</value>
-  <value name='email.cc'>Flopsy &lt;flopsy@rabbit.sand-bank.gov&gt;, Mopsy &lt;mopsy@rabbit.sand-bank.gov&gt;, Cotton-tail &lt;cotton-tail@rabbit.sand-bank.gov&gt;</value>
-  <value name='content.ID'>&lt;20040610150806.36dc6a91.mikio@users.sourceforge.net&gt;</value>
-  <value name='system.depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#to'>Peter &lt;peter@rabbit.sand-bank.gov&gt;</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>test014.eml</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#subject'>美しい日本語を話そう</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1162936788</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Email</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>2348</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>test014.eml</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#id'>&lt;20040610150806.36dc6a91.mikio@users.sourceforge.net&gt;</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#contentType'>text/plain; charset=ISO-2022-JP</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>eml</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#cc'>Flopsy &lt;flopsy@rabbit.sand-bank.gov&gt;, Mopsy &lt;mopsy@rabbit.sand-bank.gov&gt;, Cotton-tail &lt;cotton-tail@rabbit.sand-bank.gov&gt;</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#author'>Mikio Hirabayashi &lt;mikio@users.sourceforge.net&gt;</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
  </file>
