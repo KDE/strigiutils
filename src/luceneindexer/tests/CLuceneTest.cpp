@@ -5,6 +5,7 @@
 #include "indexwritertests.h"
 #include "indexreadertests.h"
 #include "analyzerconfiguration.h"
+#include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>
@@ -12,21 +13,20 @@
 #include <direct.h>
 #endif
 
+using namespace std;
+
 StrigiMutex errorlock;
 int founderrors = 0;
 int
 CLuceneTest(int argc, char*argv[]) {
-    const char* path = "testcluceneindex";
+    setenv("STRIGI_PLUGIN_PATH", BINARYDIR"/src/luceneindexer/", 1);
+    const char* path = ":MEMORY:";
 
     // initialize a directory for writing and an indexmanager
-#ifdef _WIN32
-    mkdir(path);
-#else
-    mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR);
-#endif
     Strigi::IndexManager* manager
         = Strigi::IndexPluginLoader::createIndexManager("clucene", path);
     if (manager == 0) {
+        cerr << "could not create indexmanager" << endl;
         founderrors++;
         return founderrors;
     }
@@ -46,11 +46,6 @@ CLuceneTest(int argc, char*argv[]) {
 
     // close and clean up the manager
     Strigi::IndexPluginLoader::deleteIndexManager(manager);
-
-    // clean up data
-    std::string cmd = "rm -r ";
-    cmd += path;
-    system(cmd.c_str());
 
     return founderrors;
 }
