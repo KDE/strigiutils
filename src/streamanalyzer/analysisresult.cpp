@@ -177,7 +177,7 @@ AnalysisResult::Private::write() {
     if (field.length()) {
         m_writer.addValue(m_this, fr.extensionField, field);
     }
-    m_writer.addValue(m_this, fr.embeddepthField, m_depth);
+    m_writer.addValue(m_this, fr.embeddepthField, (int32_t)m_depth);
     m_writer.addValue(m_this, fr.mtimeField, (uint32_t)m_mtime);
 
     m_writer.finishAnalysis(m_this);
