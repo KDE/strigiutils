@@ -22,6 +22,7 @@
 #endif
 
 #include <strigi/strigiconfig.h>
+#include "compat.h"
 #include "fileinputstream.h"
 #include "bz2inputstream.h"
 #include "diranalyzer.h"

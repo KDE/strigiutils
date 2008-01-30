@@ -27,6 +27,28 @@
 #include <ctype.h>
 
 
+#ifndef HAVE_SETENV
+int setenv(const char *name, const char *value, int overwrite)
+{
+    int i, iRet;
+    char * a;
+
+    if (!overwrite && getenv(name)) return 0;
+
+    i = strlen(name) + strlen(value) + 2;
+    a = (char*)malloc(i);
+    if (!a) return 1;
+
+    strcpy(a, name);
+    strcat(a, "=");
+    strcat(a, value);
+
+    iRet = putenv(a);
+    free(a);
+    return iRet;
+}
+#endif
+
 #ifndef HAVE_STRCASECMP
 int strcasecmp(const char* sa, const char* sb){
     char ca,cb;
@@ -107,7 +129,6 @@ int isblank(char c){
     return 0;
 }
 #endif
-
 
 #ifndef HAVE_MKSTEMP
 #ifdef _WIN32

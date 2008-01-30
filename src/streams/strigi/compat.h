@@ -31,6 +31,10 @@
 STREAMS_EXPORT int isblank(char c);
 #endif
 
+#ifndef HAVE_SETENV
+STREAMS_EXPORT int setenv(const char *name, const char *value, int overwrite);
+#endif
+
 #ifndef HAVE_STRCASECMP
 STREAMS_EXPORT int strcasecmp(const char *s1, const char *s2);
 #endif

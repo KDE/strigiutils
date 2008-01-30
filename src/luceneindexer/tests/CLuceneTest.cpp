@@ -1,4 +1,5 @@
 #include <strigi/strigiconfig.h>
+#include "compat.h"
 #include "indexpluginloader.h"
 #include "indexmanager.h"
 #include "indexmanagertests.h"

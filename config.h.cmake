@@ -30,6 +30,7 @@
 #cmakedefine HAVE_ISBLANK 1
 #cmakedefine HAVE_MKSTEMP 1
 #cmakedefine HAVE_NANOSLEEP 1
+#cmakedefine HAVE_SETENV 1
 #cmakedefine HAVE_STRCASECMP 1
 #cmakedefine HAVE_STRCASESTR 1
 #cmakedefine HAVE_STRLWR 1
