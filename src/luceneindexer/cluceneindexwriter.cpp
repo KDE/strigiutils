@@ -243,8 +243,6 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
                 } catch (CLuceneError& err) {
                     cerr << "Could not delete document '" << entry
                         << "' from the index: " << err.what() << endl;
-                } catch (...) {
-                    cerr << "This should not happen." << endl;
                 }
             }
             _CLDELETE(d);

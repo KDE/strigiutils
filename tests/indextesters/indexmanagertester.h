@@ -35,6 +35,7 @@ namespace strigiunittest {
 class IndexManagerTest : public CppUnit::TestFixture {
 private:
     CPPUNIT_TEST_SUITE( IndexManagerTest );
+    CPPUNIT_TEST( testIndexManagerOnInvalidDirectory );
     CPPUNIT_TEST( testIndexReader );
     CPPUNIT_TEST( testIndexWriter );
     CPPUNIT_TEST_SUITE_END_ABSTRACT();
@@ -52,6 +53,7 @@ public:
 
     void testIndexReader();
     void testIndexWriter();
+    void testIndexManagerOnInvalidDirectory();
 };
 
 class CLuceneIndexManagerTest : public IndexManagerTest {

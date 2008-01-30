@@ -25,11 +25,15 @@ IF(NOT WIN32)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
     ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT WIN32)
-# In the past, we though we needed to use -fvisibility=default for compiling
-# this library. This appears not to be the case anymore.
-#IF(__STRIGI_HAVE_GCC_VISIBILITY)
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
-#ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
+# We need to compile the clucene index plugin with default visibility, because
+# CLucene does not export the symbol for CLuceneError. If this symbol is not
+# exported, the exception cannot be caught and can cause programs that use
+# libstreamanalyzer to crash.
+# Once CLucene has '__attribute__ ((visibility("default")))' before
+# 'class CLuceneError', we can revert to -fvisibility=hidden.
+IF(__STRIGI_HAVE_GCC_VISIBILITY)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS
     cluceneindexmanager.cpp

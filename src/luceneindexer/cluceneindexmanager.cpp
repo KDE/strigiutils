@@ -108,10 +108,6 @@ Strigi::IndexWriter*
 CLuceneIndexManager::indexWriter() {
     return writer;
 }
-/*Strigi::QueryBitsetCache*
-CLuceneIndexManager::bitSets() {
-    return &bitsets;
-}*/
 IndexWriter*
 CLuceneIndexManager::refWriter() {
     writelock.lock();
@@ -139,9 +135,6 @@ CLuceneIndexManager::openWriter(bool truncate) {
         }
     } catch (CLuceneError& err) {
         fprintf(stderr, "could not create writer: %s\n", err.what());
-        indexwriter = 0;
-    } catch (...) {
-        fprintf(stderr, "Unknown exception was thrown.");
         indexwriter = 0;
     }
 }

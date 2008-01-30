@@ -13,7 +13,7 @@ include_directories (.
 )
 
 set(indextester_SRCS indextest.cpp indexreadertester.cpp indexwritertester.cpp
-    indexsearchtester.cpp)
+    indexsearchtester.cpp indexmanagertester.cpp)
 if (CLucene_FOUND)
   set(indextester_SRCS ${indextester_SRCS} clucenetests.cpp)
   set (indextester_DEPS ${indextester_DEPS} clucene)
