@@ -22,6 +22,8 @@
 #include "indexwriter.h"
 #include "indexpluginloader.h"
 
+#include <stdlib.h>
+
 using namespace std;
 using namespace Strigi;
 using namespace strigiunittest;
