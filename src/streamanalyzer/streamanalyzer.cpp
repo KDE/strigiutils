@@ -115,7 +115,6 @@ StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
             moduleLoader->loadPlugins(strigipluginpaths[i].c_str());
         }
     } else {
-cerr << "FAILURE " << endl;
         moduleLoader->loadPlugins( LIBINSTALLDIR "/strigi");
     }
 
