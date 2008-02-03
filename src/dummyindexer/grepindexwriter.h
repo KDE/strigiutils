@@ -35,7 +35,7 @@ protected:
             const Strigi::RegisteredField* field, const std::string& value);
     void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field,
-            const unsigned char* data, uint32_t size) {}
+            const unsigned char* data, uint32_t size);
     void addValue(const Strigi::AnalysisResult* idx,
             const Strigi::RegisteredField* field, uint32_t value) {}
     void addValue(const Strigi::AnalysisResult* idx,

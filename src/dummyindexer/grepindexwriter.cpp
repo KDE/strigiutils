@@ -78,3 +78,12 @@ GrepIndexWriter::addValue(const Strigi::AnalysisResult* idx,
             field->key().c_str(), value.c_str());
     }
 }
+void
+GrepIndexWriter::addValue(const Strigi::AnalysisResult* idx,
+            const Strigi::RegisteredField* field,
+            const unsigned char* data, uint32_t size) {
+    if (!field->properties().binary()) {
+        string value((const char*)data, size);
+        addValue(idx, field, value);
+    }
+}
