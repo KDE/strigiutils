@@ -311,8 +311,7 @@ OleEndAnalyzer::handleProperty(AnalysisResult* result,
         if (len > 0 && len-8 <= end-data) {
             // remove trailing '\0' characters
             while (len > 0 && data[7+len] == 0) len--;
-            // TODO perhaps we should use the encoding fixer here too
-            // but, check the unit tests if you do
+            // report the field
             result->addValue(field, data+8, len);
         }
     }
