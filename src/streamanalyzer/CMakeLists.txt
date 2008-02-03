@@ -95,8 +95,10 @@ install(FILES
 	analysisresult.h
 	analyzerconfiguration.h
 	analyzerplugin.h
+	classproperties.h
 	diranalyzer.h
 	fieldproperties.h
+	fieldpropertiesdb.h
 	fieldtypes.h
 	indexeddocument.h
 	indexreader.h
