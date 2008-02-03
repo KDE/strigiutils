@@ -305,14 +305,14 @@ OleEndAnalyzer::handleProperty(AnalysisResult* result,
         return;
     }
     int32_t datatype = readLittleEndianInt32(data);
-    // currently we only support null-terminated strings
     if (datatype == 30) {
         int32_t len = readLittleEndianInt32(data+4);
-        if (len > 0 && len-8 <= end-data) {
+        data += 8;
+        if (len > 0 && len <= end-data) {
             // remove trailing '\0' characters
-            while (len > 0 && data[7+len] == 0) len--;
+            while (len > 0 && data[len-1] == 0) len--;
             // report the field
-            result->addValue(field, data+8, len);
+            result->addValue(field, data, len);
         }
     }
 }
