@@ -78,7 +78,7 @@ WordText::addText(const char* d, size_t l, iconv_t conv) {
     size_t inbytesleft = l;
     char* outbuf = out + len;
     size_t outbytesleft = capacity - len;
-    size_t r = iconv(conv, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+    /*size_t r =*/ iconv(conv, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
      
     //fprintf(stderr, "%x %i %i added %i bytes %p\n", *d, r, inbytesleft,
     //    capacity-outbytesleft-len, conv);
@@ -141,15 +141,20 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Summary Information Stream
     key.assign(summaryKey, 16);
     m = &fieldsMaps[key];
-    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
+    r = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#title");
     if (r) (*m)[2] = r;
-    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#subject");
+    r = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#subject");
     if (r) (*m)[3] = r;
-    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#author");
+    r = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#author");
     if (r) (*m)[4] = r;
-    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+    r = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
     if (r) (*m)[5] = r;
-    r = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+    r = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
     if (r) (*m)[6] = r;
 
     // register the fields for the Document Summary Information Stream
@@ -157,7 +162,8 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     m = &fieldsMaps[key];
     r = reg.registerField("ole.category", FieldRegister::stringType, 1, 0);
     if (r) (*m)[2] = r;
-    r = reg.registerField("ole.presentationtarget",FieldRegister::stringType, 1, 0);
+    r = reg.registerField("ole.presentationtarget",FieldRegister::stringType,
+        1, 0);
     if (r) (*m)[3] = r;
     r = reg.registerField("ole.manager", FieldRegister::stringType, 1, 0);
     if (r) (*m)[14] = r;
@@ -172,7 +178,8 @@ OleEndAnalyzerFactory::getFieldMap(const string& key) const {
         = fieldsMaps.find(key);
     return (i == fieldsMaps.end()) ?0 :&i->second;
 }
-// parse with info from http://www.wotsit.org/getfile.asp?file=wword8&sc=230027800
+// parse with info from
+// http://www.wotsit.org/getfile.asp?file=wword8&sc=230027800
 bool
 OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
     const char* d;
@@ -302,9 +309,11 @@ OleEndAnalyzer::handleProperty(AnalysisResult* result,
     if (datatype == 30) {
         int32_t len = readLittleEndianInt32(data+4);
         if (len > 0 && len-8 <= end-data) {
+            // remove trailing '\0' characters
+            while (len > 0 && data[7+len] == 0) len--;
             // TODO perhaps we should use the encoding fixer here too
             // but, check the unit tests if you do
-            result->addValue(field, data+8, len-1);
+            result->addValue(field, data+8, len);
         }
     }
 }

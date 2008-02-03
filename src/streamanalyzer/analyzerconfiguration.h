@@ -212,7 +212,7 @@ public:
      * @return the maximal number of bytes that may be read, or -1 if there is
      *         no limit
      **/
-    virtual int64_t maximalStreamReadLength(const Strigi::AnalysisResult& ar) {
+    virtual int64_t maximalStreamReadLength(const Strigi::AnalysisResult&/*ar*/) {
         return -1;
     }
     /**

@@ -221,7 +221,8 @@ public:
      *
      * @param fieldRegister the FieldRegister to initialize
      */
-    virtual void initWriterData(const Strigi::FieldRegister& fieldRegister) {}
+    virtual void initWriterData(const Strigi::FieldRegister& /*fieldRegister*/){
+    }
     /**
      * @brief Clean up the writer data of the fields.
      *
@@ -244,7 +245,8 @@ public:
      *
      * @param fieldRegister contains the fields to be cleaned up after
      */
-    virtual void releaseWriterData(const Strigi::FieldRegister& fieldRegister) {}
+    virtual void releaseWriterData(const Strigi::FieldRegister &/*fieldRegister*/) {
+    }
 };
 
 } // end namespace Strigi
