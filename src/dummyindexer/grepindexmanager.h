@@ -28,7 +28,7 @@ private:
     Strigi::IndexReader* const reader;
     Strigi::IndexWriter* const writer;
 public:
-    explicit GrepIndexManager(const char* path);
+    explicit GrepIndexManager(const char* regex);
     ~GrepIndexManager();
 
     Strigi::IndexReader* indexReader();

@@ -18,7 +18,8 @@ add_executable(deepfind deepfind.cpp)
 target_link_libraries(deepfind streamanalyzer)
 install(TARGETS deepfind RUNTIME DESTINATION bin)
 
-add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp grepindexwriter.cpp ${REGEX_SOURCES})
+add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp
+    grepindexwriter.cpp ${REGEX_SOURCES})
 
 add_executable(deepgrep deepgrep.cpp)
 target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES} grepindexer)
