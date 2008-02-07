@@ -23,6 +23,7 @@
 #include "indexreader.h"
 #include "filelister.h"
 #include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "strigi_thread.h"
 #include "fileinputstream.h"
 #include <map>
@@ -124,6 +125,7 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
                 } else {
                     analysisresult.index(0);
                 }
+                if (!config.indexMore()) return;
             }
             r = dirlister.nextDir(parentpath, dirfiles);
         }
@@ -257,7 +259,7 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         da->streamanalyzer = analyzers[i];
         STRIGI_THREAD_CREATE(&threads[i-1], analyzeInThread, da);
     }
-    analyze(analyzers[0]); 
+    analyze(analyzers[0]);
     for (int i=1; i<nthreads; i++) {
         STRIGI_THREAD_JOIN(threads[i-1]);
         delete analyzers[i];

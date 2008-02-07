@@ -22,6 +22,7 @@
 #include "zipinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "fieldtypes.h"
 using namespace Strigi;
 
@@ -48,6 +49,10 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
 
     while (s) {
+        if (!idx.config().indexMore()) {
+            m_error = "cancelled.";
+            return -1;
+        }
 //        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
         idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
             s);

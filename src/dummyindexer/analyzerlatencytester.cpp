@@ -62,7 +62,9 @@ public:
     long numberOfFiles;
     map<int, int> histogram;
     string beforeLastFile;
+    struct timeval beforeLastTime;
     string lastFile;
+    struct timeval lastTime;
     Private() :numberOfChecks(0), numberOfFiles(0) {
         starttime.tv_sec = -1;
     }
@@ -72,7 +74,9 @@ public:
 bool
 LatencyMeasurer::indexFile(const char* path, const char* filename) const {
     d->beforeLastFile.assign(d->lastFile);
+    d->beforeLastTime = d->lastTime;
     d->lastFile.assign(path);
+    gettimeofday(&d->lastTime, NULL);
     d->numberOfFiles++;
     return true;
 }
@@ -88,8 +92,10 @@ LatencyMeasurer::indexMore() const {
     }
     d->histogram[(int)10*log10(elapsed(now, d->lasttime))]++;
     if (elapsed(now, d->lasttime) > 1) {
-        cerr << d->beforeLastFile << " was being indexed." << endl;
-        cerr << d->lastFile << " is being indexed." << endl;
+        cerr << d->beforeLastFile << " started "
+            << elapsed(now, d->beforeLastTime) << " seconds ago." << endl;
+        cerr << d->lastFile << " started "
+            << elapsed(now, d->lastTime) << " seconds ago." << endl;
         assert(elapsed(now, d->lasttime) < 3);
     }
     d->lasttime = now;

@@ -357,7 +357,7 @@ StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
 }
 char
 StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
-//    cerr << "StreamAnalyzerPrivate::analyze " << idx.path().c_str() << endl;
+    //cerr << "analyze " << idx.path().c_str() << endl;
 
     // retrieve or construct the through analyzers and end analyzers
     vector<vector<StreamThroughAnalyzer*> >::iterator tIter;
@@ -410,6 +410,10 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             idx.setEndAnalyzer(sea);
             char ar = sea->analyze(idx, input);
             if (ar) {
+                if (!idx.config().indexMore()) {
+                    removeIndexable(idx.depth());
+                    return -1;
+                }
                 int64_t pos = input->reset(0);
                 if (pos != 0) { // could not reset
                     cerr << "could not reset stream of " << idx.path().c_str()
@@ -440,12 +444,13 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         tIter = through.begin() + idx.depth();
         uint32_t skipsize = 4096;
         do {
+            if (!idx.config().indexMore()) {
+                removeIndexable(idx.depth());
+                return -1;
+            }
             ready = input->size() != -1;
             vector<StreamThroughAnalyzer*>::iterator ts;
             for (ts = tIter->begin(); ready && ts != tIter->end(); ++ts) {
-                //if (!(*ts)->isReadyWithStream()) {
-                //    cerr << "not ready " << (*ts)->name() << endl;
-                //}
                 ready = (*ts)->isReadyWithStream();
             }
             if (!ready) {

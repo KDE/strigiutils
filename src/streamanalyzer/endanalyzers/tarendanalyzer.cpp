@@ -22,6 +22,7 @@
 #include "tarinputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "fieldtypes.h"
 using namespace Strigi;
 
@@ -49,6 +50,9 @@ TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
+        if (!idx.config().indexMore()) {
+            return -1;
+        }
         idx.indexChild(tar.entryInfo().filename, tar.entryInfo().mtime,
             s);
         s = tar.nextEntry();
