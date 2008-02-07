@@ -76,12 +76,13 @@ main(int argc, char** argv) {
     GrepIndexManager manager(argv[1]);
 
     DirAnalyzer analyzer(manager, ic);
+    int nthreads = 8;
     if (argc > 2) {
         for (int32_t i=2; i<argc; ++i) {
-            analyzer.analyzeDir(argv[i]);
+            analyzer.analyzeDir(argv[i], nthreads);
         }
     } else {
-        analyzer.analyzeDir(".");
+        analyzer.analyzeDir(".", nthreads);
     }
     return 0;
 }
