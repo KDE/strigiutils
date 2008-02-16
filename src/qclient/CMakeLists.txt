@@ -10,10 +10,10 @@ add_executable(qclientold ${qclientold_SRCS} ${qclientold_MOC_SRCS})
 
 target_link_libraries(qclientold streams archiveengine ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
-# archivecat
-add_executable(archivecat archivecat.cpp)
+# qclientarchivecat
+add_executable(qclientarchivecat archivecat.cpp)
 
-target_link_libraries(archivecat streams archiveengine ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+target_link_libraries(qclientarchivecat streams archiveengine ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 # archivedialog
 add_executable(archivedialog archivedialog.cpp)
