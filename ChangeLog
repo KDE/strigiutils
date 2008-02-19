@@ -1,3 +1,16 @@
+0.5.8
+ - Improve quiting latency of the most important analyzers. Now Strigi reacts more quickly when you tell it to stop indexing.
+ - Add a tool to analyze the analyzer latency profile and find analyzers that have a high latency.
+ - Bring field names in line with the Xesam ontology.
+ - New analyzers for avi, wav, dds, rgb, sid and ico file types.
+ - Fix deepgrep (finally working again since 0.5.2) and extend the number of fields deepgrep searches in. Now it also searches in fields that are passed as "unsigned char*" to the IndexWriter, but only if they are not registered as being binary fields.
+ - Install two headers that provide metadata information about field types. Basically, these classes publish the ontology that strigi uses.
+ - Fix a problem with CLucene throwing CLuceneError. Because of -fvisibility=hidden, the code did not recognize CLuceneError and caused it to fall through, thus crashing programs using libstreamanalyzer. A unit test to avoid the problem from reappearing has been added.
+ - Fix for system where setenv() is not available (for instance windows). Hopefully those systems have putenv() :)
+ - Remove support for starting strigidaemon with an arbiratry index type and index dir, but add an option to use a different configuration file. This effectively gives the use the same possiblities.
+ - Fixes to the build system that allow strigi to be built and tested as part of a larger project (e.g. kdesupport).
+ - 'strigicmd listFiles' now can be used to retrieve all files/dir indexed under a certain path
+ - Added for support for Gentoo-way compilation flags. Implemented more consistent and pretty optional dependency handling.
 0.5.7 
  - use plugins instead of shared libraries for the indexer backends
  - lots of bugfixes and cleanups
