@@ -59,17 +59,10 @@ set(streamanalyzer_SRCS
 	endanalyzers/zipendanalyzer.cpp
 )
 
-#IF(WIN32)
-#	#not enough api exposed to make this a dll
-#	add_library(streamanalyzer ifilterendanalyzer.cpp ${streamanalyzer_SRCS})
-#    install(TARGETS streamanalyzer ARCHIVE DESTINATION ${LIB_DESTINATION})
-#    #add ifilter library
-#	set(streamindex_LIBS ${streamindex_LIBS} ntquery)
-#ELSE(WIN32)
-	add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
-	install(TARGETS streamanalyzer LIBRARY DESTINATION ${LIB_DESTINATION}
-                                   RUNTIME DESTINATION ${LIB_DESTINATION})
-#ENDIF(WIN32)
+add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
+install(TARGETS streamanalyzer ARCHIVE DESTINATION ${LIB_DESTINATION}
+                               LIBRARY DESTINATION ${LIB_DESTINATION}
+                               RUNTIME DESTINATION bin)
 
 set_target_properties(streamanalyzer PROPERTIES
     VERSION ${STRIGI_VERSION}
