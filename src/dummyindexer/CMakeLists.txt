@@ -28,7 +28,9 @@ install(TARGETS deepgrep RUNTIME DESTINATION bin)
 add_executable(greptest grepindexreader.cpp)
 target_link_libraries(greptest streamanalyzer)
 
-add_executable(analyzerlatencytester analyzerlatencytester.cpp)
-target_link_libraries(analyzerlatencytester streamanalyzer)
+if(NOT MSVC)
+  add_executable(analyzerlatencytester analyzerlatencytester.cpp)
+  target_link_libraries(analyzerlatencytester streamanalyzer)
+endif(NOT MSVC)
 
 add_library(grepindex grepindexmanager.cpp)
