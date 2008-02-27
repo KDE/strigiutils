@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2006,2008 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -51,43 +51,76 @@ using namespace Strigi;
 using namespace std;
 
 /**
- * This class has not been finished yet. It requires changes in all
-   analyzer factories.
+ * Configure analysis bases on what fields we want to extract.
  **/
 class SelectedFieldConfiguration : public Strigi::AnalyzerConfiguration {
 public:
+    /**
+     * Fields the user has requested to be reported.
+     **/
     const set<string> requiredFields;
+    /**
+     * Fields that were requested by the user and are provided by some analyzer.
+     **/
     mutable set<string> usedFields;
+    /**
+     * All fields provided by all analyzers.
+     **/
     mutable set<string> availableFields;
 
     explicit SelectedFieldConfiguration(const set<string> af)
         : requiredFields(af) {}
 
+    /**
+     * The configuration is valid if all fields requested can be supplied by
+     * the active set of analyzer.
+     **/
     bool valid() const {
         return requiredFields.size() == usedFields.size();
     }
-    bool useFactory(const string& name) const {
-        bool use = requiredFields.find(name) != requiredFields.end();
-        if (use) {
-            usedFields.insert(name);
+    /**
+     * If a certain field should be reported, return Stored, otherwise return
+     * None.
+     **/
+    FieldType indexType(const Strigi::RegisteredField* f) const {
+        return (requiredFields.find(f->key()) != requiredFields.end())
+            ? Stored :None;
+    }
+    /**
+     * If any of the fields provided by the given analyzer are requested, use
+     * that analyzer for the analysis.
+     **/
+    bool useAnalyzerFactory(const StreamAnalyzerFactory* f) const {
+        bool use = false;
+        vector<const RegisteredField*>::const_iterator i;
+        i = f->registeredFields().begin();
+        const vector<const RegisteredField*>::const_iterator end =
+            f->registeredFields().end();
+        for (; i != end; ++i) {
+            string key((*i)->key());
+            availableFields.insert(key);
+            bool usethis = requiredFields.find(key) != requiredFields.end();
+            if (usethis) {
+                use = true;
+                usedFields.insert((*i)->key());
+            }
         }
-        availableFields.insert(name);
         return use;
     }
     bool useFactory(StreamEndAnalyzerFactory* f) const {
-        return useFactory(f->name());
+        return useAnalyzerFactory(f);
     }
     bool useFactory(StreamThroughAnalyzerFactory* f) const {
-        return useFactory(f->name());
+        return useAnalyzerFactory(f);
     }
     bool useFactory(StreamSaxAnalyzerFactory* f) const {
-        return useFactory(f->name());
+        return useAnalyzerFactory(f);
     }
     bool useFactory(StreamEventAnalyzerFactory* f) const {
-        return useFactory(f->name());
+        return useAnalyzerFactory(f);
     }
     bool useFactory(StreamLineAnalyzerFactory* f) const {
-        return useFactory(f->name());
+        return useAnalyzerFactory(f);
     }
 };
 
@@ -105,7 +138,7 @@ containsHelp(int argc, char **argv) {
     return false;
 }
 set<string>
-parseAnalyzerNames(const char* names) {
+parseFieldNames(const char* names) {
     set<string> n;
     string ns(names);
     string::size_type start = 0, p = ns.find(',');
@@ -134,8 +167,8 @@ main(int argc, char** argv) {
     const char* targetFile;
     const char* referenceFile = 0;
     if (argc == 4) {
-        if (strcmp(argv[1],"-a") == 0) {
-            analyzers = parseAnalyzerNames(argv[2]);
+        if (strcmp(argv[1],"-f") == 0) {
+            analyzers = parseFieldNames(argv[2]);
         } else if (strcmp(argv[1], "-r") == 0) {
             referenceFile = argv[2];
         } else {
@@ -144,15 +177,15 @@ main(int argc, char** argv) {
         }
         targetFile = argv[3];
     } else if (argc == 6) {
-        if (strcmp(argv[1], "-a") == 0) {
-            analyzers = parseAnalyzerNames(argv[2]);
+        if (strcmp(argv[1], "-f") == 0) {
+            analyzers = parseFieldNames(argv[2]);
             if (strcmp(argv[3], "-r") == 0) {
                 referenceFile = argv[4];
             }
         } else if (strcmp(argv[1], "-r") == 0) {
             referenceFile = argv[2];
-            if (strcmp(argv[3], "-a") == 0) {
-                analyzers = parseAnalyzerNames(argv[4]);
+            if (strcmp(argv[3], "-f") == 0) {
+                analyzers = parseFieldNames(argv[4]);
             }
         } else {
             printUsage(argv);
@@ -196,10 +229,10 @@ main(int argc, char** argv) {
             ic.availableFields.begin(), ic.availableFields.end(),
             insert_iterator<set<string> >(missing, missing.begin()));
         if (missing.size() == 1) {
-            fprintf(stderr, "No analyzer with name %s was found.\n",
+            fprintf(stderr, "No field with name %s was found.\n",
                missing.begin()->c_str());
         } else {
-            cerr << "The analyzers";
+            cerr << "The fields ";
             for (i = missing.begin(); i != missing.end(); ++i) {
                 cerr << ", " << *i; 
             }
