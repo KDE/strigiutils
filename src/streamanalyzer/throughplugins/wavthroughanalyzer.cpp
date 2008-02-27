@@ -47,6 +47,10 @@ WavThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     sampleRateField = reg.registerField(sampleRateFieldName);
     channelsField = reg.registerField(channelsFieldName);
     lengthField = reg.registerField(lengthFieldName);
+    addField(sampleSizeField);
+    addField(sampleRateField);
+    addField(channelsField);
+    addField(lengthField);
 }
 
 // Analyzer

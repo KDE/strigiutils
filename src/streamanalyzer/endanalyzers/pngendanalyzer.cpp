@@ -89,6 +89,26 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     commentField = reg.registerField(commentFieldName);
 
     typeField = reg.typeField;
+
+    /* add the fields to the internal list of fields */
+    addField(widthField);
+    addField(heightField);
+    addField(colorDepthField);
+    addField(colorModeField);
+    addField(compressionField);
+    addField(interlaceModeField);
+    addField(lastModificationTimeField);
+    addField(titleField);
+    addField(authorField);
+    addField(descriptionField);
+    addField(copyrightField);
+    addField(creationTimeField);
+    addField(softwareField);
+    addField(disclaimerField);
+    addField(warningField);
+    addField(sourceField);
+    addField(commentField);
+    addField(typeField);
 }
 
 PngEndAnalyzer::PngEndAnalyzer(const PngEndAnalyzerFactory* f) :factory(f) {
