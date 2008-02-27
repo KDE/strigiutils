@@ -186,15 +186,19 @@ protected:
         Data* d = dv[depth];
         ar->setWriterData(d);
     }
-    void printValue(const Strigi::RegisteredField* name, std::string& value) {
-        const Tag* tag = static_cast<const Tag*>(name->writerData());
-        escape(value);
-        out << tag->open << value << tag->close;
+    void printValue(const Strigi::AnalyzerConfiguration& config,
+            const Strigi::RegisteredField* name, std::string& value) {
+        if (config.indexType(name) != Strigi::AnalyzerConfiguration::None) {
+            const Tag* tag = static_cast<const Tag*>(name->writerData());
+            escape(value);
+            out << tag->open << value << tag->close;
+        }
     }
     void finishAnalysis(const Strigi::AnalysisResult* ar) {
         STRIGI_MUTEX_LOCK(&mutex);
         Data* d = static_cast<Data*>(ar->writerData());
-        const Strigi::FieldRegister& fr = ar->config().fieldRegister();
+        const Strigi::AnalyzerConfiguration& config = ar->config();
+        const Strigi::FieldRegister& fr = config.fieldRegister();
         std::string v = ar->path();
         escape(v);
         out << " <" << mapping.map("file") << " " << mapping.map("uri")
@@ -204,19 +208,19 @@ protected:
 
         if (ar->encoding().size()) {
             v.assign(ar->encoding());
-            printValue(fr.encodingField, v);
+            printValue(config, fr.encodingField, v);
         }
 
         std::multimap<const Strigi::RegisteredField*, std::string>::iterator
             i, end;
         end = d->values.end();
         for (i = d->values.begin(); i != end; ++i) {
-            printValue(i->first, i->second);
+            printValue(config, i->first, i->second);
         }
         std::ostringstream oss;
         oss << (int)ar->depth();
         v = oss.str();
-        printValue(fr.embeddepthField, v);
+        printValue(config, fr.embeddepthField, v);
         if (d->text.size() > 0) {
             out << "  <text>";
             printText(d->text);
