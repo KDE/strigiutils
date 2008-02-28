@@ -34,7 +34,9 @@ using namespace Strigi;
 
 void
 NamespaceHarvesterSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
-    usesNamespaceField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#usesNamespace");
+    usesNamespaceField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#usesNamespace");
+    addField(usesNamespaceField);
 }
 
 void
@@ -47,9 +49,9 @@ NamespaceHarvesterSaxAnalyzer::startAnalysis(AnalysisResult *i) {
 }
 
 void NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
-    set<string>::iterator siter; // Iterator for looping over list elements
-    for ( siter = usedNamespaces.begin(); siter != usedNamespaces.end(); ++siter ) {
-        analysisResult->addValue(factory->usesNamespaceField, *siter);
+    set<string>::iterator i; // Iterator for looping over list elements
+    for (i = usedNamespaces.begin(); i != usedNamespaces.end(); ++i) {
+        analysisResult->addValue(factory->usesNamespaceField, *i);
     }
 
     analysisResult = 0;
@@ -57,20 +59,24 @@ void NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
     ready = true;
 }
 
-void NamespaceHarvesterSaxAnalyzer::startElement(const char *localname, const char *prefix,
-                                  const char *uri, int nb_namespaces, const char **namespaces,
-                                  int nb_attributes, int nb_defaulted, const char **attributes) {
+void
+NamespaceHarvesterSaxAnalyzer::startElement(const char *localname,
+        const char *prefix, const char *uri, int nb_namespaces,
+        const char **namespaces, int nb_attributes, int nb_defaulted,
+        const char **attributes) {
     assert(analysisResult != 0);
     if (uri) {
         usedNamespaces.insert(uri);
     }
 }
 
-void NamespaceHarvesterSaxAnalyzer::endElement(const char *localname, const char *prefix,
-                                const char *uri) {
+void
+NamespaceHarvesterSaxAnalyzer::endElement(const char *localname,
+        const char *prefix, const char *uri) {
 }
 
-void NamespaceHarvesterSaxAnalyzer::characters(const char *data, uint32_t length) {
+void
+NamespaceHarvesterSaxAnalyzer::characters(const char *data, uint32_t length) {
     assert(analysisResult != 0);
 }
 
