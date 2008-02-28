@@ -32,6 +32,7 @@ using namespace Strigi;
 void
 Bz2EndAnalyzerFactory::registerFields(FieldRegister& reg) {
     typeField = reg.typeField;
+    addField(typeField);
 }
 
 bool

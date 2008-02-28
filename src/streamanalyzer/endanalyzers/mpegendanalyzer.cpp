@@ -31,23 +31,33 @@ using namespace Strigi;
 using namespace std;
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["length"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
-    fields["dimensions.y"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
-    fields["dimensions.x"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
-    fields["frame rate"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#frameRate");
-    fields["video codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
-    fields["audio codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
-    fields["aspect ratio"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#aspectRatio");
-
+    fields["length"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+    fields["dimensions.y"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    fields["dimensions.x"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    fields["frame rate"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#frameRate");
+    fields["video codec"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
+    fields["audio codec"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+    fields["aspect ratio"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#aspectRatio");
     fields["type"] = r.typeField;
+
+    map<string, const RegisteredField*>::const_iterator i;
+    for (i = fields.begin(); i != fields.end(); ++i) {
+        addField(i->second);
+    }
 }
 
-bool MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const
-{
+bool
+MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     uint32_t dword = 0;
     
-    if(headersize < 9)
-    {
+    if(headersize < 9) {
         //cerr << "File was less than nine bytes.  Not long enough" << endl;
         return false;
     }

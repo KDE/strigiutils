@@ -38,7 +38,6 @@ public:
 class SdfEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class SdfEndAnalyzer;
 private:
-    static const std::string moleculeCountFieldName;
     const Strigi::RegisteredField* moleculeCountField;
 public:
     const char* name() const {

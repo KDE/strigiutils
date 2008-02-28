@@ -74,32 +74,6 @@ private:
     }
     void registerFields(FieldRegister& );
 
-    /* define static fields that contain the field names. */
-    static const string commentFieldName;
-    static const string manufacturerFieldName;
-    static const string modelFieldName;
-    static const string creationDateFieldName;
-    static const string widthFieldName;
-    static const string heightFieldName;
-    static const string orientationFieldName;
-    static const string colorModeFieldName;
-    static const string flashUsedFieldName;
-    static const string focalLengthFieldName;
-    static const string _35mmEquivalentFieldName;
-    static const string ccdWidthFieldName;
-    static const string exposureTimeFieldName;
-    static const string apertureFieldName;
-    static const string focusDistFieldName;
-    static const string exposureBiasFieldName;
-    static const string whiteBalanceFieldName;
-    static const string meteringModeFieldName;
-    static const string exposureFieldName;
-    static const string isoEquivFieldName;
-    static const string jpegQualityFieldName;
-    static const string userCommentFieldName;
-    static const string jpegProcessFieldName;
-    static const string thumbnailFieldName;
-
     /* The RegisteredField instances are used to index specific fields quickly.
        We pass a pointer to the instance instead of a string.
     */
@@ -164,44 +138,73 @@ const string JpegEndAnalyzerFactory::thumbnailFieldName("content.thumbnail");
 */
 void
 JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    commentField = r.registerField(commentFieldName, FieldRegister::stringType,
-        -1, 0);
+    commentField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+    addField(commentField);
 
-    exifFields["Exif.Image.DateTime"] = r.registerField(creationDateFieldName);
-    exifFields["Exif.Image.Make"] = r.registerField(manufacturerFieldName);
-    exifFields["Exif.Image.Model"] = r.registerField(modelFieldName);
-    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(widthFieldName);
-    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(heightFieldName);
-    exifFields["Exif.Image.Orientation"] = r.registerField(orientationFieldName,
-        FieldRegister::stringType, -1 ,0);
-    exifFields["Exif.Photo.Flash"] = r.registerField(flashUsedFieldName,
-        FieldRegister::integerType, -1, 0);
-    exifFields["Exif.Photo.FocalLength"] = r.registerField(focalLengthFieldName);
+    exifFields["Exif.Image.DateTime"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+    exifFields["Exif.Image.Make"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
+    exifFields["Exif.Image.Model"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
+    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    exifFields["Exif.Image.Orientation"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#orientation");
+    exifFields["Exif.Photo.Flash"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
+    exifFields["Exif.Photo.FocalLength"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#focalLength");
     exifFields["Exif.Photo.FocalLengthIn35mmFilm"] = r.registerField(
-        _35mmEquivalentFieldName, FieldRegister::integerType, -1, 0);
-    exifFields["Exif.Photo.ExposureTime"] =
-        r.registerField(exposureTimeFieldName, FieldRegister::floatType, -1, 0);
-    exifFields["Exif.Photo.ApertureValue"] =
-        r.registerField(apertureFieldName, FieldRegister::floatType, -1, 0);
-    exifFields["Exif.Photo.ExposureBiasValue"] =
-        r.registerField(exposureBiasFieldName, FieldRegister::floatType, -1, 0);
-    exifFields["Exif.Photo.WhiteBalance"] =
-        r.registerField(whiteBalanceFieldName, FieldRegister::integerType,-1,0);
-    exifFields["Exif.Photo.MeteringMode"] =
-        r.registerField(meteringModeFieldName, FieldRegister::integerType,-1,0);
+        "http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
+    exifFields["Exif.Photo.ExposureTime"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
+    exifFields["Exif.Photo.ApertureValue"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#aperture");
+    exifFields["Exif.Photo.ExposureBiasValue"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
+    exifFields["Exif.Photo.WhiteBalance"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
+    exifFields["Exif.Photo.MeteringMode"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
+    map<string, const RegisteredField*>::const_iterator i = exifFields.begin();
+    for (; i != exifFields.end(); ++i) {
+        addField(i->second);
+    }
 
-
-    colorModeField = r.registerField(colorModeFieldName);
-    ccdWidthField = r.registerField(ccdWidthFieldName);
-    focusDistField = r.registerField(focusDistFieldName);
-    exposureField = r.registerField(exposureFieldName);
-    isoEquivField = r.registerField(isoEquivFieldName);
-    jpegQualityField = r.registerField(jpegQualityFieldName);
-    userCommentField = r.registerField(userCommentFieldName);
-    jpegProcessField = r.registerField(jpegProcessFieldName);
-    thumbnailField = r.registerField(thumbnailFieldName);
-
+    colorModeField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+    ccdWidthField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
+    focusDistField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
+    exposureField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
+    isoEquivField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
+    jpegQualityField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
+    userCommentField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#userComment");
+    jpegProcessField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+    thumbnailField = r.registerField(
+        "content.thumbnail");
     typeField = r.typeField;
+
+    addField(colorModeField);
+    addField(ccdWidthField);
+    addField(focusDistField);
+    addField(exposureField);
+    addField(isoEquivField);
+    addField(jpegQualityField);
+    addField(userCommentField);
+    addField(jpegProcessField);
+    addField(thumbnailField);
+    addField(typeField);
 }
 
 bool

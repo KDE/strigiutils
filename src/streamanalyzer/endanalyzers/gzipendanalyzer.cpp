@@ -31,6 +31,7 @@ using namespace std;
 void
 GZipEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     typeField = reg.typeField;
+    addField(typeField);
 }
 
 bool

@@ -134,43 +134,41 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         0xAB,0x91,0x08,0x00,0x2B,0x27,0xB3,0xD9};
     static const char docSummaryKey[]= {0x02,0xD5,0xCD,0xD5,0x9C,0x2E,0x1B,0x10,
         0x93,0x97,0x08,0x00,0x2B,0x2C,0xF9,0xAE};
-    const RegisteredField* r;
     string key;
-    map<int,const RegisteredField*>* m;
+    key.assign(summaryKey, 16);
+    map<int,const RegisteredField*>* m = &fieldsMaps[key];
 
     // register the fields for the Summary Information Stream
-    key.assign(summaryKey, 16);
-    m = &fieldsMaps[key];
-    r = reg.registerField(
+    (*m)[2] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#title");
-    if (r) (*m)[2] = r;
-    r = reg.registerField(
+    addField((*m)[2]);
+    (*m)[3] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#subject");
-    if (r) (*m)[3] = r;
-    r = reg.registerField(
+    addField((*m)[3]);
+    (*m)[4] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#author");
-    if (r) (*m)[4] = r;
-    r = reg.registerField(
+    addField((*m)[4]);
+    (*m)[5] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
-    if (r) (*m)[5] = r;
-    r = reg.registerField(
+    addField((*m)[5]);
+    (*m)[6] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
-    if (r) (*m)[6] = r;
+    addField((*m)[6]);
 
     // register the fields for the Document Summary Information Stream
     key.assign(docSummaryKey, 16);
     m = &fieldsMaps[key];
-    r = reg.registerField("ole.category", FieldRegister::stringType, 1, 0);
-    if (r) (*m)[2] = r;
-    r = reg.registerField("ole.presentationtarget",FieldRegister::stringType,
-        1, 0);
-    if (r) (*m)[3] = r;
-    r = reg.registerField("ole.manager", FieldRegister::stringType, 1, 0);
-    if (r) (*m)[14] = r;
-    r = reg.registerField("ole.company", FieldRegister::stringType, 1, 0);
-    if (r) (*m)[15] = r;
+    (*m)[2] = reg.registerField("ole.category");
+    addField((*m)[2]);
+    (*m)[3] = reg.registerField("ole.presentationtarget");
+    addField((*m)[3]);
+    (*m)[14] = reg.registerField("ole.manager");
+    addField((*m)[14]);
+    (*m)[15] = reg.registerField("ole.company");
+    addField((*m)[15]);
 
     typeField = reg.typeField;
+    addField(typeField);
 }
 const map<int, const RegisteredField*>*
 OleEndAnalyzerFactory::getFieldMap(const string& key) const {

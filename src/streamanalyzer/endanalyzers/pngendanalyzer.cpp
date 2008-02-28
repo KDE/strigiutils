@@ -32,26 +32,6 @@
 using namespace std;
 using namespace Strigi;
 
-const string PngEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string PngEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string PngEndAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-const string PngEndAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-const string PngEndAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string PngEndAnalyzerFactory::interlaceModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#interlaceMode");
-const string PngEndAnalyzerFactory::lastModificationTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentModified");
-const string PngEndAnalyzerFactory::titleFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
-const string PngEndAnalyzerFactory::authorFieldName("http://freedesktop.org/standards/xesam/1.0/core#author");
-const string PngEndAnalyzerFactory::descriptionFieldName("http://freedesktop.org/standards/xesam/1.0/core#description");
-const string PngEndAnalyzerFactory::copyrightFieldName("http://freedesktop.org/standards/xesam/1.0/core#copyright");
-const string PngEndAnalyzerFactory::creationTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-const string PngEndAnalyzerFactory::softwareFieldName("http://freedesktop.org/standards/xesam/1.0/core#generator");
-const string PngEndAnalyzerFactory::disclaimerFieldName("http://freedesktop.org/standards/xesam/1.0/core#disclaimer");
- // putting warning into comment field since it's the closest equivalent
-const string PngEndAnalyzerFactory::warningFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
- // PNG spec says Source is Device used to create the image
-const string PngEndAnalyzerFactory::sourceFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
-const string PngEndAnalyzerFactory::commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
-
 // and for the colors
 static const char* colors[] = {
   "Grayscale",
@@ -70,24 +50,42 @@ static const char* interlaceModes[] = {
 
 void
 PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    colorDepthField = reg.registerField(colorDepthFieldName);
-    colorModeField = reg.registerField(colorModeFieldName);
-    compressionField = reg.registerField(compressionFieldName);
-    interlaceModeField = reg.registerField(interlaceModeFieldName);
-    lastModificationTimeField = reg.registerField(lastModificationTimeFieldName);
-    titleField = reg.registerField(titleFieldName);
-    authorField = reg.registerField(authorFieldName);
-    descriptionField = reg.registerField(descriptionFieldName);
-    copyrightField = reg.registerField(copyrightFieldName);
-    creationTimeField = reg.registerField(creationTimeFieldName);
-    softwareField = reg.registerField(softwareFieldName);
-    disclaimerField = reg.registerField(disclaimerFieldName);
-    warningField = reg.registerField(warningFieldName);
-    sourceField = reg.registerField(sourceFieldName);
-    commentField = reg.registerField(commentFieldName);
-
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    colorDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    colorModeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+    interlaceModeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#interlaceMode");
+    lastModificationTimeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentModified");
+    titleField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#title");
+    authorField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#author");
+    descriptionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#description");
+    copyrightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#copyright");
+    creationTimeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+    softwareField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#generator");
+    disclaimerField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#disclaimer");
+    // putting warning into comment field since it's the closest equivalent
+    warningField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+    // PNG spec says Source is Device used to create the image
+    sourceField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
+    commentField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
     typeField = reg.typeField;
 
     /* add the fields to the internal list of fields */

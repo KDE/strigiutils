@@ -26,7 +26,9 @@ using namespace std;
 
 void
 SdfEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    moleculeCountField = r.registerField("http://rdf.openmolecules.net/0.9#moleculeCount");
+    moleculeCountField = r.registerField(
+        "http://rdf.openmolecules.net/0.9#moleculeCount");
+    addField(moleculeCountField);
 }
 
 bool

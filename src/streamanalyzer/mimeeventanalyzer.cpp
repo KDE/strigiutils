@@ -304,4 +304,5 @@ MimeEventAnalyzer::~MimeEventAnalyzer() {
 void
 MimeEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
     mimetypefield = reg.mimetypeField;
+    addField(mimetypefield);
 }

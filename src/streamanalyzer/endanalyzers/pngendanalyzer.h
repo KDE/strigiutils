@@ -48,23 +48,6 @@ public:
 class PngEndAnalyzerFactory : public Strigi::StreamEndAnalyzerFactory {
 friend class PngEndAnalyzer;
 private:
-    static const std::string widthFieldName;
-    static const std::string heightFieldName;
-    static const std::string colorDepthFieldName;
-    static const std::string colorModeFieldName;
-    static const std::string compressionFieldName;
-    static const std::string interlaceModeFieldName;
-    static const std::string lastModificationTimeFieldName;
-    static const std::string titleFieldName;
-    static const std::string authorFieldName;
-    static const std::string descriptionFieldName;
-    static const std::string copyrightFieldName;
-    static const std::string creationTimeFieldName;
-    static const std::string softwareFieldName;
-    static const std::string disclaimerFieldName;
-    static const std::string warningFieldName;
-    static const std::string sourceFieldName;
-    static const std::string commentFieldName;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;
@@ -82,7 +65,6 @@ private:
     const Strigi::RegisteredField* warningField;
     const Strigi::RegisteredField* sourceField;
     const Strigi::RegisteredField* commentField;
-
     const Strigi::RegisteredField* typeField;
 
     const char* name() const {

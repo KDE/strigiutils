@@ -75,7 +75,7 @@ HelperProgramConfig::HelperProgramConfig() {
         paths.push_back(path);
     }
 
-/*    string exepath = findPath("pdftotext", paths);
+    string exepath = findPath("pdftotext", paths);
     if (exepath.length()) {
         HelperRecord* h = new HelperRecord();
         h->magic = (unsigned char*)"%PDF-1.";
@@ -87,7 +87,7 @@ HelperProgramConfig::HelperProgramConfig() {
         h->arguments.push_back("-");
         h->readfromstdin = false;
         helpers.push_back(h);
-    }*/
+    }
     // this  does not work atm because it requires help programs itself
 /*    exepath = findPath("wvWare", paths);
     if (exepath.length()) {

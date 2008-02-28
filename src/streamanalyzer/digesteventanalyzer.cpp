@@ -59,5 +59,7 @@ DigestEventAnalyzer::isReadyWithStream() {
 }
 void
 DigestEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
-    shafield = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#sha1Hash");
+    shafield = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#sha1Hash");
+    addField(shafield);
 }

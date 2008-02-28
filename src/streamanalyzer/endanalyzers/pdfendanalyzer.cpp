@@ -31,6 +31,7 @@ using namespace Strigi;
 void
 PdfEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     typeField = reg.typeField;
+    addField(typeField);
 }
 
 PdfEndAnalyzer::PdfEndAnalyzer(const PdfEndAnalyzerFactory* f) :factory(f) {
@@ -60,6 +61,7 @@ PdfEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     n = 0;
     StreamStatus r = parser.parse(in);
     if (r != Eof) m_error.assign(parser.error());
-    analysisresult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#TextDocument");
+    analysisresult->addValue(factory->typeField,
+        "http://freedesktop.org/standards/xesam/1.0/core#TextDocument");
     return (r == Eof) ?0 :-1;
 }

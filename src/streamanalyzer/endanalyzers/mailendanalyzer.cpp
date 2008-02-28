@@ -28,31 +28,38 @@
 using namespace Strigi;
 using namespace std;
 
-const string MailEndAnalyzerFactory::titleFieldName = "http://freedesktop.org/standards/xesam/1.0/core#subject";
-const string MailEndAnalyzerFactory::contenttypeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#contentType";
-const string MailEndAnalyzerFactory::fromFieldName = "http://freedesktop.org/standards/xesam/1.0/core#author";
-const string MailEndAnalyzerFactory::toFieldName = "http://freedesktop.org/standards/xesam/1.0/core#to";
-const string MailEndAnalyzerFactory::ccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#cc";
-const string MailEndAnalyzerFactory::bccFieldName = "http://freedesktop.org/standards/xesam/1.0/core#bcc";
-const string MailEndAnalyzerFactory::contentidFieldName = "http://freedesktop.org/standards/xesam/1.0/core#id";
-const string MailEndAnalyzerFactory::contentlinkFieldName = "http://freedesktop.org/standards/xesam/1.0/core#links";
-const string MailEndAnalyzerFactory::emailInReplyToFieldName = "http://freedesktop.org/standards/xesam/1.0/core#inReplyTo";
-
 void
 MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    titleField
-        = r.registerField(titleFieldName, FieldRegister::stringType, 1, 0);
-    contenttypeField = r.registerField(contenttypeFieldName,
-        FieldRegister::stringType, 1, 0);
-    fromField = r.registerField(fromFieldName);
-    toField = r.registerField(toFieldName);
-    ccField = r.registerField(ccFieldName);
-    bccField = r.registerField(bccFieldName);
-    contentidField = r.registerField(contentidFieldName);
-    contentlinkField = r.registerField(contentlinkFieldName);
-    emailInReplyToField = r.registerField(emailInReplyToFieldName);
-
+    titleField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#subject");
+    contenttypeField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentType");
+    fromField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#author");
+    toField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#to");
+    ccField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#cc");
+    bccField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#bcc");
+    contentidField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#id");
+    contentlinkField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#links");
+    emailInReplyToField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#inReplyTo");
     typeField = r.typeField;
+
+    addField(titleField);
+    addField(contenttypeField);
+    addField(fromField);
+    addField(toField);
+    addField(ccField);
+    addField(bccField);
+    addField(contentidField);
+    addField(contentlinkField);
+    addField(emailInReplyToField);
+    addField(typeField);
 }
 
 bool

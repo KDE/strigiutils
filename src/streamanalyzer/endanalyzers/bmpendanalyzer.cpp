@@ -27,21 +27,26 @@
 using namespace std;
 using namespace Strigi;
 
-const string BmpEndAnalyzerFactory::typeFieldName("http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
-const string BmpEndAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string BmpEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string BmpEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string BmpEndAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-
 void
 BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    typeField = reg.registerField(typeFieldName);
-    compressionField = reg.registerField(compressionFieldName);
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    colorDepthField = reg.registerField(colorDepthFieldName);
-
+    typeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    colorDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
     rdftypeField = reg.typeField;
+
+    addField(typeField);
+    addField(compressionField);
+    addField(widthField);
+    addField(heightField);
+    addField(colorDepthField);
+    addField(rdftypeField);
 }
 
 bool
