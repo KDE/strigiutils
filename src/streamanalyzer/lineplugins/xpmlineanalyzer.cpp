@@ -30,11 +30,18 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
-    heightField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
-    numberOfColorsField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#colorCount");
-
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    numberOfColorsField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
     typeField = reg.typeField;
+
+    addField(widthField);
+    addField(heightField);
+    addField(numberOfColorsField);
+    addField(typeField);
 }
 
 // Analyzer

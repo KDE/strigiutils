@@ -41,12 +41,6 @@ public:
 
 class DebLineAnalyzerFactory : public Strigi::StreamLineAnalyzerFactory {
 public:
-    static const std::string nameFieldName;
-    static const std::string versionFieldName;
-    static const std::string summaryFieldName;
-    static const std::string maintainerFieldName;
-    static const std::string sectionFieldName;
-    static const std::string dependsFieldName;
     const Strigi::RegisteredField* nameField;
     const Strigi::RegisteredField* versionField;
     const Strigi::RegisteredField* summaryField;

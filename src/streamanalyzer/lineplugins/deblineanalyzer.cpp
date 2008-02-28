@@ -29,29 +29,33 @@
 using namespace Strigi;
 using namespace std;
 
-const string DebLineAnalyzerFactory::nameFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
-const string DebLineAnalyzerFactory::versionFieldName("http://freedesktop.org/standards/xesam/1.0/core#version");
-const string DebLineAnalyzerFactory::summaryFieldName("http://freedesktop.org/standards/xesam/1.0/core#description");
-const string DebLineAnalyzerFactory::maintainerFieldName("http://freedesktop.org/standards/xesam/1.0/core#maintainer");
-const string DebLineAnalyzerFactory::sectionFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
-const string DebLineAnalyzerFactory::dependsFieldName("http://freedesktop.org/standards/xesam/1.0/core#depends");
-
-
 void
 DebLineAnalyzerFactory::registerFields(FieldRegister& r) {
-    nameField = r.registerField(nameFieldName);
-    versionField = r.registerField(versionFieldName);
-    summaryField = r.registerField(summaryFieldName);
-    maintainerField = r.registerField(maintainerFieldName);
-    sectionField = r.registerField(sectionFieldName);
-    dependsField = r.registerField(dependsFieldName);
-
+    nameField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#title");
+    versionField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#version");
+    summaryField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#description");
+    maintainerField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+    sectionField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+    dependsField = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#depends");
     typeField = r.typeField;
+
+    addField(nameField);
+    addField(versionField);
+    addField(summaryField);
+    addField(maintainerField);
+    addField(sectionField);
+    addField(dependsField);
+    addField(typeField);
 }
 
 void 
-DebLineAnalyzer::startAnalysis(AnalysisResult* res)
-{
+DebLineAnalyzer::startAnalysis(AnalysisResult* res) {
     // let's assume that it is not .deb file and set isReadyWithStream() to true
     finished=6;
     if (res->fileName()!="control") return;

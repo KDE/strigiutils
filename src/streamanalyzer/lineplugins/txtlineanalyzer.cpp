@@ -41,6 +41,12 @@ TxtLineAnalyzerFactory::registerFields(FieldRegister& reg) {
 // the file uses uses unix (\n), dos (\r\n) or mac (\r) line endings
     formatField = reg.registerField(
         "line ending format");
+
+    addField(totalLinesField);
+    addField(totalWordsField);
+    addField(totalCharactersField);
+    addField(maxLineLengthField);
+    addField(formatField);
 }
 
 // Analyzer

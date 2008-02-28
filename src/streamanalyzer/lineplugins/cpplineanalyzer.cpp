@@ -29,12 +29,18 @@ using namespace Strigi;
 // AnalyzerFactory
 void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
-    includeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#depends");
-    classField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#definesClass");
-    codeLinesField = reg.registerField("http://strigi.sf.net/ontologies/0.9#codeLineCount");
-    commentLinesField = reg.registerField("http://strigi.sf.net/ontologies/0.9#commentLineCount");
-    totalLinesField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#lineCount");
-    programmingLanguageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#programmingLanguage");
+    includeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#depends");
+    classField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#definesClass");
+    codeLinesField = reg.registerField(
+        "http://strigi.sf.net/ontologies/0.9#codeLineCount");
+    commentLinesField = reg.registerField(
+        "http://strigi.sf.net/ontologies/0.9#commentLineCount");
+    totalLinesField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#lineCount");
+    programmingLanguageField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#programmingLanguage");
 // Include count not required. Include list length is easy to obtain.
 //    includesField = reg.registerField();
     typeField = reg.typeField;
@@ -99,7 +105,8 @@ CppLineAnalyzer::endAnalysis(bool complete) {
         analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
         analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
         analysisResult->addValue(factory->programmingLanguageField, "C++");
-        analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SourceCode");
+        analysisResult->addValue(factory->typeField,
+            "http://freedesktop.org/standards/xesam/1.0/core#SourceCode");
 //        analysisResult->addValue(factory->includesField, includes);
     }
     ready = true;
