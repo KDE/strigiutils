@@ -249,33 +249,30 @@ namespace {// Private.
 
 // AnalyzerFactory
 
-const string DdsThroughAnalyzerFactory::widthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#width");
-const string DdsThroughAnalyzerFactory::heightFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#height");
-const string DdsThroughAnalyzerFactory::bitDepthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-const string DdsThroughAnalyzerFactory::volumeDepthFieldName(
-    "dds volume depth");
-const string DdsThroughAnalyzerFactory::mipmapCountFieldName (
-    "dds mipmap count" );
-const string DdsThroughAnalyzerFactory::typeFieldName (
-    "dds image type" );
-const string DdsThroughAnalyzerFactory::colorModeFieldName (
-    "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-const string DdsThroughAnalyzerFactory::compressionFieldName (
-    "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm" );
-
 void
 DdsThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    volumeDepthField = reg.registerField(volumeDepthFieldName);
-    bitDepthField = reg.registerField(bitDepthFieldName);
-    mipmapCountField = reg.registerField(mipmapCountFieldName);
-    typeField = reg.registerField(typeFieldName);
-    colorModeField = reg.registerField(colorModeFieldName);
-    compressionField = reg.registerField(compressionFieldName);
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    volumeDepthField = reg.registerField( "dds volume depth");
+    bitDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    mipmapCountField = reg.registerField("dds mipmap count");
+    typeField = reg.registerField("dds image type");
+    colorModeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+
+    addField(widthField);
+    addField(heightField);
+    addField(volumeDepthField);
+    addField(bitDepthField);
+    addField(mipmapCountField);
+    addField(typeField);
+    addField(colorModeField);
+    addField(compressionField);
 }
 
 // Analyzer

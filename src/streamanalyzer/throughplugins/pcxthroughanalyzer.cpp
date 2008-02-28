@@ -28,24 +28,29 @@
 using namespace Strigi;
 using namespace std;
 
-const string PcxThroughAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string PcxThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string PcxThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string PcxThroughAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-const string PcxThroughAnalyzerFactory::hResolutionFieldName("http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
-const string PcxThroughAnalyzerFactory::vResolutionFieldName("http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
-
-
 void
 PcxThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    compressionField = reg.registerField(compressionFieldName);
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    hResolutionField = reg.registerField(hResolutionFieldName);
-    vResolutionField = reg.registerField(vResolutionFieldName);
-    colorDepthField = reg.registerField(colorDepthFieldName);
-
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    hResolutionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
+    vResolutionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
+    colorDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
     typeField = reg.typeField;
+
+    addField(compressionField);
+    addField(widthField);
+    addField(heightField);
+    addField(hResolutionField);
+    addField(vResolutionField);
+    addField(colorDepthField);
+    addField(typeField);
 }
 
 void

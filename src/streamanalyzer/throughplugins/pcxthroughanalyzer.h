@@ -42,13 +42,6 @@ class PcxThroughAnalyzerFactory
         : public Strigi::StreamThroughAnalyzerFactory {
 friend class PcxThroughAnalyzer;
 private:
-    static const std::string widthFieldName;
-    static const std::string heightFieldName;
-    static const std::string colorDepthFieldName;
-    static const std::string compressionFieldName;
-    static const std::string hResolutionFieldName;
-    static const std::string vResolutionFieldName;
-    
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* colorDepthField;

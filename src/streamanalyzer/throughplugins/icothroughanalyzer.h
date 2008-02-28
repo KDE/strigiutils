@@ -48,11 +48,6 @@ class IcoThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class IcoThroughAnalyzer;
 private:
-    static const std::string numberFieldName;
-    static const std::string widthFieldName;
-    static const std::string heightFieldName;
-    static const std::string bitsPerPixelFieldName;
-    static const std::string colorCountFieldName;
     const Strigi::RegisteredField* numberField;
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;

@@ -31,28 +31,27 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-// These are the field names according to the Xesam ontology
-const string AviThroughAnalyzerFactory::lengthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration" );
-const string AviThroughAnalyzerFactory::resolutionHeightFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution" );
-const string AviThroughAnalyzerFactory::resolutionWidthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution" );
-const string AviThroughAnalyzerFactory::frameRateFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#frameRate" );
-const string AviThroughAnalyzerFactory::videoCodecFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#videoCodec" );
-const string AviThroughAnalyzerFactory::audioCodecFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#audioCodec" );
-
 void
 AviThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    lengthField = reg.registerField(lengthFieldName);
-    resolutionHeightField = reg.registerField(resolutionHeightFieldName);
-    resolutionWidthField = reg.registerField(resolutionWidthFieldName);
-    frameRateField = reg.registerField(frameRateFieldName);
-    videoCodecField = reg.registerField(videoCodecFieldName);
-    audioCodecField = reg.registerField(audioCodecFieldName);
+    lengthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+    resolutionHeightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
+    resolutionWidthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
+    frameRateField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#frameRate");
+    videoCodecField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
+    audioCodecField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+
+    addField(lengthField);
+    addField(resolutionHeightField);
+    addField(resolutionWidthField);
+    addField(frameRateField);
+    addField(videoCodecField);
+    addField(audioCodecField);
 }
 
 // Analyzer

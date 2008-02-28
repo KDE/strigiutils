@@ -48,10 +48,6 @@ class WavThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class WavThroughAnalyzer;
 private:
-    static const std::string sampleSizeFieldName;
-    static const std::string sampleRateFieldName;
-    static const std::string channelsFieldName;
-    static const std::string lengthFieldName;
     const Strigi::RegisteredField* sampleSizeField;
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;

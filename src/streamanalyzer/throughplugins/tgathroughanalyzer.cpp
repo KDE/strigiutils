@@ -28,21 +28,27 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string TgaThroughAnalyzerFactory::compressionFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string TgaThroughAnalyzerFactory::colorDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-const string TgaThroughAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-const string TgaThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string TgaThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
 
 void
 TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    compressionField = reg.registerField(compressionFieldName);
-    colorDepthField = reg.registerField(colorDepthFieldName);
-    colorModeField = reg.registerField(colorModeFieldName);
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+    colorDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    colorModeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
     typeField = reg.typeField;
+
+    addField(compressionField);
+    addField(colorDepthField);
+    addField(colorModeField);
+    addField(widthField);
+    addField(heightField);
+    addField(typeField);
 }
 
 // Analyzer

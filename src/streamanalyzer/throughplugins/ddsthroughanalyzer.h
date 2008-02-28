@@ -48,15 +48,6 @@ class DdsThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class DdsThroughAnalyzer;
 private:
-    static const std::string widthFieldName;
-    static const std::string heightFieldName;
-    static const std::string volumeDepthFieldName;
-    static const std::string bitDepthFieldName;
-    static const std::string mipmapCountFieldName;
-    static const std::string typeFieldName;
-    static const std::string colorModeFieldName;
-    static const std::string compressionFieldName;
-
     const Strigi::RegisteredField* widthField;
     const Strigi::RegisteredField* heightField;
     const Strigi::RegisteredField* volumeDepthField;

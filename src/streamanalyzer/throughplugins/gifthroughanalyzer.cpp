@@ -75,11 +75,18 @@ private:
 
 void
 GifThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    colorDepthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-    widthField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#width");
-    heightField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#height");
-
+    colorDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
     typeField = reg.typeField;
+
+    addField(colorDepthField);
+    addField(widthField);
+    addField(heightField);
+    addField(typeField);
 }
 
 // Analyzer

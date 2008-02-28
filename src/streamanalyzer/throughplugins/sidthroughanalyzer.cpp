@@ -33,24 +33,24 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string SidThroughAnalyzerFactory::titleFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#title");
-const string SidThroughAnalyzerFactory::artistFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#artist");
-const string SidThroughAnalyzerFactory::trackNumberFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
-const string SidThroughAnalyzerFactory::versionFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#version" );
-const string SidThroughAnalyzerFactory::copyrightFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#copyright" );
-
 void
 SidThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    titleField = reg.registerField(titleFieldName);
-    artistField = reg.registerField(artistFieldName);
-    trackNumberField = reg.registerField(trackNumberFieldName);
-    versionField = reg.registerField(versionFieldName);
-    copyrightField = reg.registerField(copyrightFieldName);
+    titleField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#title");
+    artistField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#artist");
+    trackNumberField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
+    versionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#version");
+    copyrightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#copyright");
+
+    addField(titleField);
+    addField(artistField);
+    addField(trackNumberField);
+    addField(versionField);
+    addField(copyrightField);
 }
 
 // Analyzer

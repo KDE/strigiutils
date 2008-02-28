@@ -28,19 +28,24 @@ using namespace std;
 using namespace Strigi;
 
 // AnalyzerFactory
-const string XbmThroughAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string XbmThroughAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string XbmThroughAnalyzerFactory::xHotFieldName("http://strigi.sf.net/ontologies/0.9#hotSpotX");
-const string XbmThroughAnalyzerFactory::yHotFieldName("http://strigi.sf.net/ontologies/0.9#hotSpotY");
 
 void
 XbmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    xHotField = reg.registerField(xHotFieldName);
-    yHotField = reg.registerField(yHotFieldName);
-
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    xHotField = reg.registerField(
+        "http://strigi.sf.net/ontologies/0.9#hotSpotX");
+    yHotField = reg.registerField(
+        "http://strigi.sf.net/ontologies/0.9#hotSpotY");
     typeField = reg.typeField;
+
+    addField(widthField);
+    addField(heightField);
+    addField(xHotField);
+    addField(yHotField);
+    addField(typeField);
 }
 
 // Analyzer

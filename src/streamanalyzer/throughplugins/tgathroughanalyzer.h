@@ -45,11 +45,6 @@ class TgaThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class TgaThroughAnalyzer;
 private:
-    static const std::string colorDepthFieldName;
-    static const std::string colorModeFieldName;
-    static const std::string compressionFieldName;
-    static const std::string widthFieldName;
-    static const std::string heightFieldName;
     const Strigi::RegisteredField* colorDepthField;
     const Strigi::RegisteredField* colorModeField;
     const Strigi::RegisteredField* compressionField;

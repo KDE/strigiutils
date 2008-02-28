@@ -27,22 +27,26 @@
 using namespace std;
 using namespace Strigi;
 
-// AnalyzerFactory
-const string AuThroughAnalyzerFactory::lengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
-const string AuThroughAnalyzerFactory::sampleRateFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
-const string AuThroughAnalyzerFactory::channelsFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
-const string AuThroughAnalyzerFactory::sampleBitDepthFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
-const string AuThroughAnalyzerFactory::sampleDataTypeFieldName("http://freedesktop.org/standards/xesam/1.0/core#audioSampleDataType");
-
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    lengthField = reg.registerField(lengthFieldName);
-    sampleRateField = reg.registerField(sampleRateFieldName);
-    channelsField = reg.registerField(channelsFieldName);
-    sampleBitDepthField = reg.registerField(sampleBitDepthFieldName);
-    sampleDataTypeField = reg.registerField(sampleDataTypeFieldName);
-
+    lengthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+    sampleRateField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+    channelsField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
+    sampleBitDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+    sampleDataTypeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleDataType");
     typeField = reg.typeField;
+
+    addField(lengthField);
+    addField(sampleRateField);
+    addField(channelsField);
+    addField(sampleBitDepthField);
+    addField(sampleDataTypeField);
+    addField(typeField);
 }
 
 // Analyzer

@@ -34,30 +34,22 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string RgbThroughAnalyzerFactory::widthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#width");
-const string RgbThroughAnalyzerFactory::heightFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#height");
-const string RgbThroughAnalyzerFactory::bitDepthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth" );
-const string RgbThroughAnalyzerFactory::imageNameFieldName(
-    "document.stats.image_name" );
-const string RgbThroughAnalyzerFactory::sharedRowsFieldName(
-    "document.stats.image_shared_rows" );
-const string RgbThroughAnalyzerFactory::colorModeFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#colorSpace" );
-const string RgbThroughAnalyzerFactory::compressionFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm" );
-
 void
 RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    bitDepthField = reg.registerField(bitDepthFieldName);
-    imageNameField = reg.registerField(imageNameFieldName);
-    sharedRowsField = reg.registerField(sharedRowsFieldName);
-    colorModeField = reg.registerField(colorModeFieldName);
-    compressionField = reg.registerField(compressionFieldName);
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    bitDepthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    imageNameField = reg.registerField(
+        "document.stats.image_name");
+    sharedRowsField = reg.registerField(
+        "document.stats.image_shared_rows");
+    colorModeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+    compressionField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
 }
 
 // Analyzer

@@ -80,12 +80,6 @@ class AviThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class AviThroughAnalyzer;
 private:
-    static const std::string lengthFieldName;
-    static const std::string resolutionHeightFieldName;
-    static const std::string resolutionWidthFieldName;
-    static const std::string frameRateFieldName;
-    static const std::string videoCodecFieldName;
-    static const std::string audioCodecFieldName;
     const Strigi::RegisteredField* lengthField;
     const Strigi::RegisteredField* resolutionHeightField;
     const Strigi::RegisteredField* resolutionWidthField;

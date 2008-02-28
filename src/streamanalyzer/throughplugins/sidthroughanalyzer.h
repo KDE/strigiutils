@@ -48,11 +48,6 @@ class SidThroughAnalyzerFactory
     : public Strigi::StreamThroughAnalyzerFactory {
 friend class SidThroughAnalyzer;
 private:
-    static const std::string titleFieldName;
-    static const std::string artistFieldName;
-    static const std::string copyrightFieldName;
-    static const std::string versionFieldName;
-    static const std::string trackNumberFieldName; //TODO: is this the right definition of the total number of songs available?
     const Strigi::RegisteredField* titleField;
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* copyrightField;

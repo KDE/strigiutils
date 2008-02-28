@@ -31,22 +31,16 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-
-const string WavThroughAnalyzerFactory::sampleSizeFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
-const string WavThroughAnalyzerFactory::sampleRateFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate" );
-const string WavThroughAnalyzerFactory::channelsFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
-const string WavThroughAnalyzerFactory::lengthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
-
 void
 WavThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    sampleSizeField = reg.registerField(sampleSizeFieldName);
-    sampleRateField = reg.registerField(sampleRateFieldName);
-    channelsField = reg.registerField(channelsFieldName);
-    lengthField = reg.registerField(lengthFieldName);
+    sampleSizeField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+    sampleRateField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+    channelsField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
+    lengthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
     addField(sampleSizeField);
     addField(sampleRateField);
     addField(channelsField);

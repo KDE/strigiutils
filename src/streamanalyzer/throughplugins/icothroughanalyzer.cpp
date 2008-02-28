@@ -32,24 +32,24 @@ using namespace Strigi;
 
 // AnalyzerFactory
 
-const string IcoThroughAnalyzerFactory::widthFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#width");
-const string IcoThroughAnalyzerFactory::heightFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#height");
-const string IcoThroughAnalyzerFactory::numberFieldName(
-    "document.stats.image_count" );
-const string IcoThroughAnalyzerFactory::bitsPerPixelFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth" );
-const string IcoThroughAnalyzerFactory::colorCountFieldName(
-    "http://freedesktop.org/standards/xesam/1.0/core#colorCount" );
-
 void
 IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
-    widthField = reg.registerField(widthFieldName);
-    heightField = reg.registerField(heightFieldName);
-    numberField = reg.registerField(numberFieldName);
-    bitsPerPixelField = reg.registerField(bitsPerPixelFieldName);
-    colorCountField = reg.registerField(colorCountFieldName);
+    widthField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#width");
+    heightField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#height");
+    numberField = reg.registerField(
+        "document.stats.image_count");
+    bitsPerPixelField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+    colorCountField = reg.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
+
+    addField(widthField);
+    addField(heightField);
+    addField(numberField);
+    addField(bitsPerPixelField);
+    addField(colorCountField);
 }
 
 // Analyzer
