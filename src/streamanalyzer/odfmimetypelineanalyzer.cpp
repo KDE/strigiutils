@@ -28,27 +28,33 @@
 
 using namespace Strigi;
 
-void OdfMimeTypeLineAnalyzerFactory::registerFields(FieldRegister &reg) {
+void
+OdfMimeTypeLineAnalyzerFactory::registerFields(FieldRegister &reg) {
     mimeTypeField = reg.mimetypeField;
     typeField = reg.typeField;
+    addField(mimeTypeField);
+    addField(typeField);
 }
 
-Strigi::StreamLineAnalyzer *OdfMimeTypeLineAnalyzerFactory::newInstance() const {
+Strigi::StreamLineAnalyzer *
+OdfMimeTypeLineAnalyzerFactory::newInstance() const {
     return new OdfMimeTypeLineAnalyzer(this);
 }
 
-OdfMimeTypeLineAnalyzer::OdfMimeTypeLineAnalyzer(const OdfMimeTypeLineAnalyzerFactory *factory) :
-  m_factory(factory),
-  m_ready(true),
-  m_result(0) {
+OdfMimeTypeLineAnalyzer::OdfMimeTypeLineAnalyzer(
+        const OdfMimeTypeLineAnalyzerFactory *factory) :
+    m_factory(factory),
+    m_ready(true),
+    m_result(0) {
     assert(m_factory != 0);
 }
 
-void OdfMimeTypeLineAnalyzer::startAnalysis(AnalysisResult *result) {
+void
+OdfMimeTypeLineAnalyzer::startAnalysis(AnalysisResult *result) {
     assert(result != 0);
 
-    if(result->fileName() == "mimetype" &&
-       result->parent() != 0 && result->parent()->mimeType() == "application/zip") {
+    if(result->fileName() == "mimetype" && result->parent() != 0
+            && result->parent()->mimeType() == "application/zip") {
         m_result = result->parent();
         m_ready = false;
     } else {
@@ -56,15 +62,17 @@ void OdfMimeTypeLineAnalyzer::startAnalysis(AnalysisResult *result) {
     }
 }
 
-void OdfMimeTypeLineAnalyzer::endAnalysis(bool /*complete*/) {
+void
+OdfMimeTypeLineAnalyzer::endAnalysis(bool /*complete*/) {
     m_result = 0;
 }
 
-void OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
+void
+OdfMimeTypeLineAnalyzer::handleLine(const char *data, uint32_t length) {
     assert(m_result != 0);
 
-    if (length < 35
-            || std::strncmp(data, "application/vnd.oasis.opendocument.", 35) != 0) {
+    if (length < 35 || std::strncmp(data,
+            "application/vnd.oasis.opendocument.", 35) != 0) {
         m_ready = true;
         return;
     }
