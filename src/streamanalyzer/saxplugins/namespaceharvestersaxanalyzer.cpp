@@ -48,7 +48,8 @@ NamespaceHarvesterSaxAnalyzer::startAnalysis(AnalysisResult *i) {
     usedNamespaces.clear();
 }
 
-void NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
+void
+NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
     set<string>::iterator i; // Iterator for looping over list elements
     for (i = usedNamespaces.begin(); i != usedNamespaces.end(); ++i) {
         analysisResult->addValue(factory->usesNamespaceField, *i);
