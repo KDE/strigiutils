@@ -436,7 +436,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             eIter = end.begin() + idx.depth();
         }
         if (!finished) {
-            finished = p->configuration.indexMore();
+            finished = conf.indexMore();
         }
         es++;
     }
