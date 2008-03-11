@@ -105,7 +105,7 @@ DBusHandler::handle() {
     struct timeval tv;
     int max = ((fd>*quitpipe) ?fd :*quitpipe)+1;
     // handle messages in queue
-    while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS) {}
+    //while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS) {}
     while (dbus_connection_get_is_connected(conn)) {
         FD_ZERO(&rfds);
         FD_SET(fd, &rfds);
@@ -114,7 +114,7 @@ DBusHandler::handle() {
         tv.tv_sec = 1000;
         tv.tv_usec = 0;
         retval = select(max, &rfds, NULL, NULL, &tv);
-        if (retval == -1 || FD_ISSET(*quitpipe, &rfds)) { // quit
+        if (retval == -1) {
             break;
         }
         // blocking read of the next available message
@@ -123,6 +123,9 @@ DBusHandler::handle() {
             ;
         }
         dbus_connection_flush(conn);
+        if (FD_ISSET(*quitpipe, &rfds)) { // quit
+            break;
+        }
     }
 
     for (vector<DBusObjectCallHandler*>::const_iterator i=callhandlers.begin();

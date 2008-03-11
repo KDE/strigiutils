@@ -93,8 +93,8 @@ Interface::getStatus() {
 }
 string
 Interface::stopDaemon() {
-    cerr << "stopDaemon" << endl;
-    StrigiThread::stopThreads();
+    // send a signal that will stop all threads
+    kill(getpid(), SIGQUIT);
     return "";
 }
 string
