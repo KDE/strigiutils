@@ -31,21 +31,21 @@ private:
 public:
     XesamLiveSearchInterface(XesamLiveSearchInterface* x) :iface(x) {}
     virtual ~XesamLiveSearchInterface() {}
-    virtual std::string NewSession() {
+    virtual std::string /*session*/ NewSession() {
         return iface->NewSession();
     }
-    virtual Strigi::Variant SetProperty(const std::string& session,
+    virtual Strigi::Variant /*new_val*/ SetProperty(const std::string& session,
             const std::string& prop, const Strigi::Variant& val) {
         return iface->SetProperty(session, prop, val);
     }
-    virtual Strigi::Variant GetProperty(const std::string& session,
+    virtual Strigi::Variant /*value*/ GetProperty(const std::string& session,
             const std::string& prop) {
         return iface->GetProperty(session, prop);
     }
     virtual void CloseSession(const std::string& session) {
         iface->CloseSession(session);
     }
-    virtual std::string NewSearch(const std::string& session,
+    virtual std::string /*search*/ NewSearch(const std::string& session,
             const std::string& query_xml) {
         return iface->NewSearch(session, query_xml);
     }
@@ -68,11 +68,11 @@ public:
         iface->GetHitData(msg, search, hit_ids, fields);
     }
     virtual void GetHitDataResponse(void* msg,
-            const std::vector<std::vector<Strigi::Variant> >& v) = 0;
+            const std::vector<std::vector<Strigi::Variant> >& hit_data) = 0;
     virtual void CloseSearch(const std::string& search) {
         return iface->CloseSearch(search);
     }
-    virtual std::vector<std::string> GetState() {
+    virtual std::vector<std::string> /*state_info*/ GetState() {
         return iface->GetState();
     }
 
