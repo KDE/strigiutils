@@ -54,6 +54,7 @@ public:
     DBusMessageReader& operator>>(std::vector<std::string>& s);
     DBusMessageReader& operator>>(std::vector<char>& s);
     DBusMessageReader& operator>>(std::vector<int32_t>& s);
+    DBusMessageReader& operator>>(std::vector<uint32_t>& s);
     DBusMessageReader& operator>>(std::string& s);
     DBusMessageReader& operator>>(dbus_int32_t& s);
     DBusMessageReader& operator>>(dbus_uint32_t& s);

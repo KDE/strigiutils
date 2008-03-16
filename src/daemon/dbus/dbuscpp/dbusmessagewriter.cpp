@@ -60,6 +60,11 @@ operator<<(DBusMessageWriter& w, int32_t i) {
     return w;
 }
 DBusMessageWriter&
+operator<<(DBusMessageWriter& w, uint32_t i) {
+    dbus_message_iter_append_basic(&w.it, DBUS_TYPE_UINT32, &i);
+    return w;
+}
+DBusMessageWriter&
 operator<<(DBusMessageWriter& w, int64_t i) {
     dbus_message_iter_append_basic(&w.it, DBUS_TYPE_INT64, &i);
     return w;
@@ -125,6 +130,18 @@ operator<<(DBusMessageWriter& w, const std::vector<int32_t>& s) {
     for (i = s.begin(); i != s.end(); ++i) {
         int32_t v = *i;
         dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &v);
+    }
+    dbus_message_iter_close_container(&w.it, &sub);
+    return w;
+}
+DBusMessageWriter&
+operator<<(DBusMessageWriter& w, const std::vector<uint32_t>& s) {
+    DBusMessageIter sub;
+    dbus_message_iter_open_container(&w.it, DBUS_TYPE_ARRAY, "u", &sub);
+    vector<uint32_t>::const_iterator i;
+    for (i = s.begin(); i != s.end(); ++i) {
+        uint32_t v = *i;
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_UINT32, &v);
     }
     dbus_message_iter_close_container(&w.it, &sub);
     return w;

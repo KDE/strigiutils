@@ -47,11 +47,13 @@ public:
 
 DBusMessageWriter& operator<<(DBusMessageWriter&, bool b);
 DBusMessageWriter& operator<<(DBusMessageWriter&, int32_t i);
+DBusMessageWriter& operator<<(DBusMessageWriter&, uint32_t i);
 DBusMessageWriter& operator<<(DBusMessageWriter&, int64_t i);
 DBusMessageWriter& operator<<(DBusMessageWriter&, double d);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::string& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::set<std::string>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<int32_t>& s);
+DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<uint32_t>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::string>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::map<std::string, std::string>& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::pair<bool, std::string> >& s);

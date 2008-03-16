@@ -43,7 +43,8 @@ my %typemapping = (
 	"uint64_t" => "t",
 	"Strigi::Variant" => "v",
 	"std::vector<std::vector<Strigi::Variant> >" => "aav",
-	"std::vector<int32_t>" => "ai"
+	"std::vector<int32_t>" => "ai",
+	"std::vector<uint32_t>" => "au"
 );
 
 sub splitArguments {

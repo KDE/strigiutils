@@ -150,6 +150,25 @@ DBusMessageReader::operator>>(vector<int32_t>& s) {
     return *this;
 }
 DBusMessageReader&
+DBusMessageReader::operator>>(vector<uint32_t>& s) {
+    if (!isOk()) return *this;
+    if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
+        || DBUS_TYPE_UINT32 != dbus_message_iter_get_element_type(&it)) {
+        close();
+        return *this;
+    }
+
+    DBusMessageIter sub;
+    dbus_message_iter_recurse(&it, &sub);
+    int length;
+    uint32_t* array;
+    dbus_message_iter_get_fixed_array(&sub, &array, &length);
+    s.assign(array, array+length);
+    dbus_message_iter_next(&it);
+
+    return *this;
+}
+DBusMessageReader&
 DBusMessageReader::operator>>(vector<char>& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&it)
