@@ -82,18 +82,18 @@ public:
      * If search.blocking==true this call blocks until the index has been
      * fully searched.
      **/
-    void CountHits(void* msg, const std::string& search);
+    void GetHitCount(void* msg, const std::string& search);
     /**
      * This function is called by the implementation to send the hit count.
      **/
-    void CountHitsResponse(void* msg, int32_t count);
+    void GetHitCountResponse(void* msg, uint32_t count);
     /**
      * Return num hits. If search.blocking==true this call blocks until there is
      * num hits available or the index has been fully searched. The client
      * should keep track of each hit's serial number if it want to use
      * GetHitData later. See below for a discussion about the return value.
      **/
-    void GetHits(void* msg, const std::string& search, int32_t num);
+    void GetHits(void* msg, const std::string& search, uint32_t num);
     /**
      * This function is called by the implementation to sent the hit results.
      **/
@@ -137,19 +137,35 @@ public:
      * Signal that new hits have been found.
      * @param count the number of hits added
      **/
-    void HitsAdded(const std::string& search, const int32_t count);
+    void HitsAdded(const std::string& search, const uint32_t count);
     /**
      * Signal that hits have been removed because the corresponding files
      * no longer match or have been removed.
      **/
     void HitsRemoved(const std::string& search,
-        const std::vector<int32_t>& hit_ids);
+        const std::vector<uint32_t>& hit_ids);
     /**
      * Signal that a document that was being watched has been modified.
      * The document still matches the hit.
      **/
     void HitsModified(const std::string& search,
-        const std::vector<int32_t>& hit_ids);
+        const std::vector<uint32_t>& hit_ids);
+    /**
+     * The given search has scanned the entire index. For non-live searches this means that
+     * no more hits will be available. For a live search this means that all future signals 
+     * (Hits{Added,Removed,Modified}) will be related to objects that changed in the index.
+     **/
+    void SearchDone(const std::string& search);
+    /**
+     * When the state as returned by GetState changes the StateChanged signal is fired with
+     * an argument as described in said method. If the indexer expects to only enter the
+     * UPDATE state for a very brief period - fx. indexing one changed file - it is not
+     * required that the StateChanged signal is fired. The signal only needs to be fired if
+     * the process of updating the index is going to be non-negligible. The purpose of this
+     * signal is not to provide exact details on the engine, just to provide hints for a
+     * user interface.
+     **/
+    void StateChanged(const std::vector<std::string>& state_info);
 
     // access to IndexManager for searches
     Strigi::IndexManager* indexManager() const;

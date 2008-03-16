@@ -97,24 +97,24 @@ void
 XesamLiveSearch::StartSearch(const string& search) {
 }
 void
-XesamLiveSearch::CountHits(void* msg, const string& search) {
+XesamLiveSearch::GetHitCount(void* msg, const string& search) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
         i->second.countHits(msg);
     } else {
-        CountHitsResponse(msg, -1);
+        GetHitCountResponse(msg, -1);
     }
     //HitsAdded(search, 10);
 }
 void
-XesamLiveSearch::CountHitsResponse(void* msg, int32_t count) {
+XesamLiveSearch::GetHitCountResponse(void* msg, uint32_t count) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
-        (*i)->CountHitsResponse(msg, count);
+        (*i)->GetHitCountResponse(msg, count);
     }
 }
 void
-XesamLiveSearch::GetHits(void*msg, const string& search, int32_t num) {
+XesamLiveSearch::GetHits(void*msg, const string& search, uint32_t num) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
         i->second.getHits(msg, num);
@@ -164,7 +164,7 @@ XesamLiveSearch::GetState() {
     return state;
 }
 void
-XesamLiveSearch::HitsAdded(const std::string& search, const int32_t count) {
+XesamLiveSearch::HitsAdded(const std::string& search, const uint32_t count) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
         (*i)->HitsAdded(search, count);
@@ -172,7 +172,7 @@ XesamLiveSearch::HitsAdded(const std::string& search, const int32_t count) {
 }
 void
 XesamLiveSearch::HitsRemoved(const std::string& search,
-        const std::vector<int32_t>& hit_ids) {
+        const std::vector<uint32_t>& hit_ids) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
         (*i)->HitsRemoved(search, hit_ids);
@@ -180,10 +180,24 @@ XesamLiveSearch::HitsRemoved(const std::string& search,
 }
 void
 XesamLiveSearch::HitsModified(const std::string& search,
-        const std::vector<int32_t>& hit_ids) {
+        const std::vector<uint32_t>& hit_ids) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
         (*i)->HitsModified(search, hit_ids);
+    }
+}
+void
+XesamLiveSearch::SearchDone(const std::string& search) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->SearchDone(search);
+    }
+}
+void
+XesamLiveSearch::StateChanged(const std::vector<std::string>& state_info) {
+    for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
+            i != ifaces.end(); ++i) {
+        (*i)->StateChanged(state_info);
     }
 }
 void

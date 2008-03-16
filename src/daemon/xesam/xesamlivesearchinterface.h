@@ -52,20 +52,20 @@ public:
     virtual void StartSearch(const std::string& search) {
         iface->StartSearch(search);
     }
-    virtual void CountHits(void* msg, const std::string& search) {
-        iface->CountHits(msg, search);
+    virtual void GetHitCount(void* msg, const std::string& search) {
+        iface->GetHitCount(msg, search);
     }
-    virtual void CountHitsResponse(void* msg, int32_t count) = 0;
-    virtual void GetHits(void* msg, const std::string& search, int32_t num) {
+    virtual void GetHitCountResponse(void* msg, uint32_t count) = 0;
+    virtual void GetHits(void* msg, const std::string& search, uint32_t num) {
         iface->GetHits(msg, search, num);
     }
     virtual void GetHitsResponse(void* msg,
             const std::vector<std::vector<Strigi::Variant> >& hits) = 0;
     virtual void GetHitData(void* msg,
             const std::string& search,
-            const std::vector<int32_t>& hit_ids,
-            const std::vector<std::string>& properties) {
-        iface->GetHitData(msg, search, hit_ids, properties);
+            const std::vector<uint32_t>& hit_ids,
+            const std::vector<std::string>& fields) {
+        iface->GetHitData(msg, search, hit_ids, fields);
     }
     virtual void GetHitDataResponse(void* msg,
             const std::vector<std::vector<Strigi::Variant> >& v) = 0;
@@ -76,11 +76,13 @@ public:
         return iface->GetState();
     }
 
-    virtual void HitsAdded(const std::string& search, const int32_t count) = 0; 
+    virtual void HitsAdded(const std::string& search, const uint32_t count) = 0; 
     virtual void HitsRemoved(const std::string& search,
-        const std::vector<int32_t>& hit_ids) = 0;
+        const std::vector<uint32_t>& hit_ids) = 0;
     virtual void HitsModified(const std::string& search,
-        const std::vector<int32_t>& hit_ids) = 0;
+        const std::vector<uint32_t>& hit_ids) = 0;
+    virtual void SearchDone(const std::string& search) = 0;
+    virtual void StateChanged(const std::vector<std::string>& state_info) = 0;
 };
 
 #endif

@@ -147,7 +147,7 @@ XesamSearch::countHits(void* msg) {
 void
 XesamSearch::Private::countHits(void* msg) {
     if (!valid) {
-        session.liveSearch().CountHitsResponse(msg, -1);
+        session.liveSearch().GetHitCountResponse(msg, -1);
     } else {
         STRIGI_MUTEX_LOCK(&mutex);
         if (hitcount == -1) {
@@ -156,7 +156,7 @@ XesamSearch::Private::countHits(void* msg) {
             countMessages.push_back(msg);
         } else {
             // we know the count and can send it
-            session.liveSearch().CountHitsResponse(msg, hitcount);
+            session.liveSearch().GetHitCountResponse(msg, hitcount);
         }
         STRIGI_MUTEX_UNLOCK(&mutex);
     }
@@ -196,7 +196,7 @@ XesamSearch::Private::setCount(int c) {
         hitcount = c;
         for (list<void*>::const_iterator i = countMessages.begin();
                  i != countMessages.end(); ++i) {
-            session.liveSearch().CountHitsResponse(*i, hitcount);
+            session.liveSearch().GetHitCountResponse(*i, hitcount);
         }
         countMessages.clear();
     }
