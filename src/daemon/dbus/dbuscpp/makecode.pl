@@ -171,9 +171,14 @@ sub printIntrospectionXML {
     my $type = $functionsOut{$name};
     $type =~ s/^\s*const\s*//;
     if (length($type) > 0 && $type ne "void") {
-#        print "t'$type'\n";
+        my $outname = "out";
+        # try to find the name of the output variable
+        if ($type =~ m#\s*/\*\s*(\S+)\s*\*/\s*#) {
+            $outname = $1;
+            $type =~ s#\s*/\*\s*\S+\s*\*/\s*##g;
+        }
         $type = $typemapping{$type};
-        print FH "    << \"      <arg name='out' type='$type' direction='out'/>\\n\"\n";
+        print FH"    << \"      <arg name='$outname' type='$type' direction='out'/>\\n\"\n";
     }
     print FH "    << \"    </method>\\n\"\n";
 }
@@ -293,8 +298,8 @@ print FH "#include <dbus/dbus.h>\n";
 print FH "class DBusObjectInterface;\n";
 print FH "class $classname : public $class {\n";
 print FH "private:\n";
-print FH "    DBusConnection* const conn;\n";
 print FH "    std::string object;\n";
+print FH "    DBusConnection* const conn;\n";
 print FH "    DBusObjectInterface* const iface;\n";
 foreach (keys %responses) {
     print FH "    void $_(".$responses{$_}.");\n";
