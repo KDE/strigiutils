@@ -101,21 +101,22 @@ sub printFunctionDefinition {
     my $name = shift;
     print FH "void\n";
     print FH "Private$classname\::$name(DBusMessage* msg, DBusConnection* conn) {\n";
-    print FH "    DBusMessageReader reader(msg);\n";
     print FH "    DBusMessageWriter writer(conn, msg);\n";
+    print FH "    try {\n";
+    print FH "        DBusMessageReader reader(msg);\n";
     my $i = $functionsIn{$name};
     my @a = parseArguments($i);
     for ($i=1; $i < @a; $i+=2) {
-        print FH "    ".$a[$i-1]." ".$a[$i].";\n";
+        print FH "        ".$a[$i-1]." ".$a[$i].";\n";
     }
     if (@a) {
-        print FH "    reader";
+        print FH "        reader";
         for ($i=1; $i < @a; $i+=2) {
 	    print FH " >> ".$a[$i];
         }
         print FH ";\n";
     }
-    print FH "    if (reader.isOk()) {\n        ";
+    print FH "        if (reader.isOk()) {\n            ";
     if (length($functionsOut{$name}) > 0 && $functionsOut{$name} ne "void") {
         print FH "writer << ";
     }
@@ -126,7 +127,13 @@ sub printFunctionDefinition {
             print FH ",";
         }
     }
-    print FH ");\n    }\n";
+    print FH ");\n";
+    print FH "        }\n";
+    print FH "    } catch (const std::exception& e) {\n";
+    print FH "        writer.setError(e.what());\n";
+    print FH "    } catch (...) {\n";
+    print FH "        writer.setError(\"\");\n";
+    print FH "    }\n";
     print FH "}\n";
 }
 sub printASyncFunctionDefinition {
@@ -299,6 +306,7 @@ print FH "#define ".uc($classname)."_H\n";
 print FH "#include \"$relativeinterfaceheader\"\n";
 print FH "#define DBUS_API_SUBJECT_TO_CHANGE 1\n";
 print FH "#include <dbus/dbus.h>\n";
+print FH "#include <exception>\n";
 print FH "class DBusObjectInterface;\n";
 print FH "class $classname : public $class {\n";
 print FH "private:\n";

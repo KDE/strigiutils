@@ -126,20 +126,32 @@ PrivateDBusXesamLiveSearchInterface::getIntrospectionXML() {
 }
 void
 PrivateDBusXesamLiveSearchInterface::GetState(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.GetState();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.GetState();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusXesamLiveSearchInterface::StartSearch(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string search;
-    reader >> search;
-    if (reader.isOk()) {
-        impl.StartSearch(search);
+    try {
+        DBusMessageReader reader(msg);
+        std::string search;
+        reader >> search;
+        if (reader.isOk()) {
+            impl.StartSearch(search);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
@@ -165,20 +177,32 @@ PrivateDBusXesamLiveSearchInterface::GetHits(DBusMessage* dbm, DBusConnection* c
 }
 void
 PrivateDBusXesamLiveSearchInterface::NewSession(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.NewSession();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.NewSession();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusXesamLiveSearchInterface::CloseSession(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string session;
-    reader >> session;
-    if (reader.isOk()) {
-        impl.CloseSession(session);
+    try {
+        DBusMessageReader reader(msg);
+        std::string session;
+        reader >> session;
+        if (reader.isOk()) {
+            impl.CloseSession(session);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
@@ -195,46 +219,70 @@ PrivateDBusXesamLiveSearchInterface::GetHitData(DBusMessage* dbm, DBusConnection
 }
 void
 PrivateDBusXesamLiveSearchInterface::SetProperty(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string session;
-    std::string prop;
-    Strigi::Variant val;
-    reader >> session >> prop >> val;
-    if (reader.isOk()) {
-        writer << impl.SetProperty(session,prop,val);
+    try {
+        DBusMessageReader reader(msg);
+        std::string session;
+        std::string prop;
+        Strigi::Variant val;
+        reader >> session >> prop >> val;
+        if (reader.isOk()) {
+            writer << impl.SetProperty(session,prop,val);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusXesamLiveSearchInterface::NewSearch(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string session;
-    std::string query_xml;
-    reader >> session >> query_xml;
-    if (reader.isOk()) {
-        writer << impl.NewSearch(session,query_xml);
+    try {
+        DBusMessageReader reader(msg);
+        std::string session;
+        std::string query_xml;
+        reader >> session >> query_xml;
+        if (reader.isOk()) {
+            writer << impl.NewSearch(session,query_xml);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusXesamLiveSearchInterface::GetProperty(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string session;
-    std::string prop;
-    reader >> session >> prop;
-    if (reader.isOk()) {
-        writer << impl.GetProperty(session,prop);
+    try {
+        DBusMessageReader reader(msg);
+        std::string session;
+        std::string prop;
+        reader >> session >> prop;
+        if (reader.isOk()) {
+            writer << impl.GetProperty(session,prop);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusXesamLiveSearchInterface::CloseSearch(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string search;
-    reader >> search;
-    if (reader.isOk()) {
-        impl.CloseSearch(search);
+    try {
+        DBusMessageReader reader(msg);
+        std::string search;
+        reader >> search;
+        if (reader.isOk()) {
+            impl.CloseSearch(search);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 DBusXesamLiveSearchInterface::DBusXesamLiveSearchInterface(const std::string& on, DBusConnection* c, XesamLiveSearchInterface* x) 

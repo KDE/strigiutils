@@ -141,164 +141,266 @@ PrivateDBusClientInterface::getIntrospectionXML() {
 }
 void
 PrivateDBusClientInterface::indexFile(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string path;
-    uint64_t mtime;
-    std::vector<char> content;
-    reader >> path >> mtime >> content;
-    if (reader.isOk()) {
-        impl.indexFile(path,mtime,content);
+    try {
+        DBusMessageReader reader(msg);
+        std::string path;
+        uint64_t mtime;
+        std::vector<char> content;
+        reader >> path >> mtime >> content;
+        if (reader.isOk()) {
+            impl.indexFile(path,mtime,content);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getStatus(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getStatus();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getStatus();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getFilters(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getFilters();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getFilters();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getIndexedFiles(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getIndexedFiles();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getIndexedFiles();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::setIndexedDirectories(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::set<std::string> d;
-    reader >> d;
-    if (reader.isOk()) {
-        writer << impl.setIndexedDirectories(d);
+    try {
+        DBusMessageReader reader(msg);
+        std::set<std::string> d;
+        reader >> d;
+        if (reader.isOk()) {
+            writer << impl.setIndexedDirectories(d);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getFieldNames(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getFieldNames();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getFieldNames();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getBackEnds(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getBackEnds();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getBackEnds();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::setFilters(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::vector<std::pair<bool,std::string> > rules;
-    reader >> rules;
-    if (reader.isOk()) {
-        impl.setFilters(rules);
+    try {
+        DBusMessageReader reader(msg);
+        std::vector<std::pair<bool,std::string> > rules;
+        reader >> rules;
+        if (reader.isOk()) {
+            impl.setFilters(rules);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::countKeywords(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string keywordprefix;
-    std::vector<std::string> fieldnames;
-    reader >> keywordprefix >> fieldnames;
-    if (reader.isOk()) {
-        writer << impl.countKeywords(keywordprefix,fieldnames);
+    try {
+        DBusMessageReader reader(msg);
+        std::string keywordprefix;
+        std::vector<std::string> fieldnames;
+        reader >> keywordprefix >> fieldnames;
+        if (reader.isOk()) {
+            writer << impl.countKeywords(keywordprefix,fieldnames);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getIndexedDirectories(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.getIndexedDirectories();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.getIndexedDirectories();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getHistogram(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string query;
-    std::string field;
-    std::string labeltype;
-    reader >> query >> field >> labeltype;
-    if (reader.isOk()) {
-        writer << impl.getHistogram(query,field,labeltype);
+    try {
+        DBusMessageReader reader(msg);
+        std::string query;
+        std::string field;
+        std::string labeltype;
+        reader >> query >> field >> labeltype;
+        if (reader.isOk()) {
+            writer << impl.getHistogram(query,field,labeltype);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::stopIndexing(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.stopIndexing();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.stopIndexing();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getKeywords(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string keywordmatch;
-    std::vector<std::string> fieldnames;
-    uint32_t max;
-    uint32_t offset;
-    reader >> keywordmatch >> fieldnames >> max >> offset;
-    if (reader.isOk()) {
-        writer << impl.getKeywords(keywordmatch,fieldnames,max,offset);
+    try {
+        DBusMessageReader reader(msg);
+        std::string keywordmatch;
+        std::vector<std::string> fieldnames;
+        uint32_t max;
+        uint32_t offset;
+        reader >> keywordmatch >> fieldnames >> max >> offset;
+        if (reader.isOk()) {
+            writer << impl.getKeywords(keywordmatch,fieldnames,max,offset);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::getHits(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string query;
-    uint32_t max;
-    uint32_t offset;
-    reader >> query >> max >> offset;
-    if (reader.isOk()) {
-        writer << impl.getHits(query,max,offset);
+    try {
+        DBusMessageReader reader(msg);
+        std::string query;
+        uint32_t max;
+        uint32_t offset;
+        reader >> query >> max >> offset;
+        if (reader.isOk()) {
+            writer << impl.getHits(query,max,offset);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::startIndexing(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.startIndexing();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.startIndexing();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::countHits(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string query;
-    reader >> query;
-    if (reader.isOk()) {
-        writer << impl.countHits(query);
+    try {
+        DBusMessageReader reader(msg);
+        std::string query;
+        reader >> query;
+        if (reader.isOk()) {
+            writer << impl.countHits(query);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusClientInterface::stopDaemon(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.stopDaemon();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.stopDaemon();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 DBusClientInterface::DBusClientInterface(const std::string& on, DBusConnection* c, ClientInterface* i) 

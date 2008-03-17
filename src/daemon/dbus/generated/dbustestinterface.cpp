@@ -63,41 +63,65 @@ PrivateDBusTestInterface::getIntrospectionXML() {
 }
 void
 PrivateDBusTestInterface::upload(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::vector<char> upload;
-    reader >> upload;
-    if (reader.isOk()) {
-        writer << impl.upload(upload);
+    try {
+        DBusMessageReader reader(msg);
+        std::vector<char> upload;
+        reader >> upload;
+        if (reader.isOk()) {
+            writer << impl.upload(upload);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusTestInterface::concat(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string a;
-    std::string b;
-    reader >> a >> b;
-    if (reader.isOk()) {
-        writer << impl.concat(a,b);
+    try {
+        DBusMessageReader reader(msg);
+        std::string a;
+        std::string b;
+        reader >> a >> b;
+        if (reader.isOk()) {
+            writer << impl.concat(a,b);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusTestInterface::helloWorld(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    std::string name;
-    reader >> name;
-    if (reader.isOk()) {
-        writer << impl.helloWorld(name);
+    try {
+        DBusMessageReader reader(msg);
+        std::string name;
+        reader >> name;
+        if (reader.isOk()) {
+            writer << impl.helloWorld(name);
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 void
 PrivateDBusTestInterface::giveMap(DBusMessage* msg, DBusConnection* conn) {
-    DBusMessageReader reader(msg);
     DBusMessageWriter writer(conn, msg);
-    if (reader.isOk()) {
-        writer << impl.giveMap();
+    try {
+        DBusMessageReader reader(msg);
+        if (reader.isOk()) {
+            writer << impl.giveMap();
+        }
+    } catch (const std::exception& e) {
+        writer.setError(e.what());
+    } catch (...) {
+        writer.setError("");
     }
 }
 DBusTestInterface::DBusTestInterface(const std::string& on, DBusConnection* c)
