@@ -147,7 +147,8 @@ XesamSearch::countHits(void* msg) {
 void
 XesamSearch::Private::countHits(void* msg) {
     if (!valid) {
-        session.liveSearch().GetHitCountResponse(msg, -1);
+        // send an error message
+        session.liveSearch().GetHitCountResponse(msg, "Search is not valid.", 0);
     } else {
         STRIGI_MUTEX_LOCK(&mutex);
         if (hitcount == -1) {
@@ -156,7 +157,7 @@ XesamSearch::Private::countHits(void* msg) {
             countMessages.push_back(msg);
         } else {
             // we know the count and can send it
-            session.liveSearch().GetHitCountResponse(msg, hitcount);
+            session.liveSearch().GetHitCountResponse(msg, 0, hitcount);
         }
         STRIGI_MUTEX_UNLOCK(&mutex);
     }
@@ -169,13 +170,13 @@ void
 XesamSearch::Private::getHits(void* msg, int32_t num) {
     vector<vector<Variant> > v;
     if (!valid) {
-        session.liveSearch().GetHitsResponse(msg, v);
+        session.liveSearch().GetHitsResponse(msg, "Search is not valid.", v);
     } else {
         GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, 0, num);
         valid = session.liveSearch().queue().addJob(job);
         if (!valid) {
             delete job;
-            session.liveSearch().GetHitsResponse(msg, v);
+            session.liveSearch().GetHitsResponse(msg, 0, v);
         }
     }
 }
@@ -196,7 +197,7 @@ XesamSearch::Private::setCount(int c) {
         hitcount = c;
         for (list<void*>::const_iterator i = countMessages.begin();
                  i != countMessages.end(); ++i) {
-            session.liveSearch().GetHitCountResponse(*i, hitcount);
+            session.liveSearch().GetHitCountResponse(*i, 0, hitcount);
         }
         countMessages.clear();
     }

@@ -102,15 +102,15 @@ XesamLiveSearch::GetHitCount(void* msg, const string& search) {
     if (i != p->searches.end()) {
         i->second.countHits(msg);
     } else {
-        GetHitCountResponse(msg, -1);
+        GetHitCountResponse(msg, "Search is not registered.", 0);
     }
     //HitsAdded(search, 10);
 }
 void
-XesamLiveSearch::GetHitCountResponse(void* msg, uint32_t count) {
+XesamLiveSearch::GetHitCountResponse(void* msg, const char* err, uint32_t count) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
-        (*i)->GetHitCountResponse(msg, count);
+        (*i)->GetHitCountResponse(msg, err, count);
     }
 }
 void
@@ -120,14 +120,15 @@ XesamLiveSearch::GetHits(void*msg, const string& search, uint32_t num) {
         i->second.getHits(msg, num);
     } else {
         vector<vector<Strigi::Variant> > v;
-        GetHitsResponse(msg, v);
+        GetHitsResponse(msg, "Search is not registered.", v);
     }
 }
 void
-XesamLiveSearch::GetHitsResponse(void* msg, const vector<vector<Strigi::Variant> >& h) {
+XesamLiveSearch::GetHitsResponse(void* msg, const char* err,
+        const vector<vector<Strigi::Variant> >& h) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
-        (*i)->GetHitsResponse(msg, h);
+        (*i)->GetHitsResponse(msg, err, h);
     }
 }
 void
@@ -138,15 +139,15 @@ XesamLiveSearch::GetHitData(void* msg, const string& search,
         i->second.getHitData(hit_ids, properties);
     } else {
         vector<vector<Strigi::Variant> > v;
-        GetHitDataResponse(msg, v);
+        GetHitDataResponse(msg, "Hit not found.", v);
     }
 }
 void
-XesamLiveSearch::GetHitDataResponse(void* msg,
+XesamLiveSearch::GetHitDataResponse(void* msg, const char* err,
         const vector<vector<Strigi::Variant> >& v) {
     for (vector<XesamLiveSearchInterface*>::const_iterator i = ifaces.begin();
             i != ifaces.end(); ++i) {
-        (*i)->GetHitDataResponse(msg, v);
+        (*i)->GetHitDataResponse(msg, err, v);
     }
 }
 void

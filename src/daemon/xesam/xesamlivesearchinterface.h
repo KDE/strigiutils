@@ -55,11 +55,11 @@ public:
     virtual void GetHitCount(void* msg, const std::string& search) {
         iface->GetHitCount(msg, search);
     }
-    virtual void GetHitCountResponse(void* msg, uint32_t count) = 0;
+    virtual void GetHitCountResponse(void* msg, const char* err, uint32_t count) = 0;
     virtual void GetHits(void* msg, const std::string& search, uint32_t num) {
         iface->GetHits(msg, search, num);
     }
-    virtual void GetHitsResponse(void* msg,
+    virtual void GetHitsResponse(void* msg, const char* err,
             const std::vector<std::vector<Strigi::Variant> >& hits) = 0;
     virtual void GetHitData(void* msg,
             const std::string& search,
@@ -67,7 +67,7 @@ public:
             const std::vector<std::string>& fields) {
         iface->GetHitData(msg, search, hit_ids, fields);
     }
-    virtual void GetHitDataResponse(void* msg,
+    virtual void GetHitDataResponse(void* msg, const char* err,
             const std::vector<std::vector<Strigi::Variant> >& hit_data) = 0;
     virtual void CloseSearch(const std::string& search) {
         return iface->CloseSearch(search);

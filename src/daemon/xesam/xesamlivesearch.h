@@ -24,7 +24,7 @@
 
 /**
  * The complete spec implemented by this interface is here:
- * http://www.freedesktop.org/wiki/XesamSearchLive
+ * http://xesam.org/main/XesamSearch90
  **/
 
 namespace Strigi {
@@ -86,7 +86,7 @@ public:
     /**
      * This function is called by the implementation to send the hit count.
      **/
-    void GetHitCountResponse(void* msg, uint32_t count);
+    void GetHitCountResponse(void* msg, const char* err, uint32_t count);
     /**
      * Return num hits. If search.blocking==true this call blocks until there is
      * num hits available or the index has been fully searched. The client
@@ -97,7 +97,7 @@ public:
     /**
      * This function is called by the implementation to sent the hit results.
      **/
-    void GetHitsResponse(void* msg,
+    void GetHitsResponse(void* msg, const char* err,
             const std::vector<std::vector<Strigi::Variant> >& h);
     /**
      * Get hit metadata. Intended for snippets or modified hits. hit_ids are
@@ -110,7 +110,7 @@ public:
     /**
      * This function is called by the implementation to sent the hits data.
      **/
-    void GetHitDataResponse(void* msg,
+    void GetHitDataResponse(void* msg, const char* err,
         const std::vector<std::vector<Strigi::Variant> >& d);
     /**
      * Close and free a search. Closing your session also closes all searches in
@@ -131,7 +131,7 @@ public:
     std::vector<std::string> GetState();
     /**
      * SIGNALS
-     * Functionscalled by the implementation to signal events.
+     * Functions called by the implementation to signal events.
      */
     /**
      * Signal that new hits have been found.
