@@ -57,13 +57,13 @@ ENDMACRO(CreateDBusBinding)
 
 CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
         "clientinterface" "vandenoever.strigi"
-        "${strigi_SOURCE_DIR}/src/daemon/dbus/dbusserialization.h")
+        "dbusserialization.h")
 CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/dbus/testinterface.h"
         "testinterface" "vandenoever.strigi" "")
 CreateDBusBinding(
         "${strigi_SOURCE_DIR}/src/daemon/xesam/xesamlivesearchinterface.h"
         "xesamlivesearchinterface" "org.freedesktop.xesam.Search"
-        "${strigi_SOURCE_DIR}/src/daemon/dbus/dbusserialization.h")
+        "dbusserialization.h")
 
 add_library(dbusserver testinterface.cpp dbusserver.cpp
     dbusserialization.cpp

@@ -33,6 +33,7 @@
 class DBusMessageWriter {
     DBusConnection* const conn;
     DBusMessage* const reply;
+    DBusMessage* const reply_to;
     DBusMessage* error;
 public:
     DBusMessageIter it;
@@ -40,7 +41,7 @@ public:
     DBusMessageWriter(DBusConnection* conn, DBusMessage* msg);
     DBusMessageWriter(DBusConnection* conn, const char* objectpath,
         const char* interface, const char* function);
-    DBusMessageWriter() :conn(0), reply(0) { }
+    DBusMessageWriter() :conn(0), reply(0), reply_to(0), error(0) { }
     ~DBusMessageWriter();
     void setError(const std::string& error);
 };

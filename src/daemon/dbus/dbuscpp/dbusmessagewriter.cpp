@@ -22,13 +22,13 @@
 using namespace std;
 
 DBusMessageWriter::DBusMessageWriter(DBusConnection* c, DBusMessage* msg)
-        :conn(c), reply(dbus_message_new_method_return(msg)), error(0) {
+        :conn(c), reply(dbus_message_new_method_return(msg)), reply_to(msg), error(0) {
     dbus_message_iter_init_append(reply, &it);
 }
 DBusMessageWriter::DBusMessageWriter(DBusConnection* c, const char* object,
         const char* interface, const char* function)
         :conn(c), reply(dbus_message_new_signal(object, interface, function)),
-         error(0) {
+         reply_to(0), error(0) {
     dbus_message_iter_init_append(reply, &it);
 }
 DBusMessageWriter::~DBusMessageWriter() {
@@ -45,8 +45,16 @@ DBusMessageWriter::~DBusMessageWriter() {
 }
 void
 DBusMessageWriter::setError(const std::string &e) {
-    error = dbus_message_new(DBUS_MESSAGE_TYPE_ERROR);
-    dbus_message_set_error_name(error, e.c_str());
+    // allow for only one error
+    if (error == 0) {
+        // if this is an error in a reply, use the reply in the constructor
+        if (reply_to) {
+            error = dbus_message_new_error(reply_to, e.c_str(), e.c_str());
+        } else {
+            error = dbus_message_new(DBUS_MESSAGE_TYPE_ERROR);
+            dbus_message_set_error_name(error, e.c_str());
+        }
+    }
 }
 DBusMessageWriter&
 operator<<(DBusMessageWriter& w, bool b) {
