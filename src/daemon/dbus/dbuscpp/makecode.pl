@@ -23,7 +23,9 @@ my %signals;
 my $classname;
 my $constructorargs = "";
 
-my @lines = `cat "$interfaceheader"`;
+open FILE, $interfaceheader or die "Can't open file: $!\n";
+my @lines = <FILE>;
+close FILE;
 
 my %typemapping = (
 	"void" => "ignore",
