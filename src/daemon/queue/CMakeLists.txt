@@ -11,5 +11,5 @@ set(newdaemon_LIBS
 	${CMAKE_THREAD_LIBS_INIT}
 	${strigidaemon_LIBS}
 )
-target_link_libraries(newdaemon pthread)#${newdaemon_LIBS})
+target_link_libraries(newdaemon ${CMAKE_THREAD_LIBS_INIT})
 
