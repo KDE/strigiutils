@@ -24,7 +24,7 @@
 #include "diranalyzer.h"
 
 #include <map>
-#include <pthread.h>
+#include "strigi_thread.h"
 
 class Event;
 
@@ -63,7 +63,7 @@ private:
     void clearWatches();
 
     std::vector<std::string> m_watches;
-    pthread_mutex_t m_mutex; //!< mutex on m_watches
+    STRIGI_MUTEX_DEFINE(m_mutex); //!< mutex on m_watches
 
     bool continueAnalysis();
 };

@@ -23,6 +23,7 @@
 #include <map>
 #include <vector>
 #include <strigithread.h>
+#include <strigi_thread.h>
 #include <time.h>
 
 class Event;
@@ -87,7 +88,7 @@ class EventListenerQueue : public StrigiThread
         unsigned int m_processedOldCount;
         unsigned int m_waitingOldCount;
         
-        pthread_mutex_t m_mutex;
+        STRIGI_MUTEX_DEFINE(m_mutex);
 };
 
 #endif

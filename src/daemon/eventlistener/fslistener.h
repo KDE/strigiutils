@@ -144,7 +144,7 @@ class FsListener : public EventListener
         
         bool m_bReindexReq;
         std::set<std::string> m_reindexDirs;
-        pthread_mutex_t m_reindexLock;
+        STRIGI_MUTEX_DEFINE(m_reindexLock);
         std::vector<FsEvent*> m_events;
 
         PollingListener* m_pollingListener;
