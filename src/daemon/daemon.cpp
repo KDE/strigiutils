@@ -78,7 +78,11 @@ initializeDir(const string& dir) {
     if (r == -1) {
         if (errno == ENOENT) {
             // the directory does not exist
+#ifdef _WIN32
+            r = mkdir(dir.c_str());
+#else
             r = mkdir(dir.c_str(), 0700);
+#endif
             if (r == -1) {
                 perror(dir.c_str());
                 return false;
