@@ -56,15 +56,21 @@ IndexScheduler::getQueueSize() {
 void
 shortsleep(long nanoseconds) {
     // set sleep time
+#ifndef _WIN32
     struct timespec sleeptime;
     sleeptime.tv_sec = 0;
     sleeptime.tv_nsec = nanoseconds;
     nanosleep(&sleeptime, 0);
+#endif
 }
 void *
 IndexScheduler::run(void*) {
     while (getState() != Stopping) {
+#ifndef _WIN32
         shortsleep(100000000);
+#else
+        Sleep(100);
+#endif
         if (getState() == Working) {
             index();
             if (getState() == Working) {
