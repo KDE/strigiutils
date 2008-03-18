@@ -26,8 +26,8 @@
 #include "strigi_thread.h"
 
 bool keeprunning;
-pthread_t thread;
-pthread_mutex_t lock;
+STRIGI_THREAD_DEFINE(thread);
+STRIGI_MUTEX_DEFINE(lock);
 DBusConnection* conn;
 int quitpipe[2];
 
