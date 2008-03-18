@@ -49,10 +49,12 @@ DBusMessageWriter::setError(const std::string &e) {
     if (error == 0) {
         // if this is an error in a reply, use the reply in the constructor
         if (reply_to) {
-            error = dbus_message_new_error(reply_to, e.c_str(), e.c_str());
+            error = dbus_message_new_error(reply_to,
+                "org.freedesktop.DBus.Error.Failed", e.c_str());
         } else {
             error = dbus_message_new(DBUS_MESSAGE_TYPE_ERROR);
-            dbus_message_set_error_name(error, e.c_str());
+            dbus_message_set_error_name(error,
+                "org.freedesktop.DBus.Error.Failed");
         }
     }
 }

@@ -24,6 +24,7 @@
 #include "query.h"
 #include "queue/jobqueue.h"
 #include <iostream>
+#include <stdexcept>
 #include <cstdlib>
 using namespace std;
 using namespace Strigi;
