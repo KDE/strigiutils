@@ -20,7 +20,7 @@
 #ifndef STRIGITHREAD_H
 #define STRIGITHREAD_H
 
-#include <pthread.h>
+#include <strigi_thread.h>
 #include <string>
 
 extern "C" void *threadstarter(void *);
@@ -33,8 +33,8 @@ private:
     State state;
 protected:
     int priority;
-    pthread_mutex_t lock;
-    pthread_t thread;
+    STRIGI_MUTEX_DEFINE(lock); 
+    STRIGI_THREAD_DEFINE(thread);
     void setState(State s);
     virtual void* run(void*) = 0;
     virtual void stopThread() {}
