@@ -120,11 +120,11 @@ IF(ENABLE_DBUS)
   IF(WIN32)
     file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _program_FILES_DIR)
     find_path(DBUS_INCLUDE_DIR dbus/dbus.h
-        ${_program_FILES_DIR}/dbus/include ${CMAKE_INSTALL_PREFIX}/include
+        ${_program_FILES_DIR}/dbus/include ${CMAKE_INSTALL_PREFIX}/include ${CMAKE_INCLUDE_PATH}
     )
     set(DBUS_LIBRARY_DIR ${_program_FILES_DIR}/dbus/lib)
-    find_library(DBUS_LIBRARYS NAMES dbus
-        PATHS ${DBUS_LIBRARY_DIR} ${CMAKE_INSTALL_PREFIX}/lib
+    find_library(DBUS_LIBRARY NAMES dbus dbus-1
+        PATHS ${DBUS_LIBRARY_DIR} ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_LIBRARY_PATH}
     )
   ELSE(WIN32)
     include(UsePkgConfig)
