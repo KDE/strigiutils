@@ -22,6 +22,7 @@
 #include "xesamlivesearch.h"
 #include "xesamclass.h"
 #include <sstream>
+#include <stdexcept>
 using namespace std;
 using namespace Strigi;
 
@@ -37,6 +38,7 @@ public:
     std::string sortPrimary;
     std::string sortSecondary;
     bool sortAscending;
+    bool hasCreatedSearches;
 
     Private(XesamLiveSearch& x);
     ~Private();
@@ -49,7 +51,8 @@ XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
         searchBlocking(true),
         hitSnippetLength(200),
         sortPrimary("score"),
-        sortAscending(false) {
+        sortAscending(false),
+        hasCreatedSearches(false) {
     hitFields.push_back("system.location");
 }
 XesamSession::Private::~Private() {
@@ -78,6 +81,10 @@ XesamSession::setProperty(const std::string& prop, const Variant& v) {
 }
 Variant
 XesamSession::Private::setProperty(const std::string& prop, const Variant& v) {
+    if (hasCreatedSearches) {
+        throw runtime_error("No properties can be set after a search has been "
+            "created.");
+    }
     Variant o;
     if (prop == "search.live") {
          o = searchLive = v.b();
@@ -141,6 +148,8 @@ XesamSession::Private::getProperty(const std::string& prop) {
 }
 std::string
 XesamSession::newSearch(const std::string& query_xml) {
+    p->hasCreatedSearches = true;
+
     ostringstream str;
     str << "strigisearch" << random();
     string name(str.str());
@@ -157,7 +166,7 @@ XesamSession::closeSearch(const XesamSearch& search) {
 XesamLiveSearch&
 XesamSession::liveSearch() const {
     return p->xesam;
-} 
+}
 vector<string>&
 XesamSession::hitFields() const {
     return p->hitFields;

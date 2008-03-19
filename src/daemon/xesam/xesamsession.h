@@ -38,6 +38,11 @@ public:
     ~XesamSession();
     void operator=(const XesamSession& xs);
     bool operator==(const XesamSession& xs) { return p == xs.p; }
+    /**
+     * Attempt to set a parameter to the given value.
+     * A runtime_error will be thrown if this function was called after a
+     * search has been created.
+     **/
     Strigi::Variant setProperty(const std::string& prop, const Strigi::Variant& v);
     Strigi::Variant getProperty(const std::string& prop);
     std::string newSearch(const std::string& xml_query);
