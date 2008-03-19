@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef XESAMDBUS_H_1198275077
-#define XESAMDBUS_H_1198275077
+#ifndef XESAMDBUS_H_1205966412
+#define XESAMDBUS_H_1205966412
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -47,14 +47,14 @@ Q_SIGNALS: // SIGNALS
 };
 
 /*
- * Proxy class for interface org.freedesktop.xesam.search
+ * Proxy class for interface org.freedesktop.xesam.Search
  */
 class OrgFreedesktopXesamSearchInterface: public QDBusAbstractInterface
 {
     Q_OBJECT
 public:
     static inline const char *staticInterfaceName()
-    { return "org.freedesktop.xesam.search"; }
+    { return "org.freedesktop.xesam.Search"; }
 
 public:
     OrgFreedesktopXesamSearchInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent = 0);
@@ -149,7 +149,7 @@ namespace org {
       typedef ::OrgFreedesktopDBusIntrospectableInterface Introspectable;
     }
     namespace xesam {
-      typedef ::OrgFreedesktopXesamSearchInterface search;
+      typedef ::OrgFreedesktopXesamSearchInterface Search;
     }
   }
 }
