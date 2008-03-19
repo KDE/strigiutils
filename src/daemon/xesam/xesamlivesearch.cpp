@@ -61,38 +61,37 @@ XesamLiveSearch::NewSession() {
 Strigi::Variant
 XesamLiveSearch::SetProperty(const std::string& session,
         const std::string& prop, const Strigi::Variant& v) {
-    Strigi::Variant out;
     map<string, XesamSession>::iterator i = p->sessions.find(session);
-    if (i != p->sessions.end()) {
-        out = i->second.setProperty(prop, v);
+    if (i == p->sessions.end()) {
+        throw runtime_error("Session is not valid");
     }
-    return out;
+    return i->second.setProperty(prop, v);
 }
 Strigi::Variant
 XesamLiveSearch::GetProperty(const std::string& session,
         const std::string& prop) {
     Strigi::Variant out;
     map<string, XesamSession>::iterator i = p->sessions.find(session);
-    if (i != p->sessions.end()) {
-        out = i->second.getProperty(prop);
+    if (i == p->sessions.end()) {
+        throw runtime_error("Session is not valid");
     }
-    return out;
+    return i->second.getProperty(prop);
 }
 void
 XesamLiveSearch::CloseSession(const string& session) {
     map<string, XesamSession>::const_iterator i = p->sessions.find(session);
-    if (i != p->sessions.end()) {
-        p->sessions.erase(i->first);
+    if (i == p->sessions.end()) {
+        throw runtime_error("Session is not valid");
     }
+    p->sessions.erase(i->first);
 }
 string
 XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
     map<string, XesamSession>::iterator i = p->sessions.find(session);
-    string name;
-    if (i != p->sessions.end()) {
-        name = i->second.newSearch(query_xml);
+    if (i == p->sessions.end()) {
+        throw runtime_error("Session is not valid");
     }
-    return name;
+    return i->second.newSearch(query_xml);
 }
 void
 XesamLiveSearch::StartSearch(const string& search) {
@@ -154,14 +153,15 @@ XesamLiveSearch::GetHitDataResponse(void* msg, const char* err,
 void
 XesamLiveSearch::CloseSearch(const string& search) {
     map<string, XesamSearch>::const_iterator i = p->searches.find(search);
-    if (i != p->searches.end()) {
-        i->second.session().closeSearch(i->second); 
+    if (i == p->searches.end()) {
+        throw runtime_error("Search is not valid");
     }
+    i->second.session().closeSearch(i->second);
 }
 vector<string>
 XesamLiveSearch::GetState() {
-    cerr << "XesamLiveSearch::GetState()" << endl;
     vector<string> state;
+    // TODO get the real state
     state.push_back("IDLE");
     return state;
 }
