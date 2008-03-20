@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef XESAMDBUS_H_1205966412
-#define XESAMDBUS_H_1205966412
+#ifndef XESAMDBUS_H_1206043014
+#define XESAMDBUS_H_1206043014
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -83,14 +83,21 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("CountHits"), argumentList);
     }
 
-    inline QDBusReply<QVector<QList<QVariant> > > GetHitData(const QString &search, const QList<int> &hit_ids, const QStringList &properties)
+    inline QDBusReply<uint> GetHitCount(const QString &search)
     {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue(search) << qVariantFromValue(hit_ids) << qVariantFromValue(properties);
+        argumentList << qVariantFromValue(search);
+        return callWithArgumentList(QDBus::Block, QLatin1String("GetHitCount"), argumentList);
+    }
+
+    inline QDBusReply<QVector<QList<QVariant> > > GetHitData(const QString &search, const QList<int> &hit_ids, const QStringList &fields)
+    {
+        QList<QVariant> argumentList;
+        argumentList << qVariantFromValue(search) << qVariantFromValue(hit_ids) << qVariantFromValue(fields);
         return callWithArgumentList(QDBus::Block, QLatin1String("GetHitData"), argumentList);
     }
 
-    inline QDBusReply<QVector<QList<QVariant> > > GetHits(const QString &search, int num)
+    inline QDBusReply<QVector<QList<QVariant> > > GetHits(const QString &search, uint num)
     {
         QList<QVariant> argumentList;
         argumentList << qVariantFromValue(search) << qVariantFromValue(num);
@@ -123,10 +130,10 @@ public Q_SLOTS: // METHODS
         return callWithArgumentList(QDBus::Block, QLatin1String("NewSession"), argumentList);
     }
 
-    inline QDBusReply<QDBusVariant> SetProperty(const QString &session, const QString &prop, const QDBusVariant &v)
+    inline QDBusReply<QDBusVariant> SetProperty(const QString &session, const QString &prop, const QDBusVariant &val)
     {
         QList<QVariant> argumentList;
-        argumentList << qVariantFromValue(session) << qVariantFromValue(prop) << qVariantFromValue(v);
+        argumentList << qVariantFromValue(session) << qVariantFromValue(prop) << qVariantFromValue(val);
         return callWithArgumentList(QDBus::Block, QLatin1String("SetProperty"), argumentList);
     }
 
@@ -138,9 +145,11 @@ public Q_SLOTS: // METHODS
     }
 
 Q_SIGNALS: // SIGNALS
-    void HitsAdded(const QString &search, int count);
-    void HitsModified(const QString &search, const QList<int> &hit_ids);
-    void HitsRemoved(const QString &search, const QList<int> &hit_ids);
+    void HitsAdded(const QString &search, uint count);
+    void HitsModified(const QString &search, const QList<uint> &hit_ids);
+    void HitsRemoved(const QString &search, const QList<uint> &hit_ids);
+    void SearchDone(const QString &search);
+    void StateChanged(const QStringList &state_info);
 };
 
 namespace org {
