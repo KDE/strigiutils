@@ -90,3 +90,6 @@ DaemonDBusTest::testStatusOfEmptyIndex() {
     CPPUNIT_ASSERT_MESSAGE("Number of documents indexed cannot be determined.", ok);
     CPPUNIT_ASSERT_MESSAGE("Not exactly 0 documents in the index.", numIndexed == 0);
 }
+void
+DaemonDBusTest::testStopDaemon() {
+}

@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef XESAMDBUS_H_1206043014
-#define XESAMDBUS_H_1206043014
+#ifndef XESAMDBUS_H_1206045794
+#define XESAMDBUS_H_1206045794
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>

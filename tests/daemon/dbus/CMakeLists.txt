@@ -10,13 +10,16 @@ if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
 endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
 
-include_directories (.  ${INC_DIR}
+include_directories (.  ${INC_DIR} xesam
                         ${strigi_SOURCE_DIR}/src/searchclient/qtdbus
                         ${strigi_BINARY_DIR}/src/streams
 )
 
-add_executable(daemondbustest daemondbustest.cpp runner.cpp
-    ${daemondbustest_MOC_SRCS})
+set(daemondbustest_MOC_HDRS xesam/xesamdbus.h)
+qt4_wrap_cpp(daemondbustest_MOC_SRCS ${daemondbustest_MOC_HDRS})
+
+add_executable(daemondbustest daemondbustest.cpp runner.cpp xesamdbustest.cpp
+    xesam/xesamdbus.cpp ${daemondbustest_MOC_SRCS})
 target_link_libraries (daemondbustest test_runner ${daemondbustest_LIBS} 
     strigiqtdbusclient)
 

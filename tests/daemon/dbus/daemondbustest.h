@@ -35,6 +35,7 @@ private:
     CPPUNIT_TEST_SUITE( DaemonDBusTest );
     CPPUNIT_TEST( testProcess );
     CPPUNIT_TEST( testStatusOfEmptyIndex );
+    CPPUNIT_TEST( testStopDaemon );
 /*        CPPUNIT_TEST( testIndexedDirs );
         CPPUNIT_TEST( testFilters );
         CPPUNIT_TEST( testRepository );
@@ -56,6 +57,7 @@ public:
 
     void testProcess();
     void testStatusOfEmptyIndex();
+    void testStopDaemon();
 
 /*        void testDefaultConf();
         void testIndexedDirs();
