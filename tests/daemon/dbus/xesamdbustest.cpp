@@ -44,9 +44,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( XesamDBusTest );
 
 void
 XesamDBusTest::setUp() {
-    xesam = new OrgFreedesktopXesamSearchInterface("", "", QDBusConnection::sessionBus());
     qDebug() << "== XesamDBusTest::setUp() ==";
-    waitForStatusIdle(1000);
+    xesam = new OrgFreedesktopXesamSearchInterface("org.freedesktop.xesam.searcher",
+        "/org/freedesktop/xesam/searcher/main", QDBusConnection::sessionBus());
 }
 
 void
@@ -54,26 +54,21 @@ XesamDBusTest::tearDown() {
     qDebug() << "== XesamDBusTest::tearDown() ==";
     delete xesam;
 }
-
-bool
-XesamDBusTest::waitForStatusIdle(int milliseconds) {
-/*    QTime timer;
-    timer.start();
-    QDBusReply<QStringList> reply = xesam.GetState();
-    if (reply.error().isValid()) {
-        return false;
-    }
-    while (status != "IDLE" && timer.elapsed() < milliseconds) {
-        // sleep for 10 milliseconds
-        strigi_nanosleep(10000000);
-        status = strigiclient.getStatus()["Status"];
-    }
-    return status == "idling";*/
-    return false;
+template<class T>
+void
+check(QDBusReply<T> r) {
+    CPPUNIT_ASSERT_MESSAGE((const char*)r.error().message().toUtf8(), !r.error().isValid());
 }
 
 void
 XesamDBusTest::testStartSession() {
     qDebug() << "== XesamDBusTest::testStartSession() ==";
+    // try to get the status of the daemon
+    check(xesam->GetState());
+    // start a new session 
+    QDBusReply<QString> session = xesam->NewSession();
+    check(session);
+    // close the session session 
+    check(xesam->CloseSession(session));
 }
 
