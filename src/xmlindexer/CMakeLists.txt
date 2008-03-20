@@ -38,7 +38,7 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 # register all tests based on the data in the testdata directory
-FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)
+#FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)
 FOREACH(file ${allfiles})
   GET_FILENAME_COMPONENT(testdir ${file} PATH)
   GET_FILENAME_COMPONENT(dir ${testdir} NAME)
