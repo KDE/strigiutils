@@ -256,5 +256,10 @@ DBusMessageReader::operator>>(vector<pair<bool, string> >& m) {
  */
 bool
 DBusMessageReader::atEnd() {
-    return msg && (dbus_message_iter_get_arg_type(&it) == 0);
+    // if the message was not empty and the current type == 0 then we are at the end of
+    //   a non-empty message
+    // if the message was empty and nothing was read then msg == 0 and ok == true
+    //   and we are at the end of a valid message
+    // in the other cases we are not at the end of a valid message
+    return (msg) ?(dbus_message_iter_get_arg_type(&it) == 0) :ok;
 }
