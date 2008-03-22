@@ -70,20 +70,24 @@ DaemonDBusTest::waitForStatusIdle(int milliseconds) {
         strigi_nanosleep(10000000);
         status = strigiclient.getStatus()["Status"];
     }
+    qDebug() << "Waited " << timer.elapsed() << " milliseconds for strigidaemon to start.";
     return status == "idling";
 }
 
 void
 DaemonDBusTest::testProcess() {
+    qDebug() << "== DaemonDBusTest::testProcess() ==";
 }
 
 void
 DaemonDBusTest::testStatusOfEmptyIndex() {
+    qDebug() << "== DaemonDBusTest::testStatusOfEmptyIndex() ==";
     // clear out the index
     strigiclient.setIndexedDirectories(QStringList());
     strigiclient.startIndexing();
     waitForStatusIdle(1000);
     QMap<QString, QString> status = strigiclient.getStatus();
+    qDebug() << "Status: '" << status << "'" << endl;
     CPPUNIT_ASSERT_MESSAGE("Daemon status is too short.", status.size() > 1);
     bool ok;
     int numIndexed = status["Documents indexed"].toInt(&ok);
