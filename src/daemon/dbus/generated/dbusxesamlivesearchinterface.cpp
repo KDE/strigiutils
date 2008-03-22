@@ -167,7 +167,13 @@ PrivateDBusXesamLiveSearchInterface::GetHitCount(DBusMessage* dbm, DBusConnectio
     DBusMessageReader reader(dbm);
     std::string search;
     reader >> search;
-    if (reader.isOk()) {
+    if (!reader.isOk()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Invalid input.");
+    } else if (!reader.atEnd()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Too many arguments.");
+    } else {
         dbus_message_ref(dbm);
         impl.GetHitCount(dbm, search);
     }
@@ -178,7 +184,13 @@ PrivateDBusXesamLiveSearchInterface::GetHits(DBusMessage* dbm, DBusConnection* c
     std::string search;
     uint32_t num;
     reader >> search >> num;
-    if (reader.isOk()) {
+    if (!reader.isOk()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Invalid input.");
+    } else if (!reader.atEnd()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Too many arguments.");
+    } else {
         dbus_message_ref(dbm);
         impl.GetHits(dbm, search,num);
     }
@@ -228,7 +240,13 @@ PrivateDBusXesamLiveSearchInterface::GetHitData(DBusMessage* dbm, DBusConnection
     std::vector<uint32_t> hit_ids;
     std::vector<std::string> fields;
     reader >> search >> hit_ids >> fields;
-    if (reader.isOk()) {
+    if (!reader.isOk()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Invalid input.");
+    } else if (!reader.atEnd()) {
+        DBusMessageWriter writer(conn, dbm);
+        writer.setError("Too many arguments.");
+    } else {
         dbus_message_ref(dbm);
         impl.GetHitData(dbm, search,hit_ids,fields);
     }

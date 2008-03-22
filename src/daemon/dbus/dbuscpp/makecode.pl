@@ -159,7 +159,13 @@ sub printASyncFunctionDefinition {
         }
         print FH ";\n";
     }
-    print FH "    if (reader.isOk()) {\n";
+    print FH "    if (!reader.isOk()) {\n";
+    print FH "        DBusMessageWriter writer(conn, dbm);\n";
+    print FH "        writer.setError(\"Invalid input.\");\n";
+    print FH "    } else if (!reader.atEnd()) {\n";
+    print FH "        DBusMessageWriter writer(conn, dbm);\n";
+    print FH "        writer.setError(\"Too many arguments.\");\n";
+    print FH "    } else {\n";
     print FH "        dbus_message_ref(dbm);\n        ";
     print FH "impl.$name(dbm, ";
     for ($i=3; $i < @a; $i+=2) {
