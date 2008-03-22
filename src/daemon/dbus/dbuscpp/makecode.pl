@@ -118,7 +118,11 @@ sub printFunctionDefinition {
         }
         print FH ";\n";
     }
-    print FH "        if (reader.isOk()) {\n            ";
+    print FH "        if (!reader.isOk()) {\n";
+    print FH "            writer.setError(\"Invalid input.\");\n";
+    print FH "        } else if (!reader.atEnd()) {\n";
+    print FH "            writer.setError(\"Too many arguments.\");\n";
+    print FH "        } else {\n            ";
     if (length($functionsOut{$name}) > 0 && $functionsOut{$name} ne "void") {
         print FH "writer << ";
     }

@@ -251,3 +251,10 @@ DBusMessageReader::operator>>(vector<pair<bool, string> >& m) {
     dbus_message_iter_next(&it);
     return *this;
 }
+/*
+ * Check if the iterator is positioned at the end of a valid message.
+ */
+bool
+DBusMessageReader::atEnd() {
+    return msg && (dbus_message_iter_get_arg_type(&it) == 0);
+}

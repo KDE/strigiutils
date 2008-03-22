@@ -68,7 +68,11 @@ PrivateDBusTestInterface::upload(DBusMessage* msg, DBusConnection* conn) {
         DBusMessageReader reader(msg);
         std::vector<char> upload;
         reader >> upload;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.upload(upload);
         }
     } catch (const std::exception& e) {
@@ -85,7 +89,11 @@ PrivateDBusTestInterface::concat(DBusMessage* msg, DBusConnection* conn) {
         std::string a;
         std::string b;
         reader >> a >> b;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.concat(a,b);
         }
     } catch (const std::exception& e) {
@@ -101,7 +109,11 @@ PrivateDBusTestInterface::helloWorld(DBusMessage* msg, DBusConnection* conn) {
         DBusMessageReader reader(msg);
         std::string name;
         reader >> name;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.helloWorld(name);
         }
     } catch (const std::exception& e) {
@@ -115,7 +127,11 @@ PrivateDBusTestInterface::giveMap(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.giveMap();
         }
     } catch (const std::exception& e) {

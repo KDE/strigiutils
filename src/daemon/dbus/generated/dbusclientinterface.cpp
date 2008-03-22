@@ -148,7 +148,11 @@ PrivateDBusClientInterface::indexFile(DBusMessage* msg, DBusConnection* conn) {
         uint64_t mtime;
         std::vector<char> content;
         reader >> path >> mtime >> content;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             impl.indexFile(path,mtime,content);
         }
     } catch (const std::exception& e) {
@@ -162,7 +166,11 @@ PrivateDBusClientInterface::getStatus(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getStatus();
         }
     } catch (const std::exception& e) {
@@ -176,7 +184,11 @@ PrivateDBusClientInterface::getFilters(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getFilters();
         }
     } catch (const std::exception& e) {
@@ -190,7 +202,11 @@ PrivateDBusClientInterface::getIndexedFiles(DBusMessage* msg, DBusConnection* co
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getIndexedFiles();
         }
     } catch (const std::exception& e) {
@@ -206,7 +222,11 @@ PrivateDBusClientInterface::setIndexedDirectories(DBusMessage* msg, DBusConnecti
         DBusMessageReader reader(msg);
         std::set<std::string> d;
         reader >> d;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.setIndexedDirectories(d);
         }
     } catch (const std::exception& e) {
@@ -220,7 +240,11 @@ PrivateDBusClientInterface::getFieldNames(DBusMessage* msg, DBusConnection* conn
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getFieldNames();
         }
     } catch (const std::exception& e) {
@@ -234,7 +258,11 @@ PrivateDBusClientInterface::getBackEnds(DBusMessage* msg, DBusConnection* conn) 
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getBackEnds();
         }
     } catch (const std::exception& e) {
@@ -250,7 +278,11 @@ PrivateDBusClientInterface::setFilters(DBusMessage* msg, DBusConnection* conn) {
         DBusMessageReader reader(msg);
         std::vector<std::pair<bool,std::string> > rules;
         reader >> rules;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             impl.setFilters(rules);
         }
     } catch (const std::exception& e) {
@@ -267,7 +299,11 @@ PrivateDBusClientInterface::countKeywords(DBusMessage* msg, DBusConnection* conn
         std::string keywordprefix;
         std::vector<std::string> fieldnames;
         reader >> keywordprefix >> fieldnames;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.countKeywords(keywordprefix,fieldnames);
         }
     } catch (const std::exception& e) {
@@ -281,7 +317,11 @@ PrivateDBusClientInterface::getIndexedDirectories(DBusMessage* msg, DBusConnecti
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getIndexedDirectories();
         }
     } catch (const std::exception& e) {
@@ -299,7 +339,11 @@ PrivateDBusClientInterface::getHistogram(DBusMessage* msg, DBusConnection* conn)
         std::string field;
         std::string labeltype;
         reader >> query >> field >> labeltype;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getHistogram(query,field,labeltype);
         }
     } catch (const std::exception& e) {
@@ -313,7 +357,11 @@ PrivateDBusClientInterface::stopIndexing(DBusMessage* msg, DBusConnection* conn)
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.stopIndexing();
         }
     } catch (const std::exception& e) {
@@ -332,7 +380,11 @@ PrivateDBusClientInterface::getKeywords(DBusMessage* msg, DBusConnection* conn) 
         uint32_t max;
         uint32_t offset;
         reader >> keywordmatch >> fieldnames >> max >> offset;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getKeywords(keywordmatch,fieldnames,max,offset);
         }
     } catch (const std::exception& e) {
@@ -350,7 +402,11 @@ PrivateDBusClientInterface::getHits(DBusMessage* msg, DBusConnection* conn) {
         uint32_t max;
         uint32_t offset;
         reader >> query >> max >> offset;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.getHits(query,max,offset);
         }
     } catch (const std::exception& e) {
@@ -364,7 +420,11 @@ PrivateDBusClientInterface::startIndexing(DBusMessage* msg, DBusConnection* conn
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.startIndexing();
         }
     } catch (const std::exception& e) {
@@ -380,7 +440,11 @@ PrivateDBusClientInterface::countHits(DBusMessage* msg, DBusConnection* conn) {
         DBusMessageReader reader(msg);
         std::string query;
         reader >> query;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.countHits(query);
         }
     } catch (const std::exception& e) {
@@ -394,7 +458,11 @@ PrivateDBusClientInterface::stopDaemon(DBusMessage* msg, DBusConnection* conn) {
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.stopDaemon();
         }
     } catch (const std::exception& e) {

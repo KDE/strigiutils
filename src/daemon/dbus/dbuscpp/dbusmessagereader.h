@@ -63,6 +63,7 @@ public:
     DBusMessageReader& operator>>(std::multimap<int, std::string>&);
     DBusMessageReader& operator>>(std::vector<std::pair<bool, std::string> >&);
     bool isOk() const { return ok; }
+    bool atEnd();
 };
 
 #endif

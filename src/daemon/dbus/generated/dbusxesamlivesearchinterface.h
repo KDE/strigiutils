@@ -4,6 +4,7 @@
 #include "xesam/xesamlivesearchinterface.h"
 #define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <dbus/dbus.h>
+#include <exception>
 class DBusObjectInterface;
 class DBusXesamLiveSearchInterface : public XesamLiveSearchInterface {
 private:

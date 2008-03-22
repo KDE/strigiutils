@@ -129,7 +129,11 @@ PrivateDBusXesamLiveSearchInterface::GetState(DBusMessage* msg, DBusConnection* 
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.GetState();
         }
     } catch (const std::exception& e) {
@@ -145,7 +149,11 @@ PrivateDBusXesamLiveSearchInterface::StartSearch(DBusMessage* msg, DBusConnectio
         DBusMessageReader reader(msg);
         std::string search;
         reader >> search;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             impl.StartSearch(search);
         }
     } catch (const std::exception& e) {
@@ -180,7 +188,11 @@ PrivateDBusXesamLiveSearchInterface::NewSession(DBusMessage* msg, DBusConnection
     DBusMessageWriter writer(conn, msg);
     try {
         DBusMessageReader reader(msg);
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.NewSession();
         }
     } catch (const std::exception& e) {
@@ -196,7 +208,11 @@ PrivateDBusXesamLiveSearchInterface::CloseSession(DBusMessage* msg, DBusConnecti
         DBusMessageReader reader(msg);
         std::string session;
         reader >> session;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             impl.CloseSession(session);
         }
     } catch (const std::exception& e) {
@@ -226,7 +242,11 @@ PrivateDBusXesamLiveSearchInterface::SetProperty(DBusMessage* msg, DBusConnectio
         std::string prop;
         Strigi::Variant val;
         reader >> session >> prop >> val;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.SetProperty(session,prop,val);
         }
     } catch (const std::exception& e) {
@@ -243,7 +263,11 @@ PrivateDBusXesamLiveSearchInterface::NewSearch(DBusMessage* msg, DBusConnection*
         std::string session;
         std::string query_xml;
         reader >> session >> query_xml;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.NewSearch(session,query_xml);
         }
     } catch (const std::exception& e) {
@@ -260,7 +284,11 @@ PrivateDBusXesamLiveSearchInterface::GetProperty(DBusMessage* msg, DBusConnectio
         std::string session;
         std::string prop;
         reader >> session >> prop;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             writer << impl.GetProperty(session,prop);
         }
     } catch (const std::exception& e) {
@@ -276,7 +304,11 @@ PrivateDBusXesamLiveSearchInterface::CloseSearch(DBusMessage* msg, DBusConnectio
         DBusMessageReader reader(msg);
         std::string search;
         reader >> search;
-        if (reader.isOk()) {
+        if (!reader.isOk()) {
+            writer.setError("Invalid input.");
+        } else if (!reader.atEnd()) {
+            writer.setError("Too many arguments.");
+        } else {
             impl.CloseSearch(search);
         }
     } catch (const std::exception& e) {
