@@ -19,6 +19,7 @@
  */
 
 #include "xesamdbustest.h"
+#include "xesamlistener.h"
 
 #include "xesamdbus.h"
 #include <algorithm>
@@ -49,11 +50,13 @@ XesamDBusTest::setUp() {
     qDBusRegisterMetaType<IntList>();
     xesam = new OrgFreedesktopXesamSearchInterface("org.freedesktop.xesam.searcher",
         "/org/freedesktop/xesam/searcher/main", QDBusConnection::sessionBus());
+    listener = new XesamListener(xesam);
 }
 
 void
 XesamDBusTest::tearDown() {
     qDebug() << "== XesamDBusTest::tearDown() ==";
+    delete listener;
     delete xesam;
 }
 
@@ -118,8 +121,14 @@ XesamDBusTest::testSimpleSearch() {
         xesam->CloseSearch("invalid search id"));
     // close the search object
     CHECK(xesam->CloseSearch(search));
+    // closing the search object should only work once
+    CHECKINVALID("closing a search should only be possible once.",
+        xesam->CloseSearch(search));
     // close the session session
     CHECK(xesam->CloseSession(session));
+    // closing the session object should only work once
+    CHECKINVALID("closing a session should only be possible once.",
+        xesam->CloseSession(session));
 }
 void
 XesamDBusTest::testSetProperty() {
@@ -140,6 +149,25 @@ XesamDBusTest::testSetProperty() {
        = xesam->SetProperty(session, "search.live", QDBusVariant(false));
     CHECK(newValue);
 
+    // close the session session
+    CHECK(xesam->CloseSession(session));
+}
+void
+XesamDBusTest::testSimpleSearchSignals() {
+    qDebug() << "== XesamDBusTest::testSimpleSearchSignals() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    // check that the server gives back a valid search id
+    QDBusReply<QString> search = xesam->NewSearch(session, "<userQuery>hello</userQuery>");
+    CHECK(search);
+    // check that the search can be started
+    CHECK(xesam->StartSearch(search));
+    // check that the search is finite
+    CPPUNIT_ASSERT_MESSAGE("Search did not finish.",
+        listener->waitForSearchToFinish(search, 1000));
+    // close the search object
+    CHECK(xesam->CloseSearch(search));
     // close the session session
     CHECK(xesam->CloseSession(session));
 }

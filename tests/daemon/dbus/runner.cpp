@@ -37,6 +37,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QCoreApplication>
 using namespace std;
 /**
  * Retrieve the environment settings as a QMap<QString, QString>.
@@ -202,7 +203,7 @@ doTests() {
     // Adds the test to the list of test to run
     CppUnit::TextTestRunner runner;
     runner.addTest( suite );
-    
+
     // Create the event manager and test controller
     CppUnit::TestResult controller;
 
@@ -235,6 +236,7 @@ int
 main(int argc, char** argv) {
     // unset all environment variables except HOME
     clearEnvironment();
+    QCoreApplication app(argc, argv);
 
     // start the required daemons and wait for them to start up
     int dbuspid = startDBusDaemon();

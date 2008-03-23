@@ -24,6 +24,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class OrgFreedesktopXesamSearchInterface;
+class XesamListener;
 
 namespace strigiunittest {
 
@@ -32,10 +33,12 @@ private:
     CPPUNIT_TEST_SUITE( XesamDBusTest );
     CPPUNIT_TEST( testSimpleSession );
     CPPUNIT_TEST( testSimpleSearch );
+    CPPUNIT_TEST( testSimpleSearchSignals );
     CPPUNIT_TEST( testSetProperty );
     CPPUNIT_TEST_SUITE_END();
 private:
     OrgFreedesktopXesamSearchInterface* xesam;
+    XesamListener* listener;
 public:
 
     void setUp();
@@ -43,6 +46,7 @@ public:
 
     void testSimpleSession();
     void testSimpleSearch();
+    void testSimpleSearchSignals();
     void testSetProperty();
     bool waitForStatusIdle(int milliseconds);
 };
