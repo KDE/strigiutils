@@ -76,6 +76,45 @@ XesamDBusTest::testSimpleSession() {
     // close the session session
     CHECK(xesam->CloseSession(session));
 }
+/**
+ * This test does a simple search.
+ **/
+void
+XesamDBusTest::testSimpleSearch() {
+    qDebug() << "== XesamDBusTest::testSimpleSearch() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    // check if the server gives on an invalid query
+    QDBusReply<QString> search = xesam->NewSearch(session, "invalid xml");
+    CHECKINVALID("This search should fail.", search);
+    // check that the server gives an error on an invalid session
+    search = xesam->NewSearch("nosession", "<userQuery>hello</userQuery>");
+    CHECKINVALID("This search should fail.", search);
+    // check that the server gives back a valid search id
+    search = xesam->NewSearch(session, "<userQuery>hello</userQuery>");
+    CHECK(search);
+    // these functions should give an error when they are called before the
+    // search is started
+    CHECKINVALID("This should not be possible when a search has not yet been "
+        "started.", xesam->GetHitCount(search));
+    CHECKINVALID("This should not be possible when a search has not yet been "
+        "started.", xesam->GetHits(search, 100));
+
+    // check that the search can be started
+    CHECK(xesam->StartSearch(search));
+    // check that an invalid search cannot be started
+    CHECKINVALID("It should not be possible to start and invalid search.",
+        xesam->StartSearch("invalid search id"));
+
+    // check for an error on closing a nonexistant search
+    CHECKINVALID("Closing an invalid search should not be possible.",
+        xesam->CloseSearch("invalid search id"));
+    // close the search object
+    CHECK(xesam->CloseSearch(search));
+    // close the session session
+    CHECK(xesam->CloseSession(session));
+}
 void
 XesamDBusTest::testSetProperty() {
     qDebug() << "== XesamDBusTest::testSetProperty() ==";

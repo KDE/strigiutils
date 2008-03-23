@@ -31,6 +31,7 @@ class XesamDBusTest : public CppUnit::TestFixture {
 private:
     CPPUNIT_TEST_SUITE( XesamDBusTest );
     CPPUNIT_TEST( testSimpleSession );
+    CPPUNIT_TEST( testSimpleSearch );
     CPPUNIT_TEST( testSetProperty );
     CPPUNIT_TEST_SUITE_END();
 private:
@@ -41,6 +42,7 @@ public:
     void tearDown();
 
     void testSimpleSession();
+    void testSimpleSearch();
     void testSetProperty();
     bool waitForStatusIdle(int milliseconds);
 };
