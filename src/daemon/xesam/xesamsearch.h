@@ -31,7 +31,7 @@ class Variant;
 }
 class XesamSession;
 class XesamSearch {
-public:
+private:
     class Private;
     Private* p;
 
@@ -45,17 +45,16 @@ public:
     void operator=(const XesamSearch& xs);
     bool operator==(const XesamSearch& xs) { return p == xs.p; }
     void startSearch();
-    void countHits(void* msg);
+    void getHitCount(void* msg);
     void getHits(void* msg, int32_t num);
     std::vector<std::vector<Strigi::Variant> > getHitData(
         const std::vector<int32_t>& hit_ids,
         const std::vector<std::string>& properties);
 
-    // once the count has been determined, send out the messages
-    //void setCount(int count);
     XesamSession session() const;
     std::string name() const;
     Strigi::Query query() const;
+    // once the count has been determined, send out the messages
     void setCount(int c);
     bool isValid() const;
 };

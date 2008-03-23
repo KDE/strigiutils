@@ -28,6 +28,7 @@
 #include "queue/jobqueue.h"
 #include "queue/job.h"
 #include <iostream>
+#include <stdexcept>
 using namespace std;
 using namespace Strigi;
 
@@ -41,13 +42,15 @@ public:
     std::list<void *> countMessages;
     int hitcount;
     bool valid;
+    bool started;
     STRIGI_MUTEX_DEFINE(mutex);
 
     Private(XesamSession& s, const std::string& n, const std::string& q);
     ~Private();
-    void countHits(void*);
+    void getHitCount(void*);
     void setCount(int c);
     void getHits(void* msg, int32_t num);
+    void startSearch();
 };
 
 class CountJob : public Job {
@@ -105,7 +108,9 @@ XesamSearch::operator=(const XesamSearch& xs) {
     p->ref();
 }
 XesamSearch::Private::Private(XesamSession& s, const std::string& n,
-        const std::string& q) :name(n), session(s) {
+        const std::string& q) :name(n), session(s), hitcount(-1),
+            started(false) {
+    STRIGI_MUTEX_INIT(&mutex);
 
     int userLangStart = q.find("<userQuery");
     if (userLangStart == -1) {
@@ -123,44 +128,35 @@ XesamSearch::Private::Private(XesamSession& s, const std::string& n,
         return;
     }
     queryString.assign(q.substr(userLangStart, userLangEnd-userLangStart));
+    // TODO add code to check is the query was valid
     query = Strigi::QueryParser::buildQuery(queryString);
-
-    hitcount = -1;
     valid = true;
-    STRIGI_MUTEX_INIT(&mutex);
-    // retrieve number of hits already
-    CountJob* job = new CountJob(XesamSearch(this));
-    valid = session.liveSearch().queue().addJob(job);
-    if (valid) {
-        STRIGI_MUTEX_INIT(&mutex);
-    } else {
-        delete job;
-    }
 }
 XesamSearch::Private::~Private() {
     STRIGI_MUTEX_DESTROY(&mutex);
 }
 void
-XesamSearch::countHits(void* msg) {
-    p->countHits(msg);
+XesamSearch::getHitCount(void* msg) {
+    p->getHitCount(msg);
 }
 void
-XesamSearch::Private::countHits(void* msg) {
-    if (!valid) {
+XesamSearch::Private::getHitCount(void* msg) {
+    if (!started) {
+        throw runtime_error("Search has not been started.");
+    } else if (!valid) {
         // send an error message
-        session.liveSearch().GetHitCountResponse(msg, "Search is not valid.", 0);
-    } else {
-        STRIGI_MUTEX_LOCK(&mutex);
-        if (hitcount == -1) {
-            // count is not yet know, put msg in list of msgs to be sent when
-            // we know the count
-            countMessages.push_back(msg);
-        } else {
-            // we know the count and can send it
-            session.liveSearch().GetHitCountResponse(msg, 0, hitcount);
-        }
-        STRIGI_MUTEX_UNLOCK(&mutex);
+        throw runtime_error("Search is not valid.");
     }
+    STRIGI_MUTEX_LOCK(&mutex);
+    if (hitcount == -1) {
+        // count is not yet know, put msg in list of msgs to be sent when
+        // we know the count
+        countMessages.push_back(msg);
+    } else {
+        // we know the count and can send it
+        session.liveSearch().GetHitCountResponse(msg, 0, hitcount);
+    }
+    STRIGI_MUTEX_UNLOCK(&mutex);
 }
 void
 XesamSearch::getHits(void* msg, int32_t num) {
@@ -168,16 +164,18 @@ XesamSearch::getHits(void* msg, int32_t num) {
 }
 void
 XesamSearch::Private::getHits(void* msg, int32_t num) {
+    if (!started) {
+        throw runtime_error("Search has not been started.");
+    } else if (!valid) {
+        // send an error message
+        throw runtime_error("Search is not valid.");
+    }
     vector<vector<Variant> > v;
-    if (!valid) {
-        session.liveSearch().GetHitsResponse(msg, "Search is not valid.", v);
-    } else {
-        GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, 0, num);
-        valid = session.liveSearch().queue().addJob(job);
-        if (!valid) {
-            delete job;
-            session.liveSearch().GetHitsResponse(msg, 0, v);
-        }
+    GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, 0, num);
+    bool ok = session.liveSearch().queue().addJob(job);
+    if (!ok) {
+        delete job;
+        throw runtime_error("Error processing request.");
     }
 }
 std::vector<std::vector<Variant> >
@@ -218,4 +216,22 @@ XesamSearch::session() const {
 bool
 XesamSearch::isValid() const {
     return p->valid;
+}
+void
+XesamSearch::startSearch() {
+    p->startSearch();
+}
+void
+XesamSearch::Private::startSearch() {
+    if (started) {
+        throw runtime_error("Search was already started.");
+    }
+    started = true;
+    // retrieve number of hits already
+    CountJob* job = new CountJob(XesamSearch(this));
+    bool ok = session.liveSearch().queue().addJob(job);
+    if (!ok) {
+        delete job;
+        throw runtime_error("Error starting search.");
+    }
 }

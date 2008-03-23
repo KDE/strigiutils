@@ -95,12 +95,17 @@ XesamLiveSearch::NewSearch(const string& session, const string& query_xml) {
 }
 void
 XesamLiveSearch::StartSearch(const string& search) {
+    map<string, XesamSearch>::iterator i = p->searches.find(search);
+    if (i == p->searches.end()) {
+        throw runtime_error("Search is not registered");
+    }
+    i->second.startSearch();
 }
 void
 XesamLiveSearch::GetHitCount(void* msg, const string& search) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-        i->second.countHits(msg);
+        i->second.getHitCount(msg);
     } else {
         GetHitCountResponse(msg, "Search is not registered.", 0);
     }
