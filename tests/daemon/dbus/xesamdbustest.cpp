@@ -45,6 +45,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( XesamDBusTest );
 void
 XesamDBusTest::setUp() {
     qDebug() << "== XesamDBusTest::setUp() ==";
+    qDBusRegisterMetaType<VariantListVector>();
+    qDBusRegisterMetaType<IntList>();
     xesam = new OrgFreedesktopXesamSearchInterface("org.freedesktop.xesam.searcher",
         "/org/freedesktop/xesam/searcher/main", QDBusConnection::sessionBus());
 }
@@ -106,6 +108,10 @@ XesamDBusTest::testSimpleSearch() {
     // check that an invalid search cannot be started
     CHECKINVALID("It should not be possible to start and invalid search.",
         xesam->StartSearch("invalid search id"));
+    // we should be able to retrieve the number of hits now
+    CHECK(xesam->GetHitCount(search));
+    // also getting the next hits should be possible
+    CHECK(xesam->GetHits(search, 100));
 
     // check for an error on closing a nonexistant search
     CHECKINVALID("Closing an invalid search should not be possible.",
