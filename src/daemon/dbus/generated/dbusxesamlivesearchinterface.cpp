@@ -175,7 +175,13 @@ PrivateDBusXesamLiveSearchInterface::GetHitCount(DBusMessage* dbm, DBusConnectio
         writer.setError("Too many arguments.");
     } else {
         dbus_message_ref(dbm);
-        impl.GetHitCount(dbm, search);
+        try {
+            impl.GetHitCount(dbm, search);
+        } catch (const std::exception& e) {
+            DBusMessageWriter writer(conn, dbm);
+            writer.setError(e.what());
+            dbus_message_unref(dbm);
+        }
     }
 }
 void
@@ -192,7 +198,13 @@ PrivateDBusXesamLiveSearchInterface::GetHits(DBusMessage* dbm, DBusConnection* c
         writer.setError("Too many arguments.");
     } else {
         dbus_message_ref(dbm);
-        impl.GetHits(dbm, search,num);
+        try {
+            impl.GetHits(dbm, search,num);
+        } catch (const std::exception& e) {
+            DBusMessageWriter writer(conn, dbm);
+            writer.setError(e.what());
+            dbus_message_unref(dbm);
+        }
     }
 }
 void
@@ -248,7 +260,13 @@ PrivateDBusXesamLiveSearchInterface::GetHitData(DBusMessage* dbm, DBusConnection
         writer.setError("Too many arguments.");
     } else {
         dbus_message_ref(dbm);
-        impl.GetHitData(dbm, search,hit_ids,fields);
+        try {
+            impl.GetHitData(dbm, search,hit_ids,fields);
+        } catch (const std::exception& e) {
+            DBusMessageWriter writer(conn, dbm);
+            writer.setError(e.what());
+            dbus_message_unref(dbm);
+        }
     }
 }
 void

@@ -166,7 +166,8 @@ sub printASyncFunctionDefinition {
     print FH "        DBusMessageWriter writer(conn, dbm);\n";
     print FH "        writer.setError(\"Too many arguments.\");\n";
     print FH "    } else {\n";
-    print FH "        dbus_message_ref(dbm);\n        ";
+    print FH "        dbus_message_ref(dbm);\n";
+    print FH "        try {\n            ";
     print FH "impl.$name(dbm, ";
     for ($i=3; $i < @a; $i+=2) {
         print FH $a[$i];
@@ -174,7 +175,12 @@ sub printASyncFunctionDefinition {
             print FH ",";
         }
     }
-    print FH ");\n    }\n";
+    print FH ");\n        } catch (const std::exception& e) {\n";
+    print FH "            DBusMessageWriter writer(conn, dbm);\n";
+    print FH "            writer.setError(e.what());\n";
+    print FH "            dbus_message_unref(dbm);\n";
+    print FH "        }\n";
+    print FH "    }\n";
     print FH "}\n";
 }
 sub printIntrospectionXML {
