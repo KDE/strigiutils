@@ -82,8 +82,8 @@ public:
         reader->getHits(search.query(), search.session().hitFields(), types,
             v, offset, num);
         search.session().liveSearch().GetHitsResponse(msg, v);
-#endif	
-    } 
+#endif
+    }
 };
 
 XesamSearch::XesamSearch(XesamSession& s, const std::string& n,
@@ -214,4 +214,8 @@ XesamSearch::query() const {
 XesamSession
 XesamSearch::session() const {
     return p->session;
+}
+bool
+XesamSearch::isValid() const {
+    return p->valid;
 }

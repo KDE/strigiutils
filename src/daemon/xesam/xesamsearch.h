@@ -57,6 +57,7 @@ public:
     std::string name() const;
     Strigi::Query query() const;
     void setCount(int c);
+    bool isValid() const;
 };
 
 #endif
