@@ -75,8 +75,6 @@ public:
     GetHitsJob(XesamSearch s, void* m, int off, int n) :search(s), msg(m),
         offset(off), num(n) {}
     void run() {
-#ifdef ENABLE_NEWXESAM
-
         IndexReader* reader
             = search.session().liveSearch().indexManager()->indexReader();
         vector<Variant::Type> types(search.session().hitFields().size(),
@@ -84,8 +82,7 @@ public:
         vector<vector<Variant> > v;
         reader->getHits(search.query(), search.session().hitFields(), types,
             v, offset, num);
-        search.session().liveSearch().GetHitsResponse(msg, v);
-#endif
+        search.session().liveSearch().GetHitsResponse(msg, 0, v);
     }
 };
 
