@@ -188,6 +188,9 @@ XesamSession::newSearch(const std::string& query_xml) {
     str << "strigisearch" << random();
     string name(str.str());
     XesamSearch search(*this, name, query_xml);
+    if (!search.isValid()) {
+        throw runtime_error("Xesam query is invalid.");
+    }
     p->searches.push_back(search);
     p->xesam.addSearch(name, search);
     return search.name();
