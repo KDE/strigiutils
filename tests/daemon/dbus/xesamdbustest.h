@@ -30,7 +30,8 @@ namespace strigiunittest {
 class XesamDBusTest : public CppUnit::TestFixture {
 private:
     CPPUNIT_TEST_SUITE( XesamDBusTest );
-    CPPUNIT_TEST( testStartSession );
+    CPPUNIT_TEST( testSimpleSession );
+    CPPUNIT_TEST( testSetProperty );
     CPPUNIT_TEST_SUITE_END();
 private:
     OrgFreedesktopXesamSearchInterface* xesam;
@@ -39,7 +40,8 @@ public:
     void setUp();
     void tearDown();
 
-    void testStartSession();
+    void testSimpleSession();
+    void testSetProperty();
     bool waitForStatusIdle(int milliseconds);
 };
 

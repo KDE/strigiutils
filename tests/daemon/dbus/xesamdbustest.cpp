@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2008 Jos van den Oever <jos@vandenoever.info> 
+ * Copyright (C) 2008 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -54,21 +54,47 @@ XesamDBusTest::tearDown() {
     qDebug() << "== XesamDBusTest::tearDown() ==";
     delete xesam;
 }
-template<class T>
-void
-check(QDBusReply<T> r) {
-    CPPUNIT_ASSERT_MESSAGE((const char*)r.error().message().toUtf8(), !r.error().isValid());
-}
 
+#define CHECK(REPLY) { const QDBusError error = REPLY.error(); \
+   CPPUNIT_ASSERT_MESSAGE((const char*)error.message().toUtf8(), \
+   !error.isValid()); }
+
+#define CHECKINVALID(MSG, REPLY) CPPUNIT_ASSERT_MESSAGE(MSG, \
+  REPLY.error().isValid());
+
+/**
+ * This test opens and closes a session.
+ **/
 void
-XesamDBusTest::testStartSession() {
-    qDebug() << "== XesamDBusTest::testStartSession() ==";
+XesamDBusTest::testSimpleSession() {
+    qDebug() << "== XesamDBusTest::testSimpleSession() ==";
     // try to get the status of the daemon
-    check(xesam->GetState());
-    // start a new session 
+    CHECK(xesam->GetState());
+    // start a new session
     QDBusReply<QString> session = xesam->NewSession();
-    check(session);
-    // close the session session 
-    check(xesam->CloseSession(session));
+    CHECK(session);
+    // close the session session
+    CHECK(xesam->CloseSession(session));
 }
+void
+XesamDBusTest::testSetProperty() {
+    qDebug() << "== XesamDBusTest::testSetProperty() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    // set a non-existant property
+    QDBusReply<QDBusVariant> newValue
+       = xesam->SetProperty(session, "nonexistant", QDBusVariant("whatever"));
+    CHECKINVALID("Setting this property should fail.", newValue);
+    // set a valid property with an invalid value
+    newValue
+       = xesam->SetProperty(session, "search.live", QDBusVariant("whatever"));
+    CHECKINVALID("Setting this property should fail.", newValue);
+    // set a valid property with a valid value
+    newValue
+       = xesam->SetProperty(session, "search.live", QDBusVariant(false));
+    CHECK(newValue);
 
+    // close the session session
+    CHECK(xesam->CloseSession(session));
+}
