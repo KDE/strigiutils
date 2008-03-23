@@ -87,24 +87,58 @@ XesamSession::Private::setProperty(const std::string& prop, const Variant& v) {
     }
     Variant o;
     if (prop == "search.live") {
-         o = searchLive = v.b();
+         if (v.type() == Variant::b_val) {
+             o = searchLive = v.b();
+         } else {
+             throw runtime_error("Value should be boolean.");
+         }
     } else if (prop == "search.blocking") {
-         o = searchBlocking = v.b();
+         if (v.type() == Variant::b_val) {
+             o = searchBlocking = v.b();
+         } else {
+             throw runtime_error("Value should be boolean.");
+         }
     } else if (prop == "hit.fields") {
-         o = hitFields = v.as();
+         if (v.type() == Variant::as_val) {
+             o = hitFields = v.as();
+         } else {
+             throw runtime_error("Value should be a string array.");
+         }
     } else if (prop == "hit.fields.extended") {
-         o = hitFieldsExtended = v.as();
+         if (v.type() == Variant::as_val) {
+             o = hitFieldsExtended = v.as();
+         } else {
+             throw runtime_error("Value should be a string array.");
+         }
     } else if (prop == "hit.snippet.length") {
-         o = hitSnippetLength = max(v.i(), 0);
+         if (v.type() == Variant::i_val) {
+             o = hitSnippetLength = max(v.i(), 0);
+         } else {
+             throw runtime_error("Value should be an integer.");
+         }
     } else if (prop == "sort.primary") {
-         o = sortPrimary = v.s();
+         if (v.type() == Variant::s_val) {
+             o = sortPrimary = v.s();
+         } else {
+             throw runtime_error("Value should be a string.");
+         }
     } else if (prop == "sort.secondary") {
-         o = sortSecondary = v.s();
+         if (v.type() == Variant::s_val) {
+             o = sortSecondary = v.s();
+         } else {
+             throw runtime_error("Value should be a string.");
+         }
     } else if (prop == "sort.order") {
-         sortAscending = v.s() == "ascending";
-         o = sortAscending ?"ascending" :"descending";
+         if (v.type() == Variant::s_val) {
+             sortAscending = v.s() == "ascending";
+             o = sortAscending ?"ascending" :"descending";
+         } else {
+             throw runtime_error("Value should be a string.");
+         }
     } else if (prop == "vendor.id") {
          o = getProperty(prop);
+    } else {
+         throw runtime_error(prop + " is an unknown property.");
     }
     return o;
 }
