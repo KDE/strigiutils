@@ -197,6 +197,9 @@ XesamSearch::Private::setCount(int c) {
         countMessages.clear();
     }
     STRIGI_MUTEX_UNLOCK(&mutex);
+    if (c > 0) {
+        session.liveSearch().HitsAdded(name, c);
+    }
     session.liveSearch().SearchDone(name);
 }
 string

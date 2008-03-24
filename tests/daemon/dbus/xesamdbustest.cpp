@@ -158,14 +158,26 @@ XesamDBusTest::testSimpleSearchSignals() {
     // start a new session
     QDBusReply<QString> session = xesam->NewSession();
     CHECK(session);
+    // turn off live search
+    QDBusReply<QDBusVariant> livesearch = xesam->SetProperty(session,
+        "search.live", QDBusVariant(false));
+    CHECK(livesearch);
     // check that the server gives back a valid search id
-    QDBusReply<QString> search = xesam->NewSearch(session, "<userQuery>hello</userQuery>");
+    QDBusReply<QString> search = xesam->NewSearch(session,
+        "<userQuery>hello</userQuery>");
     CHECK(search);
     // check that the search can be started
     CHECK(xesam->StartSearch(search));
     // check that the search is finite
     CPPUNIT_ASSERT_MESSAGE("Search did not finish.",
         listener->waitForSearchToFinish(search, 1000));
+    // check that the number of hits is available
+    QDBusReply<uint> hitcount = xesam->GetHitCount(search);
+    CHECK(hitcount);
+    // check that this matches the number that was reported via HitsAdded
+    CPPUNIT_ASSERT_MESSAGE("Number of hits reported is not consistent.",
+        hitcount == listener->getNumberOfReportedHits(search));
+
     // close the search object
     CHECK(xesam->CloseSearch(search));
     // close the session session

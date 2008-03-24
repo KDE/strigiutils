@@ -59,15 +59,21 @@ ENDIF(NOT WIN32)
 
 include_directories(eventlistener .)
 
-add_executable(strigidaemon
+SET(strigidaemon_SRCS 
 	daemon.cpp
 	indexscheduler.cpp
 	interface.cpp
 	socketserver.cpp
 	strigilogging.h
-	strigithread.cpp
-	queue/jobqueue.cpp
-)
+	strigithread.cpp)
+
+IF(NOT WIN32)
+  SET(strigidaemon_SRCS ${strigidaemon_SRCS} queue/jobqueue.cpp)
+ELSE(NOT WIN32)
+  SET(strigidaemon_SRCS ${strigidaemon_SRCS} queue/jobqueue.cpp)
+ENDIF(NOT WIN32)
+
+add_executable(strigidaemon ${strigidaemon_SRCS})
 
 IF (CMAKE_LIB_SOCKET_HAS_CONNECT)
     target_link_libraries(strigidaemon socket nsl)

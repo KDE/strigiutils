@@ -89,6 +89,8 @@ public:
     BooleanQuery* createBooleanQuery(const Strigi::Query& query);
     static void addField(lucene::document::Field* field, IndexedDocument&);
     Variant getFieldValue(lucene::document::Field* field, Variant::Type) const;
+
+    vector<IndexedDocument> strigiSpecial(const string& command);
 };
 const wchar_t*
 CLuceneIndexReader::Private::systemlocation() {
@@ -421,6 +423,13 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     if (!checkReader()) {
         return results;
     }
+if (q.fields().size() > 0) cerr << q.fields()[0] << endl;
+    // handle special commands
+    if (q.fields().size() == 1 && q.fields()[0] == ""
+            && q.term().string().substr(0, 14) == "strigispecial:") {
+        return p->strigiSpecial(q.term().string());
+    }
+
     Query* bq = p->createQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
@@ -782,4 +791,42 @@ CLuceneIndexReader::getChildren(const std::string& parent,
     }
     searcher.close();
     _CLDELETE(q);
+}
+vector<IndexedDocument>
+CLuceneIndexReader::Private::strigiSpecial(const string& command) {
+    vector<IndexedDocument> r;
+cerr << "strigispecial " << command << endl;
+    // we are going to count the size of each of the fields in this index
+    // this requires that we loop through all fields
+    lucene::index::TermEnum* terms = reader.reader->terms();
+
+    map<const TCHAR *, int64_t> lengths;
+    while (terms->next()) {
+        lengths[terms->term()->field()] += terms->term()->textLength();
+       // cerr << wchartoutf8(terms->term()->field()) << '\t'
+        //    << wchartoutf8(terms->term()->text()) << endl;
+    }
+    int64_t total = 0;
+    for (map<const TCHAR *, int64_t>::const_iterator i = lengths.begin();
+            i != lengths.end(); ++i) {
+        cerr << wchartoutf8(i->first) << '\t' << i->second << endl;
+        total += i->second;
+    }
+    terms->close();
+    cerr << "total" << '\t' << total << endl;
+
+    int32_t max = reader.reader->numDocs();
+    for (int32_t i=0; i < max; ++i) {
+        lucene::document::Document* d = reader.reader->document(i);
+        lucene::document::DocumentFieldEnumeration* e = d->fields();
+        while (e->hasMoreElements()) {
+            Field* f = e->nextElement();
+            if (f->isStored()) {
+                total += wcslen(f->stringValue());
+            }
+        }
+        delete d;
+    }
+    cerr << "total" << '\t' << total << endl;
+    return r;
 }
