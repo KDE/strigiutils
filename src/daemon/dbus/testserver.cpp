@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2008 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,11 +17,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "dbusserver.h"
+#include "dbushandler.h"
+#include "dbustestinterface.h"
+
 int
 main() {
-    DBusServer server(0, 0);
-    server.listen();
+    DBusHandler handler;
+    DBusTestInterface dbusinterface("/whatever", handler.connection());
+    handler.addBusName("test.server");
+    handler.addInterface("/whatever", dbusinterface.interface());
+    handler.handle();
 
     return 0;
 }

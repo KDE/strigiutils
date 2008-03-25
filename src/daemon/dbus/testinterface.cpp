@@ -32,7 +32,7 @@ TestInterface::concat(const std::string& a, const std::string& b) {
 }
 bool
 TestInterface::upload(const std::vector<char>& upload) {
-    printf("got file of size %i uploaded\n", upload.size());
+    printf("got file of size %i uploaded\n", (int)upload.size());
     return true;
 }
 map<string, string>
