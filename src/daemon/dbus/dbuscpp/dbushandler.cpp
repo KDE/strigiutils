@@ -33,7 +33,6 @@
 using namespace std;
 
 DBusHandler::DBusHandler() {
-    int ret;
     DBusError err;
 
     pipe(quitpipe);
@@ -96,16 +95,15 @@ DBusHandler::handle() {
         printf("could not get connection fd\n");
     }
     dbus_threads_init_default();
-    //dbus_connection_set_exit_on_disconnect(conn, FALSE);
-    //printf("exit on disconnect: %i\n", conn->exit_on_disconnect);
 
     // loop, testing for new messages
     fd_set rfds;
     int retval;
     struct timeval tv;
     int max = ((fd>*quitpipe) ?fd :*quitpipe)+1;
-    // handle messages in queue
-    //while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS) {}
+    // handle messages that are initially in queue
+    while (dbus_connection_dispatch(conn) == DBUS_DISPATCH_DATA_REMAINS) {}
+    dbus_connection_flush(conn);
     while (dbus_connection_get_is_connected(conn)) {
         FD_ZERO(&rfds);
         FD_SET(fd, &rfds);
