@@ -94,6 +94,12 @@ public:
     const std::vector<std::string>& fields() const;
     std::vector<Query>& subQueries();
     const std::vector<Query>& subQueries() const;
+
+    /**
+     * determine if the query is valid or not.
+     * A valid query may not contain invalid subqueries.
+     **/
+    bool valid() const;
 };
 }
 

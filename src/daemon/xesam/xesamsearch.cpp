@@ -109,25 +109,17 @@ XesamSearch::Private::Private(XesamSession& s, const std::string& n,
             started(false) {
     STRIGI_MUTEX_INIT(&mutex);
 
-    int userLangStart = q.find("<userQuery");
-    if (userLangStart == -1) {
-        valid = false;
-        return;
+    // simple check to make sure this is a xesam query
+    valid = q.find("<request") != string::npos;
+    if (!valid) {
+        throw runtime_error("Error parsing query.");
     }
-    userLangStart = q.find(">", userLangStart)+1;
-    if (userLangStart == -1) {
-        valid = false;
-        return;
+
+    query = Strigi::QueryParser::buildQuery(q);
+    valid = query.valid();
+    if (!valid) {
+        throw runtime_error("Error parsing query.");
     }
-    int userLangEnd = q.find("</userQuery", userLangStart);
-    if (userLangEnd == -1) {
-        valid = false;
-        return;
-    }
-    queryString.assign(q.substr(userLangStart, userLangEnd-userLangStart));
-    // TODO add code to check is the query was valid
-    query = Strigi::QueryParser::buildQuery(queryString);
-    valid = true;
 }
 XesamSearch::Private::~Private() {
     STRIGI_MUTEX_DESTROY(&mutex);

@@ -54,7 +54,10 @@ public:
     // Type
     Query::Type type;
 
-    QueryPrivate() :boost(1), negate(false), type(Query::Contains) {}
+    bool valid;
+
+    QueryPrivate() :boost(1), negate(false), type(Query::Contains), valid(true)
+    {}
 };
 
 Term::Term() :p(new TermPrivate()) {
@@ -229,6 +232,10 @@ vector<Query>&
 Query::subQueries() {
     return p->subs;
 }
+bool
+Query::valid() const {
+    return p->valid;
+}
 ostream &
 operator<< ( ostream &stream, Strigi::Query query )
 {
@@ -249,7 +256,7 @@ operator<< ( ostream &stream, Strigi::Query query )
         stream << "<field/>" << endl;
 
     string typeTag;
-    
+
     switch ( query.type() )
     {
         case Strigi::Query::And:
@@ -305,7 +312,7 @@ operator<< ( ostream &stream, Strigi::Query query )
             typeTag = "Keyword";
             break;
     }
-    
+
     if (!query.subQueries().empty())
     {
         stream << "<subQueries>" << endl;
@@ -318,9 +325,9 @@ operator<< ( ostream &stream, Strigi::Query query )
         }
         stream << "</subQueries>" << endl;
     }
-    
+
     stream << "</" << typeTag << ">" << endl;
-    
+
     stream << "</query>" << endl;
     return stream;
 }
