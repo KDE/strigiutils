@@ -35,30 +35,36 @@ class VariantPrivate;
  **/
 class STREAMANALYZER_EXPORT Variant {
 public:
-    enum Type {b_val, i_val, s_val, as_val};
+    enum Type {b_val, i_val, s_val, as_val, aas_val, u_val};
 private:
     VariantPrivate* p;
 public:
     Variant();
     Variant(bool v);
     Variant(int32_t v);
+    Variant(uint32_t v);
     Variant(const char* v);
     Variant(const std::string& v);
     Variant(const std::vector<std::string>& v);
+    Variant(const std::vector<std::vector<std::string> >& v);
     Variant(const Variant& v);
     ~Variant();
     Type type() const;
     const Variant& operator=(bool v);
     const Variant& operator=(int32_t v);
+    const Variant& operator=(uint32_t v);
     const Variant& operator=(const char* v);
     const Variant& operator=(const std::string& v);
     const Variant& operator=(const std::vector<std::string>& v);
+    const Variant& operator=(const std::vector<std::vector<std::string> >& v);
     const Variant& operator=(const Variant& v);
     bool isValid() const;
     bool b() const;
     int32_t i() const;
+    int32_t u() const;
     std::string s() const;
     std::vector<std::string> as() const;
+    std::vector<std::vector<std::string> > aas() const;
 };
 
 }
