@@ -48,6 +48,7 @@ XesamDBusTest::setUp() {
     qDebug() << "== XesamDBusTest::setUp() ==";
     qDBusRegisterMetaType<VariantListVector>();
     qDBusRegisterMetaType<IntList>();
+    stringlistlist = qDBusRegisterMetaType<StringListList>();
     xesam = new OrgFreedesktopXesamSearchInterface("org.freedesktop.xesam.searcher",
         "/org/freedesktop/xesam/searcher/main", QDBusConnection::sessionBus());
     listener = new XesamListener(xesam);
@@ -129,6 +130,34 @@ XesamDBusTest::testSimpleSearch() {
     // closing the session object should only work once
     CHECKINVALID("closing a session should only be possible once.",
         xesam->CloseSession(session));
+}
+#define CHECKTYPE(NAME, TYPE) { \
+   QDBusReply<QDBusVariant> reply = xesam->GetProperty(session, NAME); \
+   CHECK(reply); \
+   CPPUNIT_ASSERT_MESSAGE(NAME, reply.value().variant().type() == TYPE); }
+void
+XesamDBusTest::testGetProperty() {
+    qDebug() << "== XesamDBusTest::testGetProperty() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    CHECKTYPE("search.live", QVariant::Bool);
+    CHECKTYPE("hit.fields", QVariant::StringList);
+    CHECKTYPE("hit.fields.extended", QVariant::StringList);
+    CHECKTYPE("hit.snippet.length", QVariant::UInt);
+    CHECKTYPE("sort.primary", QVariant::String);
+    CHECKTYPE("sort.secondary", QVariant::String);
+    CHECKTYPE("sort.order", QVariant::String);
+    CHECKTYPE("vendor.id", QVariant::String);
+    CHECKTYPE("vendor.version", QVariant::UInt);
+    CHECKTYPE("vendor.display", QVariant::String);
+    CHECKTYPE("vendor.xesam", QVariant::UInt);
+    CHECKTYPE("vendor.ontology.fields", QVariant::StringList);
+    CHECKTYPE("vendor.ontology.contents", QVariant::StringList);
+    CHECKTYPE("vendor.ontology.sources", QVariant::StringList);
+    CHECKTYPE("vendor.extensions", QVariant::StringList);
+    CHECKTYPE("vendor.ontologies", stringlistlist);
+    CHECKTYPE("vendor.maxhits", QVariant::UInt);
 }
 void
 XesamDBusTest::testSetProperty() {

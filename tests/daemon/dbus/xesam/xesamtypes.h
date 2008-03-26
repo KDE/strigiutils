@@ -7,5 +7,7 @@ typedef QVector<QList<QVariant> > VariantListVector;
 Q_DECLARE_METATYPE(VariantListVector)
 typedef QList<int> IntList;
 Q_DECLARE_METATYPE(IntList)
+typedef QList<QStringList> StringListList;
+Q_DECLARE_METATYPE(StringListList)
 
 #endif

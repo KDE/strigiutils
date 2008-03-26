@@ -34,11 +34,13 @@ private:
     CPPUNIT_TEST( testSimpleSession );
     CPPUNIT_TEST( testSimpleSearch );
     CPPUNIT_TEST( testSimpleSearchSignals );
+    CPPUNIT_TEST( testGetProperty );
     CPPUNIT_TEST( testSetProperty );
     CPPUNIT_TEST_SUITE_END();
 private:
     OrgFreedesktopXesamSearchInterface* xesam;
     XesamListener* listener;
+    int stringlistlist;
 public:
 
     void setUp();
@@ -47,6 +49,7 @@ public:
     void testSimpleSession();
     void testSimpleSearch();
     void testSimpleSearchSignals();
+    void testGetProperty();
     void testSetProperty();
     bool waitForStatusIdle(int milliseconds);
 };
