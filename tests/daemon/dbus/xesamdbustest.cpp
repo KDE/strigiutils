@@ -43,6 +43,14 @@ using namespace strigiunittest;
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( XesamDBusTest );
 
+QString
+userQuery(const QString& s) {
+    return "<?xml version='1.0' encoding='UTF-8'?>\n"
+        "<request xmlns='http://freedesktop.org/standards/xesam/1.0/query'>\n"
+        " <userQuery>"+s+"</userQuery>\n"
+        "</request>\n";
+}
+
 void
 XesamDBusTest::setUp() {
     qDebug() << "== XesamDBusTest::setUp() ==";
@@ -94,10 +102,10 @@ XesamDBusTest::testSimpleSearch() {
     QDBusReply<QString> search = xesam->NewSearch(session, "invalid xml");
     CHECKINVALID("This search should fail.", search);
     // check that the server gives an error on an invalid session
-    search = xesam->NewSearch("nosession", "<userQuery>hello</userQuery>");
+    search = xesam->NewSearch("nosession", userQuery("hello"));
     CHECKINVALID("This search should fail.", search);
     // check that the server gives back a valid search id
-    search = xesam->NewSearch(session, "<userQuery>hello</userQuery>");
+    search = xesam->NewSearch(session, userQuery("hello"));
     CHECK(search);
     // these functions should give an error when they are called before the
     // search is started
@@ -193,7 +201,7 @@ XesamDBusTest::testSimpleSearchSignals() {
     CHECK(livesearch);
     // check that the server gives back a valid search id
     QDBusReply<QString> search = xesam->NewSearch(session,
-        "<userQuery>hello</userQuery>");
+        userQuery("hello"));
     CHECK(search);
     // check that the search can be started
     CHECK(xesam->StartSearch(search));
