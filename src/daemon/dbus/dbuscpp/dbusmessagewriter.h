@@ -60,5 +60,6 @@ DBusMessageWriter& operator<<(DBusMessageWriter&, const std::map<std::string, st
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::pair<bool, std::string> >& s);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::multimap<int, std::string>&);
 DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::pair<std::string, dbus_uint32_t> >&);
+DBusMessageWriter& operator<<(DBusMessageWriter&, const std::vector<std::vector<std::string> >&);
 
 #endif

@@ -203,6 +203,25 @@ operator<<(DBusMessageWriter& w, const std::vector<std::pair<std::string, dbus_u
         dbus_message_iter_close_container(&sub, &ssub);
     }
     dbus_message_iter_close_container(&w.it, &sub);
-    
+
+    return w;
+}
+DBusMessageWriter&
+operator<<(DBusMessageWriter& w, const std::vector<std::vector<std::string> >& v) {
+    DBusMessageIter sub, ssub;
+    dbus_message_iter_open_container(&w.it, DBUS_TYPE_ARRAY, "as", &sub);
+    vector<vector<string> >::const_iterator i;
+    for (i = v.begin(); i != v.end(); ++i) {
+        dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY,
+            DBUS_TYPE_STRING_AS_STRING, &ssub);
+        vector<string>::const_iterator j;
+        vector<string>::const_iterator end = (*i).end();
+        for (j = (*i).begin(); j != end; ++j) {
+            const char* c = j->c_str();
+            dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
+        }
+        dbus_message_iter_close_container(&w.it, &ssub);
+    }
+    dbus_message_iter_close_container(&w.it, &sub);
     return w;
 }
