@@ -50,10 +50,10 @@ XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
         searchLive(false),
         searchBlocking(true),
         hitSnippetLength(200),
-        sortPrimary("score"),
+        sortPrimary("xesam:score"),
         sortAscending(false),
         hasCreatedSearches(false) {
-    hitFields.push_back("system.location");
+    hitFields.push_back("xesam:url");
 }
 XesamSession::Private::~Private() {
     for (std::list<XesamSearch>::const_iterator i = searches.begin();
@@ -88,13 +88,7 @@ XesamSession::Private::setProperty(const std::string& prop, const Variant& v) {
     Variant o;
     if (prop == "search.live") {
          if (v.type() == Variant::b_val) {
-             o = searchLive = v.b();
-         } else {
-             throw runtime_error("Value should be boolean.");
-         }
-    } else if (prop == "search.blocking") {
-         if (v.type() == Variant::b_val) {
-             o = searchBlocking = v.b();
+             o = false;
          } else {
              throw runtime_error("Value should be boolean.");
          }
@@ -182,7 +176,7 @@ XesamSession::Private::getProperty(const std::string& prop) {
     } else if (prop == "vendor.ontologies") {
          o = vector<vector<string> >();
     } else if (prop == "vendor.maxhits") {
-         o = vector<vector<string> >();
+         o = (uint32_t)100;
     }
     return o;
 }
