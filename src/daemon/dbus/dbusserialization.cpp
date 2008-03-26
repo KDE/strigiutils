@@ -102,6 +102,10 @@ operator<<(DBusMessageWriter& w, const Variant& v) {
         dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "i",&sub.it);
         sub << v.i();
         break;
+    case Variant::u_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "u",&sub.it);
+        sub << v.u();
+        break;
     case Variant::s_val:
         dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT, "s",&sub.it);
         sub << v.s();
@@ -109,6 +113,10 @@ operator<<(DBusMessageWriter& w, const Variant& v) {
     case Variant::as_val:
         dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT,"as",&sub.it);
         sub << v.as();
+        break;
+    case Variant::aas_val:
+        dbus_message_iter_open_container(&w.it, DBUS_TYPE_VARIANT,"aas",&sub.it);
+        sub << v.aas();
         break;
     }
     dbus_message_iter_close_container(&w.it, &sub.it);
