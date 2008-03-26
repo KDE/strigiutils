@@ -175,7 +175,7 @@ VariantPrivate::i() const {
          return -1;
     }
 }
-int32_t
+uint32_t
 Variant::u() const {
     return p->u();
 }
