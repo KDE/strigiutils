@@ -40,7 +40,6 @@ private:
 private:
     OrgFreedesktopXesamSearchInterface* xesam;
     XesamListener* listener;
-    int stringlistlist;
 public:
 
     void setUp();
