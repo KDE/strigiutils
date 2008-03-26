@@ -61,7 +61,7 @@ public:
     bool isValid() const;
     bool b() const;
     int32_t i() const;
-    int32_t u() const;
+    uint32_t u() const;
     std::string s() const;
     std::vector<std::string> as() const;
     std::vector<std::vector<std::string> > aas() const;
