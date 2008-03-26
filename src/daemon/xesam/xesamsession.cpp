@@ -34,7 +34,7 @@ public:
     bool searchBlocking;
     std::vector<std::string> hitFields;
     std::vector<std::string> hitFieldsExtended;
-    int32_t hitSnippetLength;
+    uint32_t hitSnippetLength;
     std::string sortPrimary;
     std::string sortSecondary;
     bool sortAscending;
@@ -151,8 +151,6 @@ XesamSession::Private::getProperty(const std::string& prop) {
     Variant o;
     if (prop == "search.live") {
          o = searchLive;
-    } else if (prop == "search.blocking") {
-         o = searchBlocking;
     } else if (prop == "hit.fields") {
          o = hitFields;
     } else if (prop == "hit.fields.extended") {
@@ -168,15 +166,23 @@ XesamSession::Private::getProperty(const std::string& prop) {
     } else if (prop == "vendor.id") {
          o = "Strigi";
     } else if (prop == "vendor.version") {
-         o = "0.5.1";
+         o = (uint32_t)0;
     } else if (prop == "vendor.display") {
          o = "Strigi Desktop Search";
     } else if (prop == "vendor.xesam") {
-         o = 0;
-    } else if (prop == "vendor.fieldnames") {
+         o = (uint32_t)90;
+    } else if (prop == "vendor.ontology.fields") {
+         o = vector<string>();
+    } else if (prop == "vendor.ontology.contents") {
+         o = vector<string>();
+    } else if (prop == "vendor.ontology.sources") {
          o = vector<string>();
     } else if (prop == "vendor.extensions") {
          o = vector<string>();
+    } else if (prop == "vendor.ontologies") {
+         o = vector<vector<string> >();
+    } else if (prop == "vendor.maxhits") {
+         o = vector<vector<string> >();
     }
     return o;
 }
