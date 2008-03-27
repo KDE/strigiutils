@@ -141,31 +141,40 @@ XesamDBusTest::testSimpleSearch() {
 #define CHECKTYPE(NAME, TYPE) { \
    QDBusReply<QDBusVariant> reply = xesam->GetProperty(session, NAME); \
    CHECK(reply); \
-   CPPUNIT_ASSERT_MESSAGE(NAME, reply.value().variant().userType() == TYPE); }
+   CPPUNIT_ASSERT_MESSAGE(NAME, reply.value().variant().canConvert<TYPE>()); }
 void
 XesamDBusTest::testGetProperty() {
     qDebug() << "== XesamDBusTest::testGetProperty() ==";
     // start a new session
     QDBusReply<QString> session = xesam->NewSession();
     CHECK(session);
-    CHECKTYPE("search.live", QVariant::Bool);
-    CHECKTYPE("hit.fields", QVariant::StringList);
-    CHECKTYPE("hit.fields.extended", QVariant::StringList);
-    CHECKTYPE("hit.snippet.length", QVariant::UInt);
-    CHECKTYPE("sort.primary", QVariant::String);
-    CHECKTYPE("sort.secondary", QVariant::String);
-    CHECKTYPE("sort.order", QVariant::String);
-    CHECKTYPE("vendor.id", QVariant::String);
-    CHECKTYPE("vendor.version", QVariant::UInt);
-    CHECKTYPE("vendor.display", QVariant::String);
-    CHECKTYPE("vendor.xesam", QVariant::UInt);
-    CHECKTYPE("vendor.ontology.fields", QVariant::StringList);
-    CHECKTYPE("vendor.ontology.contents", QVariant::StringList);
-    CHECKTYPE("vendor.ontology.sources", QVariant::StringList);
-    CHECKTYPE("vendor.extensions", QVariant::StringList);
+    CHECKTYPE("search.live", bool);
+    CHECKTYPE("hit.fields", QStringList);
+    CHECKTYPE("hit.fields.extended", QStringList);
+    CHECKTYPE("hit.snippet.length", uint32_t);
+    CHECKTYPE("sort.primary", QString);
+    CHECKTYPE("sort.secondary", QString);
+    CHECKTYPE("sort.order", QString);
+    CHECKTYPE("vendor.id", QString);
+    CHECKTYPE("vendor.version", uint32_t);
+    CHECKTYPE("vendor.display", QString);
+    CHECKTYPE("vendor.xesam", uint32_t);
+    CHECKTYPE("vendor.xesam", uint32_t);
+    CHECKTYPE("vendor.ontology.fields", QStringList);
+    CHECKTYPE("vendor.ontology.contents", QStringList);
+    CHECKTYPE("vendor.ontology.sources", QStringList);
+    CHECKTYPE("vendor.extensions", QStringList);
+    CHECKTYPE("vendor.extensions", QStringList);
     // this complex type is not easy to check :-(
-    //CHECKTYPE("vendor.ontologies", QMetaType::type("StringListList"));
-    CHECKTYPE("vendor.maxhits", QVariant::UInt);
+    // CHECKTYPE("vendor.ontologies", QList<QStringList> );
+    QDBusReply<QDBusVariant> ontologies = xesam->GetProperty(session, "vendor.ontologies");
+    CHECK(ontologies);
+    QDBusArgument arg = qvariant_cast<QDBusArgument>(ontologies.value().variant());
+    CPPUNIT_ASSERT(arg.currentSignature() == "aas");
+    QList<QStringList> l;
+    arg >> l;
+    CPPUNIT_ASSERT(arg.atEnd());
+    CHECKTYPE("vendor.maxhits", uint32_t);
 }
 void
 XesamDBusTest::testSetProperty() {
