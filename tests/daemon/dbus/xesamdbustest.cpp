@@ -173,7 +173,6 @@ XesamDBusTest::testGetProperty() {
     CPPUNIT_ASSERT(arg.currentSignature() == "aas");
     QList<QStringList> l;
     arg >> l;
-    CPPUNIT_ASSERT(arg.atEnd());
     CHECKTYPE("vendor.maxhits", uint32_t);
 }
 void
