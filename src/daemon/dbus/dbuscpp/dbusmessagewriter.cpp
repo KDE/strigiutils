@@ -220,7 +220,7 @@ operator<<(DBusMessageWriter& w, const std::vector<std::vector<std::string> >& v
             const char* c = j->c_str();
             dbus_message_iter_append_basic(&ssub, DBUS_TYPE_STRING, &c);
         }
-        dbus_message_iter_close_container(&w.it, &ssub);
+        dbus_message_iter_close_container(&sub, &ssub);
     }
     dbus_message_iter_close_container(&w.it, &sub);
     return w;
