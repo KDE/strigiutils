@@ -50,12 +50,14 @@ IndexManagerTest::tearDown() {
 
 void
 IndexManagerTest::testIndexReader() {
+    CPPUNIT_ASSERT_MESSAGE("no manager available", m_manager);
     Strigi::IndexReader* reader = m_manager->indexReader();
     CPPUNIT_ASSERT_MESSAGE("reader creation failed", reader);
 }
 
 void
 IndexManagerTest::testIndexWriter() {
+    CPPUNIT_ASSERT_MESSAGE("no manager available", m_manager);
     Strigi::IndexWriter* writer = m_manager->indexWriter();
     CPPUNIT_ASSERT_MESSAGE("writer creation failed", writer);
 }
