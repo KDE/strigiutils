@@ -10,7 +10,8 @@
 - implement a qdbm+sqlite backend
 - implement an rdf backend
 
-- implement xesam (wasabi)
+- implement xesam
+- add a dbus call to disable periodic indexing for e.g. when running on battery
 - add support for numeric < and > in the queries
 - finish the ontologies
 
