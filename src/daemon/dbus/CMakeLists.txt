@@ -1,11 +1,11 @@
 subdirs(dbuscpp)
 include_directories(.. dbuscpp ${CMAKE_CURRENT_BINARY_DIR})
 
-IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+IF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
     set(test_LIBS ${LOG4CXX_LIBRARIES})
     include_directories( ${LOG4CXX_INCLUDE_DIR} )
-ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+ENDIF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
 # if available, use Perl for generating the dbus interfaces.
 # otherwise, just copy them into the build directory

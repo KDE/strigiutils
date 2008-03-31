@@ -38,17 +38,17 @@ IF (ICONV_FOUND)
   add_definitions(-DLIBXML_ICONV_ENABLED)
 ENDIF (ICONV_FOUND)
 
-IF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+IF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
     set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
     set(strigiconfupdater_LIBS ${strigiconfupdater_LIBS} ${LOG4CXX_LIBRARIES})
     include_directories( ${LOG4CXX_INCLUDE_DIR} )
     MESSAGE(STATUS "log4cxx support enabled")
-ENDIF (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+ENDIF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
-IF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
+IF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
     MESSAGE(STATUS "log4cxx WONT be enabled")
-ENDIF (ENABLE_LOG4CXX AND NOT Log4cxx_FOUND)
+ENDIF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
 
 # strigidaemon requires exception support
 IF(NOT WIN32)

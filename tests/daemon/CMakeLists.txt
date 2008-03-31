@@ -3,12 +3,12 @@ subdirs(dbus)
 
 # if we use log4cxx, include it
 # ideally this should be abstracted away in something like STRIGILOG( ... )
-if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+if (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     set(daemonconfiguratortest_LIBS ${daemonconfiguratortest_LIBS}
                                     ${LOG4CXX_LIBRARIES})
     set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
     add_definitions(-DHAVE_LOG4CXX)
-endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+endif (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
 include_directories (.  ${INC_DIR}
                         ${strigi_SOURCE_DIR}/src/xsd

@@ -1,8 +1,8 @@
-if (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+if (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     set(xesam_LIBS ${xesam_LIBS} ${LOG4CXX_LIBRARIES})
     set (INC_DIR ${INC_DIR} ${LOG4CXX_INCLUDE_DIR})
     add_definitions(-DHAVE_LOG4CXX)
-endif (ENABLE_LOG4CXX AND Log4cxx_FOUND)
+endif (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
 include_directories (${LIBXML2_INCLUDE_DIR}
                      ../
