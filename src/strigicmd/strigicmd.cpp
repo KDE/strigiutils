@@ -29,6 +29,7 @@
 #include "query.h"
 #include "queryparser.h"
 #include "xesam2strigi.h"
+#include "../daemon/strigilogging.h"
 #include <algorithm>
 #include <string>
 #include <set>
@@ -662,6 +663,9 @@ main(int argc, char** argv) {
     if (argc < 2) { 
         return usage(argc, argv);
     }
+
+    STRIGI_LOG_INIT_BASIC()
+    
     const char* cmd = argv[1];
     if (!strcmp(cmd,"create")) {
         return create(argc, argv);
