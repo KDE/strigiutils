@@ -505,9 +505,9 @@ xesamquery(int argc, char** argv) {
         }
     }
     else if (ulfile.length() != 0) {
-      printf ("processing xesam userlanguage query from file %s\n", qlfile.c_str());
+      printf ("processing xesam userlanguage query from file %s\n", ulfile.c_str());
 
-      if (xesam2strigi.parse_file ( qlfile, Xesam2Strigi::UserLanguage))
+      if (xesam2strigi.parse_file ( ulfile, Xesam2Strigi::UserLanguage))
         printf ("Xesam query parsed successfully\n");
       else
       {
