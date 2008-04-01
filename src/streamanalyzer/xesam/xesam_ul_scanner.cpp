@@ -38,9 +38,12 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
   string read;
   char ch;
   
-  if (!is_open())
+  if (!is_open()) {
+    STRIGI_LOG_ERROR ("XesamUlScanner::yylex", "file is not open")
     return -1;
+  }
   else if (eof()) {
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex", "yy::xesam_ul_parser::token::END")
     return yy::xesam_ul_parser::token::END;
   }
   
@@ -77,6 +80,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
             (ch == 'w') /*Word based matching*/ )
       {
         *yylval = ch;
+        STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                          "yy::xesam_ul_parser::token::MODIFIER")
         return yy::xesam_ul_parser::token::MODIFIER;
       }
       else {
@@ -106,6 +111,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     {
       // set yylval
       *yylval = read;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::KEYWORD")
       return yy::xesam_ul_parser::token::KEYWORD;
     }
     else if ((read.compare("and") == 0) ||
@@ -114,6 +121,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       //yy::xesam_ul_parser::token::AND (and)|(AND)
       // set yylval
       *yylval = read;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::AND")
       return yy::xesam_ul_parser::token::AND;
     }
     else if ((read.compare("or") == 0) ||
@@ -122,6 +131,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       //yy::xesam_ul_parser::token::OR (or)|(OR)
       // set yylval
       *yylval = read;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::OR")
       return yy::xesam_ul_parser::token::OR;
     }
     else if (!eof()) {
@@ -134,6 +145,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       }
       
       *yylval = read;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::WORD")
       return yy::xesam_ul_parser::token::WORD;
     }
   }
@@ -149,6 +162,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
 
     // set yylval
     *yylval = read;
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                      "yy::xesam_ul_parser::token::RELATION")
     return yy::xesam_ul_parser::token::RELATION;
   }
   else if ((ch == '"')) {
@@ -161,11 +176,15 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       m_quotmarkClosed = true;
       m_modifier = true;
       m_quotmarkCount = 0;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::QUOTMARKCLOSE")
       return yy::xesam_ul_parser::token::QUOTMARKCLOSE;
     }
     else {
       m_quotmarkClosed = false;
       m_modifier = false;
+      STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                        "yy::xesam_ul_parser::token::QUOTMARKOPEN")
       return yy::xesam_ul_parser::token::QUOTMARKOPEN;
     }
   }
@@ -174,6 +193,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     read = ch;
     // set yylval
     *yylval = read;
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                      "yy::xesam_ul_parser::token::MINUS")
     return yy::xesam_ul_parser::token::MINUS;
   }
   else if ((ch == '+')) {
@@ -181,6 +202,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     read = ch;
     // set yylval
     *yylval = read;
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                      "yy::xesam_ul_parser::token::PLUS")
     return yy::xesam_ul_parser::token::PLUS;
   }
   else if ((ch == '&') && !eof() && (peekCh() == '&')) {
@@ -189,6 +212,8 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     read = ch + ch;
     // set yylval
     *yylval = read;
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
+                      "yy::xesam_ul_parser::token::AND")
     return yy::xesam_ul_parser::token::AND;
   }
   else if ((ch == '|') && !eof() && (peekCh() == '|')) {
@@ -197,11 +222,13 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
     read = ch + ch;
     // set yylval
     *yylval = read;
+    STRIGI_LOG_DEBUG ("XesamUlScanner::yylex", "yy::xesam_ul_parser::token::OR")
     return yy::xesam_ul_parser::token::OR;
   }
 
   //unknown char!
   //TODO yyerror?
+  STRIGI_LOG_DEBUG ("XesamUlScanner::yylex", "unknown char, returning -1")
   return -1;
 }
 
