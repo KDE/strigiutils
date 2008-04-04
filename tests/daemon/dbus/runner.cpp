@@ -78,6 +78,8 @@ main(int argc, char** argv) {
     session.setStrigiDaemon(BINARYDIR"/src/daemon/strigidaemon");
     session.setXDGDir(SOURCEDIR"/src/streamanalyzer/fieldproperties");
     session.addBackend("clucene", BINARYDIR"/src/luceneindexer");
+    session.setStrigiDir("strigitestdir");
+    session.setDataDir("testdatadir");
     session.start();
 
     int result = doTests();
