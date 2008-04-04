@@ -26,7 +26,7 @@
 #include "bz2inputstream.h"
 #include "gzipinputstream.h"
 #include <QtCore/QFSFileEngine>
-#include <QtDebug>
+#include <QtCore/QtDebug>
 using namespace Strigi;
 
 FileEntry::~FileEntry() {
