@@ -20,7 +20,7 @@
 #ifndef ARCHIVEENGINEHANDLERTEST_H
 #define ARCHIVEENGINEHANDLERTEST_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class ArchiveEngineHandlerTest : public QObject {
 Q_OBJECT

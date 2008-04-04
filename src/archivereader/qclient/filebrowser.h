@@ -20,7 +20,7 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
-#include <QSplitter>
+#include <QtGui/QSplitter>
 
 class QDirModel;
 class QTreeView;

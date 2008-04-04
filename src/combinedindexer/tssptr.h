@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 #include "indexpluginloader.h"
 
 // thread safe smart pointer
