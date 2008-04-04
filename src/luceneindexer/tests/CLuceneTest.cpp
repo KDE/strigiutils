@@ -21,7 +21,7 @@ int founderrors = 0;
 int
 CLuceneTest(int argc, char*argv[]) {
     setenv("STRIGI_PLUGIN_PATH", BINARYDIR"/src/luceneindexer/", 1);
-    const char* path = ":MEMORY:";
+    const char* path = ":memory:";
 
     // initialize a directory for writing and an indexmanager
     Strigi::IndexManager* manager
