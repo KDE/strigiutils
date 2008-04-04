@@ -96,9 +96,6 @@ stopDBusDaemon(int dbuspid) {
     if (dbuspid) kill(dbuspid, 9);
     qDebug() << "killing " << dbuspid;
 }
-std::string strigitestdir = "strigitestdir";
-std::string backend = "clucene";
-std::string testdatadir = "testdatadir";
 void
 removeFile(QDir& dir, const QFileInfo& info) {
     if (info.isDir()) {
@@ -122,27 +119,50 @@ removeDir(const QString& path) {
     QDir parent(i.dir());
     removeFile(parent, i);
 }
+class StrigiDaemonUnitTestSession::Private {
+public:
+    string strigidaemon;
+    QCoreApplication* app;
+    QProcess* strigiDaemonProcess;
+    string xdgdir;
+    set<string> plugindirs;
+    set<string> backends;
+    string testdatadir;
+    string strigitestdir;
+    int dbuspid;
+
+    void setupTestDir();
+    QProcess* startStrigiDaemon(const char* daemon);
+};
 void
-setupTestDir() {
+StrigiDaemonUnitTestSession::Private::setupTestDir() {
     removeDir(strigitestdir.c_str());
     if (mkdir(strigitestdir.c_str(), 0700) != 0) {
         // abort if we cannot create a new config dir
         cerr << "cannot create directory " << strigitestdir.c_str() << endl;
         exit(1);
     }
+    removeDir(testdatadir.c_str());
+    if (mkdir(testdatadir.c_str(), 0700) != 0) {
+        // abort if we cannot create a new data dir
+        cerr << "cannot create directory " << testdatadir.c_str() << endl;
+        exit(1);
+    }
     // write a config file into the dir
     string file(strigitestdir + "/daemon.conf");
     ofstream out(file.c_str());
     out << "<strigiDaemonConfiguration useDBus='1'>" << endl;
-    out << " <repository name='localhost' indexdir='" + strigitestdir
-        + "/" + backend + "' type='" + backend + "'>" << endl;
+    out << " <repository name='localhost' indexdir='" << strigitestdir
+        << "/" << *backends.begin() << "' writeable='1' type='"
+        << *backends.begin() << "' "
+        << "pollingInterval='0'>";
     out << "  <path path='" + testdatadir + "'/>" << endl;
     out << " </repository>" << endl;
     out << "</strigiDaemonConfiguration>" << endl;
     out.close();
 }
 QProcess*
-startStrigiDaemon(const char* daemon) {
+StrigiDaemonUnitTestSession::Private::startStrigiDaemon(const char* daemon) {
     QString strigiDaemon = daemon;
     setupTestDir();
 
@@ -171,16 +191,6 @@ stopStrigiDaemon(QProcess* strigiDaemonProcess) {
     //removeDir(testdatadir.c_str());
 }
 
-class StrigiDaemonUnitTestSession::Private {
-public:
-    string strigidaemon;
-    QCoreApplication* app;
-    QProcess* strigiDaemonProcess;
-    string xdgdir;
-    set<string> plugindirs;
-    set<string> backends;
-    int dbuspid;
-};
 StrigiDaemonUnitTestSession::StrigiDaemonUnitTestSession() :p(new Private()) {
     p->app = 0;
 }
@@ -208,7 +218,7 @@ StrigiDaemonUnitTestSession::start() {
     }
     setenv("STRIGI_PLUGIN_PATH", plugindir.c_str(), 1);
 
-    p->strigiDaemonProcess = startStrigiDaemon(p->strigidaemon.c_str());
+    p->strigiDaemonProcess = p->startStrigiDaemon(p->strigidaemon.c_str());
 
     STRIGI_LOG_INIT_BASIC()
 }
@@ -235,3 +245,20 @@ StrigiDaemonUnitTestSession::addBackend(const char* name, const char* plugindir)
     p->backends.insert(name);
     p->plugindirs.insert(plugindir);
 }
+void
+StrigiDaemonUnitTestSession::addFile(const char* name, const char* content, 
+        int contentlength) {
+    string path = p->testdatadir + '/' + name;
+    FILE* f = fopen(path.c_str(), "w");
+    fwrite(content, 1, contentlength, f);
+    fclose(f);
+}
+void
+StrigiDaemonUnitTestSession::setStrigiDir(const char* dir) {
+    p->strigitestdir = dir;
+}
+void
+StrigiDaemonUnitTestSession::setDataDir(const char* dir) {
+    p->testdatadir = dir;
+}
+
