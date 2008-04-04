@@ -95,7 +95,7 @@ application/vnd.oasis.opendocument.formula  odf
 application/vnd.oasis.opendocument.formula-template  otf
 */
 
-    char *rdftype = NULL;
+    const char *rdftype = NULL;
     if( length >= (35+4) && std::strncmp(data+35, "text", 4) == 0 ) {
         rdftype = "http://freedesktop.org/standards/xesam/1.0/core#TextDocument";
     } else if ( length >= (35+12) && std::strncmp(data+35, "presentation", 12) == 0 ) {

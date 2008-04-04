@@ -94,15 +94,15 @@ RpmInputStream::RpmInputStream(InputStream* input)
     }
     for (int32_t i=0; i<nindex; ++i) {
         const unsigned char* e = (const unsigned char*)b+i*16;
-        int32_t tag = readBigEndianInt32(e);
-        int32_t type = readBigEndianInt32(e+4);
+        /*int32_t tag =*/ readBigEndianInt32(e);
+        /*int32_t type =*/ readBigEndianInt32(e+4);
         int32_t offset = readBigEndianInt32(e+8);
         if (offset < 0 || offset >= hsize) {
             m_error = "invalid offset in header\n";
             m_status = Error;
             return;
         }
-        int32_t count = readBigEndianInt32(e+12);
+        /*int32_t count =*/ readBigEndianInt32(e+12);
         int32_t end = hsize;
         if (i < nindex-1) {
             end = readBigEndianInt32(e+8+16);

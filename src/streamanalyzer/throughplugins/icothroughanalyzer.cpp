@@ -110,14 +110,14 @@ IcoThroughAnalyzer::connectInputStream(InputStream* in) {
        in->reset(0);   // rewind to the start of the stream
        return in;
     }
-    uint8_t icoe_reserved = (uint8_t)*c;
+    //uint8_t icoe_reserved = (uint8_t)*c;
 
     n = in->read(c, 2, 2);
     if (n != 2) {
        in->reset(0);   // rewind to the start of the stream
        return in;
     }
-    uint16_t icoe_planes = readLittleEndianUInt16(c);
+    /*uint16_t icoe_planes =*/ readLittleEndianUInt16(c);
 
     n = in->read(c, 2, 2);
     if (n != 2) {
@@ -131,14 +131,14 @@ IcoThroughAnalyzer::connectInputStream(InputStream* in) {
        in->reset(0);   // rewind to the start of the stream
        return in;
     }
-    uint32_t icoe_bytesinres = readLittleEndianUInt32(c);
+    /*uint32_t icoe_bytesinres =*/ readLittleEndianUInt32(c);
 
     n = in->read(c, 4, 4);
     if (n != 4) {
        in->reset(0);   // rewind to the start of the stream
        return in;
     }
-    uint32_t icoe_imageoffset = readLittleEndianUInt32(c);
+    /*uint32_t icoe_imageoffset =*/ readLittleEndianUInt32(c);
 
     // read the data on the 1st icon
     analysisResult->addValue( factory->numberField, ico_count );

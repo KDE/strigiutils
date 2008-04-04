@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #ifndef STRIGI_ARCHIVEREADER_H
-#define STRIGI_ARCHIVEREADER_H
+#define STRIGI_ARCHIVEREADER_H 
 
 #include <map>
 #include <list>

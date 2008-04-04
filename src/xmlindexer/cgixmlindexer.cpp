@@ -103,7 +103,7 @@ main() {
     }
     cerr << "len " << len << endl;
     char* e = new char[len];
-    if (e == 0 || fread(e, 1, len, stdin) != len) {
+    if (e == 0 || fread(e, 1, len, stdin) != (size_t)len) {
         cout << " <error>cannot allocate memory</error>\n</"
             << mapping.map("metadata") << ">\n" << flush;
         return 0;

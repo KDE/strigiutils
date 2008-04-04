@@ -113,7 +113,8 @@ exists(const char* file) {
 }
 void
 startDaemon() {
-    char* const daemon = "strigidaemon";
+    char daemon[13];
+    strcpy(daemon, "strigidaemon");
     // find the executable
     // get the PATH environment
     const char* path = getenv("PATH");
@@ -127,8 +128,8 @@ startDaemon() {
         end = strchr(path, ':');
         if (exists(p.c_str())) {
             if (fork()) {
-                char * const args[] = {daemon, "clucene", 0};
-                execvp(p.c_str(), args);
+                const char * const args[] = {daemon, "clucene", 0};
+                execvp(p.c_str(), (char **)args);
             }
             break;
         }

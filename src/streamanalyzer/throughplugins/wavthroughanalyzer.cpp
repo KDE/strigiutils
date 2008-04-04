@@ -61,14 +61,13 @@ WavThroughAnalyzer::connectInputStream(InputStream* in) {
     const char *c;
     uint32_t format_size;
     uint16_t format_tag;
-    uint16_t channel_count;
-    uint32_t sample_rate;
-    uint32_t bytes_per_second;
+    uint16_t channel_count = 0;
+    uint32_t sample_rate = 0;
+    uint32_t bytes_per_second = 0;
     uint16_t bytes_per_sample;
-    uint16_t sample_size;
-    uint32_t data_size;
+    uint16_t sample_size = 0;
+    uint32_t data_size = 0;
     uint32_t unknown_chunk_size;
-    uint16_t unknown_chunk16;
     bool have_fmt = false;
     bool have_data = false;
     bool eof = false;
@@ -111,8 +110,8 @@ WavThroughAnalyzer::connectInputStream(InputStream* in) {
     }
 
     // pretty dumb scanner, but better than what we had!
-    do
-    {
+    channel_count = 0;
+    do {
         if (4 != in->read(c, 4, 4)) {
             in->reset(0);   // rewind to the start of the stream
             return in;
