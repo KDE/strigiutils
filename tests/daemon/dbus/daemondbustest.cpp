@@ -112,9 +112,7 @@ DaemonDBusTest::testIndexing() {
     // check how many files are listed in the data dir
     foreach (const QString&d, strigiclient.getIndexedDirectories()) {
         QDir dir(d);
-        foreach (const QString& f, dir.entryList(QDir::Files)) {
-            docsfound++;
-        }
+        docsfound += dir.entryList(QDir::Files).size(); 
     }
     for (int i=0; i<5; ++i) {
         // start the indexing
