@@ -128,7 +128,7 @@ IndexManagerTester::testNumberQuery() {
         return;
     }*/
     QueryParser parser;
-    Query q = parser.buildQuery(FieldRegister::sizeFieldName+">0");
+    Query q = parser.buildQuery("size>0");
     int count = reader->countHits(q);
     if (count != m) fprintf(stderr, "%i != %i\n", count, m);
     VERIFY(count == m);
