@@ -29,6 +29,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QTime>
+#include <QtCore/QDir>
 #include <QtTest/QTest>
 
 /**
@@ -52,7 +53,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DaemonDBusTest );
 void
 DaemonDBusTest::setUp() {
     qDebug() << "== DaemonDBusTest::setUp() ==";
-    waitForStatusIdle(1000);
+    waitForStatusIdle(10000);
 }
 
 void
@@ -83,6 +84,7 @@ void
 DaemonDBusTest::testStatusOfEmptyIndex() {
     qDebug() << "== DaemonDBusTest::testStatusOfEmptyIndex() ==";
     // clear out the index
+    QStringList sl = strigiclient.getIndexedDirectories();
     strigiclient.setIndexedDirectories(QStringList());
     strigiclient.startIndexing();
     waitForStatusIdle(1000);
@@ -93,7 +95,44 @@ DaemonDBusTest::testStatusOfEmptyIndex() {
     int numIndexed = status["Documents indexed"].toInt(&ok);
     CPPUNIT_ASSERT_MESSAGE("Number of documents indexed cannot be determined.", ok);
     CPPUNIT_ASSERT_MESSAGE("Not exactly 0 documents in the index.", numIndexed == 0);
+    
+    // reindex the original files
+    strigiclient.setIndexedDirectories(sl);
+    strigiclient.startIndexing();
 }
 void
 DaemonDBusTest::testStopDaemon() {
+    qDebug() << "== DaemonDBusTest::testStopDaemon() ==";
+}
+void
+DaemonDBusTest::testIndexing() {
+    qDebug() << "== DaemonDBusTest::testIndexing() ==";
+    // count the files in the indexing dir
+    int docsfound = 0;
+    // check how many files are listed in the data dir
+    foreach (const QString&d, strigiclient.getIndexedDirectories()) {
+        QDir dir(d);
+        foreach (const QString& f, dir.entryList(QDir::Files)) {
+            docsfound++;
+        }
+    }
+    for (int i=0; i<5; ++i) {
+        // start the indexing
+        strigiclient.startIndexing();
+        waitForStatusIdle(1000);
+        QMap<QString, QString> status = strigiclient.getStatus();
+        int ndocs = status.value("Documents indexed").toUInt();
+        CPPUNIT_ASSERT_MESSAGE("Not the right amount of documents indexed.",
+            ndocs == docsfound);
+    }
+}
+void
+DaemonDBusTest::testSimpleQuery() {
+    qDebug() << "== DaemonDBusTest::testSimpleQuery() ==";
+    int nhits = strigiclient.countHits("hello");
+    cerr << "nhits hello: " << nhits << endl;
+    CPPUNIT_ASSERT(nhits == 2);
+    nhits = strigiclient.countHits("world");
+    cerr << "nhits world: " << nhits << endl;
+    CPPUNIT_ASSERT(nhits == 1);
 }

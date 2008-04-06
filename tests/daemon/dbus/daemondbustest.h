@@ -36,10 +36,8 @@ private:
     CPPUNIT_TEST( testProcess );
     CPPUNIT_TEST( testStatusOfEmptyIndex );
     CPPUNIT_TEST( testStopDaemon );
-/*        CPPUNIT_TEST( testIndexedDirs );
-        CPPUNIT_TEST( testFilters );
-        CPPUNIT_TEST( testRepository );
-        CPPUNIT_TEST( testPollingInterval );*/
+    CPPUNIT_TEST( testIndexing );
+    CPPUNIT_TEST( testSimpleQuery );
     CPPUNIT_TEST_SUITE_END();
 private:
     StrigiClient strigiclient;
@@ -58,21 +56,10 @@ public:
     void testProcess();
     void testStatusOfEmptyIndex();
     void testStopDaemon();
+    void testIndexing();
+    void testSimpleQuery();
+};
 
-/*        void testDefaultConf();
-        void testIndexedDirs();
-        void testFilters();
-        void testRepository();
-        void testPollingInterval();
-        void testSave();*/
-            
-            /*
-            TODO: write unit test for these methods
-            std::string getWriteableIndexType() const;
-            std::string getWriteableIndexDir() const;
-            std::list<Repository> getReadOnlyRepositories() const;
-            */
-    };
 }
 
 #endif
