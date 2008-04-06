@@ -127,12 +127,14 @@ public:
     string xdgdir;
     set<string> plugindirs;
     set<string> backends;
+    map<string, vector<unsigned char> > testfilecontents;
     string testdatadir;
     string strigitestdir;
     int dbuspid;
 
     void setupTestDir();
     QProcess* startStrigiDaemon(const char* daemon);
+    void writeTestFiles() const;
 };
 void
 StrigiDaemonUnitTestSession::Private::setupTestDir() {
@@ -148,6 +150,7 @@ StrigiDaemonUnitTestSession::Private::setupTestDir() {
         cerr << "cannot create directory " << testdatadir.c_str() << endl;
         exit(1);
     }
+    writeTestFiles();
     // write a config file into the dir
     string file(strigitestdir + "/daemon.conf");
     ofstream out(file.c_str());
@@ -168,7 +171,9 @@ StrigiDaemonUnitTestSession::Private::startStrigiDaemon(const char* daemon) {
 
     QProcess* strigiDaemonProcess = new QProcess();
     QStringList args;
+    //args << strigiDaemon;
     args << "-d" << strigitestdir.c_str();
+    //strigiDaemonProcess->start("valgrind", args, QIODevice::ReadOnly);
     strigiDaemonProcess->start(strigiDaemon, args, QIODevice::ReadOnly);
     bool ok = strigiDaemonProcess->waitForStarted();
     if (!ok) {
@@ -246,12 +251,28 @@ StrigiDaemonUnitTestSession::addBackend(const char* name, const char* plugindir)
     p->plugindirs.insert(plugindir);
 }
 void
+StrigiDaemonUnitTestSession::addFile(const char* name, const string& s) {
+    addFile(name, s.c_str(), s.length());
+}
+void
 StrigiDaemonUnitTestSession::addFile(const char* name, const char* content, 
         int contentlength) {
+    vector<unsigned char> data;
+    data.resize(contentlength);
+    for (int i=0; i<contentlength;++i) {
+        data[i] = content[i];
+    }
     string path = p->testdatadir + '/' + name;
-    FILE* f = fopen(path.c_str(), "w");
-    fwrite(content, 1, contentlength, f);
-    fclose(f);
+    p->testfilecontents[path] = data;
+}
+void
+StrigiDaemonUnitTestSession::Private::writeTestFiles() const {
+    for (map<string, vector<unsigned char> >::const_iterator i
+            = testfilecontents.begin(); i != testfilecontents.end(); ++i) {
+        FILE* f = fopen(i->first.c_str(), "w");
+        fwrite(&i->second[0], 1, i->second.size(), f);
+        fclose(f);
+    }
 }
 void
 StrigiDaemonUnitTestSession::setStrigiDir(const char* dir) {
