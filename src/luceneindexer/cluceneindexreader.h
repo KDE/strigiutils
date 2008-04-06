@@ -38,7 +38,7 @@ private:
     int32_t wordcount;
     int32_t doccount;
     const std::string dbdir;
-    time_t otime;
+    struct timeval otime;
 
     CLuceneIndexReader(CLuceneIndexManager* m, const std::string& dbdir);
     ~CLuceneIndexReader();

@@ -61,7 +61,7 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     } else {
         ramdirectory = 0;
     }
-    mtime = 0;
+    gettimeofday(&mtime, 0);
 
     //remove any old segments lying around from crashes, etc
     //writer->cleanUp();
@@ -146,7 +146,6 @@ CLuceneIndexManager::closeWriter() {
         return;
     }
     // update the timestamp on the index, so that the readers will reopen
-    setIndexMTime();
     try {
         indexwriter->close();
         delete indexwriter;
@@ -157,10 +156,7 @@ CLuceneIndexManager::closeWriter() {
     // clear the cache
     //bitsets.clear();
     derefWriter();
-}
-int
-CLuceneIndexManager::docCount() {
-    return luceneReader()->reader->numDocs();
+    setIndexMTime();
 }
 int64_t
 CLuceneIndexManager::indexSize() {
@@ -195,9 +191,9 @@ CLuceneIndexManager::deleteIndex() {
     setIndexMTime();
     openWriter(true);
 }
-time_t
+struct timeval
 CLuceneIndexManager::indexMTime() {
-    time_t t;
+    struct timeval t;
     lock.lock();
     t = mtime;
     lock.unlock();
@@ -205,10 +201,8 @@ CLuceneIndexManager::indexMTime() {
 }
 void
 CLuceneIndexManager::setIndexMTime() {
-    struct timeval t;
-    gettimeofday(&t, 0);
     lock.lock();
-    mtime = t.tv_sec;
+    gettimeofday(&mtime, 0);
     lock.unlock();
 }
 

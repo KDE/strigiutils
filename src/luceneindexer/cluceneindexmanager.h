@@ -53,7 +53,7 @@ private:
     CLuceneIndexWriter* writer;
     lucene::index::IndexWriter* indexwriter;
     lucene::analysis::Analyzer* analyzer;
-    time_t mtime;
+    struct timeval mtime;
     static int numberOfManagers;
 
     void openWriter(bool truncate=false);
@@ -68,11 +68,10 @@ public:
     Strigi::IndexReader* indexReader();
     Strigi::IndexWriter* indexWriter();
     CLuceneIndexReader* luceneReader();
-    int32_t docCount();
     int64_t indexSize();
     void deleteIndex();
     void closeWriter();
-    time_t indexMTime();
+    struct timeval indexMTime();
     void setIndexMTime();
 };
 

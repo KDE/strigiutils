@@ -124,8 +124,10 @@ CLuceneIndexReader::Private::content() {
 }
 
 CLuceneIndexReader::CLuceneIndexReader(CLuceneIndexManager* m,
-    const string& dir) :manager(m), p(new Private(*this)), dbdir(dir), otime(0),
+    const string& dir) :manager(m), p(new Private(*this)), dbdir(dir),
         reader(0) {
+    otime.tv_sec = 0;
+    otime.tv_usec = 0;
     openReader();
 }
 
@@ -144,8 +146,8 @@ CLuceneIndexReader::openReader() {
         } else {
             reader = lucene::index::IndexReader::open(dbdir.c_str());
         }
-        //fprintf(stderr,
-        //"reader at %s: %i\n", dbdir.c_str(), reader->numDocs());
+        // fprintf(stderr,
+        // "READER at %s: %i\n", dbdir.c_str(), reader->numDocs());
     } catch (CLuceneError& err) {
         fprintf(stderr, "could not create reader %s: %s\n", dbdir.c_str(),
             err.what());
@@ -165,12 +167,18 @@ CLuceneIndexReader::closeReader() {
 }
 bool
 CLuceneIndexReader::checkReader(bool enforceCurrent) {
-    if (manager->indexMTime() > otime) {
-        struct timeval t;
-        gettimeofday(&t, 0);
-        if (enforceCurrent || t.tv_sec-otime > 60) {
-            otime = t.tv_sec;
+    struct timeval mtime = manager->indexMTime();
+    if (mtime.tv_sec != otime.tv_sec || mtime.tv_usec != otime.tv_usec) {
+        if (enforceCurrent) {
+            otime = mtime;
             closeReader();
+        } else {
+            struct timeval now;
+            gettimeofday(&now, 0);
+            if (now.tv_sec - otime.tv_sec > 60) {
+                otime = mtime;
+                closeReader();
+            }
         }
     }
     if (reader == 0) {
@@ -520,9 +528,9 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
 }
 int32_t
 CLuceneIndexReader::countDocuments() {
-    if (!checkReader()) return -1;
+    if (!checkReader(true)) return -1;
     if (doccount == -1) {
-        doccount = manager->docCount();
+        doccount = reader->numDocs();
     }
     return doccount;
 }
