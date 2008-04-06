@@ -21,7 +21,7 @@
 #include "xesamdbustest.h"
 #include "xesamlistener.h"
 
-#include "xesamdbus.h"
+#include "xesam/xesamdbus.h"
 #include <algorithm>
 #include <fstream>
 #include <set>

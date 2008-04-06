@@ -10,7 +10,7 @@ if (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
 endif (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
-include_directories (.  ${INC_DIR} xesam
+include_directories (.  ${INC_DIR}
                         ${strigi_SOURCE_DIR}/src/searchclient/qtdbus
                         ${strigi_BINARY_DIR}/src/streams
 )
