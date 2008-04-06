@@ -87,7 +87,7 @@ DaemonDBusTest::testStatusOfEmptyIndex() {
     QStringList sl = strigiclient.getIndexedDirectories();
     strigiclient.setIndexedDirectories(QStringList());
     strigiclient.startIndexing();
-    waitForStatusIdle(1000);
+    waitForStatusIdle(10000);
     QMap<QString, QString> status = strigiclient.getStatus();
     qDebug() << "Status: '" << status << "'" << endl;
     CPPUNIT_ASSERT_MESSAGE("Daemon status is too short.", status.size() > 1);
@@ -117,7 +117,7 @@ DaemonDBusTest::testIndexing() {
     for (int i=0; i<5; ++i) {
         // start the indexing
         strigiclient.startIndexing();
-        waitForStatusIdle(1000);
+        waitForStatusIdle(10000);
         QMap<QString, QString> status = strigiclient.getStatus();
         int ndocs = status.value("Documents indexed").toUInt();
         CPPUNIT_ASSERT_MESSAGE("Not the right amount of documents indexed.",
