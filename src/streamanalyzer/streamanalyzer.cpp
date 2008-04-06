@@ -308,7 +308,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
         addFactory(*i);
     }
     addFactory(new Bz2EndAnalyzerFactory());
-    addFactory(new GZipEndAnalyzerFactory());
+/*    addFactory(new GZipEndAnalyzerFactory());
     addFactory(new OleEndAnalyzerFactory());
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
@@ -328,7 +328,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
 //    addFactory(new IFilterEndAnalyzerFactory());
 #endif
 #endif
-    addFactory(new HelperEndAnalyzerFactory());
+    addFactory(new HelperEndAnalyzerFactory());*/
     addFactory(new TextEndAnalyzerFactory());
 }
 void
@@ -403,8 +403,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         headersize = -1;
         finished = true;
     }
-    int es = 0, size = eIter->size();
-    while (!finished && es != size) {
+    int es = 0;
+    int itersize = eIter->size();
+    while (!finished && es != itersize) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {
             idx.setEndAnalyzer(sea);
@@ -425,8 +426,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
                     // refresh the pointer to the start of the data
                     headersize = input->read(header, headersize, headersize);
     		    if (input->reset(0) != 0) {
-        		cerr << "resetting again is impossible!! pos: " << input->position()
-            		     << " status: " << input->status() << endl;
+        		cerr << "resetting again is impossible!! pos: "
+                             << input->position() << " status: "
+                             << input->status() << endl;
     		    }
                     if (headersize < 0) finished = true;
                 }
@@ -436,7 +438,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             eIter = end.begin() + idx.depth();
         }
         if (!finished) {
-            finished = conf.indexMore();
+            finished = !conf.indexMore();
         }
         es++;
     }
