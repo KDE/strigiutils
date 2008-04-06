@@ -61,18 +61,22 @@ HelperProgramConfig::HelperProgramConfig() {
     };*/
 
     // make a vector with all the paths
-    const char* path =getenv("PATH");
     vector<string> paths;
-    const char* end = strchr(path, ':');
-    while (end) {
-        if (path[0] == '/') {
-            paths.push_back(string(path, end-path));
-        }
-        path = end+1;
-        end = strchr(path, ':');
+    string path;
+    if (getenv("PATH")) {
+        path.assign(getenv("PATH"));
     }
-    if (path[0] == '/') {
-        paths.push_back(path);
+    string::size_type start = 0;
+    string::size_type end = path.find(':');
+    while (end != string::npos) {
+        if (path[start] == '/') {
+            paths.push_back(path.substr(start, end-start));
+        }
+        start = end + 1;
+        end = path.find(':', start);
+    }
+    if (start < path.size() && path[start] == '/') {
+        paths.push_back(path.substr(start));
     }
 
     string exepath = findPath("pdftotext", paths);

@@ -194,19 +194,25 @@ IFilterEndAnalyzer::analyze(AnalysisResult& idx, InputStream *in) {
 
 string
 IFilterEndAnalyzer::writeToTempFile(InputStream *in, const char* ext) const {
-    string filepath = getenv("TMP");
-    if ( filepath.length() == 0 )
-        filepath = getenv("TEMP");
+    string filepath;
+    if (getenv("TMP")) {
+        filepath.assign(getenv("TMP"));
+    } else if (getenv("TEMP")) {
+        filepath.assign(getenv("TEMP"));
+    }
+    // if neither TMP nor TEMP were set, we use the current working directory
     filepath.append("\\strigiXXXXXX");
     {
         char* p = (char*)filepath.c_str();
         mktemp(p);
         filepath.append(ext);
     }
-    int fd=open(filepath.c_str(),O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
+    int fd = open(filepath.c_str(),
+        O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
     if (fd == -1) {
         unlink(filepath.c_str());
-        fd=open(filepath.c_str(),O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
+        fd = open(filepath.c_str(),
+            O_RDWR|O_BINARY|O_CREAT|O_EXCL|_O_SHORT_LIVED, _S_IREAD|_S_IWRITE);
         if (fd == -1) {
             fprintf(stderr, "Error in making tmp name: %s\n", strerror(errno));
             unlink(filepath.c_str());
