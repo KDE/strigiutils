@@ -80,6 +80,8 @@ main(int argc, char** argv) {
     session.addBackend("clucene", BINARYDIR"/src/luceneindexer");
     session.setStrigiDir("strigitestdir");
     session.setDataDir("testdatadir");
+    session.addFile("test", "hello\n");
+    session.addFile("test too", "hello world\n");
     session.start();
 
     int result = doTests();
