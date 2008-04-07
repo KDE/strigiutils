@@ -54,6 +54,4 @@ private:
     std::string m_confFile;
 };
 
-// std::ostream& operator<<(std::ostream&, const DaemonConfigurator&);
-
 #endif
