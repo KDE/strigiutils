@@ -82,6 +82,8 @@ main(int argc, char** argv) {
     session.setDataDir("testdatadir");
     session.addFile("test", "hello\n");
     session.addFile("test too", "hello world\n");
+    session.addFile(".hiddenfile", "hello this is hidden\n");
+    session.addFile(".hiddendir/file", "hello this is hidden\n");
     session.start();
 
     int result = doTests();

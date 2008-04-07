@@ -101,7 +101,8 @@ removeFile(QDir& dir, const QFileInfo& info) {
     if (info.isDir()) {
         QDir d(info.absoluteFilePath());
         foreach(const QFileInfo& i, d.entryInfoList(
-                QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot)) {
+                QDir::AllEntries | QDir::System | QDir::NoDotAndDotDot
+                | QDir::Hidden)) {
             removeFile(d, i);
         }
         if (!dir.rmdir(info.fileName())) {
@@ -161,6 +162,10 @@ StrigiDaemonUnitTestSession::Private::setupTestDir() {
         << "pollingInterval='0'>";
     out << "  <path path='" + testdatadir + "'/>" << endl;
     out << " </repository>" << endl;
+    out << " <filters>" << endl;
+    out << " <filter pattern='.*/' include='0'/>" << endl;
+    out << " <filter pattern='.*' include='0'/>" << endl;
+    out << " </filters>" << endl;
     out << "</strigiDaemonConfiguration>" << endl;
     out.close();
 }
@@ -267,8 +272,12 @@ StrigiDaemonUnitTestSession::addFile(const char* name, const char* content,
 }
 void
 StrigiDaemonUnitTestSession::Private::writeTestFiles() const {
+    QDir dir;
     for (map<string, vector<unsigned char> >::const_iterator i
             = testfilecontents.begin(); i != testfilecontents.end(); ++i) {
+        // check if the directory exists
+        QFileInfo info(i->first.c_str());
+        dir.mkpath(info.dir().path());
         FILE* f = fopen(i->first.c_str(), "w");
         fwrite(&i->second[0], 1, i->second.size(), f);
         fclose(f);
