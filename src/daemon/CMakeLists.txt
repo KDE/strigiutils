@@ -15,6 +15,7 @@ IF(ENABLE_INOTIFY)
 ENDIF(ENABLE_INOTIFY)
 
 IF(FAM_FOUND AND ENABLE_FAM)
+  include_directories(${FAM_INCLUDE_DIR})
   add_definitions(-DHAVE_FAM)
   IF (GAMIN_LIBRARIES)
     MESSAGE(STATUS "FAM support enabled (using Gamin)")
