@@ -84,6 +84,7 @@ main(int argc, char** argv) {
     session.addFile("test too", "hello world\n");
     session.addFile(".hiddenfile", "hello this is hidden\n");
     session.addFile(".hiddendir/file", "hello this is hidden\n");
+    session.addFile("normaldir/.hidden/f", "hello this should be hidden\n");
     session.start();
 
     int result = doTests();
