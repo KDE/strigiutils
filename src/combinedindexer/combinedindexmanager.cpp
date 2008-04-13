@@ -204,7 +204,6 @@ CombinedIndexReader::getHits(const Query& q,
         const std::vector<std::string>& fields,
         const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Variant> >& result, int off, int max) {
-#ifdef ENABLE_NEWXESAM	
     /** TODO merge the result documents by score **/
     std::vector<std::vector<Variant> > v;
     m->p->writermanager->indexReader()->getHits(q, fields, types,
@@ -216,7 +215,6 @@ CombinedIndexReader::getHits(const Query& q,
     for (i = f.begin(); i != f.end(); ++i) {
         i->second->indexReader()->getHits(q, fields, types, v, off, max);
     }
-#endif    
 }
 int32_t
 CombinedIndexReader::countDocuments() {
