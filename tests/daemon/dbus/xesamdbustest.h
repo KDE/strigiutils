@@ -36,6 +36,7 @@ private:
     CPPUNIT_TEST( testSimpleSearchSignals );
     CPPUNIT_TEST( testGetProperty );
     CPPUNIT_TEST( testSetProperty );
+    CPPUNIT_TEST( testTwoTermSearch );
     CPPUNIT_TEST_SUITE_END();
 private:
     OrgFreedesktopXesamSearchInterface* xesam;
@@ -50,6 +51,7 @@ public:
     void testSimpleSearchSignals();
     void testGetProperty();
     void testSetProperty();
+    void testTwoTermSearch();
     bool waitForStatusIdle(int milliseconds);
 };
 

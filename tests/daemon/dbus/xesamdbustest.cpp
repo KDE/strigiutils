@@ -228,3 +228,25 @@ XesamDBusTest::testSimpleSearchSignals() {
     // close the session session
     CHECK(xesam->CloseSession(session));
 }
+void
+XesamDBusTest::testTwoTermSearch() {
+    qDebug() << "== XesamDBusTest::testTwoTermSearch() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    // check that the server gives back a valid search id
+    QDBusReply<QString> search = xesam->NewSearch(session,
+        userQuery("hello world"));
+    CHECK(search);
+    // check that the search can be started
+    CHECK(xesam->StartSearch(search));
+    // we should be able to retrieve the number of hits now
+    QDBusReply<uint32_t> count = xesam->GetHitCount(search);
+    CPPUNIT_ASSERT(count == 1);
+    // also getting the next hits should be possible
+    CHECK(xesam->GetHits(search, 100));
+    // close the search object
+    CHECK(xesam->CloseSearch(search));
+    // close the session session
+    CHECK(xesam->CloseSession(session));
+}

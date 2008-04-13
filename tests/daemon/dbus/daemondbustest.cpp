@@ -134,4 +134,7 @@ DaemonDBusTest::testSimpleQuery() {
     nhits = strigiclient.countHits("world");
     cerr << "nhits world: " << nhits << endl;
     CPPUNIT_ASSERT(nhits == 1);
+    nhits = strigiclient.countHits("hello world");
+    cerr << "nhits hello world: " << nhits << endl;
+    CPPUNIT_ASSERT(nhits == 1);
 }
