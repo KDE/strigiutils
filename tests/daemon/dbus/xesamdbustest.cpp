@@ -247,6 +247,38 @@ XesamDBusTest::testTwoTermSearch() {
     QDBusReply<QVector<QList<QVariant> > > hits = xesam->GetHits(search, 100);
     CHECK(hits);
     CPPUNIT_ASSERT(hits.value().size() == 1);
+    CPPUNIT_ASSERT(hits.value()[0].size() == 1);
+    CPPUNIT_ASSERT(hits.value()[0].first() == QString("testdatadir/test too"));
+    // close the search object
+    CHECK(xesam->CloseSearch(search));
+    // close the session session
+    CHECK(xesam->CloseSession(session));
+}
+void
+XesamDBusTest::testHitFields() {
+    qDebug() << "== XesamDBusTest::testHitFields() ==";
+    // start a new session
+    QDBusReply<QString> session = xesam->NewSession();
+    CHECK(session);
+    CHECK(xesam->SetProperty(session, "hit.fields",
+            QDBusVariant(QStringList() << "xesam:url" << "xesam:size")));
+    // check that the server gives back a valid search id
+    QDBusReply<QString> search = xesam->NewSearch(session, userQuery("hello"));
+    CHECK(search);
+    // check that the search can be started
+    CHECK(xesam->StartSearch(search));
+    // we should be able to retrieve the number of hits now
+    QDBusReply<uint32_t> count = xesam->GetHitCount(search);
+    CPPUNIT_ASSERT(count == 2);
+    // also getting the next hits should be possible
+    QDBusReply<QVector<QList<QVariant> > > hits = xesam->GetHits(search, 100);
+    CHECK(hits);
+    CPPUNIT_ASSERT(hits.value().size() == 2);
+    CPPUNIT_ASSERT(hits.value()[0].size() == 2);
+    CPPUNIT_ASSERT(hits.value()[0].first() == QString("testdatadir/test"));
+    CPPUNIT_ASSERT(hits.value()[1].first() == QString("testdatadir/test too"));
+    CPPUNIT_ASSERT(hits.value()[0].last() == 6);
+    CPPUNIT_ASSERT(hits.value()[1].last() == 12);
     // close the search object
     CHECK(xesam->CloseSearch(search));
     // close the session session
