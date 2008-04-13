@@ -484,6 +484,18 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
         return;
     }
 
+    vector<string> fullFields;
+    fullFields.resize(fields.size());
+    for (size_t i = 0; i < fields.size(); i++) {
+        if (fields[i].compare(0, 6, "xesam:") == 0) {
+            fullFields[i].assign(
+                "http://freedesktop.org/standards/xesam/1.0/core#"
+                + fields[i].substr(6));
+        } else {
+            fullFields[i].assign(fields[i]);
+        }
+    }
+
     Query* bq = p->createQuery(q);
     IndexSearcher searcher(reader);
     Hits* hits = 0;
@@ -512,8 +524,8 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
         while (e->hasMoreElements()) {
             Field* field = e->nextElement();
             string name(wchartoutf8(field->name()));
-            for (uint j = 0; j < fields.size(); ++j) {
-                if (fields[j] == name) {
+            for (uint j = 0; j < fullFields.size(); ++j) {
+                if (fullFields[j] == name) {
                     doc[j] = p->getFieldValue(field, types[j]);
                 }
             }
