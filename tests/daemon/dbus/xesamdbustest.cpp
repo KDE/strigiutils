@@ -244,7 +244,9 @@ XesamDBusTest::testTwoTermSearch() {
     QDBusReply<uint32_t> count = xesam->GetHitCount(search);
     CPPUNIT_ASSERT(count == 1);
     // also getting the next hits should be possible
-    CHECK(xesam->GetHits(search, 100));
+    QDBusReply<QVector<QList<QVariant> > > hits = xesam->GetHits(search, 100);
+    CHECK(hits);
+    CPPUNIT_ASSERT(hits.value().size() == 1);
     // close the search object
     CHECK(xesam->CloseSearch(search));
     // close the session session
