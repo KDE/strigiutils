@@ -112,7 +112,7 @@ XesamSearch::Private::Private(XesamSession& s, const std::string& n,
     // simple check to make sure this is a xesam query
     valid = q.find("<request") != string::npos;
     if (!valid) {
-        throw runtime_error("Error parsing query.");
+        throw runtime_error("Error parsing query: not a valid XML Xesam query");
     }
 
     query = Strigi::QueryParser::buildQuery(q);
