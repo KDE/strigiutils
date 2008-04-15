@@ -714,6 +714,7 @@ CLuceneIndexReader::fieldNames() {
         return s;
     }
     TCHAR** names = reader->getFieldNames();
+    if (names == 0) return s;
     TCHAR** n = names;
     while (*n) {
         string str(wchartoutf8(*n));
