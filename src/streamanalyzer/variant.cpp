@@ -191,7 +191,7 @@ VariantPrivate::u() const {
     case Variant::as_val:
          return as_value.size();
     default:
-         return -1;
+         return ~0U;
     }
 }
 string
