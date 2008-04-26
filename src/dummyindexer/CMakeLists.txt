@@ -22,7 +22,7 @@ add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp
     grepindexwriter.cpp ${REGEX_SOURCES})
 
 add_executable(deepgrep deepgrep.cpp)
-target_link_libraries(deepgrep streamanalyzer ${REGEX_LIBRARIES} grepindexer)
+target_link_libraries(deepgrep grepindexer streamanalyzer ${REGEX_LIBRARIES})
 install(TARGETS deepgrep RUNTIME DESTINATION bin)
 
 add_executable(greptest grepindexreader.cpp)
