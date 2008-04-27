@@ -59,8 +59,13 @@ public:
 
     CountJob(XesamSearch s) :search(s) {}
     void run() {
-        int count = search.session().liveSearch().indexManager()->indexReader()
-            ->countHits(search.query());
+        int count = 0;
+        try {
+            count = search.session().liveSearch().indexManager()->indexReader()
+                ->countHits(search.query());
+        } catch (...) {
+            cerr << "exception!" << endl;
+        }
         search.setCount(count);
     }
 };
@@ -181,6 +186,7 @@ void
 XesamSearch::Private::setCount(int c) {
     STRIGI_MUTEX_LOCK(&mutex);
     if (valid && hitcount == -1) {
+        // reply all the outstanding requests
         hitcount = c;
         for (list<void*>::const_iterator i = countMessages.begin();
                  i != countMessages.end(); ++i) {
