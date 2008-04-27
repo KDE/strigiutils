@@ -1,3 +1,7 @@
+0.5.9
+ - Fix bug that would severely bloat the strigi index.
+ - Improve latency when calling strigi to stop.
+ - Better (but not yet complete) Xesam support
 0.5.8
  - Improve quiting latency of the most important analyzers. Now Strigi reacts more quickly when you tell it to stop indexing.
  - Add a tool to analyze the analyzer latency profile and find analyzers that have a high latency.
