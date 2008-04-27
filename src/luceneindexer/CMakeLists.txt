@@ -27,8 +27,6 @@ ENDIF(WIN32)
 # 'class CLuceneError', we can revert to -fvisibility=hidden.
 IF(__STRIGI_HAVE_GCC_VISIBILITY)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
-ELSE(__STRIGI_HAVE_GCC_VISIBILITY)
-    message(FATAL "You need GCC with visibility support.")
 ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS
