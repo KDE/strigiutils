@@ -24,6 +24,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <cstdlib>
 #include "strigithread.h"
 #include "diranalyzer.h"
 #include "analyzerconfiguration.h"
