@@ -119,6 +119,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     layout->addWidget(mainview);
     layout->addWidget(queryfield);
 
+/*  The histogram widget is temporarily disabled
     QVBoxLayout* histlayout = new QVBoxLayout();
     QDockWidget* histwidget = new QDockWidget();
     histwidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -128,7 +129,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     histlayout->addWidget(fieldnames);
     histlayout->addWidget(histogram);
     histlayout->addWidget(refreshHistogram);
-    addDockWidget(Qt::LeftDockWidgetArea, histwidget);
+    addDockWidget(Qt::LeftDockWidgetArea, histwidget);*/
 
     centralview = new QWidget();
     centralview->setLayout(layout);
