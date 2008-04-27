@@ -254,8 +254,8 @@ FieldPropertiesDb::Private::Private() {
     copy(pClasses.begin(), pClasses.end(), inserter(classes, classes.end()) );
 
     // Construct properties and propertiesByAlias lists
-    for (map<string, FieldProperties::Private>::const_iterator prop = pProperties.begin();
-            prop != pProperties.end(); ++prop) {
+    for (map<string, FieldProperties::Private>::const_iterator prop
+            = pProperties.begin(); prop != pProperties.end(); ++prop) {
         FieldProperties property(prop->second);
         string alias = prop->second.alias;
 
@@ -267,7 +267,9 @@ FieldPropertiesDb::Private::Private() {
             }
         }
 
-        properties[property.uri()] = property;
+        if (properties.find(property.uri()) == properties.end()) {
+            properties[property.uri()] = property;
+        }
     }
 
     pProperties.clear();
@@ -458,6 +460,7 @@ FieldPropertiesDb::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
 bool
 FieldPropertiesDb::Private::isBoolValid(const char *uri, const char* name,
         const char* value, bool& result){
+    while (isspace(*value)) value++;
     if (strcasecmp(value,"false") == 0) {
         result = false;
     } else if (strcasecmp(value,"true") == 0) {
@@ -686,7 +689,7 @@ FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
             if (p->currentField.uri.size()) {
                 if(!p->currentField.alias.size()) {
                     size_t pos;
-                    if( (pos = p->currentField.uri.rfind('#')) != string::npos) {
+                    if ((pos = p->currentField.uri.rfind('#')) != string::npos){
                         p->currentField.alias = p->currentField.uri.substr(pos+1);
                     }
                 }
