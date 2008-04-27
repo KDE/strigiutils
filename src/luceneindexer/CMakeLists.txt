@@ -19,12 +19,6 @@ IF(WIN32)
     ADD_DEFINITIONS(-DUNICODE)
 ENDIF(WIN32)
 
-# CLucene requires exception support
-IF(NOT WIN32)
-    IF (CMAKE_COMPILER_IS_GNUCXX)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-ENDIF(NOT WIN32)
 # We need to compile the clucene index plugin with default visibility, because
 # CLucene does not export the symbol for CLuceneError. If this symbol is not
 # exported, the exception cannot be caught and can cause programs that use
@@ -33,6 +27,8 @@ ENDIF(NOT WIN32)
 # 'class CLuceneError', we can revert to -fvisibility=hidden.
 IF(__STRIGI_HAVE_GCC_VISIBILITY)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+ELSE(__STRIGI_HAVE_GCC_VISIBILITY)
+    message(FATAL "You need GCC with visibility support.")
 ENDIF(__STRIGI_HAVE_GCC_VISIBILITY)
 
 set(cluceneindex_SRCS

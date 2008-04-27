@@ -51,13 +51,6 @@ IF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
     MESSAGE(STATUS "log4cxx WONT be enabled")
 ENDIF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
 
-# strigidaemon requires exception support
-IF(NOT WIN32)
-    IF (CMAKE_COMPILER_IS_GNUCXX)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-ENDIF(NOT WIN32)
-
 include_directories(eventlistener .)
 
 SET(strigidaemon_SRCS 
