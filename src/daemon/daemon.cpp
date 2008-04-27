@@ -231,7 +231,7 @@ main(int argc, char** argv) {
     DaemonConfigurator config (conffile);
 
     // init filter manager
-    AnalyzerConfiguration ic;
+    StoppableConfiguration ic;
     config.loadFilteringRules(ic);
     STRIGI_LOG_DEBUG("strigi.daemon", "filter manager initialized")
 

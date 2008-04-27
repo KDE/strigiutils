@@ -26,21 +26,35 @@
 #include <vector>
 #include "strigithread.h"
 #include "diranalyzer.h"
+#include "analyzerconfiguration.h"
 
 class Event;
 class EventListenerQueue;
 
 namespace Strigi {
     class IndexManager;
-    class AnalyzerConfiguration;
 }
+#include <iostream>
+class StoppableConfiguration : public Strigi::AnalyzerConfiguration {
+public:
+    bool stop;
+    bool indexMore() const {
+        return !stop;
+    }
+    bool addMoreText() const {
+        return !stop;
+    }
+    void setStop(bool s) { stop = s;exit(0); }
+    StoppableConfiguration() :stop(false) {}
+};
+
 class IndexScheduler : public StrigiThread, private Strigi::AnalysisCaller {
 private:
     std::set<std::string> dirstoindex;
     Strigi::IndexManager* indexmanager;
 
     EventListenerQueue* m_listenerEventQueue;
-    Strigi::AnalyzerConfiguration* m_indexerconfiguration;
+    StoppableConfiguration* m_indexerconfiguration;
     void processListenerEvents(std::vector<Event*>& events);
 
     void* run(void*);
@@ -56,7 +70,7 @@ public:
     void setEventListenerQueue (EventListenerQueue* eventQueue) {
         m_listenerEventQueue = eventQueue;
     }
-    void setIndexerConfiguration(Strigi::AnalyzerConfiguration* ic) {
+    void setIndexerConfiguration(StoppableConfiguration* ic) {
         m_indexerconfiguration = ic;
     }
     Strigi::AnalyzerConfiguration& getIndexerConfiguration() const {
@@ -64,7 +78,10 @@ public:
     }
     int getQueueSize();
     void startIndexing() { setState(Working); }
-    void stopIndexing() { setState(Idling); }
+    void stopIndexing() {
+        setState(Idling);
+        m_indexerconfiguration->setStop(true);
+    }
     std::string getStateString();
     ~IndexScheduler();
     const std::set<std::string> &getIndexedDirectories() const {
