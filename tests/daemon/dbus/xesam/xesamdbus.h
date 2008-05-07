@@ -14,6 +14,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
+#include <QtCore/QVector>
 #include <QtCore/QMap>
 #include <QtCore/QString>
 #include <QtCore/QStringList>

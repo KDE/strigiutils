@@ -21,6 +21,7 @@
 #include "xesam/xesamdbus.h"
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
+#include <QtCore/QTime>
 
 XesamListener::XesamListener(OrgFreedesktopXesamSearchInterface* xesam)
         :eventloop(this) {

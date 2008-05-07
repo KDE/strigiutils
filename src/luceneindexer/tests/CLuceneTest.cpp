@@ -21,6 +21,10 @@ int founderrors = 0;
 int
 CLuceneTest(int argc, char*argv[]) {
     setenv("STRIGI_PLUGIN_PATH", BINARYDIR"/src/luceneindexer/", 1);
+    setenv("XDG_DATA_HOME",
+        SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
+    setenv("XDG_DATA_DIRS",
+        SOURCEDIR"/src/streamanalyzer/fieldproperties", 1);
     const char* path = ":memory:";
 
     // initialize a directory for writing and an indexmanager
