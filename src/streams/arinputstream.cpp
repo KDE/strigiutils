@@ -107,13 +107,13 @@ ArInputStream::readHeader() {
     if (len == 0) {
         if (b[1] == '/') {
             // fprintf(stderr, "SIZE: %lli\n", m_entryinfo.size);
-            nread = m_input->read(b, m_entryinfo.size, m_entryinfo.size);
+            nread = m_input->read(b, (int32_t)m_entryinfo.size, (int32_t)m_entryinfo.size);
             if (nread != m_entryinfo.size) {
                 m_error = "premature end of stream";
                 m_status = Error;
                 return;
             }
-            gnufilenames.assign(b, m_entryinfo.size);
+            gnufilenames.assign(b, (unsigned int)m_entryinfo.size);
             readHeader();
         } else if (b[1] == ' ') {
             m_input->skip(m_entryinfo.size);
