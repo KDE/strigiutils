@@ -172,7 +172,7 @@ RgbThroughAnalyzer::connectInputStream(InputStream* in) {
     if (!storage)
         analysisResult->addValue( factory->compressionField, "Uncompressed");
     else if (storage == 1) {
-        long compressed = fileSize - 512;
+        uint64_t compressed = fileSize - 512;
         long verbatim = xsize * ysize * zsize;
         char buff[50];
         snprintf (buff, 50, "%.1f", compressed * 100.0 / verbatim);
