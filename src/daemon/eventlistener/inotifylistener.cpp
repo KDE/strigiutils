@@ -307,7 +307,7 @@ bool InotifyListener::Private::addWatch (const string& path)
             STRIGI_LOG_ERROR ("strigi.InotifyListener.Private.addWatch",
                               "Failed to watch, maximum watch number reached");
             STRIGI_LOG_ERROR ("strigi.InotifyListener.Private.addWatch",
-                              "You've to increase the value stored into\
+                              "You have to increase the value stored into\
                                /proc/sys/fs/inotify/max_user_watches");
         }
         else if ( wd == -1 )

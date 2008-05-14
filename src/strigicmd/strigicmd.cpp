@@ -486,7 +486,7 @@ xesamquery(int argc, char** argv) {
     }
     
     if (arguments.size() != 0) {
-        pe("You don't have to provide other arguments.\n");
+        pe("You do not have to provide other arguments.\n");
         return usage(argc, argv);
         return 1;
     }
