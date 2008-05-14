@@ -18,12 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "StrigiQueryBuilder.h"
+#include "xesam_ul_driver.hh"
+#include "strigilogging.h"
 #include <iostream>
 #include <sstream>
-
-#include "xesam_ul_driver.hh"
-#include "StrigiQueryBuilder.h"
-#include "strigilogging.h"
 
 using std::string;
 using std::stringstream;

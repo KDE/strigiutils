@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifndef FILTERWIDGET_H
+#define FILTERWIDGET_H
+
 #include <QWidget>
 
 class QListView;
@@ -47,3 +51,5 @@ public:
     void setFilters(const QList<QPair<bool,QString> >& f);
     const QList<QPair<bool,QString> >& getFilters() const;
 };
+
+#endif

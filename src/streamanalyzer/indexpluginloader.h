@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifndef INDEXPLUGINLOADER_H
+#define INDEXPLUGINLOADER_H
+
 #include <strigi/strigiconfig.h>
 #include <vector>
 #include <map>
@@ -33,3 +37,5 @@ namespace Strigi {
   }
 }
 std::vector<std::string> getdirs(const std::string& direnv);
+
+#endif

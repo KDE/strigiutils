@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifndef FILTERMODEL_H
+#define FILTERMODEL_H
+
 #include <QAbstractListModel>
 #include <QPair>
 
@@ -55,3 +59,5 @@ public:
     bool setData(const QModelIndex& index, const QVariant& value,
         int role=Qt::EditRole);
 };
+
+#endif

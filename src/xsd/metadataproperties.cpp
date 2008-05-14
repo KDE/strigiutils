@@ -1,6 +1,6 @@
 /* This file is generated from metadataproperties.xsd */
-#include <iostream>
 #include "metadataproperties.h"
+#include <iostream>
 XMLStream&
 operator>>(XMLStream& in, Metadata& e) {
 	in.setFromAttribute(e.a_key,"key");

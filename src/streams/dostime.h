@@ -17,7 +17,12 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef DOSTIME_H
+#define DOSTIME_H
+
 #include <time.h>
 
 time_t dos2unixtime(unsigned long dostime);
 unsigned long unix2dostime(time_t*);
+
+#endif

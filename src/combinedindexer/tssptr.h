@@ -18,6 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifndef TSSPTR_H
+#define TSSPTR_H
+
 #include "strigi/strigi_thread.h"
 #include "indexpluginloader.h"
 
@@ -79,3 +82,5 @@ private:
         }
     }
 };
+
+#endif

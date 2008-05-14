@@ -1,5 +1,5 @@
-#ifndef _LINUX_INOTIFY_SYSCALLS_H
-#define _LINUX_INOTIFY_SYSCALLS_H
+#ifndef _LOCAL_INOTIFY_SYSCALLS_H
+#define _LOCAL_INOTIFY_SYSCALLS_H
 
 /*
  * This file originally came from

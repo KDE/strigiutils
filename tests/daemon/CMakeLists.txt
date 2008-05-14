@@ -1,5 +1,8 @@
 # add a test for the daemon configuration loading classes
-subdirs(dbus)
+
+if (QT4_FOUND)
+  subdirs(dbus)
+endif (QT4_FOUND)
 
 # if we use log4cxx, include it
 # ideally this should be abstracted away in something like STRIGILOG( ... )

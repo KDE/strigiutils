@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef STRIGI_STREAMINDEXER_H
-#define STRIGI_STREAMINDEXER_H
+#ifndef STRIGI_STREAMANALYZER_H
+#define STRIGI_STREAMANALYZER_H
 
 #include <strigi/strigiconfig.h>
 #include <string>

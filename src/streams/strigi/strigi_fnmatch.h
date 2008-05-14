@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifndef STRIGI_FNMATCH_H
+#define STRIGI_FNMATCH_H
+
 #if defined(HAVE_FNMATCH_H)
 
 #elif !defined(STRIGI_FNMATCH_H_)
@@ -34,4 +38,6 @@
     #define SUCCESS 0
 
     STREAMS_EXPORT extern int fnmatch(const char *pattern, const char *string, int flags);
+#endif
+
 #endif

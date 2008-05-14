@@ -4,8 +4,8 @@
  * Copyright (C) 2005 John McCutchan
  */
 
-#ifndef _LINUX_INOTIFY_MASKS_H
-#define _LINUX_INOTIFY_MASKS_H
+#ifndef _LOCAL_INOTIFY_MASKS_H
+#define _LOCAL_INOTIFY_MASKS_H
 
 /* the following are legal, implemented events that user-space can watch for */
 #define IN_ACCESS		0x00000001	/* File was accessed */

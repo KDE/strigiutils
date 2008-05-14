@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+
+#ifndef STREAMENGINE_H
+#define STREAMENGINE_H
+
 #include <QtCore/QAbstractFileEngineHandler>
 #include <QtCore/QDateTime>
 #include "streambase.h"
@@ -53,3 +57,5 @@ public:
         return entry;
     }
 };
+
+#endif

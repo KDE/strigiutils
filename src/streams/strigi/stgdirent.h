@@ -4,8 +4,8 @@
 * Distributable under the terms of either the Apache License (Version 2.0) or
 * the GNU Lesser General Public License, as specified in the COPYING file.
 ------------------------------------------------------------------------------*/
-#ifndef lucene_util_dirent_H
-#define lucene_util_dirent_H
+#ifndef STGDIRENT_H
+#define STGDIRENT_H
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"

@@ -17,11 +17,11 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include "XesamQLParser.h"
+#include "strigilogging.h"
 #include <iostream>
 #include <sstream>
 
-#include "strigilogging.h"
-#include "XesamQLParser.h"
 
 using std::string;
 using std::stringstream;

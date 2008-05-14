@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "config.h"
 #include "fileinputstream.h"
+#include <config.h>
 #include <strigi/strigiconfig.h>
 #include <iostream>
 #include <cerrno>

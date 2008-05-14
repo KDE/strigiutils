@@ -18,7 +18,6 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include <stdlib.h>
 
 #include "daemonconfigurator.h"
 #include "../strigilogging.h"
@@ -26,6 +25,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 using namespace std;
 using namespace Strigi;

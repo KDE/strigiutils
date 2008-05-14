@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef IDV32THROUGHANALYZER_H
-#define IDV32THROUGHANALYZER_H
+#ifndef ID3V2THROUGHANALYZER_H
+#define ID3V2THROUGHANALYZER_H
 
 #include "streamthroughanalyzer.h"
 #include "fieldtypes.h"

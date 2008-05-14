@@ -18,8 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <cstring>
-
 #include "zipinputstream.h"
 #include <strigi/strigiconfig.h>
 #include "gzipinputstream.h"
@@ -27,6 +25,8 @@
 
 #include "dostime.h"
 #include "textutils.h"
+#include <cstring>
+
 
 using namespace Strigi;
 
