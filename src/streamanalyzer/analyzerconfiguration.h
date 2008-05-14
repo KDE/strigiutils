@@ -67,7 +67,7 @@ enum FieldType {
                              should be tokenized. */
 };
 private:
-    AnalyzerConfigurationPrivate* p;
+    AnalyzerConfigurationPrivate* const p;
 public:
     AnalyzerConfiguration();
     virtual ~AnalyzerConfiguration();

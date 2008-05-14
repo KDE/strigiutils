@@ -502,8 +502,7 @@ ArchiveReader::ArchiveReaderPrivate::localStat(const std::string& url, EntryInfo
     }
     return -1;
 }
-ArchiveReader::ArchiveReader() {
-    p = new ArchiveReaderPrivate();
+ArchiveReader::ArchiveReader() :p(new ArchiveReaderPrivate()) {
 }
 ArchiveReader::~ArchiveReader() {
     delete p;

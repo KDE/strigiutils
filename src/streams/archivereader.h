@@ -107,7 +107,7 @@ public:
 class STREAMS_EXPORT ArchiveReader : public StreamOpener {
 private:
     class ArchiveReaderPrivate;
-    ArchiveReaderPrivate *p;
+    ArchiveReaderPrivate* const p;
 
 public:
     /** Constructor */

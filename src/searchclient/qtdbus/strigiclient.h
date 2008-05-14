@@ -28,7 +28,7 @@
 class STRIGI_QTDBUSCLIENT_EXPORT StrigiClient {
 private:
     class Private;
-    Private* p;
+    Private* const p;
 public:
     StrigiClient();
     ~StrigiClient();

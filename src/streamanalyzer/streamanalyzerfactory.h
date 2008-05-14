@@ -36,7 +36,7 @@ class RegisteredField;
 class STREAMANALYZER_EXPORT StreamAnalyzerFactory {
 private:
     class Private;
-    Private* p;
+    Private* const p;
 public:
     StreamAnalyzerFactory();
     virtual ~StreamAnalyzerFactory();

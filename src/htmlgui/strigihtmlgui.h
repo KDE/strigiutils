@@ -62,7 +62,7 @@ class STRIGIHTMLGUI_EXPORT StrigiHtmlGui {
 class Private;
 private:
     HtmlHelper* helper;
-    Private* p;
+    Private* const p;
 
     void printHtmlHeader(std::ostream& out);
     void printHeader(std::ostream& out, const std::string& path,

@@ -49,8 +49,7 @@ public:
         const string& query) const;
 };
 
-StrigiHtmlGui::StrigiHtmlGui(HtmlHelper* h) : helper(h) {
-    p = new Private(helper);
+StrigiHtmlGui::StrigiHtmlGui(HtmlHelper* h) :helper(h), p(new Private(helper)) {
 }
 StrigiHtmlGui::~StrigiHtmlGui() {
     delete p;
