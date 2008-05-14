@@ -60,7 +60,7 @@ bool XesamQLParser::parse(const string &xesam_query,
         xesam_query.length(), XML_CHAR_ENCODING_UTF8);
     if (pBuffer == NULL)
     {
-        STRIGI_LOG_ERROR ("XesamQLParser.parse", "couldn't create input buffer")
+        STRIGI_LOG_ERROR ("XesamQLParser.parse", "could not create input buffer")
         return false;
     }
 
@@ -87,7 +87,7 @@ bool XesamQLParser::parse_file(const string &xesam_query_file,
     if (pBuffer == NULL)
     {
         STRIGI_LOG_ERROR ("XesamQLParser.parse_file",
-                          "couldn't create input buffer")
+                          "could not create input buffer")
         return false;
     }
 
@@ -106,7 +106,7 @@ bool XesamQLParser::parse_input(xmlParserInputBufferPtr buffer,
     if (buffer == NULL)
     {
         STRIGI_LOG_ERROR ("XesamQLParser.parse_input",
-                          "couldn't create input buffer")
+                          "could not create input buffer")
         return false;
     }
 
