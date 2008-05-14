@@ -70,7 +70,7 @@ public:
      * loaded from the .fieldproperties database and not specified in runtime
      * by calling plugins.
      * This call is a stub for those who want to add values for the field,
-     * which is not addded to the central ontology database.
+     * which is not added to the central ontology database.
      * 
      * NOTE: the default type is stringType
      *       and there is no parent by default

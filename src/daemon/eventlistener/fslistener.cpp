@@ -301,7 +301,7 @@ void FsListener::bootstrap()
         STRIGI_LOG_DEBUG ("strigi.FsListener.bootstrap", msg.str())
 
         if (indexedFiles.empty()) {
-            string temp = path + "/";
+            string temp = path + '/';
             msg.str("");
             m_pManager->indexReader()->getChildren (temp, indexedFiles);
             msg << "there're " << indexedFiles.size();

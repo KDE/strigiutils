@@ -45,7 +45,7 @@ bool Xesam2Strigi::parse (const string& xesam_query, Type query_type)
 {
   STRIGI_LOG_INIT_BASIC();
   STRIGI_LOG_DEBUG ("Xesam2Strigi::parse",
-                    string("going to parse query: |") + xesam_query + "|")
+                    string("going to parse query: |") + xesam_query + '|')
 
   if (query_type == QueryLanguage) {
     XesamQLParser xesamQlParser;

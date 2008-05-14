@@ -385,7 +385,7 @@ get(int argc, char** argv) {
             printf ("%s: is not indexed\n", iter->c_str());
         else
         {
-            printf ("Informations associated to %s:\n", iter->c_str());
+            printf ("Information associated to %s:\n", iter->c_str());
             for (vector<IndexedDocument>::iterator it = matches.begin();
                  it != matches.end(); it++)
             {

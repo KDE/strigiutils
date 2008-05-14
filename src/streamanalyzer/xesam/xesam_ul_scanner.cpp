@@ -87,7 +87,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
       else {
         //error, unknown modifier
         STRIGI_LOG_ERROR ("xesam_ul_scanner",
-                          string("unknown modifier: |") + ch + "|")
+                          string("unknown modifier: |") + ch + '|')
 
         // don't interrupt parsing, just provide an empty modifier
         *yylval = "";

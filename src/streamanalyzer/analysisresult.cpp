@@ -109,7 +109,7 @@ public:
     AnalysisResult* const m_this;
     AnalysisResult* const m_parent;
     const StreamEndAnalyzer* m_endanalyzer;
-    std::map<const Strigi::RegisteredField*, int> occurences;
+    std::map<const Strigi::RegisteredField*, int> occurrences;
 
     Private(const std::string& p, const char* name, time_t mt,
         AnalysisResult& t, AnalysisResult& parent);
@@ -322,18 +322,18 @@ AnalysisResult::addValue(const RegisteredField* field, double value) {
 }
 bool
 AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
-    std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurences.find(field);
-    if (i != occurences.end()) {
+    std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurrences.find(field);
+    if (i != occurrences.end()) {
 	if (i->second >= field->properties().maxCardinality()
                 && field->properties().maxCardinality() >= 0) {
 	    fprintf(stderr, "%s hit the maxCardinality limit (%d)\n",
 		field->properties().name().c_str(), field->properties().maxCardinality());
 	    return false;
 	} else {
-	    occurences[field]++;
+	    occurrences[field]++;
 	}
     } else {
-	occurences[field] = 1;
+	occurrences[field] = 1;
     }
     return true;
 }

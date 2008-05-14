@@ -551,7 +551,7 @@ bool InotifyListener::isEventInteresting (FsEvent* event)
 
     string path = inotifyEvent->watchName();
     if (path[path.length() - 1] != '/')
-        path += "/";
+        path += '/';
     path += inotifyEvent->name();
     
     if (inotifyEvent->regardsDir())

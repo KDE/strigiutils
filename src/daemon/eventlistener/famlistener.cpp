@@ -84,7 +84,7 @@ FamEvent::FamEvent (const string& watchName, FAMEvent event)
 
     string path = m_watchName;
     if (path[path.length() - 1] != '/')
-        path += "/";
+        path += '/';
     path += event.filename;
 
     if ( stat( path.c_str(), &status) == 0) {
@@ -427,7 +427,7 @@ bool FamListener::isEventInteresting (FsEvent* event)
 
     string path = famEvent->watchName();
     if (path[path.length() - 1] != '/')
-        path += "/";
+        path += '/';
     path += famEvent->name();
     
     if (famEvent->regardsDir())

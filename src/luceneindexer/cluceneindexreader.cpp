@@ -771,8 +771,8 @@ CLuceneIndexReader::keywords(const string& keywordmatch,
 }
 void
 CLuceneIndexReader::getChildren(const std::string& parent,
-            std::map<std::string, time_t>& childs) {
-    childs.clear();
+            std::map<std::string, time_t>& children) {
+    children.clear();
     // force a fresh reader. This is important because the function
     // getChildren is essential for updating the index
     if ( !checkReader(true) ) {
@@ -802,7 +802,7 @@ CLuceneIndexReader::getChildren(const std::string& parent,
             time_t mtime = atoi(wchartoutf8( v ).c_str());
             v = d->get(Private::systemlocation());
             if (v) {
-                childs[wchartoutf8( v )] = mtime;
+                children[wchartoutf8( v )] = mtime;
             }
         }
 

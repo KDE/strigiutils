@@ -84,7 +84,7 @@ public:
 
     /**
      * Thread-safe function for getting the next filename.
-     * @return 0 when no error occured or -1 if an error occurred
+     * @return 0 when no error occurred or -1 if an error occurred
      */
     int nextDir(std::string& path,
         std::vector<std::pair<std::string, struct stat> >& dirs);

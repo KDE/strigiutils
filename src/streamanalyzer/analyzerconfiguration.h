@@ -173,7 +173,7 @@ public:
      * index the archive's children.
      *
      * This can be used to stop the indexing process at the next convenient
-     * time.  For example, if the user wishes to interupt the indexing
+     * time.  For example, if the user wishes to interrupt the indexing
      * process, or if the tool @c deepgrep was asked to find the first
      * occurrence of a term and then stop.
      *
