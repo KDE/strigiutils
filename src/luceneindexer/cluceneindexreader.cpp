@@ -433,7 +433,7 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     }
 if (q.fields().size() > 0) cerr << q.fields()[0] << endl;
     // handle special commands
-    if (q.fields().size() == 1 && q.fields()[0] == ""
+    if (q.fields().size() == 1 && q.fields()[0].empty()
             && q.term().string().substr(0, 14) == "strigispecial:") {
         return p->strigiSpecial(q.term().string());
     }

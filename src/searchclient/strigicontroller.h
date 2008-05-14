@@ -38,7 +38,7 @@ private slots:
     void slotStopDaemon();
     void slotCheckStatus();
 public:
-    StrigiController(QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    explicit StrigiController(QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~StrigiController();
 };
 

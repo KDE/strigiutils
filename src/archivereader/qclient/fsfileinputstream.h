@@ -37,8 +37,10 @@ protected:
     int32_t fillBuffer(char* start, int32_t space);
 public:
     static const int32_t defaultBufferSize;
-    FsFileInputStream(const QString &filename, int32_t buffersize=defaultBufferSize);
-    FsFileInputStream(QFSFileEngine *, int32_t buffersize=defaultBufferSize);
+    explicit FsFileInputStream(const QString &filename,
+        int32_t buffersize=defaultBufferSize);
+    explicit FsFileInputStream(QFSFileEngine *,
+        int32_t buffersize=defaultBufferSize);
     ~FsFileInputStream();
     StreamStatus reopen();
 };

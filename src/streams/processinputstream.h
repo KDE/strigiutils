@@ -40,7 +40,7 @@ private:
 protected:
     int32_t fillBuffer(char* start, int32_t space);
 public:
-    ProcessInputStream(const std::vector<std::string>& args,
+    explicit ProcessInputStream(const std::vector<std::string>& args,
         InputStream* input=0);
     ~ProcessInputStream();
 };
