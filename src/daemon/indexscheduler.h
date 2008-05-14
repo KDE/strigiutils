@@ -45,7 +45,7 @@ public:
     bool addMoreText() const {
         return !stop;
     }
-    void setStop(bool s) { stop = s; std::exit(0); }
+    void setStop(bool s) { stop = s; }
     StoppableConfiguration() :stop(false) {}
 };
 
