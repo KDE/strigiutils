@@ -26,7 +26,7 @@ public:
     Private() :strigi("vandenoever.strigi", "/search",
        QDBusConnection::sessionBus()) {}
 };
-StrigiClient::StrigiClient() {
+StrigiClient::StrigiClient() :p(new Private()) {
     // register the custom types
     qDBusRegisterMetaType<QMap<QString,QString> >();
     qDBusRegisterMetaType<QMultiMap<int,QString> >();
@@ -36,7 +36,6 @@ StrigiClient::StrigiClient() {
     qDBusRegisterMetaType<BoolStringPair>();
     qDBusRegisterMetaType<StringUIntPair>();
     qDBusRegisterMetaType<QList<StringUIntPair> >();
-    p = new Private();
 }
 StrigiClient::~StrigiClient() {
     delete p;
