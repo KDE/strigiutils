@@ -1,5 +1,5 @@
 /*
-*  Copyright 2007 Fabrice Colin
+*  Copyright 2007 Fabrice Colin <fabrice.colin@gmail.com>
 *  Copyright 2007 Flavio Castelli - small changes for fitting into Strigi
 *
 *  This library is free software; you can redistribute it and/or
