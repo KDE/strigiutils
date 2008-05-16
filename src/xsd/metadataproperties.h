@@ -4,6 +4,7 @@
 #include "xsdparser/xmlstream.h"
 #include <string>
 #include <list>
+#include <ostream>
 class Metadata {
 public:
 	Metadata(const std::string& xml = "");
