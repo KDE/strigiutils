@@ -1,7 +1,7 @@
+/* DO NOT EDIT */
 /* This file is generated from strigidaemonconfiguration.xsd */
 #ifndef STRIGIDAEMONCONFIGURATION_H
 #define STRIGIDAEMONCONFIGURATION_H
-#include <iostream>
 #include "xsdparser/xmlstream.h"
 #include <string>
 #include <list>

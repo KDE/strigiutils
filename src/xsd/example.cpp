@@ -1,3 +1,4 @@
+/* DO NOT EDIT */
 /* This file is generated from example.xsd */
 #include "example.h"
 #include <iostream>

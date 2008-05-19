@@ -1,3 +1,4 @@
+/* DO NOT EDIT */
 /* This file is generated from metadataproperties.xsd */
 #include "metadataproperties.h"
 #include <iostream>
@@ -25,7 +26,7 @@ XMLStream& operator>>(XMLStream&, Metadata&);
 XMLStream&
 operator>>(XMLStream& in, Metadataproperties& e) {
 	const SimpleNode* n = in.firstChild();
-	bool hasChildren = (n != 0);
+	bool hasChildren = n;
 	while (n && in.getTagName() == "metadata") {
 		Metadata v;
 		in >> v;

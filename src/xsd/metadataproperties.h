@@ -1,10 +1,10 @@
+/* DO NOT EDIT */
 /* This file is generated from metadataproperties.xsd */
 #ifndef METADATAPROPERTIES_H
 #define METADATAPROPERTIES_H
 #include "xsdparser/xmlstream.h"
 #include <string>
 #include <list>
-#include <ostream>
 class Metadata {
 public:
 	Metadata(const std::string& xml = "");

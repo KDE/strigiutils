@@ -1,3 +1,4 @@
+/* DO NOT EDIT */
 /* This file is generated from strigidaemonconfiguration.xsd */
 #include "strigidaemonconfiguration.h"
 #include <iostream>

@@ -102,6 +102,7 @@ public class xsdparser {
 
 		// write the parsed classes
 		PrintWriter header = new PrintWriter(new FileWriter(base + ".h"));
+		header.println("/* DO NOT EDIT */");
 		header.println("/* This file is generated from " + xsdfile + " */");
 		header.println("#ifndef " + base.toUpperCase() + "_H");
 		header.println("#define " + base.toUpperCase() + "_H");
@@ -109,6 +110,7 @@ public class xsdparser {
 		header.println("#include <string>");
 		header.println("#include <list>");
 		PrintWriter impl = new PrintWriter(new FileWriter(base + ".cpp"));
+		impl.println("/* DO NOT EDIT */");
 		impl.println("/* This file is generated from " + xsdfile + " */");
 		impl.println("#include \"" + base + ".h\"");
 		impl.println("#include <iostream>");
