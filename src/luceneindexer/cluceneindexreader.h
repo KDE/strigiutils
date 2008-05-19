@@ -75,6 +75,11 @@ public:
         uint32_t max, uint32_t offset);
     void getChildren(const std::string& parent,
             std::map<std::string, time_t>& );
+
+    // implementation function
+    void getDocuments(const std::vector<std::string>& fields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result, int off, int max);
 };
 
 #endif

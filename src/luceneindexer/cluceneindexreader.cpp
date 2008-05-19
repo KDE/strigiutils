@@ -384,6 +384,11 @@ CLuceneIndexReader::Private::getFieldValue(lucene::document::Field* field,
 int32_t
 CLuceneIndexReader::countHits(const Strigi::Query& q) {
     if (!checkReader()) return -1;
+    // if the query is empty, we return the number of files in the index
+    if (q.term().string().size() == 0 && q.subQueries().size() == 0) {
+        return countDocuments();
+    }
+
     Query* bq = p->createQuery(q);
     if (reader == 0) {
         return 0;
@@ -475,10 +480,50 @@ if (q.fields().size() > 0) cerr << q.fields()[0] << endl;
     return results;
 }
 void
+CLuceneIndexReader::getDocuments(const std::vector<std::string>& fullFields,
+        const std::vector<Strigi::Variant::Type>& types,
+        std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
+    int pos = 0;
+    int maxDoc = reader->maxDoc();
+    for (int i=0; i<off; i++) {
+        while (pos < maxDoc && reader->isDeleted(pos)) pos++;
+        if (pos == maxDoc) return;
+        pos++;
+    }
+    if (max < 0) max = 0;
+    result.resize(max);
+    Document* d = new Document();
+    for (int i = 0; i < max && pos < maxDoc; ++i) {
+        while (pos < maxDoc && reader->isDeleted(pos)) pos++;
+        d->clear();
+        if (pos == maxDoc || !reader->document(pos++, d)) {
+            continue;
+        }
+        
+        vector<Variant>& doc = result[i];
+        doc.clear();
+        doc.resize(fullFields.size());
+
+        DocumentFieldEnumeration* e = d->fields();
+        while (e->hasMoreElements()) {
+            Field* field = e->nextElement();
+            string name(wchartoutf8(field->name()));
+            for (uint j = 0; j < fullFields.size(); ++j) {
+                if (fullFields[j] == name) {
+                    doc[j] = p->getFieldValue(field, types[j]);
+                }
+            }
+        }
+        _CLDELETE(e);
+    }
+    delete d;
+}
+void
 CLuceneIndexReader::getHits(const Strigi::Query& q,
         const std::vector<std::string>& fields,
         const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
+cerr << "getHits " << off << " " << max << endl;
     result.clear();
     if (!checkReader() || types.size() < fields.size()) {
         return;
@@ -494,6 +539,12 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
         } else {
             fullFields[i].assign(fields[i]);
         }
+    }
+
+    // if the query is empty, we return the number of files in the index
+    if (q.term().string().size() == 0 && q.subQueries().size() == 0) {
+        getDocuments(fullFields, types, result, off, max);
+        return;
     }
 
     Query* bq = p->createQuery(q);
