@@ -21,6 +21,7 @@
 #include "estraierindexmanager.h"
 #include "query.h"
 #include <estraier.h>
+#include <cstring>
 #include <set>
 #include <sstream>
 #include <assert.h>

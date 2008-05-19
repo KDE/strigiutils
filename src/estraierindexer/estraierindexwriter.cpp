@@ -23,6 +23,7 @@
 #include <fieldtypes.h>
 #include <vector>
 #include <sstream>
+#include <cstring>
 using namespace std;
 using namespace Strigi;
 

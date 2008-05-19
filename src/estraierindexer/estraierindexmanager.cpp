@@ -23,6 +23,7 @@
 #include "estraierindexwriter.h"
 #include "strigi_thread.h"
 #include "indexplugin.h"
+#include <cstring>
 #include <iostream>
 #include <assert.h>
 #include <sys/types.h>
