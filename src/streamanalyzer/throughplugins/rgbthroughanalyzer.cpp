@@ -1,5 +1,5 @@
 /* This file is part of Strigi Desktop Search, ported from code of:
- * - Melchior FRANZ <mfranz@kde.org> (Copyright (C) 2004)
+ * Copyright (C) 2004 Melchior FRANZ <mfranz@kde.org>
  *
  * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
  *

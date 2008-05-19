@@ -1,7 +1,7 @@
 /*
  * Inode based directory notification for Linux
  *
- * Copyright (C) 2005 John McCutchan
+ * Copyright (C) 2005 John McCutchan <john@johnmccutchan.com>
  */
 
 #ifndef _LOCAL_INOTIFY_MASKS_H

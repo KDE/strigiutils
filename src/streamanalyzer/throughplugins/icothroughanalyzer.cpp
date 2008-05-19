@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search, ported from code of:
- * - Shane Wright <me@shanewright.co.uk> (Copyright (C) 2002)
- * - Matthias Lechner <matthias@lmme.de> (Copyright (C) 2007) 
+ * Copyright (C) 2007 Shane Wright <me@shanewright.co.uk>
+ *                    Matthias Lechner <matthias@lmme.de>
  *
  * Copyright (C) 2007 Flavio Castelli <flavio.castelli@gmail.com>
  *
