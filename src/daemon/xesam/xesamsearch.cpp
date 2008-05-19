@@ -41,6 +41,7 @@ public:
     // list of requests to count to which we should reply
     std::list<void *> countMessages;
     int hitcount;
+    int hitsgotten;
     bool valid;
     bool started;
     STRIGI_MUTEX_DEFINE(mutex);
@@ -49,7 +50,7 @@ public:
     ~Private();
     void getHitCount(void*);
     void setCount(int c);
-    void getHits(void* msg, int32_t num);
+    void getHits(void* msg, uint32_t num);
     void startSearch();
 };
 
@@ -110,7 +111,7 @@ XesamSearch::operator=(const XesamSearch& xs) {
     p->ref();
 }
 XesamSearch::Private::Private(XesamSession& s, const std::string& n,
-        const std::string& q) :name(n), session(s), hitcount(-1),
+        const std::string& q) :name(n), session(s), hitcount(-1), hitsgotten(0),
             started(false) {
     STRIGI_MUTEX_INIT(&mutex);
 
@@ -153,11 +154,11 @@ XesamSearch::Private::getHitCount(void* msg) {
     STRIGI_MUTEX_UNLOCK(&mutex);
 }
 void
-XesamSearch::getHits(void* msg, int32_t num) {
+XesamSearch::getHits(void* msg, uint32_t num) {
     p->getHits(msg, num);
 }
 void
-XesamSearch::Private::getHits(void* msg, int32_t num) {
+XesamSearch::Private::getHits(void* msg, uint32_t num) {
     if (!started) {
         throw runtime_error("Search has not been started.");
     } else if (!valid) {
@@ -165,7 +166,9 @@ XesamSearch::Private::getHits(void* msg, int32_t num) {
         throw runtime_error("Search is not valid.");
     }
     vector<vector<Variant> > v;
-    GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, 0, num);
+    uint32_t sofar = hitsgotten;
+    hitsgotten += num;
+    GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, sofar, num);
     bool ok = session.liveSearch().queue().addJob(job);
     if (!ok) {
         delete job;

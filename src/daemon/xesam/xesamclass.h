@@ -36,7 +36,7 @@ public:
         STRIGI_MUTEX_INIT(&mutex);
     }
     virtual ~XesamClass() {
-        std::cerr << "delete " << this << std::endl;
+//        std::cerr << "delete " << this << std::endl;
         STRIGI_MUTEX_UNLOCK(&mutex);
         STRIGI_MUTEX_DESTROY(&mutex);
     }
