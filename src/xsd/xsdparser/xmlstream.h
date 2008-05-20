@@ -23,6 +23,11 @@
 #include <string>
 #include <map>
 #include <list>
+// Although ostream isn't used *here*, other generated code
+// which #includes this file does use std::ostream (while
+// it doesn't #include <ostream> itself) so pull the header
+// in here.
+#include <ostream>
 
 class SimpleNode;
 class XMLStream {
