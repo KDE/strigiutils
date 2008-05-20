@@ -56,6 +56,9 @@ DirLister::nextEntry(EntryInfo& e) {
  */
 class ArchiveEntryCache {
 public:
+    class SubEntry;
+    typedef std::map<std::string, SubEntry *> SubEntryMap;
+
     /**
      * @brief Represents an entry in the cache.
      */
@@ -65,7 +68,7 @@ public:
         EntryInfo entry;
         /** A list of subentries of this entry. */
         //can't define staticly constructed object while object is being defined
-        std::map<std::string, SubEntry> entries;
+        SubEntryMap entries;
         /**
          * @brief The number of entries in the cache below and including
          * this one.
@@ -76,7 +79,7 @@ public:
         /** Constructor */
         SubEntry() { }
         /** Destructor */
-        virtual ~SubEntry() {}
+        virtual ~SubEntry();
     };
     /**
      * @brief Represents a top-level entry in the cache
@@ -130,14 +133,23 @@ public:
     void print() const;
 };
 
+ArchiveEntryCache::SubEntry::~SubEntry() {
+    SubEntryMap::iterator i;
+    for (i=entries.begin(); i!=entries.end(); ++i) {
+        delete i->second;
+    }
+    // Probably superfluous
+    entries.clear();
+}
+
 void
 ArchiveEntryCache::print() const {
     std::map<std::string, RootSubEntry>::const_iterator j;
     for (j=cache.begin(); j!=cache.end(); ++j) {
         printf("x %s\n", j->first.c_str());
-        std::map<std::string, SubEntry>::const_iterator i;
+        SubEntryMap::const_iterator i;
         for (i = j->second.entries.begin(); i != j->second.entries.end(); ++i) {
-            printf("- %s ", i->second.entry.filename.c_str());
+            printf("- %s ", i->second->entry.filename.c_str());
         }
         printf("\n");
     }
@@ -145,9 +157,9 @@ ArchiveEntryCache::print() const {
 int32_t
 ArchiveEntryCache::SubEntry::count() const {
     int32_t count = 1;
-    map<string, SubEntry>::const_iterator i;
+    SubEntryMap::const_iterator i;
     for (i = entries.begin(); i != entries.end(); ++i) {
-        count += i->second.count();
+        count += i->second->count();
     }
     return count;
 }
@@ -179,7 +191,7 @@ ArchiveEntryCache::findEntry(const string& url) const {
     }
     const SubEntry* e = &ei->second;
 
-    map<string, SubEntry>::const_iterator i;
+    SubEntryMap::const_iterator i;
 
     size_t p = ei->first.length();
     do {
@@ -194,7 +206,7 @@ ArchiveEntryCache::findEntry(const string& url) const {
         if (i == e->entries.end()) {
             e = 0;
         } else {
-            e = &i->second;
+            e = i->second;
             p = np;
         }
         if (p == url.length()) {
@@ -268,19 +280,19 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
     se.entry.filename = name;
 
     // find the right entry
-    map<string, ArchiveEntryCache::SubEntry>::iterator ii;
+    ArchiveEntryCache::SubEntryMap::iterator ii;
     ArchiveEntryCache::SubEntry* parent = &e;
     for (uint i=0; i<names.size(); ++i) {
         ii = parent->entries.find(names[i]);
         if (ii == parent->entries.end()) {
-            ArchiveEntryCache::SubEntry newse;
-            newse.entry.filename = names[i];
-            newse.entry.type = EntryInfo::Dir;
-            newse.entry.size = 0;
+            ArchiveEntryCache::SubEntry *newse = new ArchiveEntryCache::SubEntry;
+            newse->entry.filename = names[i];
+            newse->entry.type = EntryInfo::Dir;
+            newse->entry.size = 0;
             parent->entries[names[i]] = newse;
             ii = parent->entries.find(names[i]);
         }
-        parent = &ii->second;
+        parent = ii->second;
     }
     *parent = se;
 }
@@ -601,9 +613,9 @@ ArchiveReader::dirEntries(const std::string& url) {
     }
 
     if (subentry) {
-        map<string, ArchiveEntryCache::SubEntry>::const_iterator i;
+        ArchiveEntryCache::SubEntryMap::const_iterator i;
         for (i = subentry->entries.begin(); i != subentry->entries.end(); ++i) {
-            v.push_back(i->second.entry);
+            v.push_back(i->second->entry);
         }
     }
     DirLister dl(v);
