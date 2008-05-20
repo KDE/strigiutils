@@ -24,7 +24,7 @@
 #include "diranalyzer.h"
 
 #include <strigi/strigiconfig.h>
-#include "event.h"
+#include "eventlistener/event.h"
 #include "eventlistenerqueue.h"
 #include "analyzerconfiguration.h"
 
