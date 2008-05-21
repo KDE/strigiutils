@@ -80,6 +80,9 @@ OPTION(ENABLE_EXIV2
 	"enable exiv2 support. This allows you to index EXIF/IPTC metadata." ON)
 
 # backends
+
+set(CLUCENE_MIN_VERSION "0.9.20")
+
 OPTION(ENABLE_CLUCENE "enable CLucene support (recommended)" ON)
 OPTION(ENABLE_HYPERESTRAIER "enable Hyper Estraier support(unreliable)" OFF)
 OPTION(ENABLE_SQLITE "enable SQLite support(unreliable)" OFF)
