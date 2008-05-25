@@ -105,7 +105,7 @@ public:
      * not have to be the ones listed in in the hit.fields session property.
      **/
     void GetHitData(void* msg, const std::string& search,
-            const std::vector<int32_t>& hit_ids,
+            const std::vector<uint32_t>& hit_ids,
             const std::vector<std::string>& properties);
     /**
      * This function is called by the implementation to sent the hits data.

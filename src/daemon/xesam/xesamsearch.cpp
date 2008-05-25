@@ -176,7 +176,7 @@ XesamSearch::Private::getHits(void* msg, uint32_t num) {
     }
 }
 std::vector<std::vector<Variant> >
-XesamSearch::getHitData(const std::vector<int32_t>& hit_ids,
+XesamSearch::getHitData(const std::vector<uint32_t>& hit_ids,
         const std::vector<std::string>& properties) {
     vector<vector<Variant> > v;
     return v;
