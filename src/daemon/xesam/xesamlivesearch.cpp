@@ -141,8 +141,7 @@ XesamLiveSearch::GetHitData(void* msg, const string& search,
         const vector<uint32_t>& hit_ids, const vector<string>& properties) {
     map<string, XesamSearch>::iterator i = p->searches.find(search);
     if (i != p->searches.end()) {
-cerr << "XesamLiveSearch::GetHitData" << endl;
-        i->second.getHitData(hit_ids, properties);
+        i->second.getHitData(msg, hit_ids, properties);
     } else {
         vector<vector<Strigi::Variant> > v;
         GetHitDataResponse(msg, "Search is not registered.", v);

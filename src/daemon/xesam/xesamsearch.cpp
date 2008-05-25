@@ -51,6 +51,8 @@ public:
     void getHitCount(void*);
     void setCount(int c);
     void getHits(void* msg, uint32_t num);
+    void getHitData(void* msg, const std::vector<uint32_t>& hit_ids,
+        const std::vector<std::string>& properties);
     void startSearch();
 };
 
@@ -74,7 +76,7 @@ public:
 class GetHitsJob : public Job {
 public:
     XesamSearch search;
-    void* msg;
+    void* const msg;
     const int offset;
     const int num;
 
@@ -83,12 +85,54 @@ public:
     void run() {
         IndexReader* reader
             = search.session().liveSearch().indexManager()->indexReader();
-        vector<Variant::Type> types(search.session().hitFields().size(),
+        const vector<Variant::Type> types(search.session().hitFields().size(),
             Variant::s_val);
         vector<vector<Variant> > v;
         reader->getHits(search.query(), search.session().hitFields(), types,
             v, offset, num);
         search.session().liveSearch().GetHitsResponse(msg, 0, v);
+    }
+};
+
+class GetHitDataJob : public Job {
+public:
+    XesamSearch search;
+    void* const msg;
+    const std::vector<uint32_t> hit_ids;
+    const std::vector<std::string> properties;
+
+    GetHitDataJob(XesamSearch s, void* m, const std::vector<uint32_t>& h,
+        const std::vector<std::string>& p) :search(s), msg(m),
+        hit_ids(h), properties(p) {}
+    void run() {
+        IndexReader* reader
+            = search.session().liveSearch().indexManager()->indexReader();
+        const vector<Variant::Type> types(properties.size(), Variant::s_val);
+        // we loop over all consecutive stretches
+        vector<vector<Variant> > v;
+        std::vector<uint32_t>::const_iterator i(hit_ids.begin());
+        uint32_t first = hit_ids[0];
+        uint32_t last = first;
+        for (i++; i != hit_ids.end(); ++i) {
+            if (*i != last + 1) {
+                vector<vector<Variant> > sv;
+                reader->getHits(search.query(), properties, types,
+                    sv, first, last-first+1);
+                v.insert(v.end(), sv.begin(), sv.end());
+                first = last = *i;
+            } else {
+                last = *i;
+            }
+        }
+        vector<vector<Variant> > sv;
+        reader->getHits(search.query(), properties, types,
+            sv, first, last-first+1);
+        if (v.size() > 0) {
+            v.insert(v.end(), sv.begin(), sv.end());
+            search.session().liveSearch().GetHitDataResponse(msg, 0, v);
+        } else {
+            search.session().liveSearch().GetHitDataResponse(msg, 0, sv);
+        }
     }
 };
 
@@ -165,7 +209,6 @@ XesamSearch::Private::getHits(void* msg, uint32_t num) {
         // send an error message
         throw runtime_error("Search is not valid.");
     }
-    vector<vector<Variant> > v;
     uint32_t sofar = hitsgotten;
     hitsgotten += num;
     GetHitsJob* job = new GetHitsJob(XesamSearch(this), msg, sofar, num);
@@ -175,11 +218,33 @@ XesamSearch::Private::getHits(void* msg, uint32_t num) {
         throw runtime_error("Error processing request.");
     }
 }
-std::vector<std::vector<Variant> >
-XesamSearch::getHitData(const std::vector<uint32_t>& hit_ids,
+void
+XesamSearch::getHitData(void* msg, const std::vector<uint32_t>& hit_ids,
         const std::vector<std::string>& properties) {
-    vector<vector<Variant> > v;
-    return v;
+    p->getHitData(msg, hit_ids, properties);
+}
+void
+XesamSearch::Private::getHitData(void* msg,
+        const std::vector<uint32_t>& hit_ids,
+        const std::vector<std::string>& properties) {
+    if (!started) {
+        throw runtime_error("Search has not been started.");
+    } else if (!valid) {
+        // send an error message
+        throw runtime_error("Search is not valid.");
+    }
+    if (hit_ids.size() == 0) {
+        vector<vector<Variant> > v;
+        session.liveSearch().GetHitDataResponse(msg, 0, v);
+        return;
+    }
+    GetHitDataJob* job = new GetHitDataJob(XesamSearch(this), msg, hit_ids,
+        properties);
+    bool ok = session.liveSearch().queue().addJob(job);
+    if (!ok) {
+        delete job;
+        throw runtime_error("Error processing request.");
+    }
 }
 void
 XesamSearch::setCount(int c) {
