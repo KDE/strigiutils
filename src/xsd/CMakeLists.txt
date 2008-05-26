@@ -23,34 +23,49 @@ endif (LIBXML2_FOUND)
 OPTION(ENABLE_REGENERATEXSD "regenerate xsd parser from *.xsd files(not normally required)" ON)
 FIND_OPTIONAL_DEP(Java ENABLE_REGENERATEXSD JAVA_COMPILE "generating xsd parser from *.xsd files")
 
-# loop over all xsd files, the next line does not work everywhere,
-# so we dont use it currently
-# file(GLOB XSDFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.xsd)
-# if the previous line does not work, try this:
-set(XSDFILES strigidaemonconfiguration.xsd metadataproperties.xsd)
+# loop over all xsd files
+set(XSDFILES "${CMAKE_CURRENT_SOURCE_DIR}/strigidaemonconfiguration.xsd" 
+             "${CMAKE_CURRENT_SOURCE_DIR}/metadataproperties.xsd")
 
 foreach (XSDFILE ${XSDFILES})
-  string(REPLACE ".xsd" "" XSDNAME ${XSDFILE})
+  get_filename_component(XSDNAME "${XSDFILE}" NAME_WE)
 
   # generate the io code from the XML Schema file
-  SET(CPPFILE ${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}.cpp)
+  SET(CPPFILE "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp")
 
-  if (JAVA_COMPILE
-        AND ${CMAKE_CURRENT_SOURCE_DIR}/${XSDFILE} IS_NEWER_THAN ${CPPFILE} )
+  if (JAVA_COMPILE)
     add_custom_command(
-      OUTPUT ${XSDNAME}.cpp
-        ${XSDNAME}test.cpp
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
+             "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
+             "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}test.cpp"
       COMMAND ${JAVA_COMPILE} -d ${CMAKE_CURRENT_BINARY_DIR}
-        xsdparser/xsdparser.java
+             "${CMAKE_CURRENT_SOURCE_DIR}/xsdparser/xsdparser.java"
       COMMAND ${JAVA_RUNTIME} -cp ${CMAKE_CURRENT_BINARY_DIR}
-        xsdparser.xsdparser ${XSDFILE}
-    DEPENDS xsdparser/xsdparser.java ${XSDFILE}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  endif (JAVA_COMPILE
-        AND ${CMAKE_CURRENT_SOURCE_DIR}/${XSDFILE} IS_NEWER_THAN ${CPPFILE} )
+			 xsdparser.xsdparser ${XSDFILE}
+      DEPENDS xsdparser/xsdparser.java ${XSDFILE}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  else (JAVA_COMPILE)
+    add_custom_command(
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
+             "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
+             "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}test.cpp"
+      COMMAND ${CMAKE_COMMAND}
+        ARGS  -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}.cpp"
+                "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
+      COMMAND ${CMAKE_COMMAND}
+        ARGS  -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}.h"
+                "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
+      COMMAND ${CMAKE_COMMAND}
+        ARGS  -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}test.cpp"
+                "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}test.cpp"
+    )
+  endif (JAVA_COMPILE)
 
   # create a library from the xml io files
-  add_library(${XSDNAME} ${XSDNAME}.cpp)
+  add_library(${XSDNAME} ${CPPFILE})
   target_link_libraries(${XSDNAME} xmlstream)
 
   # generate a test executable
