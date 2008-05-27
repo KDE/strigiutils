@@ -81,7 +81,7 @@ OPTION(ENABLE_EXIV2
 
 # backends
 
-set(CLUCENE_MIN_VERSION "0.9.20")
+set(CLUCENE_MIN_VERSION "0.9.19")
 
 OPTION(ENABLE_CLUCENE "enable CLucene support (recommended)" ON)
 OPTION(ENABLE_HYPERESTRAIER "enable Hyper Estraier support(unreliable)" OFF)
