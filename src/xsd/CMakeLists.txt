@@ -19,9 +19,18 @@ else (LIBXML2_FOUND)
   target_link_libraries(xmlstream ${EXPAT_LIBRARY})
 endif (LIBXML2_FOUND)
 
-# java is required to compile the xsd parser
-OPTION(ENABLE_REGENERATEXSD "regenerate xsd parser from *.xsd files(not normally required)" ON)
-FIND_OPTIONAL_DEP(Java ENABLE_REGENERATEXSD JAVA_COMPILE "generating xsd parser from *.xsd files")
+# javac >= 1.5 is required to compile the xsd parser
+OPTION(ENABLE_REGENERATEXSD
+  "regenerate xsd parser from *.xsd files(not normally required)" ON)
+find_package(Java)
+if (JAVA_COMPILE)
+  execute_process(COMMAND ${JAVA_COMPILE} "-version" ERROR_VARIABLE
+    JAVAC_VERSION_STRING)
+  string(REGEX MATCH " 1\\.[56]" JAVAC_VERSION "${JAVAC_VERSION_STRING}")
+  if (JAVAC_VERSION)
+    set(JAVAC5_FOUND TRUE)
+  endif (JAVAC_VERSION)
+endif (JAVA_COMPILE)
 
 # loop over all xsd files
 set(XSDFILES "${CMAKE_CURRENT_SOURCE_DIR}/strigidaemonconfiguration.xsd" 
@@ -33,7 +42,7 @@ foreach (XSDFILE ${XSDFILES})
   # generate the io code from the XML Schema file
   SET(CPPFILE "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp")
 
-  if (JAVA_COMPILE)
+  if (JAVAC5_FOUND)
     add_custom_command(
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
              "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
@@ -44,7 +53,7 @@ foreach (XSDFILE ${XSDFILES})
 			 xsdparser.xsdparser ${XSDFILE}
       DEPENDS xsdparser/xsdparser.java ${XSDFILE}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  else (JAVA_COMPILE)
+  else (JAVAC5_FOUND)
     add_custom_command(
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
              "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
@@ -62,7 +71,7 @@ foreach (XSDFILE ${XSDFILES})
                 "${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}test.cpp"
                 "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}test.cpp"
     )
-  endif (JAVA_COMPILE)
+  endif (JAVAC5_FOUND)
 
   # create a library from the xml io files
   add_library(${XSDNAME} ${CPPFILE})
