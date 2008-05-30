@@ -308,7 +308,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
         addFactory(*i);
     }
     addFactory(new Bz2EndAnalyzerFactory());
-/*    addFactory(new GZipEndAnalyzerFactory());
+    addFactory(new GZipEndAnalyzerFactory());
     addFactory(new OleEndAnalyzerFactory());
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
@@ -328,7 +328,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
 //    addFactory(new IFilterEndAnalyzerFactory());
 #endif
 #endif
-    addFactory(new HelperEndAnalyzerFactory());*/
+    addFactory(new HelperEndAnalyzerFactory());
     addFactory(new TextEndAnalyzerFactory());
 }
 void
