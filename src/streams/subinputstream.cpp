@@ -28,7 +28,7 @@ using namespace Strigi;
 SubInputStream::SubInputStream(InputStream *i, int64_t length)
         : m_offset(i->position()), m_input(i) {
     assert(length >= -1);
-//    printf("substream m_offset: %lli\n", m_offset);
+//    fprintf(stderr, "substream m_offset: %li\n", m_offset);
     m_size = length;
 }
 int32_t
@@ -40,12 +40,13 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
             return -1;
         }
         // restrict the amount of data that can be read
-        if (max <= 0 || max > left) {
+        if (min > left) min = (int32_t)left;
+        if (max < min || max > left) {
             max = (int32_t)left;
         }
-        if (min > left) min = (int32_t)left;
     }
     int32_t nread = m_input->read(start, min, max);
+    assert(max < min || nread <= max);
     if (nread < -1) {
         fprintf(stderr, "substream too short.\n");
         m_status = Error;
@@ -58,8 +59,8 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
                 m_size = m_position;
             }
         } else {
-//            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i m_size %lli\n", nread, min, max, m_size);
-//            fprintf(stderr, "pos %lli parentpos %lli\n", m_position, m_input->position());
+//            fprintf(stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nread %i min %i max %i m_size %li\n", nread, min, max, m_size);
+//            fprintf(stderr, "pos %li parentpos %li\n", m_position, m_input->position());
 //            fprintf(stderr, "status: %i error: %s\n", m_input->status(), m_input->error());
             // we expected data but didn't get enough so that's an error
             m_status = Error;
@@ -77,8 +78,8 @@ SubInputStream::read(const char*& start, int32_t min, int32_t max) {
 int64_t
 SubInputStream::reset(int64_t newpos) {
     assert(newpos >= 0);
-//    fprintf(stderr, "subreset pos: %lli newpos: %lli m_offset: %lli\n", m_position,
-//        newpos, m_offset);
+//    fprintf(stderr, "subreset pos: %li newpos: %li m_offset: %li m_size: %li\n",
+//         m_position, newpos, m_offset, m_size);
     m_position = m_input->reset(newpos + m_offset);
     if (m_position < m_offset) {
         cerr << "########### m_position " << m_position << " newpos " << newpos
@@ -93,7 +94,7 @@ SubInputStream::reset(int64_t newpos) {
 }
 int64_t
 SubInputStream::skip(int64_t ntoskip) {
-//    printf("subskip pos: %lli ntoskip: %lli m_offset: %lli\n", m_position, ntoskip, m_offset);
+//    fprintf(stderr, "subskip pos: %li ntoskip: %li m_offset: %li m_size: %li\n", m_position, ntoskip, m_offset, m_size);
     if (m_size == m_position) {
         m_status = Eof;
         return -1;
