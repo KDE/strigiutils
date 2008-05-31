@@ -139,7 +139,9 @@ string
 removeXML(const std::string& q) {
     string::size_type tagstart = q.find("<userQuery");
     string::size_type tagend = q.find(">", tagstart);
+    while (tagend+1 < q.size() && isspace(q[tagend+1])) tagend++;
     string::size_type queryend = q.find("<", tagend);
+    while (queryend-1 > tagend && isspace(q[queryend-1])) queryend--;
     if (queryend != string::npos) {
         return q.substr(tagend+1, queryend-tagend-1);
     }
