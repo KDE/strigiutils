@@ -1,3 +1,15 @@
+0.5.10
+ - Improved Xesam support. strigidaemon can now be queried with the client from
+   the Xesam test suite.
+ - Fix a bug in subinputstream.
+   Under certain circumstances the function read() of the internal stream could
+   be called with max < min. read() specifies that in such cases, there is no
+   limit on the number of bytes that may be read. This would cause
+   SubInputStream to malfunction because it would allow too much of the internal
+   stream to be read.
+ - Reenable a number of endanalyzers.
+   By accident, the analyzers for .tar and .gz files were disabled in the
+   previous release. Now they are re-enabled.
 0.5.9
  - Fix bug that would severely bloat the strigi index.
  - Improve latency when calling strigi to stop.

@@ -523,7 +523,6 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
         const std::vector<std::string>& fields,
         const std::vector<Strigi::Variant::Type>& types,
         std::vector<std::vector<Strigi::Variant> >& result, int off, int max) {
-cerr << "getHits " << off << " " << max << endl;
     result.clear();
     if (!checkReader() || types.size() < fields.size()) {
         return;
