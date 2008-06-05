@@ -258,6 +258,8 @@ public:
     const RegisteredField* sizeField;
     /** A field for storing rdf:type of the file/data */
     const RegisteredField* typeField;
+    /** A field for storing strigi:debugParseError */
+    const RegisteredField* parseErrorField;
 
 };
 

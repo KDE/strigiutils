@@ -82,6 +82,7 @@ public:
 
     AnalyzerLoader* moduleLoader;
     const RegisteredField* sizefield;
+    const RegisteredField* errorfield;
     void initializeThroughFactories();
     void initializeEndFactories();
     void initializeSaxFactories();
@@ -106,6 +107,7 @@ StreamAnalyzerPrivate::StreamAnalyzerPrivate(AnalyzerConfiguration& c)
         :conf(c), writer(0) {
     moduleLoader = new AnalyzerLoader();
     sizefield = c.fieldRegister().sizeField;
+    errorfield = c.fieldRegister().parseErrorField;
 
     // load the plugins from the environment setting
     const char* strigipluginpath(getenv("STRIGI_PLUGIN_PATH"));
@@ -411,6 +413,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             idx.setEndAnalyzer(sea);
             char ar = sea->analyze(idx, input);
             if (ar) {
+                idx.addValue(errorfield, sea->name() + string(": ")
+                    + sea->error());
                 if (!idx.config().indexMore()) {
                     removeIndexable(idx.depth());
                     return -1;

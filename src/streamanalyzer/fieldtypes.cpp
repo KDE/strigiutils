@@ -72,6 +72,7 @@ FieldRegister::FieldRegister() {
     mtimeField = registerField(mtimeFieldName);//, integerType, 1, 0);
     sizeField = registerField(sizeFieldName);//, integerType, 1, 0);
     typeField = registerField(typeFieldName);
+    parseErrorField = registerField("http://strigi.sf.net/ontologies/0.9#debugParseError");
 }
 
 FieldRegister::~FieldRegister() {
