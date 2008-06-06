@@ -453,7 +453,10 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         tIter = through.begin() + idx.depth();
         uint32_t skipsize = 4096;
         do {
-            if (!idx.config().indexMore()) {
+            // ask the analyzerconfiguration if we should continue
+            int64_t max = idx.config().maximalStreamReadLength(idx);
+            if (!idx.config().indexMore()
+                    || (max != -1 && input->position() <= max)) {
                 removeIndexable(idx.depth());
                 return -1;
             }
