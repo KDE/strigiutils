@@ -90,7 +90,7 @@ LatencyMeasurer::indexMore() const {
     if (d->starttime.tv_sec == -1) {
         d->lasttime = d->starttime = now;
     }
-    d->histogram[(int)10*log10(elapsed(now, d->lasttime))]++;
+    d->histogram[static_cast<int>(10*log10(elapsed(now, d->lasttime)))]++;
     if (elapsed(now, d->lasttime) > 1) {
         cerr << d->beforeLastFile << " started "
             << elapsed(now, d->beforeLastTime) << " seconds ago." << endl;
