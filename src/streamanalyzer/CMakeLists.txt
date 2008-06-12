@@ -57,6 +57,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
+	endanalyzers/zipexeendanalyzer.cpp
 )
 
 add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})

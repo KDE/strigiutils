@@ -30,7 +30,7 @@
 #include "textendanalyzer.h"
 #include "tarendanalyzer.h"
 #include "arendanalyzer.h"
-#include "zipendanalyzer.h"
+#include "zipexeendanalyzer.h"
 #include "oleendanalyzer.h"
 #include "rpmendanalyzer.h"
 #include "cpioendanalyzer.h"
@@ -317,6 +317,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new MailEndAnalyzerFactory());
     addFactory(new MpegEndAnalyzerFactory());
     addFactory(new ZipEndAnalyzerFactory());
+    addFactory(new ZipExeEndAnalyzerFactory());
     addFactory(new RpmEndAnalyzerFactory());
     addFactory(new CpioEndAnalyzerFactory());
     addFactory(new PngEndAnalyzerFactory());

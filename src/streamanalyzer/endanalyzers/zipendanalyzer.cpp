@@ -62,8 +62,11 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         m_error = zip.error();
         return -1;
     } else {
-        idx.addValue(factory->mimetypefield, "application/zip");
-        idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+        if (factory) {
+            idx.addValue(factory->mimetypefield, "application/zip");
+            idx.addValue(factory->typeField,
+                "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+        }
         m_error.resize(0);
     }
     return 0;
