@@ -50,11 +50,17 @@ TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
     TarInputStream tar(in);
     InputStream *s = tar.nextEntry();
     while (s) {
-        if (!idx.config().indexMore()) {
-            return -1;
+        // check if we're done
+        int64_t max = idx.config().maximalStreamReadLength(idx);
+        if (max != -1 && in->position() <= max) {
+            return 0;
         }
-        idx.indexChild(tar.entryInfo().filename, tar.entryInfo().mtime,
-            s);
+        // check if the analysis has been aborted
+        if (!idx.config().indexMore()) {
+            return 0;
+        }
+        idx.indexChild(tar.entryInfo().filename, tar.entryInfo().mtime, s);
+
         s = tar.nextEntry();
     }
     if (tar.status() == Error) {
