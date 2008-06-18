@@ -457,9 +457,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             // ask the analyzerconfiguration if we should continue
             int64_t max = idx.config().maximalStreamReadLength(idx);
             if (!idx.config().indexMore()
-                    || (max != -1 && input->position() <= max)) {
-                removeIndexable(idx.depth());
-                return -1;
+                    || (max != -1 && input->position() >= max)) {
+                // we are done
+                return 0;
             }
             ready = input->size() != -1;
             vector<StreamThroughAnalyzer*>::iterator ts;
