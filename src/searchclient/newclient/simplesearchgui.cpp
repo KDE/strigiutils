@@ -188,13 +188,13 @@ void SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     ui.adddir->setEnabled(running);
     ui.removedir->setEnabled(running);
     ui.queryfield->setEnabled(running);
-    ui.toggledaemon->setText((running)?"stop daemon":"start daemon");
+    ui.toggledaemon->setText((running)?tr("stop daemon"):tr("start daemon"));
     ui.toggledaemon->setEnabled(true);
 
     bool idxng = status["Status"] == "indexing";
     if (idxng != indexing) {
         indexing = idxng;
-        ui.toggleindexing->setText((indexing)?"stop indexing":"start indexing");
+        ui.toggleindexing->setText((indexing)?tr("stop indexing"):tr("start indexing"));
     }
 
     QMap<QString,QString>::const_iterator i;

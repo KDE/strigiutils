@@ -63,10 +63,10 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     starting = true;
     indexeddirs = new QListWidget();
     indexeddirs->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    adddir = new QPushButton("add directory");
-    removedir = new QPushButton("remove directory");
-    toggleindexing = new QPushButton("start indexing");
-    toggledaemon = new QPushButton("stop daemon");
+    adddir = new QPushButton(tr("add directory"));
+    removedir = new QPushButton(tr("remove directory"));
+    toggleindexing = new QPushButton(tr("start indexing"));
+    toggledaemon = new QPushButton(tr("stop daemon"));
     statuslayout->addWidget(statusview);
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addWidget(toggledaemon);
@@ -79,7 +79,7 @@ SimpleSearchGui::SimpleSearchGui (QWidget * parent, Qt::WFlags flags)
     fieldnames->addItems(strigi.getFieldNames());
     fieldnames->setCurrentIndex(fieldnames->findText("system.last_modified_time"));
     histogram->setFieldName("system.last_modified_time");
-    refreshHistogram = new QPushButton("refresh histogram");
+    refreshHistogram = new QPushButton(tr("refresh histogram"));
     refreshHistogram->setEnabled(false);
 
 /*    vector<string> backends = ClientInterface::getBackEnds();
@@ -242,7 +242,7 @@ SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     adddir->setEnabled(running);
     removedir->setEnabled(running);
     queryfield->setEnabled(running);
-    toggledaemon->setText((running)?"stop daemon":"start daemon");
+    toggledaemon->setText((running)?tr("stop daemon"):tr("start daemon"));
     toggledaemon->setEnabled(true);
     if (backendsList) {
         backendsList->setEnabled(!running);
@@ -250,7 +250,7 @@ SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
     bool idxng = status["Status"] == "indexing";
     if (idxng != indexing) {
         indexing = idxng;
-        toggleindexing->setText((indexing)?"stop indexing":"start indexing");
+        toggleindexing->setText((indexing)?tr("stop indexing"):tr("start indexing"));
     }
 
     QMap<QString,QString>::const_iterator i;
