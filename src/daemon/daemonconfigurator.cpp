@@ -75,7 +75,10 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         a_useDBus = true;
         Repository r;
         r.a_name = "localhost";
-        string home = getenv("HOME");
+        string home;
+        if (getenv("HOME")) {
+            home.assign(getenv("HOME"));
+        }
         r.a_indexdir = strigidir + "/clucene";
         r.a_writeable = true;
         r.a_type = "clucene";
