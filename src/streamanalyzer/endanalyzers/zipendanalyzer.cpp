@@ -43,17 +43,21 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     ZipInputStream zip(in);
     InputStream *s = zip.nextEntry();
-    if (zip.status()) {
-        fprintf(stderr, "error: %s\n", zip.error());
-//        exit(1);
+    if (zip.status() != Ok) {
+        m_error = zip.error();
+        return -1;
     }
 
     while (s) {
-        if (!idx.config().indexMore()) {
-            m_error = "cancelled.";
-            return -1;
+        // check if we're done
+        int64_t max = idx.config().maximalStreamReadLength(idx);
+        if (max != -1 && in->position() <= max) {
+            return 0;
         }
-//        fprintf(stderr, "zip: %s\n", zip.entryInfo().filename.c_str());
+        // check if the analysis has been aborted
+        if (!idx.config().indexMore()) {
+            return 0;
+        }
         idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
             s);
         s = zip.nextEntry();
