@@ -42,7 +42,7 @@ foreach (XSDFILE ${XSDFILES})
   # generate the io code from the XML Schema file
   SET(CPPFILE "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp")
 
-  if (JAVAC5_FOUND)
+  if (JAVAC5_FOUND AND NOT WIN32)
     add_custom_command(
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
              "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
@@ -53,7 +53,7 @@ foreach (XSDFILE ${XSDFILES})
 			 xsdparser.xsdparser ${XSDFILE}
       DEPENDS xsdparser/xsdparser.java ${XSDFILE}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  else (JAVAC5_FOUND)
+  else (JAVAC5_FOUND AND NOT WIN32)
     add_custom_command(
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.cpp"
              "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}.h"
@@ -71,7 +71,7 @@ foreach (XSDFILE ${XSDFILES})
                 "${CMAKE_CURRENT_SOURCE_DIR}/${XSDNAME}test.cpp"
                 "${CMAKE_CURRENT_BINARY_DIR}/${XSDNAME}test.cpp"
     )
-  endif (JAVAC5_FOUND)
+  endif (JAVAC5_FOUND AND NOT WIN32)
 
   # create a library from the xml io files
   add_library(${XSDNAME} ${CPPFILE})
