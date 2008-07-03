@@ -140,6 +140,11 @@ decodedHeaderValue(const char* v, int32_t len) {
 
             // continue after the quoted data
             s = p = end + 2;
+        } else if (e-s > 3 && s[0] == 13 && s[1] == 10
+                && (s[2] == 9 || s[2] == 32)) {
+            // skip the CRLF WSP used for folding the header lines
+            decoded.append(p, s-p);
+            s = p = s + 4;
         } else {
             s++;
         }
@@ -270,7 +275,10 @@ MailInputStream::readHeaderLine() {
         } else if (linepos >= maxlinesize) {
             // error line is too long
             m_status = Error;
-            m_error = "mail header line is too long";
+            ostringstream out;
+            out << "mail header line is too long: more than " << linepos
+                << " bytes.";
+            m_error = out.str();
             return;
         } else {
             while (linepos < nread) {
@@ -340,7 +348,7 @@ MailInputStream::value(const char* n, const string& headerline) const {
 }
 void
 MailInputStream::readHeader() {
-    maxlinesize = 1000;
+    maxlinesize = 1024*1024;
 
     readHeaderLine();
     while (m_status == Ok && linestart != lineend) {
