@@ -1,4 +1,14 @@
+# Not all systems have mkdtemp, and some of the tests use mkdtemp
+# -- pulling in an implementation from kdefakes is an annoying workaround,
+# so instead just don't do the tests here.
+CHECK_FUNCTION_EXISTS(mkdtemp HAVE_MKDTEMP)
+
 set (TESTINGDIRS utils indextesters streamanalyzer daemon)
+IF(NOT HAVE_MKDTEMP)
+    MESSAGE(WARNING " No mkdtemp found; some Strigi tests are suppressed.")
+    SET(TESTINGDIRS utils daemon)
+ENDIF(NOT HAVE_MKDTEMP)
+
 subdirs (${TESTINGDIRS})
 
 # setting for using CPPUNIT
