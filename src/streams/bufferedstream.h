@@ -172,8 +172,6 @@ BufferedStream<T>::reset(int64_t newpos) {
         buffer.avail += (int32_t)d;
         buffer.readPos -= d;
         StreamBase<T>::m_status = Ok;
-    } else if (newpos == 0) {
-        resetBuffer();
     }
     return StreamBase<T>::m_position;
 }
