@@ -35,7 +35,9 @@ ADD_STRIGITA(sid sidthroughanalyzer.cpp)
 ADD_STRIGITA(rgb rgbthroughanalyzer.cpp)
 ADD_STRIGITA(dds ddsthroughanalyzer.cpp)
 ADD_STRIGITA(wav wavthroughanalyzer.cpp)
-ADD_STRIGITA(avi avithroughanalyzer.cpp)
+
+# disabled until bug 164296 is fixed
+#ADD_STRIGITA(avi avithroughanalyzer.cpp)
 
 # disabled until a good check for making sure the file is a tga
 #ADD_STRIGITA(tga  tgathroughanalyzer.cpp)
