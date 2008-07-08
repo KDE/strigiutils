@@ -59,7 +59,9 @@ ZipExeEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         if (zipanalyzer.checkHeader(c+i-offset, nread-i)) {
             char r;
             if (in->reset(i) == i) {
-                r = zipanalyzer.analyze(idx, in);
+                // put the stream in a substream so it can be reset to the start
+                SubInputStream sub(in, 0);
+                r = zipanalyzer.analyze(idx, &sub);
                 if (r == 0) {
                     return 0;
                 }
