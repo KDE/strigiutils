@@ -124,7 +124,7 @@ XesamDBusTest::testSimpleSearch() {
     // also getting the next hits should be possible
     CHECK(xesam->GetHits(search, 100));
 
-    // check for an error on closing a nonexistant search
+    // check for an error on closing a non-existent search
     CHECKINVALID("Closing an invalid search should not be possible.",
         xesam->CloseSearch("invalid search id"));
     // close the search object
@@ -181,9 +181,9 @@ XesamDBusTest::testSetProperty() {
     // start a new session
     QDBusReply<QString> session = xesam->NewSession();
     CHECK(session);
-    // set a non-existant property
+    // set a non-existent property
     QDBusReply<QDBusVariant> newValue
-       = xesam->SetProperty(session, "nonexistant", QDBusVariant("whatever"));
+       = xesam->SetProperty(session, "nonexistent", QDBusVariant("whatever"));
     CHECKINVALID("Setting this property should fail.", newValue);
     // set a valid property with an invalid value
     newValue
