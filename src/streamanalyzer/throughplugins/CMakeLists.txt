@@ -34,10 +34,11 @@ ADD_STRIGITA(ico icothroughanalyzer.cpp)
 ADD_STRIGITA(sid sidthroughanalyzer.cpp)
 ADD_STRIGITA(rgb rgbthroughanalyzer.cpp)
 ADD_STRIGITA(dds ddsthroughanalyzer.cpp)
-ADD_STRIGITA(wav wavthroughanalyzer.cpp)
 
-# disabled until bug 164296 is fixed
-#ADD_STRIGITA(avi avithroughanalyzer.cpp)
+# Bug 164296: these two analyzers are dummy leftovers.They make sure that
+# possible original, broken analyzers are overwritten/neutralized.
+ADD_STRIGITA(avi avithroughanalyzer.cpp)
+ADD_STRIGITA(wav wavthroughanalyzer.cpp)
 
 # disabled until a good check for making sure the file is a tga
 #ADD_STRIGITA(tga  tgathroughanalyzer.cpp)
