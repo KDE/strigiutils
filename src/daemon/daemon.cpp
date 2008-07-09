@@ -199,7 +199,12 @@ main(int argc, char** argv) {
     // set up the directory paths
     string daemondir;
     if (userForcedStrigiDir.length() == 0) {
-        string homedir = getenv("HOME");
+        char* home = getenv("HOME");
+        if (home == NULL) {
+            cerr << "Environment variable 'HOME' must be defined." << endl;
+            exit(1);
+        }
+        string homedir(home);
         daemondir = homedir+"/.strigi";
     } else {
         daemondir = userForcedStrigiDir;
