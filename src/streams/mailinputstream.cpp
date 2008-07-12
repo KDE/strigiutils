@@ -308,7 +308,7 @@ MailInputStream::readHeaderLine() {
                         state = 0;
                     }
                 } else { // state == 3   '\r\n'
-                    if (c == '\r' || !isspace(c)) { // end
+                    if (c == '\r' || linepos == 2 || !isspace(c)) { // end
                         completeLine = true;
                         lineend = linestart + linepos - 2;
                         break;
