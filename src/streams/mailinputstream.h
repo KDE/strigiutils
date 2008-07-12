@@ -36,14 +36,15 @@ class StringTerminatedSubStream;
  **/
 class STREAMS_EXPORT MailInputStream : public SubStreamProvider {
 private:
-    int64_t nextLineStartPosition;
+    class Private;
+    int64_t old1;
     // variables that record the current read state
-    int32_t entrynumber;
-    int maxlinesize;
-    const char* linestart;
-    const char* lineend;
+    int32_t old2;
+    int old3;
+    const char* old4;
+    const char* old5;
 
-    StringTerminatedSubStream* substream;
+    Private* const p;
     std::string m_subject;
     std::string m_from;
     std::string m_to;
@@ -53,10 +54,10 @@ private:
     std::string m_inreplyto;
     std::string m_references;
     std::string m_contenttype;
-    std::string contenttransferencoding;
-    std::string contentdisposition;
+    std::string old6;
+    std::string old7;
 
-    std::stack<std::string> boundary;
+    std::stack<std::string> old8;
 
     void readHeaderLine();
     void readHeader();

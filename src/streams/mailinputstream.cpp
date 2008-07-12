@@ -51,10 +51,66 @@ decodeHex(char h) {
     if (h >= 'a' && h <= 'f') return 10+h-'a';
     return h - '0';
 }
-string
-decodeQuotedPrintable(const char* v, int32_t len) {
+
+class Decoder {
+private:
+    char* buffer;
+    size_t bufferlen;
+    map<string, iconv_t> iconvs;
+public:
+    Decoder() :buffer(0), bufferlen(0) {}
+    ~Decoder() {
+        free(buffer);
+        map<string, iconv_t>::const_iterator i;
+        for (i = iconvs.begin(); i != iconvs.end(); ++i) {
+            iconv_close(i->second);
+        }
+    }
+    void decode(const string& enc, string& data);
+};
+void
+Decoder::decode(const string& enc, string& data) {
+    iconv_t conv;
+    if (iconvs.find(enc) == iconvs.end()) {
+        conv = iconvs[enc] = iconv_open("UTF-8", enc.c_str());
+    } else {
+        conv = iconvs[enc];
+    }
+    if (conv == (iconv_t)-1) return;
+    ICONV_CONST char* in = (char*)data.c_str();
+    size_t ilen = data.length();
+    size_t olen = 4*ilen;
+    if (olen > bufferlen) {
+        bufferlen = olen;
+        buffer = (char*)realloc(buffer, bufferlen);
+    }
+    char* out = buffer;
+    char* mem = out;
+    size_t r = iconv(conv, &in, &ilen, &out, &olen);
+    if (r != (size_t)-1) {
+        data.assign(mem, out-mem);
+    }
+}
+
+class QuotedPrintableDecoder {
+private:
     string decoded;
-    decoded.reserve(len);
+public:
+    string& decodeQuotedPrintable(const char* v, uint32_t len);
+};
+class HeaderDecoder : public QuotedPrintableDecoder, Decoder {
+private:
+    string decoded;
+public:
+    const string& decodedHeaderValue(const char* v, uint32_t len);
+};
+
+string&
+QuotedPrintableDecoder::decodeQuotedPrintable(const char* v, uint32_t len) {
+    if (decoded.size() < len) {
+        decoded.reserve(len);
+    }
+    decoded.resize(0);
     const char* pos = v;
     const char* end = v + len;
     char c;
@@ -67,7 +123,7 @@ decodeQuotedPrintable(const char* v, int32_t len) {
         } else if (*v == '_') {
             decoded.append(pos, v - pos);
             decoded.append(" ");
-            v++;
+            pos = v = v + 1;
         } else {
             v++;
         }
@@ -77,31 +133,15 @@ decodeQuotedPrintable(const char* v, int32_t len) {
     }
     return decoded;
 }
-string
-decode(const string& enc, const string& data) {
-    string s;
-    iconv_t const conv(iconv_open("UTF-8", enc.c_str()));
-    if (conv == (iconv_t)-1) return s;
-    ICONV_CONST char* in = (char*)data.c_str();
-    size_t ilen = data.length();
-    size_t olen = 4*ilen;
-    char* out = (char*)malloc(olen);
-    char* mem = out;
-    size_t r = iconv(conv, &in, &ilen, &out, &olen);
-    if (r != (size_t)-1) {
-        s.assign(mem, out-mem);
-    }
-    free(mem);
-    iconv_close(conv);
-    return s;
-}
 /**
  * This function can decode a mail header if it contains utf8 encoded in base64.
  **/
-string
-decodedHeaderValue(const char* v, int32_t len) {
-    string decoded;
-    decoded.reserve(len*2);
+const string&
+HeaderDecoder::decodedHeaderValue(const char* v, uint32_t len) {
+    if (decoded.size() < len) {
+        decoded.reserve(len*2);
+    }
+    decoded.resize(0);
     const char* s = v;
     const char* p = v;
     const char* e = s + len;
@@ -119,21 +159,26 @@ decodedHeaderValue(const char* v, int32_t len) {
                 s++;
                 continue;
             }
+            // save the stuff from before the encoding
             decoded.append(p, s-p);
             s += 2;
             q1++;
             q2++;
             // find the end
             if (*q1 == 'b' || *q1 == 'B') {
-                string str = Base64InputStream::decode(q2, end-q2);
+                string str(Base64InputStream::decode(q2, end-q2));
                 if (strncasecmp("utf-8", s, 5)) {
                     string encoding(s, q1-s-1);
-                    str = decode(encoding, str);
+                    decode(encoding, str);
                 }
                 decoded.append(str);
-            } else if ((*q1 == 'q' || *q1 =='Q')
-                    && strncasecmp("utf-8", s, 5)) {
-                decoded.append(decodeQuotedPrintable(q2, end-q2));
+            } else if (*q1 == 'q' || *q1 =='Q') {
+                string& str(decodeQuotedPrintable(q2, end-q2));
+                if (strncasecmp("utf-8", s, 5) != 0) {
+                    string encoding(s, q1-s-1);
+                    decode(encoding, str);
+                }
+                decoded.append(str);
             } else {
                 s -= 1;
             }
@@ -225,21 +270,59 @@ MailInputStream::checkHeader(const char* data, int32_t datasize) {
     }
     return reqheader && linecount >= 5;
 }
-MailInputStream::MailInputStream(InputStream* input)
-        : SubStreamProvider(input), substream(0) {
+class MailInputStream::Private {
+public:
+    MailInputStream* const m;
+    int64_t nextLineStartPosition;
+    // variables that record the current read state
+    int32_t entrynumber;
+    int maxlinesize;
+    const char* linestart;
+    const char* lineend;
+
+    StringTerminatedSubStream* substream;
+    std::string m_contenttransferencoding;
+    std::string m_contentdisposition;
+
+    std::stack<std::string> boundary;
+
+    HeaderDecoder decoder;
+
+    void readHeaderLine();
+    void readHeader();
+    void scanBody();
+    void handleHeaderLine();
+    bool handleBodyLine();
+    bool lineIsEndOfBlock();
+    bool checkHeaderLine() const;
+    void clearHeaders();
+    void ensureFileName();
+    std::string value(const char* n, const std::string& headerline) const;
+
+    Private(MailInputStream* mail);
+    ~Private();
+};
+MailInputStream::Private::Private(MailInputStream* mail) :m(mail) {
+    substream = 0;
     entrynumber = 0;
     nextLineStartPosition = 0;
+}
+MailInputStream::Private::~Private() {
+    if (substream && substream != m->m_entrystream) {
+        delete substream;
+    }
+}
+MailInputStream::MailInputStream(InputStream* input)
+        : SubStreamProvider(input), p(new Private(this)) {
     // parse the header and store the imporant header fields
-    readHeader();
+    p->readHeader();
     if (m_status != Ok) {
         fprintf(stderr, "no valid header\n");
         return;
     }
 }
 MailInputStream::~MailInputStream() {
-    if (substream && substream != m_entrystream) {
-        delete substream;
-    }
+    delete p;
 }
 /**
  * This function read the input until the end of a header line.
@@ -250,7 +333,7 @@ MailInputStream::~MailInputStream() {
  *   '\r\S', '\n\S', '\r\n\S', '\r\r', '\n\n', '\r\n\r'
  **/
 void
-MailInputStream::readHeaderLine() {
+MailInputStream::Private::readHeaderLine() {
     // state: 0 -> ok, 1 -> '\r', 2 -> '\n', 3 -> '\r\n'
     char state = 0;
     int32_t nread;
@@ -258,27 +341,27 @@ MailInputStream::readHeaderLine() {
     bool completeLine = false;
     char c = 0;
 
-    m_input->reset(nextLineStartPosition);
+    m->m_input->reset(nextLineStartPosition);
     do {
-        nread = m_input->read(linestart, linepos+1, maxlinesize);
+        nread = m->m_input->read(linestart, linepos+1, maxlinesize);
         if (nread < linepos+1) {
             completeLine = true;
             lineend = linestart + nread;
-            m_status = Eof;
+            m->m_status = Eof;
             return;
         }
-        m_input->reset(nextLineStartPosition);
-        if (m_input->status() == Error) {
-            m_status = Error;
-            m_error = m_input->error();
+        m->m_input->reset(nextLineStartPosition);
+        if (m->m_input->status() == Error) {
+            m->m_status = Error;
+            m->m_error = m->m_input->error();
             return;
         } else if (linepos >= maxlinesize) {
             // error line is too long
-            m_status = Error;
+            m->m_status = Error;
             ostringstream out;
             out << "mail header line is too long: more than " << linepos
                 << " bytes.";
-            m_error = out.str();
+            m->m_error = out.str();
             return;
         } else {
             while (linepos < nread) {
@@ -323,7 +406,7 @@ MailInputStream::readHeaderLine() {
     nextLineStartPosition += linepos;
 }
 string
-MailInputStream::value(const char* n, const string& headerline) const {
+MailInputStream::Private::value(const char* n, const string& headerline) const {
     size_t nl = strlen(n);
     string value;
     // get the value
@@ -347,11 +430,11 @@ MailInputStream::value(const char* n, const string& headerline) const {
     return value;
 }
 void
-MailInputStream::readHeader() {
+MailInputStream::Private::readHeader() {
     maxlinesize = 1024*1024;
 
     readHeaderLine();
-    while (m_status == Ok && linestart != lineend) {
+    while (m->m_status == Ok && linestart != lineend) {
         handleHeaderLine();
         readHeaderLine();
     }
@@ -361,8 +444,8 @@ MailInputStream::readHeader() {
  * If a boundary is encountered, the block header is parsed.
  **/
 void
-MailInputStream::scanBody() {
-    while (m_status == Ok) {
+MailInputStream::Private::scanBody() {
+    while (m->m_status == Ok) {
         readHeaderLine();
         int32_t len = lineend - linestart;
         if (len > 2 && strncmp("--", linestart, 2) == 0) {
@@ -373,7 +456,7 @@ MailInputStream::scanBody() {
                 // check if this is the end of a multipart
                 boundary.pop();
                 if (boundary.size() == 0) {
-                    m_status = Eof;
+                    m->m_status = Eof;
                 }
             } else if (len == blen + 2
                     && strncmp(linestart + 2, boundary.top().c_str(), blen)
@@ -386,7 +469,7 @@ MailInputStream::scanBody() {
     }
 }
 void
-MailInputStream::handleHeaderLine() {
+MailInputStream::Private::handleHeaderLine() {
     static const char* subject = "Subject:";
     static const char* contenttype = "Content-Type:";
     static const char* to = "To:";
@@ -405,53 +488,53 @@ MailInputStream::handleHeaderLine() {
     } else if (strncasecmp(linestart, subject, 8) == 0) {
         int32_t offset = 8;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_subject = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_subject = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, to, 3) == 0) {
         int32_t offset = 3;
         // FIXME: should split for ','
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_to = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_to = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, from, 5) == 0) {
         int32_t offset = 5;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_from = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_from = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, cc, 3) == 0) {
         int32_t offset = 3;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_cc = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_cc = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, bcc, 4) == 0) {
         int32_t offset = 4;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_bcc = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_bcc = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, messageid, 11) == 0) {
         int32_t offset = 11;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_messageid = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_messageid = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, inreplyto, 12) == 0) {
         int32_t offset = 12;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_inreplyto = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_inreplyto = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, references, 11) == 0) {
         int32_t offset = 11;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_references = decodedHeaderValue(linestart+offset, len-offset);
+        m->m_references = decoder.decodedHeaderValue(linestart+offset, len-offset);
     } else if (strncasecmp(linestart, contenttype, 13) == 0) {
         int32_t offset = 13;
         while (offset < len && isspace(linestart[offset])) offset++;
-        this->m_contenttype = std::string(linestart+offset, len-offset);
+        m->m_contenttype = std::string(linestart+offset, len-offset);
         // get the boundary
-        string b = value("boundary", this->m_contenttype);
+        string b = value("boundary", m->m_contenttype);
         if (b.size()) {
             boundary.push(b);
         }
     } else if (strncasecmp(linestart, contenttransferencoding, 26) == 0) {
-        this->contenttransferencoding = std::string(linestart, len);
+        m_contenttransferencoding = std::string(linestart, len);
     } else if (strncasecmp(linestart, contentdisposition, 20) == 0) {
-        this->contentdisposition = std::string(linestart, len);
+        m_contentdisposition = std::string(linestart, len);
     }
 }
 bool
-MailInputStream::checkHeaderLine() const {
+MailInputStream::Private::checkHeaderLine() const {
     assert(lineend - linestart >= 0);
     bool validheader = linestart < lineend;
     if (validheader) {
@@ -465,7 +548,7 @@ MailInputStream::checkHeaderLine() const {
  * Handle the body part header.
  **/
 bool
-MailInputStream::handleBodyLine() {
+MailInputStream::Private::handleBodyLine() {
     clearHeaders();
 
     // start of new block
@@ -474,32 +557,32 @@ MailInputStream::handleBodyLine() {
     size_t n = boundary.size();
     do {
         readHeaderLine();
-        validheader = m_status == Ok && checkHeaderLine();
+        validheader = m->m_status == Ok && checkHeaderLine();
         if (validheader) {
             handleHeaderLine();
         }
-    } while (m_status == Ok && validheader);
+    } while (m->m_status == Ok && validheader);
     if (boundary.size() > n) {
         return false;
     }
     readHeaderLine();
-    if (m_status != Ok) {
+    if (m->m_status != Ok) {
         return false;
     }
 
     // get the filename
-    m_entryinfo.filename = value("filename", contentdisposition);
-    if (m_entryinfo.filename.length() == 0) {
-        m_entryinfo.filename = value("name", m_contenttype);
+    m->m_entryinfo.filename = value("filename", m_contentdisposition);
+    if (m->m_entryinfo.filename.length() == 0) {
+        m->m_entryinfo.filename = value("name", m->m_contenttype);
     }
 
     // create a stream that's limited to the content
-    substream = new StringTerminatedSubStream(m_input, "--"+boundary.top());
+    substream = new StringTerminatedSubStream(m->m_input, "--"+boundary.top());
     // set a reasonable buffer size
-    if (strcasestr(contenttransferencoding.c_str(), "base64")) {
-        m_entrystream = new Base64InputStream(substream);
+    if (strcasestr(m_contenttransferencoding.c_str(), "base64")) {
+        m->m_entrystream = new Base64InputStream(substream);
     } else {
-        m_entrystream = substream;
+        m->m_entrystream = substream;
     }
     return true;
 }
@@ -509,21 +592,21 @@ MailInputStream::handleBodyLine() {
  * later.
  **/
 void
-MailInputStream::ensureFileName() {
+MailInputStream::Private::ensureFileName() {
     entrynumber++;
-    if (m_entryinfo.filename.length() == 0) {
+    if (m->m_entryinfo.filename.length() == 0) {
         ostringstream o;
         o << entrynumber;
-        m_entryinfo.filename = o.str();
+        m->m_entryinfo.filename = o.str();
     }
-    m_entryinfo.type = EntryInfo::File;
+    m->m_entryinfo.type = EntryInfo::File;
 }
 InputStream*
 MailInputStream::nextEntry() {
     if (m_status != Ok) return 0;
     // if the mail does not consist of multiple parts, we give a pointer to
     // the input stream
-    if (boundary.size() == 0) {
+    if (p->boundary.size() == 0) {
         // signal eof because we only return eof once
         m_status = Eof;
         m_entrystream = new SubInputStream(m_input);
@@ -531,21 +614,21 @@ MailInputStream::nextEntry() {
         return m_entrystream;
     }
     // read anything that's left over in the previous stream
-    if (substream) {
+    if (p->substream) {
         const char* dummy;
-        while (substream->status() == Ok) {
-            substream->read(dummy, 1, 0);
+        while (p->substream->status() == Ok) {
+            p->substream->read(dummy, 1, 0);
         }
-        if (substream->status() == Error) {
+        if (p->substream->status() == Error) {
             m_status = Error;
         } else {
-            nextLineStartPosition = substream->offset()
-                + substream->size();
+            p->nextLineStartPosition = p->substream->offset()
+                + p->substream->size();
         }
-        if (substream && substream != m_entrystream) {
-            delete substream;
+        if (p->substream && p->substream != m_entrystream) {
+            delete p->substream;
         }
-        substream = 0;
+        p->substream = 0;
         delete m_entrystream;
         m_entrystream = 0;
 
@@ -553,18 +636,17 @@ MailInputStream::nextEntry() {
             return 0;
         }
     }
-    scanBody();
+    p->scanBody();
 
     if (m_entrystream == 0) {
         m_status = Eof;
     }
-    ensureFileName();
+    p->ensureFileName();
     return m_entrystream;
 }
 void
-MailInputStream::clearHeaders() {
-    m_contenttype.resize(0);
-    contenttransferencoding.resize(0);
-    contentdisposition.resize(0);
+MailInputStream::Private::clearHeaders() {
+    m->m_contenttype.resize(0);
+    m_contenttransferencoding.resize(0);
+    m_contentdisposition.resize(0);
 }
-
