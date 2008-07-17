@@ -1,3 +1,15 @@
+0.5.11
+ - Fix a bug that can cause a crash on an executable zip file.
+ - Fix parsing of empty headers when CRLFCRLF is followed by a space. In other words, fix parsing of emails that have a space as the first character in the body.
+ - Fix two broken (by design) throughanalyzers by replacing the with one eventanalyzer.
+ - Updated xesam ontology to include proper ranges. This is necessary for the Nepomuk backend but does not change anything for clucene (were all is string anyway)
+ - Make sure the app can handle environments where HOME is not defined.
+ - Make the zip analyzer check more often if it should stop analyzing.
+ - Fix wrong comparison when checking if we are finished yet.
+ - Make the analyzer respect a configuration that only wants part of the stream to be analyzed.
+ - Add an analyzer for Windows self-extracting zip archives.
+ - Ask the analyzerconfiguration if we should continue and put a cap on the maximum length of stream we read
+ - Log parse errors in the analysisresult.
 0.5.10
  - Improved Xesam support. strigidaemon can now be queried with the client from
    the Xesam test suite.
