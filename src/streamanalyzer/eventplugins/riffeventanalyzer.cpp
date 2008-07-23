@@ -24,6 +24,7 @@
 #include "streameventanalyzer.h"
 #include "analyzerplugin.h"
 #include <stack>
+#include <iostream>
 
 namespace Strigi {
     class RegisteredField;
@@ -133,6 +134,7 @@ RiffEventAnalyzer::processAvih() {
     a->addValue(f->resolutionHeightField, readLittleEndianUInt32(c+36));
     return true;
 }
+
 bool
 RiffEventAnalyzer::processStrh() {
     AnalysisResult* a = analysisresult;
@@ -249,7 +251,7 @@ RiffEventAnalyzer::handleChunkData(uint64_t off, const char* data,
         uint32_t length) {
     const RiffChunk &chunk = chunks.top();
 
-    // short WAVE intermezze ...
+    // short WAVE intermezzo ...
     if (chunk.type == 0x61746164) { // data
         if (bytes_per_second) {
             float wav_seconds = chunk.size / (float)bytes_per_second;
@@ -312,7 +314,7 @@ RiffEventAnalyzer::handleData(const char* data, uint32_t length) {
             if (r.size % 2 == 1) {
                 r.size++;
             }
-            if (r.size > 0) {
+            if (r.size > 0 || r.type == 0x46464952) {
                 chunks.push(r);
                 // is this a RIFF or a LIST?
                 if (r.type == 0x46464952 || r.type == 0x5453494C) {
@@ -320,6 +322,9 @@ RiffEventAnalyzer::handleData(const char* data, uint32_t length) {
                 } else {
                     state = ChunkBody;
                 }
+            } else {
+                valid = false;
+                return;
             }
             pos += 8;
         } else if (state == StartOfChunkList) {
