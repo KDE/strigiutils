@@ -30,10 +30,12 @@
 #include "indexplugin.h"
 #include <iostream>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
 #include "timeofday.h"
 #include "stgdirent.h" //our dirent compatibility header... uses native if available
 
+using namespace std;
 
 /* define and export the index factory */
 REGISTER_STRIGI_INDEXMANAGER(CLuceneIndexManager)

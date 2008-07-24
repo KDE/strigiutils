@@ -102,10 +102,21 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         AnalyzerConfiguration::FieldType type, const TCHAR* name,
         const TCHAR* value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
-    Field* field = new Field(name, value,
-        (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored,
-        (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed,
-        (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized);
+    int config = 0;
+    if ( (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored )
+	config |= Field::STORE_YES;
+    else
+	config |= Field::STORE_NO;
+
+    if ( (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed ){
+	    if ( (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized )
+		config |= Field::INDEX_TOKENIZED;
+	    else
+		config |= Field::INDEX_UNTOKENIZED;
+    }else
+	config |= Field::INDEX_NO;
+
+    Field* field = new Field(name, value, config);
     doc->doc.add(*field);
 }
 void
@@ -177,7 +188,7 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
         const TCHAR* mappedFn = mapId(_T(""));
 #if defined(_UCS2)
     #ifndef STRIGI_USE_CLUCENE_COMPRESSEDFIELDS
-        doc->doc.add(*Field::Text(mappedFn, c.c_str(), false));
+        doc->doc.add(*new Field(mappedFn, c.c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED));
     #else
         // lets store the content as utf8. remember, the stream is required
         // until the document is added, so a static construction of stringreader
@@ -193,7 +204,7 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
             Field::STORE_NO | Field::INDEX_TOKENIZED));
     #endif
 #else //_UCS2
-        doc->doc.add(*Field::Text(mappedFn, doc->content.c_str()) );
+        doc->doc.add(*new Field(mappedFn, doc->content.c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED) );
 #endif
     }
     lucene::index::IndexWriter* writer = manager->refWriter();
@@ -237,7 +248,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
         if (!reader->isDeleted(i)) {
             Document* d = reader->document(i);
             const TCHAR* t = d->get(systemlocation());
-            if (t && _tcsncmp(t, prefixText, prefixLen) == 0) {
+            if (t && wcsncmp(t, prefixText, prefixLen) == 0) {
                 try {
                     reader->deleteDocument(i);
                 } catch (CLuceneError& err) {
@@ -305,7 +316,7 @@ bool isLuceneFile(const char* filename){
 
     else if ( strncmp(ext,".f",2)==0 ){
         const char* n = ext+2;
-        if ( *n && _istdigit(*n) )
+        if ( *n && isdigit(*n) )
             return true;
     }
 
@@ -335,6 +346,9 @@ CLuceneIndexWriter::cleanUp() {
     if (!locked) {
         return;
     }
+    /*
+	//this is a hack and will not work with new versions of the index..
+        //furthermore, segmentinfos is a private class.
     lucene::index::SegmentInfos infos;
     try {
         //Have SegmentInfos read the segments file in directory
@@ -383,6 +397,7 @@ CLuceneIndexWriter::cleanUp() {
         _CLDELETE_CaARRAY(files[i]);
     }
     _CLDELETE_ARRAY(files);
+    */
 }
 
 void

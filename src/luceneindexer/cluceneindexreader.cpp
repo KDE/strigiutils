@@ -33,6 +33,7 @@
 #include "tcharutils.h"
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
+#include <CLucene/store/RAMDirectory.h>
 #include "fieldtypes.h"
 #include <sstream>
 #include <iostream>
@@ -56,6 +57,8 @@ using lucene::document::DocumentFieldEnumeration;
 using Strigi::IndexedDocument;
 using Strigi::Variant;
 using Strigi::FieldRegister;
+
+using namespace std;
 
 class HitCounter : public HitCollector {
 private:
@@ -725,7 +728,6 @@ CLuceneIndexReader::histogram(const string& query,
     } catch (CLuceneError& err) {
         printf("could not query: %s\n", err.what());
     }
-    char cstr[CL_MAX_DIR];
     wstring field = utf8toucs2(fieldname);
     int32_t max = INT_MIN;
     int32_t min = INT_MAX;
@@ -737,7 +739,7 @@ CLuceneIndexReader::histogram(const string& query,
         const TCHAR* v = d->get(field.c_str());
         if (v) {
             int val = (int)strtol(wchartoutf8( v ).c_str(), &end, 10);
-            if (end == cstr || *end != 0) {
+            if ( *end != 0) {
                 _CLDELETE(hits);
                 return h;
             }
@@ -802,7 +804,7 @@ CLuceneIndexReader::keywords(const string& keywordmatch,
              lastTerm = enumerator->term(false);
              if (lastTerm) {
                  if (prefixLen > lastTerm->textLength()
-                         || _tcsncmp(lastTerm->text(), prefixtext, prefixLen)
+                         || wcsncmp(lastTerm->text(), prefixtext, prefixLen)
                              != 0) {
                      break;
                  }
