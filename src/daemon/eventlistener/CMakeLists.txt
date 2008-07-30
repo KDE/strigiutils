@@ -13,7 +13,7 @@ INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../../streams/strigi ..
     ${strigi_BINARY_DIR}/src/streams/strigi
     ${strigi_SOURCE_DIR}/src/streams/strigi)
 
-ADD_LIBRARY(eventlistener
+add_library(eventlistener STATIC
     event.cpp
     eventlistenerqueue.cpp
     pollinglistener.cpp
@@ -21,4 +21,4 @@ ADD_LIBRARY(eventlistener
     ${inotify_SRC}
     ${fam_SRC})
 
-TARGET_LINK_LIBRARIES (eventlistener ${eventlistener_LIBS})
+target_link_libraries(eventlistener ${eventlistener_LIBS})
