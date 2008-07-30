@@ -65,7 +65,7 @@ CreateDBusBinding(
         "xesamlivesearchinterface" "org.freedesktop.xesam.Search"
         "dbusserialization.h")
 
-add_library(dbusserver testinterface.cpp dbusserver.cpp
+add_library(dbusserver STATIC testinterface.cpp dbusserver.cpp
     dbusserialization.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/dbustestinterface.cpp"
     "${CMAKE_CURRENT_BINARY_DIR}/dbusxesamlivesearchinterface.cpp"

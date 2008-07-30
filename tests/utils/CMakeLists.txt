@@ -4,6 +4,6 @@ include_directories (   .
                         ${strigi_SOURCE_DIR}/src/combinedindexer
                     )
 
-add_library(unittestfunctions unittestfunctions.cpp)
+add_library(unittestfunctions STATIC unittestfunctions.cpp)
 
 target_link_libraries (unittestfunctions combinedindex)

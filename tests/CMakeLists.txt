@@ -19,7 +19,7 @@ include_directories (. ${CPPUNIT_INCLUDE_DIR}  ${strigi_SOURCE_DIR}/src/daemon
 # a convenience library that adds a unified way of build a test executable
 # for testing
 # simply link this into any unit test executable
-add_library(test_runner test_runner.cpp)
+add_library(test_runner STATIC test_runner.cpp)
 target_link_libraries(test_runner ${CPPUNIT_LIBRARIES})
 
 ENABLE_TESTING()

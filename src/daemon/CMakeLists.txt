@@ -107,5 +107,5 @@ install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h
 	DESTINATION include/strigi)
 
 # create a library from the xml io files
-add_library(daemonconfigurator daemonconfigurator.cpp)
+add_library(daemonconfigurator STATIC daemonconfigurator.cpp)
 target_link_libraries( daemonconfigurator strigidaemonconfiguration)

@@ -4,7 +4,7 @@ include_directories(xsdparser ${ICONV_INCLUDE_DIR})
 
 if (LIBXML2_FOUND)
   include_directories(${LIBXML2_INCLUDE_DIR})
-  add_library(xmlstream
+  add_library(xmlstream STATIC
 	xsdparser/libxmlstream.cpp
 	xsdparser/xmlstream.cpp
   )
@@ -12,7 +12,7 @@ if (LIBXML2_FOUND)
 else (LIBXML2_FOUND)
   # we use expat
   include_directories(${EXPAT_INCLUDE_DIR})
-  add_library(xmlstream
+  add_library(xmlstream STATIC
 	xsdparser/expatxmlstream.cpp
 	xsdparser/xmlstream.cpp
   )
@@ -74,7 +74,7 @@ foreach (XSDFILE ${XSDFILES})
   endif (JAVAC5_FOUND AND NOT WIN32)
 
   # create a library from the xml io files
-  add_library(${XSDNAME} ${CPPFILE})
+  add_library(${XSDNAME} STATIC ${CPPFILE})
   target_link_libraries(${XSDNAME} xmlstream)
 
   # generate a test executable

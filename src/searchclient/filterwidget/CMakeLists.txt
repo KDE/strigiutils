@@ -5,7 +5,7 @@ set(filterwidget_MOC_HDRS filterwidget.h)
 
 qt4_wrap_cpp(filterwidget_MOC_SRCS ${filterwidget_MOC_HDRS})
 
-add_library(filterwidget ${filterwidget_SRCS} ${filterwidget_MOC_SRCS})
+add_library(filterwidget STATIC ${filterwidget_SRCS} ${filterwidget_MOC_SRCS})
 
 target_link_libraries(filterwidget ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 

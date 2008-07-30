@@ -24,7 +24,7 @@ set (strigi_xesam_SRCS XesamQLParser.cc XesamQueryBuilder.cc
             xesam_ul_scanner.cpp xesam_ul_file_scanner.cpp xesam_ul_string_scanner.cpp 
             xesam_ul_parser.cc xesam2strigi.cpp)
 
-add_library (strigi_xesam ${strigi_xesam_SRCS})
+add_library (strigi_xesam STATIC ${strigi_xesam_SRCS})
 target_link_libraries(strigi_xesam ${LIBXML2_LIBRARIES} streamanalyzer ${xesam_LIBS})
 
 # no getopt on win32

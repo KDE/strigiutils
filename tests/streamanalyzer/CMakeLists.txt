@@ -13,7 +13,7 @@ include_directories (.
                      ../utils
 )
 
-add_library(streamanalyzertesters diranalyzertester.cpp)
+add_library(streamanalyzertesters STATIC diranalyzertester.cpp)
 
 target_link_libraries (streamanalyzertesters unittestfunctions ${streamanalyzertesters_LIBS})
 

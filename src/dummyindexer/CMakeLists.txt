@@ -18,7 +18,7 @@ add_executable(deepfind deepfind.cpp)
 target_link_libraries(deepfind streamanalyzer)
 install(TARGETS deepfind RUNTIME DESTINATION bin)
 
-add_library(grepindexer grepindexreader.cpp grepindexmanager.cpp
+add_library(grepindexer STATIC grepindexreader.cpp grepindexmanager.cpp
     grepindexwriter.cpp ${REGEX_SOURCES})
 
 add_executable(deepgrep deepgrep.cpp)
@@ -33,4 +33,4 @@ if(NOT MSVC)
   target_link_libraries(analyzerlatencytester streamanalyzer)
 endif(NOT MSVC)
 
-add_library(grepindex grepindexmanager.cpp)
+add_library(grepindex STATIC grepindexmanager.cpp)

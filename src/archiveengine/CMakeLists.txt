@@ -7,7 +7,7 @@ include_directories(
 	${QT_INCLUDE_DIR}
 )
 
-add_library(archiveengine
+add_library(archiveengine STATIC
         archivedirengine.cpp
 	archiveengine.cpp
 	archiveenginehandler.cpp

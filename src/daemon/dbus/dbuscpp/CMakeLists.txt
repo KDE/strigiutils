@@ -4,7 +4,7 @@ IF(WIN32)
 include_directories(${DBUS_INCLUDE_DIR})
 ENDIF(WIN32)
 
-add_library(dbuscpp dbushandler.cpp dbusmessagereader.cpp
+add_library(dbuscpp STATIC dbushandler.cpp dbusmessagereader.cpp
     dbusmessagewriter.cpp dbusobjectcallhandler.cpp
 )
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DBUS_CFLAGS}")
