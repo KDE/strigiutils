@@ -22,6 +22,7 @@
 #include "rpminputstream.h"
 #include "subinputstream.h"
 #include "analysisresult.h"
+#include "analyzerconfiguration.h"
 #include "fieldtypes.h"
 
 using namespace Strigi;
@@ -45,6 +46,15 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     }
     idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
     while (s) {
+        // check if we're done
+        int64_t max = idx.config().maximalStreamReadLength(idx);
+        if (max != -1 && in->position() <= max) {
+            return 0;
+        }
+        // check if the analysis has been aborted
+        if (!idx.config().indexMore()) {
+            return 0;
+        }
         idx.indexChild(rpm.entryInfo().filename, rpm.entryInfo().mtime,
             s);
         s = rpm.nextEntry();
