@@ -164,6 +164,10 @@
 
 #define MIMEINSTALLDIR "${MIMEINSTALLDIR}"
 
+#if @SYSCALL_IOPRIO_FOUND@
+  #define HAVE_SYSCALL_IOPRIO_SET
+#endif
+
 // Definition of types that are used internally
 
 #if !@HAVE_INTPTR_T@

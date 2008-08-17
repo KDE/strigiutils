@@ -20,6 +20,7 @@
 #include "strigithread.h"
 #include "strigi_thread.h"
 #include "strigilogging.h"
+
 #include <string>
 #include <cstring>
 #include <errno.h>
@@ -27,6 +28,25 @@
 #include <sys/resource.h>
 #include <vector>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/syscall.h>
+
+#ifdef HAVE_SYSCALL_IOPRIO_SET
+enum {
+    IOPRIO_CLASS_NONE,
+    IOPRIO_CLASS_RT,
+    IOPRIO_CLASS_BE,
+    IOPRIO_CLASS_IDLE,
+};
+
+enum {
+    IOPRIO_WHO_PROCESS = 1,
+    IOPRIO_WHO_PGRP,
+    IOPRIO_WHO_USER,
+};
+
+#define IOPRIO_CLASS_SHIFT  13
+#endif
 
 using namespace std;
 
@@ -87,6 +107,7 @@ threadstarter(void *d) {
     memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
     StrigiThread* thread = static_cast<StrigiThread*>(d);
+
 #ifndef __APPLE__
     if (thread->getPriority() > 0) {
 #ifndef SCHED_BATCH
@@ -105,8 +126,17 @@ threadstarter(void *d) {
                 + ".threadstarter",
                 string("error setting to batch: ") + strerror(errno));
         }
-#ifdef HAVE_LINUXIOPRIO
-    sys_ioprio_set(IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE);
+
+#ifdef HAVE_SYSCALL_IOPRIO_SET
+        if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0,
+                IOPRIO_CLASS_IDLE<<IOPRIO_CLASS_SHIFT ) < 0 ) {
+            fprintf(stderr, "cannot set io scheduling to idle (%s). "
+                "Trying best effort.\n",  strerror( errno ));
+            if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0,
+                    7|IOPRIO_CLASS_BE<<IOPRIO_CLASS_SHIFT ) < 0 ) {
+                fprintf( stderr, "cannot set io scheduling to best effort.\n");
+            }
+        }
 #endif
     }
 #endif

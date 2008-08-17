@@ -95,6 +95,7 @@ find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Iconv REQUIRED)
+find_package(SysCallIOPrio)
 
 # use either expat or libxml2
 FIND_OPTIONAL_DEP(Expat ENABLE_EXPAT Expat_FOUND "XML via Expat")
