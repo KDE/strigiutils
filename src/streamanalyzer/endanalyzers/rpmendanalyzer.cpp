@@ -48,7 +48,7 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     while (s) {
         // check if we're done
         int64_t max = idx.config().maximalStreamReadLength(idx);
-        if (max != -1 && in->position() <= max) {
+        if (max != -1 && in->position() > max) {
             return 0;
         }
         // check if the analysis has been aborted
