@@ -48,7 +48,7 @@
 #if !@HAVE_INT8_T@
  #define HAVE_INT8_T 1
  #if ${SIZEOF_CHAR}==1 //is char one byte?
-  typedef char int8_t;
+  typedef signed char int8_t;
  #else
   #error Could not determine type for int8_t!
  #endif

@@ -25,6 +25,7 @@
 #include "cluceneindexmanager.h"
 #include <strigi/strigiconfig.h>
 #include <CLucene.h>
+#include <CLucene/store/RAMDirectory.h>
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
 #include "indexplugin.h"

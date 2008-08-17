@@ -77,7 +77,7 @@ main(int argc, char** argv) {
             indexdump(argv[i]);
         }
     } catch (...) {
-        cerr << "error while dumping index" << endl;
+		fprintf(stderr,"error while dumping index\n");
     }
     return 0;
 }
