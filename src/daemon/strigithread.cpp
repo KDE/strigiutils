@@ -25,13 +25,13 @@
 #include <cstring>
 #include <errno.h>
 #include <signal.h>
-#include <sys/resource.h>
 #include <vector>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/resource.h>
 #include <sys/syscall.h>
 
-#ifdef HAVE_SYSCALL_IOPRIO_SET
+// define two enums and a constant for use of ioprio
 enum {
     IOPRIO_CLASS_NONE,
     IOPRIO_CLASS_RT,
@@ -44,9 +44,7 @@ enum {
     IOPRIO_WHO_PGRP,
     IOPRIO_WHO_USER,
 };
-
 #define IOPRIO_CLASS_SHIFT  13
-#endif
 
 using namespace std;
 
@@ -126,8 +124,7 @@ threadstarter(void *d) {
                 + ".threadstarter",
                 string("error setting to batch: ") + strerror(errno));
         }
-
-#ifdef HAVE_SYSCALL_IOPRIO_SET
+#ifdef SYS_ioprio_set
         if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0,
                 IOPRIO_CLASS_IDLE<<IOPRIO_CLASS_SHIFT ) < 0 ) {
             fprintf(stderr, "cannot set io scheduling to idle (%s). "
