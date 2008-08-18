@@ -84,7 +84,7 @@ public:
     ~MpegEndAnalyzer() {}
     const char* name() const { return "MpegEndAnalyzer"; }
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx,
+    signed char analyze(Strigi::AnalysisResult& idx,
                  Strigi::InputStream* in);
     bool readMpeg(Strigi::InputStream* in);
     bool parse_seq(Strigi::InputStream* in);

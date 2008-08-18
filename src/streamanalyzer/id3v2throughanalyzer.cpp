@@ -55,7 +55,7 @@ ID3V2ThroughAnalyzer::setIndexable(AnalysisResult* i) {
 }
 int32_t
 readSize(const unsigned char* b, bool async) {
-    const char* c = (const char*)b;
+    const signed char* c = (const signed char*)b;
     if (async) {
         if (c[0] < 0 || c[1] < 0 || c[2] < 0 || c[3] < 0) {
             return -1;
@@ -74,9 +74,10 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
+    const signed char* sbuf = (const signed char*)buf;
     in->reset(0);
     if (nread != 10 || strncmp("ID3", buf, 3) != 0 // check that it's ID3
-            || buf[3] < 0 || buf[3] > 4  // only handle version <= 4
+            || sbuf[3] < 0 || buf[3] > 4  // only handle version <= 4
             || buf[5] != 0 // we're too dumb too handle flags
             ) {
         return in;

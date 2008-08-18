@@ -32,8 +32,8 @@ public:
         :factory(f) {}
 
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
-    static char staticAnalyze(Strigi::AnalysisResult& idx,
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    static signed char staticAnalyze(Strigi::AnalysisResult& idx,
         Strigi::InputStream* in);
     const char* name() const { return "ArEndAnalyzer"; }
 };

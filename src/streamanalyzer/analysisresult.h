@@ -96,7 +96,7 @@ public:
      *
      * @return 0 on success, a negative value on error
      **/
-    char index(StreamBase<char>* file);
+    signed char index(StreamBase<char>* file);
     /**
      * @brief Parse the given stream, treating it as a child of the
      * stream corresponding to this object.
@@ -111,7 +111,7 @@ public:
      *
      * @return 0 on success, a negative value on error
      **/
-    char indexChild(const std::string& name, time_t mt,
+    signed char indexChild(const std::string& name, time_t mt,
         StreamBase<char>* file);
     /**
      * Associate a fragment of text with the file.
@@ -225,7 +225,7 @@ public:
      * @param the depth of containment of the associated file. Since the depth
      *        should not be too large, the type of depth is restricted to 'char'
      */
-    char depth() const;
+    signed char depth() const;
     /**
      * @deprecated
      * @brief Use writerData() instead.

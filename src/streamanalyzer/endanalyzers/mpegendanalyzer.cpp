@@ -85,7 +85,8 @@ MpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         || packet == 0x01ba;
 }
 
-char MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
+signed char
+MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in) {
         return -1;
     }

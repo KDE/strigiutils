@@ -53,9 +53,9 @@ public:
     StreamAnalyzer(AnalyzerConfiguration& c);
     ~StreamAnalyzer();
     void setIndexWriter(IndexWriter& writer);
-    char indexFile(const char *filepath);
-    char indexFile(const std::string& filepath);
-    char analyze(AnalysisResult& idx, StreamBase<char> *input);
+    signed char indexFile(const char *filepath);
+    signed char indexFile(const std::string& filepath);
+    signed char analyze(AnalysisResult& idx, StreamBase<char> *input);
     AnalyzerConfiguration& configuration() const;
 };
 }

@@ -362,7 +362,7 @@ OleEndAnalyzer::getStreamString(InputStream* in) const {
     }
     return string();
 }
-char
+signed char
 OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
     if(!in)
         return -1;

@@ -34,7 +34,7 @@ class FieldAnalyzerConfiguration : public AnalyzerConfiguration {
 private:
     const set<string> neededFields;
     mutable set<string> availableFields;
-    char m_maxDepth;
+    signed char m_maxDepth;
     const bool needsAllFields;
 public:
     FieldAnalyzerConfiguration(const set<string>& fields);

@@ -96,7 +96,7 @@ public:
     void addThroughAnalyzers();
     void addEndAnalyzers();
     void removeIndexable(unsigned depth);
-    char analyze(AnalysisResult& idx, StreamBase<char>* input);
+    signed char analyze(AnalysisResult& idx, StreamBase<char>* input);
 
     StreamAnalyzerPrivate(AnalyzerConfiguration& c);
     ~StreamAnalyzerPrivate();
@@ -183,12 +183,12 @@ StreamAnalyzer::setIndexWriter(IndexWriter& w) {
     p->writer = &w;
     p->writer->initWriterData(p->conf.fieldRegister());
 }
-char
+signed char
 StreamAnalyzer::indexFile(const char *filepath) {
     string path(filepath);
     return indexFile(path);
 }
-char
+signed char
 StreamAnalyzer::indexFile(const string& filepath) {
     if (!checkUtf8(filepath.c_str())) {
         return 1;
@@ -354,11 +354,11 @@ StreamAnalyzerPrivate::addEndAnalyzers() {
         eIter->push_back((*ea)->newInstance());
     }
 }
-char
+signed char
 StreamAnalyzer::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     return p->analyze(idx, input);
 }
-char
+signed char
 StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     //cerr << "analyze " << idx.path().c_str() << endl;
 

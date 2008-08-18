@@ -36,7 +36,7 @@ char XesamUlStringScanner::getCh()
 {
   char ret;
   if (m_xesam_query.empty())
-    return -1;
+    return 0;
   
   ret = m_xesam_query[0];
 
@@ -53,7 +53,7 @@ char XesamUlStringScanner::peekCh()
   if (!m_xesam_query.empty())
     return m_xesam_query[0];
 
-  return -1;
+  return 0;
 }
 
 bool XesamUlStringScanner::eof()

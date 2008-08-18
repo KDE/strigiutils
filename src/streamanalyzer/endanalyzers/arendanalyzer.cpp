@@ -34,13 +34,13 @@ bool
 ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ArInputStream::checkHeader(header, headersize);
 }
-char
+signed char
 ArEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     char result = staticAnalyze(idx, in);
     idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
     return  result;
 }
-char
+signed char
 ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
     if(!in)

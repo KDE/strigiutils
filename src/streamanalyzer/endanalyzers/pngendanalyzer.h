@@ -29,17 +29,17 @@ private:
     const PngEndAnalyzerFactory* factory;
     time_t timeZoneOffset;
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "PngEndAnalyzer"; }
-    char analyzeTime(Strigi::AnalysisResult& as, Strigi::InputStream* in);
+    signed char analyzeTime(Strigi::AnalysisResult& as, Strigi::InputStream* in);
     /*
        Internal function called to analyze text embedded in the png.
        Such text has a special format: 79 bytes of header, a \0 and content
        until the end of the stream.
      */
-    char analyzeText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
-    char analyzeZText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
-    char addMetaData(const std::string& key, Strigi::AnalysisResult& as,
+    signed char analyzeText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
+    signed char analyzeZText(Strigi::AnalysisResult& as, Strigi::InputStream* in);
+    signed char addMetaData(const std::string& key, Strigi::AnalysisResult& as,
         Strigi::InputStream* in);
 public:
     PngEndAnalyzer(const PngEndAnalyzerFactory* f);

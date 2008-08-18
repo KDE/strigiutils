@@ -39,7 +39,7 @@ ZipExeEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     bool ok = std::memcmp(header, magic, 4) == 0;
     return ok;
 }
-char
+signed char
 ZipExeEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;

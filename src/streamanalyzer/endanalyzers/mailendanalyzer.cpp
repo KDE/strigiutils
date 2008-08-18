@@ -81,7 +81,7 @@ charset(const string& contenttype) {
     }
     return string();
 }
-char
+signed char
 MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;

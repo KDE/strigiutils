@@ -36,7 +36,7 @@ bool
 ZipEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return ZipInputStream::checkHeader(header, headersize);
 }
-char
+signed char
 ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;

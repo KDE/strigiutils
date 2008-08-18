@@ -142,12 +142,12 @@ bool
 HelperEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return helperconfig.findHelper(header, headersize) != 0;
 }
-char
+signed char
 HelperEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in){
     if(!in)
         return -1;
 
-    char state = -1;
+    signed char state = -1;
     const char* b;
     int32_t nread = in->read(b, 1024, 0);
     in->reset(0);

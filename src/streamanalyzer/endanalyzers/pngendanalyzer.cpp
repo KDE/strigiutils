@@ -128,7 +128,7 @@ PngEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
     return headersize >= 29 && memcmp(header, pngmagic, 8) == 0;
 }
-char
+signed char
 PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     const char* c;
     int32_t nread = in->read(c, 12, 12);
@@ -228,7 +228,7 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
 
     return 0;
 }
-char
+signed char
 PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
         InputStream* in) {
     const char* c;
@@ -244,7 +244,7 @@ PngEndAnalyzer::analyzeText(Strigi::AnalysisResult& as,
     in->reset(nlen+1);
     return addMetaData(name, as, in);
 }
-char
+signed char
 PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
         InputStream* in) {
     const char* c;
@@ -261,7 +261,7 @@ PngEndAnalyzer::analyzeZText(Strigi::AnalysisResult& as,
     GZipInputStream z(in, GZipInputStream::ZLIBFORMAT);
     return addMetaData(name, as, &z);
 }
-char
+signed char
 PngEndAnalyzer::analyzeTime(Strigi::AnalysisResult& as,
         Strigi::InputStream* in) {
     const char* chunck;
@@ -309,7 +309,7 @@ PngEndAnalyzer::analyzeTime(Strigi::AnalysisResult& as,
 
     return 0;
 }
-char
+signed char
 PngEndAnalyzer::addMetaData(const string& key,
         Strigi::AnalysisResult& as, InputStream* in) {
     // try to store 1KB (should we get more?)

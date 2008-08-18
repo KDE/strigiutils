@@ -26,7 +26,7 @@
 class CpioEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "CpioEndAnalyzer"; }
 };
 

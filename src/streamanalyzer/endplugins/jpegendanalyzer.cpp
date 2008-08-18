@@ -55,7 +55,7 @@ public:
         return "JpegEndAnalyzer";
     }
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(AnalysisResult& idx, ::InputStream* in);
+    signed char analyze(AnalysisResult& idx, ::InputStream* in);
 };
 
 /*
@@ -213,7 +213,7 @@ JpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         = {0xFF, 0xD8, 0xFF};
     return headersize >= 3 &&  memcmp(header, jpgmagic, 3) == 0;
 }
-char
+signed char
 JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     // parse the jpeg file now
     Exiv2::Image::AutoPtr img;

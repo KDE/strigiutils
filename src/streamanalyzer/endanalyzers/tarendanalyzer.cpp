@@ -35,13 +35,13 @@ bool
 TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return TarInputStream::checkHeader(header, headersize);
 }
-char
+signed char
 TarEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     char result = staticAnalyze(idx, in);
     idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
     return result;
 }
-char
+signed char
 TarEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         InputStream* in) {
     if(!in)

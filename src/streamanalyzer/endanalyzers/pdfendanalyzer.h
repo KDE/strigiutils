@@ -35,7 +35,7 @@ private:
     int n;
 
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "PdfEndAnalyzer"; }
     Strigi::StreamStatus handle(Strigi::InputStream* s);
     Strigi::StreamStatus handle(const std::string& s);

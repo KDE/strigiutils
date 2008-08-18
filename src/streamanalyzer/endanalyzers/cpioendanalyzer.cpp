@@ -32,7 +32,7 @@ bool
 CpioEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return CpioInputStream::checkHeader(header, headersize);
 }
-char
+signed char
 CpioEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;

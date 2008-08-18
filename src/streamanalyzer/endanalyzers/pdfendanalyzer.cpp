@@ -55,7 +55,7 @@ bool
 PdfEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return headersize > 7 && strncmp(header, "%PDF-1.", 7) == 0;
 }
-char
+signed char
 PdfEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     analysisresult = &as;
     n = 0;

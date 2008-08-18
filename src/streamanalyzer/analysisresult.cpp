@@ -186,7 +186,7 @@ const std::string& AnalysisResult::fileName() const { return p->m_name; }
 const std::string& AnalysisResult::path() const { return p->m_path; }
 const string& AnalysisResult::parentPath() const { return p->m_parentpath; }
 time_t AnalysisResult::mTime() const { return p->m_mtime; }
-char AnalysisResult::depth() const { return p->m_depth; }
+signed char AnalysisResult::depth() const { return p->m_depth; }
 int64_t AnalysisResult::id() const { return p->m_id; }
 void AnalysisResult::setId(int64_t i) { p->m_id = i; }
 void AnalysisResult::setEncoding(const char* enc) { p->m_encoding = enc; }
@@ -195,11 +195,11 @@ void* AnalysisResult::writerData() const { return p->m_writerData; }
 void AnalysisResult::setWriterData(void* wd) const { p->m_writerData = wd; }
 void AnalysisResult::setMimeType(const std::string& mt) { p->m_mimetype = mt; }
 const std::string& AnalysisResult::mimeType() const { return p->m_mimetype; }
-char
+signed char
 AnalysisResult::index(InputStream* file) {
     return p->m_indexer.analyze(*this, file);
 }
-char
+signed char
 AnalysisResult::indexChild(const std::string& name, time_t mt,
         InputStream* file) {
     std::string path(p->m_path);

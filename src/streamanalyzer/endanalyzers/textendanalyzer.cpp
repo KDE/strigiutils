@@ -38,7 +38,7 @@ TextEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return last == 0 || nb != 0;
 }
 
-char
+signed char
 TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
         return -1;
@@ -48,7 +48,7 @@ TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     const char* b;
     // store and index the first 20k of a text file
     int32_t nread = in->read(b, 20*1024, 0);
-    char retval = -1;
+    signed char retval = -1;
     if (nread > 0) {
         char nb;
         const char* last = checkUtf8(b, nread, nb);

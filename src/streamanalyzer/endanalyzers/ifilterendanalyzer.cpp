@@ -81,7 +81,7 @@ bool
 IFilterEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return true;
 }
-char
+signed char
 IFilterEndAnalyzer::analyze(AnalysisResult& idx, InputStream *in) {
     const string& filename = idx.fileName();
     int p = filename.find_last_of('.');

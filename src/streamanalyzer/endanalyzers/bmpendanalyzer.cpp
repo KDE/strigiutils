@@ -62,7 +62,7 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     }
     return ok;
 }
-char
+signed char
 BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     // read BMP file type and ensure it is not damaged
     const char * bmptype_bm = "BM";

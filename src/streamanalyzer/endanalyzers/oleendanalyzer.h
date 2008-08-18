@@ -67,7 +67,7 @@ public:
     OleEndAnalyzer(const OleEndAnalyzerFactory* const f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
     bool tryPropertyStream(Strigi::AnalysisResult& idx, Strigi::InputStream* s);
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "OleEndAnalyzer"; }
 };
 

@@ -36,7 +36,7 @@ bool
 RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
     return RpmInputStream::checkHeader(header, headersize);
 }
-char
+signed char
 RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     RpmInputStream rpm(in);
     InputStream *s = rpm.nextEntry();

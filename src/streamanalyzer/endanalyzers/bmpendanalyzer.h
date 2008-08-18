@@ -30,7 +30,7 @@ private:
 public:
     BmpEndAnalyzer(const BmpEndAnalyzerFactory* f) :factory(f) {}
     bool checkHeader(const char* header, int32_t headersize) const;
-    char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
     const char* name() const { return "BmpEndAnalyzer"; }
 };
 
