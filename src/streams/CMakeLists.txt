@@ -48,7 +48,7 @@ set(streams_SRCS ${streams_SRCS} strigi/compat.cpp strigi/fnmatch.cpp strigi/stg
 add_library(streams SHARED ${streams_SRCS})
 
 set_target_properties(streams PROPERTIES
-    VERSION ${STRIGI_VERSION}
+    VERSION ${STRIGI_VERSION_STRING}
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_STREAMS_LIB
 )

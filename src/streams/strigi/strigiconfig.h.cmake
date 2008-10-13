@@ -22,7 +22,46 @@
 #ifndef STRIGICONFIG_H
 #define STRIGICONFIG_H
 
-#define STRIGI_VERSION_STRING "@STRIGI_VERSION@"
+#define STRIGI_VERSION_STRING "@STRIGI_VERSION_STRING@"
+
+/// @brief The major Strigi version number at compile time
+#define STRIGI_VERSION_MAJOR @STRIGI_VERSION_MAJOR@
+
+/// @brief The minor Strigi version number at compile time
+#define STRIGI_VERSION_MINOR @STRIGI_VERSION_MINOR@
+
+/// @brief The Strigi release version number at compile time
+#define STRIGI_VERSION_RELEASE @STRIGI_VERSION_RELEASE@
+
+/**
+ * \brief Create a unique number from the major, minor and release number of a %Strigi version
+ *
+ * This function can be used for preprocessing.
+ */
+#define STRIGI_MAKE_VERSION( a,b,c ) (((a) << 16) | ((b) << 8) | (c))
+
+/**
+ * \brief %Strigi Version as a unique number at compile time
+ *
+ * This macro calculates the %Strigi version into a number. It is mainly used
+ * through STRIGI_IS_VERSION in preprocessing.
+ */
+#define STRIGI_VERSION \
+    STRIGI_MAKE_VERSION(STRIGI_VERSION_MAJOR,STRIGI_VERSION_MINOR,STRIGI_VERSION_RELEASE)
+
+/**
+ * \brief Check if the %Strigi version matches a certain version or is higher
+ *
+ * This macro is typically used to compile conditionally a part of code:
+ * \code
+ * #if STRIGI_IS_VERSION(2,1)
+ * // Code for Strigi 2.1
+ * #else
+ * // Code for Strigi 2.0
+ * #endif
+ * \endcode
+ */
+#define STRIGI_IS_VERSION(a,b,c) ( STRIGI_VERSION >= STRIGI_MAKE_VERSION(a,b,c) )
 
 /* use the same includes for types finding as in ConfigureChecks.cmake */
 #if @STRIGI_HAVE_SOCKET_H@

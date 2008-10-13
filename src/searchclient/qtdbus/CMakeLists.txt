@@ -22,7 +22,7 @@ add_library(strigiqtdbusclient SHARED ${strigiqtdbusclient_SRCS}
 
 target_link_libraries(strigiqtdbusclient ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY})
 set_target_properties(strigiqtdbusclient
-                 PROPERTIES VERSION ${STRIGI_VERSION}
+                 PROPERTIES VERSION ${STRIGI_VERSION_STRING}
                  SOVERSION ${STRIGI_VERSION_MAJOR}
                  DEFINE_SYMBOL MAKE_STRIGI_QTDBUSCLIENT_LIB
 )

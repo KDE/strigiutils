@@ -3,7 +3,7 @@ include_directories( ../daemon ../streamanalyzer ../streams
 
 add_library(strigihtmlgui SHARED strigihtmlgui.cpp)
 set_target_properties(strigihtmlgui PROPERTIES
-    VERSION ${STRIGI_VERSION}
+    VERSION ${STRIGI_VERSION_STRING}
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_STRIGIHTMLGUI_LIB
 )

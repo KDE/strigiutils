@@ -91,7 +91,7 @@ target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
 add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
 	asyncsocketclient.cpp)
 set_target_properties(searchclient PROPERTIES
-    VERSION ${STRIGI_VERSION}
+    VERSION ${STRIGI_VERSION_STRING}
     SOVERSION ${STRIGI_VERSION_MAJOR}
     DEFINE_SYMBOL MAKE_SEARCHCLIENT_LIB
 )
