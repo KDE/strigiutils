@@ -98,6 +98,7 @@ install(FILES
 	indexreader.h
 	indexmanager.h
 	indexplugin.h
+	indexpluginloader.h
 	indexwriter.h
 	variant.h
 	query.h
