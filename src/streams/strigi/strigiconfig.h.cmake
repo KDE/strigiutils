@@ -31,7 +31,7 @@
 #define STRIGI_VERSION_MINOR @STRIGI_VERSION_MINOR@
 
 /// @brief The Strigi release version number at compile time
-#define STRIGI_VERSION_RELEASE @STRIGI_VERSION_RELEASE@
+#define STRIGI_VERSION_RELEASE @STRIGI_VERSION_PATCH@
 
 /**
  * \brief Create a unique number from the major, minor and release number of a %Strigi version
