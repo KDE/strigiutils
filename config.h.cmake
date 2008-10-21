@@ -152,9 +152,7 @@
 
 #include <strigi/strigiconfig.h>
 
-#define KDELIBSUFF "${KDELIBSUFF}"
-
-#define LIBINSTALLDIR "${LIBINSTALLDIR}"
+#define LIBINSTALLDIR "${LIB_DESTINATION}"
 
 #define SOURCEDIR "${CMAKE_CURRENT_SOURCE_DIR}"
 
