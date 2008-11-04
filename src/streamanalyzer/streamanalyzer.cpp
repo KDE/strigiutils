@@ -393,7 +393,7 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
     }
 
     // reread the header so we can use it for the endanalyzers
-    if (input) {
+    if (input && headersize > 0) {
         headersize = input->read(header, headersize, headersize);
         if (headersize <= 0) {
             finished = true;
