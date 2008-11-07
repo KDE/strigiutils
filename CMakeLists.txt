@@ -5,7 +5,8 @@ set(STRIGI_VERSION_MINOR 6 CACHE INT "Minor Strigi version number" FORCE)
 set(STRIGI_VERSION_PATCH 0 CACHE INT "Release Strigi version number" FORCE)
 set(STRIGI_VERSION_STRING "${STRIGI_VERSION_MAJOR}.${STRIGI_VERSION_MINOR}.${STRIGI_VERSION_PATCH}" CACHE STRING "Strigi version string" FORCE)
 
-cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
+
 
 if(WIN32)
  set(CMAKE_DEBUG_POSTFIX "d")
@@ -14,8 +15,11 @@ endif(WIN32)
 # include specific modules
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+if(NOT WIN32)
+ find_package(PkgConfig)
+endif(NOT WIN32)
+
 # include general modules
-include(UsePkgConfig)
 include(MacroCheckGccVisibility)
 include(MacroFindOptionalDep)
 
