@@ -107,30 +107,30 @@ private:
 
 };
 
-const string JpegEndAnalyzerFactory::commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
-const string JpegEndAnalyzerFactory::manufacturerFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
-const string JpegEndAnalyzerFactory::modelFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
-const string JpegEndAnalyzerFactory::creationDateFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-const string JpegEndAnalyzerFactory::widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string JpegEndAnalyzerFactory::heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
-const string JpegEndAnalyzerFactory::orientationFieldName("http://freedesktop.org/standards/xesam/1.0/core#orientation");
-const string JpegEndAnalyzerFactory::colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-const string JpegEndAnalyzerFactory::flashUsedFieldName("http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
-const string JpegEndAnalyzerFactory::focalLengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#focalLength");
-const string JpegEndAnalyzerFactory::_35mmEquivalentFieldName("http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
-const string JpegEndAnalyzerFactory::ccdWidthFieldName("http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
-const string JpegEndAnalyzerFactory::exposureTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
-const string JpegEndAnalyzerFactory::apertureFieldName("http://freedesktop.org/standards/xesam/1.0/core#aperture");
-const string JpegEndAnalyzerFactory::focusDistFieldName("http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
-const string JpegEndAnalyzerFactory::exposureBiasFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
-const string JpegEndAnalyzerFactory::whiteBalanceFieldName("http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
-const string JpegEndAnalyzerFactory::meteringModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
-const string JpegEndAnalyzerFactory::exposureFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
-const string JpegEndAnalyzerFactory::isoEquivFieldName("http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
-const string JpegEndAnalyzerFactory::jpegQualityFieldName("http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
-const string JpegEndAnalyzerFactory::userCommentFieldName("http://freedesktop.org/standards/xesam/1.0/core#userComment");
-const string JpegEndAnalyzerFactory::jpegProcessFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string JpegEndAnalyzerFactory::thumbnailFieldName("content.thumbnail");
+const string commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+const string manufacturerFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
+const string modelFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
+const string creationDateFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+const string widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
+const string heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+const string orientationFieldName("http://freedesktop.org/standards/xesam/1.0/core#orientation");
+const string colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
+const string flashUsedFieldName("http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
+const string focalLengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#focalLength");
+const string _35mmEquivalentFieldName("http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
+const string ccdWidthFieldName("http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
+const string exposureTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
+const string apertureFieldName("http://freedesktop.org/standards/xesam/1.0/core#aperture");
+const string focusDistFieldName("http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
+const string exposureBiasFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
+const string whiteBalanceFieldName("http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
+const string meteringModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
+const string exposureFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
+const string isoEquivFieldName("http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
+const string jpegQualityFieldName("http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
+const string userCommentFieldName("http://freedesktop.org/standards/xesam/1.0/core#userComment");
+const string jpegProcessFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
+const string thumbnailFieldName("content.thumbnail");
 
 /*
  Register the field names so that the StreamIndexer knows which analyzer
@@ -265,7 +265,7 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
 
     const Exiv2::ExifData& exif = img->exifData();
     // if there's exif data, this is a photo, otherwise just an image
-    if( exif.size() ) {
+    if( ! exif.empty() ) {
         ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Photo");
     } else {
         ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
