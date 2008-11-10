@@ -64,6 +64,8 @@ ProcessInputStream::~ProcessInputStream() {
     }
     if (pid != -1) {
         kill(SIGTERM, pid);
+        int status;
+        waitpid(pid, &status , 0);
     }
     const char* const* p = args;
     while (*p) {
