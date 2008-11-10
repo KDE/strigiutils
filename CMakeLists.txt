@@ -110,6 +110,9 @@ find_optional_dep(HyperEstraier ENABLE_HYPERESTRAIER HyperEstraier_FOUND "HyperE
 find_optional_dep(SQLite ENABLE_SQLITE SQLite_FOUND "SQLite backend")
 
 find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
+if(EXIV2_FOUND)
+    include_directories(${EXIV2_INCLUDE_DIR})
+endif(EXIV2_FOUND)
 
 #find_package(XAttr)
 set(QT_MIN_VERSION "4.3.0")

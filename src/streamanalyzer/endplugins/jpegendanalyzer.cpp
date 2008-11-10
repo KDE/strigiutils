@@ -280,14 +280,23 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
 //            cerr << i->key() << "\t" << i->value() << endl;
         }
     }
-
+#if (EXIV2_TEST_VERSION(0,17,91))
+    Exiv2::ExifThumbC thumb(exif);
+    Exiv2::DataBuf thumbnail = thumb.copy();
+#else
     Exiv2::DataBuf thumbnail = exif.copyThumbnail();
+#endif
     data = (const char*)thumbnail.pData_;
     if (data) {
         StringInputStream thumbstream(data, thumbnail.size_, false);
         string thumbname("thumbnail");
+#if (EXIV2_TEST_VERSION(0,17,91))
+        ar.indexChild(thumbname + thumb.extension(), ar.mTime(),
+            &thumbstream);
+#else
         ar.indexChild(thumbname + exif.thumbnailExtension(), ar.mTime(),
             &thumbstream);
+#endif
     }
 
 /*
