@@ -59,19 +59,30 @@ CppLineAnalyzer::startAnalysis(AnalysisResult* i) {
 }
 void
 CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
-    string line(data, length);
-
     totalLines++;
+    
+    bool shortComment = false;
+    bool mayHaveInclude = false;
+    bool endOfComment = false;
 
-    if (line.find("/*") != string::npos) inComment = true;
+    for (unsigned int i=0;i<length;i++ ) {
+        if (data[i]=='/') {
+            if (i<(length-1) && data[i+1]=='*') inComment = true; 
+            if (i<(length-1) && data[i+1]=='/') shortComment = true;
+            if (i>0 && data[i-1]=='*') endOfComment = true;
+        }
+        if (data[i]=='#') mayHaveInclude=true;
+    }
 
     if (!inComment){
 
         codeLines++;
+        
+        if (shortComment) commentLines++;
 
-        size_t pos = line.find_first_of("//");
-        if (pos != string::npos) commentLines++;
-
+        if (mayHaveInclude) {
+        
+        string line(data, length);
         //TODO Add code here for counting strings.
         //Look for included files.
         size_t pos1 = line.find("#include",0);
@@ -90,12 +101,12 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
                 includes++;
             }
         }
-
+        }
     }
     else
         commentLines++;
 
-    if (line.find("*/") != string::npos) inComment = false;
+    if (endOfComment) inComment=false;
 }
 void
 CppLineAnalyzer::endAnalysis(bool complete) {
