@@ -173,7 +173,7 @@ endif(NOT WIN32)
 
 #
 # AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by
-# alexander neuendorf
+# alexander neundorf
 #
 # on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
 if(NOT WIN32)
@@ -228,8 +228,13 @@ set(CPACK_PACKAGE_VERSION_MINOR ${STRIGI_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${STRIGI_VERSION_PATCH})
 include(CPack)
 
-# code for installing an script to help cmake applications determint the Strigi
-# version number
+# code to create and install a StrigiConfig.cmake file, which contains basically all the 
+# information needed by users of strigi: version number, include directory, 
+# libraries, API-type (signed or unsigned char), etc.
+# If more things become necessary, add them to StrigiConfig.cmake.in.
+# The installed file will then be loaded by the FIND_PACKAGE(Strigi NO_MODULES)
+# call in kdelibs/cmake/modules/FindStrigi.cmake. Alex
+
 configure_file(StrigiConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/StrigiConfig.cmake @ONLY )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/StrigiConfig.cmake DESTINATION ${LIB_DESTINATION}/strigi)
