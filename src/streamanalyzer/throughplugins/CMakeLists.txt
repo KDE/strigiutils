@@ -37,8 +37,8 @@ ADD_STRIGITA(dds ddsthroughanalyzer.cpp)
 
 # Bug 164296: these two analyzers are dummy leftovers.They make sure that
 # possible original, broken analyzers are overwritten/neutralized.
-ADD_STRIGITA(avi avithroughanalyzer.cpp)
-ADD_STRIGITA(wav wavthroughanalyzer.cpp)
+ADD_STRIGITA(avi dummy.cpp)
+ADD_STRIGITA(wav dummy.cpp)
 
 # disabled until a good check for making sure the file is a tga
 #ADD_STRIGITA(tga  tgathroughanalyzer.cpp)
