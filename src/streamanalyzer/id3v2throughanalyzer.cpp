@@ -100,7 +100,7 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     buf += size;
     while (p < buf && *p) {
         size = readSize((unsigned char*)p+4, async);
-        if (size < 0 || size > (buf-p)-11) {
+        if (size <= 0 || size > (buf-p)-11) {
             // cerr << "size < 0: " << size << endl;
             return in;
         }
