@@ -48,19 +48,20 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return -1;
     }
 
-    while (s) {
-        // check if we're done
-        int64_t max = idx.config().maximalStreamReadLength(idx);
-        if (max != -1 && in->position() > max) {
-            return 0;
+    if (idx.config().indexArchiveContents()) {
+        while (s) {
+            // check if we're done
+            int64_t max = idx.config().maximalStreamReadLength(idx);
+            if (max != -1 && in->position() > max) {
+                return 0;
+            }
+            // check if the analysis has been aborted
+            if (!idx.config().indexMore()) {
+                return 0;
+            }
+            idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime, s);
+            s = zip.nextEntry();
         }
-        // check if the analysis has been aborted
-        if (!idx.config().indexMore()) {
-            return 0;
-        }
-        idx.indexChild(zip.entryInfo().filename, zip.entryInfo().mtime,
-            s);
-        s = zip.nextEntry();
     }
     if (zip.status() == Error) {
         m_error = zip.error();

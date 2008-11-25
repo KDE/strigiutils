@@ -39,25 +39,26 @@ RpmEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 signed char
 RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     RpmInputStream rpm(in);
-    InputStream *s = rpm.nextEntry();
-    if (rpm.status()) {
-        fprintf(stderr, "error: %s\n", rpm.error());
+    if (idx.config().indexArchiveContents()) {
+        InputStream *s = rpm.nextEntry();
+        if (rpm.status()) {
+            fprintf(stderr, "error: %s\n", rpm.error());
 //        exit(1);
-    }
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
-    while (s) {
-        // check if we're done
-        int64_t max = idx.config().maximalStreamReadLength(idx);
-        if (max != -1 && in->position() > max) {
-            return 0;
         }
-        // check if the analysis has been aborted
-        if (!idx.config().indexMore()) {
-            return 0;
+        while (s) {
+            // check if we're done
+            int64_t max = idx.config().maximalStreamReadLength(idx);
+            if (max != -1 && in->position() > max) {
+                return 0;
+            }
+            // check if the analysis has been aborted
+            if (!idx.config().indexMore()) {
+                return 0;
+            }
+            idx.indexChild(rpm.entryInfo().filename, rpm.entryInfo().mtime,
+                           s);
+            s = rpm.nextEntry();
         }
-        idx.indexChild(rpm.entryInfo().filename, rpm.entryInfo().mtime,
-            s);
-        s = rpm.nextEntry();
     }
     if (rpm.status() == Error) {
         m_error = rpm.error();
@@ -65,6 +66,7 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     } else {
         m_error.resize(0);
     }
+    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
     return 0;
 }
 

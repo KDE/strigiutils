@@ -180,6 +180,7 @@ public:
      * @return true if indexing should continue, false if it should stop
      */
     virtual bool indexMore() const {return true;}
+    bool indexArchiveContents() const;
     /**
      * @brief Allows end analyzer to check whether they should continue
      * adding text fragments to the index.
@@ -279,6 +280,12 @@ public:
      * See the documentation for the non-const version of this function.
      */
     const FieldRegister& fieldRegister() const;
+
+protected:
+    /**
+     * indexArchiveContents is not virtual to keep binary comp.
+     */
+    void setIndexArchiveContents( bool );
 };
 
 /*

@@ -55,7 +55,10 @@ public:
     std::vector<std::pair<bool,std::string> > m_filters;
     FieldRegister m_fieldregister;
 
-    AnalyzerConfigurationPrivate() {
+    bool indexArchiveContents;
+
+    AnalyzerConfigurationPrivate()
+        : indexArchiveContents( true ) {
     }
 };
 
@@ -72,7 +75,7 @@ AnalyzerConfiguration::~AnalyzerConfiguration() {
     delete p;
 }
 /**
- * Returns indexing flags from the fieldproperties DB associated to 
+ * Returns indexing flags from the fieldproperties DB associated to
  * the registered field.
  **/
 AnalyzerConfiguration::FieldType
@@ -103,6 +106,14 @@ AnalyzerConfiguration::indexFile(const char* path, const char* filename) const {
         }
     }
     return true;
+}
+bool
+AnalyzerConfiguration::indexArchiveContents() const {
+    return p->indexArchiveContents;
+}
+void
+AnalyzerConfiguration::setIndexArchiveContents( bool b ) {
+    p->indexArchiveContents = b;
 }
 bool
 AnalyzerConfiguration::indexDir(const char* path, const char* filename) const {
