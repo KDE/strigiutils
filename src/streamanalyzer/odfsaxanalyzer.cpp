@@ -31,6 +31,7 @@ using namespace Strigi;
 
 static const char *dcNS = "http://purl.org/dc/elements/1.1/";
 static const char *metaNS = "urn:oasis:names:tc:opendocument:xmlns:meta:1.0";
+static const char *opfNS = "http://www.idpf.org/2007/opf";
 //static const char *officeNS = "urn:oasis:names:tc:opendocument:xmlns:office:1.0";
 //static const char *svgNS = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
 //static const char *textNS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
@@ -94,6 +95,16 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
             m_currentField = m_factory->descriptionField;
         } else if(std::strcmp(localname, "language") == 0) {
             m_currentField = m_factory->languageField;
+// This element never appears in ODF files. It is defined in OPF specification 
+// (see http://www.openebook.org/2007/opf/OPF_2.0_final_spec.html#Section2.2.7 ) used
+// in ePub electronic book format. It is here only because metadata format is almost
+// identical to one used in ODF, so it makes more sense to reuse ODF analyzer for ePub too than 
+// to duplicate whole thing just to add support for one additional field
+        } else if((std::strcmp(localname, "date") == 0) && nb_attributes == 1 && 
+          (std::strcmp(attributes[0], "event") == 0) && attributes[2] != 0 &&
+          (std::strcmp(attributes[2], opfNS) == 0) &&
+          (std::strncmp(attributes[3], "creation", attributes[4] - attributes[3]) == 0 ) ) { 
+            m_currentField = m_factory->creationTimeField; 
         }
     } else if(uri && std::strcmp(uri, metaNS) == 0) {
         if(std::strcmp(localname, "creation-date") == 0) {
