@@ -144,7 +144,7 @@ main() {
     AnalyzerConfiguration ac;
     StreamAnalyzer sa(ac);
     sa.setIndexWriter(*manager.indexWriter());
-    while (parseFile(sa, manager, &stream, delim));
+    while (parseFile(sa, manager, &stream, delim)) {};
     cout << "</" << mapping.map("metadata") << ">\n" << flush;
 
     return 0;
