@@ -255,7 +255,7 @@ SimpleSearchGui::updateStatus(const QMap<QString, QString>& s) {
 
     QMap<QString,QString>::const_iterator i;
     QString text;
-    for (i = status.begin(); i != status.end(); ++i) {
+    for (i = status.constBegin(); i != status.constEnd(); ++i) {
         text += i.key();
         text += ":\t";
         text += i.value();
