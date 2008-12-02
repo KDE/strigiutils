@@ -43,8 +43,18 @@ set (MIMEINSTALLDIR "${CMAKE_INSTALL_PREFIX}/share/mime")
 # This saves typing ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY} in about every subdir
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+
+# Set up RPATH handling, so the libs are found if they are installed to a non-standard location.
+# By default cmake builds the targets with full RPATH to everything in the build directory,
+# but then removes the RPATH when installing.
+# These two options below make it set the RPATH of the installed targets to all
+# RPATH directories outside the current CMAKE_BINARY_DIR and also the library 
+# install directory. Alex
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE)
+set(CMAKE_INSTALL_RPATH "${LIB_DESTINATION}" )
+
 if(APPLE)
-    set(CMAKE_INSTALL_NAME_DIR ${LIB_DESTINATION})
+   set(CMAKE_INSTALL_NAME_DIR ${LIB_DESTINATION})
 endif(APPLE)
 
 if(MSVC)
@@ -118,9 +128,8 @@ endif(EXIV2_FOUND)
 set(QT_MIN_VERSION "4.3.0")
 find_optional_dep(Qt4 ENABLE_QT4 QT4_FOUND "Qt4 GUI client")
 
-check_include_files(strings.h     HAVE_STRINGS_H)                      # various
-
 if(ENABLE_DBUS)
+  # this should go into a FindLibdbus.cmake or something similar, Alex
   if(WIN32)
     file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _program_FILES_DIR)
     find_path(DBUS_INCLUDE_DIR dbus/dbus.h

@@ -17,6 +17,10 @@ CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)          # src/streamindexer/plug
 CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)          # config.h, strigiconfig.h
 CHECK_INCLUDE_FILE_CXX(regex.h HAVE_REGEX_H)            # src/dummyindexer/*
 
+INCLUDE(CheckIncludeFiles)
+CHECK_INCLUDE_FILES(strings.h     HAVE_STRINGS_H)                      # various
+
+
 #test for some functions that are missing on a particular system
 INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(fchdir HAVE_FCHDIR)               # unused !
