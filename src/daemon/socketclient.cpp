@@ -27,6 +27,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+/* GCC 4.3.2 Fix */
+#include <cstring>
+
 
 using namespace std;
 
