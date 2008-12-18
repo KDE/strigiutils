@@ -84,11 +84,13 @@ Decoder::decode(const string& enc, string& data) {
         bufferlen = olen;
         buffer = (char*)realloc(buffer, bufferlen);
     }
-    char* out = buffer;
-    char* mem = out;
-    size_t r = iconv(conv, &in, &ilen, &out, &olen);
-    if (r != (size_t)-1) {
-        data.assign(mem, out-mem);
+    if (olen > 0) {
+        char* out = buffer;
+        char* mem = out;
+        size_t r = iconv(conv, &in, &ilen, &out, &olen);
+        if (r != (size_t)-1) {
+            data.assign(mem, out-mem);
+        }
     }
 }
 
@@ -452,7 +454,7 @@ MailInputStream::Private::scanBody() {
             int32_t blen = boundary.top().length();
             if (len == blen + 4 && strncmp(linestart + 2 + blen, "--", 2) == 0
                     && strncmp(linestart + 2, boundary.top().c_str(), blen)
-                        == 0) { 
+                        == 0) {
                 // check if this is the end of a multipart
                 boundary.pop();
                 if (boundary.size() == 0) {
