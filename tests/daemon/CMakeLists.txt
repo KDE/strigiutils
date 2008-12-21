@@ -22,7 +22,7 @@ include_directories (.  ${INC_DIR}
 )
 
 add_executable(daemonconfiguratortest daemonconfiguratortest.cpp)
-target_link_libraries (daemonconfiguratortest test_runner daemonconfigurator
+target_link_libraries (daemonconfiguratortest strigi_test_runner daemonconfigurator
                        streamanalyzer ${daemonconfiguratortest_LIBS})
 
 add_test (daemonconfiguratortest daemonconfiguratortest)

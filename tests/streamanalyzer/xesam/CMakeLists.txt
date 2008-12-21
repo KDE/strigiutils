@@ -10,7 +10,7 @@ include_directories (.
 )
 
 add_executable (xesam2strigitest xesam2strigitest.cpp)
-target_link_libraries (xesam2strigitest test_runner strigi_xesam ${xesamtest_LIBS})
+target_link_libraries (xesam2strigitest strigi_test_runner strigi_xesam ${xesamtest_LIBS})
 
 add_test (xesam2strigitest xesam2strigitest)
 

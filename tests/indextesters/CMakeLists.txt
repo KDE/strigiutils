@@ -32,6 +32,6 @@ if (indextester_DEPS)
   ADD_DEPENDENCIES(indextester ${indextester_DEPS})
 endif (indextester_DEPS)
 target_link_libraries(indextester
-  test_runner unittestfunctions ${indextesters_LIBS})
+  strigi_test_runner unittestfunctions ${indextesters_LIBS})
 
 add_test(indextester indextester)

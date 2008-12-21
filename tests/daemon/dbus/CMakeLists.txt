@@ -21,7 +21,7 @@ qt4_wrap_cpp(daemondbustest_MOC_SRCS ${daemondbustest_MOC_HDRS})
 add_executable(daemondbustest daemondbustest.cpp runner.cpp xesamdbustest.cpp
     xesam/xesamdbus.cpp xesamlistener.cpp strigidaemonunittestsession.cpp
     ${daemondbustest_MOC_SRCS})
-target_link_libraries (daemondbustest test_runner ${daemondbustest_LIBS}
+target_link_libraries (daemondbustest strigi_test_runner ${daemondbustest_LIBS}
     strigiqtdbusclient)
 
 add_executable(dtest test.cpp)
