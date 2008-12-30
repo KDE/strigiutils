@@ -127,6 +127,10 @@ endif(EXIV2_FOUND)
 #find_package(XAttr)
 set(QT_MIN_VERSION "4.3.0")
 find_optional_dep(Qt4 ENABLE_QT4 QT4_FOUND "Qt4 GUI client")
+if(QT4_FOUND)
+  # properly set up compile flags (QT_DEBUG/QT_NO_DEBUG, ...)
+  include(${QT_USE_FILE})
+endif(QT4_FOUND)
 
 if(ENABLE_DBUS)
   # this should go into a FindLibdbus.cmake or something similar, Alex
