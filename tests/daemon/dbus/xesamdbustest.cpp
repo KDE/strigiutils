@@ -31,7 +31,6 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QTime>
-#include <QtTest/QTest>
 
 /**
    This test tests the dbus capabilities of strigidaemon.

@@ -22,7 +22,7 @@ add_executable(daemondbustest daemondbustest.cpp runner.cpp xesamdbustest.cpp
     xesam/xesamdbus.cpp xesamlistener.cpp strigidaemonunittestsession.cpp
     ${daemondbustest_MOC_SRCS})
 target_link_libraries (daemondbustest strigi_test_runner ${daemondbustest_LIBS}
-    strigiqtdbusclient ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY})
+    strigiqtdbusclient)
 
 add_executable(dtest test.cpp)
 target_link_libraries (dtest ${daemondbustest_LIBS} strigiqtdbusclient)
