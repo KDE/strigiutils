@@ -1,3 +1,12 @@
+0.6.2
+ - Better support for nice IO priorities on Linux (Sebastian Trueg)
+ - Compile with development version of CLucene (Ben van Klinken)
+ - Explicitly use 'unsigned char' or 'signed char' instead of 'char' since 'char' can be either signed or unsigned on different processors. E.g. on ARM 'char' means 'unsigned char' and on i386 'char' means 'signed char'. This changes makes libstreamanalyzer 0.6.2 binary incompatible with versions < 0.6.0. (Jos van den OOever)
+ - Many CMake cleanups (Alexander Neundorf)
+ - 6.5x speedup of C++ comment analyzer (Jakub Stachowski)
+ - Various stability fixes (Jos van den Oever, Sebastian Trueg)
+ - Support for ePub format (Jakub Stachowski)
+ - Handle RIFF file with unspecified size for the RIFF packet. (Jos van den Oever)
 0.5.11
  - Fix a bug that can cause a crash on an executable zip file.
  - Fix parsing of empty headers when CRLFCRLF is followed by a space. In other words, fix parsing of emails that have a space as the first character in the body.
