@@ -207,7 +207,8 @@ AnalysisResult::indexChild(const std::string& name, time_t mt,
     path.append(name);
     const char* n = path.c_str() + path.rfind('/') + 1;
     // check if we should index this file by applying the filename filters
-    if (p->m_analyzerconfig.indexFile(path.c_str(), n)) {
+    // make sure that the depth variable does not overflow
+    if (depth() < 127 && p->m_analyzerconfig.indexFile(path.c_str(), n)) {
         AnalysisResult i(path, n, mt, *this);
         return p->m_indexer.analyze(i, file);
     }
