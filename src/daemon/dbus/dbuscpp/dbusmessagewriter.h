@@ -24,6 +24,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <strigi/strigiconfig.h>
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif

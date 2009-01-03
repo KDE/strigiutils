@@ -20,6 +20,7 @@
 #include "indexpluginloader.h"
 #include "indexmanager.h"
 #include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stgdirent.h>

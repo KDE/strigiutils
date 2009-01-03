@@ -27,6 +27,10 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <strigi/strigiconfig.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
 
 class DBusMessageReader {
 private:

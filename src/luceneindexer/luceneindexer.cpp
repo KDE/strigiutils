@@ -21,6 +21,7 @@
 #include "diranalyzer.h"
 #include "indexpluginloader.h"
 #include "analyzerconfiguration.h"
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
