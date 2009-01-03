@@ -165,20 +165,17 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 bool newfile = j == dbend;
                 bool updatedfile = !newfile && j->second != mtime;
 
-                // if the file is update we delete it in this loop
-                // if it is new, it should not be in the list anyway
-                // otherwise we should _not_ delete it and remove it from the
-                // to be deleted list
-                if (updatedfile || !newfile) {
-                    dbdirfiles.erase(j);
-                }
-                // if the file has not yet been indexed or if the mtime has
-                // changed, index it
-                if (updatedfile) {
-                    toDelete.push_back(filepath);
-                }
-                if (newfile || updatedfile) {
+                if (newfile || (updatedfile && !S_ISDIR(i-second.st_mode))) {
+                    // if the file has not yet been indexed or if the mtime has
+                    // changed, index it
+                    // if a directory has been updated, this will not change the index
+                    // so the entry is not removed from the index, nor reindexed
                     toIndex.push_back(make_pair(filepath, i->second));
+                } else {
+                    // files left in dbdirfiles after this loop will be deleted from the
+                    // index. because this file has not changed, it should not be
+                    // removed from the index
+                    dbdirfiles.erase(j);
                 }
             }
             // all the files left in dbdirfiles, are not in the current
