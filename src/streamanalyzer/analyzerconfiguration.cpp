@@ -147,37 +147,25 @@ AnalyzerConfiguration::setFilters(
     vector<pair<bool,string> >::const_iterator i;
     p->m_patterns.clear();
     p->m_dirpatterns.clear();
-    bool hadinclude = false;
     for (i = p->m_filters.begin(); i != p->m_filters.end(); ++i) {
         string s = i->second;
         if (s.length()) {
-            hadinclude = hadinclude || i->first;
             AnalyzerConfigurationPrivate::Pattern p;
             p.include = i->first;
             size_t sp = s.rfind('/');
-            if (sp == string::npos) {
-                p.matchfullpath = false;
-            } else {
-                if (sp == s.length()-1) { // directory pattern
-                    sp = s.rfind('/', s.length()-2);
-                    if (!hadinclude) { // can exclude entire directory
-                        p.matchfullpath = sp != string::npos;
-                        p.pattern = s.substr(0, s.length()-1);
-                        this->p->m_dirpatterns.push_back(p);
-                        continue;
-                    }
-                    if (s.length() == 1 || s[s.length()-2] != '*') {
-                        s += '*';
-                    }
-                    if (sp == string::npos
-                            && s[0] != '*') {
-                        s = "*/" + s;
-                    }
-                }
-                p.matchfullpath = true;
+            if (sp == s.length()-1) { // directory pattern (it ends with '/')
+                // if the path contains another '/', match the entire path
+                sp = s.rfind('/', s.length()-2);
+                p.matchfullpath =  sp != string::npos;
+                // remove the terminating '/'
+                p.pattern = s.substr(0, s.length()-1);
+                this->p->m_dirpatterns.push_back(p);
+            } else { // file pattern
+                // if the path contains a '/', match the entire path
+                p.matchfullpath =  sp != string::npos;
+                p.pattern = s;
+                this->p->m_patterns.push_back(p);
             }
-            p.pattern = s;
-            this->p->m_patterns.push_back(p);
         }
     }
 }
