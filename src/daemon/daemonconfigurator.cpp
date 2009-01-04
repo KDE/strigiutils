@@ -95,6 +95,9 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
 
         // add pattern to ignore hidden directories and hidden files
         Filter f;
+        f.a_include = true;
+        f.a_pattern = ".*.directory/"; // mail box directory
+        e_filters.e_filter.push_back(f);
         f.a_include = false;
         f.a_pattern = ".*/";
         e_filters.e_filter.push_back(f);
