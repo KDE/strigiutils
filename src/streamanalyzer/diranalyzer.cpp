@@ -184,7 +184,9 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                     i != dbend; ++i) {
                 toDelete.push_back(i->first);
             }
-            manager.indexWriter()->deleteEntries(toDelete);
+            if (toDelete.size() > 0) {
+                manager.indexWriter()->deleteEntries(toDelete);
+            }
             vector<pair<string, struct stat> >::const_iterator fend
                 = toIndex.end();
             for (vector<pair<string, struct stat> >::const_iterator i
