@@ -224,7 +224,8 @@ CLuceneIndexWriter::finishAnalysis(const AnalysisResult* idx) {
 void
 CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
     manager->closeWriter();
-    if (!manager->luceneReader()->checkReader()) {
+    // make sure the index reader is up to date
+    if (!manager->luceneReader()->checkReader(true)) {
         fprintf(stderr,"cannot delete entry: lucene reader cannot be opened\n");
         return;
     }
