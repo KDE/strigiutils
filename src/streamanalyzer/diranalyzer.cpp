@@ -165,7 +165,7 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 bool newfile = j == dbend;
                 bool updatedfile = !newfile && j->second != mtime;
 
-                if (newfile || (updatedfile && !S_ISDIR(i-second.st_mode))) {
+                if (newfile || (updatedfile && !S_ISDIR(i->second.st_mode))) {
                     // if the file has not yet been indexed or if the mtime has
                     // changed, index it
                     // if a directory has been updated, this will not change the index
