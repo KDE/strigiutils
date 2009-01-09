@@ -38,14 +38,13 @@ using namespace Strigi;
 
 bool
 DirLister::nextEntry(EntryInfo& e) {
-    if (pos < (int)entries.size()) {
+    if (pos >= 0 && pos < (int)entries.size()) {
         e = entries[pos++];
     } else {
         pos = -1;
     }
     return pos != -1;
 }
-
 
 /**
  * @brief A cache for entries that have already been found.
@@ -98,12 +97,6 @@ public:
      * Contains all the root entries in the cache.
      */
     std::map<std::string, RootSubEntry> cache;
-    // most vexing - this doesn't seem to be defined anywhere
-    // and yet... it compiles. Why? Perhaps because it isn't
-    // called from anywhere...
-    // You'd have thought you'd get a warning, though.
-    // Go figure.
-    vector<EntryInfo> entries(const std::string& url);
 
     /**
      * @brief Find an entry in the cache by its URL
@@ -191,18 +184,16 @@ ArchiveEntryCache::findEntry(const string& url) const {
     }
     const SubEntry* e = &ei->second;
 
-    SubEntryMap::const_iterator i;
-
     size_t p = ei->first.length();
+    string name;
     do {
         size_t np = url.find('/', p+1);
-        string name;
         if (np == string::npos) {
-            name = url.substr(p+1);
+            name.assign(url.substr(p+1));
         } else {
-            name = url.substr(p+1, np-p-1);
+            name.assign(url.substr(p+1, np-p-1));
         }
-        i = e->entries.find(name);
+        SubEntryMap::const_iterator i = e->entries.find(name);
         if (i == e->entries.end()) {
             e = 0;
         } else {
@@ -266,26 +257,26 @@ ArchiveReader::ArchiveReaderPrivate::StreamPtr::free() {
     if (provider) delete provider;
 }
 void
-addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
+addEntry(ArchiveEntryCache::SubEntry* e, ArchiveEntryCache::SubEntry* se) {
     // split path into components
     vector<string> names;
-    string name = se.entry.filename;
+    string name = se->entry.filename;
     string::size_type p = name.find('/');
     while (p != string::npos) {
         names.push_back(name.substr(0, p));
         name = name.substr(p + 1);
         p = name.find('/');
     }
-    names.push_back(name);
-    se.entry.filename = name;
+    se->entry.filename = name;
 
     // find the right entry
     ArchiveEntryCache::SubEntryMap::iterator ii;
-    ArchiveEntryCache::SubEntry* parent = &e;
+    ArchiveEntryCache::SubEntry* parent = e;
     for (uint i=0; i<names.size(); ++i) {
         ii = parent->entries.find(names[i]);
         if (ii == parent->entries.end()) {
-            ArchiveEntryCache::SubEntry *newse = new ArchiveEntryCache::SubEntry;
+            ArchiveEntryCache::SubEntry *newse
+                = new ArchiveEntryCache::SubEntry();
             newse->entry.filename = names[i];
             newse->entry.type = EntryInfo::Dir;
             newse->entry.size = 0;
@@ -294,7 +285,7 @@ addEntry(ArchiveEntryCache::SubEntry& e, ArchiveEntryCache::SubEntry& se) {
         }
         parent = ii->second;
     }
-    *parent = se;
+    parent->entries[name] = se;
 }
 ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
     typedef std::pair<bool (*)(const char*, int32_t),
@@ -452,18 +443,17 @@ ArchiveReader::ArchiveReaderPrivate::fillEntry(ArchiveEntryCache::SubEntry& e,
     SubStreamProvider* p = subStreamProvider(s, streams);
     if (!p) return 0;
     do {
-        ArchiveEntryCache::SubEntry se;
-        se.entry = p->entryInfo();
-        int nsubentries = fillEntry(se, p->currentEntry());
-        if (se.entry.size < 0) {
+        ArchiveEntryCache::SubEntry* se = new ArchiveEntryCache::SubEntry();
+        se->entry = p->entryInfo();
+        int nsubentries = fillEntry(*se, p->currentEntry());
+        if (se->entry.size < 0) {
             // read entire stream to determine it's size
             InputStream *es = p->currentEntry();
             const char* c;
             while (es->read(c, 1, 0) > 0) {}
-            se.entry.size = es->size();
-            if (se.entry.size < 0) se.entry.size = 0;
+            se->entry.size = max(es->size(), (int64_t)0);
         }
-        addEntry(e, se);
+        addEntry(&e, se);
         if (nsubentries) {
             nentries += nsubentries;
         }
@@ -503,10 +493,9 @@ ArchiveReader::ArchiveReaderPrivate::localStat(const std::string& url, EntryInfo
                 e.type = (EntryInfo::Type)(EntryInfo::Dir|EntryInfo::File);
                 free(streams);
 
-                ArchiveEntryCache::RootSubEntry rse;
+                ArchiveEntryCache::RootSubEntry& rse = cache.cache[url];
                 rse.indexed = false;
                 rse.entry = e;
-                cache.cache[url] = rse;
             }
             delete s;
             return 0;
@@ -603,12 +592,11 @@ ArchiveReader::dirEntries(const std::string& url) {
         }
         EntryInfo e;
         p->localStat(name, e);
-        ArchiveEntryCache::RootSubEntry se;
+        ArchiveEntryCache::RootSubEntry& se = p->cache.cache[name];
         se.indexed = true;
         se.entry = e;
         p->fillEntry(se, s);
         delete s;
-        p->cache.cache[name] = se;
         subentry = p->cache.findEntry(url);
     }
 
