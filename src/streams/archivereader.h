@@ -30,9 +30,6 @@
 
 namespace Strigi {
 
-template <class T> class StreamBase;
-struct EntryInfo;
-
 /**
  * @brief Lists the contents of a directory
  */
