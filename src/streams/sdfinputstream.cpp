@@ -32,7 +32,7 @@ const string SdfInputStream::label("V2000");
 
 SdfInputStream::SdfInputStream(InputStream* input)
         : SubStreamProvider(input), substream(0), 
-	  entrynumber(0), previousStartOfDelimiter(0) {
+      entrynumber(0), previousStartOfDelimiter(0) {
     m_searcher.setQuery(delimiter);
 }
 SdfInputStream::~SdfInputStream() {
@@ -59,85 +59,85 @@ SdfInputStream::nextEntry() {
 
     // read anything that's left over in the previous substream
     if (substream) {
-	substream->reset(0);
+    substream->reset(0);
         const char* dummy;
         while (substream->status() == Ok) {
             substream->read(dummy, 1, 0);
         }
-	if (substream->status() == Error) {
+    if (substream->status() == Error) {
             m_status = Error;
-	}
-	if (substream && substream != m_entrystream) {
+    }
+    if (substream && substream != m_entrystream) {
             delete substream;
         }
-	substream = 0;
+    substream = 0;
         delete m_entrystream;
         m_entrystream = 0;
-	
-	m_input->reset(previousStartOfDelimiter);
-	
-	// eat delimiter and following newlines
+    
+    m_input->reset(previousStartOfDelimiter);
+    
+    // eat delimiter and following newlines
         if (m_input->status() == Ok) {
             m_input->read(dummy, 4, 4);
-	    if (strncmp(dummy, delimiter.c_str(), 4) == 0) {
-		m_input->read(dummy, 1, 1);
-		while (m_input->status() == Ok &&
-		    (strncmp(dummy, "\n", 1) == 0 
-		     || strncmp(dummy, "\r", 1) == 0)) {
-			m_input->read(dummy, 1, 1);
-		}
-	    }
+        if (strncmp(dummy, delimiter.c_str(), 4) == 0) {
+        m_input->read(dummy, 1, 1);
+        while (m_input->status() == Ok &&
+            (strncmp(dummy, "\n", 1) == 0 
+             || strncmp(dummy, "\r", 1) == 0)) {
+            m_input->read(dummy, 1, 1);
+        }
+        }
         }
     }
-	// make sure it is not a MOL
-	// we can not check it in checkHeader due to low header size limit
-	// There is only one way to destinguish between MOL and SD:
-	// MOL does not have $$$$ delimiter. Return no entries if it is a MOL.
-	const char* start;
-	const char* end;
-	int32_t nread = 0;
-	int32_t total = 0;
-	const int64_t pos = m_input->position();
-	int64_t len=0;
-	
-	while (m_input->status() == Ok) {
-	    nread = m_input->read(start, 1, 0);
-	    if (nread > 0) {
-		end = m_searcher.search(start, nread);
-		if (end) {
-		    len = end - start + total;
-		    break;
-		}
-		total += nread;
-	    }    
-	}	
-	if (m_input->status() == Error) {
-	    m_status = Error;
-    	    m_entrystream = new SubInputStream(m_input);
-	    return 0;
-	}
-	
-	m_input->reset(pos);
-	
-	if (len > 0) {
-	    // this stream is an SD
-	    substream = new SubInputStream(m_input, len);
-	    previousStartOfDelimiter = m_input->position() + len;
-	    m_entryinfo.type = EntryInfo::File;
-	    m_entryinfo.size = len;
+    // make sure it is not a MOL
+    // we can not check it in checkHeader due to low header size limit
+    // There is only one way to destinguish between MOL and SD:
+    // MOL does not have $$$$ delimiter. Return no entries if it is a MOL.
+    const char* start;
+    const char* end;
+    int32_t nread = 0;
+    int32_t total = 0;
+    const int64_t pos = m_input->position();
+    int64_t len=0;
+    
+    while (m_input->status() == Ok) {
+        nread = m_input->read(start, 1, 0);
+        if (nread > 0) {
+        end = m_searcher.search(start, nread);
+        if (end) {
+            len = end - start + total;
+            break;
+        }
+        total += nread;
+        }    
+    }    
+    if (m_input->status() == Error) {
+        m_status = Error;
+            m_entrystream = new SubInputStream(m_input);
+        return 0;
+    }
+    
+    m_input->reset(pos);
+    
+    if (len > 0) {
+        // this stream is an SD
+        substream = new SubInputStream(m_input, len);
+        previousStartOfDelimiter = m_input->position() + len;
+        m_entryinfo.type = EntryInfo::File;
+        m_entryinfo.size = len;
 
-	    m_entryinfo.filename.assign("Molecule");
-	    entrynumber++;
-	    ostringstream o;
-	    o << entrynumber;
-	    m_entryinfo.filename.append(o.str());
+        m_entryinfo.filename.assign("Molecule");
+        entrynumber++;
+        ostringstream o;
+        o << entrynumber;
+        m_entryinfo.filename.append(o.str());
 
-	    m_entrystream = substream;
-	    return m_entrystream;
-	} else {
-	    // this stream is a MOL itself, not an SD
-	    m_status = Eof;
-    	    m_entrystream = new SubInputStream(m_input);
-	    return 0;
-	}
+        m_entrystream = substream;
+        return m_entrystream;
+    } else {
+        // this stream is a MOL itself, not an SD
+        m_status = Eof;
+            m_entrystream = new SubInputStream(m_input);
+        return 0;
+    }
 }
