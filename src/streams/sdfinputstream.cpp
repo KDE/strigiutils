@@ -31,8 +31,8 @@ const string SdfInputStream::delimiter("$$$$");
 const string SdfInputStream::label("V2000");
 
 SdfInputStream::SdfInputStream(InputStream* input)
-        : SubStreamProvider(input), substream(0), 
-      entrynumber(0), previousStartOfDelimiter(0) {
+        : SubStreamProvider(input), substream(0), entrynumber(0),
+        previousStartOfDelimiter(0) {
     m_searcher.setQuery(delimiter);
 }
 SdfInputStream::~SdfInputStream() {
@@ -59,34 +59,34 @@ SdfInputStream::nextEntry() {
 
     // read anything that's left over in the previous substream
     if (substream) {
-    substream->reset(0);
+        substream->reset(0);
         const char* dummy;
         while (substream->status() == Ok) {
             substream->read(dummy, 1, 0);
         }
-    if (substream->status() == Error) {
+        if (substream->status() == Error) {
             m_status = Error;
-    }
-    if (substream && substream != m_entrystream) {
+        }
+        if (substream && substream != m_entrystream) {
             delete substream;
         }
-    substream = 0;
+        substream = 0;
         delete m_entrystream;
         m_entrystream = 0;
     
-    m_input->reset(previousStartOfDelimiter);
+        m_input->reset(previousStartOfDelimiter);
     
-    // eat delimiter and following newlines
+        // eat delimiter and following newlines
         if (m_input->status() == Ok) {
             m_input->read(dummy, 4, 4);
-        if (strncmp(dummy, delimiter.c_str(), 4) == 0) {
-        m_input->read(dummy, 1, 1);
-        while (m_input->status() == Ok &&
-            (strncmp(dummy, "\n", 1) == 0 
-             || strncmp(dummy, "\r", 1) == 0)) {
-            m_input->read(dummy, 1, 1);
-        }
-        }
+            if (strncmp(dummy, delimiter.c_str(), 4) == 0) {
+                m_input->read(dummy, 1, 1);
+                while (m_input->status() == Ok && (
+                        strncmp(dummy, "\n", 1) == 0
+                        || strncmp(dummy, "\r", 1) == 0)) {
+                    m_input->read(dummy, 1, 1);
+                }
+            }
         }
     }
     // make sure it is not a MOL
@@ -103,17 +103,17 @@ SdfInputStream::nextEntry() {
     while (m_input->status() == Ok) {
         nread = m_input->read(start, 1, 0);
         if (nread > 0) {
-        end = m_searcher.search(start, nread);
-        if (end) {
-            len = end - start + total;
-            break;
-        }
-        total += nread;
+            end = m_searcher.search(start, nread);
+            if (end) {
+                len = end - start + total;
+                break;
+            }
+            total += nread;
         }    
     }    
     if (m_input->status() == Error) {
         m_status = Error;
-            m_entrystream = new SubInputStream(m_input);
+        m_entrystream = new SubInputStream(m_input);
         return 0;
     }
     
@@ -137,7 +137,7 @@ SdfInputStream::nextEntry() {
     } else {
         // this stream is a MOL itself, not an SD
         m_status = Eof;
-            m_entrystream = new SubInputStream(m_input);
+        m_entrystream = new SubInputStream(m_input);
         return 0;
     }
 }
