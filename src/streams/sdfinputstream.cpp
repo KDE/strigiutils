@@ -56,6 +56,7 @@ SdfInputStream::nextEntry() {
     if (m_status != Ok) return 0;
 
     m_input->reset(previousStartOfDelimiter);
+    int32_t nread = 0;
 
     // read anything that's left over in the previous substream
     if (substream) {
@@ -78,8 +79,8 @@ SdfInputStream::nextEntry() {
     
         // eat delimiter and following newlines
         if (m_input->status() == Ok) {
-            m_input->read(dummy, 4, 4);
-            if (strncmp(dummy, delimiter.c_str(), 4) == 0) {
+            nread = m_input->read(dummy, 4, 4);
+            if (nread == 4 && strncmp(dummy, delimiter.c_str(), 4) == 0) {
                 m_input->read(dummy, 1, 1);
                 while (m_input->status() == Ok && (
                         strncmp(dummy, "\n", 1) == 0
@@ -95,7 +96,6 @@ SdfInputStream::nextEntry() {
     // MOL does not have $$$$ delimiter. Return no entries if it is a MOL.
     const char* start;
     const char* end;
-    int32_t nread = 0;
     int32_t total = 0;
     const int64_t pos = m_input->position();
     int64_t len=0;
