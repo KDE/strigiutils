@@ -159,14 +159,14 @@ PollingListener::rmWatch(const string& path) {
 void
 PollingListener::addWatches(const set<string>& watches) {
     for (set<string>::iterator iter = watches.begin();
-            iter != watches.end(); iter++) {
+            iter != watches.end(); ++iter) {
         string temp = fixPath(*iter);
         bool match = false;
 
         STRIGI_MUTEX_LOCK (&m_mutex);
         // try to reduce number of watches
         for (vector<string>::iterator it = m_watches.begin();
-                it != m_watches.end(); it++) {
+                it != m_watches.end(); ++it) {
             if ((temp.length() >= it->length()) && (temp.find(*it) == 0)) {
                 // temp starts with *it, it means temp is a subdir of *it
                 // we don't add it to watches

@@ -113,7 +113,7 @@ public:
         std::vector<uint32_t>::const_iterator i(hit_ids.begin());
         uint32_t first = hit_ids[0];
         uint32_t last = first;
-        for (i++; i != hit_ids.end(); ++i) {
+        for (++i; i != hit_ids.end(); ++i) {
             if (*i != last + 1) {
                 vector<vector<Variant> > sv;
                 reader->getHits(search.query(), properties, types,

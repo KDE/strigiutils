@@ -287,7 +287,7 @@ SimpleSearchGui::removeDirectory() {
     if (items.size() == 0)
         return;
 
-    for (QList<QListWidgetItem*>::iterator iter = items.begin(); iter != items.end(); iter++)
+    for (QList<QListWidgetItem*>::iterator iter = items.begin(); iter != items.end(); ++iter)
     {
         int row = ui.indexeddirs->row (*iter);
         ui.indexeddirs->takeItem (row);

@@ -137,7 +137,7 @@ DaemonConfigurator::setIndexedDirectories ( set<string>& dirs,
     }
 
     for (set<string>::const_iterator iter = dirs.begin(); iter != dirs.end();
-            iter++) {
+            ++iter) {
         Path p;
         p.a_path = *iter;
         r->e_path.push_back(p);
@@ -162,7 +162,7 @@ DaemonConfigurator::getIndexedDirectories(const string& repositoryName) {
     Repository* r = &(*match);
     
     for (list<Path>::const_iterator iter = r->e_path.begin();
-         iter != r->e_path.end(); iter++) {
+         iter != r->e_path.end(); ++iter) {
         dirs.insert (iter->a_path);
     }
 

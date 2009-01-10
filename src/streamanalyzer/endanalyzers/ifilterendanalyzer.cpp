@@ -73,8 +73,9 @@ IFilterEndAnalyzer::~IFilterEndAnalyzer(){
 void
 _cpycharToWide(wchar_t* d, const char* s, size_t len){
     size_t sLen = strlen(s);
-    for ( uint32_t i=0;i<len&&i<sLen+1;i++ )
+    for (uint32_t i=0; i<len && i<sLen+1; ++i) {
       d[i] = s[i];
+    }
 }
 
 bool

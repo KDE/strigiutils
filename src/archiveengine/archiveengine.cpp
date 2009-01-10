@@ -284,9 +284,9 @@ ArchiveEngine::nextEntry() const {
         //entrystream->mark(1);
         const EntryInfo& info = zipstream->entryInfo();
         QString name(info.filename.c_str());
-        QStringList path = name.split("/", QString::SkipEmptyParts);
+        QStringList path = name.split('/', QString::SkipEmptyParts);
         FileEntry* fe = rootentry;
-        foreach(QString s, path) {
+        foreach(const QString& s, path) {
             current = fe->entry(s);
             if (current == 0) {
                 if (readAllEntryNames) {

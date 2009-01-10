@@ -250,7 +250,7 @@ bool FamListener::Private::isEventValid(FsEvent* event)
 bool FamListener::Private::addWatch (const string& path)
 {
     map<FAMRequest, string>::iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
+    for (iter = m_watches.begin(); iter != m_watches.end(); ++iter) {
         if ((iter->second).compare (path) == 0) // dir is already watched
             return true;
     }
@@ -285,7 +285,7 @@ void FamListener::Private::rmWatch(FAMRequest& famRequest, string path)
 void FamListener::Private::rmWatches(map<FAMRequest, string>& watchesToRemove)
 {
     for (map<FAMRequest,string>::iterator it = watchesToRemove.begin();
-         it != watchesToRemove.end(); it++)
+         it != watchesToRemove.end(); ++it)
     {
         map<FAMRequest,string>::iterator match = m_watches.find (it->first);
         if (match != m_watches.end()) {
@@ -304,7 +304,7 @@ void FamListener::Private::rmWatches(set<string>& watchesToRemove)
     
     // find all pairs <watch-id, watch-name> that have to be removed
     for (set<string>::iterator it = watchesToRemove.begin();
-         it != watchesToRemove.end(); it++)
+         it != watchesToRemove.end(); ++it)
     {
         MatchString finder (*it);
         map<FAMRequest, string>::iterator match;
@@ -323,7 +323,7 @@ void FamListener::Private::rmWatches(set<string>& watchesToRemove)
 void FamListener::Private::clearWatches ()
 {
     map<FAMRequest, string>::iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
+    for (iter = m_watches.begin(); iter != m_watches.end(); ++iter) {
         FAMRequest famRequest = iter->first;
         if (FAMCancelMonitor (&m_famConnection, &famRequest) == -1)
             STRIGI_LOG_ERROR ("strigi.FamListener.rmWatch",
@@ -342,7 +342,7 @@ void FamListener::Private::dirRemoved (string dir)
 
     // remove inotify watches over no more indexed dirs
     for (map<FAMRequest, string>::iterator mi = m_watches.begin();
-         mi != m_watches.end(); mi++)
+         mi != m_watches.end(); ++mi)
     {
         if ((mi->second).find (dir,0) == 0)
             watchesToRemove.insert (make_pair (mi->first, mi->second));
@@ -480,7 +480,7 @@ void FamListener::dirRemoved (string dir, vector<Event*>& events)
 
         // remove all entries that were contained into the removed directory
         for (map<string, time_t>::iterator it = indexedFiles.begin();
-             it != indexedFiles.end(); it++)
+             it != indexedFiles.end(); ++it)
         {
             Event* event = new Event (Event::DELETED, it->first);
             events.push_back (event);

@@ -55,7 +55,7 @@ ZipExeEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     in->reset(0);
     // find a zip signature
     int32_t offset = 0;
-    for (int32_t i = 4; i<nread-4; i++) {
+    for (int32_t i = 4; i<nread-4; ++i) {
         if (zipanalyzer.checkHeader(c+i-offset, nread-i)) {
             char r;
             if (in->reset(i) == i) {

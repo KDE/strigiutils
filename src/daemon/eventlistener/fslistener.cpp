@@ -87,16 +87,16 @@ void calculateDiff(set<string> actualDirs, set<string> reindexDirs,
     dirsCreated.clear();
     dirsDeleted.clear();
 
-    for (iter = actualDirs.begin(); iter != actualDirs.end(); iter++)
+    for (iter = actualDirs.begin(); iter != actualDirs.end(); ++iter)
         strDirsActual << "\n\t-" << *iter;
     
-    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); iter++)
+    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); ++iter)
         strDirsReindex << "\n\t-" << *iter;
 
     STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsActual.str())
     STRIGI_LOG_DEBUG ("strigi.calculateDiff", strDirsReindex.str())
 
-    for (iter = actualDirs.begin(); iter != actualDirs.end(); iter++) {
+    for (iter = actualDirs.begin(); iter != actualDirs.end(); ++iter) {
         set<string>::iterator match = reindexDirs.find (*iter);
         if (match == reindexDirs.end()) {
             dirsDeleted.insert (*iter);
@@ -172,7 +172,7 @@ FsListener::FsListener(const char* name, set<string>& indexedDirs)
     m_pollingListener = 0;
 
     for (set<string>::iterator iter = indexedDirs.begin();
-         iter != indexedDirs.end(); iter++)
+         iter != indexedDirs.end(); ++iter)
         m_indexedDirs.insert (fixPath (*iter));
     
     STRIGI_MUTEX_INIT (&m_reindexLock);
@@ -242,7 +242,7 @@ void FsListener::bootstrap()
         bootstrapDirs = m_indexedDirs;
     
     for (set<string>::iterator iter = bootstrapDirs.begin();
-         iter != bootstrapDirs.end(); iter++)
+         iter != bootstrapDirs.end(); ++iter)
     {
         toWatch.insert (*iter);
         
@@ -259,7 +259,7 @@ void FsListener::bootstrap()
             
             vector<pair<string, struct stat> >::iterator iter;
             
-            for (iter = dirs.begin(); iter != dirs.end(); iter++) {
+            for (iter = dirs.begin(); iter != dirs.end(); ++iter) {
                 struct stat stats = iter->second;
 
                 if (S_ISDIR(stats.st_mode)) { //dir
@@ -287,7 +287,7 @@ void FsListener::bootstrap()
     msg << " keys inside iMultimap";
     STRIGI_LOG_DEBUG ("strigi.FsListener.bootstrap", msg.str())
     
-    for (iMultimap::iterator iter = files.begin(); iter != files.end(); iter++)
+    for (iMultimap::iterator iter = files.begin(); iter != files.end(); ++iter)
     {
         map <string, time_t> indexedFiles;
         stringstream msg;
@@ -338,7 +338,7 @@ void FsListener::bootstrap()
         }
 
         for (set<File>::iterator it = (iter->second).begin();
-             it != (iter->second).end(); it++)
+             it != (iter->second).end(); ++it)
         {
             File file = *it;
             events.push_back (new Event (Event::CREATED, file.m_name));
@@ -348,7 +348,7 @@ void FsListener::bootstrap()
     //TODO: check
     if (reindexReq()) {
         for (vector<Event*>::iterator iter = events.begin();
-             iter != events.end(); iter++) {
+             iter != events.end(); ++iter) {
             delete *iter;
         }
 
@@ -389,7 +389,7 @@ void FsListener::reindex()
     calculateDiff(m_indexedDirs, reindexDirs, dirsDeleted, dirsCreated);
 
     for (set<string>::iterator iter = dirsCreated.begin();
-         iter != dirsCreated.end() && !reindexReq(); iter++)
+         iter != dirsCreated.end() && !reindexReq(); ++iter)
     {
         DirLister lister(m_pAnalyzerConfiguration);
         string path;
@@ -421,7 +421,7 @@ void FsListener::reindex()
     if (reindexReq()) {
         // another reindex request arrived, undo last actions
         for (vector<Event*>::iterator iter = events.begin();
-             iter != events.end(); iter++)
+             iter != events.end(); ++iter)
             delete *iter;
         events.clear();
         //TODO check!!!
@@ -526,7 +526,7 @@ void FsListener::recursivelyMonitor (string dir, set<string>& toWatch,
 
     while (ret != -1) {
         for (vector<pair<string,struct stat> >::iterator iter = fsitems.begin();
-             iter != fsitems.end(); iter++)
+             iter != fsitems.end(); ++iter)
         {
             struct stat stats = iter->second;
             
@@ -555,7 +555,7 @@ void FsListener::addWatches(const set<string> &watches)
         toPool = watches;
     }
     else {
-	    for (iter = watches.begin(); iter != watches.end(); iter++) {
+	    for (iter = watches.begin(); iter != watches.end(); ++iter) {
 	        if (!addWatch (*iter)) {
 	            // adding watch failed, we've to use polling in order to watch it
 	            toPool.insert(*iter);
@@ -585,7 +585,7 @@ void FsListener::addWatches(const set<string> &watches)
 void FsListener::dirsRemoved (set<string> dirs, vector<Event*>& events)
 {
     for (set<string>::iterator iter = dirs.begin();
-         iter != dirs.end(); iter++)
+         iter != dirs.end(); ++iter)
     {
         string path = fixPath(*iter);
         set<string>::iterator match = m_pollingDirs.find (path);
@@ -602,7 +602,7 @@ void FsListener::setIndexedDirectories (const set<string> &dirs)
     set<string> fixedDirs;
 
     // fix path, all dir must end with a '/'
-    for (set<string>::iterator iter = dirs.begin(); iter != dirs.end(); iter++)
+    for (set<string>::iterator iter = dirs.begin(); iter != dirs.end(); ++iter)
         fixedDirs.insert (fixPath (*iter));
 
     STRIGI_MUTEX_LOCK (&m_reindexLock);
@@ -619,7 +619,7 @@ void FsListener::dumpEvents()
 {
     unsigned int counter = 1;
     for (vector<FsEvent*>::iterator iter = m_events.begin();
-         iter != m_events.end(); iter++)
+         iter != m_events.end(); ++iter)
     {
         FsEvent* event = *iter;
         stringstream msg;

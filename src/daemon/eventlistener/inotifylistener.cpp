@@ -291,7 +291,7 @@ void InotifyListener::Private::pendingEvent(vector<FsEvent*>& events,
 bool InotifyListener::Private::addWatch (const string& path)
 {
     map<int, string>::iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++)
+    for (iter = m_watches.begin(); iter != m_watches.end(); ++iter)
     {
         if ((iter->second).compare (path) == 0) // dir is already watched
             return true;
@@ -369,7 +369,7 @@ void InotifyListener::Private::rmWatch(int wd, string path)
 void InotifyListener::Private::rmWatches(map<int, string>& watchesToRemove)
 {
     for (map<int,string>::iterator it = watchesToRemove.begin();
-         it != watchesToRemove.end(); it++)
+         it != watchesToRemove.end(); ++it)
     {
         map<int,string>::iterator match = m_watches.find (it->first);
         if (match != m_watches.end())
@@ -386,7 +386,7 @@ void InotifyListener::Private::rmWatches(set<string>& watchesToRemove)
     
     // find all pairs <watch-id, watch-name> that have to be removed
     for (set<string>::iterator it = watchesToRemove.begin();
-         it != watchesToRemove.end(); it++)
+         it != watchesToRemove.end(); ++it)
     {
         MatchString finder (*it);
         map<int, string>::iterator match = find_if (m_watches.begin(),
@@ -404,7 +404,7 @@ void InotifyListener::Private::rmWatches(set<string>& watchesToRemove)
 void InotifyListener::Private::clearWatches ()
 {
     map<int, string>::iterator iter;
-    for (iter = m_watches.begin(); iter != m_watches.end(); iter++) {
+    for (iter = m_watches.begin(); iter != m_watches.end(); ++iter) {
         char buff [20];
         snprintf(buff, 20 * sizeof (char), "%i", iter->first);
 
@@ -443,7 +443,7 @@ void InotifyListener::Private::dirRemoved (string dir)
     
     // remove inotify watches over no more indexed directories
     for (map<int, string>::iterator mi = m_watches.begin();
-         mi != m_watches.end(); mi++)
+         mi != m_watches.end(); ++mi)
     {
         if ((mi->second).find (dir,0) == 0)
             watchesToRemove.insert (make_pair (mi->first, mi->second));
@@ -588,7 +588,7 @@ void InotifyListener::dirRemoved (string dir, vector<Event*>& events)
 
         // remove all entries that were contained into the removed directory
         for (map<string, time_t>::iterator it = indexedFiles.begin();
-             it != indexedFiles.end(); it++)
+             it != indexedFiles.end(); ++it)
         {
             Event* event = new Event (Event::DELETED, it->first);
             events.push_back (event);

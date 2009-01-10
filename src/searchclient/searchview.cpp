@@ -59,7 +59,7 @@ SearchViewHtmlHelper::mapMimetypeIcon(const string& url,
     // use gnome icons because they map easily
     QString gnome = "/opt/gnome/share/icons/gnome/48x48/mimetypes/gnome-mime-";
     QString icon(mimetype.c_str());
-    icon.replace("/", "-");
+    icon.replace('/', '-');
     icon = gnome + icon + ".png";
     QFileInfo i(icon);
     QString html;

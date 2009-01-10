@@ -121,7 +121,7 @@ IndexScheduler::processListenerEvents(vector<Event*>& events) {
     STRIGI_LOG_DEBUG ("strigi.IndexScheduler", "processing listener's events");
 
     for(vector<Event*>::iterator iter = events.begin();
-        iter != events.end(); iter++)
+        iter != events.end(); ++iter)
     {
         Event* event = *iter;
 

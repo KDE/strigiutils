@@ -276,7 +276,7 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
         ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
     }
 
-    for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();i++){
+    for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();++i){
         map<string,const RegisteredField*>::const_iterator f
             = factory->exifFields.find(i->key());
         if (f != factory->exifFields.end() && f->second) {

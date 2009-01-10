@@ -247,7 +247,7 @@ operator<< ( ostream &stream, Strigi::Query query )
             << "</negate>" << endl;
 
     for ( std::vector<string>::iterator it = query.fields().begin();
-          it != query.fields().end(); it++ )
+          it != query.fields().end(); ++it )
     {
         stream << "<field>"<< *it << "</field>" << endl;
     }

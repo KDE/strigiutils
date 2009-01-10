@@ -25,7 +25,7 @@ main(int argc, char** argv) {
         QFileInfo info(argv[i]);
         if (info.isDir()) {
             QDir d(argv[i]);
-            foreach(QString s, d.entryList()) {
+            foreach(const QString& s, d.entryList()) {
                 printf("%s\n", (const char*)s.toUtf8());
             }
         } else {

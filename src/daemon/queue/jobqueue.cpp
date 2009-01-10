@@ -144,7 +144,7 @@ JobQueue::Private::~Private() {
     pthread_cond_broadcast(&cond);
 
     // remove all remaining jobs
-    for (list<Job*>::const_iterator i = jobs.begin(); i != jobs.end(); i++) {
+    for (list<Job*>::const_iterator i = jobs.begin(); i != jobs.end(); ++i) {
         delete *i;
     }
     jobs.clear();
@@ -165,7 +165,7 @@ JobQueue::Private::addJob(Job* job) {
 
     // check if we can merge this job with a job from the waiting queue
     list<Job*>::iterator i, end = jobs.end();
-    for (i = jobs.begin(); i != end; i++) {
+    for (i = jobs.begin(); i != end; ++i) {
         if ((*i)->merge(job)) {
             STRIGI_MUTEX_UNLOCK(&mutex);
             return true;

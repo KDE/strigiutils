@@ -49,7 +49,7 @@ void EventListenerQueue::clearEvents( map<string, Event*>& events)
 {
     map < string, Event*>:: iterator iter;
 
-    for (iter = events.begin(); iter != events.end(); iter++)
+    for (iter = events.begin(); iter != events.end(); ++iter)
     {
         delete iter->second;
     }
@@ -390,7 +390,7 @@ void EventListenerQueue::addEvents (vector<Event*> events)
     
     Event* event = NULL;
 
-    for (iter = events.begin(); iter != events.end(); iter++)
+    for (iter = events.begin(); iter != events.end(); ++iter)
     {
         event = searchInProcessed(*iter);
         if (event)
@@ -463,7 +463,7 @@ vector <Event*> EventListenerQueue::getEvents()
     if (STRIGI_MUTEX_TRY_LOCK (&m_mutex) == 0)
     {
         for (map<string, Event*>::iterator iter = m_toProcess.begin();
-             iter != m_toProcess.end(); iter++)
+             iter != m_toProcess.end(); ++iter)
         {
             result.push_back (new Event (iter->second));
             

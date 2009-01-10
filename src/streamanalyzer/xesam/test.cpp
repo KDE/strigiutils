@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     }
 
     for (set<string>::iterator iter = qlQueries.begin();
-         iter != qlQueries.end(); iter++)
+         iter != qlQueries.end(); ++iter)
     {
         printf ("processing query from file %s\n", (*iter).c_str());
         
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 
     
     for (set<string>::iterator iter = ulQueries.begin();
-         iter != ulQueries.end(); iter++)
+         iter != ulQueries.end(); ++iter)
     {
         printf ("processing user language query from file %s\n",
                 (*iter).c_str());
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     }
 
     for (set<string>::iterator iter = ulStringQueries.begin();
-         iter != ulStringQueries.end(); iter++)
+         iter != ulStringQueries.end(); ++iter)
     {
         printf ("processing user language query specified by command "
                 "line |%s|\n", (*iter).c_str());

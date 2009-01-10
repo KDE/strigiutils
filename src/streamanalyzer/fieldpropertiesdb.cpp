@@ -201,7 +201,7 @@ FieldPropertiesDb::Private::Private() {
     vector<string> dirs = getXdgDirs();
     vector<string>::const_iterator i;
     set<string> done;
-    for (i=dirs.begin(); i!=dirs.end(); i++) {
+    for (i=dirs.begin(); i!=dirs.end(); ++i) {
         if (done.find(*i) == done.end()) {
             done.insert(*i);
             loadProperties(*i);

@@ -240,7 +240,7 @@ getMaxForType(uint32_t type) {
     case 0x68727473: // strh
         return 40;
     case 0x66727473: // strf
-        return 2; // atm we dont need more
+        return 2; // atm we do not need more
     case 0x20746D66: // 'fmt '
         return 16;
     };

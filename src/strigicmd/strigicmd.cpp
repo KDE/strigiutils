@@ -145,7 +145,7 @@ printIndexedDocument(IndexedDocument indexedDoc) {
     set<string> processedProperties;
     for (multimap<string,string>::iterator iter = indexedDoc.properties.begin();
          iter != indexedDoc.properties.end();
-         iter++) {
+         ++iter) {
         // iter over all document properties
         
         set<string>::iterator match = processedProperties.find(iter->first);
@@ -156,7 +156,7 @@ printIndexedDocument(IndexedDocument indexedDoc) {
         multimap<string,string>::iterator it;
         bool first = true;
         for (it = indexedDoc.properties.lower_bound(iter->first);
-             it != indexedDoc.properties.upper_bound(iter->first); it++) {
+             it != indexedDoc.properties.upper_bound(iter->first); ++it) {
             // shows all properties with the same key together
             if (first) {
                 printf ("\t- %s:\t%s\n", it->first.c_str(), it->second.c_str());
@@ -341,7 +341,7 @@ listFiles(int argc, char** argv) {
         listFiles(reader, "");
 
     for (vector<string>::iterator iter = arguments.begin();
-         iter != arguments.end(); iter++) {
+         iter != arguments.end(); ++iter) {
         cout << "indexed files under " << *iter << endl;
         listFiles(reader, *iter);
     }
@@ -378,7 +378,7 @@ get(int argc, char** argv) {
     QueryParser parser;
     
     for (vector<string>::iterator iter = arguments.begin();
-         iter != arguments.end(); iter++) {
+         iter != arguments.end(); ++iter) {
         Query query = parser.buildQuery( "system.location:'"+ *iter + '\'');
         vector<IndexedDocument> matches = reader->query(query, 0, 10);
         if (matches.size() == 0)
@@ -387,7 +387,7 @@ get(int argc, char** argv) {
         {
             printf ("Information associated to %s:\n", iter->c_str());
             for (vector<IndexedDocument>::iterator it = matches.begin();
-                 it != matches.end(); it++)
+                 it != matches.end(); ++it)
             {
                 printIndexedDocument(*it);
             }
@@ -426,7 +426,7 @@ query(int argc, char** argv) {
     QueryParser parser;
     
     for (vector<string>::iterator iter = arguments.begin();
-            iter != arguments.end(); iter++) {
+            iter != arguments.end(); ++iter) {
         unsigned int results = 0;
         Query query = parser.buildQuery(*iter);
         const uint batchsize = 10;
@@ -537,7 +537,7 @@ xesamquery(int argc, char** argv) {
 
     while (matches.size() > 0) {
         for (vector<IndexedDocument>::iterator it = matches.begin();
-            it != matches.end(); it++) {
+            it != matches.end(); ++it) {
                 printf ("\"%s\" matched\n", it->uri.c_str());
                 printIndexedDocument(*it);
             }
@@ -596,7 +596,7 @@ deindex(int argc, char** argv) {
     vector<string> toDelete;
     
     for (vector<string>::iterator iter = arguments.begin();
-         iter != arguments.end(); iter++)
+         iter != arguments.end(); ++iter)
     {
         // find all indexed files whose path starts with *iter
         FindIndexedFiles match (*iter);
@@ -618,7 +618,7 @@ deindex(int argc, char** argv) {
     else
     {
         for (vector<string>::iterator iter = toDelete.begin();
-             iter != toDelete.end(); iter++)
+             iter != toDelete.end(); ++iter)
         {
             printf ("%s will be deindex\n", iter->c_str());
         }
