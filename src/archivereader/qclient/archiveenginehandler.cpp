@@ -113,7 +113,7 @@ public:
     QStringList entryList(QDir::Filters filters,
         const QStringList & filterNames) const {
         QStringList l;
-        DirLister dl = reader->dirEntries(url);
+        ArchiveReader::DirLister dl = reader->dirEntries(url);
         EntryInfo e;
         while (dl.nextEntry(e)) {
             l << e.filename.c_str();

@@ -46,7 +46,7 @@ test2(const char* path) {
     FileStreamOpener opener;
     ArchiveReader r;
     r.addStreamOpener(&opener);
-    DirLister dl = r.dirEntries(path);
+    ArchiveReader::DirLister dl = r.dirEntries(path);
     EntryInfo e;
     while (dl.nextEntry(e)) {
         string filepath(path);

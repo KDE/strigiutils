@@ -31,35 +31,6 @@
 namespace Strigi {
 
 /**
- * @brief Lists the contents of a directory
- */
-class STREAMS_EXPORT DirLister {
-private:
-    int pos;
-    std::vector<EntryInfo> entries;
-public:
-    /**
-     * @brief Create a DirLister
-     *
-     * @param e a vector containing information about each
-     * item in the directory
-     */
-    DirLister(const std::vector<EntryInfo>& e)
-        : pos(0)
-        , entries(e)
-    {}
-    /**
-     * @brief Gets information aobut the next item in the directory
-     *
-     * @param e an EntryInfo object to populate with information about
-     * the next item in the directory
-     * @return true if there was another item in the directory, false
-     * if there are no further items in the directory
-     */
-    bool nextEntry(EntryInfo& e);
-};
-
-/**
  * @brief Abstract class that defines an interface for opening streams and statting
  * files.
  */
@@ -107,6 +78,43 @@ private:
     ArchiveReaderPrivate* const p;
 
 public:
+    /**
+     * @brief Lists the contents of a directory
+     */
+    class STREAMS_EXPORT DirLister {
+    public:
+        /**
+         * @brief Internal helper class.
+         */
+        class Private;
+        /**
+         * @brief Create a DirLister
+         *
+         * @param e a vector containing information about each
+         * item in the directory
+         */
+        DirLister(Private* p);
+        /**
+         * @brief Copy constructor
+         */
+        DirLister(const DirLister& dl);
+        /**
+         * @brief the destructor
+         */
+        virtual ~DirLister();
+        /**
+         * @brief Gets information aobut the next item in the directory
+         *
+         * @param e an EntryInfo object to populate with information about
+         * the next item in the directory
+         * @return true if there was another item in the directory, false
+         * if there are no further items in the directory
+         */
+        bool nextEntry(EntryInfo& e);
+    private:
+        Private* const p;
+    };
+
     /** Constructor */
     ArchiveReader();
     /** Destructor */

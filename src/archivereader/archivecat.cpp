@@ -42,7 +42,7 @@ main(int argc, char** argv) {
             continue;
         }
         printf("file: %i %s\n", e.type, e.filename.c_str());
-        DirLister dl = reader.dirEntries(argv[i]);
+        ArchiveReader::DirLister dl = reader.dirEntries(argv[i]);
         while (dl.nextEntry(e)) {
             printf("%i %s\n", e.type, e.filename.c_str());
         }

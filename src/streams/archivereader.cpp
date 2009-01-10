@@ -36,14 +36,39 @@
 using namespace std;
 using namespace Strigi;
 
-bool
-DirLister::nextEntry(EntryInfo& e) {
-    if (pos >= 0 && pos < (int)entries.size()) {
-        e = entries[pos++];
-    } else {
-        pos = -1;
+class ArchiveReader::DirLister::Private {
+public:
+    int pos;
+    const vector<EntryInfo> entries;
+    Private(const vector<EntryInfo>& v) :entries(v) {
+        pos = 0;
     }
-    return pos != -1;
+    bool
+    nextEntry(EntryInfo& e) {
+        if (pos >= 0 && pos < (int)entries.size()) {
+            e = entries[pos++];
+        } else {
+            pos = -1;
+        }
+        return pos != -1;
+    }
+};
+
+ArchiveReader::DirLister::DirLister(Private* d) :p(d) {
+    assert(d);
+}
+
+ArchiveReader::DirLister::DirLister(const DirLister& dl)
+    :p(new Private(*dl.p)) {
+}
+
+ArchiveReader::DirLister::~DirLister() {
+    delete p;
+}
+
+bool
+ArchiveReader::DirLister::nextEntry(EntryInfo& e) {
+    return p->nextEntry(e);
 }
 
 /**
@@ -561,7 +586,7 @@ ArchiveReader::isArchive(const std::string& url) {
     }
     return e.type & EntryInfo::File && e.type & EntryInfo::Dir;
 }
-DirLister
+ArchiveReader::DirLister
 ArchiveReader::dirEntries(const std::string& url) {
     std::vector<EntryInfo> v;
 
@@ -584,7 +609,7 @@ ArchiveReader::dirEntries(const std::string& url) {
         // or create a new entry
         InputStream* s = 0;
         vector<size_t> l = p->cullName(url, s);
-        if (!s) return DirLister(v);
+        if (!s) return DirLister(new DirLister::Private(v));
         if (l.size()) {
             name = url.substr(0, l[l.size()-1]-1);
         } else {
@@ -606,7 +631,7 @@ ArchiveReader::dirEntries(const std::string& url) {
             v.push_back(i->second->entry);
         }
     }
-    DirLister dl(v);
+    DirLister dl(new DirLister::Private(v));
     return dl;
 }
 bool
