@@ -23,6 +23,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stgdirent.h>
@@ -203,8 +204,11 @@ AnalyzerLoader::streamSaxAnalyzerFactories() {
     map<string, Private::Module*>::iterator i;
     for (i = Private::modulelist.modules.begin();
             i != Private::modulelist.modules.end(); ++i) {
+            assert(i->second);
+            assert(i->second->factory);
         list<StreamSaxAnalyzerFactory*> ml
             = i->second->factory->streamSaxAnalyzerFactories();
+            assert(&ml);
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
