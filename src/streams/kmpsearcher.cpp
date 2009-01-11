@@ -90,7 +90,9 @@ preBmGs(const char* x, int32_t m, int32_t* bmGs) {
 
     delete [] suff;
 }
-
+KmpSearcher::KmpSearcher(const std::string& query) :table(0) {
+    setQuery(query);
+}
 void
 KmpSearcher::setQuery(const string& query) {
     m_query = query;
