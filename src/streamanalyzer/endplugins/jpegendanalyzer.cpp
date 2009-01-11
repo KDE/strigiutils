@@ -257,7 +257,7 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
             m_error.assign(e.what());
             return -1;
         } catch(std::exception& e) {
-            // trueg: here Exiv2::Error is not catched above, until the reason is found
+            // trueg: here Exiv2::Error is not caught above, until the reason is found
             // I added this generic exception handling which should do no harm whatsoever
             m_error.assign(e.what());
             return -1;
