@@ -106,7 +106,7 @@ void calculateDiff(set<string> actualDirs, set<string> reindexDirs,
             reindexDirs.erase (match);
     }
 
-    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); iter++) {
+    for (iter = reindexDirs.begin(); iter != reindexDirs.end(); ++iter) {
         dirsCreated.insert (*iter);
         strDirsCreated << "\n\t-" << *iter;
     }

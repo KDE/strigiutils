@@ -58,9 +58,9 @@ public:
     bool tokenized;
     /** Should the field contain only unique values **/
     bool uniquevalues;
-    /** The minimal number of occurences required for this field. **/
+    /** The minimal number of occurrences required for this field. **/
     int min_cardinality;
-    /** The maximal number of occurences allowed for this field. **/
+    /** The maximal number of occurrences allowed for this field. **/
     int max_cardinality;
 
     Private() :binary(false), compressed(false), indexed(true), stored(false),
