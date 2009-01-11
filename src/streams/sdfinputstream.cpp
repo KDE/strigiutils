@@ -48,6 +48,7 @@ SdfInputStream::~SdfInputStream() {
  **/
 const char*
 skip80Line(const char* data, int32_t size) {
+    if (size <= 0) return 0;
     // EOL can be at position 80
     int max = min(size, 81);
     int i;
@@ -62,6 +63,7 @@ skip80Line(const char* data, int32_t size) {
 }
 bool
 SdfInputStream::checkHeader(const char* data, int32_t datasize) {
+    if (datasize <= 10) return false;
     // the fourth line must contain the string "V2000"
     // skip three lines of at most 80 bytes
     const char* thisLine;
