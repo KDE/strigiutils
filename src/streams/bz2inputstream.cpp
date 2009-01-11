@@ -50,8 +50,7 @@ BZ2InputStream::Private::Private(BZ2InputStream* bis, InputStream* i)
     // initialize values that signal state
     this->input = input;
 
-    // TODO: check first bytes of stream before allocating buffer
-    // 0x42 0x5a 0x68 0x39 0x31
+    // check first bytes of stream before allocating buffer
     if (!checkMagic()) {
         p->m_error = "Magic bytes are wrong.";
         p->m_status = Error;
@@ -101,7 +100,7 @@ BZ2InputStream::Private::checkMagic() {
     int32_t nread;
 
     int64_t pos = input->position();
-    nread = input->read(begin, 5, 5);
+    nread = input->read(begin, 5, 0);
     input->reset(pos);
     if (nread != 5) {
         return false;

@@ -423,6 +423,8 @@ ArchiveReader::ArchiveReaderPrivate::subStreamProvider(
         InputStream* input, list<ArchiveReaderPrivate::StreamPtr>& streams
         ) {
     if (input == 0) return 0;
+    // TODO: the magic bytes can be checked without allocating
+    // the BZ2InputStream or GZipInputstream to make the code faster
     InputStream* s = new BZ2InputStream(input);
     if (s->status() == Ok) {
         streams.push_back(s);
