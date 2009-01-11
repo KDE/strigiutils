@@ -26,6 +26,9 @@
 
 namespace Strigi {
 
+// specification can be found here:
+// http://www.symyx.com/downloads/public/ctfile/ctfile.jsp
+
 class STREAMS_EXPORT SdfInputStream : public SubStreamProvider {
 private:
     SubInputStream* substream;

@@ -40,16 +40,41 @@ SdfInputStream::~SdfInputStream() {
         delete substream;
     }
 }
+/**
+ * Return a pointer that points past the current line. The line can end on
+ * either \r, \n, or \r\n.
+ * If the pointer would point past then end of the buffer or the line is longer
+ * than 80 bytes, NULL is returned.
+ **/
+const char*
+skip80Line(const char* data, int32_t size) {
+    // EOL can be at position 80
+    int max = min(size, 81);
+    int i;
+    for (i=0; i<max && data[i] != '\n' && data[i] != '\r'; ++i) {
+    }
+    if (i == max) return 0;
+    if (data[i] == '\n') return (i+1 < size) ?data+i+1 :0;
+    // data[i] is known to be '\r' by now
+    if (i+1 < size && data[i+1] != '\n') return data+i+1;
+    // data[i+1] is known to be '\n' by now
+    return (i+2 < size) ?data+i+2 :0;
+}
 bool
 SdfInputStream::checkHeader(const char* data, int32_t datasize) {
-    // expect at least 64 bytes
-    if (datasize < 64) return false;
-
-    KmpSearcher searcher;
-    searcher.setQuery(label);
-    const char* found = searcher.search(data, datasize);
-
-    return found > 0;
+    // the fourth line must contain the string "V2000"
+    // skip three lines of at most 80 bytes
+    const char* thisLine;
+    const char* nextLine = data;
+    for (int i=0; i<4 && nextLine != 0; ++i) {
+        thisLine = nextLine;
+        nextLine = skip80Line(thisLine, datasize - (thisLine - data));
+    }
+    static const KmpSearcher searcher(label);
+    if (nextLine != 0) {
+        nextLine = searcher.search(thisLine, nextLine - thisLine);
+    }
+    return nextLine != 0;
 }
 InputStream*
 SdfInputStream::nextEntry() {
