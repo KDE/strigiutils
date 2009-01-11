@@ -48,6 +48,8 @@ public class xsdparser {
 		}
 		if (registry == null) {
 			System.err.println("No DOMImplementationRegistry found.");
+			System.err.println("Make sure your java runtime library contains one.");
+			System.err.println("You may have multiple conflicting java implementations installed.");
 			return;
 		}
 		DOMImplementationLS domimpl = (DOMImplementationLS) registry
