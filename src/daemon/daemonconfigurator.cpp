@@ -87,6 +87,7 @@ DaemonConfigurator::DaemonConfigurator (const string& confFile)
         Path p;
         p.a_path = home;                 r.e_path.push_back(p);
         p.a_path = home + "/.kde";       r.e_path.push_back(p);
+        p.a_path = home + "/.kde4";      r.e_path.push_back(p);
         p.a_path = home + "/.gnome2";    r.e_path.push_back(p);
         p.a_path = home + "/.evolution"; r.e_path.push_back(p);
         p.a_path = home + "/.mozilla";   r.e_path.push_back(p);
