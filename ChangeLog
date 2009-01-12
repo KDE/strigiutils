@@ -1,3 +1,15 @@
+0.6.3
+ - Move Strigi::DirLister in archivereader.h to ArchiveReader::DirLister. Two class with this name were present in the code. The one in archivereader.h was not used in any code outside of Strigi, so we are changing it. Note that this changes means that one should not use Strigi 0.6.2.
+ - Change type of EntryInfo.mtime from 'unsigned' to time_t.
+ - The spec of SDF files was found and used to implement a more precise syntax check for the header of SDF files.
+ - Fix memory corruption bug in ArchiveReader.
+ - Change type of ontology entry 'exposureTime' to string. In theory something like duration would make sense but in practice xsd:string is the used one.
+ - Add a default rule to find mail box directories with pattern '.*.directory'. Since these directory names start with a dot, they are normally not found.
+ - Add '$HOME/.kde4' to the directories that are indexed by default.
+ - Simplify matching of file paths in the rules for including or excluding directories from the index. The code is now more readable and easier to maintain.
+ - Fix a big performance problem:  Whenever a directory mtime changed, all files inside the directory were re-indexed.
+ - Fix bug where a gz archive that contains a file that is identical to the
+ original archive is indexed over and over. The depth of nested files that are indexed is now limited to 127.
 0.6.2
  - Better support for nice IO priorities on Linux (Sebastian Trueg)
  - Compile with development version of CLucene (Ben van Klinken)
