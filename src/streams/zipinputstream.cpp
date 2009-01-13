@@ -106,6 +106,11 @@ ZipInputStream::nextEntry() {
         delete m_entrystream;
         m_entrystream = 0;
     }
+    // are we at the end of the zip file?
+    if (m_input->status() == Eof) {
+        m_status = Eof;
+        return 0;
+    }
     readHeader();
     if (m_status) return 0;
     if (compressionMethod == 8) {
@@ -160,9 +165,9 @@ ZipInputStream::readHeader() {
     }
     // check the second half of the signature
     if (hb[2] != 0x03 || hb[3] != 0x04) {
-        // this may be the regular end of the file
+        // this may be the start of the central file header
         if (hb[2] != 0x01 || hb[3] != 0x02) {
-            fprintf(stderr, "This is new: %x %x %x %x\n",
+            fprintf(stderr, "This code in a zip file is strange: %x %x %x %x\n",
                 hb[0], hb[1], hb[2], hb[3]);
         }
         m_status = Eof;
