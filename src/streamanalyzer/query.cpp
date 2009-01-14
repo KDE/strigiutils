@@ -192,6 +192,10 @@ const Term&
 Query::term() const {
     return p->term;
 }
+void
+Query::setTerm(const Term& t) {
+    p->term = t;
+}
 float
 Query::boost() const {
     return p->boost;
