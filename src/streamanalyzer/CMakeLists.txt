@@ -16,23 +16,15 @@ set(streamanalyzer_SRCS
 	analyzerconfiguration.cpp
 	analyzerloader.cpp
 	classproperties.cpp
-	digesteventanalyzer.cpp
 	diranalyzer.cpp
 	eventthroughanalyzer.cpp
 	fieldproperties.cpp
 	fieldpropertiesdb.cpp
 	fieldtypes.cpp
 	filelister.cpp
-	htmlsaxanalyzer.cpp
-	id3v2throughanalyzer.cpp
         indexreader.cpp
 	indexpluginloader.cpp
 	lineeventanalyzer.cpp
-	m3ustreamanalyzer.cpp
-	mimeeventanalyzer.cpp
-	odfmimetypelineanalyzer.cpp
-	odfsaxanalyzer.cpp
-	oggthroughanalyzer.cpp
 	query.cpp
 	queryparser.cpp
 	saxeventanalyzer.cpp
@@ -58,6 +50,14 @@ set(streamanalyzer_SRCS
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
 	endanalyzers/zipexeendanalyzer.cpp
+	eventanalyzers/digesteventanalyzer.cpp
+	eventanalyzers/mimeeventanalyzer.cpp
+	lineanalyzers/m3ustreamanalyzer.cpp
+	lineanalyzers/odfmimetypelineanalyzer.cpp
+	saxanalyzers/htmlsaxanalyzer.cpp
+	saxanalyzers/odfsaxanalyzer.cpp
+	throughanalyzers/id3v2throughanalyzer.cpp
+	throughanalyzers/oggthroughanalyzer.cpp
 )
 
 add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
