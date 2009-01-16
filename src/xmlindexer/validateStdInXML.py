@@ -28,5 +28,6 @@ parser.setContentHandler(urilogger)
 try:
    parser.parse(sys.stdin)
 except SAXException, e :
-   print "Error after "+urilogger.uri
+   if hasattr(urilogger, 'uri'):
+     print "Error after "+urilogger.uri
    print e;
