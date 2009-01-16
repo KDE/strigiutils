@@ -100,9 +100,9 @@ BZ2InputStream::Private::checkMagic() {
     int32_t nread;
 
     int64_t pos = input->position();
-    nread = input->read(begin, 5, 5);
+    nread = input->read(begin, 5, 0);
     input->reset(pos);
-    if (nread != 5) {
+    if (nread < 5) {
         return false;
     }
 
