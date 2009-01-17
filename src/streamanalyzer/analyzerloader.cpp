@@ -208,7 +208,6 @@ AnalyzerLoader::streamSaxAnalyzerFactories() {
             assert(i->second->factory);
         list<StreamSaxAnalyzerFactory*> ml
             = i->second->factory->streamSaxAnalyzerFactories();
-            assert(&ml);
         copy(ml.begin(), ml.end(), back_inserter(l));
     }
     return l;
