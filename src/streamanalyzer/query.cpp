@@ -39,6 +39,13 @@ public:
     bool ordered;
     bool enableStemming;
     bool wordbased;
+
+    TermPrivate()
+        : i_value(0), d_value(0.0), fuzzy(0.0), slack(0), proximityDistance(10)
+        , type(Term::String), phrase(true), caseSensitive(true)
+        , diacriticSensitive(true), ordered(true), enableStemming(false)
+        , wordbased(true)
+    {}
 };
 class Strigi::QueryPrivate {
 public:
@@ -61,8 +68,6 @@ public:
 };
 
 Term::Term() :p(new TermPrivate()) {
-    // FIXME (trueg): The term is completely uninitialized here. The values as well as the type are random.
-    //                Create a TermPrivate constructor that initializes all to 0 and sets the type to s.th. like "None" or "Empty"
 }
 Term::Term(const Term& t) :p(new TermPrivate(*t.p)) {
 }
