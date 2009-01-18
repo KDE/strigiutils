@@ -39,9 +39,12 @@ public:
 };
 bool
 BZ2InputStream::checkHeader(const char* data, int32_t datasize) {
-    static const char magic[] = {0x42, 0x5a, 0x68, 0x39, 0x31};
-    if (datasize < 5) return false;
-    return std::memcmp(data, magic, 5) == 0;
+    static const char magic[] = {0x42, 0x5a};
+    static const char compressed_magic[] = {0x31, 0x41, 0x59, 0x26, 0x53, 0x59};
+    if (datasize < 10) return false;
+    return (std::memcmp(data, magic, 2) == 0
+            && (data[2] == 0x68 || data[2] == 0x30)
+            && std::memcmp(data + 4, compressed_magic, 6) == 0);
 }
 BZ2InputStream::BZ2InputStream(InputStream* input) :p(new Private(this, input)){
 }
@@ -100,13 +103,13 @@ BZ2InputStream::Private::checkMagic() {
     int32_t nread;
 
     int64_t pos = input->position();
-    nread = input->read(begin, 5, 0);
+    nread = input->read(begin, 10, 0);
     input->reset(pos);
-    if (nread < 5) {
+    if (nread < 10) {
         return false;
     }
 
-    return checkHeader(begin, 5);
+    return checkHeader(begin, 10);
 }
 void
 BZ2InputStream::Private::readFromStream() {
