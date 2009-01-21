@@ -127,7 +127,8 @@ void
 CLuceneIndexManager::openWriter(bool truncate) {
     try {
         if (ramdirectory) {
-            indexwriter = new IndexWriter(ramdirectory, analyzer, true);
+            indexwriter = new IndexWriter(ramdirectory, analyzer,
+                !IndexReader::indexExists(ramdirectory));
         } else if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
             if (IndexReader::isLocked(dbdir.c_str())) {
                 IndexReader::unlock(dbdir.c_str());
