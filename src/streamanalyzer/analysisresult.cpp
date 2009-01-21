@@ -33,7 +33,7 @@
 #include <string>
 #include <cstdlib>
 #include <iconv.h>
-
+#include <cassert>
 #include <iostream>
 #include <map>
 
@@ -99,7 +99,7 @@ public:
     const time_t m_mtime;
     std::string m_name;
     const std::string m_path;
-    const std::string m_parentpath;
+    const std::string m_parentpath; // only use this value of m_parent == 0
     std::string m_encoding;
     std::string m_mimetype;
     IndexWriter& m_writer;
@@ -141,10 +141,11 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
              m_writer(w), m_depth(0), m_indexer(indexer),
              m_analyzerconfig(indexer.configuration()), m_this(&t),
              m_parent(0), m_endanalyzer(0) {
-    size_t pos = m_path.rfind('/');
+    size_t pos = m_path.rfind('/'); // TODO: perhaps us '\\' on Windows
     if (pos == std::string::npos) {
         m_name = m_path;
     } else {
+        assert(pos != m_path.size()-1); // make sure there is no trailing '/'
         m_name = m_path.substr(pos+1);
     }
 }
@@ -162,7 +163,8 @@ AnalysisResult::Private::write() {
     const FieldRegister& fr = m_analyzerconfig.fieldRegister();
     m_writer.addValue(m_this, fr.pathField, m_path);
     // get the parent directory and store it without trailing slash
-    m_writer.addValue(m_this, fr.parentLocationField, m_parentpath);
+    m_writer.addValue(m_this, fr.parentLocationField,
+        (m_parent) ?m_parent->path() :m_parentpath);
 
     if (m_encoding.length()) {
         m_writer.addValue(m_this, fr.encodingField, m_encoding);
@@ -184,7 +186,9 @@ AnalysisResult::Private::write() {
 }
 const std::string& AnalysisResult::fileName() const { return p->m_name; }
 const std::string& AnalysisResult::path() const { return p->m_path; }
-const string& AnalysisResult::parentPath() const { return p->m_parentpath; }
+const string& AnalysisResult::parentPath() const {
+    return (p->m_parent) ?p->m_parent->path() :p->m_parentpath;
+}
 time_t AnalysisResult::mTime() const { return p->m_mtime; }
 signed char AnalysisResult::depth() const { return p->m_depth; }
 int64_t AnalysisResult::id() const { return p->m_id; }
