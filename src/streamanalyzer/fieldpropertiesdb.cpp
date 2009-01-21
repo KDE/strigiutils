@@ -296,16 +296,18 @@ FieldPropertiesDb::Private::addEssentialProperties() {
 
     props.typeuri = FieldRegister::stringType;
     props.uri = FieldRegister::pathFieldName;
+    props.tokenized = false; // should not be tokenized: needed for retrieval 
     properties[FieldRegister::pathFieldName] = props;
 
     props.uri = FieldRegister::filenameFieldName;
+    props.tokenized = true;
     properties[FieldRegister::filenameFieldName] = props;
 
     props.uri = FieldRegister::mimetypeFieldName;
     properties[FieldRegister::mimetypeFieldName] = props;
 
     props.uri = FieldRegister::parentLocationFieldName;
-    props.tokenized = false;
+    props.tokenized = false; // should not be tokenized: needed for retrieval
     properties[FieldRegister::parentLocationFieldName] = props;
 }
 void

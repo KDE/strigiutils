@@ -29,6 +29,7 @@
 #include "cluceneindexreader.h"
 #include "cluceneindexmanager.h"
 #include <CLucene/util/stringreader.h>
+#include <CLucene/search/PrefixQuery.h>
 #include <sstream>
 #include <assert.h>
 
@@ -43,8 +44,12 @@ using lucene::document::Field;
 using lucene::index::IndexWriter;
 using lucene::index::Term;
 using lucene::index::TermDocs;
+using lucene::search::BooleanQuery;
 using lucene::search::IndexSearcher;
 using lucene::search::Hits;
+using lucene::search::PrefixFilter;
+using lucene::search::TermQuery;
+using lucene::search::Query;
 using lucene::util::BitSet;
 
 using lucene::util::Reader;
@@ -68,6 +73,13 @@ const wchar_t*
 CLuceneIndexWriter::systemlocation() {
     const static wstring s(utf8toucs2(FieldRegister::pathFieldName));
     return s.c_str();
+}
+namespace {
+const wchar_t*
+parentlocation() {
+    const static wstring s(utf8toucs2(FieldRegister::parentLocationFieldName));
+    return s.c_str();
+}
 }
 void
 CLuceneIndexWriter::addText(const AnalysisResult* idx, const char* text,
@@ -103,18 +115,23 @@ CLuceneIndexWriter::addValue(const AnalysisResult* idx,
         const TCHAR* value) {
     CLuceneDocData* doc = static_cast<CLuceneDocData*>(idx->writerData());
     int config = 0;
-    if ( (type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored )
-	config |= Field::STORE_YES;
-    else
-	config |= Field::STORE_NO;
+    if ((type & AnalyzerConfiguration::Stored) == AnalyzerConfiguration::Stored){
+        config |= Field::STORE_YES;
+    } else {
+        config |= Field::STORE_NO;
+    }
 
-    if ( (type & AnalyzerConfiguration::Indexed) == AnalyzerConfiguration::Indexed ){
-	    if ( (type & AnalyzerConfiguration::Tokenized) == AnalyzerConfiguration::Tokenized )
-		config |= Field::INDEX_TOKENIZED;
-	    else
-		config |= Field::INDEX_UNTOKENIZED;
-    }else
-	config |= Field::INDEX_NO;
+    if ((type & AnalyzerConfiguration::Indexed)
+            == AnalyzerConfiguration::Indexed) {
+        if ((type & AnalyzerConfiguration::Tokenized)
+                == AnalyzerConfiguration::Tokenized) {
+            config |= Field::INDEX_TOKENIZED;
+        } else {
+            config |= Field::INDEX_UNTOKENIZED;
+        }
+    } else {
+        config |= Field::INDEX_NO;
+    }
 
     Field* field = new Field(name, value, config);
     doc->doc.add(*field);
@@ -240,26 +257,61 @@ CLuceneIndexWriter::deleteEntries(const std::vector<std::string>& entries) {
 void
 CLuceneIndexWriter::deleteEntry(const string& entry,
         lucene::index::IndexReader* reader) {
+    int deleted = 0;
+{
+    BooleanQuery* bq = _CLNEW BooleanQuery();
+    wstring path(utf8toucs2(entry));
 
-    wstring tstr(utf8toucs2(entry));
-    int32_t prefixLen = tstr.length();
-    const TCHAR* prefixText = tstr.c_str();
-    int32_t maxdoc = reader->maxDoc();
-    for (int32_t i = 0; i < maxdoc; ++i) {
-        if (!reader->isDeleted(i)) {
-            Document* d = reader->document(i);
-            const TCHAR* t = d->get(systemlocation());
-            if (t && wcsncmp(t, prefixText, prefixLen) == 0) {
-                try {
-                    reader->deleteDocument(i);
-                } catch (CLuceneError& err) {
-                    cerr << "Could not delete document '" << entry
-                        << "' from the index: " << err.what() << endl;
-                }
-            }
-            _CLDELETE(d);
+    Term* t = _CLNEW Term(systemlocation(), path.c_str());
+    lucene::search::Query* q1 = new TermQuery(t);
+    _CLDECDELETE(t);
+    t = _CLNEW Term(parentlocation(), path.c_str());
+    lucene::search::Query* q2 = new TermQuery(t);
+    _CLDECDELETE(t);
+    bq->add(q1, true, false, false);
+    bq->add(q2, true, false, false);
+
+    IndexSearcher searcher(reader);
+    Hits* hits = 0;
+    int nhits = 0;
+    try {
+        hits = searcher.search(bq);
+        nhits = hits->length();
+    } catch (CLuceneError& err) {
+        fprintf(stderr, "could not query: %s\n", err.what());
+    }
+    for (int i = 0; i < nhits; ++i) {
+        int32_t id = hits->id(i);
+        if (!reader->isDeleted(id)) {
+            reader->deleteDocument(id);
+            deleted++;
         }
     }
+    if (hits) {
+        _CLDELETE(hits);
+    }
+    searcher.close();
+    _CLDELETE(bq);
+
+    // if we have not deleted anything up to now, we cannot delete more
+    if (deleted == 0) return;
+}
+{
+    wstring v = utf8toucs2(entry+"/");
+    Term* t = _CLNEW Term(parentlocation(), v.c_str());
+    PrefixFilter* filter = _CLNEW PrefixFilter(t);
+    BitSet* b = filter->bits(reader);
+    _CLDELETE(filter);
+    _CLDELETE(t);
+    int32_t size = b->size();
+    for (int id = 0; id < size; ++id) {
+        if (b->get(id) && !reader->isDeleted(id)) {
+            reader->deleteDocument(id);
+            deleted++;
+        }
+    }
+    _CLDELETE(b);
+}
 }
 void
 CLuceneIndexWriter::deleteAllEntries() {
@@ -348,7 +400,7 @@ CLuceneIndexWriter::cleanUp() {
         return;
     }
     /*
-	//this is a hack and will not work with new versions of the index..
+    //this is a hack and will not work with new versions of the index..
         //furthermore, segmentinfos is a private class.
     lucene::index::SegmentInfos infos;
     try {
