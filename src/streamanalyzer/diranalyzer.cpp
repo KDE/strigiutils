@@ -320,6 +320,7 @@ DirAnalyzer::Private::updateDirs(const vector<string>& dirs, int nthreads,
         ++it;
     }
     dbfiles.clear();*/
+    manager.indexWriter()->commit();
 
     return 0;
 }
