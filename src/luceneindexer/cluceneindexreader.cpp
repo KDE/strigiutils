@@ -767,6 +767,7 @@ CLuceneIndexReader::fieldNames() {
     while (*n) {
         string str(wchartoutf8(*n));
         s.push_back(str);
+        _CLDELETE_ARRAY(*n);
         n++;
     }
     _CLDELETE_ARRAY(names);
