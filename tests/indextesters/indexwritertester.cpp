@@ -46,6 +46,9 @@ IndexWriterTest::tearDown() {
 
 void
 IndexWriterTest::testAddText() {
+    // make sure the index is empty
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
+
     // test adding very simple text
     string path( "/tmp/dummy.txt" );
     {
@@ -54,6 +57,10 @@ IndexWriterTest::testAddText() {
         m_writer->addText( &result, text.c_str(), text.length() );
     }
     m_writer->commit();
+    // at this point the new document is most likely not yet visible
+    // for query() calls, the reader is not forcibly refreshed
+    // it *is* refreshed for calls to countDocuments(), so we call that
+    CPPUNIT_ASSERT_EQUAL( 1, m_reader->countDocuments() );
 
     std::vector<IndexedDocument> results = m_reader->query(
         QueryParser::buildQuery("dummy"), 0, 100 );
@@ -70,6 +77,9 @@ IndexWriterTest::testAddText() {
 
 void
 IndexWriterTest::testDeleteAllEntries() {
+    // make sure the index is empty
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
+
     // add some random data
     string path( "/tmp/dummy.txt" );
     {
@@ -79,9 +89,8 @@ IndexWriterTest::testDeleteAllEntries() {
         m_writer->addValue( &result, m_fieldRegister.filenameField, filename );
     }
     m_writer->commit();
-
     m_writer->deleteAllEntries();
-    m_writer->commit();
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
 
     // now make sure nothing is left
     std::map<std::string, time_t> children;
@@ -103,6 +112,9 @@ IndexWriterTest::testDeleteAllEntries() {
 
 void
 IndexWriterTest::testDeleteEntries() {
+    // make sure the index is empty
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
+
     // add some random data
     string path1( "/tmp/dummy1.txt" );
     string path2( "/tmp/dummy2.txt" );
@@ -131,4 +143,45 @@ IndexWriterTest::testDeleteEntries() {
     m_reader->getChildren( std::string(), children );
     CPPUNIT_ASSERT_EQUAL( 1, ( int )children.size() );
     CPPUNIT_ASSERT_EQUAL( path2, children.begin()->first );
+}
+void
+IndexWriterTest::testDeleteNestedEntries() {
+    // make sure the index is empty
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
+
+    // add some random data
+    string path1( "/tmp/dummydir" );
+    string path2( "/tmp/dummydir/dummydir2" );
+    string path3( "/tmp/dummydir/dummydir2/d.txt" );
+    {
+        AnalysisResult anaRes1(path1, 1, *m_writer, *m_streamAnalyzer);
+        {
+            AnalysisResult anaRes2(path2, 1, *m_writer, *m_streamAnalyzer,
+                path1);
+            {
+                AnalysisResult anaRes3(path3, 1, *m_writer, *m_streamAnalyzer,
+                    path2);
+            }
+        }
+    }
+    m_writer->commit();
+    // check that three documents are in the index
+    CPPUNIT_ASSERT_EQUAL(3, m_reader->countDocuments());
+
+    m_writer->commit();
+    // check that three documents are in the index, even after committing twice
+    CPPUNIT_ASSERT_EQUAL(3, m_reader->countDocuments());
+
+    // check that three documents are in the index
+    CPPUNIT_ASSERT_EQUAL(3, m_reader->countDocuments());
+
+    // now delete the first one
+    std::vector<std::string> entries;
+    entries.push_back(path1);
+    m_writer->deleteEntries(entries);
+    m_writer->commit();
+    m_reader->countDocuments();
+
+    // now make sure none are left 
+    CPPUNIT_ASSERT_EQUAL( 0, m_reader->countDocuments() );
 }

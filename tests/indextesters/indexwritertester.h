@@ -37,6 +37,7 @@ private:
     CPPUNIT_TEST_SUITE( IndexWriterTest );
     CPPUNIT_TEST( testAddText );
     CPPUNIT_TEST( testDeleteAllEntries );
+    CPPUNIT_TEST( testDeleteNestedEntries );
     CPPUNIT_TEST_SUITE_END_ABSTRACT();
 
     Strigi::StreamAnalyzer* m_streamAnalyzer;
@@ -46,6 +47,7 @@ private:
     void testAddText();
     void testDeleteAllEntries();
     void testDeleteEntries();
+    void testDeleteNestedEntries();
 
 public:
     IndexWriterTest(const std::string& backendname) :IndexTest(backendname),
