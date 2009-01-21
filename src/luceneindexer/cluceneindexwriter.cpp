@@ -258,45 +258,22 @@ void
 CLuceneIndexWriter::deleteEntry(const string& entry,
         lucene::index::IndexReader* reader) {
     int deleted = 0;
-{
-    BooleanQuery* bq = _CLNEW BooleanQuery();
     wstring path(utf8toucs2(entry));
-
-    Term* t = _CLNEW Term(systemlocation(), path.c_str());
-    lucene::search::Query* q1 = new TermQuery(t);
-    _CLDECDELETE(t);
-    t = _CLNEW Term(parentlocation(), path.c_str());
-    lucene::search::Query* q2 = new TermQuery(t);
-    _CLDECDELETE(t);
-    bq->add(q1, true, false, false);
-    bq->add(q2, true, false, false);
-
-    IndexSearcher searcher(reader);
-    Hits* hits = 0;
-    int nhits = 0;
-    try {
-        hits = searcher.search(bq);
-        nhits = hits->length();
-    } catch (CLuceneError& err) {
-        fprintf(stderr, "could not query: %s\n", err.what());
-    }
-    for (int i = 0; i < nhits; ++i) {
-        int32_t id = hits->id(i);
-        if (!reader->isDeleted(id)) {
-            reader->deleteDocument(id);
-            deleted++;
-        }
-    }
-    if (hits) {
-        _CLDELETE(hits);
-    }
-    searcher.close();
-    _CLDELETE(bq);
-
-    // if we have not deleted anything up to now, we cannot delete more
+{
+    Term t(systemlocation(), path.c_str());
+    deleted += reader->deleteDocuments(&t);
+    // if no file was deleted, no more can be deleted
     if (deleted == 0) return;
 }
 {
+    Term t(parentlocation(), path.c_str());
+    deleted += reader->deleteDocuments(&t);
+
+    // if we have only deleted one file up to now, we cannot delete more
+    if (deleted < 2) return;
+}
+{
+    // delete all deeper nested files
     wstring v = utf8toucs2(entry+"/");
     Term* t = _CLNEW Term(parentlocation(), v.c_str());
     PrefixFilter* filter = _CLNEW PrefixFilter(t);
