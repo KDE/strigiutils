@@ -128,6 +128,10 @@ AnalysisResult::Private::Private(const std::string& p, const char* name,
              m_analyzerconfig(parent.p->m_analyzerconfig),
              m_this(&t), m_parent(&parent),
              m_endanalyzer(0) {
+    // make sure that the path starts with the path of the parent
+    assert(m_path.size() > m_parent->p->m_path.size()+1);
+    assert(m_path.compare(0, m_parent->p->m_path.size(), m_parent->p->m_path)
+        == 0);
 }
 AnalysisResult::AnalysisResult(const std::string& path, const char* name,
         time_t mt, AnalysisResult& parent)
@@ -148,6 +152,11 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
         assert(pos != m_path.size()-1); // make sure there is no trailing '/'
         m_name = m_path.substr(pos+1);
     }
+    // check that the path start with the path of the parent
+    // if the path of the parent is set (!= ""), m_path should be 2 characters
+    // longer: 1 for the separator and one for the file name.
+    assert(m_path.size() > (m_parentpath.size()+(m_parentpath.size())?1:0));
+    assert(m_path.compare(0, m_parentpath.size(), m_parentpath) == 0);
 }
 AnalysisResult::AnalysisResult(const std::string& path, time_t mt,
         IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath)
