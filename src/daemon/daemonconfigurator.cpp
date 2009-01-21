@@ -241,7 +241,7 @@ DaemonConfigurator::getPollingInterval(const string& repositoryName) {
     }
 
     // check minimum polling interval
-    if (r->a_pollingInterval < DEFAULT_POLLING_INTERVAL)
+    if (r->a_pollingInterval < 5)
     {
         r->a_pollingInterval = DEFAULT_POLLING_INTERVAL;
         return DEFAULT_POLLING_INTERVAL;
