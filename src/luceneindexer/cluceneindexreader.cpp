@@ -144,11 +144,7 @@ CLuceneIndexReader::openReader() {
     doccount = -1;
     wordcount = -1;
     try {
-        if (manager->ramdirectory) {
-            reader = lucene::index::IndexReader::open(manager->ramdirectory);
-        } else {
-            reader = lucene::index::IndexReader::open(dbdir.c_str());
-        }
+        reader = lucene::index::IndexReader::open(manager->directory);
         // fprintf(stderr,
         // "READER at %s: %i\n", dbdir.c_str(), reader->numDocs());
     } catch (CLuceneError& err) {

@@ -60,9 +60,9 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     writer = new CLuceneIndexWriter(this);
     analyzer = new StandardAnalyzer();
     if (path == ":memory:") {
-        ramdirectory = new lucene::store::RAMDirectory();
+        directory = new lucene::store::RAMDirectory();
     } else {
-        ramdirectory = 0;
+        directory = FSDirectory::getDirectory(path.c_str(), false);
     }
     gettimeofday(&mtime, 0);
 
@@ -80,7 +80,9 @@ CLuceneIndexManager::~CLuceneIndexManager() {
         r->second = 0;
     }
     closeWriter();
-    delete ramdirectory;
+    // no reader or writer should be referring to this directory anymore
+    directory->close();
+    delete directory;
     delete analyzer;
     if (--numberOfManagers == 0) {
 // temporarily commented out because of problem with clucene
@@ -126,17 +128,13 @@ CLuceneIndexManager::derefWriter() {
 void
 CLuceneIndexManager::openWriter(bool truncate) {
     try {
-        if (ramdirectory) {
-            bool create = truncate || !IndexReader::indexExists(ramdirectory);
-            indexwriter = new IndexWriter(ramdirectory, analyzer, create);
-        } else if (!truncate && IndexReader::indexExists(dbdir.c_str())) {
-            if (IndexReader::isLocked(dbdir.c_str())) {
-                IndexReader::unlock(dbdir.c_str());
+        bool create = truncate || !IndexReader::indexExists(directory);
+        if (!create) {
+            if (IndexReader::isLocked(directory)) {
+                IndexReader::unlock(directory);
             }
-            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, false);
-        } else {
-            indexwriter = new IndexWriter(dbdir.c_str(), analyzer, true);
         }
+        indexwriter = new IndexWriter(directory, analyzer, create);
     } catch (CLuceneError& err) {
         fprintf(stderr, "could not create writer: %s\n", err.what());
         indexwriter = 0;
