@@ -426,7 +426,7 @@ CLuceneIndexReader::countHits(const Strigi::Query& q) {
         // try to do a constant score query
         //QueryFilter* filter = _CLNEW QueryFilter(&bq);
         ConstantScoreQuery csq(filter);*/
-        printf("could not query: %s\n", err.what());
+        fprintf(stderr, "could not query: %s\n", err.what());
     }
     delete hits;
     searcher.close();
@@ -454,7 +454,7 @@ if (q.fields().size() > 0) cerr << q.fields()[0] << endl;
         hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
-        printf("could not query: %s\n", err.what());
+        fprintf(stderr, "could not query: %s\n", err.what());
     }
     if (off < 0) off = 0;
     max += off;
@@ -557,7 +557,7 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
         hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
-        printf("could not query: %s\n", err.what());
+        fprintf(stderr, "could not query: %s\n", err.what());
     }
     if (off < 0) off = 0;
     max += off;
@@ -726,7 +726,7 @@ CLuceneIndexReader::histogram(const string& query,
         hits = searcher.search(bq);
         s = hits->length();
     } catch (CLuceneError& err) {
-        printf("could not query: %s\n", err.what());
+        fprintf(stderr, "could not query: %s\n", err.what());
     }
     wstring field = utf8toucs2(fieldname);
     int32_t max = INT_MIN;
@@ -842,7 +842,7 @@ CLuceneIndexReader::getChildren(const std::string& parent,
         hits = searcher.search(q);
         nhits = hits->length();
     } catch (CLuceneError& err) {
-        printf("could not query: %s\n", err.what());
+        fprintf(stderr, "could not query: %s\n", err.what());
     }
     const TCHAR* mtime = mapId(Private::mtime());
     for (int i = 0; i < nhits; ++i) {
