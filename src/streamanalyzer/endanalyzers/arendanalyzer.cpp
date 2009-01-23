@@ -23,6 +23,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "subinputstream.h"
+#include "analyzerconfiguration.h"
 using namespace Strigi;
 
 void
@@ -37,7 +38,8 @@ ArEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 signed char
 ArEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     char result = staticAnalyze(idx, in);
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+    idx.addValue(factory->typeField,
+        "http://freedesktop.org/standards/xesam/1.0/core#Archive");
     return  result;
 }
 signed char
@@ -47,10 +49,32 @@ ArEndAnalyzer::staticAnalyze(AnalysisResult& idx,
         return -1;
 
     ArInputStream ar(in);
+    // if the first two files are called 'debian-binary' and 'control.tar.gz'
+    // those are analyzed regardless, since they signal that this file is a 
+    // debian archive
     InputStream *s = ar.nextEntry();
-    while (s) {
+    if (s && ar.entryInfo().filename.compare("debian-binary") == 0) {
         idx.indexChild(ar.entryInfo().filename, ar.entryInfo().mtime, s);
         s = ar.nextEntry();
+    }
+    if (s && ar.entryInfo().filename.compare("control.tar.gz") == 0) {
+        idx.indexChild(ar.entryInfo().filename, ar.entryInfo().mtime, s);
+        s = ar.nextEntry();
+    }
+    if (idx.config().indexArchiveContents()) {
+        while (s) {
+            // check if we're done
+            int64_t max = idx.config().maximalStreamReadLength(idx);
+            if (max != -1 && in->position() > max) {
+                return 0;
+            }
+            // check if the analysis has been aborted
+            if (!idx.config().indexMore()) {
+                return 0;
+            }
+            idx.indexChild(ar.entryInfo().filename, ar.entryInfo().mtime, s);
+            s = ar.nextEntry();
+        }
     }
     if (ar.status() == Error) {
         return -1;
