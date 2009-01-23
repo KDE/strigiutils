@@ -116,7 +116,14 @@ main(int argc, char **argv) {
             }
             stdinFilename = argv[i];
         } else {
-            dirs.push_back(argv[i]);
+            const char* dir = argv[i];
+            // remove trailing '/'
+            size_t len = strlen(dir);
+            if (dir[len-1] == '/') {
+                dirs.push_back(std::string(dir, len-1));
+            } else {
+                dirs.push_back(dir);
+            }
         }
     }
 
