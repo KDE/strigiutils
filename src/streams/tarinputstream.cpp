@@ -96,7 +96,11 @@ TarInputStream::parseHeader() {
     }
     if (len > 100) len = 100;
     m_entryinfo.filename.resize(0);
-    m_entryinfo.filename.append(hb, len);
+    size_t offset =  0;
+    if (len > 2 && hb[0] == '.' && hb[1] == '/') {
+        offset = 2; // skip initial './'
+    }
+    m_entryinfo.filename.append(hb, offset, len);
     if (m_entryinfo.filename == "././@LongLink") {
         m_entryinfo.filename.resize(0);
         readLongLink(hb);
