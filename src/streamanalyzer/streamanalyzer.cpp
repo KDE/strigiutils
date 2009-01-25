@@ -310,7 +310,6 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    addFactory(new LzmaEndAnalyzerFactory());
     addFactory(new Bz2EndAnalyzerFactory());
     addFactory(new GZipEndAnalyzerFactory());
     addFactory(new OleEndAnalyzerFactory());
@@ -327,6 +326,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new OdfSaxAnalyzerFactory());
     addFactory(new PdfEndAnalyzerFactory());
     addFactory(new SdfEndAnalyzerFactory());
+    addFactory(new LzmaEndAnalyzerFactory());
 #ifdef WIN32
 #ifdef __GNUC__
 #warning FIXME - IFilterEndAnalyzerFactory is pure virtual!

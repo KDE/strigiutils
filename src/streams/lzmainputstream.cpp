@@ -34,7 +34,7 @@ public:
     CLzmaDec state;
     InputStream *input;
     const char* next_in;
-    int32_t avail_in, avail_out;
+    int32_t avail_in;
     int64_t bytesDecompressed;
 
     Private(LZMAInputStream* p, InputStream* i);
@@ -48,21 +48,23 @@ LZMAInputStream::checkHeader(const char* data, int32_t datasize) {
     
     // lzma does not have magic bytes, but it has a function for parsing
     // the header which contains the stream properties
+    // by limiting the range of sizes we support and doing a sanity check on the
+    // size of the dictionary, the number of files that are regarded as valid
+    // can be limited
     CLzmaProps props;
     SRes res = LzmaProps_Decode(&props, (const Byte*)data, LZMA_PROPS_SIZE);
     int64_t size = readLittleEndianInt64(data + LZMA_PROPS_SIZE);
     return res == SZ_OK && (size == -1 ||
-        (props.dicSize < size && size < 2000000000)); // only support up to 2Gb
+        (props.dicSize < size && size < 1099511627776LL)); // only support < 1Tb 
 }
-LZMAInputStream::LZMAInputStream(InputStream* input) :p(new Private(this, input)){
+LZMAInputStream::LZMAInputStream(InputStream* input)
+    :p(new Private(this, input)){
 }
 static void *SzAlloc(void *p, size_t size) { p = p; return malloc(size); }
 static void SzFree(void *p, void *address) { p = p; free(address); }
 static ISzAlloc g_Alloc = { SzAlloc, SzFree };
 LZMAInputStream::Private::Private(LZMAInputStream* bis, InputStream* i)
         :p(bis), input(i) {
-    // initialize values that signal state
-    this->input = input;
 
     // check the header and read the size of the uncompressed stream
     SRes res = SZ_ERROR_UNSUPPORTED;
@@ -85,7 +87,6 @@ LZMAInputStream::Private::Private(LZMAInputStream* bis, InputStream* i)
     bytesDecompressed = 0;
 
     // signal that we need to read into the buffer
-    avail_out = 1;
     avail_in = 0;
 
     // set the minimum size for the output buffer
@@ -127,10 +128,8 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
             return -1;
         }
     }
-    // make sure we can write into the buffer
-    avail_out = space;
     // decompress
-    SizeT outProcessed = avail_out;
+    SizeT outProcessed = space;
     SizeT inProcessed = avail_in;
     ELzmaFinishMode finishMode = LZMA_FINISH_ANY;
     int64_t bytesTodo = p->m_size - bytesDecompressed;
@@ -143,7 +142,6 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
         (const Byte*)next_in, &inProcessed, finishMode, &status);
     avail_in -= inProcessed;
     next_in += inProcessed;
-    avail_out -= outProcessed;
     bytesDecompressed += outProcessed;
     if (res != SZ_OK) {
         p->m_error = "error decompressing";
