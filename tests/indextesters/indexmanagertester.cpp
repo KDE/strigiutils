@@ -65,7 +65,7 @@ void
 IndexManagerTest::testIndexManagerOnInvalidDirectory() {
     // Creating an index manager on a non exitent directory should not cause
     // major problems. Because in CLucene this can nevertheless lead to
-    // 'unknown errors' we have this test. It is there to make verify that
+    // 'unknown errors' we have this test. It is there to verify that
     // this code should not crash the program or throw an uncaught exception.
     const char *dir = "i am a non-existent / directory";
     Strigi::IndexManager* manager

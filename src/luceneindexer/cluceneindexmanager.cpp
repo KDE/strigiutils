@@ -62,7 +62,12 @@ CLuceneIndexManager::CLuceneIndexManager(const std::string& path)
     if (path == ":memory:") {
         directory = new lucene::store::RAMDirectory();
     } else {
-        directory = FSDirectory::getDirectory(path.c_str(), false);
+        try {
+            directory = FSDirectory::getDirectory(path.c_str(), false);
+        } catch (CLuceneError& err) {
+            fprintf(stderr, "could not create FSDirectory: %s\n", err.what());
+            directory = 0;
+        }
     }
     gettimeofday(&mtime, 0);
 
@@ -81,7 +86,7 @@ CLuceneIndexManager::~CLuceneIndexManager() {
     }
     closeWriter();
     // no reader or writer should be referring to this directory anymore
-    directory->close();
+    if (directory) directory->close();
     delete directory;
     delete analyzer;
     if (--numberOfManagers == 0) {
@@ -127,6 +132,7 @@ CLuceneIndexManager::derefWriter() {
 }
 void
 CLuceneIndexManager::openWriter(bool truncate) {
+    if (directory == 0) return;
     try {
         bool create = truncate || !IndexReader::indexExists(directory);
         if (!create) {
