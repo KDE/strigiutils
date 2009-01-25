@@ -55,7 +55,7 @@ BZ2InputStream::Private::Private(BZ2InputStream* bis, InputStream* i)
 
     // check first bytes of stream before allocating buffer
     if (!checkMagic()) {
-        p->m_error = "Magic bytes are wrong.";
+        p->m_error = "Magic bytes for bz2 are wrong.";
         p->m_status = Error;
         allocatedBz = false;
         return;

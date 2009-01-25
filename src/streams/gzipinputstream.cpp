@@ -47,7 +47,7 @@ GZipInputStream::Private::Private(GZipInputStream* gi,
 
     // check first bytes of stream before allocating buffer
     if (format == GZIPFORMAT && !checkMagic()) {
-        p->m_error = "Magic bytes are wrong.";
+        p->m_error = "Magic bytes for gz are wrong.";
         p->m_status = Error;
         return;
     }

@@ -27,6 +27,23 @@
 
 using namespace Strigi;
 
+/*
+ * TODO: add these fields:
+ * "Name", i18n("Name"), QVariant::String);
+ * "Version", i18n("Version"), QVariant::String);
+ * "Release", i18n("Release"), QVariant::Int);
+ * "Summary", i18n("Summary"), QVariant::String);
+ * Description );
+ * "Group", i18n("Group"), QVariant::String);
+ * "Size", i18n("Size"), QVariant::Int);
+ * Bytes );
+ * "Vendor", i18n("Vendor"), QVariant::String );
+ * "Packager", i18n("Packager"), QVariant::String );
+ * "Archive Offset", i18n("Archive Offset"), QVariant::Int);
+ * "Comment", i18n("Comment"), QVariant::String);
+ * MultiLine );
+ */
+
 void
 RpmEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     typeField = reg.typeField;

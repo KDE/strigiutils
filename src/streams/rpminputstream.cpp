@@ -20,6 +20,7 @@
 #include "rpminputstream.h"
 #include "cpioinputstream.h"
 #include "gzipinputstream.h"
+#include "lzmainputstream.h"
 #include "bz2inputstream.h"
 #include "subinputstream.h"
 #include "textutils.h"
@@ -129,6 +130,8 @@ RpmInputStream::RpmInputStream(InputStream* input)
     m_input->reset(pos);
     if (BZ2InputStream::checkHeader(b, 16)) {
         uncompressionStream = new BZ2InputStream(m_input);
+    } else if (LZMAInputStream::checkHeader(b, 16)) {
+        uncompressionStream = new LZMAInputStream(m_input);
     } else {
         uncompressionStream = new GZipInputStream(m_input);
     }
