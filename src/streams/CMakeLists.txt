@@ -24,6 +24,8 @@ set(streams_SRCS
 	gzipinputstream.cpp
 	inputstreamreader.cpp
 	kmpsearcher.cpp
+        lzma/LzmaDec.c
+        lzmainputstream.cpp
 	mailinputstream.cpp
 	oleinputstream.cpp
 	rpminputstream.cpp

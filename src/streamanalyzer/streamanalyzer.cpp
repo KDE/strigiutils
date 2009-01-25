@@ -25,6 +25,7 @@
 #include "streameventanalyzer.h"
 #include "streamsaxanalyzer.h"
 #include "bz2endanalyzer.h"
+#include "lzmaendanalyzer.h"
 #include "eventanalyzers/mimeeventanalyzer.h"
 #include "bmpendanalyzer.h"
 #include "textendanalyzer.h"
@@ -309,6 +310,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
+    addFactory(new LzmaEndAnalyzerFactory());
     addFactory(new Bz2EndAnalyzerFactory());
     addFactory(new GZipEndAnalyzerFactory());
     addFactory(new OleEndAnalyzerFactory());

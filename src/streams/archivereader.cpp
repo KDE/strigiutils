@@ -29,6 +29,7 @@
 #include "rpminputstream.h"
 #include "arinputstream.h"
 #include "zipinputstream.h"
+#include "lzmainputstream.h"
 #include <vector>
 #include <iostream>
 #include <cstring>
@@ -432,12 +433,19 @@ ArchiveReader::ArchiveReaderPrivate::subStreamProvider(
         delete s;
         input->reset(0);
         s = new GZipInputStream(input);
-        if (s->status() != Ok) {
+        if (s->status() == Ok) {
+            streams.push_back(s);
+        } else {
             delete s;
             input->reset(0);
-            s = input;
-        } else {
-            streams.push_back(s);
+            s = new LZMAInputStream(input);
+            if (s->status() == Ok) {
+                streams.push_back(s);
+            } else {
+                delete s;
+                input->reset(0);
+                s = input;
+            }
         }
     }
     const char* c;
