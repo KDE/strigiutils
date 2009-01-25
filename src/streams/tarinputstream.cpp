@@ -21,8 +21,10 @@
 #include <strigi/strigiconfig.h>
 #include "subinputstream.h"
 #include <cstring>
+#include <iostream>
 
 using namespace Strigi;
+using namespace std;
 
 TarInputStream::TarInputStream(InputStream* input)
         : SubStreamProvider(input) {
@@ -96,17 +98,19 @@ TarInputStream::parseHeader() {
     }
     if (len > 100) len = 100;
     m_entryinfo.filename.resize(0);
-    size_t offset =  0;
-    if (len > 2 && hb[0] == '.' && hb[1] == '/') {
-        offset = 2; // skip initial './'
-    }
-    m_entryinfo.filename.append(hb, offset, len);
-    if (m_entryinfo.filename == "././@LongLink") {
-        m_entryinfo.filename.resize(0);
+    if (len == 13 && strncmp(hb, "././@LongLink", 13) == 0) {
         readLongLink(hb);
         if (m_status) return;
         hb = readHeader();
         if (m_status) return;
+    } else if (len > 1 && hb[0] == '.' && hb[1] == '/') {
+        // skip initial './' part of filename
+        if (len == 2) { // skip entry './'
+            return parseHeader();
+        }
+        m_entryinfo.filename.append(hb, 2, len-2);
+    } else {
+        m_entryinfo.filename.append(hb, 0, len);
     }
 
     // read the file size which is in octal format
