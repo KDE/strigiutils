@@ -157,6 +157,8 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
             return -1;
         }
         p->m_size = bytesDecompressed;
+    } else if (status == LZMA_STATUS_FINISHED_WITH_MARK) {
+        p->m_size = bytesDecompressed;
     }
     return outProcessed;
 }

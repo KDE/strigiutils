@@ -16,6 +16,7 @@ set(streamtests
 	InputStreamReaderTest.cpp
 	InputStreamTest.cpp
 	KmpSearcherTest.cpp
+	LZMAInputStreamTest.cpp
 	MailInputStreamTest.cpp
 	RpmInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
