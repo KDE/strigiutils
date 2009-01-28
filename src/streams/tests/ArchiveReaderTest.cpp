@@ -62,8 +62,14 @@ test2(const char* path) {
 void
 walkdirectories(const char* path, void (*callback)(const char*)) {
     DIR* dir = opendir(path);
-    if (dir == 0) return;
+    if (dir == 0) {
+        callback(path);
+        return;
+    }
     string p(path);
+    if (p.size() > 0 && p[p.size()-1] != '/') {
+        p.append("/");
+    }
     struct dirent* subdir = readdir(dir);
     struct stat dirstat;
     while (subdir) {
