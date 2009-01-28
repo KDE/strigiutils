@@ -71,14 +71,15 @@ LZMAInputStream::Private::Private(LZMAInputStream* bis, InputStream* i)
     LzmaDec_Construct(&state);
     const char* data;
     int32_t nread;
-    nread = input->read(data, LZMA_PROPS_SIZE+8, LZMA_PROPS_SIZE+8);
-    if (nread == LZMA_PROPS_SIZE+8) {
+    const int32_t headersize = LZMA_PROPS_SIZE+8;
+    nread = input->read(data, headersize, headersize);
+    if (nread == headersize && checkHeader(data, headersize)) {
         // allocate the decompressor
         res = LzmaDec_Allocate(&state, (const Byte*)data, LZMA_PROPS_SIZE,
             &g_Alloc);
         p->m_size = readLittleEndianInt64(data + LZMA_PROPS_SIZE);
     }
-    if (res != SZ_OK || p->m_size < -1 || p->m_size > 1000000) {
+    if (res != SZ_OK || p->m_size < -1) {
         p->m_error = "LZMA header is not supported.";
         p->m_status = Error;
         return;
