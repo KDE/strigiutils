@@ -23,6 +23,7 @@ extern "C" {
 }
 #include "textutils.h"
 #include <iostream>
+#include <sstream>
 
 using namespace Strigi;
 using namespace std;
@@ -45,16 +46,19 @@ public:
 bool
 LZMAInputStream::checkHeader(const char* data, int32_t datasize) {
     if (datasize < LZMA_PROPS_SIZE + 8) return false;
-    
+
     // lzma does not have magic bytes, but it has a function for parsing
     // the header which contains the stream properties
-    // by limiting the range of sizes we support and doing a sanity check on the
+    // nevertheless some use '5d 00' as the magic bytes
+    if (data[0] != 0x5d || data[1] != 0x00) return false;
+
+    // by limiting the range of sizes and doing a sanity check on the
     // size of the dictionary, the number of files that are regarded as valid
     // can be limited
     CLzmaProps props;
     SRes res = LzmaProps_Decode(&props, (const Byte*)data, LZMA_PROPS_SIZE);
     int64_t size = readLittleEndianInt64(data + LZMA_PROPS_SIZE);
-    return res == SZ_OK && (size == -1 ||
+    return res == SZ_OK && props.dicSize <= 8388608 && (size == -1 ||
         (props.dicSize < size && size < 1099511627776LL)); // only support < 1Tb 
 }
 LZMAInputStream::LZMAInputStream(InputStream* input)
@@ -145,7 +149,11 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
     next_in += inProcessed;
     bytesDecompressed += outProcessed;
     if (res != SZ_OK) {
-        p->m_error = "error decompressing";
+        ostringstream str;
+        str << "error decompressing dicsize: " << props.dicSize
+            << " size: " << p->m_size
+            << " decompressed: " << bytesDecompressed;
+        p->m_error = str.str();
         p->m_status = Error;
         return -1;
     }
