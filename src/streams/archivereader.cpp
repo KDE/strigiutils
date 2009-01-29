@@ -31,6 +31,7 @@
 #include "zipinputstream.h"
 #include "lzmainputstream.h"
 #include <vector>
+#include <list>
 #include <iostream>
 #include <cstring>
 
@@ -94,13 +95,6 @@ public:
         /** A list of subentries of this entry. */
         //can't define staticly constructed object while object is being defined
         SubEntryMap entries;
-        /**
-         * @brief The number of entries in the cache below and including
-         * this one.
-         *
-         * @return the size of the tree rooted at this node
-         */
-        int32_t count() const;
         /** Constructor */
         SubEntry() { }
         /** Destructor */
@@ -164,8 +158,6 @@ ArchiveEntryCache::SubEntry::~SubEntry() {
     for (i=entries.begin(); i!=entries.end(); ++i) {
         delete i->second;
     }
-    // Probably superfluous
-    entries.clear();
 }
 
 void
@@ -180,15 +172,6 @@ ArchiveEntryCache::print() const {
         }
         printf("\n");
     }
-}
-int32_t
-ArchiveEntryCache::SubEntry::count() const {
-    int32_t count = 1;
-    SubEntryMap::const_iterator i;
-    for (i = entries.begin(); i != entries.end(); ++i) {
-        count += i->second->count();
-    }
-    return count;
 }
 map<string, ArchiveEntryCache::RootSubEntry*>::const_iterator
 ArchiveEntryCache::findRootEntry(const string& url) const {
@@ -434,33 +417,56 @@ ArchiveReader::ArchiveReaderPrivate::open(const string& url) const {
 }
 SubStreamProvider*
 ArchiveReader::ArchiveReaderPrivate::subStreamProvider(
-        InputStream* input, list<ArchiveReaderPrivate::StreamPtr>& streams
-        ) {
+        InputStream* input, list<ArchiveReaderPrivate::StreamPtr>& streams) {
     if (input == 0) return 0;
-    // TODO: the magic bytes can be checked without allocating
-    // the BZ2InputStream or GZipInputstream to make the code faster
-    InputStream* s = new BZ2InputStream(input);
-    if (s->status() == Ok) {
-        streams.push_back(s);
-    } else {
-        delete s;
-        input->reset(0);
-        s = new GZipInputStream(input);
-        if (s->status() == Ok) {
-            streams.push_back(s);
-        } else {
-            delete s;
-            input->reset(0);
-            s = new LZMAInputStream(input);
-            if (s->status() == Ok) {
+    InputStream* s = input;
+
+    bool foundCompressedStream;
+    do {
+        foundCompressedStream = false;
+        // check if this is a compressed stream
+        const char* c;
+        int32_t n = s->read(c, 16, 0);
+        s->reset(0);
+        if (BZ2InputStream::checkHeader(c, n)) {
+            InputStream* ns = new BZ2InputStream(s);
+            if (ns->status() == Ok) {
+                foundCompressedStream = true;
+                s = ns;
                 streams.push_back(s);
             } else {
-                delete s;
-                input->reset(0);
-                s = input;
+                delete ns;
+                s->reset(0);
             }
         }
-    }
+        n = s->read(c, 2, 0);
+        s->reset(0);
+        if (n >= 2 && c[0] == 0x1f && c[1] == (char)0x8b) {
+            InputStream* ns = new GZipInputStream(s);
+            if (ns->status() == Ok) {
+                foundCompressedStream = true;
+                s = ns;
+                streams.push_back(s);
+            } else {
+                delete ns;
+                s->reset(0);
+            }
+        }
+        n = s->read(c, 2, 0);
+        s->reset(0);
+        if (LZMAInputStream::checkHeader(c, n)) {
+            InputStream* ns = new LZMAInputStream(s);
+            if (ns->status() == Ok) {
+                foundCompressedStream = true;
+                s = ns;
+                streams.push_back(s);
+            } else {
+                delete ns;
+                s->reset(0);
+            }
+        }
+    } while (foundCompressedStream);
+ 
     const char* c;
     int32_t n = s->read(c, 1024, 0);
     s->reset(0);
@@ -468,12 +474,16 @@ ArchiveReader::ArchiveReaderPrivate::subStreamProvider(
     map<bool (*)(const char*, int32_t),
         SubStreamProvider* (*)(InputStream*)>::const_iterator i;
     for (i = subs.begin(); i != subs.end(); ++i) {
-        if (i->first(c,n)) {
+        // check if the header matches for each substreamprovider
+        if (i->first(c, n)) {
+            // create a new SubStreamProvider
             ss = i->second(s);
             if (ss->nextEntry()) {
                 streams.push_back(ss);
+                // return the first substream
                 return ss;
             }
+            // even though the header was good, this stream has no substream
             delete ss;
             s->reset(0);
             n = s->read(c, 1, 0);
@@ -531,6 +541,7 @@ ArchiveReader::ArchiveReaderPrivate::localStat(const std::string& url,
                     e.type = se->second->entry.type;
                     return 0;
                 }
+                // the file has changed: it is removed from the cache
                 ArchiveEntryCache::RootSubEntry* rse = se->second;
                 cache.cache.erase(se->second->entry.filename);
                 delete rse;
@@ -541,6 +552,7 @@ ArchiveReader::ArchiveReaderPrivate::localStat(const std::string& url,
             list<ArchiveReaderPrivate::StreamPtr> streams;
             SubStreamProvider* provider = subStreamProvider(s, streams);
             if (provider) {
+                // this file contains substreams
                 e.type = (EntryInfo::Type)(EntryInfo::Dir|EntryInfo::File);
                 free(streams);
 
@@ -669,13 +681,11 @@ ArchiveReader::dirEntries(const std::string& url) {
 }
 bool
 ArchiveReader::canHandle(const std::string& url) {
-    vector<size_t> partpos;
     size_t pos = url.rfind('/');
     EntryInfo e;
     int r = p->localStat(url, e);
     while (pos != string::npos && pos != 0 && r == -1) {
         r = p->localStat(url.substr(0, pos), e);
-        partpos.push_back(pos+1);
         pos = url.rfind('/', pos-1);
     }
     return r == 0 && e.type & EntryInfo::File && e.type & EntryInfo::Dir;

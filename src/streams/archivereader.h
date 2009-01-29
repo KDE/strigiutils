@@ -20,12 +20,8 @@
 #ifndef STRIGI_ARCHIVEREADER_H
 #define STRIGI_ARCHIVEREADER_H 
 
-#include <map>
-#include <list>
-#include <vector>
 #include <string>
 #include <strigi/strigiconfig.h>
-#include "streambase.h"
 #include "substreamprovider.h"
 
 namespace Strigi {
