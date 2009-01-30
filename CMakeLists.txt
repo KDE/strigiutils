@@ -244,8 +244,15 @@ include(CPack)
 # information needed by users of strigi: version number, include directory, 
 # libraries, API-type (signed or unsigned char), etc.
 # If more things become necessary, add them to StrigiConfig.cmake.in.
+# Please make sure that pathes in the file are set relative to the location of the
+# StrigiConfig.cmake file
 # The installed file will then be loaded by the FIND_PACKAGE(Strigi NO_MODULES)
 # call in kdelibs/cmake/modules/FindStrigi.cmake. Alex
+
+get_filename_component(_LIBRARY_ROOT "${LIB_DESTINATION}" PATH)
+message(STATUS "${LIB_DESTINATION} - ${_LIBRARY_ROOT}")
+file(RELATIVE_PATH LIBRARY_DESTINATION ${_LIBRARY_ROOT} ${LIB_DESTINATION})
+file(RELATIVE_PATH INCLUDE_DESTINATION ${_LIBRARY_ROOT} ${CMAKE_INSTALL_PREFIX}/include)
 
 configure_file(StrigiConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/StrigiConfig.cmake @ONLY )
 
