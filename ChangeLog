@@ -1,3 +1,14 @@
+0.6.4
+ - Path fixes to the build system the benefit of windows users (sengels)
+ - Clean up of class ArchiveReader
+ - Support for LZMA compressed streams in archives, notably .deb and .rpm
+ - Remove preceding ./ from file path in tar archives.
+ - Make parsing ar and deb files easier to abort: useful in e.g. Dolphin
+ - Better method of removing deleted file from the CLucene
+ - Do not tokenize the URL in the index to improve polling speed
+ - Fix the bz2 header check: more bz2 archives are recognized (pino)
+ - Fix infinite loop on parsing SGI image files
+ - Fix reading of zip files without central directory.
 0.6.3
  - Move Strigi::DirLister in archivereader.h to ArchiveReader::DirLister. Two class with this name were present in the code. The one in archivereader.h was not used in any code outside of Strigi, so we are changing it. Note that this changes means that one should not use Strigi 0.6.2.
  - Change type of EntryInfo.mtime from 'unsigned' to time_t.
