@@ -1,0 +1,34 @@
+[Field]
+Uri=document.stats.paragraph_count
+Name=Paragraph count
+TypeUri=integer
+Description=Document paragraph count
+Comment=per ODF spec
+
+[Field]
+Uri=document.stats.page_count
+Name=Page count
+TypeUri=integer
+Description=Document page count
+Comment=per ODF spec
+
+[Field]
+Uri=document.stats.table_count
+Name=Table count
+TypeUri=integer
+Description=Document table count
+Comment=per ODF spec
+
+[Field]
+Uri=document.stats.object_count
+Name=Object count
+TypeUri=integer
+Description=Document object count
+Comment=per ODF spec
+
+[Field]
+Uri=document.stats.image_count
+Name=Image count
+TypeUri=integer
+Description=Document image count
+Comment=per ODF spec

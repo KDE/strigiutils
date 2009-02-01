@@ -1,0 +1,264 @@
+[Field]
+Uri=chemistry.name
+ParentUri=content.title
+Name=Name
+TypeUri=string
+Description=IUPAC Name
+Comment=
+
+[Field]
+Uri=chemistry.inchi
+ParentUri=content.ID
+Name=InChI
+TypeUri=string
+Tokenized=false
+Description=IUPAC International Chemical Identifier
+Comment=http://www.iupac.org/inchi/
+
+[Field]
+Uri=chemistry.smiles
+Name=Canonical SMILES
+TypeUri=string
+Description=Daylight SMILES 
+Comment=http://www.daylight.com/smiles/ (Canonical?)
+
+[Field]
+Uri=chemistry.molecular_formula
+Name=Chemical formula
+TypeUri=string
+Tokenized=false
+Description=Chemical formula in standard Hill Order
+Comment=http://en.wikipedia.org/wiki/Hill_system_order. We shall remove spaces.
+
+
+
+[Field]
+Uri=chemistry.pubchem_cid
+ParentUri=content.ID
+Name=Pubchem CID
+TypeUri=integer
+Description=Pubchem Compound ID
+Comment=
+
+[Field]
+Uri=chemistry.pdbid
+ParentUri=content.ID
+Name=PDB Identifier
+TypeUri=string
+Description=Identifier used for proteins in the PDB database.
+Comment=
+
+
+
+[Field]
+Uri=chemistry.molecular_weight
+Name=Molecular Weight
+TypeUri=float
+Description=Standard molecular weight in a.m.u. (g/mol)
+Comment=
+
+[Field]
+Uri=chemistry.exact_mass
+Name=Exact Mass
+TypeUri=float
+Description=Molecular mass of most common isotopes for mass spectra
+Comment=
+
+[Field]
+Uri=chemistry.isosmiles
+Name=Isomeric SMILES
+TypeUri=string
+Description=
+Comment=shall we keep it?
+
+[Field]
+Uri=chemistry.xlog
+Name=XLog
+TypeUri=float
+Description=XLog value
+Comment=
+
+[Field]
+Uri=chemistry.chirality
+Name=Chirality
+TypeUri=integer
+Description=Chirality True/False (1/0)
+Comment=boolean value (1 = has chiralities)
+
+[Field]
+Uri=chemistry.dimension
+Name=Dimension
+TypeUri=integer
+Description=Dimension of coordinates (0/2/3)
+Comment=0D/2D/3D depending on the coordinates found
+[Field]
+Uri=chemistry.experimental_method
+Name=Experimental Method
+TypeUri=string
+Description=Experimental Method: NMR, X-Ray
+Comment=
+
+[Field]
+Uri=chemistry.sequence
+Name=Biomolecule residue sequence
+TypeUri=string
+Description=Biomolecule/Biopolymer residue sequence
+Comment=
+
+[Field]
+Uri=chemistry.xray_resolution
+Name=X-Ray Resolution
+TypeUri=string
+Description=Resolution of the X-Ray data for crystal structures.
+Comment=
+
+[Field]
+Uri=chemistry.ph
+Name=pH
+TypeUri=float
+Description=experimental pH value
+Comment=
+
+[Field]
+Uri=chemistry.temperature
+Name=Temperature
+TypeUri=float
+Description=Experimental temperature
+Comment=in degrees Kelvin
+
+[Field]
+Uri=chemistry.crystal_space_group
+Name=Crystal Space Group
+TypeUri=string
+Description=
+Comment=
+
+
+
+[Field]
+Uri=chemistry.conformer_count
+Name=Conformer Count
+TypeUri=integer
+Description=The total number of conformers in the document.
+
+[Field]
+Uri=chemistry.chain_count
+Name=Chain Count
+TypeUri=integer
+Description=The total number of polymer chains in the document.
+
+[Field]
+Uri=chemistry.atom_count
+Name=Atom Count
+TypeUri=integer
+Description=The total number of atoms in the document.
+
+[Field]
+Uri=chemistry.bond_count
+Name=Bond Count
+TypeUri=integer
+Description=The total number of bonds in the document.
+
+[Field]
+Uri=chemistry.residue_count
+Name=Residue Count
+TypeUri=integer
+Description=The total number of monomer residues in the document.
+
+[Field]
+Uri=chemistry.strand_count
+Name=Strand Count
+TypeUri=integer
+Description=The total number of polymer strands in the document.
+
+[Field]
+Uri=chemistry.fragment_count
+Name=Fragment Count
+TypeUri=integer
+Description=The total number of molecular fragments in the document.
+
+[Field]
+Uri=chemistry.molecule_count
+Name=Molecule Count
+TypeUri=integer
+Description=Number of molecules in the file
+Comment=
+
+[Field]
+Uri=chemistry.hb_donor_count
+Name=Hydrogen Bond Donor Count
+TypeUri=integer
+Description=Hydrogen Bond Donor Count
+Comment=
+
+[Field]
+Uri=chemistry.hb_acceptor_count
+Name=Hydrogen Bond Acceptor Count
+TypeUri=integer
+Description=Hydrogen Bond Acceptor Count
+Comment=
+
+[Field]
+Uri=chemistry.rotable_bond_count
+Name=Rotable Bond Count
+TypeUri=integer
+Description=Rotatable Bond Count
+Comment=
+
+[Field]
+Uri=chemistry.polar_surface_area
+Name=Polar Surface Area
+TypeUri=string
+Description=Topological Polar Surface Area
+Comment=shall we keep this descriptor?
+
+
+
+[Field]
+Uri=chemistry.classification
+Name=Classification
+TypeUri=string
+Description=Classification of the molecule
+Comment=e.g. it could be a protein class
+
+[Field]
+Uri=chemistry.related_compounds
+Name=Related Compounds
+TypeUri=string
+Description=Related Compounds
+Comment=shall we keep it? (from PubChem)
+
+[Field]
+Uri=chemistry.similar_compounds
+Name=Similar Compounds
+TypeUri=string
+Description=Similar Compounds
+Comment=shall we keep it? (from PubChem)
+
+[Field]
+Uri=chemistry.substances
+Name=Substances
+TypeUri=string
+Description=Substances
+Comment=shall we keep it? (from PubChem)
+
+[Field]
+Uri=chemistry.toxicology
+Name=Toxicology
+TypeUri=string
+Description=NLM Toxicology
+Comment=shall we keep it? (from PubChem)
+
+[Field]
+Uri=chemistry.pharmacology
+Name=Pharmacology
+TypeUri=string
+Description=Pharmacological Action
+Comment=shall we keep it? (from PubChem)
+
+[Field]
+Uri=chemistry.synonyms
+Name=Chemical Synonyms
+TypeUri=string
+Description=Chemical Synonyms
+Comment=shall we keep it? (from PubChem)

@@ -1,0 +1,19 @@
+#add_subdirectory(txlib)
+
+include_directories(..
+	${strigi_BINARY_DIR}/src/streams
+	${strigi_SOURCE_DIR}/src/streams/strigi
+)
+if (Magic_FOUND)
+include_directories(${MAGIC_INCLUDE_DIR})
+
+add_executable(pdftest pdftest.cpp)
+
+target_link_libraries(pdftest STATIC streams ${MAGIC_LIBRARIES})
+endif (Magic_FOUND)
+
+add_library(pdfstream STATIC pdfparser.cpp)
+target_link_libraries(pdfstream streams)
+
+add_executable(pdf pdf.cpp pdfparser.cpp)
+target_link_libraries(pdf streams)

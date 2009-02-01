@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<request>
+  <query>
+    <equals>
+      <field name="dc:title"/>
+      <string caseSensitive="true">The Ugly Duckling</string>
+    </equals>
+  </query>
+</request>

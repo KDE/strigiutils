@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='all.zip/a.bz2' mtime='1150927654'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.bz2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.bz2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>bz2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1150927654</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>214</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='all.zip/a.gz' mtime='1165888460'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.gz</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.gz</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>gz</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1165888460</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>45</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='all.zip/a.tar' mtime='1150927654'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.tar</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.tar</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>tar</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1150927654</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>10240</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='all.zip/a.zip/file1' mtime='1139008378'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.zip/file1</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>file1</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1139008378</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>6</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/a.zip/file2' mtime='1139008384'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.zip/file2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>file2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1139008384</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>7</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/a.zip' mtime='1150927654'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/a.zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#mimeType'>application/zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1150927654</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>275</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Archive</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/affine/bg1.jpg' mtime='1156299536'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/affine/bg1.jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>bg1.jpg</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1156299536</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>23771</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/arthurplugin/bg1.jpg' mtime='1156299536'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/p.zip/data2/kdesvn/qt4/qt-copy/demos/arthurplugin/bg1.jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>bg1.jpg</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1156299536</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>23771</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/examples/draganddrop/puzzle/example.jpg' mtime='1156299544'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/p.zip/data2/kdesvn/qt4/qt-copy/examples/draganddrop/puzzle/example.jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>example.jpg</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1156299544</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>31770</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip/data2/kdesvn/qt4/qt-copy/src/3rdparty/libpng/pngbar.jpg' mtime='1156299376'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/p.zip/data2/kdesvn/qt4/qt-copy/src/3rdparty/libpng/pngbar.jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>pngbar.jpg</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>jpg</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1156299376</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>2498</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>2</value>
+ </file>
+ <file uri='all.zip/p.zip' mtime='1175574210'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip/p.zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#mimeType'>application/zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>p.zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1175574210</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>82148</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Archive</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='all.zip' mtime='1181592183'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>all.zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#mimeType'>application/zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>all.zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1181592183</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>59615</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Archive</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+ </file>

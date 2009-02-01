@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+ <file uri='a.zip/file1' mtime='1139008378'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>a.zip/file1</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>file1</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1139008378</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>6</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='a.zip/file2' mtime='1139008384'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>a.zip/file2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>file2</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1139008384</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>7</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>1</value>
+ </file>
+ <file uri='a.zip' mtime='1162936778'>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#url'>a.zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#parentUrl'></value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#mimeType'>application/zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#name'>a.zip</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#fileExtension'>zip</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#sourceModified'>1162936778</value>
+  <value name='http://freedesktop.org/standards/xesam/1.0/core#size'>275</value>
+  <value name='http://www.w3.org/1999/02/22-rdf-syntax-ns#type'>http://freedesktop.org/standards/xesam/1.0/core#Archive</value>
+  <value name='http://strigi.sf.net/ontologies/0.9#depth'>0</value>
+ </file>
