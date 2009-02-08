@@ -20,6 +20,7 @@
 #ifndef STRIGITHREAD_H
 #define STRIGITHREAD_H
 
+#include <stdio.h>
 #include <strigi_thread.h>
 #include <string>
 
