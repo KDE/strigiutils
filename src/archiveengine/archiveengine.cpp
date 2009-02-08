@@ -90,7 +90,7 @@ void
 FileEntryCache::prune() {
     QHash<QString, Entry>::iterator i = entrycache.begin();
     QDateTime now = QDateTime::currentDateTime();
-    while (i != entrycache.constEnd()) {
+    while (i != entrycache.end()) {
         if (i.value().lastUsed.secsTo(now) > 600) {
             delete i.value().entry;
             i = entrycache.erase(i);
