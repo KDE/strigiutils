@@ -11,6 +11,8 @@ include_directories(
 
 set(streams_SRCS
 	archivereader.cpp
+	archiveentrycache.cpp
+	listinginprogress.cpp
 	arinputstream.cpp
 	base64inputstream.cpp
 	bz2inputstream.cpp

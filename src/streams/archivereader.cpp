@@ -18,167 +18,87 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "archivereader.h"
-#include <strigi/strigiconfig.h>
-#include "streambase.h"
-#include "substreamprovider.h"
 #include "sdfinputstream.h"
 #include "tarinputstream.h"
-#include "gzipinputstream.h"
-#include "bz2inputstream.h"
 #include "mailinputstream.h"
 #include "rpminputstream.h"
 #include "arinputstream.h"
 #include "zipinputstream.h"
-#include "lzmainputstream.h"
-#include <vector>
-#include <list>
+#include "archiveentrycache.h"
+#include "listinginprogress.h"
 #include <iostream>
-#include <cstring>
+#include <set>
 
 using namespace std;
 using namespace Strigi;
 
-namespace {
-/**
- * @brief A cache for entries that have already been found.
- * @internal
- *
- * The cache is stored in a tree, sorted on the path in the URL
- * (with @c / as the delimiter).
- */
-class ArchiveEntryCache {
-public:
-    class SubEntry;
-    typedef std::map<std::string, SubEntry *> SubEntryMap;
-
-    /**
-     * @brief Represents an entry in the cache.
-     */
-    class SubEntry {
-    public:
-        /** The cached information about this entry. */
-        EntryInfo entry;
-        /** A list of subentries of this entry. */
-        SubEntryMap entries;
-        /** Constructor */
-        SubEntry() { }
-        /** Destructor */
-        virtual ~SubEntry();
-    };
-    /**
-     * @brief Represents a top-level entry in the cache
-     */
-    class RootSubEntry : public SubEntry {
-    public:
-        /** Constructor */
-        RootSubEntry() :SubEntry() {}
-        /** Whether this entry and its subentries have been indexed yet */
-        bool indexed;
-    };
-    ~ArchiveEntryCache() {
-       map<string, RootSubEntry*>::const_iterator i;
-       for (i = cache.begin(); i != cache.end(); ++i) {
-           delete i->second;
-       }
-    }
-    /**
-     * @brief The cache itself.
-     *
-     * Contains all the root entries in the cache.
-     */
-    std::map<std::string, RootSubEntry*> cache;
-    /**
-     * @brief Find an entry in the cache by its URL
-     *
-     * @param url the url of the entry
-     * @return a pointer to the entry, if it is in the cache,
-     * 0 if the entry is not in the cache
-     */
-    const SubEntry* findEntry(const string& url) const;
-    /**
-     * @brief Finds the root subentry in the cache of the given url,
-     * if it is in the cache
-     *
-     * This finds the RootSubEntry (tree root) that the SubEntry for the
-     * given url either is or should be stored under.  If there is no
-     * suitable RootSubEntry in the cache, cache.end() is returned.
-     *
-     * @param url the url of the object to find the root entry for
-     * @return an iterator to the root entry
-     */
-    map<string, RootSubEntry*>::const_iterator findRootEntry(
-        const string& url) const;
-};
-typedef std::map<bool (*)(const char*, int32_t),
-    SubStreamProvider* (*)(InputStream*)> Subs;
-/** Convenience class that holds a pointer to either a stream or a
- *  SubStreamProvider. It ensures proper destruction of the objects pointed
- *  to.
- **/
-class StreamPtr {
-private:
-    InputStream* stream;
-    SubStreamProvider* provider;
-public:
-    StreamPtr() :stream(0), provider(0) {}
-    StreamPtr(InputStream* s) :stream(s), provider(0) {}
-    StreamPtr(SubStreamProvider* p) :stream(0), provider(p) {}
-    void free() {
-        delete stream;
-        delete provider;
-    }
-};
-/*
- * This class contains a stack of SubStreamProviders and a growing cache
- * entry. It serves as a common entrypoint for requests to urls below a
- * common prefix that points to a physical file.
- * If a request is given to ArchiveReader for a path that is not in the
- * cache yet and that path could logically be part of a physical file,
- * ArchiveReader will look if there is a ListingInProgress. If there is,
- * the request is sent to the ListingInProgress. It may have the required
- * entry already in cache. If not, it should read from the stack of
- * SubStreamProviders until it can service the incoming request.
- */
-class ListingInProgress {
-public:
-    const Subs subs;
-    ArchiveEntryCache::RootSubEntry* root;
-    InputStream* const stream;
-    const std::string url;
-
-    ListingInProgress(const Subs& sbs, const EntryInfo& entry,
-            const std::string& u, InputStream* s) :subs(sbs), stream(s), url(u) {
-        root = new ArchiveEntryCache::RootSubEntry();
-        root->entry = entry;
-        root->indexed = true;
-        fillEntry(*root, stream);
-    }
-    ~ListingInProgress() {
-        delete root;
-        delete stream;
-    }
-    bool isDone() const {
-        return true;
-    }
-    int fillEntry(ArchiveEntryCache::SubEntry& e, InputStream* s);
-};
-} // end of anonymous namespace
-
 class ArchiveReader::DirLister::Private {
-public:
+private:
     int pos;
-    const vector<EntryInfo> entries;
-    Private(const vector<EntryInfo>& v) :entries(v) {
-        pos = 0;
+    vector<EntryInfo> entries;
+    ListingInProgress* const listing;
+    const ArchiveEntryCache::SubEntry* entry;
+    set<std::string> done;
+public:
+    const std::string url;
+    explicit Private(const vector<EntryInfo>& v, int p = 0)
+        :pos(p), entries(v), listing(NULL), entry(NULL) {
+    }
+    explicit Private(ListingInProgress* l, const std::string& u)
+            :pos(0), listing(l), entry(NULL), url(u) {
+        listing->ref();
+    }
+    ~Private() {
+        if (listing && listing->unref()) delete listing;
     }
     bool
     nextEntry(EntryInfo& e) {
-        if (pos >= 0 && pos < (int)entries.size()) {
+        if (pos < 0 || (listing == NULL && pos >= (int)entries.size())) {
+            // there are no (more) valid entries
+            pos = -1;
+        } else if (listing == NULL) {
+            // get the next entry from the static list
             e = entries[pos++];
+        } else if (entry == NULL) {
+            // acquire a dynamic list and get the first entry
+            entry = listing->nextEntry(url);
+            if (entry && entry->entries.size()) {
+                e = nextEntry();
+                pos = 1;
+            } else {
+                pos = -1;
+            }
+        } else if (pos < (int)entry->entries.size()
+                || listing->nextEntry(entry)) {
+            // e is now the next entry from the dynamic list
+            e = nextEntry();
         } else {
+            // there are no more entries
             pos = -1;
         }
         return pos != -1;
+    }
+private:
+    /**
+     * Get the first entry from entry->entries() that is not in the entries
+     * vector.
+     **/
+    EntryInfo
+    nextEntry() {
+        // we can make this more efficient by sorting a set with the entries
+        // that have already been returned. A set is faster than a vector for
+        // lookups by value.
+        ArchiveEntryCache::SubEntryMap::const_iterator i
+            = entry->entries.begin();
+        do {
+            if (done.find(i->first) == done.end()) {
+                done.insert(i->first);
+                pos++;
+                return i->second->entry;
+            }
+        } while (++i != entry->entries.end());
+        // this should never happen!
+        return i->second->entry;
     }
 };
 
@@ -197,70 +117,6 @@ ArchiveReader::DirLister::~DirLister() {
 bool
 ArchiveReader::DirLister::nextEntry(EntryInfo& e) {
     return p->nextEntry(e);
-}
-
-ArchiveEntryCache::SubEntry::~SubEntry() {
-    SubEntryMap::iterator i;
-    for (i=entries.begin(); i!=entries.end(); ++i) {
-        delete i->second;
-    }
-}
-map<string, ArchiveEntryCache::RootSubEntry*>::const_iterator
-ArchiveEntryCache::findRootEntry(const string& url) const {
-    string n(url);
-    size_t p = n.size();
-    do {
-        map<string, RootSubEntry*>::const_iterator i = cache.find(n);
-        if (i != cache.end()) {
-            // the root entry is in the cache - we're done
-            return i;
-        }
-        // remove the last element in the path, and look for that
-        p = n.rfind('/');
-        if (p != string::npos) {
-            n.resize(p);
-        }
-    } while (p != string::npos);
-    // couldn't find it
-    return cache.end();
-}
-/**
- * Find the entry corresponding to @p url.
- **/
-const ArchiveEntryCache::SubEntry*
-ArchiveEntryCache::findEntry(const string& url) const {
-    // find the root entry that should contain the wanted entry
-    map<string, RootSubEntry*>::const_iterator ei = findRootEntry(url);
-    if (ei == cache.end()) return 0; // no root could be find
-    if (ei->first == url) {
-        // the requested entry is a root entry: we are done
-        return ei->second;
-    }
-
-    // use the path components as keys to find the entry
-    const SubEntry* e = ei->second;
-    size_t p = ei->first.length();
-    string name;
-    do {
-        size_t np = url.find('/', p+1);
-        if (np == string::npos) {
-            name.assign(url, p+1, url.size());
-        } else {
-            name.assign(url, p+1, np-p-1);
-        }
-        SubEntryMap::const_iterator i = e->entries.find(name);
-        if (i == e->entries.end()) {
-            e = 0;
-        } else {
-            e = i->second;
-            p = np;
-        }
-        if (p == url.length()) {
-            return e;
-        }
-    } while(e && p != string::npos);
-
-    return e;
 }
 
 /** Private data members and functions for ArchiveReader */
@@ -287,7 +143,6 @@ public:
         InputStream*& stream) const;
     SubStreamProvider* positionedProvider(const std::string& url);
     InputStream* open(const std::string& url) const;
-    int fillEntry(ArchiveEntryCache::SubEntry&e, InputStream*s);
     /**
      * @brief Query known StreamOpeners about an URL.
      *
@@ -302,159 +157,6 @@ public:
     ~ArchiveReaderPrivate();
     ListingInProgress* findListingInProgress(const string& url) const;
 };
-namespace {
-void
-free(list<StreamPtr>& l) {
-    list<StreamPtr>::iterator i;
-    for (i=l.begin(); i!=l.end(); ++i) {
-        i->free();
-    }
-}
-SubStreamProvider*
-subStreamProvider(const Subs& subs, InputStream* input,
-         list<StreamPtr>& streams) {
-    if (input == 0) return 0;
-    InputStream* s = input;
-
-    bool foundCompressedStream;
-    do {
-        foundCompressedStream = false;
-        // check if this is a compressed stream
-        const char* c;
-        int32_t n = s->read(c, 16, 0);
-        s->reset(0);
-        if (BZ2InputStream::checkHeader(c, n)) {
-            InputStream* ns = new BZ2InputStream(s);
-            if (ns->status() == Ok) {
-                foundCompressedStream = true;
-                s = ns;
-                streams.push_back(s);
-            } else {
-                delete ns;
-                s->reset(0);
-            }
-        }
-        n = s->read(c, 2, 0);
-        s->reset(0);
-        if (n >= 2 && c[0] == 0x1f && c[1] == (char)0x8b) {
-            InputStream* ns = new GZipInputStream(s);
-            if (ns->status() == Ok) {
-                foundCompressedStream = true;
-                s = ns;
-                streams.push_back(s);
-            } else {
-                delete ns;
-                s->reset(0);
-            }
-        }
-        n = s->read(c, 2, 0);
-        s->reset(0);
-        if (LZMAInputStream::checkHeader(c, n)) {
-            InputStream* ns = new LZMAInputStream(s);
-            if (ns->status() == Ok) {
-                foundCompressedStream = true;
-                s = ns;
-                streams.push_back(s);
-            } else {
-                delete ns;
-                s->reset(0);
-            }
-        }
-    } while (foundCompressedStream);
- 
-    const char* c;
-    int32_t n = s->read(c, 1024, 0);
-    s->reset(0);
-    SubStreamProvider* ss;
-    map<bool (*)(const char*, int32_t),
-        SubStreamProvider* (*)(InputStream*)>::const_iterator i;
-    for (i = subs.begin(); i != subs.end(); ++i) {
-        // check if the header matches for each substreamprovider
-        if (i->first(c, n)) {
-            // create a new SubStreamProvider
-            ss = i->second(s);
-            if (ss->nextEntry()) {
-                streams.push_back(ss);
-                // return the first substream
-                return ss;
-            }
-            // even though the header was good, this stream has no substream
-            delete ss;
-            s->reset(0);
-            n = s->read(c, 1, 0);
-            s->reset(0);
-        }
-    }
-    free(streams);
-    return 0;
-}
-/**
- * Add the entry @p se to the cache.
- * The filename of @p se contains the complete path.
- * This is split on '/' into its parts. The parts are used as keys to find
- * the parents of the new entry.
- * Any entry that is not yet in the cache is created as a directory.
- **/
-void
-addEntry(ArchiveEntryCache::SubEntry* parent, ArchiveEntryCache::SubEntry* se) {
-    // split path into components, the components are placed in the array
-    // 'names'. The filename is kept in the filename member of se
-    vector<string> names;
-    string& name = se->entry.filename;
-    string::size_type p = name.find('/');
-    while (p != string::npos) {
-        names.push_back(name.substr(0, p));
-        name.erase(0, p + 1);
-        p = name.find('/');
-    }
-
-    // find the right entry
-    ArchiveEntryCache::SubEntry* child;
-    for (size_t i=0; i<names.size(); ++i) {
-        child = parent->entries[names[i]];
-        if (child == NULL) {
-            // create a new directory entry if it is not yet in the cache
-            child = new ArchiveEntryCache::SubEntry();
-            child->entry.filename = names[i];
-            child->entry.type = EntryInfo::Dir;
-            child->entry.size = 0;
-            parent->entries[names[i]] = child;
-        }
-        parent = child;
-    }
-    // this is what we came for: add the entry to the parent
-    parent->entries[name] = se;
-}
-int
-ListingInProgress::fillEntry(ArchiveEntryCache::SubEntry& e, InputStream* s) {
-    int nentries = 0;
-    list<StreamPtr> streams;
-    SubStreamProvider* p = subStreamProvider(subs, s, streams);
-    if (!p) return 0;
-    do {
-        ArchiveEntryCache::SubEntry* se = new ArchiveEntryCache::SubEntry();
-        se->entry = p->entryInfo();
-        int nsubentries = fillEntry(*se, p->currentEntry());
-        if (se->entry.size < 0) {
-            // read entire stream to determine it's size
-            InputStream *es = p->currentEntry();
-            const char* c;
-            while (es->read(c, 1, 0) > 0) {}
-            se->entry.size = max(es->size(), (int64_t)0);
-        }
-        addEntry(&e, se);
-        if (nsubentries) {
-            nentries += nsubentries;
-        }
-        nentries++;
-    } while (p->nextEntry());
-    free(streams);
-    if (nentries) {
-        e.entry.type = (EntryInfo::Type)(e.entry.type|EntryInfo::Dir);
-    }
-    return nentries;
-}
-}
 ArchiveReader::ArchiveReaderPrivate::ArchiveReaderPrivate() {
     typedef std::pair<bool (*)(const char*, int32_t),
         SubStreamProvider* (*)(InputStream*)> SubsPair;
@@ -484,7 +186,7 @@ ArchiveReader::ArchiveReaderPrivate::~ArchiveReaderPrivate() {
         = listingsInProgress.end();
     for (map<string, ListingInProgress*>::const_iterator i
             = listingsInProgress.begin(); i != end; ++i) {
-        delete i->second;
+        if (i->second->unref()) delete i->second;
     }
 }
 /**
@@ -659,11 +361,14 @@ ArchiveReader::stat(const std::string& url, EntryInfo& e) {
         return 0;
     }
     // try reading the entries from the collection to which this file belongs
-    dirEntries(url);
-    subentry = p->cache.findEntry(url);
-    if (subentry) {
-        e = subentry->entry;
-        return 0;
+    size_t pos = url.rfind('/');
+    if (pos == string::npos) return -1;
+    std::string parenturl(url, 0, pos);
+    ArchiveReader::DirLister dirlister(dirEntries(parenturl));
+    while (dirlister.nextEntry(e)) {
+        if (e.filename == url.c_str()+pos+1) {
+            return 0;
+        }
     }
     return -1;
 }
@@ -702,6 +407,16 @@ ArchiveReader::isArchive(const std::string& url) {
     }
     return e.type & EntryInfo::File && e.type & EntryInfo::Dir;
 }
+std::vector<EntryInfo>
+convert(const ArchiveEntryCache::SubEntry* entry) {
+    std::vector<EntryInfo> v;
+    if (entry == NULL) return v;
+    ArchiveEntryCache::SubEntryMap::const_iterator i;
+    for (i = entry->entries.begin(); i != entry->entries.end(); ++i) {
+        v.push_back(i->second->entry);
+    }
+    return v;
+}
 ArchiveReader::DirLister
 ArchiveReader::dirEntries(const std::string& url) {
     // find the entry in the cache
@@ -713,7 +428,7 @@ ArchiveReader::dirEntries(const std::string& url) {
         lip = p->findListingInProgress(url);
     }
     std::vector<EntryInfo> v;
-    if (lip == NULL) {
+    if (subentry == NULL && lip == NULL) {
         // this entry is not in the cache, we try to open it
         InputStream* s = 0;
         vector<size_t> l = p->cullName(url, s);
@@ -731,33 +446,34 @@ ArchiveReader::dirEntries(const std::string& url) {
         // get the properties of the physical file
         p->localStat(name, e);
         lip = new ListingInProgress(p->subs, e, name, s);
+        lip->ref();
         p->listingsInProgress[name] = lip;
     }
 
-    if (lip->isDone()) {
-        // more the information of the ListingInProgress to the cache
-        p->cache.cache[lip->url] = lip->root;
-        lip->root = 0;
-        p->listingsInProgress.erase(lip->url);
-        delete lip;
-        subentry = p->cache.findEntry(url);
-    } else {
-        // TODO: create a DirLister from the ListingInProgress
-    }
- 
-    if (subentry) {
-        ArchiveEntryCache::SubEntryMap::const_iterator i;
-        for (i = subentry->entries.begin(); i != subentry->entries.end();
-                ++i) {
-            v.push_back(i->second->entry);
+    if (lip) {
+        if (lip->isDone()) {
+            p->cache.cache[lip->url] = lip->root;
+            lip->root = 0;
+            p->listingsInProgress.erase(lip->url);
+            if (lip->unref()) delete lip;
+        } else {
+            return DirLister(new DirLister::Private(lip, url));
         }
+    }
+
+    if (subentry == NULL) {
+        subentry = p->cache.findEntry(url);
+    }
+    if (subentry) {
+        v = convert(subentry);
     }
     return DirLister(new DirLister::Private(v));
 }
 bool
 ArchiveReader::canHandle(const std::string& url) {
     // remove parts from the back of url until url matches a physical file
-    // return true of the physical file is an archive, i.e. contains substreams
+    // return true of the physical file is an archive, i.e. contains
+    // substreams
     size_t pos = url.rfind('/');
     EntryInfo e;
     int r = p->localStat(url, e);

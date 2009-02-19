@@ -99,7 +99,11 @@ public:
          */
         virtual ~DirLister();
         /**
-         * @brief Gets information aobut the next item in the directory
+         * @brief assignment operator
+         **/
+        const DirLister& operator=(const DirLister&);
+        /**
+         * @brief Gets information about the next item in the directory
          *
          * @param e an EntryInfo object to populate with information about
          * the next item in the directory
