@@ -147,16 +147,17 @@ RpmInputStream::~RpmInputStream() {
     delete uncompressionStream;
     delete cpio;
     delete headerinfo;
+    m_entrystream = 0;
 }
 InputStream*
 RpmInputStream::nextEntry() {
     if (m_status) return 0;
-    InputStream* entry = cpio->nextEntry();
+    m_entrystream = cpio->nextEntry();
     m_status = cpio->status();
     if (m_status == Ok) {
         m_entryinfo = cpio->entryInfo();
     } else if (m_status == Error) {
         m_error = cpio->error();
     }
-    return entry;
+    return m_entrystream;
 }
