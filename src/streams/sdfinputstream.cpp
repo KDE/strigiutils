@@ -66,7 +66,7 @@ SdfInputStream::checkHeader(const char* data, int32_t datasize) {
     if (datasize <= 10) return false;
     // the fourth line must contain the string "V2000"
     // skip three lines of at most 80 bytes
-    const char* thisLine;
+    const char* thisLine = 0;
     const char* nextLine = data;
     for (int i=0; i<4 && nextLine != 0; ++i) {
         thisLine = nextLine;
@@ -140,7 +140,7 @@ SdfInputStream::nextEntry() {
     }    
     if (m_input->status() == Error) {
         m_status = Error;
-        m_entrystream = new SubInputStream(m_input);
+        m_entrystream = 0;
         return 0;
     }
     
@@ -164,7 +164,7 @@ SdfInputStream::nextEntry() {
     } else {
         // this stream is a MOL itself, not an SD
         m_status = Eof;
-        m_entrystream = new SubInputStream(m_input);
+        m_entrystream = 0;
         return 0;
     }
 }
