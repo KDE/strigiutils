@@ -35,8 +35,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "local_inotify.h"
-#include "local_inotify-syscalls.h"
+#include <sys/inotify.h>
 
 using namespace std;
 using namespace Strigi;

@@ -1,15 +1,13 @@
 IF(ENABLE_INOTIFY)
-    set (inotify_INCLUDE inotify)
     set (inotify_SRC inotifylistener.cpp)
 ENDIF(ENABLE_INOTIFY)
 
 IF(FAM_FOUND AND ENABLE_FAM)
-    set (fam_INCLUDE inotify)
     set (fam_SRC famlistener.cpp)
     set (eventlistener_LIBS ${eventlistener_LIBS} ${FAM_LIBRARIES})
 ENDIF(FAM_FOUND AND ENABLE_FAM)
 
-INCLUDE_DIRECTORIES ( ${inotify_INCLUDE} ../../streams/strigi ..
+INCLUDE_DIRECTORIES ( ../../streams/strigi ..
     ${strigi_BINARY_DIR}/src/streams/strigi
     ${strigi_SOURCE_DIR}/src/streams/strigi)
 
