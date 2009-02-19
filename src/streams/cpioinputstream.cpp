@@ -38,6 +38,7 @@ CpioInputStream::checkHeader(const char* data, int32_t datasize) {
 }
 CpioInputStream::CpioInputStream(InputStream* input)
         : SubStreamProvider(input) {
+    m_entryinfo.type = EntryInfo::File;
 }
 CpioInputStream::~CpioInputStream() {
 }
