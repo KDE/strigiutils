@@ -78,11 +78,13 @@ inputStreamTest2(StreamBase<T>* s) {
 void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
+    VERIFY(s == ssp->currentEntry());
     while (s) {
         inputStreamTest1<char>(s);
         printf("%s %li\n", ssp->entryInfo().filename.c_str(),
             (long)ssp->entryInfo().size);
         s = ssp->nextEntry();
+        VERIFY(s == ssp->currentEntry());
     }
     if (ssp->status() == Strigi::Error) {
         fprintf(stderr, "%s\n", ssp->error());
@@ -92,9 +94,11 @@ subStreamProviderTest1(SubStreamProvider* ssp) {
 void
 subStreamProviderTest2(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
+    VERIFY(s == ssp->currentEntry());
     while (s) {
         inputStreamTest2<char>(s);
         s = ssp->nextEntry();
+        VERIFY(s == ssp->currentEntry());
     }
     if (ssp->status() == Strigi::Error) {
         fprintf(stderr, "%s\n", ssp->error());
