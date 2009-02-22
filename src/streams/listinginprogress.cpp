@@ -252,7 +252,7 @@ ListingInProgress::nextEntry(const std::string& url) {
     }
     const ArchiveEntryCache::SubEntry* entry = root->findEntry(this->url, url);
     bool ok = true;
-    while (entry == NULL && ok) {
+    while (ok && (entry == NULL || entry->entries.size() == 0)) {
         ok = nextEntry();
         entry = root->findEntry(this->url, url);
     }
