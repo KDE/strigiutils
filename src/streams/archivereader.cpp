@@ -36,7 +36,7 @@ class ArchiveReader::DirLister::Private {
 private:
     int pos;
     vector<EntryInfo> entries;
-    ListingInProgress* const listing;
+    ListingInProgress* listing;
     const ArchiveEntryCache::SubEntry* entry;
     set<std::string> done;
 public:
@@ -50,6 +50,15 @@ public:
     }
     ~Private() {
         if (listing && listing->unref()) delete listing;
+    }
+    void operator=(const Private& a) {
+        pos = a.pos;
+        entries = a.entries;
+        if (listing && listing->unref()) delete listing;
+        listing = a.listing;
+        if (listing) listing->ref();
+        entry = a.entry;
+        done = a.done;
     }
     bool
     nextEntry(EntryInfo& e) {
@@ -117,6 +126,11 @@ ArchiveReader::DirLister::~DirLister() {
 bool
 ArchiveReader::DirLister::nextEntry(EntryInfo& e) {
     return p->nextEntry(e);
+}
+const ArchiveReader::DirLister&
+ArchiveReader::DirLister::operator=(const DirLister& a) {
+    *p = *a.p;
+    return a;
 }
 
 /** Private data members and functions for ArchiveReader */
@@ -297,7 +311,7 @@ ArchiveReader::ArchiveReaderPrivate::localStat(const std::string& url,
                 return 0;
             }
 
-            // check if ListingInProgress points to this url
+            // check if a ListingInProgress points to this url
             map<string, ListingInProgress*>::const_iterator li =
                 listingsInProgress.find(url);
             if (li != listingsInProgress.end()) {
@@ -405,7 +419,7 @@ ArchiveReader::isArchive(const std::string& url) {
     if (p->localStat(url, e) != 0) {
         return false;
     }
-    return e.type & EntryInfo::File && e.type & EntryInfo::Dir;
+    return e.type & (EntryInfo::File | EntryInfo::Dir);
 }
 std::vector<EntryInfo>
 convert(const ArchiveEntryCache::SubEntry* entry) {
@@ -492,7 +506,7 @@ ArchiveReader::ArchiveReaderPrivate::findListingInProgress(const string& url)
         map<string, ListingInProgress*>::const_iterator i
             = listingsInProgress.find(n);
         if (i != listingsInProgress.end()) {
-            // the root entry is in the map - we're done
+            // the root entry is in the map - we are done
             return i->second;
         }
         // remove the last element in the path, and look for that
