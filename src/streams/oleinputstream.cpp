@@ -25,7 +25,9 @@
 using namespace Strigi;
 using namespace std;
 
+namespace {
 class OleEntryStream;
+}
 class OleInputStream::Private {
 public:
     const char* data;
@@ -53,6 +55,7 @@ public:
     InputStream* nextEntry();
 };
 
+namespace {
 class OleEntryStream : public BufferedInputStream {
 public:
     OleInputStream::Private* const parent;
@@ -75,6 +78,22 @@ public:
     }
     int32_t fillBuffer(char* start, int32_t space);
 };
+void
+printEntry(const char* d) {
+    char type = d[0x42];
+    string name;
+    for (int i=0; i< d[0x40]; ++i) {
+        name.append(d+2*i,1);
+    }
+    int32_t prevIndex = readLittleEndianInt32(d+0x44);
+    int32_t nextIndex = readLittleEndianInt32(d+0x48);
+    int32_t firstIndex = readLittleEndianInt32(d+0x4C);
+    int32_t blockStart = readLittleEndianInt32(d+0x74);
+    int32_t blockSize = readLittleEndianInt32(d+0x78);
+    printf("entry %i %s: %i %i %i %i %i %i\n", d[0x40],name.c_str(), type, prevIndex, nextIndex, firstIndex,
+        blockStart, blockSize);
+}
+}
 int32_t
 OleEntryStream::fillBuffer(char* start, int32_t space) {
     if (done == m_size) return -1;
@@ -129,21 +148,6 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     }
     //fprintf(stderr, "fill %i %i %i\n", space, parent->currentDataBlock, n);
     return n;
-}
-void
-printEntry(const char* d) {
-    char type = d[0x42];
-    string name;
-    for (int i=0; i< d[0x40]; ++i) {
-        name.append(d+2*i,1);
-    }
-    int32_t prevIndex = readLittleEndianInt32(d+0x44);
-    int32_t nextIndex = readLittleEndianInt32(d+0x48);
-    int32_t firstIndex = readLittleEndianInt32(d+0x4C);
-    int32_t blockStart = readLittleEndianInt32(d+0x74);
-    int32_t blockSize = readLittleEndianInt32(d+0x78);
-    printf("entry %i %s: %i %i %i %i %i %i\n", d[0x40],name.c_str(), type, prevIndex, nextIndex, firstIndex,
-        blockStart, blockSize);
 }
 
 OleInputStream::OleInputStream(InputStream* input) :SubStreamProvider(input),
