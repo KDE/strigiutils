@@ -97,8 +97,6 @@ printEntry(const char* d) {
 int32_t
 OleEntryStream::fillBuffer(char* start, int32_t space) {
     if (done == m_size) return -1;
-//    fprintf(stderr, "current %i %i\n", parent->currentDataBlock, blocksize);
-//    fprintf(stderr, "doff %i\n", (1+parent->currentDataBlock)*512);
 
     int32_t n = space;
     int32_t avail = blocksize-blockoffset;
@@ -146,7 +144,6 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
             }
         }
     }
-    //fprintf(stderr, "fill %i %i %i\n", space, parent->currentDataBlock, n);
     return n;
 }
 
@@ -168,24 +165,24 @@ OleInputStream::Private::Private(OleInputStream* s, InputStream* input)
     int32_t nBat = readLittleEndianInt32(data+0x2c);
     int32_t ptOffset = readLittleEndianInt32(data+0x30);
     int32_t sBatOffset = readLittleEndianInt32(data+0x3c);
-    //int32_t xBatOffset = readLittleEndianInt32(data+0x44);
+    int32_t xBatOffset = readLittleEndianInt32(data+0x44);
     int32_t nXBat = readLittleEndianInt32(data+0x48);
-    if (!checkHeader(data, size) || nBat < 0 || nBat > 109 || nXBat < 0) {
+    if (!checkHeader(data, size) || nBat < 0 || nBat > 128*nXBat+109
+            || nXBat < 0) {
         stream->m_status = Error;
         stream->m_error = "Invalid OLE file.";
         return;
     }
-//    fprintf(stderr, "%i %i %i %i\n", nBat, ptOffset, sBatOffset, nXBat);
-//    fprintf(stderr, "doing ole\n");
     int32_t max = 0;
-    batIndex.reserve(109);
+    batIndex.reserve(nBat);
     data += 76;
-    for (int i = 0; i < nBat; ++i) {
+    for (int i = 0; i < ::min(109, nBat); ++i) {
         int32_t p = readLittleEndianInt32(data+4*i);
         batIndex.push_back(p);
         if (p > max) max = p;
     }
     if (ptOffset > max) max = ptOffset;
+    if (128*(nBat-1) > max) max = 128*(nBat-1);
 
     int32_t toread = (max+2)*512;
     if (input->size() >= 0 && input->size() < toread) {
@@ -204,17 +201,27 @@ OleInputStream::Private::Private(OleInputStream* s, InputStream* input)
     }
     maxindex = size/512-2;
 
+    // read any remaining BAT entries from XBAT blocks
+    xBatOffset = 512 + 512 * xBatOffset;
+    for (int j = 0; j < nXBat; ++j) {
+        for (int i = 0; i<127 && (int)batIndex.size() < nBat; ++i) {
+            int32_t p = readLittleEndianInt32(data + 4*i + xBatOffset);
+            batIndex.push_back(p);
+        }
+        xBatOffset = 512+512*readLittleEndianInt32(data + 508 + xBatOffset);
+    }
+
     // print all bat blocks
-/*    for (int i = 0; i<nBat; ++i) {
+/*    for (size_t i = 0; i<batIndex.size(); ++i) {
         const char* b = data+(1+batIndex[i])*512;
-        fprintf(stderr, "%4.i\n", batIndex[i]);
+        fprintf(stderr, "%4.i %4.i\n", i, batIndex[i]);
         for (int j=0; j<128;++j) {
             int32_t p = readLittleEndianInt32(b+4*j);
             fprintf(stderr, "%4.i ", p);
             if (j%16 == 15) {fprintf(stderr, "\n");}
         }
-    }
-*/
+    }*/
+
     // collect all sbat blocks
 //    fprintf(stderr, "sbat blocks\n");
     while (sBatOffset >= 0 && sbatIndex.size() < 1000) {
@@ -255,7 +262,6 @@ OleInputStream::Private::~Private() {
 }
 int32_t
 OleInputStream::Private::nextBlock(int32_t in) {
-    //fprintf(stderr, "nextBlock(%i)\n", in);
     // get the number of the bat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)batIndex.size()) {
@@ -284,7 +290,6 @@ OleInputStream::Private::nextBlock(int32_t in) {
 }
 int32_t
 OleInputStream::Private::nextSmallBlock(int32_t in) {
-//    fprintf(stderr, "nextSmallBlock(%i)\n", in);
     // get the number of the sbat block we need
     int32_t bid = in/128;
     if (bid < 0 || bid >= (int32_t)sbatIndex.size()) {
@@ -367,7 +372,6 @@ OleInputStream::nextEntry() {
 InputStream*
 OleInputStream::Private::nextEntry() {
     if (currentTableBlock < 0) return 0;
-//    fprintf(stderr, "nextEntry()\n");
     do {
         if (++currentTableIndex == 4) {
             currentTableBlock = nextBlock(currentTableBlock);
