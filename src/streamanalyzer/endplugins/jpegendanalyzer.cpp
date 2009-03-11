@@ -106,7 +106,7 @@ private:
     const RegisteredField* typeField;
 
 };
-
+/*
 const string commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
 const string manufacturerFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
 const string modelFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
@@ -131,7 +131,7 @@ const string jpegQualityFieldName("http://freedesktop.org/standards/xesam/1.0/co
 const string userCommentFieldName("http://freedesktop.org/standards/xesam/1.0/core#userComment");
 const string jpegProcessFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
 const string thumbnailFieldName("content.thumbnail");
-
+*/
 /*
  Register the field names so that the StreamIndexer knows which analyzer
  provides what information.
