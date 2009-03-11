@@ -255,11 +255,11 @@ DdsThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
         "http://freedesktop.org/standards/xesam/1.0/core#width");
     heightField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#height");
-    volumeDepthField = reg.registerField( "dds volume depth");
+    volumeDepthField = reg.registerField( "http://strigi.sf.net/ontologies/homeless#ddsVolumeDepth");
     bitDepthField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
-    mipmapCountField = reg.registerField("dds mipmap count");
-    typeField = reg.registerField("dds image type");
+    mipmapCountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsMipmapCount");
+    typeField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsImageType");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     compressionField = reg.registerField(

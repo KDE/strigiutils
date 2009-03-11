@@ -39,7 +39,7 @@ IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     heightField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#height");
     numberField = reg.registerField(
-        "document.stats.image_count");
+        "http://strigi.sf.net/ontologies/homeless#documentImageCount");
     bitsPerPixelField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
     colorCountField = reg.registerField(

@@ -192,7 +192,7 @@ JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     jpegProcessField = r.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     thumbnailField = r.registerField(
-        "content.thumbnail");
+        "http://strigi.sf.net/ontologies/homeless#contentThumbnail");
     typeField = r.typeField;
 
     addField(colorModeField);

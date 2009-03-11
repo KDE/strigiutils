@@ -3,6 +3,7 @@ install(FILES
 	xesam.rdfs
 	xesam-convenience.rdfs
 	strigi.rdfs
+	homeless.rdfs
 
 #	chemical.rdfs
 

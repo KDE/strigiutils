@@ -46,9 +46,9 @@ RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     bitDepthField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
     imageNameField = reg.registerField(
-        "document.stats.image_name");
+        "http://strigi.sf.net/ontologies/homeless#documentImageName");
     sharedRowsField = reg.registerField(
-        "document.stats.image_shared_rows");
+        "http://strigi.sf.net/ontologies/homeless#documentImageSharedRows");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     compressionField = reg.registerField(

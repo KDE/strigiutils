@@ -45,13 +45,13 @@ void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
     languageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#language");
     keywordField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
     generatorField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#generator");
-    tablecountField = reg.registerField("document.stats.table_count");
+    tablecountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentTableCount");
     pagecountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#pageCount");
     paragcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#paragraphCount");
     wordcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#wordCount");
     charcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#characterCount");
-    objectcountField = reg.registerField("document.stats.object_count");
-    imagecountField = reg.registerField("document.stats.image_count");
+    objectcountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentObjectCount");
+    imagecountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentImageCount");
 }
 
 Strigi::StreamSaxAnalyzer *OdfSaxAnalyzerFactory::newInstance() const {

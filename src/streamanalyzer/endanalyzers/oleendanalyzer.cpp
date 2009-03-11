@@ -158,13 +158,13 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Document Summary Information Stream
     key.assign(docSummaryKey, 16);
     m = &fieldsMaps[key];
-    (*m)[2] = reg.registerField("ole.category");
+    (*m)[2] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleCategory");
     addField((*m)[2]);
-    (*m)[3] = reg.registerField("ole.presentationtarget");
+    (*m)[3] = reg.registerField("http://strigi.sf.net/ontologies/homeless#olePresentationTarget");
     addField((*m)[3]);
-    (*m)[14] = reg.registerField("ole.manager");
+    (*m)[14] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleManager");
     addField((*m)[14]);
-    (*m)[15] = reg.registerField("ole.company");
+    (*m)[15] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleCompany");
     addField((*m)[15]);
 
     typeField = reg.typeField;

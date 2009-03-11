@@ -36,11 +36,11 @@ TxtLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     totalCharactersField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#characterCount");
     maxLineLengthField = reg.registerField(
-        "maxLineLength");
+        "http://strigi.sf.net/ontologies/homeless#maxLineLength");
 //TODO: this field should receive a proper name. What is meant is whether
 // the file uses uses unix (\n), dos (\r\n) or mac (\r) line endings
     formatField = reg.registerField(
-        "line ending format");
+        "http://strigi.sf.net/ontologies/homeless#lineEndingFormat");
 
     addField(totalLinesField);
     addField(totalWordsField);
