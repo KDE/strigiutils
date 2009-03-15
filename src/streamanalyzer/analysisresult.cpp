@@ -334,6 +334,11 @@ AnalysisResult::addValue(const RegisteredField* field, double value) {
 	return;
     p->m_writer.addValue(this, field, value);
 }
+void
+AnalysisResult::addTriplet(const std::string& subject, const std::string& predicate,
+        const std::string& object){
+    p->m_writer.addTriplet(subject, predicate, object);
+}
 bool
 AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
     std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurrences.find(field);
