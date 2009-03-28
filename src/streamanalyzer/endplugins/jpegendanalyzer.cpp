@@ -30,6 +30,8 @@
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
 
+#include <cmath>
+
 using namespace Strigi;
 using namespace std;
 
@@ -170,6 +172,8 @@ JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
         "http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
     exifFields["Exif.Photo.MeteringMode"] = r.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
+    exifFields["Exif.Photo.ISOSpeedRatings"] = r.registerField(
+        "http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
     map<string, const RegisteredField*>::const_iterator i = exifFields.begin();
     for (; i != exifFields.end(); ++i) {
         addField(i->second);
@@ -213,6 +217,27 @@ JpegEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
         = {0xFF, 0xD8, 0xFF};
     return headersize >= 3 &&  memcmp(header, jpgmagic, 3) == 0;
 }
+namespace {
+
+bool
+fnumberToApertureValue(string& fnumber) {
+    // Convert the F number to the aperture value
+    // return true if the value in fnumber is changed to ApertureValue
+    char* end;
+    double c = strtod(fnumber.c_str(), &end);
+    if (c <= 0 || c == HUGE_VALF || *end == '\0') return false;
+    double d = strtod(end + 1, &end);
+    if (d <= 0 || d == HUGE_VALF) return false;
+    c /= d;
+    double apex = log2(c * c);
+    std::ostringstream aperture;
+    aperture << round(apex * 65536) << "/65536";
+    fnumber.assign(aperture.str());
+    return true;
+}
+
+}
+
 signed char
 JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     // parse the jpeg file now
@@ -277,6 +302,14 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     }
 
     for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();++i){
+        if (i->key() == "Exif.Photo.FNumber") {
+            string aperture(i->toString());
+            if (fnumberToApertureValue(aperture)) {
+                ar.addValue(factory->exifFields.at("Exif.Photo.ApertureValue"),
+                    aperture);
+            }
+            continue;
+        }
         map<string,const RegisteredField*>::const_iterator f
             = factory->exifFields.find(i->key());
         if (f != factory->exifFields.end() && f->second) {
