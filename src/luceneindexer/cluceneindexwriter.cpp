@@ -279,7 +279,7 @@ CLuceneIndexWriter::deleteEntry(const string& entry,
     PrefixFilter* filter = _CLNEW PrefixFilter(t);
     BitSet* b = filter->bits(reader);
     _CLDELETE(filter);
-    _CLDELETE(t);
+    _CLDECDELETE(t);
     int32_t size = b->size();
     for (int id = 0; id < size; ++id) {
         if (b->get(id) && !reader->isDeleted(id)) {
