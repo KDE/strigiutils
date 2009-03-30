@@ -305,8 +305,9 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
         if (i->key() == "Exif.Photo.FNumber") {
             string aperture(i->toString());
             if (fnumberToApertureValue(aperture)) {
-                ar.addValue(factory->exifFields.at("Exif.Photo.ApertureValue"),
-                    aperture);
+                ar.addValue(
+                   factory->exifFields.find("Exif.Photo.ApertureValue")->second,
+                   aperture);
             }
             continue;
         }
