@@ -32,6 +32,10 @@
 
 #include <cmath>
 
+#ifdef _MSC_VER
+#define HUGE_VALF HUGE_VAL
+#endif
+
 using namespace Strigi;
 using namespace std;
 
@@ -229,9 +233,15 @@ fnumberToApertureValue(string& fnumber) {
     double d = strtod(end + 1, &end);
     if (d <= 0 || d == HUGE_VALF) return false;
     c /= d;
-    double apex = log2(c * c);
+#ifdef _MSC_VER
+    double apex = log10(2.)/log10(c * c);
+    apex *= 65536;
+    apex  = (apex < 0 ? ceil(apex - 0.5) : floor(apex + 0.5));
+#else
+    double apex = round(log2(c * c) * 65536);
+#endif
     std::ostringstream aperture;
-    aperture << round(apex * 65536) << "/65536";
+    aperture << apex << "/65536";
     fnumber.assign(aperture.str());
     return true;
 }
