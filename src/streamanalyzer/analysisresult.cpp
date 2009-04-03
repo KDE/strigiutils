@@ -236,7 +236,7 @@ AnalysisResult::indexChild(const std::string& name, time_t mt,
 }
 AnalysisResult*
 AnalysisResult::child() {
-    return p->child;
+    return p->m_child;
 }
 void
 AnalysisResult::addText(const char* text, int32_t length) {
