@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2006,2009 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -109,7 +109,8 @@ public:
     AnalysisResult* const m_this;
     AnalysisResult* const m_parent;
     const StreamEndAnalyzer* m_endanalyzer;
-    std::map<const Strigi::RegisteredField*, int> occurrences;
+    std::map<const Strigi::RegisteredField*, int> m_occurrences;
+    AnalysisResult* m_child;
 
     Private(const std::string& p, const char* name, time_t mt,
         AnalysisResult& t, AnalysisResult& parent);
@@ -127,7 +128,7 @@ AnalysisResult::Private::Private(const std::string& p, const char* name,
              m_indexer(parent.p->m_indexer),
              m_analyzerconfig(parent.p->m_analyzerconfig),
              m_this(&t), m_parent(&parent),
-             m_endanalyzer(0) {
+             m_endanalyzer(0), m_child(0) {
     // make sure that the path starts with the path of the parent
     assert(m_path.size() > m_parent->p->m_path.size()+1);
     assert(m_path.compare(0, m_parent->p->m_path.size(), m_parent->p->m_path)
@@ -144,7 +145,7 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
             :m_writerData(0), m_mtime(mt), m_path(p), m_parentpath(parentpath),
              m_writer(w), m_depth(0), m_indexer(indexer),
              m_analyzerconfig(indexer.configuration()), m_this(&t),
-             m_parent(0), m_endanalyzer(0) {
+             m_parent(0), m_endanalyzer(0), m_child(0) {
     size_t pos = m_path.rfind('/'); // TODO: perhaps us '\\' on Windows
     if (pos == std::string::npos) {
         m_name = m_path;
@@ -164,6 +165,8 @@ AnalysisResult::AnalysisResult(const std::string& path, time_t mt,
     p->m_writer.startAnalysis(this);
 }
 AnalysisResult::~AnalysisResult() {
+    // delete child before writing and deleting the parent
+    delete p->m_child;
     p->write();
     delete p;
 }
@@ -215,6 +218,10 @@ AnalysisResult::index(InputStream* file) {
 signed char
 AnalysisResult::indexChild(const std::string& name, time_t mt,
         InputStream* file) {
+    // clean up previous child
+    delete p->m_child;
+    p->m_child = 0;
+
     std::string path(p->m_path);
     path.append("/");
     path.append(name);
@@ -222,10 +229,14 @@ AnalysisResult::indexChild(const std::string& name, time_t mt,
     // check if we should index this file by applying the filename filters
     // make sure that the depth variable does not overflow
     if (depth() < 127 && p->m_analyzerconfig.indexFile(path.c_str(), n)) {
-        AnalysisResult i(path, n, mt, *this);
-        return p->m_indexer.analyze(i, file);
+        p->m_child = new AnalysisResult(path, n, mt, *this);
+        return p->m_indexer.analyze(*p->m_child, file);
     }
     return 0;
+}
+AnalysisResult*
+AnalysisResult::child() {
+    return p->child;
 }
 void
 AnalysisResult::addText(const char* text, int32_t length) {
@@ -341,18 +352,20 @@ AnalysisResult::addTriplet(const std::string& subject, const std::string& predic
 }
 bool
 AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
-    std::map<const Strigi::RegisteredField*, int>::const_iterator i = occurrences.find(field);
-    if (i != occurrences.end()) {
+    std::map<const Strigi::RegisteredField*, int>::const_iterator i
+        = m_occurrences.find(field);
+    if (i != m_occurrences.end()) {
 	if (i->second >= field->properties().maxCardinality()
                 && field->properties().maxCardinality() >= 0) {
 	    fprintf(stderr, "%s hit the maxCardinality limit (%d)\n",
-		field->properties().name().c_str(), field->properties().maxCardinality());
+		field->properties().name().c_str(),
+                    field->properties().maxCardinality());
 	    return false;
 	} else {
-	    occurrences[field]++;
+	    m_occurrences[field]++;
 	}
     } else {
-	occurrences[field] = 1;
+	m_occurrences[field] = 1;
     }
     return true;
 }

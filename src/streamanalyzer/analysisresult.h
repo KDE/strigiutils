@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2006,2009 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -113,6 +113,16 @@ public:
      **/
     signed char indexChild(const std::string& name, time_t mt,
         StreamBase<char>* file);
+    /**
+     * @brief return a pointer to the last child that was indexed
+     * Calling indexChild() creates a child AnalysisResult. The pointer returned
+     * by this function is valid until the next call to indexChid() or until
+     * this instance is destroyed.
+     * @return a pointer to the last child that was indexed or NULL if no
+     *         child was indexed yet
+     * @since Strigi 0.6.13
+     **/
+    AnalysisResult* child();
     /**
      * Associate a fragment of text with the file.
      *
