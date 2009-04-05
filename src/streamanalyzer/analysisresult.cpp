@@ -150,7 +150,15 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
     if (pos == std::string::npos) {
         m_name = m_path;
     } else {
-        assert(pos != m_path.size()-1); // make sure there is no trailing '/'
+        if (pos == m_path.size()-1) {
+            // assert that there is no trailing '/' unless it is part of a
+            // protocol, which means the parent must be "" and the string must
+            // end in a colon followed by up to three slashes
+            assert(m_parentpath == "");
+            int i = m_path.size();
+            while (--i > 0 && m_path[i] == '/') {}
+            assert(i > 0 && m_path[i] == ':');
+        }
         m_name = m_path.substr(pos+1);
     }
     // check that the path start with the path of the parent
