@@ -229,16 +229,22 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
     caller = c;
     // check if the path exists and if it is a file or a directory
     struct stat s;
-    int retval = stat(dir.c_str(), &s);
+    const string path(removeTrailingSlash(dir));
+    int retval;
+    if (path.size() == 0) {
+        // special case for analyzing the root directory '/' on unix
+        retval = stat("/", &s);
+    } else {
+        retval = stat(path.c_str(), &s);
+    }
     time_t mtime = (retval == -1) ?0 :s.st_mtime;
-    retval = analyzeFile(dir, mtime, S_ISREG(s.st_mode));
+    retval = analyzeFile(path, mtime, S_ISREG(s.st_mode));
     // if the path does not point to a directory, return
     if (!S_ISDIR(s.st_mode)) {
         manager.indexWriter()->commit();
         return retval;
     }
-
-    dirlister.startListing(removeTrailingSlash(dir));
+    dirlister.startListing(path);
     if (lastToSkip.length()) {
         dirlister.skipTillAfter(lastToSkip);
     }

@@ -287,7 +287,13 @@ DirLister::Private::nextDir(std::string& path,
     entrypath.assign(path);
     entrypath.append("/");
     dirs.clear();
-    DIR* dir = opendir(path.c_str());
+    DIR* dir;
+    if (path.size()) {
+        dir = opendir(path.c_str());
+    } else {
+        // special case for root directory '/' on unix systems
+        dir = opendir("/");
+    }
     if (!dir) {
         return -1;
     }

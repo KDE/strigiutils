@@ -156,7 +156,10 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
     // check that the path start with the path of the parent
     // if the path of the parent is set (!= ""), m_path should be 2 characters
     // longer: 1 for the separator and one for the file name.
-    assert(m_path.size() > (m_parentpath.size()+(m_parentpath.size())?1:0));
+    // if m_path == "" and m_parentpath == "" then the unix root dir '/' is
+    // meant
+    assert((m_path.size() == 0 && m_parentpath.size() == 0)
+        || (m_path.size() > (m_parentpath.size()+(m_parentpath.size())?1:0)));
     assert(m_path.compare(0, m_parentpath.size(), m_parentpath) == 0);
 }
 AnalysisResult::AnalysisResult(const std::string& path, time_t mt,
