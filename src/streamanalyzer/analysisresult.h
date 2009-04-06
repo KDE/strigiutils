@@ -120,7 +120,7 @@ public:
      * this instance is destroyed.
      * @return a pointer to the last child that was indexed or NULL if no
      *         child was indexed yet
-     * @since Strigi 0.6.13
+     * @since Strigi 0.6.5
      **/
     AnalysisResult* child();
     /**
