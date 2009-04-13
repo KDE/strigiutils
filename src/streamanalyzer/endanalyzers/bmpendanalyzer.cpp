@@ -34,11 +34,11 @@ BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     compressionField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     colorDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     rdftypeField = reg.typeField;
 
     addField(typeField);
@@ -122,7 +122,7 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
         rs.addValue(factory->compressionField, "Unknown");
     }
 
-    rs.addValue(factory->rdftypeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    rs.addValue(factory->rdftypeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
 
     return 0;
 }

@@ -26,14 +26,30 @@
 using namespace Strigi;
 using namespace std;
 
-const string ID3V2ThroughAnalyzerFactory::titleFieldName("http://freedesktop.org/standards/xesam/1.0/core#title");
-const string ID3V2ThroughAnalyzerFactory::artistFieldName("http://freedesktop.org/standards/xesam/1.0/core#artist");
-const string ID3V2ThroughAnalyzerFactory::albumFieldName("http://freedesktop.org/standards/xesam/1.0/core#album");
-const string ID3V2ThroughAnalyzerFactory::composerFieldName("http://freedesktop.org/standards/xesam/1.0/core#composer");
+#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
+
+const string ID3V2ThroughAnalyzerFactory::titleFieldName("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
+const string ID3V2ThroughAnalyzerFactory::artistFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
+const string ID3V2ThroughAnalyzerFactory::albumFieldName(NMM_PROPOSAL "musicAlbum");
+const string ID3V2ThroughAnalyzerFactory::composerFieldName(NMM_PROPOSAL "composer");
 const string ID3V2ThroughAnalyzerFactory::genreFieldName("http://freedesktop.org/standards/xesam/1.0/core#genre");
-const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName(NMM_PROPOSAL "trackNumber");
 const string ID3V2ThroughAnalyzerFactory::albumTrackCountFieldName("http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
-const string ID3V2ThroughAnalyzerFactory::discNumberFieldName("http://freedesktop.org/standards/xesam/1.0/core#discNumber");
+const string ID3V2ThroughAnalyzerFactory::discNumberFieldName(NMM_PROPOSAL "setNumber");
+
+const string
+    typePropertyName(
+	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+    fullnamePropertyName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname"),
+
+    musicClassName(
+	NMM_PROPOSAL "MusicPiece"),
+    albumClassName(
+	NMM_PROPOSAL "MusicAlbum"),
+    contactClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
+#undef NMM_PROPOSAL
 
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
@@ -95,7 +111,10 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     if (nread != size || !indexable) {
         return in;
     }
-    indexable->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Music");
+    indexable->addValue(factory->typeField, musicClassName);
+    
+    string album, disc;
+    
     const char* p = buf + 10;
     buf += size;
     while (p < buf && *p) {
@@ -109,26 +128,39 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
                 indexable->addValue(factory->titleField,
                     string(p+11, size-1));
             } else if (strncmp("TPE1", p, 4) == 0) {
-                indexable->addValue(factory->artistField,
-                    string(p+11, size-1));
+		string artistUri = indexable->newAnonymousUri();
+		
+                indexable->addValue(factory->artistField, artistUri);
+		indexable->addTriplet(artistUri, typePropertyName, contactClassName);
+		indexable->addTriplet(artistUri, fullnamePropertyName, string(p+11, size-1));
             } else if (strncmp("TALB", p, 4) == 0) {
-                indexable->addValue(factory->albumField,
-                    string(p+11, size-1));
+                album = string(p+11, size-1);
             } else if (strncmp("TCON", p, 4) == 0) {
                 indexable->addValue(factory->genreField,
                     string(p+11, size-1));
             } else if (strncmp("TCOM", p, 4) == 0) {
-                indexable->addValue(factory->composerField,
-                    string(p+11, size-1));
+		string composerUri = indexable->newAnonymousUri();
+		
+                indexable->addValue(factory->composerField, composerUri);
+		indexable->addTriplet(composerUri, typePropertyName, contactClassName);
+		indexable->addTriplet(composerUri, fullnamePropertyName, string(p+11, size-1));
             } else if (strncmp("TRCK", p, 4) == 0) {
-                indexable->addValue(factory->trackNumberField,
-                    string(p+11, size-1));
+                indexable->addValue(factory->trackNumberField, string(p+11, size-1));
             } else if (strncmp("TPOS", p, 4) == 0) {
-                indexable->addValue(factory->discNumberField,
-                    string(p+11, size-1));
+                disc = string(p+11, size-1);
             }
         }
         p += size + 10;
+    }
+    
+    if(album.size()>0) {
+	string albumUri = indexable->newAnonymousUri();
+	
+	indexable->addValue(factory->albumField, albumUri);
+	indexable->addTriplet(albumUri, typePropertyName, albumClassName);
+	indexable->addTriplet(albumUri, factory->titleFieldName, album);
+	if(disc.size()>0)
+	  indexable->addTriplet(albumUri, factory->discNumberFieldName, disc);
     }
     return in;
 }

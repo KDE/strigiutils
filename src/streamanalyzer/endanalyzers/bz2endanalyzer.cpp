@@ -57,7 +57,7 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         fprintf(stderr, "Error reading bz2: %s\n", stream.error());
         return -2;
     }
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+    idx.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive");
     stream.reset(0);
     if (TarInputStream::checkHeader(start, nread)) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);

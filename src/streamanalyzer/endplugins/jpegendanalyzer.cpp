@@ -103,7 +103,6 @@ private:
     const RegisteredField* whiteBalanceField;
     const RegisteredField* meteringModeField;
     const RegisteredField* exposureField;
-    const RegisteredField* isoEquivField;
     const RegisteredField* jpegQualityField;
     const RegisteredField* userCommentField;
     const RegisteredField* jpegProcessField;
@@ -112,102 +111,80 @@ private:
     const RegisteredField* typeField;
 
 };
-/*
-const string commentFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentComment");
-const string manufacturerFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
-const string modelFieldName("http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
-const string creationDateFieldName("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-const string widthFieldName("http://freedesktop.org/standards/xesam/1.0/core#width");
-const string heightFieldName("http://freedesktop.org/standards/xesam/1.0/core#height");
+
+#define NEXIF "http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#"
+
+const string commentFieldName("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
+const string manufacturerFieldName(NEXIF "make");
+const string modelFieldName(NEXIF "model");
+const string creationDateFieldName("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
+const string widthFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
+const string heightFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
 const string orientationFieldName("http://freedesktop.org/standards/xesam/1.0/core#orientation");
 const string colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-const string flashUsedFieldName("http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
-const string focalLengthFieldName("http://freedesktop.org/standards/xesam/1.0/core#focalLength");
-const string _35mmEquivalentFieldName("http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
+const string flashUsedFieldName(NEXIF "flash");
+const string focalLengthFieldName(NEXIF "focalLength");
+const string _35mmEquivalentFieldName(NEXIF "focalLengthIn35mmFilm");
 const string ccdWidthFieldName("http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
-const string exposureTimeFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
-const string apertureFieldName("http://freedesktop.org/standards/xesam/1.0/core#aperture");
+const string exposureTimeFieldName(NEXIF "exposureTime");
+const string apertureFieldName(NEXIF "apertureValue");
 const string focusDistFieldName("http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
-const string exposureBiasFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
-const string whiteBalanceFieldName("http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
-const string meteringModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
-const string exposureFieldName("http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
-const string isoEquivFieldName("http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
+const string exposureBiasFieldName(NEXIF "exposureBiasValue");
+const string whiteBalanceFieldName(NEXIF "whiteBalance");
+const string meteringModeFieldName(NEXIF "meteringMode");
+const string exposureFieldName(NEXIF "exposureProgram");
 const string jpegQualityFieldName("http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
-const string userCommentFieldName("http://freedesktop.org/standards/xesam/1.0/core#userComment");
+const string userCommentFieldName("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
 const string jpegProcessFieldName("http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-const string thumbnailFieldName("content.thumbnail");
-*/
+const string thumbnailFieldName("http://strigi.sf.net/ontologies/homeless#contentThumbnail");
+const string ISOSpeedRatingsFieldName(NEXIF "isoSpeedRatings");
+
+#undef NEXIF
+
 /*
  Register the field names so that the StreamIndexer knows which analyzer
  provides what information.
 */
 void
 JpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    commentField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+    commentField = r.registerField(commentFieldName);
     addField(commentField);
 
-    exifFields["Exif.Image.DateTime"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-    exifFields["Exif.Image.Make"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#cameraManufacturer");
-    exifFields["Exif.Image.Model"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
-    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
-    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
-    exifFields["Exif.Image.Orientation"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#orientation");
-    exifFields["Exif.Photo.Flash"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#flashUsed");
-    exifFields["Exif.Photo.FocalLength"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#focalLength");
-    exifFields["Exif.Photo.FocalLengthIn35mmFilm"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#35mmEquivalent");
-    exifFields["Exif.Photo.ExposureTime"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#exposureTime");
-    exifFields["Exif.Photo.ApertureValue"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#aperture");
-    exifFields["Exif.Photo.ExposureBiasValue"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#exposureBias");
-    exifFields["Exif.Photo.WhiteBalance"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#whiteBalance");
-    exifFields["Exif.Photo.MeteringMode"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#meteringMode");
-    exifFields["Exif.Photo.ISOSpeedRatings"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
-    map<string, const RegisteredField*>::const_iterator i = exifFields.begin();
+    exifFields["Exif.Image.DateTime"] = r.registerField(creationDateFieldName);
+    exifFields["Exif.Image.Make"] = r.registerField(manufacturerFieldName);
+    exifFields["Exif.Image.Model"] = r.registerField(modelFieldName);
+    exifFields["Exif.Photo.PixelXDimension"] = r.registerField(widthFieldName);
+    exifFields["Exif.Photo.PixelYDimension"] = r.registerField(heightFieldName);
+    exifFields["Exif.Image.Orientation"] = r.registerField(orientationFieldName);
+    exifFields["Exif.Photo.Flash"] = r.registerField(flashUsedFieldName);
+    exifFields["Exif.Photo.FocalLength"] = r.registerField(focalLengthFieldName);
+    exifFields["Exif.Photo.FocalLengthIn35mmFilm"] = r.registerField(_35mmEquivalentFieldName);
+    exifFields["Exif.Photo.ExposureTime"] = r.registerField(exposureTimeFieldName);
+    exifFields["Exif.Photo.ApertureValue"] = r.registerField(apertureFieldName);
+    exifFields["Exif.Photo.ExposureBiasValue"] = r.registerField(exposureBiasFieldName);
+    exifFields["Exif.Photo.WhiteBalance"] = r.registerField(whiteBalanceFieldName);
+    exifFields["Exif.Photo.MeteringMode"] = r.registerField(meteringModeFieldName);
+    exifFields["Exif.Photo.ISOSpeedRatings"] = r.registerField(ISOSpeedRatingsFieldName);
+
+map<string, const RegisteredField*>::const_iterator i = exifFields.begin();
     for (; i != exifFields.end(); ++i) {
         addField(i->second);
     }
 
-    colorModeField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
-    ccdWidthField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#ccdWidth");
-    focusDistField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#focusDistance");
-    exposureField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#exposureProgram");
-    isoEquivField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#isoEquivalent");
-    jpegQualityField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#targetQuality");
-    userCommentField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#userComment");
-    jpegProcessField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
-    thumbnailField = r.registerField(
-        "http://strigi.sf.net/ontologies/homeless#contentThumbnail");
+    colorModeField = r.registerField(colorModeFieldName);
+    ccdWidthField = r.registerField(ccdWidthFieldName);
+    focusDistField = r.registerField(focusDistFieldName);
+    exposureField = r.registerField(exposureFieldName);
+    jpegQualityField = r.registerField(jpegQualityFieldName);
+    userCommentField = r.registerField(userCommentFieldName);
+    jpegProcessField = r.registerField(jpegProcessFieldName);
+    thumbnailField = r.registerField(thumbnailFieldName);
     typeField = r.typeField;
 
     addField(colorModeField);
     addField(ccdWidthField);
     addField(focusDistField);
     addField(exposureField);
-    addField(isoEquivField);
     addField(jpegQualityField);
     addField(userCommentField);
     addField(jpegProcessField);
@@ -306,9 +283,9 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     const Exiv2::ExifData& exif = img->exifData();
     // if there's exif data, this is a photo, otherwise just an image
     if( ! exif.empty() ) {
-        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Photo");
+        ar.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#Photo");
     } else {
-        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+        ar.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
     }
 
     for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();++i){

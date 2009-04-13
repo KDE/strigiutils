@@ -28,26 +28,57 @@
 using namespace Strigi;
 using namespace std;
 
+#define NMO_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmo#"
+
+const string
+    titleFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject"),
+    fromFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#from"),
+    toFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#to"),
+    ccFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#cc"),
+    bccFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#bcc"),
+    contentidFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#messageId"),
+    contentlinkFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#references"),
+    emailInReplyToFieldName(
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#inReplyTo"),
+
+    typeFieldName(
+	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+    fullnameFieldName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname"),
+    hasEmailAddressFieldName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#hasEmailAddress"),
+    emailAddressFieldName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#emailAddress"),
+
+    emailClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nmo#Email"),
+    contactClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact"),
+    emailAddressClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#EmailAddress"),
+    mimePartClassName(
+	NMO_PROPOSAL "MimePart");
+
+#undef NMO_PROPOSAL
+
 void
 MailEndAnalyzerFactory::registerFields(FieldRegister& r) {
-    titleField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#subject");
-    contenttypeField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentType");
-    fromField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#author");
-    toField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#to");
-    ccField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#cc");
-    bccField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#bcc");
-    contentidField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#id");
-    contentlinkField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#links");
-    emailInReplyToField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#inReplyTo");
+    titleField = r.registerField(titleFieldName);
+    contenttypeField = r.mimetypeField;
+    fromField = r.registerField(fromFieldName);
+    toField = r.registerField(toFieldName);
+    ccField = r.registerField(ccFieldName);
+    bccField = r.registerField(bccFieldName);
+    contentidField = r.registerField(contentidFieldName);
+    contentlinkField = r.registerField(contentlinkFieldName);
+    emailInReplyToField = r.registerField(emailInReplyToFieldName);
     typeField = r.typeField;
 
     addField(titleField);
@@ -81,6 +112,35 @@ charset(const string& contenttype) {
     }
     return string();
 }
+void
+splitAddress(const string& addr, string& name, string& email) {
+  size_t p;
+  if( (p = addr.find("<"))!= string::npos ) {
+    name = addr.substr(0, p);
+    email = addr.substr(p+1, addr.rfind(">") -p -1);
+  } else {
+    name = "";
+    email = addr;
+  }
+}
+string 
+processAddress(Strigi::AnalysisResult& idx, const string& address) {
+    string uri(idx.newAnonymousUri());
+    string cmUri;
+    string name, email;
+
+    splitAddress(address, name, email);
+    cmUri = "mailto:" + email;
+
+    idx.addTriplet(uri, typeFieldName, contactClassName);
+    if (name.size())
+	idx.addTriplet(uri, fullnameFieldName, name);
+    idx.addTriplet(uri, hasEmailAddressFieldName, cmUri);
+    idx.addTriplet(cmUri, typeFieldName, emailAddressClassName);
+    idx.addTriplet(cmUri, emailAddressFieldName, email);
+    
+    return uri;
+}
 signed char
 MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if(!in)
@@ -96,19 +156,29 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     if (enc.length()) {
         idx.setEncoding(enc.c_str());
     }
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Email");
+    idx.addValue(factory->typeField, emailClassName);
     idx.addValue(factory->titleField, mail.subject());
     idx.addValue(factory->contenttypeField, mail.contentType());
-    idx.addValue(factory->fromField, mail.from());
-    idx.addValue(factory->toField, mail.to());
-    if (mail.cc().length() > 0) idx.addValue(factory->ccField, mail.cc());
-    if (mail.bcc().length() > 0) idx.addValue(factory->bccField, mail.bcc());
+    
+    idx.addValue(factory->fromField, processAddress(idx, mail.from()) );
+    
+    idx.addValue(factory->toField, processAddress(idx, mail.to()) );
+    if (mail.cc().length() > 0) idx.addValue(factory->ccField, processAddress(idx, mail.cc()) );
+    if (mail.bcc().length() > 0) idx.addValue(factory->bccField, processAddress(idx, mail.bcc()) );
     if (mail.messageid().length() > 0)
         idx.addValue(factory->contentidField, mail.messageid());
-    if (mail.inreplyto().length() > 0)
-        idx.addValue(factory->emailInReplyToField, mail.inreplyto());
-    if (mail.references().length() > 0)
-        idx.addValue(factory->contentlinkField, mail.references());
+    if (mail.inreplyto().length() > 0) {
+	string uri(idx.newAnonymousUri());
+        idx.addValue(factory->emailInReplyToField, uri);
+	idx.addTriplet(uri, typeFieldName, emailClassName);
+	idx.addTriplet(uri, contentidFieldName, mail.inreplyto());
+    }
+    if (mail.references().length() > 0) {
+	string uri(idx.newAnonymousUri());
+	idx.addValue(factory->contentlinkField, uri);
+	idx.addTriplet(uri, typeFieldName, emailClassName);
+	idx.addTriplet(uri, contentidFieldName, mail.references());
+    }
     if (s != 0) {
         TextEndAnalyzer tea;
         if (enc.length()) {
@@ -129,6 +199,8 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         }
         // maybe use the date of sending the mail here
         idx.indexChild(file, idx.mTime(), s);
+	idx.child()->addValue(factory->typeField, mimePartClassName);
+
         s = mail.nextEntry();
         n++;
     }

@@ -38,7 +38,7 @@ TarEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 signed char
 TarEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     char result = staticAnalyze(idx, in);
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+    idx.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive");
     return result;
 }
 signed char

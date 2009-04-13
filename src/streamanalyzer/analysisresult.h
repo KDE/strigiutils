@@ -206,6 +206,12 @@ public:
     void addValue(RegisteredField*field, const std::string& name,
         const std::string& value);
     /**
+     * @brief Generate a new "anonymous" uri.
+     *
+     * Anonymous uri is later supposed to be replaced by inferencer with a canonical uri.
+     **/
+    std::string newAnonymousUri();
+    /**
      * @brief Get the filename of the associated file.
      *
      * For the full name see path().

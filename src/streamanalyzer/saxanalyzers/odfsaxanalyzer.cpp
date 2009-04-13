@@ -36,20 +36,30 @@ static const char *opfNS = "http://www.idpf.org/2007/opf";
 //static const char *svgNS = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
 //static const char *textNS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
 
+const std::string
+    typePropertyName(
+	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+    fullnamePropertyName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname"),
+
+    contactClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
+
+
 void OdfSaxAnalyzerFactory::registerFields(FieldRegister &reg) {
-    creatorField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#author");
-    creationTimeField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-    titleField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
-    subjectField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#subject");
-    descriptionField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#description");
-    languageField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#language");
-    keywordField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
-    generatorField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#generator");
+    creatorField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
+    creationTimeField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
+    titleField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
+    subjectField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject");
+    descriptionField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
+    languageField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#language");
+    keywordField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword");
+    generatorField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator");
     tablecountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentTableCount");
-    pagecountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#pageCount");
+    pagecountField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#pageCount");
     paragcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#paragraphCount");
-    wordcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#wordCount");
-    charcountField = reg.registerField("http://freedesktop.org/standards/xesam/1.0/core#characterCount");
+    wordcountField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount");
+    charcountField = reg.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount");
     objectcountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentObjectCount");
     imagecountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#documentImageCount");
 }
@@ -157,6 +167,12 @@ void OdfSaxAnalyzer::characters(const char *data, uint32_t length) {
     assert(m_result != 0);
 
     if(m_currentField != 0) {
-        m_result->addValue(m_currentField, data, length);
+	if(m_currentField == m_factory->creatorField) {
+	    std::string creatorUri = m_result->newAnonymousUri();
+	    m_result->addValue(m_currentField, creatorUri);
+	    m_result->addTriplet(creatorUri, typePropertyName, contactClassName);
+	    m_result->addTriplet(creatorUri, fullnamePropertyName, data);
+	} else
+	    m_result->addValue(m_currentField, data, length);
     }
 }

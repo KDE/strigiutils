@@ -32,19 +32,19 @@ using namespace std;
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["length"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration");
     fields["dimensions.y"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     fields["dimensions.x"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     fields["frame rate"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#frameRate");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate");
     fields["video codec"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
     fields["audio codec"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
     fields["aspect ratio"] = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#aspectRatio");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#aspectRatio");
     fields["type"] = r.typeField;
 
     map<string, const RegisteredField*>::const_iterator i;

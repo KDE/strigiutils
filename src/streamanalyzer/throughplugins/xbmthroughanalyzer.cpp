@@ -32,9 +32,9 @@ using namespace Strigi;
 void
 XbmThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     xHotField = reg.registerField(
         "http://strigi.sf.net/ontologies/0.9#hotSpotX");
     yHotField = reg.registerField(

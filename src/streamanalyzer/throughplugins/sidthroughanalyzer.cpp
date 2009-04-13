@@ -36,15 +36,15 @@ using namespace Strigi;
 void
 SidThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     titleField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#title");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     artistField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#artist");
     trackNumberField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
     versionField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#version");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version");
     copyrightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#copyright");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright");
 
     addField(titleField);
     addField(artistField);

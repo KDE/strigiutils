@@ -40,11 +40,11 @@ using namespace Strigi;
 void
 RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     bitDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     imageNameField = reg.registerField(
         "http://strigi.sf.net/ontologies/homeless#documentImageName");
     sharedRowsField = reg.registerField(

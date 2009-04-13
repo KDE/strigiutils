@@ -373,23 +373,23 @@ RiffEventAnalyzer::isReadyWithStream() {
 void
 RiffEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
     sampleSizeField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#bitsPerSample");
     sampleRateField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate");
     channelsField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels");
     lengthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration");
     resolutionHeightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution");
     resolutionWidthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution");
     frameRateField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#frameRate");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#frameRate");
     videoCodecField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#videoCodec");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
     audioCodecField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
 
     addField(sampleSizeField);
     addField(sampleRateField);

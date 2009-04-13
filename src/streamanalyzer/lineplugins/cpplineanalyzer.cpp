@@ -30,17 +30,17 @@ using namespace Strigi;
 void
 CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     includeField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#depends");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends");
     classField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#definesClass");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#definesClass");
     codeLinesField = reg.registerField(
         "http://strigi.sf.net/ontologies/0.9#codeLineCount");
     commentLinesField = reg.registerField(
         "http://strigi.sf.net/ontologies/0.9#commentLineCount");
     totalLinesField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#lineCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount");
     programmingLanguageField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#programmingLanguage");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage");
 // Include count not required. Include list length is easy to obtain.
 //    includesField = reg.registerField();
     typeField = reg.typeField;
@@ -117,7 +117,7 @@ CppLineAnalyzer::endAnalysis(bool complete) {
         analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
         analysisResult->addValue(factory->programmingLanguageField, "C++");
         analysisResult->addValue(factory->typeField,
-            "http://freedesktop.org/standards/xesam/1.0/core#SourceCode");
+            "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode");
 //        analysisResult->addValue(factory->includesField, includes);
     }
     ready = true;

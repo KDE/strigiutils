@@ -48,44 +48,53 @@ static const char* interlaceModes[] = {
   "Adam7"
 };
 
+const string
+    typeFieldName(
+	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+    fullnameFieldName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname"),
+    contactClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
+
+
 void
 PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     colorDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     compressionField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     interlaceModeField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#interlaceMode");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#interlaceMode");
     lastModificationTimeField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentModified");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentLastModified");
     titleField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#title");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     authorField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#author");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
     descriptionField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#description");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
     copyrightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#copyright");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright");
     creationTimeField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
     softwareField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#generator");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#generator");
     disclaimerField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#disclaimer");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#disclaimer");
     // putting warning into comment field since it's the closest equivalent
     warningField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
     // PNG spec says Source is Device used to create the image
     sourceField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
     commentField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
     typeField = reg.typeField;
 
     /* add the fields to the internal list of fields */
@@ -149,7 +158,7 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
         return -1;
     }
 
-    as.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    as.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
 
     // read the png dimensions
     uint32_t width = readBigEndianUInt32(c+4);
@@ -324,7 +333,11 @@ PngEndAnalyzer::addMetaData(const string& key,
         if ("Title" == key) {
             as.addValue(factory->titleField, value);
         } else if ("Author" == key) {
-            as.addValue(factory->authorField, value);
+	    string authorUri = as.newAnonymousUri();
+	    
+            as.addValue(factory->authorField, authorUri);
+	    as.addTriplet(authorUri, typeFieldName, contactClassName);
+	    as.addTriplet(authorUri, fullnameFieldName, value);
         } else if ("Description" == key) {
             as.addValue(factory->descriptionField, value);
         } else if ("Copyright" == key) {

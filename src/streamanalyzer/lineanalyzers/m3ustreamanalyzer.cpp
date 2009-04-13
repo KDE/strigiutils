@@ -32,7 +32,7 @@ void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg)
 // track list length is easily obtained via API
 //    tracksField = reg.registerField();
     trackPathField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#links");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#hasLogicalPart");
     m3uTypeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#formatSubtype");
     typeField = reg.typeField;
@@ -88,7 +88,7 @@ void M3uLineAnalyzer::endAnalysis(bool complete)
     //if (complete && extensionOk)
         //analysisResult->addValue(factory->tracksField, count);
     if (complete && extensionOk)
-        analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#AudioList");
+        analysisResult->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#MediaList");
 
 }
 

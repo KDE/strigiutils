@@ -32,17 +32,17 @@ using namespace std;
 void
 DebLineAnalyzerFactory::registerFields(FieldRegister& r) {
     nameField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#title");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     versionField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#version");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version");
     summaryField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#description");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
     maintainerField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword");
     sectionField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword");
     dependsField = r.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#depends");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#depends");
     typeField = r.typeField;
 
     addField(nameField);

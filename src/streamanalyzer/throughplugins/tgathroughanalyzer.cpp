@@ -34,13 +34,13 @@ TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     compressionField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     colorDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     typeField = reg.typeField;
 
     addField(compressionField);
@@ -118,7 +118,7 @@ TgaThroughAnalyzer::connectInputStream(InputStream* in) {
 
     uint8_t colorDepth = *(buf+16);
     analysisResult->addValue(factory->colorDepthField, colorDepth);
-    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    analysisResult->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
 
     return in;
 }

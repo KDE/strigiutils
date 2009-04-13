@@ -31,9 +31,9 @@ using namespace Strigi;
 void
 XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     numberOfColorsField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
     typeField = reg.typeField;
@@ -103,7 +103,7 @@ XpmLineAnalyzer::handleLine(const char* data, uint32_t length) {
         return;
 
     analysisResult->addValue(factory->numberOfColorsField, propertyValue);
-    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    analysisResult->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image");
 }
 bool
 XpmLineAnalyzer::isReadyWithStream() {

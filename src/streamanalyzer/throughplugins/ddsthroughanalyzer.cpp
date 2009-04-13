@@ -252,12 +252,12 @@ namespace {// Private.
 void
 DdsThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     volumeDepthField = reg.registerField( "http://strigi.sf.net/ontologies/homeless#ddsVolumeDepth");
     bitDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     mipmapCountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsMipmapCount");
     typeField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsImageType");
     colorModeField = reg.registerField(

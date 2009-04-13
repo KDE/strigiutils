@@ -76,11 +76,11 @@ private:
 void
 GifThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     colorDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     typeField = reg.typeField;
 
     addField(colorDepthField);
@@ -117,7 +117,7 @@ GifThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue(factory->colorDepthField, (uint32_t)colorDepth);
     }
 
-    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    analysisResult->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
 
     return in;
 }

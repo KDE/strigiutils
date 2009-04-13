@@ -70,7 +70,7 @@ ZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         if (factory) {
             idx.addValue(factory->mimetypefield, "application/zip");
             idx.addValue(factory->typeField,
-                "http://freedesktop.org/standards/xesam/1.0/core#Archive");
+                "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Archive");
         }
         m_error.resize(0);
     }

@@ -48,6 +48,10 @@ class OggThroughAnalyzerFactory
 friend class OggThroughAnalyzer;
 private:
     std::map<std::string, const Strigi::RegisteredField*> fields;
+    const Strigi::RegisteredField* artistField;
+    const Strigi::RegisteredField* albumField;
+    const Strigi::RegisteredField* composerField;
+    const Strigi::RegisteredField* performerField;
     const char* name() const {
         return "OggThroughAnalyzer";
     }

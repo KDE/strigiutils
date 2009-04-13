@@ -30,11 +30,11 @@ using namespace Strigi;
 void
 TxtLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     totalLinesField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#lineCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount");
     totalWordsField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#wordCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#wordCount");
     totalCharactersField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#characterCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#characterCount");
     maxLineLengthField = reg.registerField(
         "http://strigi.sf.net/ontologies/homeless#maxLineLength");
 //TODO: this field should receive a proper name. What is meant is whether

@@ -6,6 +6,14 @@ include_directories(
 	${BZIP2_INCLUDE_DIR}
 )
 
+add_executable(rdfindexer
+        rdfindexer.cpp
+        tagmapping.cpp
+	rdfindexwriter.cpp
+)
+
+target_link_libraries(rdfindexer streamanalyzer)
+
 add_executable(xmlindexer
         xmlindexer.cpp
         tagmapping.cpp

@@ -27,16 +27,24 @@
 using namespace std;
 using namespace Strigi;
 
+#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
+
+const string
+    musicClassName(
+	NMM_PROPOSAL "MusicPiece");
+
+#undef NMM_PROPOSAL
+
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     lengthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration");
     sampleRateField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#sampleRate");
     channelsField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioChannels");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#channels");
     sampleBitDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#audioSampleBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#bitsPerSample");
     sampleDataTypeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#audioSampleDataType");
     typeField = reg.typeField;
@@ -134,7 +142,7 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue(factory->lengthField, length);
     }
 
-    analysisResult->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Music");
+    analysisResult->addValue(factory->typeField, musicClassName);
 
     return in;
 }

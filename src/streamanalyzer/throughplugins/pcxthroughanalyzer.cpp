@@ -33,15 +33,15 @@ PcxThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     compressionField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     hResolutionField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#horizontalResolution");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#horizontalResolution");
     vResolutionField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#verticalResolution");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution");
     colorDepthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     typeField = reg.typeField;
 
     addField(compressionField);
@@ -90,7 +90,7 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     indexable->addValue(factory->hResolutionField, (int32_t)readLittleEndianUInt16(header+12));
     indexable->addValue(factory->vResolutionField, (int32_t)readLittleEndianUInt16(header+14));
 
-    indexable->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Image");
+    indexable->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
     return in;
 }
 bool

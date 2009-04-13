@@ -140,10 +140,10 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 
     // register the fields for the Summary Information Stream
     (*m)[2] = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#title");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     addField((*m)[2]);
     (*m)[3] = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#subject");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject");
     addField((*m)[3]);
     (*m)[4] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#author");
@@ -152,7 +152,7 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
     addField((*m)[5]);
     (*m)[6] = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentComment");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
     addField((*m)[6]);
 
     // register the fields for the Document Summary Information Stream
@@ -400,7 +400,7 @@ OleEndAnalyzer::analyze(AnalysisResult& ar, InputStream* in) {
         m_error = ole.error();
         return -1;
     } else {
-        ar.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#Document");
+        ar.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Document");
         m_error.resize(0);
     }
     return 0;

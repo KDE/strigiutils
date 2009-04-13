@@ -29,29 +29,48 @@
 using namespace Strigi;
 using namespace std;
 
+#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
+
+const string
+    typePropertyName(
+	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+    fullnamePropertyName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname"),
+    titlePropertyName(
+	"http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"),
+
+    musicClassName(
+	NMM_PROPOSAL "MusicPiece"),
+    albumClassName(
+	NMM_PROPOSAL "MusicAlbum"),
+    contactClassName(
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
+
 void
 OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
-    fields["title"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#title");
-    fields["album"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#album");
-    fields["artist"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#artist");
+    fields["title"] = r.registerField(titlePropertyName);
+    albumField = r.registerField(NMM_PROPOSAL "musicAlbum");
+    artistField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
     fields["genre"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#genre");
-    fields["codec"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
-    fields["composer"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#composer");
-    fields["performer"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#performer");
-    fields["date"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
-    fields["description"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#description");
-    fields["tracknumber"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+    fields["codec"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
+    composerField = r.registerField(NMM_PROPOSAL "composer");
+    performerField = r.registerField(NMM_PROPOSAL "performer");
+    fields["date"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
+    fields["description"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
+    fields["tracknumber"] = r.registerField(NMM_PROPOSAL "trackNumber");
 
 
-    fields["version"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#version");
-    fields["isrc"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#isrc");
-    fields["copyright"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#copyright");
-    fields["license"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#license");
+    fields["version"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version");
+    fields["isrc"] = r.registerField(NMM_PROPOSAL "internationalStandardRecordingCode");
+    fields["copyright"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright");
+    fields["license"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license");
 
 // ogg spec fields left unimplemented: ORGANIZATION, LOCATION, CONTACT
 
     fields["type"] = r.typeField;
 }
+
+#undef NMM_PROPOSAL
 
 void
 OggThroughAnalyzer::setIndexable(AnalysisResult* i) {
@@ -128,10 +147,34 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
                 // check if we can handle this field and if so handle it
                 map<string, const RegisteredField*>::const_iterator iter
                     = factory->fields.find(name);
+                string value(p2+eq+1, size-eq-1);
                 if (iter != factory->fields.end()) {
-                    string value(p2+eq+1, size-eq-1);
                     indexable->addValue(iter->second, value);
-                }
+                } else if(name=="artist") {
+		    string artistUri = indexable->newAnonymousUri();
+		
+		    indexable->addValue(factory->artistField, artistUri);
+		    indexable->addTriplet(artistUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(artistUri, fullnamePropertyName, value);
+		} else if(name=="album") {
+		    string albumUri = indexable->newAnonymousUri();
+		    
+		    indexable->addValue(factory->albumField, albumUri);
+		    indexable->addTriplet(albumUri, typePropertyName, albumClassName);
+		    indexable->addTriplet(albumUri, titlePropertyName, value);
+		} else if(name=="composer") {
+		    string composerUri = indexable->newAnonymousUri();
+
+		    indexable->addValue(factory->composerField, composerUri);
+		    indexable->addTriplet(composerUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(composerUri, fullnamePropertyName, value);
+		} else if(name=="performer") {
+		    string performerUri = indexable->newAnonymousUri();
+
+		    indexable->addValue(factory->performerField, performerUri);
+		    indexable->addTriplet(performerUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(performerUri, fullnamePropertyName, value);
+		}
             }
         } else {
             cerr << "problem with tag size of " << size << endl;
@@ -141,8 +184,7 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
     }
     // set the "codec" value
     indexable->addValue(factory->fields.find("codec")->second, "Ogg/Vorbis");
-    indexable->addValue(factory->fields.find("type")->second,
-            "http://freedesktop.org/standards/xesam/1.0/core#Music");
+    indexable->addValue(factory->fields.find("type")->second, musicClassName);
     return in;
 }
 bool

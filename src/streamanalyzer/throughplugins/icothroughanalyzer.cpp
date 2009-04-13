@@ -35,13 +35,13 @@ using namespace Strigi;
 void
 IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     widthField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#width");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#height");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     numberField = reg.registerField(
         "http://strigi.sf.net/ontologies/homeless#documentImageCount");
     bitsPerPixelField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#pixelDataBitDepth");
+        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     colorCountField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
 

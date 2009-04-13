@@ -62,6 +62,6 @@ PdfEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     StreamStatus r = parser.parse(in);
     if (r != Eof) m_error.assign(parser.error());
     analysisresult->addValue(factory->typeField,
-        "http://freedesktop.org/standards/xesam/1.0/core#TextDocument");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument");
     return (r == Eof) ?0 :-1;
 }

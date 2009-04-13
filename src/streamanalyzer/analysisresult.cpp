@@ -205,6 +205,9 @@ AnalysisResult::Private::write() {
     m_writer.addValue(m_this, fr.embeddepthField, (int32_t)m_depth);
     m_writer.addValue(m_this, fr.mtimeField, (uint32_t)m_mtime);
 
+    //FIXME a temporary workaround until we have a file(system) analyzer.
+    if(m_depth==0) m_writer.addValue(m_this, fr.typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject"); 
+    
     m_writer.finishAnalysis(m_this);
 }
 const std::string& AnalysisResult::fileName() const { return p->m_name; }
@@ -360,6 +363,15 @@ void
 AnalysisResult::addTriplet(const std::string& subject, const std::string& predicate,
         const std::string& object){
     p->m_writer.addTriplet(subject, predicate, object);
+}
+std::string
+AnalysisResult::newAnonymousUri(){
+    std::string result;
+    result.resize(6);
+    result[0]=':';
+    for(int i=1; i<6; i++)
+      result[i]=(char)((random() % 26) + 'a');
+    return result;
 }
 bool
 AnalysisResult::Private::checkCardinality(const RegisteredField* field) {
