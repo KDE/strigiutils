@@ -147,12 +147,12 @@ VariantPrivate::b() const {
     switch (vartype) {
     case Variant::b_val:
     case Variant::i_val:
-         return i_value;
+         return i_value != 0;
     case Variant::s_val:
          return s_value == "1" || s_value == "true" || s_value == "True"
              || s_value == "TRUE";
     case Variant::as_val:
-         return as_value.size();
+         return as_value.size() != 0;
     default:
          return false;
     }

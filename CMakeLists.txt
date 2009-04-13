@@ -65,6 +65,7 @@ if(MSVC)
     add_definitions(-wd4309) # 'conversion' : truncation of constant value
     add_definitions(-wd4503) # decorated name length exceeded
     add_definitions(-wd4786) # identifier was truncated to '255' characters in the debug information
+    add_definitions(-wd4355) # 'this' : used in base member initializer list
 else(MSVC)
     if (NOT WIN32)
        if(NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")     # I suppose even GCC on SunOS doesn't like -fPIC

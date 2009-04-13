@@ -419,7 +419,7 @@ ArchiveReader::isArchive(const std::string& url) {
     if (p->localStat(url, e) != 0) {
         return false;
     }
-    return e.type & (EntryInfo::File | EntryInfo::Dir);
+    return ((e.type & (EntryInfo::File | EntryInfo::Dir)) != 0);
 }
 std::vector<EntryInfo>
 convert(const ArchiveEntryCache::SubEntry* entry) {
