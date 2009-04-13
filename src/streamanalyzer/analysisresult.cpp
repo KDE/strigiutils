@@ -30,6 +30,7 @@
 #include "streambase.h"
 #include "textutils.h"
 #include "strigi_thread.h"
+#include <time.h>
 #include <string>
 #include <cstdlib>
 #include <iconv.h>
@@ -138,6 +139,7 @@ AnalysisResult::AnalysisResult(const std::string& path, const char* name,
         time_t mt, AnalysisResult& parent)
         :p(new Private(path, name, mt, *this, parent)) {
     p->m_writer.startAnalysis(this);
+    srand(time(NULL));
 }
 AnalysisResult::Private::Private(const std::string& p, time_t mt,
         IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath,
@@ -370,7 +372,7 @@ AnalysisResult::newAnonymousUri(){
     result.resize(6);
     result[0]=':';
     for(int i=1; i<6; i++)
-      result[i]=(char)((random() % 26) + 'a');
+      result[i]=(char)((rand() % 26) + 'a');
     return result;
 }
 bool
