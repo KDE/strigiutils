@@ -380,6 +380,7 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
         cerr << "saxError in FieldPropertiesDB::parseProperties." << endl;
     }
 
+    xmlFreeDoc(ctxt->myDoc);
     xmlFreeParserCtxt(ctxt);
     entities.clear();
 
