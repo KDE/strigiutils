@@ -73,7 +73,7 @@ public:
     string currentElementResource;
     FieldProperties::Private currentField;
     ClassProperties::Private currentClass;
-    map<string,xmlEntity*> xmlEntities;
+    map<string, xmlEntity> xmlEntities;
     list< pair<string, string> > entities;
 
     void setDefinitionAttribute(const char * name, const char * value);
@@ -383,11 +383,10 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
     xmlFreeParserCtxt(ctxt);
     entities.clear();
 
-    for (map<std::string, xmlEntityPtr>::iterator j=xmlEntities.begin();
+    for (map<std::string, xmlEntity>::iterator j=xmlEntities.begin();
             j!=xmlEntities.end(); ++j) {
-        delete [] j->second->name;
-        delete [] j->second->content;
-        delete j->second;
+        delete [] j->second.name;
+        delete [] j->second.content;
     }
     xmlEntities.clear();
 }
@@ -396,32 +395,26 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
         int type, const xmlChar* publicId, const xmlChar* systemId,
         xmlChar* content) {
     Private* p = (Private*)ctx;
-    xmlEntityPtr newEntity;
-    char * str;
-    int len;
-    map<std::string, xmlEntityPtr>::const_iterator j
-        = p->xmlEntities.find((const char *)name);
+    string stdname((const char*)name);
+    map<std::string, xmlEntity>::const_iterator j
+        = p->xmlEntities.find(stdname);
     if (j == p->xmlEntities.end()) {
-        newEntity = new xmlEntity;
-        memset(newEntity, 0 , sizeof(xmlEntity));
-        newEntity->type = XML_ENTITY_DECL;
+        pair<string,string> pr;
+        pr.first.reserve(stdname.size()+2);
+        pr.first.append("&").append(stdname).append(";");
+        pr.second.assign((const char*)content);
+        p->entities.push_back(pr);
 
-        len=strlen((const char*)name);
-        str = new char[len+1];
-        strcpy(str, (const char*)name);
-        newEntity->name = (const xmlChar *)str;
-        len = strlen((const char *)content);
-        newEntity->length = len;
-        str = new char[len+1];
-        strcpy(str, (const char *)content);
-        newEntity->orig = (xmlChar *)str;
-        newEntity->content = (xmlChar *)str;
-        newEntity->etype = XML_INTERNAL_GENERAL_ENTITY;
-        newEntity->URI = (xmlChar *)str;
-
-        p->xmlEntities[(const char *)name] = newEntity;
-        p->entities.push_back(
-            pair<string,string>((const char *)name, (const char *)content));
+        xmlEntity& newEntity = p->xmlEntities[stdname];
+        newEntity.type = XML_ENTITY_DECL;
+        newEntity.name = (xmlChar*)new char[stdname.size()+1];
+        strcpy((char*)newEntity.name, stdname.c_str());
+        newEntity.length = pr.second.size();
+        newEntity.orig = (xmlChar*)new char[newEntity.length+1];
+        strcpy((char*)newEntity.orig, (const char*)content);
+        newEntity.content = newEntity.orig;
+        newEntity.etype = XML_INTERNAL_GENERAL_ENTITY;
+        newEntity.URI = newEntity.orig;
     } else {
         cerr << "Error: entity " << name << " redeclared." << endl;
     }
@@ -430,12 +423,12 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
 xmlEntityPtr
 FieldPropertiesDb::Private::getEntitySAXFunc(void * ctx, const xmlChar * name) {
     Private* p = (Private*)ctx;
-    map<std::string, xmlEntityPtr>::const_iterator j
+    map<std::string, xmlEntity>::iterator j
         = p->xmlEntities.find((const char *)name);
     if (j == p->xmlEntities.end()) {
         return NULL;
     } else {
-        return j->second;
+        return &j->second;
     }
 }
 
@@ -476,15 +469,14 @@ FieldPropertiesDb::Private::isBoolValid(const char *uri, const char* name,
 }
 
 // workaround for entities handling problem with libxml
+// what is the problem? this is an expensive function
 void
 FieldPropertiesDb::Private::replaceEntities(string& value) {
     for (list< pair<string, string> >::const_iterator j = entities.begin();
             j != entities.end(); ++j) {
-        string entity = '&' + j->first + ';';
         size_t pos = string::npos;
-        while((pos = value.find(entity)) != string::npos) {
-        value.erase(pos, entity.size());
-            value.insert(pos, j->second);
+        while((pos = value.find(j->first)) != string::npos) {
+            value.replace(pos, j->first.size(), j->second);
         }
     }
 }
