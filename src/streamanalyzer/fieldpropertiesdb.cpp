@@ -475,8 +475,8 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
          size_t namelen, const char* value, size_t valuelen) {
     bool boolValue;
     //Trim leading and trailing whitespace
-    string val(value, valuelen);
-    val.erase(0, val.find_first_not_of(" \t\n"));
+    size_t trimmedvallen = valuelen - strspn(value, " \t\n");
+    string val(value + valuelen - trimmedvallen, trimmedvallen);
     val.erase(val.find_last_not_of(" \t\n") + 1);
 
     if (currentDefinition == defProperty) {
