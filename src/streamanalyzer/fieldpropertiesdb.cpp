@@ -22,6 +22,11 @@
 #include "fieldproperties_private.h"
 #include "fieldtypes.h"
 #include <vector>
+#include <map>
+#include <iostream>
+#include <set>
+#include <cstdlib>
+#include <cstring>
 #include <sys/types.h>
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
@@ -34,12 +39,6 @@
 #include <libxml/SAX2.h>
 #include <sys/stat.h>
 #include <config.h>
-#include <cstdlib>
-#include <cstring>
-#include <map>
-#include <iostream>
-#include <list>
-#include <set>
 
 using namespace Strigi;
 using namespace std;
@@ -59,7 +58,7 @@ public:
     void loadProperties(const string& dir);
     void parseProperties(char*data);
     void storeProperties(FieldProperties::Private& props);
-    void warnIfLocale(const char* name, string& locale);
+    void warnIfLocale(const char* name, const string& locale);
 
 // SAX Callbacks and stuff
     map<string, FieldProperties::Private> pProperties;
@@ -74,9 +73,9 @@ public:
     FieldProperties::Private currentField;
     ClassProperties::Private currentClass;
     map<string, xmlEntity> xmlEntities;
-    list< pair<string, string> > entities;
 
-    void setDefinitionAttribute(const char * name, const char * value);
+    void setDefinitionAttribute(const char* name, size_t namelen,
+        const char * value, size_t valuelen);
 
     static void charactersSAXFunc(void* ctx, const xmlChar * ch, int len);
     static void errorSAXFunc(void* ctx, const char * msg, ...);
@@ -92,8 +91,6 @@ public:
 
     static bool isBoolValid(const char *uri, const char* name,
         const char* value, bool& result);
-    void replaceEntities(string& value);
-
 };
 
 const FieldProperties&
@@ -372,8 +369,13 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
     currentDefinition = defNone;
 
     ctxt = xmlCreatePushParserCtxt(&handler, this, data, strlen(data), "xxx");
-    if (ctxt == 0 || xmlParseChunk(ctxt, 0, 0, 1)) {
+    if (ctxt == 0) {
         saxError = true;
+    } else {
+        xmlCtxtUseOptions(ctxt, XML_PARSE_NOENT);
+        if (xmlParseChunk(ctxt, 0, 0, 1)) {
+            saxError = true;
+        }
     }
 
     if(saxError) {
@@ -382,7 +384,6 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
 
     xmlFreeDoc(ctxt->myDoc);
     xmlFreeParserCtxt(ctxt);
-    entities.clear();
 
     for (map<std::string, xmlEntity>::iterator j=xmlEntities.begin();
             j!=xmlEntities.end(); ++j) {
@@ -400,17 +401,11 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
     map<std::string, xmlEntity>::const_iterator j
         = p->xmlEntities.find(stdname);
     if (j == p->xmlEntities.end()) {
-        pair<string,string> pr;
-        pr.first.reserve(stdname.size()+2);
-        pr.first.append("&").append(stdname).append(";");
-        pr.second.assign((const char*)content);
-        p->entities.push_back(pr);
-
         xmlEntity& newEntity = p->xmlEntities[stdname];
         newEntity.type = XML_ENTITY_DECL;
         newEntity.name = (xmlChar*)new char[stdname.size()+1];
         strcpy((char*)newEntity.name, stdname.c_str());
-        newEntity.length = pr.second.size();
+        newEntity.length = strlen((const char*)content);
         newEntity.orig = (xmlChar*)new char[newEntity.length+1];
         strcpy((char*)newEntity.orig, (const char*)content);
         newEntity.content = newEntity.orig;
@@ -468,33 +463,24 @@ FieldPropertiesDb::Private::isBoolValid(const char *uri, const char* name,
     }
     return true;
 }
-
-// workaround for entities handling problem with libxml
-// what is the problem? this is an expensive function
-void
-FieldPropertiesDb::Private::replaceEntities(string& value) {
-    for (list< pair<string, string> >::const_iterator j = entities.begin();
-            j != entities.end(); ++j) {
-        size_t pos = string::npos;
-        while((pos = value.find(j->first)) != string::npos) {
-            value.replace(pos, j->first.size(), j->second);
-        }
-    }
+namespace {
+// due to inlining, the strlen(B) is evaluated at runtime when B is a literal
+// string
+inline bool compare(const char* a, size_t alen, const char* b) {
+    return alen == strlen(b) && strncmp(a, b, strlen(b)) == 0;
 }
-
+}
 void
-FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
-         const char * value) {
+FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
+         size_t namelen, const char* value, size_t valuelen) {
     bool boolValue;
     //Trim leading and trailing whitespace
-    string val = value;
+    string val(value, valuelen);
     val.erase(0, val.find_first_not_of(" \t\n"));
     val.erase(val.find_last_not_of(" \t\n") + 1);
 
-    replaceEntities(val);
-
     if (currentDefinition == defProperty) {
-        if (strcmp(name, "about") == 0) {
+        if (compare(name, namelen, "about")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentField.uri.size()) {
                 cerr << "Uri is already defined for " << currentField.uri << "."
@@ -502,7 +488,7 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
             } else {
                 currentField.uri.assign(val);
             }
-        } else if (strcmp(name, "alias") == 0) {
+        } else if (compare(name, namelen, "alias")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentField.alias.size()) {
                 cerr << "alias is already defined for " << currentField.uri << "."
@@ -510,16 +496,15 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
             } else {
                 currentField.alias.assign(val);
             }
-        } else if(strcmp(name, "range") == 0) {
+        } else if (compare(name, namelen, "range")) {
             warnIfLocale(currentField.uri.c_str(), currentElementLang);
             if (currentField.typeuri.size()) {
                cerr << "range is already defined for " << currentField.uri
                    << "." << endl;
             } else {
-                replaceEntities(currentElementResource);
                 currentField.typeuri.assign(currentElementResource);
             }
-        } else if(strcmp(name, "label") == 0) {
+        } else if (compare(name, namelen, "label")) {
             if (currentElementLang.size()) {
                 FieldProperties::Localized l(
                     currentField.localized[currentElementLang]);
@@ -537,7 +522,7 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
             } else {
                 currentField.name.assign(val);
             }
-        } else if (strcmp(name, "comment") == 0) {
+        } else if (compare(name, namelen, "comment")) {
             if (currentElementLang.size()) {
                 FieldProperties::Localized l(
                     currentField.localized[currentElementLang]);
@@ -555,44 +540,42 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
             } else {
                 currentField.description.assign(val);
             }
-        } else if (strcmp(name, "subPropertyOf") == 0) {
-            replaceEntities(currentElementResource);
+        } else if (compare(name, namelen, "subPropertyOf")) {
             currentField.parentUris.push_back(currentElementResource);
-        } else if (strcmp(name, "domain") == 0) {
-            replaceEntities(currentElementResource);
+        } else if (compare(name, namelen, "domain")) {
             currentField.applicableClasses.push_back(currentElementResource);
-        } else if (strcmp(name, "binary") == 0) {
+        } else if (compare(name, namelen, "binary")) {
             if (isBoolValid(currentField.uri.c_str(), "binary", value,
                     boolValue)) {
                 currentField.binary = boolValue;
             }
-        } else if (strcmp(name, "compressed") == 0) {
+        } else if (compare(name, namelen, "compressed")) {
             if (isBoolValid(currentField.uri.c_str(), "compressed", value,
                     boolValue)) {
                 currentField.compressed = boolValue;
             }
-        } else if (strcmp(name, "indexed") == 0) {
+        } else if (compare(name, namelen, "indexed")) {
             if (isBoolValid(currentField.uri.c_str(), "indexed", value,
                     boolValue)) {
                 currentField.indexed = boolValue;
             }
-        } else if (strcmp(name, "stored") == 0) {
+        } else if (compare(name, namelen, "stored")) {
             if (isBoolValid(currentField.uri.c_str(), "stored", value,
                     boolValue)) {
                 currentField.stored = boolValue;
             }
-        } else if (strcmp(name, "tokenized") == 0) {
+        } else if (compare(name, namelen, "tokenized")) {
             if (isBoolValid(currentField.uri.c_str(), "tokenized", value,
                     boolValue)) {
                 currentField.tokenized = boolValue;
             }
-        } else if (strcmp(name, "minCardinality") == 0) {
+        } else if (compare(name, namelen, "minCardinality")) {
             currentField.min_cardinality = atoi(value);
-        } else if (strcmp(name, "maxCardinality") == 0) {
+        } else if (compare(name, namelen, "maxCardinality")) {
             currentField.max_cardinality = atoi(value);
         }
     } else if (currentDefinition == defClass) {
-        if (strcmp(name, "about") == 0) {
+        if (compare(name, namelen, "about")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentClass.uri.size()) {
                 cerr << "Uri is already defined for " << currentClass.uri
@@ -601,7 +584,7 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
         } else {
             currentClass.uri.assign(val);
         }
-    } else if (strcmp(name, "label") == 0) {
+    } else if (compare(name, namelen, "label")) {
         if (currentElementLang.size()) {
             ClassProperties::Localized l(
                 currentClass.localized[currentElementLang]);
@@ -619,7 +602,7 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
         } else {
             currentClass.name.assign(val);
         }
-    } else if (strcmp(name, "comment") == 0) {
+    } else if (compare(name, namelen, "comment")) {
         if (currentElementLang.size()) {
             ClassProperties::Localized l(
                     currentClass.localized[currentElementLang]);
@@ -637,8 +620,7 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char * name,
         } else {
             currentClass.description.assign(val);
         }
-    } else if(strcmp(name, "subClassOf") == 0) {
-        replaceEntities(currentElementResource);
+    } else if(compare(name, namelen, "subClassOf")) {
         currentClass.parentUris.push_back(currentElementResource);
     }
 }
@@ -658,17 +640,20 @@ FieldPropertiesDb::Private::startElementNsSAX2Func(void * ctx,
         }
         if (p->currentDefinition != defNone) {
             for (int i=0; i<nb_attributes; i++) {
-                p->setDefinitionAttribute((const char*)attributes[i*5],
-                    (const char*)attributes[3+i*5]);
+                const xmlChar ** a = attributes + i*5;
+                p->setDefinitionAttribute((const char*)a[0],
+                    strlen((const char*)a[0]), (const char*)a[3], a[4]-a[3]);
             }
         }
     } else {
         p->currentSubElement = (const char *)localname;
         for (int i=0; i<nb_attributes; i++) {
-            if (strcmp((const char*)attributes[i*5], "resource") == 0) {
-                p->currentElementResource = (const char*)attributes[3+i*5];
+            const xmlChar ** a = attributes + i*5;
+            size_t len = a[0]-a[1];
+            if (len == 8 && strncmp((const char*)attributes[i*5], "resource", 8) == 0) {
+                p->currentElementResource.assign((const char*)a[3], a[4]-a[3]);
             } else if (strcmp((const char*)attributes[i*5], "lang") == 0) {
-                p->currentElementLang = (const char*)attributes[3+i*5];
+                p->currentElementLang.assign((const char*)a[3], a[4]-a[3]);
             }
         }
     }
@@ -701,7 +686,9 @@ FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
         } else {
             if (p->currentSubElement == (const char*)localname) {
                 p->setDefinitionAttribute(p->currentSubElement.c_str(),
-                p->currentElementChars.c_str());
+                    p->currentSubElement.size(),
+                    p->currentElementChars.c_str(),
+                    p->currentElementChars.size());
                 p->currentSubElement = "";
                 p->currentElementChars = "";
                 p->currentElementResource = "";
@@ -723,7 +710,7 @@ FieldPropertiesDb::Private::storeProperties(FieldProperties::Private& p) {
 }
 
 void
-FieldPropertiesDb::Private::warnIfLocale(const char* name, string& locale) {
+FieldPropertiesDb::Private::warnIfLocale(const char* name, const string& locale) {
     if (locale.size()) {
         cerr << "Warning: you cannot define a locale for the resource URI "
             << name << "." << endl;
