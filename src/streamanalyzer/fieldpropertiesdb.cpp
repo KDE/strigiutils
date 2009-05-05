@@ -70,6 +70,7 @@ public:
     string currentElementChars;
     string currentElementLang;
     string currentElementResource;
+    bool nestedResource;
     FieldProperties::Private currentField;
     ClassProperties::Private currentClass;
     map<string, xmlEntity> xmlEntities;
@@ -260,7 +261,9 @@ FieldPropertiesDb::Private::Private() {
             if(propertiesByAlias.find(alias) == propertiesByAlias.end()) {
                 propertiesByAlias[alias] = property;
             } else {
-                cerr << "Error: alias " << alias << " requested by several properties" << endl;
+                cerr << "Error: alias " << alias << " requested by several properties: " << propertiesByAlias.find(alias)->second.uri()
+		  << ", " << prop->second.uri
+		  << endl;
             }
         }
 
@@ -367,7 +370,8 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
     currentField.clear();
     currentClass.clear();
     currentDefinition = defNone;
-
+    nestedResource = false;
+    
     ctxt = xmlCreatePushParserCtxt(&handler, this, data, strlen(data), "xxx");
     if (ctxt == 0) {
         saxError = true;
@@ -646,11 +650,18 @@ FieldPropertiesDb::Private::startElementNsSAX2Func(void * ctx,
             }
         }
     } else {
-        p->currentSubElement = (const char *)localname;
+	if ( (strcmp((const char *)localname, "Property") == 0) ||
+	      (strcmp((const char *)localname, "Class") == 0) ) {
+	    p->nestedResource = true;
+	} else {
+	  p->currentSubElement = (const char *)localname;
+	}
         for (int i=0; i<nb_attributes; i++) {
             const xmlChar ** a = attributes + i*5;
             size_t len = a[0]-a[1];
             if (len == 8 && strncmp((const char*)attributes[i*5], "resource", 8) == 0) {
+                p->currentElementResource.assign((const char*)a[3], a[4]-a[3]);
+            } else if (strcmp((const char*)attributes[i*5], "about") == 0) {
                 p->currentElementResource.assign((const char*)a[3], a[4]-a[3]);
             } else if (strcmp((const char*)attributes[i*5], "lang") == 0) {
                 p->currentElementLang.assign((const char*)a[3], a[4]-a[3]);
@@ -666,23 +677,31 @@ FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
 
     if (p->currentDefinition!=defNone) {
         if (strcmp((const char *)localname, "Property") == 0) {
-            if (p->currentField.uri.size()) {
-                if(!p->currentField.alias.size()) {
-                    size_t pos;
-                    if ((pos = p->currentField.uri.rfind('#')) != string::npos){
-                        p->currentField.alias = p->currentField.uri.substr(pos+1);
-                    }
-                }
-                p->pProperties[p->currentField.uri] = p->currentField;
-                p->currentField.clear();
-            }
-            p->currentDefinition = defNone;
+	    if (p->nestedResource) {
+		p->nestedResource = false;
+	    } else {
+		if (p->currentField.uri.size()) {
+		    if(!p->currentField.alias.size()) {
+			size_t pos;
+			if ((pos = p->currentField.uri.rfind('#')) != string::npos){
+			    p->currentField.alias = p->currentField.uri.substr(pos+1);
+			}
+		    }
+		    p->pProperties[p->currentField.uri] = p->currentField;
+		    p->currentField.clear();
+		}
+		p->currentDefinition = defNone;
+	    }
         } else if (strcmp((const char *)localname, "Class") == 0) {
-            if (p->currentClass.uri.size()) {
-                p->pClasses[p->currentClass.uri] = p->currentClass;
-                p->currentClass.clear();
-            }
-            p->currentDefinition = defNone;
+	    if (p->nestedResource) {
+		p->nestedResource = false;
+	    } else {
+		if (p->currentClass.uri.size()) {
+		    p->pClasses[p->currentClass.uri] = p->currentClass;
+		    p->currentClass.clear();
+		}
+		p->currentDefinition = defNone;
+	    }
         } else {
             if (p->currentSubElement == (const char*)localname) {
                 p->setDefinitionAttribute(p->currentSubElement.c_str(),
