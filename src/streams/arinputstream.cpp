@@ -136,4 +136,5 @@ ArInputStream::readHeader() {
     } else {
         m_entryinfo.filename = std::string(b, len);
     }
+    m_entryinfo.type = Strigi::EntryInfo::File;
 }
