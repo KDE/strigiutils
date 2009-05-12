@@ -56,7 +56,7 @@ public:
     static vector<string> getXdgDirs();
     void addEssentialProperties();
     void loadProperties(const string& dir);
-    void parseProperties(char*data);
+    void parseProperties(FILE* f);
     void storeProperties(FieldProperties::Private& props);
     void warnIfLocale(const char* name, const string& locale);
 
@@ -326,30 +326,33 @@ FieldPropertiesDb::Private::loadProperties(const string& dir) {
     }
     struct dirent* de = readdir(d);
     struct stat s;
-    char* data = 0;
     while (de) {
         string path(pdir+de->d_name);
         if (path.length() >= 5 && path.substr(path.length()-5) == ".rdfs" &&
                 !stat(path.c_str(), &s) && S_ISREG(s.st_mode)) {
             FILE* f = fopen(path.c_str(), "r");
             if (f) {
-                // read the entire file at once
-                data = (char*)realloc(data, s.st_size+1);
-                if (fread(data, 1, s.st_size, f) == (size_t)s.st_size) {
-                    //fprintf(stderr, "parsing %s\n", path.c_str());
-                    data[s.st_size] = '\0';
-                    parseProperties(data);
-                }
+                parseProperties(f);
                 fclose(f);
             }
         }
         de = readdir(d);
     }
     closedir(d);
-    free(data);
+}
+namespace {
+int
+strigi_xmlFileRead(void* context, char* buffer, int len) {
+    FILE* f = (FILE*)context;
+    return fread(buffer, 1, len, f);
+}
+int
+strigi_xmlFileClose(void*) {
+    return 0;
+}
 }
 void
-FieldPropertiesDb::Private::parseProperties(char* data) {
+FieldPropertiesDb::Private::parseProperties(FILE* f) {
     FieldProperties::Private props;
 
     xmlParserCtxtPtr ctxt;
@@ -372,12 +375,12 @@ FieldPropertiesDb::Private::parseProperties(char* data) {
     currentDefinition = defNone;
     nestedResource = false;
     
-    ctxt = xmlCreatePushParserCtxt(&handler, this, data, strlen(data), "xxx");
+    ctxt = xmlCreateIOParserCtxt(&handler, this, strigi_xmlFileRead, strigi_xmlFileClose, f, XML_CHAR_ENCODING_NONE);
     if (ctxt == 0) {
         saxError = true;
     } else {
         xmlCtxtUseOptions(ctxt, XML_PARSE_NOENT);
-        if (xmlParseChunk(ctxt, 0, 0, 1)) {
+        if (xmlParseDocument(ctxt)) {
             saxError = true;
         }
     }
