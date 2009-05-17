@@ -204,19 +204,17 @@ bool
 fnumberToApertureValue(string& fnumber) {
     // Convert the F number to the aperture value
     // return true if the value in fnumber is changed to ApertureValue
+    // F number = sqrt(pow(2, apex))
     char* end;
     double c = strtod(fnumber.c_str(), &end);
     if (c <= 0 || c == HUGE_VALF || *end == '\0') return false;
     double d = strtod(end + 1, &end);
     if (d <= 0 || d == HUGE_VALF) return false;
     c /= d;
-#ifdef _MSC_VER
-    double apex = log10(2.)/log10(c * c);
-    apex *= 65536;
+
+    // do not use log2() or round() here to be cross-platform
+    double apex = log(c*c) / M_LN2 * 65536;
     apex  = (apex < 0 ? ceil(apex - 0.5) : floor(apex + 0.5));
-#else
-    double apex = round(log2(c * c) * 65536);
-#endif
     std::ostringstream aperture;
     aperture << apex << "/65536";
     fnumber.assign(aperture.str());
