@@ -29,7 +29,7 @@
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
-
+#include <math.h>
 #ifdef _MSC_VER
 // at least MSVC2008 needs this define for defines like M_LN2
 #define _USE_MATH_DEFINES
