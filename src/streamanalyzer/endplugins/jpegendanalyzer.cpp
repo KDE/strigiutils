@@ -30,7 +30,11 @@
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
 
+#ifdef _MSC_VER
+// at least MSVC2008 needs this define for defines like M_LN2
+#define _USE_MATH_DEFINES
 #include <cmath>
+#endif
 
 #ifdef _MSC_VER
 #define HUGE_VALF HUGE_VAL
