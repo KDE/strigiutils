@@ -92,7 +92,7 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
     // PNG spec says Source is Device used to create the image
     sourceField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#cameraModel");
+        "http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#model");
     commentField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
     typeField = reg.typeField;

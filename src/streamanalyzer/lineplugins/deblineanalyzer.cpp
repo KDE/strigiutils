@@ -69,7 +69,7 @@ DebLineAnalyzer::startAnalysis(AnalysisResult* res) {
     // it is .deb file after all
     result=res;
     finished=0;
-    result->addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
+    result->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software");
 }
 void
 DebLineAnalyzer::endAnalysis(bool complete) {

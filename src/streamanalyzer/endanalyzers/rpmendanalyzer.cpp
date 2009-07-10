@@ -83,7 +83,7 @@ RpmEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
     } else {
         m_error.resize(0);
     }
-    idx.addValue(factory->typeField, "http://freedesktop.org/standards/xesam/1.0/core#SoftwarePackage");
+    idx.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Software");
     return 0;
 }
 

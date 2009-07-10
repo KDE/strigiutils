@@ -35,7 +35,7 @@ XpmLineAnalyzerFactory::registerFields(FieldRegister& reg) {
     heightField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     numberOfColorsField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount");
     typeField = reg.typeField;
 
     addField(widthField);

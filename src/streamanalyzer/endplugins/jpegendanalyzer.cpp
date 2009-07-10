@@ -124,7 +124,7 @@ const string modelFieldName(NEXIF "model");
 const string creationDateFieldName("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
 const string widthFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
 const string heightFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
-const string orientationFieldName("http://freedesktop.org/standards/xesam/1.0/core#orientation");
+const string orientationFieldName(NEXIF "orientation");
 const string colorModeFieldName("http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
 const string flashUsedFieldName(NEXIF "flash");
 const string focalLengthFieldName(NEXIF "focalLength");

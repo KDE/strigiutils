@@ -47,7 +47,7 @@ const string FieldRegister::binaryType = "binary";
 const string FieldRegister::stringType = "string";
 const string FieldRegister::datetimeType = "datetime";
 
-const string FieldRegister::pathFieldName = "http://freedesktop.org/standards/xesam/1.0/core#url";
+const string FieldRegister::pathFieldName = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileUrl";
 const string FieldRegister::parentLocationFieldName = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#isPartOf";
 const string FieldRegister::encodingFieldName = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#characterSet";
 const string FieldRegister::mimetypeFieldName = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#mimeType";
@@ -55,7 +55,7 @@ const string FieldRegister::filenameFieldName = "http://www.semanticdesktop.org/
 const string FieldRegister::contentFieldName = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent";
 const string FieldRegister::extensionFieldName = "http://freedesktop.org/standards/xesam/1.0/core#fileExtension";
 const string FieldRegister::embeddepthFieldName = "http://strigi.sf.net/ontologies/0.9#depth";
-const string FieldRegister::mtimeFieldName = "http://freedesktop.org/standards/xesam/1.0/core#sourceModified";
+const string FieldRegister::mtimeFieldName = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileLastModified";
 const string FieldRegister::sizeFieldName = "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentSize";
 const string FieldRegister::typeFieldName = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 

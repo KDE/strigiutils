@@ -43,7 +43,7 @@ IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     bitsPerPixelField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     colorCountField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#colorCount");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount");
 
     addField(widthField);
     addField(heightField);
