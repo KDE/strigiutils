@@ -1,9 +1,10 @@
 0.6.5
- - Fix KDE bug 185551: Strigi now allows path that start with protocol:/* like 'file:///' or 'remote:/'
+ - Fix KDE bug 185551: Strigi now allows paths that start with protocol:/* like 'file:///' or 'remote:/'
  - Add a new function AnalysisResult::child(). This function allows an AnalysisResult instance to access the last child it has had indexed. This is needed for cases when a parent knows something about a child which the child does not know. In such cases the parent can call child()->addValue(...).
  - Adjust to the new library naming scheme in iconv-1.12
  - Implemented missing addTriplet method
- - Rewrite the implementation of ArchiveReader. The new implementation is more effient in listing contents of directories. Now single directory entries can be returned without the need for reading the entire archive of which the directory is a part.
+ - Rewrite the implementation of ArchiveReader. The new implementation is more
+ efficient in listing contents of directories. Now single directory entries can be returned without the need for reading the entire archive of which the directory is a part.
 0.6.4
  - Path fixes to the build system the benefit of windows users (sengels)
  - Clean up of class ArchiveReader
