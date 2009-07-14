@@ -328,7 +328,7 @@ FieldPropertiesDb::Private::loadProperties(const string& dir) {
     struct stat s;
     while (de) {
         string path(pdir+de->d_name);
-        if (path.length() >= 5 && path.substr(path.length()-5) == ".rdfs" &&
+        if (path.length() >= 5 && path.compare(path.length() - 5, 5, ".rdfs", 5) == 0 &&
                 !stat(path.c_str(), &s) && S_ISREG(s.st_mode)) {
             FILE* f = fopen(path.c_str(), "r");
             if (f) {
