@@ -312,7 +312,7 @@ protected:
     void releaseWriterData(const Strigi::FieldRegister&);
 public:
     explicit RdfIndexWriter(std::ostream& o, const TagMapping& m, rdfset& r)
-            :out(o), mapping(m) ,rdf(r){
+            :out(o), rdf(r), mapping(m) {
         STRIGI_MUTEX_INIT(&mutex);
     }
     ~RdfIndexWriter() {
