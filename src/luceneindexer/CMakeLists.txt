@@ -54,7 +54,8 @@ set_target_properties(clucene PROPERTIES PREFIX ${prefix})
 target_link_libraries(clucene ${CLUCENE_LIBRARY} streamanalyzer)
 install(TARGETS clucene LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 
-add_executable(luceneindexer luceneindexer.cpp)
-target_link_libraries(luceneindexer streamanalyzer)
-
-install(TARGETS luceneindexer RUNTIME DESTINATION bin)
+if(BUILD_UTILS)
+  add_executable(luceneindexer luceneindexer.cpp)
+  target_link_libraries(luceneindexer streamanalyzer)
+  install(TARGETS luceneindexer RUNTIME DESTINATION bin)
+endif(BUILD_UTILS)

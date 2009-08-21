@@ -2,7 +2,12 @@
 # Check copied from kdelibs FindX11.cmake.
 CHECK_LIBRARY_EXISTS("socket" "connect" "" CMAKE_LIB_SOCKET_HAS_CONNECT)
 
-set(DIRS streams streamanalyzer archivereader xsd dummyindexer xmlindexer combinedindexer strigicmd)
+set(DIRS streams streamanalyzer archivereader combinedindexer dummyindexer)
+
+if (BUILD_UTILS)
+    add_subdirectory(strigicmd)
+    add_subdirectory(xmlindexer)
+endif (BUILD_UTILS)
 
 if (CppUnit_FOUND)
     add_subdirectory(indexertests)
@@ -30,9 +35,10 @@ if (QT_QTDBUS_FOUND AND NOT WIN32)
   set(DIRS ${DIRS} searchclient)
 endif (QT_QTDBUS_FOUND AND NOT WIN32)
 # make sure we build the daemon on all architectures - not as long as sys/socket.h is used
-if(NOT WIN32)
-  set(DIRS ${DIRS} daemon)
-endif(NOT WIN32)
+if(BUILD_DAEMON AND NOT WIN32)
+  add_subdirectory(daemon)
+  add_subdirectory(xsd)
+endif(BUILD_DAEMON AND NOT WIN32)
 
 if (NOT CLucene_FOUND)
   message("** No CLucene libraries were found, so Strigi cannot use indexes.")

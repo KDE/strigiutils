@@ -3,7 +3,12 @@
 # so instead just don't do the tests here.
 CHECK_FUNCTION_EXISTS(mkdtemp HAVE_MKDTEMP)
 
-set (TESTINGDIRS utils indextesters streamanalyzer daemon)
+set (TESTINGDIRS utils indextesters streamanalyzer)
+
+IF(BUILD_DAEMON)
+    add_subdirectory(daemon)
+ENDIF(BUILD_DAEMON)
+
 IF(NOT HAVE_MKDTEMP)
     MESSAGE(WARNING " No mkdtemp found; some Strigi tests are suppressed.")
     SET(TESTINGDIRS utils daemon)

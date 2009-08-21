@@ -14,16 +14,20 @@ include_directories(
 add_executable(dummyindexer dummyindexer.cpp)
 target_link_libraries(dummyindexer streamanalyzer)
 
-add_executable(deepfind deepfind.cpp)
-target_link_libraries(deepfind streamanalyzer)
-install(TARGETS deepfind RUNTIME DESTINATION bin)
+if(BUILD_DEEPTOOLS)
+  add_executable(deepfind deepfind.cpp)
+  target_link_libraries(deepfind streamanalyzer)
+  install(TARGETS deepfind RUNTIME DESTINATION bin)
+endif (BUILD_DEEPTOOLS)
 
 add_library(grepindexer STATIC grepindexreader.cpp grepindexmanager.cpp
     grepindexwriter.cpp ${REGEX_SOURCES})
 
-add_executable(deepgrep deepgrep.cpp)
-target_link_libraries(deepgrep grepindexer streamanalyzer ${REGEX_LIBRARIES})
-install(TARGETS deepgrep RUNTIME DESTINATION bin)
+if(BUILD_DEEPTOOLS)
+  add_executable(deepgrep deepgrep.cpp)
+  target_link_libraries(deepgrep grepindexer streamanalyzer ${REGEX_LIBRARIES})
+  install(TARGETS deepgrep RUNTIME DESTINATION bin)
+endif (BUILD_DEEPTOOLS)
 
 add_executable(greptest grepindexreader.cpp)
 target_link_libraries(greptest streamanalyzer)
