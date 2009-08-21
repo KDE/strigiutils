@@ -103,7 +103,11 @@ FlacThroughAnalyzer::connectInputStream(InputStream* in) {
       nreq = (blocktype & 0x80 ? blocksize : blocksize+4);
 	
       nread = in->read(buf, nreq, nreq);
-
+      if (nread!=nreq) {
+	in->reset(0);
+        return in;
+      }
+      
       // we are looking for the comments block only
       if ((blocktype&0x7F)==4) {
 	const char *p2 = buf + 4 + readLittleEndianUInt32(buf); //skip vendor string. maybe put it into metadata as soon as there's some place for it
