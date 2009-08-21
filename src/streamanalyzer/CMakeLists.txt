@@ -59,6 +59,7 @@ set(streamanalyzer_SRCS
 	saxanalyzers/odfsaxanalyzer.cpp
 	throughanalyzers/id3v2throughanalyzer.cpp
 	throughanalyzers/oggthroughanalyzer.cpp
+	throughanalyzers/flacthroughanalyzer.cpp
 )
 
 add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})

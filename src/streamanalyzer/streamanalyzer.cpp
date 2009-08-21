@@ -46,6 +46,7 @@
 #include "dataeventinputstream.h"
 #include "throughanalyzers/id3v2throughanalyzer.h"
 #include "throughanalyzers/oggthroughanalyzer.h"
+#include "throughanalyzers/flacthroughanalyzer.h"
 #include "eventanalyzers/digesteventanalyzer.h"
 #include "lineanalyzers/odfmimetypelineanalyzer.h"
 #include "saxanalyzers/odfsaxanalyzer.h"
@@ -260,6 +261,7 @@ StreamAnalyzerPrivate::initializeThroughFactories() {
     }
     addFactory(new ID3V2ThroughAnalyzerFactory());
     addFactory(new OggThroughAnalyzerFactory());
+    addFactory(new FlacThroughAnalyzerFactory());
     addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,
         eventfactories));
 }
