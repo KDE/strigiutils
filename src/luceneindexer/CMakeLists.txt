@@ -1,8 +1,5 @@
 include (CheckCXXCompilerFlag)
 
-# TODO: fix the tests in the directory 'tests' and reenable them
-subdirs(indexdump simplereader tests)
-
 include_directories(
     ${strigi_SOURCE_DIR}/src/streamanalyzer
     ${strigi_SOURCE_DIR}/src/streams
@@ -59,3 +56,11 @@ if(BUILD_UTILS)
   target_link_libraries(luceneindexer streamanalyzer)
   install(TARGETS luceneindexer RUNTIME DESTINATION bin)
 endif(BUILD_UTILS)
+
+add_subdirectory(indexdump)
+add_subdirectory(simplereader)
+
+# TODO: fix the tests in the directory 'tests' and reenable them
+if (CppUnit_FOUND)
+  add_subdirectory(tests)
+endif (CppUnit_FOUND)

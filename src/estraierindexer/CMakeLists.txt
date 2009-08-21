@@ -1,5 +1,3 @@
-subdirs(tests)
-
 include_directories( ../streamanalyzer ../streams ${EST_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams
 	${strigi_SOURCE_DIR}/src/streams/strigi)
@@ -26,3 +24,7 @@ add_library(estraier MODULE
 set_target_properties(estraier PROPERTIES PREFIX ${prefix})
 target_link_libraries(estraier ${EST_LIBS})
 install(TARGETS estraier LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+
+if (CppUnit_FOUND)
+    add_subdirectory(tests)
+endif (CppUnit_FOUND)

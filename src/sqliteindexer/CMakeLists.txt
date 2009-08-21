@@ -1,5 +1,3 @@
-subdirs(tests)
-
 include_directories( ../streamanalyzer ../streams ../streams/strigi
 	${SQLITE_LIBRARY_DIR} ${SQLITE_INCLUDE_DIR}
 	${strigi_BINARY_DIR}/src/streams)
@@ -24,3 +22,7 @@ add_library(sqlite MODULE
 set_target_properties(sqlite PROPERTIES PREFIX ${prefix})
 target_link_libraries(sqlite ${SQLITE_LIBRARIES})
 install(TARGETS sqlite LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
+
+if (CppUnit_FOUND)
+    add_subdirectory(tests)
+endif (CppUnit_FOUND)
