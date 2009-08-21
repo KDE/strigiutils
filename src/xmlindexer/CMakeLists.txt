@@ -14,6 +14,8 @@ add_executable(rdfindexer
 
 target_link_libraries(rdfindexer streamanalyzer)
 
+install(TARGETS rdfindexer RUNTIME DESTINATION bin)
+
 add_executable(xmlindexer
         xmlindexer.cpp
         tagmapping.cpp
