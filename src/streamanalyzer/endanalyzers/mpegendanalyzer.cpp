@@ -30,6 +30,12 @@
 using namespace Strigi;
 using namespace std;
 
+#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
+const string
+    VideoClassName(
+	NMM_PROPOSAL "Video"),
+#undef NMM_PROPOSAL
+
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["length"] = r.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#duration");
@@ -145,7 +151,7 @@ MpegEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
                 break;
         }
     }
-    idx.addValue(tempfields["type"], "http://freedesktop.org/standards/xesam/1.0/core#Video");
+    idx.addValue(tempfields["type"], videoClassName);
     return 0;
 }
 
