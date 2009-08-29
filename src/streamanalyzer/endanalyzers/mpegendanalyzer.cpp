@@ -32,8 +32,8 @@ using namespace std;
 
 #define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
 const string
-    VideoClassName(
-	NMM_PROPOSAL "Video"),
+    videoClassName(
+	NMM_PROPOSAL "Video");
 #undef NMM_PROPOSAL
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
