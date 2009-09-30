@@ -30,10 +30,11 @@ endif (SQLite_FOUND)
 if(NOT WIN32)
   set(DIRS ${DIRS} htmlgui)
 endif(NOT WIN32)
-# searchclient needs htmlgui which is not compilable on win32
-if (QT_QTDBUS_FOUND AND NOT WIN32)
+
+if (QT_QTDBUS_FOUND)
   set(DIRS ${DIRS} searchclient)
-endif (QT_QTDBUS_FOUND AND NOT WIN32)
+endif (QT_QTDBUS_FOUND)
+
 # make sure we build the daemon on all architectures - not as long as sys/socket.h is used
 if(BUILD_DAEMON AND NOT WIN32)
   add_subdirectory(daemon)

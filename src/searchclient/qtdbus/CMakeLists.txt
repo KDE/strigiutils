@@ -27,7 +27,9 @@ set_target_properties(strigiqtdbusclient
                  DEFINE_SYMBOL MAKE_STRIGI_QTDBUSCLIENT_LIB
 )
 
-install(TARGETS strigiqtdbusclient LIBRARY DESTINATION ${LIB_DESTINATION})
+install(TARGETS strigiqtdbusclient RUNTIME DESTINATION bin 
+                                   LIBRARY DESTINATION ${LIB_DESTINATION} 
+                                   ARCHIVE DESTINATION ${LIB_DESTINATION})
 install(FILES strigiasyncclient.h strigiclient.h strigidbus.h strigitypes.h
   DESTINATION include/strigi/qtdbus)
 

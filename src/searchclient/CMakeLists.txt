@@ -1,6 +1,9 @@
 include_directories(../streamanalyzer ../htmlgui ../streams ../daemon
 	qtdbus ${strigi_BINARY_DIR}/src/streams filterwidget)
+
 add_subdirectory(qtdbus)
+# disable searchclient for now
+if(NOT WIN32)
 add_subdirectory(filterwidget)
 # add_subdirectory(keywordcompletion)
 
@@ -36,6 +39,4 @@ target_link_libraries(cmdlinestrigi searchclient)
 
 install(TARGETS strigiclient RUNTIME DESTINATION bin)
 
-
-
-
+endif(NOT WIN32)
