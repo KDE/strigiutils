@@ -219,10 +219,10 @@ endif(NOT WIN32)
 macro_check_gcc_visibility(__STRIGI_HAVE_GCC_VISIBILITY)
 
 find_optional_dep(CppUnit ENABLE_CPPUNIT CppUnit_FOUND "Strigi unit tests")
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND)
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND AND NOT WIN32)
    message(FATAL_ERROR
      "If your are compiling in Debug mode, please compile with cppunit-dev and run unit tests.")
-endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND)
+endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND AND NOT WIN32)
 
 enable_testing()
 
