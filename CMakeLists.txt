@@ -211,7 +211,7 @@ if(NOT WIN32)
   endif (DLOPEN_IN_LIBDL)
 
   if (NOT HAVE_LIBDL)
-   message(FATAL "dlopen support is required.")
+   message(FATAL_ERROR "dlopen support is required.")
   endif (NOT HAVE_LIBDL)
 endif(NOT WIN32)
 
@@ -219,6 +219,10 @@ endif(NOT WIN32)
 macro_check_gcc_visibility(__STRIGI_HAVE_GCC_VISIBILITY)
 
 find_optional_dep(CppUnit ENABLE_CPPUNIT CppUnit_FOUND "Strigi unit tests")
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND)
+   message(FATAL_ERROR
+     "If your are compiling in Debug mode, please compile with cppunit-dev and run unit tests.")
+endif ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CppUnit_FOUND)
 
 enable_testing()
 
