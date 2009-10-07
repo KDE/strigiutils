@@ -94,7 +94,7 @@ FlacThroughAnalyzer::connectInputStream(InputStream* in) {
         return in;
     }
     
-    cerr<< "found a flac file!";    
+    //cerr<< "found a flac file!";    
     do {
       blocktype = buf[blocksize];
       blocksize = readBigEndianUInt32(buf+blocksize)& 0xFFFFFF;
