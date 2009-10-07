@@ -82,11 +82,13 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     indexable->addValue(factory->widthField, (int32_t)w);
     indexable->addValue(factory->heightField, (int32_t)h);
     indexable->addValue(factory->colorDepthField, (int32_t)bpp);
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     if ( header[2] == 1 ) {
 	indexable->addValue(factory->compressionField, "RLE");
     } else {
 	indexable->addValue(factory->compressionField, "None");
     }
+    */
     indexable->addValue(factory->hResolutionField, (int32_t)readLittleEndianUInt16(header+12));
     indexable->addValue(factory->vResolutionField, (int32_t)readLittleEndianUInt16(header+14));
 

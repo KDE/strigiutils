@@ -139,12 +139,13 @@ XbmThroughAnalyzer::connectInputStream(InputStream* in) {
         int32_t yHot;
         nextOffset = processLine(buf, nread, nextOffset, yHot);
         if (nextOffset != -1) {
-            analysisResult->addValue(factory->xHotField, xHot);
-            analysisResult->addValue(factory->yHotField, yHot);
+// FIXME: either get rid of this or replace with NIE equivalent
+//            analysisResult->addValue(factory->xHotField, xHot);
+//            analysisResult->addValue(factory->yHotField, yHot);
         }
     }
 
-    analysisResult->addValue(factory->typeField, "http://strigi.sf.net/ontologies/0.9#Cursor");
+    analysisResult->addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/nfo#Cursor");
 
     return in;
 }

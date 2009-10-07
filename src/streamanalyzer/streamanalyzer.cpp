@@ -418,8 +418,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             idx.setEndAnalyzer(sea);
             char ar = sea->analyze(idx, input);
             if (ar) {
-                idx.addValue(errorfield, sea->name() + string(": ")
-                    + sea->error());
+// FIXME: find either a NIE-compliant way to report errors or use some API for this
+//                idx.addValue(errorfield, sea->name() + string(": ")
+//                    + sea->error());
                 if (!idx.config().indexMore()) {
                     removeIndexable(idx.depth());
                     return -1;

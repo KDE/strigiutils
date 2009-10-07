@@ -141,7 +141,8 @@ IcoThroughAnalyzer::connectInputStream(InputStream* in) {
     /*uint32_t icoe_imageoffset =*/ readLittleEndianUInt32(c);
 
     // read the data on the 1st icon
-    analysisResult->addValue( factory->numberField, ico_count );
+    //FIXME: either get rid of this or replace with NIE equivalent
+    //analysisResult->addValue( factory->numberField, ico_count );
 
     analysisResult->addValue( factory->widthField, icoe_width );
     analysisResult->addValue( factory->heightField, icoe_height );

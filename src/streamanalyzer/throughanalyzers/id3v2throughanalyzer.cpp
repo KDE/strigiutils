@@ -32,7 +32,7 @@ const string ID3V2ThroughAnalyzerFactory::titleFieldName("http://www.semanticdes
 const string ID3V2ThroughAnalyzerFactory::artistFieldName("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
 const string ID3V2ThroughAnalyzerFactory::albumFieldName(NMM_PROPOSAL "musicAlbum");
 const string ID3V2ThroughAnalyzerFactory::composerFieldName(NMM_PROPOSAL "composer");
-const string ID3V2ThroughAnalyzerFactory::genreFieldName("http://freedesktop.org/standards/xesam/1.0/core#genre");
+const string ID3V2ThroughAnalyzerFactory::genreFieldName(NMM_PROPOSAL "genre");
 const string ID3V2ThroughAnalyzerFactory::trackNumberFieldName(NMM_PROPOSAL "trackNumber");
 const string ID3V2ThroughAnalyzerFactory::albumTrackCountFieldName("http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
 const string ID3V2ThroughAnalyzerFactory::discNumberFieldName(NMM_PROPOSAL "setNumber");

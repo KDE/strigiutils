@@ -52,7 +52,8 @@ void
 NamespaceHarvesterSaxAnalyzer::endAnalysis(bool /*complete*/) {
     set<string>::iterator i; // Iterator for looping over list elements
     for (i = usedNamespaces.begin(); i != usedNamespaces.end(); ++i) {
-        analysisResult->addValue(factory->usesNamespaceField, *i);
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue(factory->usesNamespaceField, *i);
     }
 
     analysisResult = 0;

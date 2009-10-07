@@ -202,9 +202,10 @@ AnalysisResult::Private::write() {
     }
     string field = m_this->extension();
     if (field.length()) {
-        m_writer.addValue(m_this, fr.extensionField, field);
+        //m_writer.addValue(m_this, fr.extensionField, field);//FIXME: either get rid of this or replace with NIE equivalent
     }
-    m_writer.addValue(m_this, fr.embeddepthField, (int32_t)m_depth);
+    //This is superfluous. You can use nie:DataObject type to find out whether you've got a file or embedded data
+    //m_writer.addValue(m_this, fr.embeddepthField, (int32_t)m_depth);
     m_writer.addValue(m_this, fr.mtimeField, (uint32_t)m_mtime);
 
     //FIXME a temporary workaround until we have a file(system) analyzer.

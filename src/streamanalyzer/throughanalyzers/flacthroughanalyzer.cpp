@@ -52,7 +52,7 @@ FlacThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["title"] = r.registerField(titlePropertyName);
     albumField = r.registerField(NMM_PROPOSAL "musicAlbum");
     artistField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
-    fields["genre"] = r.registerField("http://freedesktop.org/standards/xesam/1.0/core#genre");
+    fields["genre"] = r.registerField(NMM_PROPOSAL "genre");
     fields["codec"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
     composerField = r.registerField(NMM_PROPOSAL "composer");
     performerField = r.registerField(NMM_PROPOSAL "performer");

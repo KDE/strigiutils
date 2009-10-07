@@ -38,7 +38,7 @@ SidThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     titleField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     artistField = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#artist");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
     trackNumberField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#albumTrackCount");
     versionField = reg.registerField(
@@ -139,10 +139,19 @@ SidThroughAnalyzer::connectInputStream(InputStream* in) {
     copyright = c;
     
     // read the data on the 1st icon
-    analysisResult->addValue( factory->artistField, artist );
+    string artistUri = analysisResult->newAnonymousUri();
+	
+    analysisResult->addValue(factory->artistField, artistUri);
+    analysisResult->addTriplet(artistUri,
+			       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+			       "http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
+    analysisResult->addTriplet(artistUri,
+			       "http://www.semanticdesktop.org/ontologies/2007/03/22/nco#fullname",
+			       artist);
+    
     analysisResult->addValue( factory->titleField, title );
     analysisResult->addValue( factory->copyrightField, copyright );
-    analysisResult->addValue( factory->trackNumberField, num_songs );
+    //analysisResult->addValue( factory->trackNumberField, num_songs ); //FIXME: either get rid of this or replace with NIE equivalent
     analysisResult->addValue( factory->versionField, version );
     
     in->reset(0);   // rewind to the start of the stream

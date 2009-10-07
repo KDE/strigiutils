@@ -46,7 +46,7 @@ RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     bitDepthField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
     imageNameField = reg.registerField(
-        "http://strigi.sf.net/ontologies/homeless#documentImageName");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     sharedRowsField = reg.registerField(
         "http://strigi.sf.net/ontologies/homeless#documentImageSharedRows");
     colorModeField = reg.registerField(
@@ -116,6 +116,7 @@ RgbThroughAnalyzer::connectInputStream(InputStream* in) {
     if (imagename[0] != '\0') {
         analysisResult->addValue( factory->imageNameField, imagename);
     }
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     if (zsize == 1)
         analysisResult->addValue( factory->colorModeField, "Grayscale");
     else if (zsize == 2)
@@ -131,6 +132,7 @@ RgbThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue( factory->compressionField,
                                   string ("Runlength Encoded"));
     }
+    */
     return in;
 }
 

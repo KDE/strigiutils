@@ -99,11 +99,13 @@ TxtLineAnalyzer::endAnalysis(bool complete) {
         analysisResult->addValue(factory->totalWordsField, (int32_t)totalWords);
         analysisResult->addValue(factory->totalCharactersField, (int32_t)totalCharacters);
         analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
+/* //FIXME: either get rid of this or replace with NIE equivalent
         analysisResult->addValue(factory->maxLineLengthField, (int32_t)maxLineLength);
         if (dos)
             analysisResult->addValue(factory->formatField, "DOS");
         else
             analysisResult->addValue(factory->formatField, "UNIX");
+*/
     }
     ready = true;
 }

@@ -96,6 +96,7 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
     analysisResult->addValue(factory->channelsField, channels);
 
     uint16_t bytesPerSample = 0;
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     switch (encoding) {
     case 1 :
         analysisResult->addValue(factory->sampleDataTypeField, "ISDN u-law");
@@ -133,6 +134,7 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue(factory->sampleDataTypeField, "Unknown");
         bytesPerSample = 0;
     }
+    */
     if(bytesPerSample) {
         analysisResult->addValue(factory->sampleBitDepthField, bytesPerSample*8);
     }

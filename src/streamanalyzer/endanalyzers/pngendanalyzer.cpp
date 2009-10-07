@@ -183,13 +183,14 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     }
 
     as.addValue(factory->colorDepthField, (uint32_t)bpp);
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     as.addValue(factory->colorModeField,
         (type < sizeof(colors)/sizeof(colors[0]))
                    ? colors[type] : "Unknown");
 
     as.addValue(factory->compressionField,
         (c[14] == 0) ? "Deflate" : "Unknown");
-
+    */
     as.addValue(factory->interlaceModeField,
         ((uint)c[16] < sizeof(interlaceModes)/sizeof(interlaceModes[0]))
                    ? interlaceModes[(int)c[16]] : "Unknown");

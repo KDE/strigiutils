@@ -318,18 +318,22 @@ DdsThroughAnalyzer::connectInputStream(InputStream* in) {
     // Set file info
     analysisResult->addValue( factory->widthField, header.width );
     analysisResult->addValue( factory->heightField, header.height );
-    analysisResult->addValue( factory->mipmapCountField, header.mipmapcount );
+    //FIXME: either get rid of this or replace with NIE equivalent
+    //analysisResult->addValue( factory->mipmapCountField, header.mipmapcount );
 
     // Set file type.
     if( header.caps.caps2 & DDSCAPS2_CUBEMAP ) {
-        analysisResult->addValue( factory->typeField, "Cube Map Texture");
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue( factory->typeField, "Cube Map Texture");
     }
     else if( header.caps.caps2 & DDSCAPS2_VOLUME ) {
-        analysisResult->addValue( factory->typeField, "Volume Texture");
-        analysisResult->addValue( factory->volumeDepthField, header.depth);
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue( factory->typeField, "Volume Texture");
+        //analysisResult->addValue( factory->volumeDepthField, header.depth);
     }
     else {
-        analysisResult->addValue( factory->typeField, "2D Texture");
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue( factory->typeField, "2D Texture");
     }
 
     // Set file color depth and compression.

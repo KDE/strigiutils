@@ -70,7 +70,8 @@ TgaThroughAnalyzer::connectInputStream(InputStream* in) {
         return in;
     }
 
-    uint8_t imagetype = *(buf+2);;
+    uint8_t imagetype = *(buf+2);
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     switch (imagetype) {
     case 1 :
     case 9 :
@@ -110,7 +111,7 @@ TgaThroughAnalyzer::connectInputStream(InputStream* in) {
     default :
         analysisResult->addValue(factory->compressionField, "Unknown");
     };
-
+    */
     uint16_t width = readLittleEndianUInt16(buf+12);
     uint16_t height = readLittleEndianUInt16(buf+14);
     analysisResult->addValue(factory->widthField, width);

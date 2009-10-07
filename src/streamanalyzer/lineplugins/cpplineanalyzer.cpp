@@ -112,8 +112,9 @@ void
 CppLineAnalyzer::endAnalysis(bool complete) {
     // we assume all cpp files must have includes
     if (includes && complete) {
-        analysisResult->addValue(factory->codeLinesField, (int32_t)codeLines);
-        analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue(factory->codeLinesField, (int32_t)codeLines);
+        //analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
         analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
         analysisResult->addValue(factory->programmingLanguageField, "C++");
         analysisResult->addValue(factory->typeField,

@@ -75,7 +75,7 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     const char* bmp_id;
     in->read(bmp_id, 2, 2);
     in->reset(0);
-
+/* //FIXME: either get rid of this or replace with NIE equivalent
     if (memcmp(bmp_id, bmptype_bm, 2) == 0) {
         rs.addValue(factory->typeField, "Windows Bitmap");
     } else if (memcmp(bmp_id, bmptype_ba, 2) == 0) {
@@ -91,7 +91,7 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     } else {
         return -1;
     }
-
+*/
     // read compression type (bytes #30-33)
     const char* h;
     int32_t n = in->read(h, 34, 34);
@@ -105,6 +105,7 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     uint32_t colorDepth = readLittleEndianUInt16(h+28);
     rs.addValue(factory->colorDepthField, colorDepth);
     uint32_t bmpi_compression = readLittleEndianUInt32(h+30);
+/* //FIXME: either get rid of this or replace with NIE equivalent    
     switch (bmpi_compression) {
     case 0 :
         rs.addValue(factory->compressionField, "None");
@@ -121,7 +122,7 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     default :
         rs.addValue(factory->compressionField, "Unknown");
     }
-
+*/
     rs.addValue(factory->rdftypeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
 
     return 0;

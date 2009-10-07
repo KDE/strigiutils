@@ -64,15 +64,17 @@ void M3uLineAnalyzer::handleLine(const char* data, uint32_t length)
 
     if (*data != '#') {
 
-        if (line == 1)
-            analysisResult->addValue(factory->m3uTypeField, "simple");
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //if (line == 1)
+        //    analysisResult->addValue(factory->m3uTypeField, "simple");
 
         // TODO: Check for a valid url with QUrl
         analysisResult->addValue(factory->trackPathField, std::string(data, length));
 
         ++count;
-    } else if (line == 1 && strncmp(data, "#EXTM3U", 7) == 0) {
-        analysisResult->addValue(factory->m3uTypeField, "extended");
+    } else if (line == 1 && strncmp(data, "#EXTM3U", 7) == 0) {      
+	//FIXME: either get rid of this or replace with NIE equivalent
+        //analysisResult->addValue(factory->m3uTypeField, "extended");
     } 
 }
 

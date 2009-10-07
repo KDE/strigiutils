@@ -145,11 +145,13 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     (*m)[3] = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#subject");
     addField((*m)[3]);
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     (*m)[4] = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#author");
     addField((*m)[4]);
+    */
     (*m)[5] = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#contentKeyword");
+        "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#keyword");
     addField((*m)[5]);
     (*m)[6] = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");
@@ -158,6 +160,7 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     // register the fields for the Document Summary Information Stream
     key.assign(docSummaryKey, 16);
     m = &fieldsMaps[key];
+    /* //FIXME: either get rid of this or replace with NIE equivalent
     (*m)[2] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleCategory");
     addField((*m)[2]);
     (*m)[3] = reg.registerField("http://strigi.sf.net/ontologies/homeless#olePresentationTarget");
@@ -166,7 +169,7 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     addField((*m)[14]);
     (*m)[15] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleCompany");
     addField((*m)[15]);
-
+    */
     typeField = reg.typeField;
     addField(typeField);
 }

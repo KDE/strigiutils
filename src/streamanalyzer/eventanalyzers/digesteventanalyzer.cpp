@@ -50,7 +50,17 @@ DigestEventAnalyzer::endAnalysis(bool complete) {
     for (int i = 0; i < 20; i++) {
         sprintf(d+2*i, "%02x", *digest++);
     }
-    analysisresult->addValue(factory->shafield, d, 40);
+    string hashUri = analysisresult->newAnonymousUri();
+    analysisresult->addValue(factory->shafield, hashUri);
+    analysisresult->addTriplet(hashUri,
+			       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+			       "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileHash");
+    analysisresult->addTriplet(hashUri,
+			       "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashAlgorithm",
+			       "SHA1");
+    analysisresult->addTriplet(hashUri,
+			       "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hashValue",
+			       string(d,40));
     analysisresult = 0;
 }
 bool
@@ -60,6 +70,6 @@ DigestEventAnalyzer::isReadyWithStream() {
 void
 DigestEventAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) {
     shafield = reg.registerField(
-        "http://freedesktop.org/standards/xesam/1.0/core#sha1Hash");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#hasHash");
     addField(shafield);
 }

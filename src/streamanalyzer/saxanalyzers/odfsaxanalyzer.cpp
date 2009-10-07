@@ -135,22 +135,26 @@ void OdfSaxAnalyzer::startElement(const char *localname, const char *prefix,
 				m_result->addValue(m_factory->wordcountField, line);
 			}
 			else if(std::strcmp(attrName, "paragraph-count") ==0 ){
-				m_result->addValue(m_factory->paragcountField,line);
+				//FIXME: either get rid of this or replace with NIE equivalent
+				//m_result->addValue(m_factory->paragcountField,line);
 			}
                         else if(std::strcmp(attrName, "page-count") ==0 ){
 				m_result->addValue(m_factory->pagecountField,line);
                         }
                         else if(std::strcmp(attrName, "image-count") ==0 ){
-				m_result->addValue(m_factory->imagecountField,line);
+				//FIXME: either get rid of this or replace with NIE equivalent
+				//m_result->addValue(m_factory->imagecountField,line);
                         }
                         else if(std::strcmp(attrName, "character-count") ==0 ){
 				m_result->addValue(m_factory->charcountField,line);
                         }
                         else if(std::strcmp(attrName, "object-count") ==0 ){
-				m_result->addValue(m_factory->objectcountField,line);
+				//FIXME: either get rid of this or replace with NIE equivalent
+				//m_result->addValue(m_factory->objectcountField,line);
                         }
                         else if(std::strcmp(attrName, "table-count") ==0 ){
-				m_result->addValue(m_factory->tablecountField,line);
+				//FIXME: either get rid of this or replace with NIE equivalent
+				//m_result->addValue(m_factory->tablecountField,line);
                         }
 		   }
 	   	}
