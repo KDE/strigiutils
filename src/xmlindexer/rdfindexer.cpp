@@ -139,7 +139,6 @@ main(int argc, char **argv) {
     AnalyzerConfiguration ic;
     ic.setFilters(filters);
 
-    cerr << "nthreads: " << nthreads << endl;
     const TagMapping mapping(mappingfile);
 /*    cout << "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata");

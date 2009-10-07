@@ -145,7 +145,7 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
         // module was already loaded
         return;
     }
-    cerr << lib << endl;
+    // cerr << lib << endl;
     StgModuleType handle;
 #ifdef HAVE_DLFCN_H
     // do not use RTLD_GLOBAL here
