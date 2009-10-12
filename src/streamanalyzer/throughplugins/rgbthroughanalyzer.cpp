@@ -81,8 +81,10 @@ RgbThroughAnalyzer::connectInputStream(InputStream* in) {
     const int64_t pos = in->position();
     in->reset(pos);   // rewind to the start of the stream
     if (512 != in->read(c, 512, 512)) {
+       in->reset(pos);
        return in;
     }
+    in->reset(pos);
     magic = readBigEndianUInt16(c);
     if (magic != 474) {
         return in;
