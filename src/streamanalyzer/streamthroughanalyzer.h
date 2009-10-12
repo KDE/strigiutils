@@ -50,6 +50,8 @@ public:
      * caller. The InputStream pointer maybe 0 for special filetypes that have
      * no content, so any implementation must always check the pointer before
      * reading from the stream.
+     * The stream @p in should be returned and it should be at position 0.
+     * This means reading from the stream is only allowed when the stream is reset to position 0.
      **/
     virtual InputStream *connectInputStream(InputStream *in) = 0;
     /**
