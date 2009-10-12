@@ -394,6 +394,9 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
             && ts != tIter->end(); ++ts) {
         (*ts)->setIndexable(&idx);
         input = (*ts)->connectInputStream(input);
+        if (input && input->position() != 0) {
+            cerr << "Analyzer " << (*ts)->name() << " has left the stream in a bad state." << endl;
+        }
     }
 
     // reread the header so we can use it for the endanalyzers
