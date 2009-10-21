@@ -261,9 +261,10 @@ FieldPropertiesDb::Private::Private() {
             if(propertiesByAlias.find(alias) == propertiesByAlias.end()) {
                 propertiesByAlias[alias] = property;
             } else {
-                cerr << "Error: alias " << alias << " requested by several properties: " << propertiesByAlias.find(alias)->second.uri()
-		  << ", " << prop->second.uri
-		  << endl;
+//FIXME: use loging framework
+//                cerr << "Error: alias " << alias << " requested by several properties: " << propertiesByAlias.find(alias)->second.uri()
+//		  << ", " << prop->second.uri
+//		  << endl;
             }
         }
 
@@ -386,7 +387,8 @@ FieldPropertiesDb::Private::parseProperties(FILE* f) {
     }
 
     if(saxError) {
-        cerr << "saxError in FieldPropertiesDB::parseProperties." << endl;
+//FIXME: use logging framework
+//        cerr << "saxError in FieldPropertiesDB::parseProperties." << endl;
     }
 
     xmlFreeDoc(ctxt->myDoc);
@@ -419,7 +421,8 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
         newEntity.etype = XML_INTERNAL_GENERAL_ENTITY;
         newEntity.URI = newEntity.orig;
     } else {
-        cerr << "Error: entity " << name << " redeclared." << endl;
+// FIXME: use logging framework
+//        cerr << "Error: entity " << name << " redeclared." << endl;
     }
 }
 
@@ -452,7 +455,8 @@ FieldPropertiesDb::Private::errorSAXFunc(void* ctx, const char* msg, ...) {
     va_start(args, msg);
     e += string(" ")+va_arg(args,char*);
     va_end(args);
-    cerr << "Error: " << e << endl;
+// FIXME: use logging framework
+//    cerr << "Error: " << e << endl;
 }
 
 bool
@@ -464,8 +468,9 @@ FieldPropertiesDb::Private::isBoolValid(const char *uri, const char* name,
     } else if (strcasecmp(value,"true") == 0) {
         result = true;
     } else {
-        cerr << name << " flag value[" << value << "] for " << uri
-            << " is unrecognized. Should be in set {True,False}." << endl;
+// FIXME: use logging framework
+//	 cerr << name << " flag value[" << value << "] for " << uri
+//            << " is unrecognized. Should be in set {True,False}." << endl;
         return false;
     }
     return true;
@@ -490,24 +495,27 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
         if (compare(name, namelen, "about")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentField.uri.size()) {
-                cerr << "Uri is already defined for " << currentField.uri << "."
-                   << endl;
+// FIXME: use logging framework
+//                cerr << "Uri is already defined for " << currentField.uri << "."
+//                   << endl;
             } else {
                 currentField.uri.assign(val);
             }
         } else if (compare(name, namelen, "alias")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentField.alias.size()) {
-                cerr << "alias is already defined for " << currentField.uri << "."
-                   << endl;
+// FIXME: use logging framework
+//                cerr << "alias is already defined for " << currentField.uri << "."
+//                   << endl;
             } else {
                 currentField.alias.assign(val);
             }
         } else if (compare(name, namelen, "range")) {
             warnIfLocale(currentField.uri.c_str(), currentElementLang);
             if (currentField.typeuri.size()) {
-               cerr << "range is already defined for " << currentField.uri
-                   << "." << endl;
+// FIXME: use logging framework
+//               cerr << "range is already defined for " << currentField.uri
+//                   << "." << endl;
             } else {
                 currentField.typeuri.assign(currentElementResource);
             }
@@ -516,16 +524,18 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
                 FieldProperties::Localized l(
                     currentField.localized[currentElementLang]);
                 if (l.name.size()) {
-                    cerr << "label [" << currentElementLang
-                        << "] is already defined for " << currentField.uri
-                        << "." << endl;
+// FIXME: use logging framework
+//                    cerr << "label [" << currentElementLang
+//                        << "] is already defined for " << currentField.uri
+//                        << "." << endl;
                 } else {
                     l.name.assign(val);
                     currentField.localized[currentElementLang] = l;
                 }
             } else if (currentField.name.size()) {
-                cerr << "label is already defined for " << currentField.uri
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "label is already defined for " << currentField.uri
+//                    << "." << endl;
             } else {
                 currentField.name.assign(val);
             }
@@ -534,16 +544,18 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
                 FieldProperties::Localized l(
                     currentField.localized[currentElementLang]);
                 if (l.description.size()) {
-                    cerr << "comment[" << currentElementLang
-                        << "] is already defined for " << currentField.uri
-                        << "." << endl;
+// FIXME: use logging framework
+//                    cerr << "comment[" << currentElementLang
+//                        << "] is already defined for " << currentField.uri
+//                        << "." << endl;
                 } else {
                     l.description.assign(val);
                     currentField.localized[currentElementLang] = l;
                 }
             } else if (currentField.description.size()) {
-                cerr << "comment is already defined for " << currentField.uri
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "comment is already defined for " << currentField.uri
+//                    << "." << endl;
             } else {
                 currentField.description.assign(val);
             }
@@ -585,8 +597,9 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
         if (compare(name, namelen, "about")) {
             warnIfLocale(val.c_str(), currentElementLang);
             if (currentClass.uri.size()) {
-                cerr << "Uri is already defined for " << currentClass.uri
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "Uri is already defined for " << currentClass.uri
+//                    << "." << endl;
             }
         } else {
             currentClass.uri.assign(val);
@@ -596,16 +609,18 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
             ClassProperties::Localized l(
                 currentClass.localized[currentElementLang]);
             if (l.name.size()) {
-                cerr << "label[" << currentElementLang
-                    << "] is already defined for " << currentClass.uri
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "label[" << currentElementLang
+//                    << "] is already defined for " << currentClass.uri
+//                    << "." << endl;
             } else {
                 l.name.assign(val);
                 currentClass.localized[currentElementLang] = l;
             }
         } else if (currentClass.name.size()) {
-            cerr << "label is already defined for " << currentClass.uri
-                << "." << endl;
+// FIXME: use logging framework
+//            cerr << "label is already defined for " << currentClass.uri
+//                << "." << endl;
         } else {
             currentClass.name.assign(val);
         }
@@ -614,16 +629,18 @@ FieldPropertiesDb::Private::setDefinitionAttribute(const char* name,
             ClassProperties::Localized l(
                     currentClass.localized[currentElementLang]);
             if (l.description.size()) {
-                cerr << "comment[" << currentElementLang
-                    << "] is already defined for " << currentClass.uri
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "comment[" << currentElementLang
+//                    << "] is already defined for " << currentClass.uri
+//                    << "." << endl;
             } else {
                 l.description.assign(val);
                 currentClass.localized[currentElementLang] = l;
             }
         } else if (currentField.description.size()) {
-            cerr << "comment is already defined for " << currentClass.uri
-                << "." << endl;
+// FIXME: use logging framework
+//            cerr << "comment is already defined for " << currentClass.uri
+//                << "." << endl;
         } else {
             currentClass.description.assign(val);
         }
@@ -716,8 +733,9 @@ FieldPropertiesDb::Private::endElementNsSAX2Func(void *ctx,
                 p->currentElementResource = "";
                 p->currentElementLang = "";
             } else {
-                cerr << "ERROR: Wrong closing element " << localname
-                    << "." << endl;
+// FIXME: use logging framework
+//                cerr << "ERROR: Wrong closing element " << localname
+//                    << "." << endl;
             }
         }
     }
@@ -734,8 +752,9 @@ FieldPropertiesDb::Private::storeProperties(FieldProperties::Private& p) {
 void
 FieldPropertiesDb::Private::warnIfLocale(const char* name, const string& locale) {
     if (locale.size()) {
-        cerr << "Warning: you cannot define a locale for the resource URI "
-            << name << "." << endl;
+// FIXME: use logging framework
+//        cerr << "Warning: you cannot define a locale for the resource URI "
+//            << name << "." << endl;
     }
 }
 void
