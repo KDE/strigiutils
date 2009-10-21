@@ -37,6 +37,7 @@ set(streamanalyzer_SRCS
 	endanalyzers/bmpendanalyzer.cpp
 	endanalyzers/bz2endanalyzer.cpp
 	endanalyzers/cpioendanalyzer.cpp
+	endanalyzers/flacendanalyzer.cpp
 	endanalyzers/gzipendanalyzer.cpp
 	endanalyzers/helperendanalyzer.cpp
 	endanalyzers/lzmaendanalyzer.cpp
@@ -59,7 +60,6 @@ set(streamanalyzer_SRCS
 	saxanalyzers/odfsaxanalyzer.cpp
 	throughanalyzers/id3v2throughanalyzer.cpp
 	throughanalyzers/oggthroughanalyzer.cpp
-	throughanalyzers/flacthroughanalyzer.cpp
 )
 
 add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})

@@ -19,43 +19,50 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FLACTHROUGHANALYZER_H
-#define FLACTHROUGHANALYZER_H
+#ifndef FLACENDANALYZER_H
+#define FLACENDANALYZER_H
 
-#include "streamthroughanalyzer.h"
+#include "streamendanalyzer.h"
 #include "fieldtypes.h"
 #include <map>
 
 // flac according to http://flac.sourceforge.net/format.html
 
-class FlacThroughAnalyzerFactory;
-class FlacThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
+class FlacEndAnalyzerFactory;
+class FlacEndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
-    Strigi::AnalysisResult* indexable;
-    const FlacThroughAnalyzerFactory* factory;
+    const FlacEndAnalyzerFactory* factory;
 public:
-    FlacThroughAnalyzer(const FlacThroughAnalyzerFactory* f) :factory(f) {}
-    ~FlacThroughAnalyzer() {}
-    void setIndexable(Strigi::AnalysisResult*);
-    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
-    bool isReadyWithStream();
-    const char* name() const { return "FlacThroughAnalyzer"; }
+    FlacEndAnalyzer(const FlacEndAnalyzerFactory* f) :factory(f) {}
+    bool checkHeader(const char* header, int32_t headersize) const;
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "FlacEndAnalyzer"; }
 };
 
-class FlacThroughAnalyzerFactory
-        : public Strigi::StreamThroughAnalyzerFactory {
-friend class FlacThroughAnalyzer;
+class FlacEndAnalyzerFactory
+        : public Strigi::StreamEndAnalyzerFactory {
+friend class FlacEndAnalyzer;
 private:
     std::map<std::string, const Strigi::RegisteredField*> fields;
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* albumField;
     const Strigi::RegisteredField* composerField;
     const Strigi::RegisteredField* performerField;
+    const Strigi::RegisteredField* descriptionField;
+    const Strigi::RegisteredField* sampleRateField;
+    const Strigi::RegisteredField* channelsField;
+    const Strigi::RegisteredField* durationField;
+    const Strigi::RegisteredField* bitsPerSampleField;
+    const Strigi::RegisteredField* sampleCountField;
+    const Strigi::RegisteredField* bitRateField;
+    const Strigi::RegisteredField* codecField;
+    const Strigi::RegisteredField* typeField;
+
     const char* name() const {
-        return "FlacThroughAnalyzer";
+        return "FlacEndAnalyzer";
     }
-    Strigi::StreamThroughAnalyzer* newInstance() const {
-        return new FlacThroughAnalyzer(this);
+    Strigi::StreamEndAnalyzer* newInstance() const {
+        return new FlacEndAnalyzer(this);
     }
     void registerFields(Strigi::FieldRegister&);
 };
