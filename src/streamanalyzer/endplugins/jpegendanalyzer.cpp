@@ -235,7 +235,11 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     if (ar.depth() == 0) {
         try {
             // try to open the file directly: this is faster
-            img = Exiv2::ImageFactory::open(ar.path());
+            if (ar.path().compare(0, 5, "file:") == 0) {
+                img = Exiv2::ImageFactory::open(ar.path().substr(5));
+            } else {
+                img = Exiv2::ImageFactory::open(ar.path());
+            }
             img->readMetadata();
             ok = true;
         } catch (...) {
