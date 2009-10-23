@@ -65,7 +65,7 @@ CUESHEET
 FLAC album art: put it where it belongs. Needs a NIE/NMM decision
 OGG Vorbis comment album art
 More tags: http://lists.xiph.org/pipermail/vorbis-dev/attachments/20090716/e2db9203/attachment-0001.xls
-    
+
 CodecVersion
 MBArtistID, MBAlbumArtistID need a nmm:Artist class. needs to be resolved at nepomuk level.
 */
@@ -162,15 +162,25 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 	  indexable.addValue(factory->durationField, duration);
 	}
 	
-      } else if ((blocktype&0x7F)==6) { // FLAC Picture block
-	int mimelen = readBigEndianUInt32(buf+4);
+      } else if ((blocktype&0x7F)==6) { // FLAC Picture block	
+	if (blocksize<32) // the block with no mime, no description and no picture is 32 bytes long
+	  return -1;
+	  
+	uint32_t mimelen = readBigEndianUInt32(buf+4);
+	if (12+mimelen>blocksize) // can the block hold mime string and description length?
+	   return -1;
 	
 	const char *p = buf+8+mimelen;
-	int desclen = readBigEndianUInt32(p);
+	uint32_t desclen = readBigEndianUInt32(p);
+	if (12+mimelen+desclen+20>blocksize) // can the block hold picture and description?
+	   return -1;
 	string description(p+4, desclen);
 	
 	p += 4+desclen+16;
-	int piclen = readBigEndianUInt32(p);
+	uint32_t piclen = readBigEndianUInt32(p);
+	
+	if( p+4+piclen-buf>blocksize) // can the block contain the whole picture?
+	  return -1;
 	
 	StringInputStream picstream(p+4, piclen, false);
 	string picname;
@@ -270,6 +280,6 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
     int64_t in_size = in->size();
     if(in_size>=0)
       indexable.addValue(factory->bitRateField,(uint32_t)(8*((in_size-in->position())/duration)));
-    in->reset(0);
+
     return 0;
 }
