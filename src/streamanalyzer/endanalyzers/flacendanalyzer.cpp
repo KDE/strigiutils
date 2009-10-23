@@ -24,6 +24,7 @@
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "textutils.h"
+#include "rdfnamespaces.h"
 #include "stringstream.h"
 #include <iostream>
 #include <cctype>
@@ -70,7 +71,7 @@ CodecVersion
 MBArtistID, MBAlbumArtistID need a nmm:Artist class. needs to be resolved at nepomuk level.
 */
 
-// OGG Vorbis spec fields left unimplemented because they are too ambiguous: Organization, Location, Publisher, Contact
+// OGG Vorbis spec fields left unimplemented because they are too ambiguous: Organization, Location, Contact
 
 void
 FlacEndAnalyzerFactory::registerFields(FieldRegister& r) {
@@ -88,6 +89,7 @@ FlacEndAnalyzerFactory::registerFields(FieldRegister& r) {
     codecField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
     composerField = r.registerField(NMM_PROPOSAL "composer");
     performerField = r.registerField(NMM_PROPOSAL "performer");
+    publisherField = r.registerField(NCO "publisher");
     fields["date"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
     descriptionField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
     fields["description"] = descriptionField;
@@ -179,7 +181,7 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 	p += 4+desclen+16;
 	uint32_t piclen = readBigEndianUInt32(p);
 	
-	if( p+4+piclen-buf>blocksize) // can the block contain the whole picture?
+	if( p+4+piclen>blocksize+buf) // can the block contain the whole picture?
 	  return -1;
 	
 	StringInputStream picstream(p+4, piclen, false);
@@ -251,6 +253,12 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 			indexable.addValue(factory->composerField, composerUri);
 			indexable.addTriplet(composerUri, typePropertyName, contactClassName);
 			indexable.addTriplet(composerUri, fullnamePropertyName, value);
+		    } else if(name=="publisher") {
+			const string publisherUri( indexable.newAnonymousUri() );
+
+			indexable.addValue(factory->publisherField, publisherUri);
+			indexable.addTriplet(publisherUri, typePropertyName, contactClassName);
+			indexable.addTriplet(publisherUri, fullnamePropertyName, value);
 		    } else if(name=="performer") {
 			const string performerUri( indexable.newAnonymousUri() );
 

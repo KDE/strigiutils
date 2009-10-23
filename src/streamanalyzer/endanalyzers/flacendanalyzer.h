@@ -48,6 +48,7 @@ private:
     const Strigi::RegisteredField* albumField;
     const Strigi::RegisteredField* composerField;
     const Strigi::RegisteredField* performerField;
+    const Strigi::RegisteredField* publisherField;
     const Strigi::RegisteredField* descriptionField;
     const Strigi::RegisteredField* sampleRateField;
     const Strigi::RegisteredField* channelsField;
