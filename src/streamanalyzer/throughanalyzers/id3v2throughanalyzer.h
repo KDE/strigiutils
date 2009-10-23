@@ -43,22 +43,21 @@ class ID3V2ThroughAnalyzerFactory
         : public Strigi::StreamThroughAnalyzerFactory {
 friend class ID3V2ThroughAnalyzer;
 private:
-    static const std::string titleFieldName;
-    static const std::string artistFieldName;
-    static const std::string albumFieldName;
-    static const std::string composerFieldName;
-    static const std::string genreFieldName;
-    static const std::string trackNumberFieldName;
-    static const std::string albumTrackCountFieldName;
-    static const std::string discNumberFieldName;
+    const Strigi::RegisteredField* createdField;
+    const Strigi::RegisteredField* subjectField;
     const Strigi::RegisteredField* titleField;
+    const Strigi::RegisteredField* descriptionField;    
     const Strigi::RegisteredField* artistField;
     const Strigi::RegisteredField* albumField;
     const Strigi::RegisteredField* composerField;
+    const Strigi::RegisteredField* performerField;
+    const Strigi::RegisteredField* publisherField;
+    const Strigi::RegisteredField* lyricistField;
+    const Strigi::RegisteredField* languageField;
     const Strigi::RegisteredField* genreField;
+    const Strigi::RegisteredField* copyrightField;
     const Strigi::RegisteredField* trackNumberField;
-    const Strigi::RegisteredField* albumTrackCountField;
-    const Strigi::RegisteredField* discNumberField;
+    const Strigi::RegisteredField* durationField;
     const Strigi::RegisteredField* typeField;
     const char* name() const {
         return "ID3V2ThroughAnalyzer";
