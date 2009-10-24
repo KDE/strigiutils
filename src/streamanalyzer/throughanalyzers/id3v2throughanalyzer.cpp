@@ -18,6 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "id3v2throughanalyzer.h"
 #include "rdfnamespaces.h"
 #include <strigi/strigiconfig.h>
@@ -28,6 +32,12 @@
 #include <cstring>
 #include <cstdlib>
 #include <iconv.h>
+
+#ifdef ICONV_SECOND_ARGUMENT_IS_CONST
+     #define ICONV_CONST const
+#else
+     #define ICONV_CONST
+#endif
 
 using namespace Strigi;
 using namespace std;
@@ -253,8 +263,9 @@ UTF8Convertor::convert(const char *data, size_t len) {
 
   char *result = out;
   size_t reslen = capacity;
-  char *input = (char *)data;
-  iconv(conv, &input, &len, &result, &reslen); 
+
+  ICONV_CONST char *input = (char *)data;
+  iconv(conv, &input, &len, &result, &reslen);
   
   return string(out,capacity-reslen);
 }
