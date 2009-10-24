@@ -59,6 +59,11 @@ private:
     const Strigi::RegisteredField* trackNumberField;
     const Strigi::RegisteredField* durationField;
     const Strigi::RegisteredField* typeField;
+    const Strigi::RegisteredField* bitrateField;
+    const Strigi::RegisteredField* samplerateField;
+    const Strigi::RegisteredField* codecField;
+    const Strigi::RegisteredField* channelsField;
+
     const char* name() const {
         return "ID3V2ThroughAnalyzer";
     }

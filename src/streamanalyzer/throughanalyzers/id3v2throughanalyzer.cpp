@@ -27,6 +27,7 @@
 #include <sstream>
 #include <cstring>
 #include <cstdlib>
+#include <iconv.h>
 
 using namespace Strigi;
 using namespace std;
@@ -47,6 +48,8 @@ const string
     
     musicClassName(
 	NMM_DRAFT "MusicPiece"),
+    audioClassName(
+	NFO "Audio"),
     albumClassName(
 	NMM_DRAFT "MusicAlbum"),
     contactClassName(
@@ -54,18 +57,17 @@ const string
 
 /*
 Album Art
-UTF16 in Frames
 ENCA autodetection of broken encodings
 ID3v2.0
 play counter:needs nepomuk resolution
 refactor as endanalyzer?
-actual mp3 support: bitrate and stuff
-ID3v1
-lyrics
-Improve:
+ID3v1 -- needs to become endanalyzer first
++lyrics
++Improve:
   creation date:
   language: support multiple
   Genre
+VBR detection
 */
 
 static const string genres[] = {
@@ -219,6 +221,44 @@ static const string genres[] = {
   "Synthpop"
 };
 
+const uint32_t bitrate [15] = {0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000 };
+
+const uint32_t samplerate[3] = {44100, 48000, 32000};
+
+const char * encodings[5] = {"ISO-8859-1", "UTF-16", "UTF-16BE", "UTF-8", "UTF-16LE"};
+
+class UTF8Convertor {
+  private:
+    iconv_t const conv;
+    char *out;
+    size_t capacity;
+  public:
+     UTF8Convertor(const char *encoding);
+     const string convert(const char *data, size_t len);
+     ~UTF8Convertor();
+};
+UTF8Convertor::UTF8Convertor(const char *encoding) :conv(iconv_open("UTF-8", encoding)), out(0), capacity(0) {
+}
+UTF8Convertor::~UTF8Convertor() {
+    iconv_close(conv);
+    if (out) free(out);
+}
+const string
+UTF8Convertor::convert(const char *data, size_t len) {
+  if ( capacity<len*3 ||	// is the buffer too small or too large?
+      (capacity>10000 && capacity>len*8) ) {
+      capacity = len*3;
+      out = (char*)realloc(out, len*3);
+  }
+
+  char *result = out;
+  size_t reslen = capacity;
+  char *input = (char *)data;
+  iconv(conv, &input, &len, &result, &reslen); 
+  
+  return string(out,capacity-reslen);
+}
+
 void
 ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     createdField	= r.registerField(NIE "contentCreated");
@@ -234,9 +274,14 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     publisherField	= r.registerField(NCO "publisher");
     languageField	= r.registerField(NIE "language");
     copyrightField	= r.registerField(NIE "copyright");
-    trackNumberField	= r.registerField(NMM_DRAFT "trackNumber");  //FIXME:id3 track numbers can look like this: 1/10
+    trackNumberField	= r.registerField(NMM_DRAFT "trackNumber");
     durationField	= r.registerField(NFO "duration");
     typeField		= r.typeField;
+    
+    bitrateField	= r.registerField(NFO "averageBitrate");
+    samplerateField	= r.registerField(NFO "sampleRate");
+    codecField		= r.registerField(NFO "codec");
+    channelsField	= r.registerField(NFO "channels");
 }
 
 inline
@@ -252,15 +297,19 @@ ID3V2ThroughAnalyzer::setIndexable(AnalysisResult* i) {
     indexable = i;
 }
 
+inline
+int32_t readAsyncSize(const unsigned char* b) {
+    return (((int32_t)b[0])<<21) + (((int32_t)b[1])<<14)
+	    + (((int32_t)b[2])<<7) + ((int32_t)b[3]);
+}  
+
 int32_t
 readSize(const unsigned char* b, bool async) {
     const signed char* c = (const signed char*)b;
     if (async) {
-        if (c[0] < 0 || c[1] < 0 || c[2] < 0 || c[3] < 0) {
+        if (c[0] < 0 || c[1] < 0 || c[2] < 0 || c[3] < 0)
             return -1;
-        }
-        return (((int32_t)b[0])<<21) + (((int32_t)b[1])<<14)
-                + (((int32_t)b[2])<<7) + ((int32_t)b[3]);
+        return readAsyncSize(b);
     }
     return readBigEndianInt32(b);
 }
@@ -271,127 +320,165 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
-    const signed char* sbuf = (const signed char*)buf;
+    const unsigned char* usbuf = (const unsigned char*)buf;
     in->reset(0);
-    if (nread != 10 || strncmp("ID3", buf, 3) != 0 // check that it's ID3
-            || sbuf[3] < 0 || buf[3] > 4  // only handle version <= 4
-            || buf[5] != 0 // we're too dumb too handle flags
-            ) {
-        return in;
-    }
-    bool async = buf[3] >= 4;
 
-    // calculate size from 4 syncsafe bytes
-    int32_t size = readSize((unsigned char*)buf+6, async);
-    if (size < 0 || size > 300000)
-	return in;
-    size += 10; // add the size of the header
+    // parse ID3v2* tag
 
-    // read the entire tag
-    nread = in->read(buf, size, size);
-    in->reset(0);
-    if (nread != size || !indexable) {
-        return in;
-    }
-    indexable->addValue(factory->typeField, musicClassName);
-    
-    string albumUri;
+    if (nread == 10 && strncmp("ID3", buf, 3) == 0	// check that it's ID3
+            && usbuf[3] <= 4 				// only handle version <= 4
+            && buf[5] == 0) { // we're too dumb too handle flags
 
-    const char* p = buf + 10;
-    buf += size;
-    while (p < buf && *p) {
-        size = readSize((unsigned char*)p+4, async);
-        if (size <= 0 || size > (buf-p)-11) {
-            // cerr << "size < 0: " << size << endl;
-            return in;
-        }
+	bool async = buf[3] >= 4;
 
-	const string value(p+11, size-1);
-        if (p[10] == 0 || p[10] == 3) { // text is ISO-8859-1 or utf8
-            if (strncmp("TIT1", p, 4) == 0) {
-                indexable->addValue(factory->subjectField, value);
-	    } else if (strncmp("TIT2", p, 4) == 0) {
-                indexable->addValue(factory->titleField, value);
-            } else if (strncmp("TIT3", p, 4) == 0) {
-                indexable->addValue(factory->descriptionField, value);
-            } else if (strncmp("TLAN", p, 4) == 0) {
-                indexable->addValue(factory->languageField, value);
-            } else if (strncmp("TCOP", p, 4) == 0) {
-                indexable->addValue(factory->copyrightField, value);
-            } else if ((strncmp("TDRL", p, 4) == 0) ||
-			(strncmp("TDAT", p, 4) == 0) ||
-			(strncmp("TYER", p, 4) == 0) ||
-			(strncmp("TDRC", p, 4) == 0)) {
-                indexable->addValue(factory->createdField, value);
-            } else if ((strncmp("TPE1", p, 4) == 0) ||
-			(strncmp("TPE2", p, 4) == 0) ||
-			(strncmp("TPE3", p, 4) == 0) ||
-			(strncmp("TPE4", p, 4) == 0)) {
-		string performerUri = indexable->newAnonymousUri();
-		
-                indexable->addValue(factory->performerField, performerUri);
-		indexable->addTriplet(performerUri, typePropertyName, contactClassName);
-		indexable->addTriplet(performerUri, fullnamePropertyName, value);
-	    } else if ((strncmp("TPUB", p, 4) == 0) ||
-			(strncmp("TENC", p, 4) == 0)) {
-		string publisherUri = indexable->newAnonymousUri();
-		
-                indexable->addValue(factory->publisherField, publisherUri);
-		indexable->addTriplet(publisherUri, typePropertyName, contactClassName);
-		indexable->addTriplet(publisherUri, fullnamePropertyName, value);
-            } else if ((strncmp("TALB", p, 4) == 0) ||
-			(strncmp("TOAL", p, 4) == 0)) {
-		addStatement(indexable, albumUri, titlePropertyName, value);
-            } else if (strncmp("TCON", p, 4) == 0) {
-                indexable->addValue(factory->genreField, value);
-            } else if (strncmp("TLEN", p, 4) == 0) {
-                indexable->addValue(factory->durationField, value);
-            } else if (strncmp("TEXT", p, 4) == 0) {
-		string lyricistUri = indexable->newAnonymousUri();
-		
-                indexable->addValue(factory->lyricistField, lyricistUri);
-		indexable->addTriplet(lyricistUri, typePropertyName, contactClassName);
-		indexable->addTriplet(lyricistUri, fullnamePropertyName, value);
-            } else if (strncmp("TCOM", p, 4) == 0) {
-		string composerUri = indexable->newAnonymousUri();
+	// calculate size from 4 syncsafe bytes
+	int32_t size = readAsyncSize((unsigned char*)buf+6);
+	if (size < 0 || size > 300000)
+	    return in;
+	size += 10+4; // add the size of the ID3 header and MP3 frame header
 
-                indexable->addValue(factory->composerField, composerUri);
-		indexable->addTriplet(composerUri, typePropertyName, contactClassName);
-		indexable->addTriplet(composerUri, fullnamePropertyName, value);
-            } else if (strncmp("TRCK", p, 4) == 0) {
-		if (int tnum = atoi(p+11)) { // use p directly instead of value for speed
-		    indexable->addValue(factory->trackNumberField, tnum);
-		    if (char *pos = (char*)memchr(p+11,'/',size-1)) {
-			  if (int tcount = atoi(pos+1)) {
-			      ostringstream outs;
-			      outs << tcount;
-			      addStatement(indexable, albumUri, albumTrackCountPropertyName, outs.str());
-			  }
+	// read the entire tag
+	nread = in->read(buf, size, size);
+	in->reset(0);
+	if (nread != size || !indexable) {
+	    return in;
+	}
+	
+	indexable->addValue(factory->typeField, musicClassName);
+	
+	string albumUri;
+
+	const char* p = buf + 10;
+	buf += size-4;
+	while (p < buf && *p) {
+	    size = readSize((unsigned char*)p+4, async);
+	    if (size <= 0 || size > (buf-p)-10) {
+		cerr << "size < 0: " << size << endl;
+		return in;
+	    }
+
+	    string value;
+	    uint8_t enc = p[10];
+	    const char *encoding = enc>4 ? encodings[0] : encodings[enc] ;
+	    UTF8Convertor conv(encoding);
+	    
+	    if (enc == 0 or enc == 3) {
+		value = string(p+11, size-1);
+	    } else {
+		value = conv.convert(p+11,size-1);
+	    }
+	    
+	    if (!value.empty()) {
+		if (strncmp("TIT1", p, 4) == 0) {
+		    indexable->addValue(factory->subjectField, value);
+		} else if (strncmp("TIT2", p, 4) == 0) {
+		    indexable->addValue(factory->titleField, value);
+		} else if (strncmp("TIT3", p, 4) == 0) {
+		    indexable->addValue(factory->descriptionField, value);
+		} else if (strncmp("TLAN", p, 4) == 0) {
+		    indexable->addValue(factory->languageField, value);
+		} else if (strncmp("TCOP", p, 4) == 0) {
+		    indexable->addValue(factory->copyrightField, value);
+		} else if ((strncmp("TDRL", p, 4) == 0) ||
+			    (strncmp("TDAT", p, 4) == 0) ||
+			    (strncmp("TYER", p, 4) == 0) ||
+			    (strncmp("TDRC", p, 4) == 0)) {
+		    indexable->addValue(factory->createdField, value);
+		} else if ((strncmp("TPE1", p, 4) == 0) ||
+			    (strncmp("TPE2", p, 4) == 0) ||
+			    (strncmp("TPE3", p, 4) == 0) ||
+			    (strncmp("TPE4", p, 4) == 0)) {
+		    string performerUri = indexable->newAnonymousUri();
+		    
+		    indexable->addValue(factory->performerField, performerUri);
+		    indexable->addTriplet(performerUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(performerUri, fullnamePropertyName, value);
+		} else if ((strncmp("TPUB", p, 4) == 0) ||
+			    (strncmp("TENC", p, 4) == 0)) {
+		    string publisherUri = indexable->newAnonymousUri();
+		    
+		    indexable->addValue(factory->publisherField, publisherUri);
+		    indexable->addTriplet(publisherUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(publisherUri, fullnamePropertyName, value);
+		} else if ((strncmp("TALB", p, 4) == 0) ||
+			    (strncmp("TOAL", p, 4) == 0)) {
+		    addStatement(indexable, albumUri, titlePropertyName, value);
+		} else if (strncmp("TCON", p, 4) == 0) {
+		    indexable->addValue(factory->genreField, value);
+		} else if (strncmp("TLEN", p, 4) == 0) {
+		    indexable->addValue(factory->durationField, value);
+		} else if (strncmp("TEXT", p, 4) == 0) {
+		    string lyricistUri = indexable->newAnonymousUri();
+		    
+		    indexable->addValue(factory->lyricistField, lyricistUri);
+		    indexable->addTriplet(lyricistUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(lyricistUri, fullnamePropertyName, value);
+		} else if (strncmp("TCOM", p, 4) == 0) {
+		    string composerUri = indexable->newAnonymousUri();
+
+		    indexable->addValue(factory->composerField, composerUri);
+		    indexable->addTriplet(composerUri, typePropertyName, contactClassName);
+		    indexable->addTriplet(composerUri, fullnamePropertyName, value);
+		} else if (strncmp("TRCK", p, 4) == 0) {
+		    istringstream ins(value);
+		    int tnum;
+		    ins >> tnum;
+		    if (!ins.fail()) {
+			indexable->addValue(factory->trackNumberField, tnum);
+			ins.ignore(10,'/');
+			int tcount;
+			ins >> tcount;
+			if (!ins.fail()) {
+			    ostringstream outs;
+			    outs << tcount;
+			    addStatement(indexable, albumUri, albumTrackCountPropertyName, outs.str());
+			}
+		    }
+		} else if (strncmp("TPOS", p, 4) == 0) {
+		    istringstream ins(value);
+		    int dnum;
+		    ins >> dnum;
+		    if (!ins.fail()) {
+			ostringstream out;
+			out << dnum;
+			addStatement(indexable, albumUri, discNumberPropertyName, out.str());
+			ins.ignore(10,'/');
+			int dcount;
+			ins >> dcount;
+			if (!ins.fail()) {
+			    ostringstream outs;
+			    outs << dcount;
+			    addStatement(indexable, albumUri, discCountPropertyName, outs.str());
+			}		    
 		    }
 		}
-            } else if (strncmp("TPOS", p, 4) == 0) {
-		if (int dnum  = atoi(p+11)) { // use p directly instead of value for speed
-		    ostringstream out;
-		    out << dnum;
-		    addStatement(indexable, albumUri, discNumberPropertyName, out.str());
-		    if (char *pos = (char*)memchr(p+11,'/',size-1)) {
-			  if (int dcount = atoi(pos+1)) {
-			      ostringstream outs;
-			      outs << dcount;
-			      addStatement(indexable, albumUri, discCountPropertyName, outs.str());
-			  }
-		    }		    
-		}
-            }
-        }
-        p += size + 10;
-    }
+	    }
+	    p += size + 10;
+	}
 
-    if(!albumUri.empty()) {
-	indexable->addValue(factory->albumField, albumUri);
-	indexable->addTriplet(albumUri, typePropertyName, albumClassName);
+	if(!albumUri.empty()) {
+	    indexable->addValue(factory->albumField, albumUri);
+	    indexable->addTriplet(albumUri, typePropertyName, albumClassName);
+	}
     }
-    
+    // parse MP3 frame header
+
+    int bitrateindex, samplerateindex;
+    if (((unsigned char)buf[0] == 0xff) && (((unsigned char)buf[1]&0xfe) == 0xfa)
+      && ((bitrateindex = ((unsigned char)buf[2]>>4)) != 0xf)
+      && ((samplerateindex = (((unsigned char)buf[2]>>2)&3)) != 3 )) { // is this MP3?
+	
+	indexable->addValue(factory->typeField, audioClassName);
+	cerr<<bitrateindex;
+	// FIXME: no support for VBR :(
+	// ideas: compare bitrate from the frame with stream size/duration from ID3 tags
+	// check several consecutive frames to see if bitrate is different
+	// in neither case you can be sure to properly detected VBR :(
+	indexable->addValue(factory->bitrateField, bitrate[bitrateindex]); 
+	indexable->addValue(factory->samplerateField, samplerate[samplerateindex]);
+	indexable->addValue(factory->codecField, "MP3");
+	indexable->addValue(factory->channelsField, ((buf[3]>>6) == 3 ? 1:2 ) );
+    }
     return in;
 }
 bool
