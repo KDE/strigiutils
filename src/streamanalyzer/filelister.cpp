@@ -271,18 +271,24 @@ DirLister::stopListing() {
 int
 DirLister::Private::nextDir(std::string& path,
         std::vector<std::pair<std::string, struct stat> >& dirs) {
-    // check if there are more directories to work on
-    if (todoPaths.size() == 0) {
-        return -1;
-    }
     string entryname;
     string entrypath;
     size_t entrypathlength;
+    // check if there are more directories to work on
+    bool end = false;
     // open the directory
     STRIGI_MUTEX_LOCK(&mutex);
-    path.assign(todoPaths.front());
-    todoPaths.pop_front();
+    if (!todoPaths.empty()) {
+      path.assign(todoPaths.front());
+      todoPaths.pop_front();
+    }
+    else {
+      end = true;
+    }
     STRIGI_MUTEX_UNLOCK(&mutex);
+    if (end) {
+      return -1;
+    }
     entrypathlength = path.length()+1;
     entrypath.assign(path);
     entrypath.append("/");
