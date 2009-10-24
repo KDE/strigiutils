@@ -52,13 +52,13 @@ set(streamanalyzer_SRCS
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
 	endanalyzers/zipexeendanalyzer.cpp
+	endanalyzers/id3endanalyzer.cpp
 	eventanalyzers/digesteventanalyzer.cpp
 	eventanalyzers/mimeeventanalyzer.cpp
 	lineanalyzers/m3ustreamanalyzer.cpp
 	lineanalyzers/odfmimetypelineanalyzer.cpp
 	saxanalyzers/htmlsaxanalyzer.cpp
 	saxanalyzers/odfsaxanalyzer.cpp
-	throughanalyzers/id3v2throughanalyzer.cpp
 	throughanalyzers/oggthroughanalyzer.cpp
 )
 

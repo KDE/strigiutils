@@ -17,31 +17,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef ID3V2THROUGHANALYZER_H
-#define ID3V2THROUGHANALYZER_H
+#ifndef ID3ENDANALYZER_H
+#define ID3ENDANALYZER_H
 
-#include "streamthroughanalyzer.h"
+#include "streamendanalyzer.h"
 #include "fieldtypes.h"
 
 // id3v2 according to http://www.id3.org/id3v2.4.0-structure.txt
 
-class ID3V2ThroughAnalyzerFactory;
-class ID3V2ThroughAnalyzer : public Strigi::StreamThroughAnalyzer {
+class ID3EndAnalyzerFactory;
+class ID3EndAnalyzer : public Strigi::StreamEndAnalyzer {
 private:
-    Strigi::AnalysisResult* indexable;
-    const ID3V2ThroughAnalyzerFactory* factory;
+    const ID3EndAnalyzerFactory* factory;
 public:
-    ID3V2ThroughAnalyzer(const ID3V2ThroughAnalyzerFactory* f)
-        :indexable(0), factory(f) {}
-    void setIndexable(Strigi::AnalysisResult*);
-    Strigi::InputStream *connectInputStream(Strigi::InputStream *in);
-    bool isReadyWithStream();
-    const char* name() const { return "ID3V2ThroughAnalyzer"; }
+    ID3EndAnalyzer(const ID3EndAnalyzerFactory* f) :factory(f) {}
+    bool checkHeader(const char* header, int32_t headersize) const;
+    signed char analyze(Strigi::AnalysisResult& idx, Strigi::InputStream* in);
+    const char* name() const { return "ID3EndAnalyzer"; }
 };
 
-class ID3V2ThroughAnalyzerFactory
-        : public Strigi::StreamThroughAnalyzerFactory {
-friend class ID3V2ThroughAnalyzer;
+class ID3EndAnalyzerFactory
+        : public Strigi::StreamEndAnalyzerFactory {
+friend class ID3EndAnalyzer;
 private:
     const Strigi::RegisteredField* createdField;
     const Strigi::RegisteredField* subjectField;
@@ -65,10 +62,10 @@ private:
     const Strigi::RegisteredField* channelsField;
 
     const char* name() const {
-        return "ID3V2ThroughAnalyzer";
+        return "ID3EndAnalyzer";
     }
-    Strigi::StreamThroughAnalyzer* newInstance() const {
-        return new ID3V2ThroughAnalyzer(this);
+    Strigi::StreamEndAnalyzer* newInstance() const {
+        return new ID3EndAnalyzer(this);
     }
     void registerFields(Strigi::FieldRegister&);
 };

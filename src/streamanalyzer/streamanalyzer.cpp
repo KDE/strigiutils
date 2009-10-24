@@ -44,7 +44,7 @@
 #include "mpegendanalyzer.h"
 #include "helperendanalyzer.h"
 #include "dataeventinputstream.h"
-#include "throughanalyzers/id3v2throughanalyzer.h"
+#include "endanalyzers/id3endanalyzer.h"
 #include "throughanalyzers/oggthroughanalyzer.h"
 #include "flacendanalyzer.h"
 #include "eventanalyzers/digesteventanalyzer.h"
@@ -259,7 +259,6 @@ StreamAnalyzerPrivate::initializeThroughFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    addFactory(new ID3V2ThroughAnalyzerFactory());
     addFactory(new OggThroughAnalyzerFactory());
     addFactory(new EventThroughAnalyzerFactory(saxfactories, linefactories,
         eventfactories));
@@ -325,6 +324,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new PngEndAnalyzerFactory());
     addFactory(new BmpEndAnalyzerFactory());
     addFactory(new FlacEndAnalyzerFactory());
+    addFactory(new ID3EndAnalyzerFactory());
     addFactory(new OdfSaxAnalyzerFactory());
     addFactory(new PdfEndAnalyzerFactory());
     addFactory(new SdfEndAnalyzerFactory());

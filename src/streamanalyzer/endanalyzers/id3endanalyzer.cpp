@@ -22,7 +22,7 @@
 # include "config.h"
 #endif
 
-#include "id3v2throughanalyzer.h"
+#include "id3endanalyzer.h"
 #include "rdfnamespaces.h"
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
@@ -271,7 +271,7 @@ UTF8Convertor::convert(const char *data, size_t len) {
 }
 
 void
-ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
+ID3EndAnalyzerFactory::registerFields(FieldRegister& r) {
     createdField	= r.registerField(NIE "contentCreated");
     subjectField	= r.registerField(NIE "subject");
     titleField		= r.registerField(titlePropertyName);
@@ -297,15 +297,10 @@ ID3V2ThroughAnalyzerFactory::registerFields(FieldRegister& r) {
 
 inline
 void
-addStatement(AnalysisResult *indexable, string& subject, const string& predicate, const string& object) {
+addStatement(AnalysisResult &indexable, string& subject, const string& predicate, const string& object) {
     if (subject.empty())
-	subject = indexable->newAnonymousUri();
-    indexable->addTriplet(subject, predicate, object);
-}
-
-void
-ID3V2ThroughAnalyzer::setIndexable(AnalysisResult* i) {
-    indexable = i;
+	subject = indexable.newAnonymousUri();
+    indexable.addTriplet(subject, predicate, object);
 }
 
 inline
@@ -324,38 +319,48 @@ readSize(const unsigned char* b, bool async) {
     }
     return readBigEndianInt32(b);
 }
-InputStream*
-ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
+bool
+ID3EndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
+  const unsigned char* usbuf = (const unsigned char*)header;
+  return (headersize>=6)
+	  && (
+	    (strncmp("ID3", header, 3) == 0	// check that it's ID3
+	      && usbuf[3] <= 4 				// only handle version <= 4
+	      && header[5] == 0)  // we're too dumb too handle flags
+	    ||
+	    ((unsigned char)header[0] == 0xff && ((unsigned char)header[1]&0xfe) == 0xfa
+	      && (unsigned char)header[2]>>4 != 0xf	// MP3 frame header is ok too
+	      && (((unsigned char)header[2]>>2)&3) != 3)
+	  );
+
+}
+signed char
+ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* in) {
     if(!in)
-        return in;
+        return -1;
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
-    const unsigned char* usbuf = (const unsigned char*)buf;
     in->reset(0);
 
     // parse ID3v2* tag
 
-    if (nread == 10 && strncmp("ID3", buf, 3) == 0	// check that it's ID3
-            && usbuf[3] <= 4 				// only handle version <= 4
-            && buf[5] == 0) { // we're too dumb too handle flags
+    if (nread == 10 && strncmp("ID3", buf, 3) == 0) { // check for ID3 header
 
 	bool async = buf[3] >= 4;
 
 	// calculate size from 4 syncsafe bytes
 	int32_t size = readAsyncSize((unsigned char*)buf+6);
 	if (size < 0 || size > 300000)
-	    return in;
+	    return -1;
 	size += 10+4; // add the size of the ID3 header and MP3 frame header
 
 	// read the entire tag
 	nread = in->read(buf, size, size);
-	in->reset(0);
-	if (nread != size || !indexable) {
-	    return in;
-	}
+	if (nread != size)
+	    return -1;
 	
-	indexable->addValue(factory->typeField, musicClassName);
+	indexable.addValue(factory->typeField, musicClassName);
 	
 	string albumUri;
 
@@ -364,8 +369,8 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
 	while (p < buf && *p) {
 	    size = readSize((unsigned char*)p+4, async);
 	    if (size <= 0 || size > (buf-p)-10) {
-		cerr << "size < 0: " << size << endl;
-		return in;
+		//cerr << "size < 0: " << size << endl;
+		return -1;
 	    }
 
 	    string value;
@@ -381,61 +386,61 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
 	    
 	    if (!value.empty()) {
 		if (strncmp("TIT1", p, 4) == 0) {
-		    indexable->addValue(factory->subjectField, value);
+		    indexable.addValue(factory->subjectField, value);
 		} else if (strncmp("TIT2", p, 4) == 0) {
-		    indexable->addValue(factory->titleField, value);
+		    indexable.addValue(factory->titleField, value);
 		} else if (strncmp("TIT3", p, 4) == 0) {
-		    indexable->addValue(factory->descriptionField, value);
+		    indexable.addValue(factory->descriptionField, value);
 		} else if (strncmp("TLAN", p, 4) == 0) {
-		    indexable->addValue(factory->languageField, value);
+		    indexable.addValue(factory->languageField, value);
 		} else if (strncmp("TCOP", p, 4) == 0) {
-		    indexable->addValue(factory->copyrightField, value);
+		    indexable.addValue(factory->copyrightField, value);
 		} else if ((strncmp("TDRL", p, 4) == 0) ||
 			    (strncmp("TDAT", p, 4) == 0) ||
 			    (strncmp("TYER", p, 4) == 0) ||
 			    (strncmp("TDRC", p, 4) == 0)) {
-		    indexable->addValue(factory->createdField, value);
+		    indexable.addValue(factory->createdField, value);
 		} else if ((strncmp("TPE1", p, 4) == 0) ||
 			    (strncmp("TPE2", p, 4) == 0) ||
 			    (strncmp("TPE3", p, 4) == 0) ||
 			    (strncmp("TPE4", p, 4) == 0)) {
-		    string performerUri = indexable->newAnonymousUri();
+		    string performerUri = indexable.newAnonymousUri();
 		    
-		    indexable->addValue(factory->performerField, performerUri);
-		    indexable->addTriplet(performerUri, typePropertyName, contactClassName);
-		    indexable->addTriplet(performerUri, fullnamePropertyName, value);
+		    indexable.addValue(factory->performerField, performerUri);
+		    indexable.addTriplet(performerUri, typePropertyName, contactClassName);
+		    indexable.addTriplet(performerUri, fullnamePropertyName, value);
 		} else if ((strncmp("TPUB", p, 4) == 0) ||
 			    (strncmp("TENC", p, 4) == 0)) {
-		    string publisherUri = indexable->newAnonymousUri();
+		    string publisherUri = indexable.newAnonymousUri();
 		    
-		    indexable->addValue(factory->publisherField, publisherUri);
-		    indexable->addTriplet(publisherUri, typePropertyName, contactClassName);
-		    indexable->addTriplet(publisherUri, fullnamePropertyName, value);
+		    indexable.addValue(factory->publisherField, publisherUri);
+		    indexable.addTriplet(publisherUri, typePropertyName, contactClassName);
+		    indexable.addTriplet(publisherUri, fullnamePropertyName, value);
 		} else if ((strncmp("TALB", p, 4) == 0) ||
 			    (strncmp("TOAL", p, 4) == 0)) {
 		    addStatement(indexable, albumUri, titlePropertyName, value);
 		} else if (strncmp("TCON", p, 4) == 0) {
-		    indexable->addValue(factory->genreField, value);
+		    indexable.addValue(factory->genreField, value);
 		} else if (strncmp("TLEN", p, 4) == 0) {
-		    indexable->addValue(factory->durationField, value);
+		    indexable.addValue(factory->durationField, value);
 		} else if (strncmp("TEXT", p, 4) == 0) {
-		    string lyricistUri = indexable->newAnonymousUri();
+		    string lyricistUri = indexable.newAnonymousUri();
 		    
-		    indexable->addValue(factory->lyricistField, lyricistUri);
-		    indexable->addTriplet(lyricistUri, typePropertyName, contactClassName);
-		    indexable->addTriplet(lyricistUri, fullnamePropertyName, value);
+		    indexable.addValue(factory->lyricistField, lyricistUri);
+		    indexable.addTriplet(lyricistUri, typePropertyName, contactClassName);
+		    indexable.addTriplet(lyricistUri, fullnamePropertyName, value);
 		} else if (strncmp("TCOM", p, 4) == 0) {
-		    string composerUri = indexable->newAnonymousUri();
+		    string composerUri = indexable.newAnonymousUri();
 
-		    indexable->addValue(factory->composerField, composerUri);
-		    indexable->addTriplet(composerUri, typePropertyName, contactClassName);
-		    indexable->addTriplet(composerUri, fullnamePropertyName, value);
+		    indexable.addValue(factory->composerField, composerUri);
+		    indexable.addTriplet(composerUri, typePropertyName, contactClassName);
+		    indexable.addTriplet(composerUri, fullnamePropertyName, value);
 		} else if (strncmp("TRCK", p, 4) == 0) {
 		    istringstream ins(value);
 		    int tnum;
 		    ins >> tnum;
 		    if (!ins.fail()) {
-			indexable->addValue(factory->trackNumberField, tnum);
+			indexable.addValue(factory->trackNumberField, tnum);
 			ins.ignore(10,'/');
 			int tcount;
 			ins >> tcount;
@@ -468,8 +473,8 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
 	}
 
 	if(!albumUri.empty()) {
-	    indexable->addValue(factory->albumField, albumUri);
-	    indexable->addTriplet(albumUri, typePropertyName, albumClassName);
+	    indexable.addValue(factory->albumField, albumUri);
+	    indexable.addTriplet(albumUri, typePropertyName, albumClassName);
 	}
     }
     // parse MP3 frame header
@@ -479,20 +484,15 @@ ID3V2ThroughAnalyzer::connectInputStream(InputStream* in) {
       && ((bitrateindex = ((unsigned char)buf[2]>>4)) != 0xf)
       && ((samplerateindex = (((unsigned char)buf[2]>>2)&3)) != 3 )) { // is this MP3?
 	
-	indexable->addValue(factory->typeField, audioClassName);
-	cerr<<bitrateindex;
+	indexable.addValue(factory->typeField, audioClassName);
 	// FIXME: no support for VBR :(
 	// ideas: compare bitrate from the frame with stream size/duration from ID3 tags
 	// check several consecutive frames to see if bitrate is different
 	// in neither case you can be sure to properly detected VBR :(
-	indexable->addValue(factory->bitrateField, bitrate[bitrateindex]); 
-	indexable->addValue(factory->samplerateField, samplerate[samplerateindex]);
-	indexable->addValue(factory->codecField, "MP3");
-	indexable->addValue(factory->channelsField, ((buf[3]>>6) == 3 ? 1:2 ) );
+	indexable.addValue(factory->bitrateField, bitrate[bitrateindex]); 
+	indexable.addValue(factory->samplerateField, samplerate[samplerateindex]);
+	indexable.addValue(factory->codecField, "MP3");
+	indexable.addValue(factory->channelsField, ((buf[3]>>6) == 3 ? 1:2 ) );
     }
-    return in;
-}
-bool
-ID3V2ThroughAnalyzer::isReadyWithStream() {
-    return true;
+    return 0;
 }
