@@ -401,7 +401,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 			indexable.indexChild(picname, indexable.mTime(), &picstream);
 
 			if(desclen) {
-			    if (enc == 0 or enc == 3) {
+			    if (enc == 0 || enc == 3) {
 				indexable.child()->addValue(factory->descriptionField, string(desc, desclen) );
 			    } else {
 				indexable.child()->addValue(factory->descriptionField, conv.convert(desc, desclen) );
@@ -411,7 +411,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 		}
 	    }
 
-	    if (enc == 0 or enc == 3) {
+	    if (enc == 0 || enc == 3) {
 		value = string(p+11, size-1);
 	    } else {
 		value = conv.convert(p+11,size-1);
