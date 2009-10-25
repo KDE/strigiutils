@@ -27,6 +27,7 @@
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "textutils.h"
+#include "stringstream.h"
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -66,7 +67,6 @@ const string
 	NCO "Contact");
 
 /*
-Album Art
 ENCA autodetection of broken encodings. First, need to make sure it's going to be actually useful.
 ID3v2.0
 play counter:needs nepomuk resolution
@@ -76,6 +76,7 @@ replaygain
   creation date:
   language: support multiple
   Genre
+  album art type handling
 VBR detection
 */
 
@@ -344,7 +345,8 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	  found_year = false, found_track = false,
 	  found_genre = false;
     string albumUri;
-
+    char albumArtNum = '\0';
+    
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
@@ -382,6 +384,31 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    uint8_t enc = p[10];
 	    const char *encoding = enc>4 ? encodings[0] : encodings[enc] ;
 	    UTF8Convertor conv(encoding);
+
+	    if (strncmp("APIC", p, 4) == 0) {
+		size_t mimelen = strnlen(p+11, size-1);
+		if (mimelen<size-1-3) {
+		    const char *desc = p+11+mimelen+1+1;
+//		    uint8_t pictype = p[11+mimelen+1];
+		    size_t desclen = strnlen(desc,size-1-mimelen-2-1);
+		    const char *content = desc + desclen + 1 + (enc == 0 || enc == 3 ? 0:1) ;
+
+		    if(content<p+10+size) {
+			StringInputStream picstream(content, p+10+size-content, false);
+			string picname;
+			picname = (char)('0'+albumArtNum++);
+			indexable.indexChild(picname, indexable.mTime(), &picstream);
+
+			if(desclen) {
+			    if (enc == 0 or enc == 3) {
+				indexable.child()->addValue(factory->descriptionField, string(desc, desclen) );
+			    } else {
+				indexable.child()->addValue(factory->descriptionField, conv.convert(desc, desclen) );
+			    }
+			}
+		    }
+		}
+	    }
 
 	    if (enc == 0 or enc == 3) {
 		value = string(p+11, size-1);
@@ -528,7 +555,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 		indexable.addValue(factory->trackNumberField, out.str());
 	    }
 	    if (!found_genre && (unsigned char)(buf[127]) < 148)
-		indexable.addValue(factory->genreField, genres[buf[127]]);
+		indexable.addValue(factory->genreField, genres[(uint8_t)buf[127]]);
 	}
     }
 
