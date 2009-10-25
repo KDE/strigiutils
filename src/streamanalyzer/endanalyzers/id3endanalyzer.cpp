@@ -67,11 +67,10 @@ const string
 
 /*
 Album Art
-ENCA autodetection of broken encodings
+ENCA autodetection of broken encodings. First, need to make sure it's going to be actually useful.
 ID3v2.0
 play counter:needs nepomuk resolution
-refactor as endanalyzer?
-ID3v1 -- needs to become endanalyzer first
+replaygain
 +lyrics
 +Improve:
   creation date:
@@ -80,7 +79,7 @@ ID3v1 -- needs to become endanalyzer first
 VBR detection
 */
 
-static const string genres[] = {
+static const string genres[148] = {
   "Blues",
   "Classic Rock",
   "Country",
@@ -276,6 +275,7 @@ ID3EndAnalyzerFactory::registerFields(FieldRegister& r) {
     subjectField	= r.registerField(NIE "subject");
     titleField		= r.registerField(titlePropertyName);
     descriptionField	= r.registerField(NIE "description");
+    commentField	= r.registerField(NIE "comment");
     artistField		= r.registerField(NCO "creator");
     albumField		= r.registerField(NMM_DRAFT "musicAlbum");
     genreField		= r.registerField(NMM_DRAFT "genre");
@@ -338,10 +338,16 @@ signed char
 ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* in) {
     if(!in)
         return -1;
+    
+    bool found_title = false, found_artist = false,
+	  found_album = false, found_comment = false,
+	  found_year = false, found_track = false,
+	  found_genre = false;
+    string albumUri;
+
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
-    in->reset(0);
 
     // parse ID3v2* tag
 
@@ -356,13 +362,12 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	size += 10+4; // add the size of the ID3 header and MP3 frame header
 
 	// read the entire tag
+	in->reset(0);
 	nread = in->read(buf, size, size);
 	if (nread != size)
 	    return -1;
-	
+
 	indexable.addValue(factory->typeField, musicClassName);
-	
-	string albumUri;
 
 	const char* p = buf + 10;
 	buf += size-4;
@@ -370,25 +375,26 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    size = readSize((unsigned char*)p+4, async);
 	    if (size <= 0 || size > (buf-p)-10) {
 		//cerr << "size < 0: " << size << endl;
-		return -1;
+		break;
 	    }
 
 	    string value;
 	    uint8_t enc = p[10];
 	    const char *encoding = enc>4 ? encodings[0] : encodings[enc] ;
 	    UTF8Convertor conv(encoding);
-	    
+
 	    if (enc == 0 or enc == 3) {
 		value = string(p+11, size-1);
 	    } else {
 		value = conv.convert(p+11,size-1);
 	    }
-	    
+
 	    if (!value.empty()) {
 		if (strncmp("TIT1", p, 4) == 0) {
 		    indexable.addValue(factory->subjectField, value);
 		} else if (strncmp("TIT2", p, 4) == 0) {
 		    indexable.addValue(factory->titleField, value);
+		    found_title = true;
 		} else if (strncmp("TIT3", p, 4) == 0) {
 		    indexable.addValue(factory->descriptionField, value);
 		} else if (strncmp("TLAN", p, 4) == 0) {
@@ -400,32 +406,36 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 			    (strncmp("TYER", p, 4) == 0) ||
 			    (strncmp("TDRC", p, 4) == 0)) {
 		    indexable.addValue(factory->createdField, value);
+		    found_year = true;
 		} else if ((strncmp("TPE1", p, 4) == 0) ||
 			    (strncmp("TPE2", p, 4) == 0) ||
 			    (strncmp("TPE3", p, 4) == 0) ||
 			    (strncmp("TPE4", p, 4) == 0)) {
 		    string performerUri = indexable.newAnonymousUri();
-		    
+
 		    indexable.addValue(factory->performerField, performerUri);
 		    indexable.addTriplet(performerUri, typePropertyName, contactClassName);
 		    indexable.addTriplet(performerUri, fullnamePropertyName, value);
+		    found_artist = true;
 		} else if ((strncmp("TPUB", p, 4) == 0) ||
 			    (strncmp("TENC", p, 4) == 0)) {
 		    string publisherUri = indexable.newAnonymousUri();
-		    
+
 		    indexable.addValue(factory->publisherField, publisherUri);
 		    indexable.addTriplet(publisherUri, typePropertyName, contactClassName);
 		    indexable.addTriplet(publisherUri, fullnamePropertyName, value);
 		} else if ((strncmp("TALB", p, 4) == 0) ||
 			    (strncmp("TOAL", p, 4) == 0)) {
 		    addStatement(indexable, albumUri, titlePropertyName, value);
+		    found_album = true;
 		} else if (strncmp("TCON", p, 4) == 0) {
 		    indexable.addValue(factory->genreField, value);
+		    found_genre = true;
 		} else if (strncmp("TLEN", p, 4) == 0) {
 		    indexable.addValue(factory->durationField, value);
 		} else if (strncmp("TEXT", p, 4) == 0) {
 		    string lyricistUri = indexable.newAnonymousUri();
-		    
+
 		    indexable.addValue(factory->lyricistField, lyricistUri);
 		    indexable.addTriplet(lyricistUri, typePropertyName, contactClassName);
 		    indexable.addTriplet(lyricistUri, fullnamePropertyName, value);
@@ -441,6 +451,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 		    ins >> tnum;
 		    if (!ins.fail()) {
 			indexable.addValue(factory->trackNumberField, tnum);
+			found_track = true;
 			ins.ignore(10,'/');
 			int tcount;
 			ins >> tcount;
@@ -471,11 +482,6 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    }
 	    p += size + 10;
 	}
-
-	if(!albumUri.empty()) {
-	    indexable.addValue(factory->albumField, albumUri);
-	    indexable.addTriplet(albumUri, typePropertyName, albumClassName);
-	}
     }
     // parse MP3 frame header
 
@@ -494,5 +500,42 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	indexable.addValue(factory->codecField, "MP3");
 	indexable.addValue(factory->channelsField, ((buf[3]>>6) == 3 ? 1:2 ) );
     }
+    
+    // Parse ID3v1 tag
+
+    int64_t insize;
+    if ( (insize = in->size()) > (128+nread)) {
+
+      // read the tag and check signature
+	int64_t nskip = insize-128-nread;
+	if (nskip == in->skip(nskip))
+	if (in->read(buf, 128, 128)==128)
+	if (!strncmp("TAG", buf, 3)) {
+
+	    if (!found_title && buf[3])
+		indexable.addValue(factory->titleField, string(buf+3, strnlen(buf+3, 30)));
+	    if (!found_artist && buf[33])
+		indexable.addValue(factory->artistField, string(buf+33, strnlen(buf+33, 30)));
+	    if (!found_album && buf[63])
+		addStatement(indexable, albumUri, titlePropertyName, string(buf+63, strnlen(buf+63, 30)));
+	    if (!found_year && buf[93])
+		indexable.addValue(factory->createdField, string(buf+93, strnlen(buf+3, 4)));
+	    if (!found_comment && buf[97])
+		indexable.addValue(factory->commentField, string(buf+97, strnlen(buf+97, 30)));
+	    if (!found_track && !buf[125] && buf[126]) {
+		ostringstream out;
+		out << (int)(buf[126]);
+		indexable.addValue(factory->trackNumberField, out.str());
+	    }
+	    if (!found_genre && (unsigned char)(buf[127]) < 148)
+		indexable.addValue(factory->genreField, genres[buf[127]]);
+	}
+    }
+
+    if(!albumUri.empty()) {
+	indexable.addValue(factory->albumField, albumUri);
+	indexable.addTriplet(albumUri, typePropertyName, albumClassName);
+    }
+
     return 0;
 }
