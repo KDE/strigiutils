@@ -238,6 +238,16 @@ const uint32_t samplerate[3] = {44100, 48000, 32000};
 
 const char * encodings[5] = {"ISO-8859-1", "UTF-16", "UTF-16BE", "UTF-8", "UTF-16LE"};
 
+#ifndef _GNU_SOURCE
+size_t
+strnlen(const char *s, size_t maxlen) {
+    for(size_t i=0; i<maxlen; i++)
+	if (s[i]==0)
+	    return i;
+    return maxlen;
+}
+#endif
+
 class UTF8Convertor {
   private:
     iconv_t const conv;
