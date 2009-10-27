@@ -37,6 +37,26 @@ SignatureInputStreamTest(int argc, char** argv) {
         SignatureInputStream sig(&file, 10);
         charinputstreamtests[i](&sig);
     }
+
+    std::string s = "123456788901234456789012345678901234567890";
+    for (uint32_t i=0; i<s.length(); ++i) {
+        for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+            StringInputStream str(s.c_str(), s.length(), false);
+            SignatureInputStream sig(&str, i);
+            const char* data;
+            while (sig.read(data, j, j) > 0) {}
+            VERIFY(sig.signature() == s.substr(s.length()-i));
+        }
+    }
+    for (uint32_t i=0; i<s.length(); ++i) {
+        for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+            StringInputStream str(s.c_str(), s.length(), false);
+            SignatureInputStream sig(&str, i);
+            while (sig.skip(j) > 0) {}
+            VERIFY(sig.signature() == s.substr(s.length()-i));
+        }
+    }
+
     return founderrors;
 }
 

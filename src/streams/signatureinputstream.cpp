@@ -26,6 +26,11 @@
 using namespace std;
 using namespace Strigi;
 
+/**
+ * There are two cases:
+ *  - the stream size is known in advance.
+ *  - the stream size is no known
+ **/
 class SignatureInputStream::Private {
 public:
     int32_t signaturesize;
