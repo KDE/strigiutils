@@ -128,7 +128,7 @@ SdfInputStream::nextEntry() {
     int64_t len=0;
     
     while (m_input->status() == Ok) {
-        nread = m_input->read(start, 1, 0);
+        nread = m_input->read(start, 1024, 0);
         if (nread > 0) {
             end = m_searcher.search(start, nread);
             if (end) {
