@@ -19,9 +19,10 @@ set(streamtests
 	LZMAInputStreamTest.cpp
 	MailInputStreamTest.cpp
 	RpmInputStreamTest.cpp
+	SdfInputStreamTest.cpp
+	SignatureInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	SubInputStreamTest.cpp
-	SdfInputStreamTest.cpp
 	TarInputStreamTest.cpp
 	ZipInputStreamTest.cpp
 	stat64bitTest.cpp

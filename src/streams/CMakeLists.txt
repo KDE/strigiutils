@@ -32,6 +32,7 @@ set(streams_SRCS
 	oleinputstream.cpp
 	rpminputstream.cpp
 	sdfinputstream.cpp
+	signatureinputstream.cpp
 	stringterminatedsubstream.cpp
 	subinputstream.cpp
 	substreamproviderprovider.cpp
