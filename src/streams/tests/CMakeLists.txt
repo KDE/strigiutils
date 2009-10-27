@@ -7,8 +7,10 @@ include_directories(
 )
 set(streamtests
 	testrunner.cpp
+	ArInputStreamTest.cpp
 	Base64InputStreamTest.cpp
 	BZ2InputStreamTest.cpp
+	CpioInputStreamTest.cpp
 	EventInputStreamTest.cpp
 	FileInputStreamTest.cpp
 	GZipInputStreamTest.cpp

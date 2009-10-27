@@ -44,7 +44,11 @@ CpioInputStream::~CpioInputStream() {
 }
 InputStream*
 CpioInputStream::nextEntry() {
-    if (m_status) return 0;
+    if (m_status) {
+        delete m_entrystream;
+        m_entrystream = 0;
+        return 0;
+    }
     if (m_entrystream) {
         while (m_entrystream->status() == Ok) {
             m_entrystream->skip(m_entrystream->size());
@@ -57,7 +61,11 @@ CpioInputStream::nextEntry() {
     }
     readHeader();
     m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
-    return (m_status) ?0 :m_entrystream;
+    if (m_status) {
+        delete m_entrystream;
+        m_entrystream = 0;
+    }
+    return m_entrystream;
 }
 void
 CpioInputStream::readHeader() {
