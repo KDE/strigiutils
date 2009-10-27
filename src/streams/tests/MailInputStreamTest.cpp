@@ -29,11 +29,7 @@ MailInputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
-    for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("mail");
-        MailInputStream mail(&file);
-        streamprovidertests[i](&mail);
-    }
+    TESTONARCHIVE(MailInputStream, "mail");
     return founderrors;
 }
 

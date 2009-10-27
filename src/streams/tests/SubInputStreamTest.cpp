@@ -20,6 +20,7 @@
 #include "../fileinputstream.h"
 #include "../subinputstream.h"
 #include "inputstreamtests.h"
+#include <iostream>
 
 using namespace Strigi;
 
@@ -29,10 +30,8 @@ SubInputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
-    for (int i=0; i<ninputstreamtests; ++i) {
-        FileInputStream file("a.zip");
-        SubInputStream sub(&file, 1);
-        charinputstreamtests[i](&sub);
+    for (int j=1; j<275; j*=2) {
+        TESTONFILE2(SubInputStream, j, "a.zip");
     }
     return founderrors;
 }

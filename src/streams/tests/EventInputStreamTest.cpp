@@ -17,15 +17,17 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../fileinputstream.h"
 #include "../dataeventinputstream.h"
 #include "inputstreamtests.h"
 
 using namespace Strigi;
 
 class TestEventHandler : public DataEventHandler {
+private:
+    const bool done;
 public:
-    bool handleData(const char* data, uint32_t size) { return true; }
+    TestEventHandler(bool d) :done(d) {}
+    bool handleData(const char* data, uint32_t size) { return done; }
 };
 
 int
@@ -34,12 +36,11 @@ EventInputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
-    TestEventHandler de;
-    for (int i=0; i<ninputstreamtests; ++i) {
-        FileInputStream file("a.zip");
-        DataEventInputStream sub(&file, de);
-        charinputstreamtests[i](&sub);
-    }
+    TestEventHandler de1(true);
+    TESTONFILE2(DataEventInputStream, de1, "a.zip");
+    TestEventHandler de2(false);
+    TESTONFILE2(DataEventInputStream, de2, "a.zip");
+
     return founderrors;
 }
 

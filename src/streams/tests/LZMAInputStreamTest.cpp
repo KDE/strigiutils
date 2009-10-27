@@ -17,7 +17,6 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../fileinputstream.h"
 #include "../lzmainputstream.h"
 #include "inputstreamtests.h"
 
@@ -29,11 +28,7 @@ LZMAInputStreamTest(int argc, char* argv[]) {
     VERIFY(chdir(argv[1]) == 0);
 
     founderrors = 0;
-    for (int i=0; i<ninputstreamtests; ++i) {
-        FileInputStream file("a.lzma");
-        LZMAInputStream lzma(&file);
-        charinputstreamtests[i](&lzma);
-    }
+    TESTONFILE(LZMAInputStream, "a.lzma");
     return founderrors;
 }
 

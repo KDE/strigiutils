@@ -40,15 +40,11 @@ int
 SdfInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
     VERIFY(chdir(argv[1]) == 0);
+    founderrors = 0;
     
     testSdfHeader("drugs.sdf");
 
-    founderrors = 0;
-    for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("drugs.sdf");
-        SdfInputStream sdf(&file);
-        streamprovidertests[i](&sdf);
-    }
+    TESTONARCHIVE(SdfInputStream, "drugs.sdf");
     return founderrors;
 }
 

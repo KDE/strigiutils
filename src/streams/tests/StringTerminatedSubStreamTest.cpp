@@ -39,11 +39,7 @@ StringTerminatedSubStreamTest(int argc, char* argv[]) {
     int64_t nread = sub.read(start, 10, 10);
     VERIFY(nread == 1);
 
-    for (int i=0; i<ninputstreamtests; ++i) {
-        FileInputStream file("a.zip");
-        StringTerminatedSubStream sub(&file, "THEEND");
-        charinputstreamtests[i](&sub);
-    }
+    TESTONFILE2(StringTerminatedSubStream, "THEEND", "a.zip");
     return founderrors;
 }
 

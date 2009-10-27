@@ -93,7 +93,6 @@ inputStreamTest3(StreamBase<T>* s) {
     VERIFY(s->status() == Ok);
 
     int64_t n2 = s->skip(toread);
-std::cerr << "n2 " << n2 << " toread " << toread << " size " << s->size() <<  std::endl;
     VERIFY(n2 == s->size());
     n2 = s->reset(p);
     VERIFY(n2 == p);
@@ -104,6 +103,7 @@ void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
     VERIFY(s == ssp->currentEntry());
+    VERIFY(s); // we want at least one stream
     while (s) {
         inputStreamTest1<char>(s);
         printf("%s %li\n", ssp->entryInfo().filename.c_str(),

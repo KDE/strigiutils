@@ -29,9 +29,15 @@ StringStreamTest(int argc, char** argv) {
     VERIFY(chdir(argv[1]) == 0);
 
     founderrors = 0;
+    std::string s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (int i=0; i<ninputstreamtests; ++i) {
-        StringStream<char> s1("p.zip", 5);
+        StringStream<char> s1(s.c_str(), s.length());
         charinputstreamtests[i](&s1);
+    }
+    for (int i=0; i<ninputstreamtests; ++i) {
+        StringStream<char> s1(s.c_str(), s.length());
+        UnknownSizeInputStream s2(&s1);
+        charinputstreamtests[i](&s2);
     }
     return founderrors;
 }

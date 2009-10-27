@@ -20,7 +20,6 @@
 #include "../fileinputstream.h"
 #include "../stringstream.h"
 #include "../signatureinputstream.h"
-#include "../stringterminatedsubstream.h"
 #include "inputstreamtests.h"
 #include <iostream>
 
@@ -36,6 +35,12 @@ SignatureInputStreamTest(int argc, char* argv[]) {
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         SignatureInputStream sig(&file, 10);
+        charinputstreamtests[i](&sig);
+    }
+    for (int i=0; i<ninputstreamtests; ++i) {
+        FileInputStream file("a.zip");
+        UnknownSizeInputStream ui(&file);
+        SignatureInputStream sig(&ui, 10);
         charinputstreamtests[i](&sig);
     }
 
@@ -59,32 +64,27 @@ SignatureInputStreamTest(int argc, char* argv[]) {
             VERIFY(sig.signature() == s.substr(s.length()-i));
         }
     }
-    const int len = 26;
     // test on stream of unknown size with read
-    for (uint32_t len=0; len<s.length()-1; ++len) {
-        for (uint32_t i=0; i<s.length(); ++i) {
-            for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-                StringInputStream str(s.c_str(), s.length(), false);
-                StringTerminatedSubStream sub(&str, s.substr(len, 1));
-                SignatureInputStream sig(&sub, i);
-                const char* data;
-                while (sig.read(data, j, j) > 0) {}
-                VERIFY(sub.size() == len);
-                VERIFY(sig.signature() == s.substr(s.length()-i));
-            }
+    for (uint32_t i=0; i<s.length(); ++i) {
+        for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+            StringInputStream str(s.c_str(), s.length(), false);
+            UnknownSizeInputStream ui(&str);
+            SignatureInputStream sig(&ui, i);
+            const char* data;
+            while (sig.read(data, j, j) > 0) {}
+            VERIFY(ui.size() == (int64_t)s.length());
+            VERIFY(sig.signature() == s.substr(s.length()-i));
         }
     }
     // test on stream of unknown size with skip
-    for (uint32_t len=0; len<s.length()-1; ++len) {
-        for (uint32_t i=0; i<s.length(); ++i) {
-            for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-                StringInputStream str(s.c_str(), s.length(), false);
-                StringTerminatedSubStream sub(&str, s.substr(len, 1));
-                SignatureInputStream sig(&sub, i);
-                while (sig.skip(j) > 0) {}
-                VERIFY(sub.size() == len);
-                VERIFY(sig.signature() == s.substr(s.length()-i));
-            }
+    for (uint32_t i=0; i<s.length(); ++i) {
+        for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+            StringInputStream str(s.c_str(), s.length(), false);
+            UnknownSizeInputStream ui(&str);
+            SignatureInputStream sig(&ui, i);
+            while (sig.skip(j) > 0) {}
+            VERIFY(ui.size() == (int64_t)s.length());
+            VERIFY(sig.signature() == s.substr(s.length()-i));
         }
     }
 

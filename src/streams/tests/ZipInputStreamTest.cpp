@@ -18,8 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "../fileinputstream.h"
-#include "../skippingfileinputstream.h"
 #include "../zipinputstream.h"
 #include "inputstreamtests.h"
 
@@ -31,17 +29,7 @@ ZipInputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
-    for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("a.zip");
-        ZipInputStream zip(&file);
-        streamprovidertests[i](&zip);
-    }
-
-    for (int i=0; i<nstreamprovidertests; ++i) {
-        SkippingFileInputStream file("a.zip");
-        ZipInputStream zip(&file);
-        streamprovidertests[i](&zip);
-    }
+    TESTONARCHIVE(ZipInputStream, "a.zip");
 
     // should have at least one stream
     InputStream* file = new SkippingFileInputStream("a.zip");

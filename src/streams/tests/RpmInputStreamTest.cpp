@@ -30,11 +30,7 @@ RpmInputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
-    for (int i=0; i<nstreamprovidertests; ++i) {
-        FileInputStream file("dbus-1-java-0.62-21.6.i586.rpm");
-        RpmInputStream rpm(&file);
-        streamprovidertests[i](&rpm);
-    }
+    TESTONARCHIVE(RpmInputStream, "dbus-1-java-0.62-21.6.i586.rpm");
 
     return founderrors;
 }
