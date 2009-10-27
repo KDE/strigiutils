@@ -88,7 +88,6 @@ SkippingFileInputStream::~SkippingFileInputStream() {
 }
 int32_t
 SkippingFileInputStream::read(const char*& start, int32_t _min, int32_t _max) {
-cerr<<"read " << _min << " " << _max << " " << m_status <<endl;
     int32_t n = max(_min, _max);
     if (n > buffersize) {
         buffer = (char*)realloc(buffer, n);
@@ -106,20 +105,16 @@ cerr<<"read " << _min << " " << _max << " " << m_status <<endl;
         }
     }
     start = buffer;
-cerr << "nr " << nr << " " << m_position << " " << m_status << endl;;
     return nr;
 }
 int64_t
 SkippingFileInputStream::skip(int64_t ntoskip) {
-cerr<<"skip " << ntoskip << " " << m_status <<endl;
     int64_t oldpos = m_position;
     if (reset(m_position + ntoskip) == -2) return -2;
-cerr << "nr " << m_position-oldpos << " " << m_position << " " << m_status<<endl;
     return m_position - oldpos;
 }
 int64_t
 SkippingFileInputStream::reset(int64_t pos) {
-cerr<<"reset " << pos <<" " << m_status <<endl;
     if (m_size >= 0 && pos > m_size) pos = m_size;
     if (fseek(file, pos, SEEK_SET)) {
         m_status = Error;
@@ -127,6 +122,5 @@ cerr<<"reset " << pos <<" " << m_status <<endl;
     }
     m_position = ftell(file);
     m_status = (m_position == m_size) ?Eof :Ok;
-cerr << "m_position " << m_position << " " << m_status<<endl;
     return m_position;
 }
