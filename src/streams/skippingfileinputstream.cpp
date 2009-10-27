@@ -87,9 +87,9 @@ SkippingFileInputStream::~SkippingFileInputStream() {
     free(buffer);
 }
 int32_t
-SkippingFileInputStream::read(const char*& start, int32_t min, int32_t max) {
-cerr<<"read " << min << " " << max << " " << m_status <<endl;
-    int32_t n = ::max(min, max);
+SkippingFileInputStream::read(const char*& start, int32_t _min, int32_t _max) {
+cerr<<"read " << _min << " " << _max << " " << m_status <<endl;
+    int32_t n = max(_min, _max);
     if (n > buffersize) {
         buffer = (char*)realloc(buffer, n);
     }
