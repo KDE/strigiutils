@@ -367,7 +367,9 @@ OleInputStream::Private::readEntryInfo() {
 }
 InputStream*
 OleInputStream::nextEntry() {
-    return p->nextEntry();
+    m_entrystream = p->nextEntry();
+    if (!m_entrystream) m_status = Eof;
+    return m_entrystream;
 }
 InputStream*
 OleInputStream::Private::nextEntry() {
