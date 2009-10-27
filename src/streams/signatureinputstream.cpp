@@ -39,21 +39,34 @@ public:
 
 SignatureInputStream::SignatureInputStream(InputStream* i,
         int32_t signaturesize) :p(new Private(i, signaturesize)) {
+    m_size = i->size();
 }
 SignatureInputStream::~SignatureInputStream() {
     delete p;
 }
 int32_t
 SignatureInputStream::read(const char*& start, int32_t min, int32_t max) {
-    return p->input->read(start, min, max);
+    int32_t r = p->input->read(start, min, max);
+    m_status = p->input->status();
+    m_position = p->input->position();
+    m_size = p->input->size();
+    return r;
 }
 int64_t
 SignatureInputStream::reset(int64_t newpos) {
-    return p->input->reset(newpos);
+    int32_t r = p->input->reset(newpos);
+    m_status = p->input->status();
+    m_position = p->input->position();
+    m_size = p->input->size();
+    return r;
 }
 int64_t
 SignatureInputStream::skip(int64_t ntoskip) {
-    return p->input->skip(ntoskip);
+    int32_t r = p->input->skip(ntoskip);
+    m_status = p->input->status();
+    m_position = p->input->position();
+    m_size = p->input->size();
+    return r;
 }
 std::string
 SignatureInputStream::signature() const {

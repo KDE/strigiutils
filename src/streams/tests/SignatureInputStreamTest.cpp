@@ -27,13 +27,10 @@ using namespace std;
 using namespace Strigi;
 
 int
-SignatureInputStreamTest(int, char*[]) {
+SignatureInputStreamTest(int argc, char** argv) {
+    if (argc < 2) return 1;
     founderrors = 0;
-    StringInputStream sr("abc");
-    SignatureInputStream sig(&sr, 1);
-    const char* start;
-    int64_t nread = sig.read(start, 10, 10);
-    cout << "read " << nread << endl;
+    VERIFY(chdir(argv[1]) == 0);
 
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");

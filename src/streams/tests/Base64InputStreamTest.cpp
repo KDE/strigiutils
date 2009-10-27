@@ -24,7 +24,7 @@
 using namespace Strigi;
 
 int
-Base64InputStreamTest(int, char*[]) {
+Base64InputStreamTest(int argc, char** argv) {
     founderrors = 0;
     FileInputStream file("base64enc.txt");
     Base64InputStream b64(&file);
@@ -38,10 +38,12 @@ Base64InputStreamTest(int, char*[]) {
         nread = b64.read(start, 1, 0);
     }
     printf("\n");
-/*    for (int i=0; i<ninputstreamtests; ++i) {
+
+    VERIFY(chdir(argv[1]) == 0);
+    for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         charinputstreamtests[i](&file);
-    }*/
+    }
     return founderrors;
 }
 
