@@ -53,7 +53,7 @@ XesamSession::Private::Private(XesamLiveSearch& x) :xesam(x),
         sortPrimary("xesam:score"),
         sortAscending(false),
         hasCreatedSearches(false) {
-    hitFields.push_back("xesam:url");
+    hitFields.push_back("nie:url");
 }
 XesamSession::Private::~Private() {
     for (std::list<XesamSearch>::const_iterator i = searches.begin();

@@ -435,7 +435,6 @@ CLuceneIndexReader::query(const Strigi::Query& q, int off, int max) {
     if (!checkReader()) {
         return results;
     }
-if (q.fields().size() > 0) cerr << q.fields()[0] << endl;
     // handle special commands
     if (q.fields().size() == 1 && q.fields()[0].empty()
             && q.term().string().substr(0, 14) == "strigispecial:") {
@@ -534,6 +533,10 @@ CLuceneIndexReader::getHits(const Strigi::Query& q,
             fullFields[i].assign(
                 "http://freedesktop.org/standards/xesam/1.0/core#"
                 + fields[i].substr(6));
+        } else if (fields[i].compare(0, 4, "nie:") == 0) {
+            fullFields[i].assign(
+                "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#"
+                + fields[i].substr(4));
         } else {
             fullFields[i].assign(fields[i]);
         }

@@ -260,7 +260,7 @@ XesamDBusTest::testHitFields() {
     QDBusReply<QString> session = xesam->NewSession();
     CHECK(session);
     CHECK(xesam->SetProperty(session, "hit.fields",
-            QDBusVariant(QStringList() << "xesam:url" << "xesam:size")));
+            QDBusVariant(QStringList() << "nie:url" << "nie:contentSize")));
     // check that the server gives back a valid search id
     QDBusReply<QString> search = xesam->NewSearch(session, userQuery("hello"));
     CHECK(search);
