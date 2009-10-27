@@ -20,6 +20,7 @@
 #include "../fileinputstream.h"
 #include "../stringstream.h"
 #include "../signatureinputstream.h"
+#include "../stringterminatedsubstream.h"
 #include "inputstreamtests.h"
 #include <iostream>
 
@@ -38,7 +39,8 @@ SignatureInputStreamTest(int argc, char** argv) {
         charinputstreamtests[i](&sig);
     }
 
-    std::string s = "123456788901234456789012345678901234567890";
+    std::string s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // test on stream of known size with read
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
             StringInputStream str(s.c_str(), s.length(), false);
@@ -48,12 +50,41 @@ SignatureInputStreamTest(int argc, char** argv) {
             VERIFY(sig.signature() == s.substr(s.length()-i));
         }
     }
+    // test on stream of known size with skip
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
             StringInputStream str(s.c_str(), s.length(), false);
             SignatureInputStream sig(&str, i);
             while (sig.skip(j) > 0) {}
             VERIFY(sig.signature() == s.substr(s.length()-i));
+        }
+    }
+    const int len = 26;
+    // test on stream of unknown size with read
+    for (uint32_t len=0; len<s.length()-1; ++len) {
+        for (uint32_t i=0; i<s.length(); ++i) {
+            for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+                StringInputStream str(s.c_str(), s.length(), false);
+                StringTerminatedSubStream sub(&str, s.substr(len, 1));
+                SignatureInputStream sig(&sub, i);
+                const char* data;
+                while (sig.read(data, j, j) > 0) {}
+                VERIFY(sub.size() == len);
+                VERIFY(sig.signature() == s.substr(s.length()-i));
+            }
+        }
+    }
+    // test on stream of unknown size with skip
+    for (uint32_t len=0; len<s.length()-1; ++len) {
+        for (uint32_t i=0; i<s.length(); ++i) {
+            for (int32_t j=1; j<(int32_t)s.length(); ++j) {
+                StringInputStream str(s.c_str(), s.length(), false);
+                StringTerminatedSubStream sub(&str, s.substr(len, 1));
+                SignatureInputStream sig(&sub, i);
+                while (sig.skip(j) > 0) {}
+                VERIFY(sub.size() == len);
+                VERIFY(sig.signature() == s.substr(s.length()-i));
+            }
         }
     }
 

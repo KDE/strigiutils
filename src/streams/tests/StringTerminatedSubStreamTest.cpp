@@ -32,6 +32,13 @@ StringTerminatedSubStreamTest(int argc, char** argv) {
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
+    StringInputStream sr("abc");
+    StringTerminatedSubStream sub(&sr, "b");
+    VERIFY(sub.size() == -1);
+    const char* start;
+    int64_t nread = sub.read(start, 10, 10);
+    VERIFY(nread == 1);
+
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         StringTerminatedSubStream sub(&file, "THEEND");
