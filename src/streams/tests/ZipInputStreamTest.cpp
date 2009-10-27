@@ -19,6 +19,7 @@
  */
 
 #include "../fileinputstream.h"
+#include "../skippingfileinputstream.h"
 #include "../zipinputstream.h"
 #include "inputstreamtests.h"
 
@@ -35,6 +36,24 @@ ZipInputStreamTest(int argc, char* argv[]) {
         ZipInputStream zip(&file);
         streamprovidertests[i](&zip);
     }
+
+    for (int i=0; i<nstreamprovidertests; ++i) {
+        SkippingFileInputStream file("a.zip");
+        ZipInputStream zip(&file);
+        streamprovidertests[i](&zip);
+    }
+
+    // should have at least one stream
+    InputStream* file = new SkippingFileInputStream("a.zip");
+    const char* data;
+    file->read(data, 500, 500);
+    file->reset(0);
+    VERIFY(file->status() == Ok);
+    ZipInputStream *zip = new ZipInputStream(file);
+    InputStream* i = zip->nextEntry();
+    VERIFY(i);
+    delete zip;
+    delete file;
 
     return founderrors;
 }

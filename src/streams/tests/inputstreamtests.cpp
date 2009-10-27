@@ -20,6 +20,7 @@
 #include <strigi/strigiconfig.h>
 #include "inputstreamtests.h"
 #include "../substreamprovider.h"
+#include <iostream>
 
 using namespace Strigi;
 
@@ -68,6 +69,7 @@ inputStreamTest2(StreamBase<T>* s) {
     int64_t n = s->read(ptr, 100, 0);
     VERIFY(n > 0);
     n = s->reset(p);
+    VERIFY(n == p);
     n = s->skip(100);
     VERIFY(n > 0);
     n = s->reset(p);
@@ -75,6 +77,29 @@ inputStreamTest2(StreamBase<T>* s) {
     VERIFY(s->position() == p);
     inputStreamTest1(s);
 }
+
+template <class T>
+void
+inputStreamTest3(StreamBase<T>* s) {
+    // read beyond end, then reset, check status and try to skip so much again
+    int64_t p = s->position();
+    int32_t toread = s->size();
+    toread = (toread > 0) ?toread+100 :1000000;
+    const T* ptr;
+    int64_t n = s->read(ptr, toread, 0);
+    VERIFY(n == s->size());
+    n = s->reset(p);
+    VERIFY(n == p);
+    VERIFY(s->status() == Ok);
+
+    int64_t n2 = s->skip(toread);
+std::cerr << "n2 " << n2 << " toread " << toread << " size " << s->size() <<  std::endl;
+    VERIFY(n2 == s->size());
+    n2 = s->reset(p);
+    VERIFY(n2 == p);
+    VERIFY(s->status() == Ok);
+}
+
 void
 subStreamProviderTest1(SubStreamProvider* ssp) {
     StreamBase<char>* s = ssp->nextEntry();
@@ -106,11 +131,11 @@ subStreamProviderTest2(SubStreamProvider* ssp) {
     VERIFY(ssp->status() == Strigi::Eof);
 }
 
-int ninputstreamtests = 2;
+int ninputstreamtests = 3;
 void (*charinputstreamtests[])(StreamBase<char>*) = {
-    inputStreamTest1, inputStreamTest2 };
+    inputStreamTest1, inputStreamTest2, inputStreamTest3 };
 void (*wcharinputstreamtests[])(StreamBase<wchar_t>*) = {
-    inputStreamTest1, inputStreamTest2 };
+    inputStreamTest1, inputStreamTest2, inputStreamTest3 };
 
 int nstreamprovidertests = 2;
 void (*streamprovidertests[])(SubStreamProvider*) = {

@@ -24,7 +24,7 @@ using namespace Strigi;
 
 int
 FileInputStreamTest(int argc, char* argv[]) {
-    if (argc < 2) return 0;
+    if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 

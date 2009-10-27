@@ -25,7 +25,7 @@ using namespace Strigi;
 
 int
 BZ2InputStreamTest(int argc, char* argv[]) {
-    if (argc < 2) return 0;
+    if (argc < 2) return 1;
     VERIFY(chdir(argv[1]) == 0);
 
     founderrors = 0;
