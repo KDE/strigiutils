@@ -24,7 +24,7 @@
 using namespace Strigi;
 
 int
-Base64InputStreamTest(int argc, char** argv) {
+Base64InputStreamTest(int argc, char* argv[]) {
     founderrors = 0;
     FileInputStream file("base64enc.txt");
     Base64InputStream b64(&file);

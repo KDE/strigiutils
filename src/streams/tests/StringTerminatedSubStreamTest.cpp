@@ -27,7 +27,7 @@ using namespace std;
 using namespace Strigi;
 
 int
-StringTerminatedSubStreamTest(int argc, char** argv) {
+StringTerminatedSubStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
