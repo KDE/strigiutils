@@ -21,6 +21,7 @@ set(streamtests
 	RpmInputStreamTest.cpp
 	SdfInputStreamTest.cpp
 	SignatureInputStreamTest.cpp
+	SkippingFileInputStreamTest.cpp
 	StringTerminatedSubStreamTest.cpp
 	SubInputStreamTest.cpp
 	TarInputStreamTest.cpp

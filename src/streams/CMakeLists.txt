@@ -33,6 +33,7 @@ set(streams_SRCS
 	rpminputstream.cpp
 	sdfinputstream.cpp
 	signatureinputstream.cpp
+	skippingfileinputstream.cpp
 	stringterminatedsubstream.cpp
 	subinputstream.cpp
 	substreamproviderprovider.cpp
