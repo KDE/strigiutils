@@ -45,10 +45,15 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
     }
     if (nread > 0) {
         m_position += nread;
-        if (totalread < m_position) {
+        // value of -1 for totalread means data should not be reported anymore
+        if (totalread != -1 && totalread < m_position) {
             int32_t amount = (int32_t)(m_position - totalread);
-            handler.handleData(start + nread - amount, amount);
-            totalread = m_position;
+            bool wantMore = handler.handleData(start + nread - amount, amount);
+            if (wantMore) {
+                totalread = m_position;
+            } else {
+                totalread = -1;
+            }
         }
     }
     if (nread < min) {
@@ -65,7 +70,7 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
         }
 #endif
         assert(m_size == m_position);
-        assert(totalread == m_size);
+        assert(totalread == -1 || totalread == m_size);
         if (!finished) {
             finish();
             finished = true;
@@ -75,12 +80,17 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
 }
 int64_t
 DataEventInputStream::skip(int64_t ntoskip) {
-    //fprintf(stderr, "skipping %lli\n", ntoskip);
-    // we call the default implementation because it calls
-    // read() which is required for sending the signals
-    int64_t skipped = InputStream::skip(ntoskip);
-    //const char*d;
-    //int32_t skipped = read(d, ntoskip, ntoskip);
+    int64_t skipped;
+    if (totalread == -1) { // done reporting, we can use fast skipping
+        skipped = input->skip(ntoskip);
+        m_status = input->status();
+        m_position = input->position();
+        m_size = input->size();
+    } else {
+        // we call the default implementation because it calls
+        // read() which is required for sending the signals
+        skipped = InputStream::skip(ntoskip);
+    }
     return skipped;
 }
 int64_t

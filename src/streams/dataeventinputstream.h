@@ -104,7 +104,7 @@ public:
      * @brief Creates a DataEventInputStream with a given InputStream
      * as the data source.
      *
-     * Each instace of a DataEventHandler should only be passed to
+     * Each instance of a DataEventHandler should only be passed to
      * one DataEventInputStream.  Behaviour is undefined otherwise.
      *
      * @param input the InputStream to use as the data source
