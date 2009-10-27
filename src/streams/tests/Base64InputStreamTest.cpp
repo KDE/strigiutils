@@ -18,32 +18,19 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "../base64inputstream.h"
-#include "../fileinputstream.h"
 #include "inputstreamtests.h"
 
 using namespace Strigi;
 
 int
 Base64InputStreamTest(int argc, char* argv[]) {
-    founderrors = 0;
-    FileInputStream file("base64enc.txt");
-    Base64InputStream b64(&file);
-    const char* start;
-    int32_t nread = b64.read(start, 1, 0);
-    while (nread > 0) {
-        //printf("%i\n", nread);
-        for (int i=0; i<nread; ++i) {
-            fprintf(stderr, "%c", start[i]);
-        }
-        nread = b64.read(start, 1, 0);
-    }
-    printf("\n");
-
+    if (argc < 2) return 1;
     VERIFY(chdir(argv[1]) == 0);
-    for (int i=0; i<ninputstreamtests; ++i) {
-        FileInputStream file("a.zip");
-        charinputstreamtests[i](&file);
-    }
+
+    founderrors = 0;
+
+    TESTONFILE(Base64InputStream, "base64enc.txt");
+
     return founderrors;
 }
 
