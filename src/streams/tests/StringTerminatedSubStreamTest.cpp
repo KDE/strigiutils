@@ -34,12 +34,12 @@ StringTerminatedSubStreamTest(int, char*[]) {
     const char* start;
     int64_t nread = sub.read(start, 10, 10);
     cout << "read " << nread << endl;
-/*
+
     for (int i=0; i<ninputstreamtests; ++i) {
         FileInputStream file("a.zip");
         StringTerminatedSubStream sub(&file, "THEEND");
         charinputstreamtests[i](&sub);
-    }*/
+    }
     return founderrors;
 }
 
