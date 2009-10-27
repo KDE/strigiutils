@@ -88,7 +88,7 @@ IndexReaderTest::testNumberQuery() {
     }
     m_writer->commit();
     QueryParser parser;
-    Query q = parser.buildQuery("size>0");
+    Query q = parser.buildQuery("contentSize>0");
     int count = m_reader->countHits(q);
 
     str.str("");

@@ -133,7 +133,7 @@ void
 IndexSearchTest::testSystemLocationSearchIndexedFile() {
     Strigi::QueryParser parser;
 
-    Strigi::Query query = parser.buildQuery("name:'testfile01'");
+    Strigi::Query query = parser.buildQuery("fileName:'testfile01'");
     vector<Strigi::IndexedDocument> matches = m_reader->query(query, 0, 10);
 
     int nhits = matches.size();
