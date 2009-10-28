@@ -17,19 +17,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../skippingfileinputstream2.h"
+#include "../mmapfileinputstream.h"
 #include "inputstreamtests.h"
 
 using namespace Strigi;
 
 int
-SkippingFileInputStreamTest(int argc, char* argv[]) {
+MMapFileInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
     founderrors = 0;
     VERIFY(chdir(argv[1]) == 0);
 
     for (int i=0; i<ninputstreamtests; ++i) {
-        SkippingFileInputStream2 file("a.zip");
+        MMapFileInputStream file("a.zip");
         charinputstreamtests[i](&file);
     }
     return founderrors;

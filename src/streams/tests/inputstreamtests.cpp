@@ -70,10 +70,6 @@ inputStreamTest2(StreamBase<T>* s) {
     VERIFY(n > 0);
     n = s->reset(p);
     VERIFY(n == p);
-    n = s->skip(100);
-    VERIFY(n > 0);
-    n = s->reset(p);
-    VERIFY(n == p);
     VERIFY(s->position() == p);
     inputStreamTest1(s);
 }
@@ -94,9 +90,6 @@ inputStreamTest3(StreamBase<T>* s) {
 
     int64_t n2 = s->skip(toread);
     VERIFY(n2 == s->size());
-    n2 = s->reset(p);
-    VERIFY(n2 == p);
-    VERIFY(s->status() == Ok);
 }
 
 void

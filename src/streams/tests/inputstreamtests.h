@@ -55,6 +55,8 @@ extern int founderrors;
 #include "unknownsizestream.h"
 #include "../fileinputstream.h"
 #include "../skippingfileinputstream.h"
+#include "../skippingfileinputstream2.h"
+#include "../mmapfileinputstream.h"
 
 #define TESTONFILE(CLASS, FILE)  \
     for (int i=0; i<ninputstreamtests; ++i) { \
@@ -62,7 +64,7 @@ extern int founderrors;
         CLASS s1(&f1); \
         charinputstreamtests[i](&s1); \
 \
-        SkippingFileInputStream f2(FILE); \
+        MMapFileInputStream f2(FILE); \
         CLASS s2(&f2); \
         charinputstreamtests[i](&s2); \
 \
@@ -71,7 +73,7 @@ extern int founderrors;
         CLASS s3(&u3); \
         charinputstreamtests[i](&s3); \
 \
-        SkippingFileInputStream f4(FILE); \
+        MMapFileInputStream f4(FILE); \
         UnknownSizeInputStream u4(&f4); \
         CLASS s4(&f4); \
         charinputstreamtests[i](&s4); \
@@ -83,7 +85,7 @@ extern int founderrors;
         CLASS s1(&f1, ARG); \
         charinputstreamtests[i](&s1); \
 \
-        SkippingFileInputStream f2(FILE); \
+        MMapFileInputStream f2(FILE); \
         CLASS s2(&f2, ARG); \
         charinputstreamtests[i](&s2); \
 \
@@ -92,7 +94,7 @@ extern int founderrors;
         CLASS s3(&u3, ARG); \
         charinputstreamtests[i](&s3); \
 \
-        SkippingFileInputStream f4(FILE); \
+        MMapFileInputStream f4(FILE); \
         UnknownSizeInputStream u4(&f4); \
         CLASS s4(&u4, ARG); \
         charinputstreamtests[i](&s4); \
@@ -104,7 +106,7 @@ extern int founderrors;
         CLASS s1(&f1); \
         streamprovidertests[i](&s1); \
 \
-        SkippingFileInputStream f2(FILE); \
+        MMapFileInputStream f2(FILE); \
         CLASS s2(&f2); \
         streamprovidertests[i](&s2); \
 \
@@ -113,7 +115,7 @@ extern int founderrors;
         CLASS s3(&u3); \
         streamprovidertests[i](&s3); \
 \
-        SkippingFileInputStream f4(FILE); \
+        MMapFileInputStream f4(FILE); \
         UnknownSizeInputStream u4(&f4); \
         CLASS s4(&f4); \
         streamprovidertests[i](&s4); \

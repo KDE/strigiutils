@@ -1,6 +1,6 @@
 /* This file is part of Strigi Desktop Search
  *
- * Copyright (C) 2006 Jos van den Oever <jos@vandenoever.info>
+ * Copyright (C) 2009 Jos van den Oever <jos@vandenoever.info>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,21 +17,38 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../skippingfileinputstream2.h"
-#include "inputstreamtests.h"
+#ifndef STRIGI_MMAPFILEINPUTSTREAM_H
+#define STRIGI_MMAPFILEINPUTSTREAM_H
 
-using namespace Strigi;
+#include "streambase.h"
 
-int
-SkippingFileInputStreamTest(int argc, char* argv[]) {
-    if (argc < 2) return 1;
-    founderrors = 0;
-    VERIFY(chdir(argv[1]) == 0);
+namespace Strigi {
 
-    for (int i=0; i<ninputstreamtests; ++i) {
-        SkippingFileInputStream2 file("a.zip");
-        charinputstreamtests[i](&file);
-    }
-    return founderrors;
-}
+/**
+ * @brief Provides buffered access to a file
+ */
+class STREAMS_EXPORT MMapFileInputStream : public InputStream {
+private:
+    class Private;
+    Private * const p;
+    const char *buffer;
+
+    void open(FILE* f, const char* path);
+
+    int32_t read(const char*& start, int32_t min, int32_t max);
+    int64_t skip(int64_t ntoskip);
+    int64_t reset(int64_t pos);
+public:
+    /**
+     * @brief Create an InputStream to access a file
+     *
+     * @param filepath the name of the file to open
+     */
+    explicit MMapFileInputStream(const char* filepath);
+    ~MMapFileInputStream();
+};
+
+} // end namespace Strigi
+
+#endif
 

@@ -29,11 +29,13 @@ set(streams_SRCS
         lzma/LzmaDec.c
         lzmainputstream.cpp
 	mailinputstream.cpp
+	mmapfileinputstream.cpp
 	oleinputstream.cpp
 	rpminputstream.cpp
 	sdfinputstream.cpp
 	signatureinputstream.cpp
 	skippingfileinputstream.cpp
+	skippingfileinputstream2.cpp
 	stringterminatedsubstream.cpp
 	subinputstream.cpp
 	substreamproviderprovider.cpp

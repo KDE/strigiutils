@@ -20,6 +20,7 @@ set(streamtests
 	KmpSearcherTest.cpp
 	LZMAInputStreamTest.cpp
 	MailInputStreamTest.cpp
+	MMapFileInputStreamTest.cpp
 	OleInputStreamTest.cpp
 	RpmInputStreamTest.cpp
 	SdfInputStreamTest.cpp
