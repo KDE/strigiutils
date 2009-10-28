@@ -354,7 +354,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
     bool found_title = false, found_artist = false,
 	  found_album = false, found_comment = false,
 	  found_year = false, found_track = false,
-	  found_genre = false;
+	  found_genre = false, found_tag = false;
     string albumUri;
     char albumArtNum = '\0';
     
@@ -380,7 +380,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	if (nread != size)
 	    return -1;
 
-	indexable.addValue(factory->typeField, musicClassName);
+	found_tag = true;
 
 	const char* p = buf + 10;
 	buf += size-4;
@@ -549,7 +549,9 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	if (nskip == in->skip(nskip))
 	if (in->read(buf, 128, 128)==128)
 	if (!strncmp("TAG", buf, 3)) {
-
+	  
+	    found_tag = true;
+	    
 	    if (!found_title && buf[3])
 		indexable.addValue(factory->titleField, string(buf+3, strnlen(buf+3, 30)));
 	    if (!found_artist && buf[33])
@@ -574,6 +576,9 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	indexable.addValue(factory->albumField, albumUri);
 	indexable.addTriplet(albumUri, typePropertyName, albumClassName);
     }
+
+    if (found_tag)
+	indexable.addValue(factory->typeField, musicClassName);
 
     return 0;
 }
