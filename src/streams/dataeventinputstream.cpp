@@ -63,7 +63,7 @@ DataEventInputStream::read(const char*& start, int32_t min, int32_t max) {
             m_size = m_position;
         }
 #ifndef NDEBUG
-        if (m_size != m_position || m_size != totalread) {
+        if (totalread != -1 && (m_size != m_position || m_size != totalread)) {
             cerr << "m_size: " << m_size << " m_position: " << m_position
                 << " totalread: " << totalread << " nread: " << nread << endl;
             cerr << input->status() << " " << input->error() << endl;
