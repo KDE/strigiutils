@@ -422,9 +422,9 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    }
 
 	    if (enc == 0 || enc == 3) {
-		value = string(p+11, size-1);
+		value = string(p+11, strnlen(p+11, size-1));
 	    } else {
-		value = conv.convert(p+11,size-1);
+		value = conv.convert(p+11,size-1); // FIXME: add similar workaround 
 	    }
 
 	    if (!value.empty()) {
