@@ -39,6 +39,7 @@ MMapFileInputStream::MMapFileInputStream(const char* filepath) :p(0) {
         m_error += "': ";
         m_error += strerror(errno);
         m_status = Error;
+        close(fd);
         return;
     }
     m_size = sb.st_size;
@@ -47,6 +48,7 @@ MMapFileInputStream::MMapFileInputStream(const char* filepath) :p(0) {
     } else {
         buffer = 0;
     }
+    close(fd);
     if (buffer == (const char*)MAP_FAILED) {
         // handle error
         buffer = 0;
