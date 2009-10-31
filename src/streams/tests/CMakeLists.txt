@@ -1,3 +1,5 @@
+#if (NOT WIN32)
+# mmap isn't available on win32, so tests will not compile
 
 include_directories(
 	${strigi_BINARY_DIR}/src/streams
@@ -20,7 +22,6 @@ set(streamtests
 	KmpSearcherTest.cpp
 	LZMAInputStreamTest.cpp
 	MailInputStreamTest.cpp
-	MMapFileInputStreamTest.cpp
 	OleInputStreamTest.cpp
 	RpmInputStreamTest.cpp
 	SdfInputStreamTest.cpp
@@ -37,6 +38,7 @@ if(NOT WIN32)
                 ArchiveReaderTest.cpp
                 ProcessInputStreamTest.cpp
                 StringStreamTest.cpp    # this maybe works with mingw
+                MMapFileInputStreamTest.cpp
         )
 endif(NOT WIN32)
 
@@ -53,3 +55,4 @@ FOREACH (test ${TestsToRun})
   ADD_TEST(${TName} testrunner-streams ${TName} ${strigi_SOURCE_DIR}/testdata/data)
 ENDFOREACH (test)
 
+#endif(NOT WIN32)

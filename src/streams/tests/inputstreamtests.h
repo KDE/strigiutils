@@ -56,7 +56,11 @@ extern int founderrors;
 #include "../fileinputstream.h"
 #include "../skippingfileinputstream.h"
 #include "../skippingfileinputstream2.h"
+#ifdef _WIN32
+#define MMapFileInputStream FileInputStream
+#else
 #include "../mmapfileinputstream.h"
+#endif
 
 #define TESTONFILE(CLASS, FILE)  \
     for (int i=0; i<ninputstreamtests; ++i) { \

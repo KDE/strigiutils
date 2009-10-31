@@ -29,7 +29,6 @@ set(streams_SRCS
         lzma/LzmaDec.c
         lzmainputstream.cpp
 	mailinputstream.cpp
-	mmapfileinputstream.cpp
 	oleinputstream.cpp
 	rpminputstream.cpp
 	sdfinputstream.cpp
@@ -47,6 +46,7 @@ set(streams_SRCS
 if(NOT WIN32)
 set(streams_SRCS ${streams_SRCS}
 	processinputstream.cpp
+	mmapfileinputstream.cpp
 )
 endif(NOT WIN32)
 
