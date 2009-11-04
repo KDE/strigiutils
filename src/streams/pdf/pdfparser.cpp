@@ -109,12 +109,10 @@ PdfParser::skipNotFromString(const char*str, int32_t n) {
 }
 StreamStatus
 PdfParser::skipKeyword(const char* str, int32_t len) {
-    if (end - pos < len) {
-        StreamStatus s;
-        if ((s = read(len, 0)) != Ok) {
+    StreamStatus s = checkForData(len);
+    if (s != Ok) {
             m_error.assign("Premature end of stream.");
             return Error;
-        }
     }
 //    printf("skipKeyword %s '%.*s'\n", str, (len>end-pos)?end-pos:len, pos);
     if (strncmp(pos, str, len) != 0) {
@@ -424,8 +422,8 @@ PdfParser::parseNull() {
 StreamStatus
 PdfParser::parseObjectStreamObject() {
 //    printf("parseObjectStreamObject %.*s\n", (5>end-pos)?end-pos:5, pos);
-    StreamStatus r = read(2, 0);
-    if (r == Error) return r;
+    StreamStatus r = checkForData(2);
+    if (r != Ok) return r;
 
     char ch = *pos;
     if (ch == 't' || ch == 'f') {
@@ -455,7 +453,7 @@ PdfParser::parseObjectStreamObject() {
 }
 StreamStatus
 PdfParser::parseContentStreamObject() {
-    StreamStatus r = read(2, 0);
+    StreamStatus r = checkForData(2);
     if (r != Ok) return r;
 //    fprintf(stderr, "parseContentStreamObject %.*s\n",
 //        (5>end-pos)?end-pos:5, pos);
