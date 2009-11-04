@@ -8,7 +8,9 @@
 FIND_PATH(FAM_INCLUDE_DIR fam.h PATHS /usr/include /usr/local/include )
 FIND_LIBRARY(FAM_LIBRARIES NAMES fam )
 
-FIND_LIBRARY(GAMIN_LIBRARIES NAMES gamin gamin-1 PATH /usr/lib /usr/local/lib)
+FIND_LIBRARY(GAMIN_LIBRARIES 
+	NAMES gamin gamin-1 
+	PATH /usr/lib /usr/local/lib /usr/lib64 /usr/local/lib64 )
  
 IF (NOT GAMIN_LIBRARIES AND FAM_LIBRARIES)
   message (STATUS "Please use Gamin instead of FAM if possible") 
