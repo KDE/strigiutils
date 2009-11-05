@@ -24,6 +24,7 @@
 #include <cerrno>
 #include <cstring>
 #include <sys/mman.h>
+#include <sys/stat.h>
 
 using namespace Strigi;
 using namespace std;
