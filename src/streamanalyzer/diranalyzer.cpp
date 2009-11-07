@@ -39,16 +39,13 @@ public:
     IndexManager& manager;
     AnalyzerConfiguration& config;
     StreamAnalyzer analyzer;
-    STRIGI_MUTEX_DEFINE(updateMutex);
     AnalysisCaller* caller;
 
     Private(IndexManager& m, AnalyzerConfiguration& c)
             :dirlister(&c), manager(m), config(c), analyzer(c) {
-        STRIGI_MUTEX_INIT(&updateMutex);
         analyzer.setIndexWriter(*manager.indexWriter());
     }
     ~Private() {
-        STRIGI_MUTEX_DESTROY(&updateMutex);
     }
     int analyzeDir(const string& dir, int nthreads, AnalysisCaller* caller,
         const string& lastToSkip);
