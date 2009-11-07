@@ -241,7 +241,8 @@ protected:
 	      i != d->values.end(); i++) {
             addTriplet(subj, i->first->key(), i->second);
         }
-	
+	if (!d->text.empty())
+	    addTriplet(subj,"http://www.semanticdesktop.org/ontologies/2007/01/19/nie#plainTextContent",d->text);
 	
         d->values.clear();
         d->text.assign("");
