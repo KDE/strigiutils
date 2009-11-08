@@ -30,7 +30,7 @@ Requirements
 
 Optional:
 - Qt4 >= 4.2 (for a graphical interface)
-- D-Bus (http://www.freedesktop.org/wiki/Software/dbus): it is optional but is tuned on by default
+- D-Bus (http://www.freedesktop.org/wiki/Software/dbus): it is optional but is turned on by default
 - linux kernel >= 2.6.13 (for inotify support)
 - FAM or Gamin for FAM file system monitoring support (Gamin is recommended)
 - log4cxx >= 0.9.7 (http://logging.apache.org/log4cxx/) for advanced logging features
