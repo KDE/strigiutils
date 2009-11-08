@@ -1,6 +1,5 @@
 - fix this: set indexdir='' in daemon.conf, now strigidaemon crashes on an exception
 
-- fix this: echo "hello world" > test && xmlindexer test |grep world
 - maintain the version number and check in kdelibs for the right version number
 
 - convert 'char' to 'signed char' everywhere for maemo compiler
