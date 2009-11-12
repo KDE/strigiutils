@@ -64,7 +64,6 @@ public:
     DBusMessageReader& operator>>(dbus_uint32_t& s);
     DBusMessageReader& operator>>(dbus_uint64_t& s);
     DBusMessageReader& operator>>(dbus_int64_t& s);
-    DBusMessageReader& operator>>(int64_t& s);
     DBusMessageReader& operator>>(std::multimap<int, std::string>&);
     DBusMessageReader& operator>>(std::vector<std::pair<bool, std::string> >&);
     bool isOk() const { return ok; }
