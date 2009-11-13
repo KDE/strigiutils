@@ -41,7 +41,7 @@ DBusMessageReader::operator>>(dbus_uint32_t& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(int32_t& s) {
+DBusMessageReader::operator>>(dbus_int32_t& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type(&it)) {
         close();
@@ -63,7 +63,7 @@ DBusMessageReader::operator>>(dbus_uint64_t& s) {
     return *this;
 }
 DBusMessageReader&
-DBusMessageReader::operator>>(int64_t& s) {
+DBusMessageReader::operator>>(dbus_int64_t& s) {
     if (!isOk()) return *this;
     if (DBUS_TYPE_INT64 != dbus_message_iter_get_arg_type(&it)) {
         close();
