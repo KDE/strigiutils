@@ -25,6 +25,7 @@
 #include <cstring>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <algorithm>
 
 using namespace Strigi;
 using namespace std;

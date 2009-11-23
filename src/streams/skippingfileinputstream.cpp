@@ -24,6 +24,7 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace Strigi;
 using namespace std;
