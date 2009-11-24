@@ -36,7 +36,7 @@
 #include <cmath>
 #endif
 
-#ifdef _MSC_VER
+#if defined(__SUNPRO_CC) || defined(_MSC_VER)
 #define HUGE_VALF HUGE_VAL
 #endif
 
