@@ -21,6 +21,7 @@
 #include <config.h>
 #include <strigi/strigiconfig.h>
 #include <iostream>
+#include <algorithm>
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
