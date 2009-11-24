@@ -113,7 +113,7 @@ main() {
     StringInputStream stream(e, len);
 
     // read the first line
-    const char* d;
+    const char* d = NULL;
     const int32_t maxlength = 1024;
     int32_t nread = stream.read(d, maxlength, maxlength);
     stream.reset(0);
