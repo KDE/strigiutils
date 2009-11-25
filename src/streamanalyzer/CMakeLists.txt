@@ -114,11 +114,6 @@ install(FILES
 	streamthroughanalyzer.h
 	DESTINATION include/strigi
 )
-install(TARGETS streamanalyzer
-	LIBRARY DESTINATION ${LIB_DESTINATION}
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION  ${LIB_DESTINATION}
-)
 
 
 # test executable
