@@ -172,6 +172,8 @@ if(ENABLE_DBUS)
     endif(NOT DBUS_FOUND)
 
   endif(WIN32)
+
+  find_program(DBUSLAUNCH_EXECUTABLE NAMES dbus-launch)
 endif(ENABLE_DBUS)
 
 # Don't delete bison section, but only micron seems to need this

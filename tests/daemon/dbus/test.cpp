@@ -66,7 +66,7 @@ startDBusDaemon() {
     // start the dbus process
     QProcess dbusprocess;
     QStringList dbusargs;
-    dbusprocess.start("dbus-launch", dbusargs, QIODevice::ReadOnly);
+    dbusprocess.start(QString::fromUtf8(DBUSLAUNCH_EXECUTABLE), dbusargs, QIODevice::ReadOnly);
     bool ok = dbusprocess.waitForStarted() && dbusprocess.waitForFinished();
     if (!ok) {
         qDebug() << "error starting dbus-launch";
