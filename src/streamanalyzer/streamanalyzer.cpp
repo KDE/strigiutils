@@ -32,6 +32,7 @@
 #include "tarendanalyzer.h"
 #include "arendanalyzer.h"
 #include "zipexeendanalyzer.h"
+#include "odfendanalyzer.h"
 #include "oleendanalyzer.h"
 #include "rpmendanalyzer.h"
 #include "cpioendanalyzer.h"
@@ -48,8 +49,6 @@
 #include "throughanalyzers/oggthroughanalyzer.h"
 #include "flacendanalyzer.h"
 #include "eventanalyzers/digesteventanalyzer.h"
-#include "lineanalyzers/odfmimetypelineanalyzer.h"
-#include "saxanalyzers/odfsaxanalyzer.h"
 #include "analysisresult.h"
 #include "indexwriter.h"
 #include "analyzerconfiguration.h"
@@ -237,7 +236,7 @@ StreamAnalyzerPrivate::initializeLineFactories() {
     for (i = plugins.begin(); i != plugins.end(); ++i) {
         addFactory(*i);
     }
-    addFactory(new OdfMimeTypeLineAnalyzerFactory());
+//    addFactory(new OdfMimeTypeLineAnalyzerFactory());
     addFactory(new M3uLineAnalyzerFactory());
 }
 void
@@ -317,6 +316,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new ArEndAnalyzerFactory());
     addFactory(new MailEndAnalyzerFactory());
     addFactory(new MpegEndAnalyzerFactory());
+    addFactory(new OdfEndAnalyzerFactory());
     addFactory(new ZipEndAnalyzerFactory());
     addFactory(new ZipExeEndAnalyzerFactory());
     addFactory(new RpmEndAnalyzerFactory());
@@ -325,7 +325,6 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new BmpEndAnalyzerFactory());
     addFactory(new FlacEndAnalyzerFactory());
     addFactory(new ID3EndAnalyzerFactory());
-    addFactory(new OdfSaxAnalyzerFactory());
     addFactory(new PdfEndAnalyzerFactory());
     addFactory(new SdfEndAnalyzerFactory());
     addFactory(new LzmaEndAnalyzerFactory());

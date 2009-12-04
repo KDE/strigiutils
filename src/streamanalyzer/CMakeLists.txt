@@ -51,14 +51,16 @@ set(streamanalyzer_SRCS
 	endanalyzers/tarendanalyzer.cpp
 	endanalyzers/textendanalyzer.cpp
 	endanalyzers/zipendanalyzer.cpp
+	endanalyzers/odfendanalyzer.cpp
 	endanalyzers/zipexeendanalyzer.cpp
 	endanalyzers/id3endanalyzer.cpp
 	eventanalyzers/digesteventanalyzer.cpp
 	eventanalyzers/mimeeventanalyzer.cpp
 	lineanalyzers/m3ustreamanalyzer.cpp
-	lineanalyzers/odfmimetypelineanalyzer.cpp
 	saxanalyzers/htmlsaxanalyzer.cpp
-	saxanalyzers/odfsaxanalyzer.cpp
+	helperanalyzers/saxhelperanalyzer.cpp
+	helperanalyzers/odfmetahelperanalyzer.cpp
+	helperanalyzers/odfcontenthelperanalyzer.cpp
 	throughanalyzers/oggthroughanalyzer.cpp
 )
 
