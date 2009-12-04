@@ -46,6 +46,7 @@ checkIndexdirIsEmpty(const char* dir) {
     while (de) {
         if (strcmp(de->d_name, "..") && strcmp(de->d_name, ".")) {
             fprintf(stderr, "Directory %s is not empty.\n", dir);
+	    closedir(d);
             return false;
         }
         de = readdir(d);
