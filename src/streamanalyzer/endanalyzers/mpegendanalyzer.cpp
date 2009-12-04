@@ -25,16 +25,15 @@
 #include "mpegendanalyzer.h"
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
+#include "rdfnamespaces.h"
 #include "textutils.h"
 #include <iostream>
 using namespace Strigi;
 using namespace std;
 
-#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
 const string
     videoClassName(
-	NMM_PROPOSAL "Video");
-#undef NMM_PROPOSAL
+	NMM_DRAFT "Video");
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["length"] = r.registerField(

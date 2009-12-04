@@ -23,13 +23,12 @@
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "textutils.h"
+#include "rdfnamespaces.h"
 #include <iostream>
 #include <cctype>
 #include <cstring>
 using namespace Strigi;
 using namespace std;
-
-#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
 
 const string
     typePropertyName(
@@ -40,28 +39,28 @@ const string
 	"http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"),
 
     musicClassName(
-	NMM_PROPOSAL "MusicPiece"),
+	NMM_DRAFT "MusicPiece"),
     albumClassName(
-	NMM_PROPOSAL "MusicAlbum"),
+	NMM_DRAFT "MusicAlbum"),
     contactClassName(
 	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
 
 void
 OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["title"] = r.registerField(titlePropertyName);
-    albumField = r.registerField(NMM_PROPOSAL "musicAlbum");
+    albumField = r.registerField(NMM_DRAFT "musicAlbum");
     artistField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
-    fields["genre"] = r.registerField(NMM_PROPOSAL "genre");
+    fields["genre"] = r.registerField(NMM_DRAFT "genre");
     fields["codec"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
-    composerField = r.registerField(NMM_PROPOSAL "composer");
-    performerField = r.registerField(NMM_PROPOSAL "performer");
+    composerField = r.registerField(NMM_DRAFT "composer");
+    performerField = r.registerField(NMM_DRAFT "performer");
     fields["date"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
     fields["description"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
-    fields["tracknumber"] = r.registerField(NMM_PROPOSAL "trackNumber");
+    fields["tracknumber"] = r.registerField(NMM_DRAFT "trackNumber");
 
 
     fields["version"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version");
-    fields["isrc"] = r.registerField(NMM_PROPOSAL "internationalStandardRecordingCode");
+    fields["isrc"] = r.registerField(NMM_DRAFT "internationalStandardRecordingCode");
     fields["copyright"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright");
     fields["license"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license");
 
@@ -69,8 +68,6 @@ OggThroughAnalyzerFactory::registerFields(FieldRegister& r) {
 
     fields["type"] = r.typeField;
 }
-
-#undef NMM_PROPOSAL
 
 void
 OggThroughAnalyzer::setIndexable(AnalysisResult* i) {

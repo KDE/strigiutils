@@ -23,17 +23,14 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "textutils.h"
+#include "rdfnamespaces.h"
 
 using namespace std;
 using namespace Strigi;
 
-#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
-
 const string
     musicClassName(
-	NMM_PROPOSAL "MusicPiece");
-
-#undef NMM_PROPOSAL
+	NMM_DRAFT "MusicPiece");
 
 void
 AuThroughAnalyzerFactory::registerFields(FieldRegister& reg) {

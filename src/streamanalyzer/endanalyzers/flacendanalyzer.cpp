@@ -32,8 +32,6 @@
 using namespace Strigi;
 using namespace std;
 
-#define NMM_PROPOSAL "http://www.semanticdesktop.org/ontologies/nmm#"
-
 const string
     typePropertyName(
 	"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
@@ -42,22 +40,22 @@ const string
     titlePropertyName(
 	"http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title"),
     albumTrackCountPropertyName(
-	NMM_PROPOSAL "albumTrackCount"),
+	NMM_DRAFT "albumTrackCount"),
     albumGainPropertyName(
-	NMM_PROPOSAL "albumGain"),
+	NMM_DRAFT "albumGain"),
     albumPeakGainPropertyName(
-	NMM_PROPOSAL "albumPeakGain"),
+	NMM_DRAFT "albumPeakGain"),
     albumArtistPropertyName(
-	NMM_PROPOSAL "albumArtist"),
+	NMM_DRAFT "albumArtist"),
     musicBrainzAlbumIDPropertyName(
-	NMM_PROPOSAL "musicBrainzAlbumID"),
+	NMM_DRAFT "musicBrainzAlbumID"),
     discNumberPropertyName(
-	NMM_PROPOSAL "setNumber"),
+	NMM_DRAFT "setNumber"),
 
     musicClassName(
-	NMM_PROPOSAL "MusicPiece"),
+	NMM_DRAFT "MusicPiece"),
     albumClassName(
-	NMM_PROPOSAL "MusicAlbum"),
+	NMM_DRAFT "MusicAlbum"),
     contactClassName(
 	"http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact");
 /*
@@ -83,32 +81,30 @@ FlacEndAnalyzerFactory::registerFields(FieldRegister& r) {
     bitRateField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#averageBitrate");
 
     fields["title"] = r.registerField(titlePropertyName);
-    albumField = r.registerField(NMM_PROPOSAL "musicAlbum");
+    albumField = r.registerField(NMM_DRAFT "musicAlbum");
     artistField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nco#creator");
-    fields["genre"] = r.registerField(NMM_PROPOSAL "genre");
+    fields["genre"] = r.registerField(NMM_DRAFT "genre");
     codecField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#codec");
-    composerField = r.registerField(NMM_PROPOSAL "composer");
-    performerField = r.registerField(NMM_PROPOSAL "performer");
+    composerField = r.registerField(NMM_DRAFT "composer");
+    performerField = r.registerField(NMM_DRAFT "performer");
     publisherField = r.registerField(NCO "publisher");
     fields["date"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#contentCreated");
     descriptionField = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#description");
     fields["description"] = descriptionField;
     fields["comment"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#comment");    
-    fields["tracknumber"] = r.registerField(NMM_PROPOSAL "trackNumber");
-    fields["mbtrackid"] = r.registerField(NMM_PROPOSAL "musicBrainzTrackID");
+    fields["tracknumber"] = r.registerField(NMM_DRAFT "trackNumber");
+    fields["mbtrackid"] = r.registerField(NMM_DRAFT "musicBrainzTrackID");
 
-    fields["replaygain_track_gain"] = r.registerField(NMM_PROPOSAL "trackGain");
-    fields["replaygain_track_peak"] = r.registerField(NMM_PROPOSAL "trackPeakGain");
+    fields["replaygain_track_gain"] = r.registerField(NMM_DRAFT "trackGain");
+    fields["replaygain_track_peak"] = r.registerField(NMM_DRAFT "trackPeakGain");
 
     fields["version"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#version");
-    fields["isrc"] = r.registerField(NMM_PROPOSAL "internationalStandardRecordingCode");
+    fields["isrc"] = r.registerField(NMM_DRAFT "internationalStandardRecordingCode");
     fields["copyright"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#copyright");
     fields["license"] = r.registerField("http://www.semanticdesktop.org/ontologies/2007/01/19/nie#license");
 
     typeField = r.typeField;
 }
-
-#undef NMM_PROPOSAL
 
 bool
 FlacEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {

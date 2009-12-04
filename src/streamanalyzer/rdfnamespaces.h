@@ -39,7 +39,7 @@
 #define NID3	"http://www.semanticdesktop.org/ontologies/2007/05/10/nid3#"// obsolete
 
 //Draft
-#define NMM_DRAFT	"http://www.semanticdesktop.org/ontologies/nmm#"
+#define NMM_DRAFT	"http://www.semanticdesktop.org/ontologies/2009/02/19/nmm#"
 
 
 #endif
