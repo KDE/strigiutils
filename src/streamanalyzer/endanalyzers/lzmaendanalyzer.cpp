@@ -47,7 +47,7 @@ LzmaEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     LZMAInputStream stream(in);
     // since this is lzma file, its likely that it contains a tar file
-    const char* start;
+    const char* start = 0;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
         fprintf(stderr, "Error reading lzma: %s\n", stream.error());

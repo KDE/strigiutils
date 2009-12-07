@@ -45,7 +45,8 @@ IndexManagerTest::tearDown() {
     Strigi::IndexPluginLoader::deleteIndexManager(m_manager);
     // clean up data (if any)
     string cmd("rm -rf '" + m_indexpath + "'");
-    system(cmd.c_str());
+    int r = system(cmd.c_str());
+    CPPUNIT_ASSERT_MESSAGE("cleanup failed", r == 0);
 }
 
 void

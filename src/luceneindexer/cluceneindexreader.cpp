@@ -627,7 +627,7 @@ CLuceneIndexReader::documentId(const string& uri) {
     }
     _CLDELETE(docs);
 
-    if (id != -1 && reader->isDeleted(id)) {
+    if (id != -1 && reader->isDeleted((int32_t)id)) {
         id = -1;
     }
 
@@ -642,7 +642,7 @@ CLuceneIndexReader::mTime(int64_t docid) {
     if (docid < 0) return 0;
     if (!checkReader(true)) return 0;
     time_t mtime = 0;
-    Document *d = reader->document(docid);
+    Document *d = reader->document((int32_t)docid);
     if (d) {
         const TCHAR* v = d->get(Private::mtime());
         mtime = atoi(wchartoutf8( v ).c_str());
@@ -793,7 +793,7 @@ CLuceneIndexReader::keywords(const string& keywordmatch,
     set<wstring> s;
     wstring prefix = utf8toucs2(keywordmatch);
     const wchar_t* prefixtext = prefix.c_str();
-    uint32_t prefixLen = prefix.length();
+    string::size_type prefixLen = prefix.length();
     vector<string>::const_iterator i;
     Term* lastTerm = 0;
     for (i = fn.begin(); i != fn.end() && s.size() << max; ++i) {

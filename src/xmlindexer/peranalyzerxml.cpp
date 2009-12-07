@@ -36,6 +36,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cerrno>
 #include <algorithm>
 #ifdef HAVE_UNISTD_H
  #include <unistd.h>
@@ -263,11 +264,14 @@ main(int argc, char** argv) {
     if (slashpos == string::npos) {
          analyzer.analyzeDir(targetFile);
     } else {
-         chdir(targetPath.substr(0,slashpos).c_str());
-         analyzer.analyzeDir(targetPath.substr(slashpos+1).c_str());
+        if (chdir(targetPath.substr(0,slashpos).c_str()) == -1) {
+            fprintf(stderr, "%s\n", strerror(errno));
+            return -1;
+        }
+        analyzer.analyzeDir(targetPath.substr(slashpos+1).c_str());
     }
     string str = out.str();
-    int32_t n = 2*str.length();
+    int32_t n = 2*(int32_t)str.length();
 
     // if no reference file was specified, we output the analysis
     if (referenceFile == 0) {
@@ -291,7 +295,7 @@ main(int argc, char** argv) {
     const char* p1 = c;
     const char* p2 = str.c_str();
     int32_t n1 = n;
-    int32_t n2 = str.length();
+    string::size_type n2 = str.length();
     while (n1-- && n2-- && *p1 == *p2) {
         p1++;
         p2++;
@@ -299,7 +303,7 @@ main(int argc, char** argv) {
     if (n1 ==0 && (*p1 || *p2)) {
          cout << "difference at position " << p1-c << endl;
 
-         int32_t m = (80 > str.length())?str.length():80;
+         int32_t m = (80 > str.length())?(int32_t)str.length():80;
          printf("%i %.*s\n", m, m, str.c_str());
 
          m = (80 > n)?n:80;

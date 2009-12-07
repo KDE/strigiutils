@@ -48,7 +48,7 @@ void
 SimpleNodeParser::parse(const string& xml, SimpleNode& node) {
     depth = 0;
     nodes.push(&node);
-    if (xmlSAXUserParseMemory(&handler, this, xml.c_str(), xml.length())) {
+    if (xmlSAXUserParseMemory(&handler, this, xml.c_str(), (int)xml.length())) {
         printf("parsing error: %s\n", "");
         // handle the error unless it is a tag mismatch in html
 //        errorstring = XML_ErrorString(e);

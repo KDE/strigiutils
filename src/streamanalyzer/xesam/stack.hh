@@ -86,7 +86,7 @@ namespace yy
     }
 
     inline
-    unsigned int
+    std::string::size_type
     height () const
     {
       return seq_.size ();

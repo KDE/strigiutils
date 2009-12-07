@@ -67,19 +67,19 @@ utf8toucs2(const std::string& utf8) {
 std::string
 wchartoutf8(const wchar_t* p, const wchar_t* e) {
     string utf8;
-    utf8.reserve((int)(1.5*(e-p)));
+    utf8.reserve((int)(1.5*(float)(e-p)));
     while (p < e) {
         wchar_t c = *p;
         if (c < 0x80) {
             utf8 += (char)c;
         } else if (c < 0x800) {
             char c2 = (char)((c & 0x3f) | 0x80);
-            utf8 += (c>>6) | 0xc0;
+            utf8 += (char)((c>>6) | 0xc0);
             utf8 += c2;
         } else if (c < 0x10000) {
             char c3 = (char)((c & 0x3f) | 0x80);
             char c2 = (char)(((c>>6) & 0x3f) | 0x80);
-            utf8 += (c>>12) | 0xe0;
+            utf8 += (char)((c>>12) | 0xe0);
             utf8 += c2;
             utf8 += c3;
         }

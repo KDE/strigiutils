@@ -363,7 +363,7 @@ StrigiHtmlGui::printIndexedDirs(ostream& out, const string& path,
     }
     i = params.find("deldir");
     if (i != params.end()) {
-        uint oldsize = dirs.size();
+        size_t oldsize = dirs.size();
         dirs.erase(i->second);
         if (dirs.size() != oldsize) {
             p->strigi.setIndexedDirectories(dirs);
@@ -462,7 +462,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
 
     out << "<div class='path'>";
     string::size_type p = path.find('/');
-    int pp = 0;
+    string::size_type pp = 0;
     string subpath;
     while (p != string::npos) {
         subpath = path.substr(pp, p-pp+1);
@@ -480,7 +480,7 @@ StrigiHtmlGui::Private::printSearchResult(ostream& out,
     out << "<a href='" << link << "'>" << subpath << "</a>";
 
     out << " - "
-        << toSizeString(doc.size) << " - "
+        << toSizeString((int)doc.size) << " - "
         << h->mimetypeDescription(doc.mimetype) << "</div>";
     /*out << "<table>";
     map<string, string>::const_iterator j;

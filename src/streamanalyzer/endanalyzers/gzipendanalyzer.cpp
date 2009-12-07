@@ -46,7 +46,7 @@ GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
 
     GZipInputStream stream(in);
     // since this is gzip file, its likely that it contains a tar file
-    const char* start;
+    const char* start = 0;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
         printf("Error reading gzip: %s\n", stream.error());

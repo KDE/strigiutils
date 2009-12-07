@@ -140,7 +140,7 @@ private:
         std::string ov(value);
         p = ov.c_str();
         end = p + ov.size();
-        int newsize = value.size()+4*namp+3*(nlt+ngt)+5*napos+3*nexcept;
+        int newsize = (int)value.size()+4*namp+3*(nlt+ngt)+5*napos+3*nexcept;
         value.clear();
         value.reserve(newsize);
         while (p < end) {
@@ -203,7 +203,7 @@ protected:
         STRIGI_MUTEX_LOCK(&mutex);
         Data* d = static_cast<Data*>(ar->writerData());
         const Strigi::AnalyzerConfiguration& config = ar->config();
-        const Strigi::FieldRegister& fr = config.fieldRegister();
+        //const Strigi::FieldRegister& fr = config.fieldRegister();
         std::string v = ar->path();
         escape(v);
 /*        out << " <" << mapping.map("file") << " " << mapping.map("uri")

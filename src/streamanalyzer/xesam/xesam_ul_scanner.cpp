@@ -209,7 +209,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
   else if ((ch == '&') && !eof() && (peekCh() == '&')) {
     // yy::xesam_ul_parser::token::AND (&&)
     ch = getCh();
-    read = ch + ch;
+    read = (char)(ch + ch);
     // set yylval
     *yylval = read;
     STRIGI_LOG_DEBUG ("XesamUlScanner::yylex",
@@ -219,7 +219,7 @@ int XesamUlScanner::yylex(YYSTYPE* yylval)
   else if ((ch == '|') && !eof() && (peekCh() == '|')) {
     // yy::xesam_ul_parser::token::OR (||)
     ch = getCh();
-    read = ch + ch;
+    read = (char)(ch + ch);
     // set yylval
     *yylval = read;
     STRIGI_LOG_DEBUG ("XesamUlScanner::yylex", "yy::xesam_ul_parser::token::OR")

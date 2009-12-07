@@ -53,7 +53,7 @@ public:
      * @brief inherited from StreamBase
      **/
     int64_t reset(int64_t pos) {
-        int32_t r = input->reset(pos);
+        int64_t r = input->reset(pos);
         m_status = input->status();
         m_position = input->position();
         if (m_size == -1 && m_status == Eof) m_size = input->size();
@@ -63,7 +63,7 @@ public:
      * @brief inherited from StreamBase
      **/
     int64_t skip(int64_t ntoskip) {
-        int32_t r = input->skip(ntoskip);
+        int64_t r = input->skip(ntoskip);
         m_status = input->status();
         m_position = input->position();
         if (m_size == -1 && m_status == Eof) m_size = input->size();

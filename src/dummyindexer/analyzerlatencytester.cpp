@@ -36,7 +36,8 @@ using namespace std;
 
 float
 elapsed(const struct timeval& a, const struct timeval& b) {
-    return (a.tv_sec - b.tv_sec) + (a.tv_usec - b.tv_usec) / 1.0e6;
+    return (float)(a.tv_sec - b.tv_sec)
+            + (float)(a.tv_usec - b.tv_usec) / 1.0e6f;
 }
 
 class LatencyMeasurer : public AnalyzerConfiguration {
@@ -58,7 +59,7 @@ public:
 class LatencyMeasurer::Private {
 public:
     struct timeval starttime, lasttime;
-    long numberOfChecks;
+    int32_t numberOfChecks;
     long numberOfFiles;
     map<int, int> histogram;
     string beforeLastFile;
@@ -116,7 +117,7 @@ LatencyMeasurer::Private::print() {
     gettimeofday(&now, NULL);
     cout << numberOfChecks << " checks in " << numberOfFiles << " files."
         << endl;
-    cout << "On average " << (elapsed(now, starttime)/numberOfChecks)
+    cout << "On average " << (elapsed(now, starttime)/(float)numberOfChecks)
         << " seconds between checks." << endl;
     int smallestTime = INT_MAX;
     int largestTime = INT_MIN;

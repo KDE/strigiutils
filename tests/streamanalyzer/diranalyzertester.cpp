@@ -116,7 +116,8 @@ void DirAnalyzerTester::tearDown()
     cmd += indexdir;
     cmd += " ";
     cmd += filedir;
-    system(cmd.c_str());
+    int r = system(cmd.c_str());
+    CPPUNIT_ASSERT_MESSAGE("cleanup failed", r == 0);
 }
 
 void DirAnalyzerTester::testVariables()

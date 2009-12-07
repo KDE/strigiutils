@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <cstring>
+#include <cerrno>
 
 #include <dbus/dbus.h>
 
@@ -36,7 +37,11 @@ using namespace std;
 DBusHandler::DBusHandler() {
     DBusError err;
 
-    pipe(quitpipe);
+    if (pipe(quitpipe) == -1) {
+        fprintf(stderr, "Connection Error (%s)\n", strerror(errno));
+        conn = 0;
+        return;
+    }
 
     // initialise the error
     dbus_error_init(&err);

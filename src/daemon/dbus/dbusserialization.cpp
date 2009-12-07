@@ -48,7 +48,8 @@ operator<<(DBusMessageWriter& w,
         // the fragments as stored are sometimes not properly recoded back
         // from usc2 to utf8 which causes dbus to close the connection,
         // whereupon the strigidaemon quits
-        if (Strigi::checkUtf8(i->fragment.c_str(), i->fragment.size())) {
+        if (Strigi::checkUtf8(i->fragment.c_str(),
+                              (uint32_t)i->fragment.size())) {
             c = i->fragment.c_str();
         } else {
             c = "";

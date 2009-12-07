@@ -253,7 +253,7 @@ create(int argc, char** argv) {
     vector<string>::iterator j;
     for (j = arguments.begin(); j != arguments.end(); ++j) {
         // remove trailinig '/'
-        int l = j->length();
+        string::size_type l = j->length();
         if (l > 0 && (*j)[l-1] == '/') {
             *j = j->substr(0,l-1);
         }
@@ -427,7 +427,7 @@ query(int argc, char** argv) {
     
     for (vector<string>::iterator iter = arguments.begin();
             iter != arguments.end(); ++iter) {
-        unsigned int results = 0;
+        int results = 0;
         Query query = parser.buildQuery(*iter);
         const uint batchsize = 10;
         vector<IndexedDocument> matches = reader->query(query, 0, batchsize);
@@ -445,7 +445,7 @@ query(int argc, char** argv) {
                 printIndexedDocument(*it);
             }
 
-            results += matches.size();
+            results += (int)matches.size();
             
             if (matches.size() == batchsize) {
                 // maybe there're other results
@@ -542,7 +542,7 @@ xesamquery(int argc, char** argv) {
                 printIndexedDocument(*it);
             }
 
-        results += matches.size();
+        results += (int)matches.size();
 
         if (matches.size() == batchsize) {
             // maybe there're other results

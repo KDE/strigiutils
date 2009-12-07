@@ -94,9 +94,9 @@ main() {
         "<?xml version='1.0' encoding='UTF-8'?>\n<"
         << mapping.map("metadata") << ">\n";
 
-    long len;
+    int len;
     const char* lenstr = getenv("CONTENT_LENGTH");
-    if (lenstr == NULL || sscanf(lenstr,"%ld", &len) != 1 || len < 0) {
+    if (lenstr == NULL || sscanf(lenstr,"%id", &len) != 1 || len < 0) {
         cout << " <error>input too small</error>\n</"
             << mapping.map("metadata") << ">\n" << flush;
         return 0;

@@ -111,21 +111,21 @@ void* EventListenerQueue::run(void*)
                 snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_processed.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                             string(buff) + " events in \"processed\" queue");
-                m_processedOldCount = m_processed.size();
+                m_processedOldCount = (unsigned int)m_processed.size();
             }
 
             if (m_toProcess.size() != m_toProcessOldCount) {
                 snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_toProcess.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                             string(buff) + " events in \"to process\" queue");
-                m_toProcessOldCount = m_toProcess.size();
+                m_toProcessOldCount = (unsigned int)m_toProcess.size();
             }
 
             if (m_waiting.size() != m_waitingOldCount) {
                 snprintf (buff, 50*sizeof(char), "%lu", (unsigned long)m_waiting.size());
                 STRIGI_LOG_DEBUG ("strigi.EventListenerQueue.run",
                                 string(buff) + " events in \"waiting\" queue");
-                m_waitingOldCount = m_waiting.size();
+                m_waitingOldCount = (unsigned int)m_waiting.size();
             }
             
             STRIGI_MUTEX_UNLOCK (&m_mutex);
@@ -449,7 +449,7 @@ unsigned int EventListenerQueue::size()
     
     if (STRIGI_MUTEX_TRY_LOCK (&m_mutex) == 0)
     {
-        i = m_toProcess.size();
+        i = (unsigned int)m_toProcess.size();
         STRIGI_MUTEX_UNLOCK (&m_mutex);
     }
     

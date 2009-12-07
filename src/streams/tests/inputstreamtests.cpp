@@ -50,7 +50,7 @@ inputStreamTest1(StreamBase<T>* s) {
         size = s->size();
     } else {
         // read past the end
-        n = s->read(ptr, size+1, size+1);
+        n = s->read(ptr, (int32_t)size+1, (int32_t)size+1);
         VERIFY(ptr);
     }
     VERIFY(size == n);
@@ -79,7 +79,7 @@ void
 inputStreamTest3(StreamBase<T>* s) {
     // read beyond end, then reset, check status and try to skip so much again
     int64_t p = s->position();
-    int32_t toread = s->size();
+    int32_t toread = (int32_t)s->size();
     toread = (toread > 0) ?toread+100 :1000000;
     const T* ptr;
     int64_t n = s->read(ptr, toread, 0);

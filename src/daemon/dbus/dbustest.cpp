@@ -38,7 +38,10 @@ serverthread(void*) {
     int ret;
 
     printf("Listening for method calls\n");
-    pipe(quitpipe);
+    if (pipe(quitpipe) == -1) {
+        fprintf(stderr, "Could not create pipe.\n");
+        return 0;
+    }
 
     // initialise the error
     dbus_error_init(&err);

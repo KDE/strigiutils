@@ -51,7 +51,7 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return r;
     }*/
     // since this is bz2 file, its likely that it contains a tar file
-    const char* start;
+    const char* start = 0;
     int32_t nread = stream.read(start, 1024, 0);
     if (nread < -1) {
         fprintf(stderr, "Error reading bz2: %s\n", stream.error());

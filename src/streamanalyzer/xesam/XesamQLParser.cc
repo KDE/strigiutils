@@ -57,8 +57,9 @@ bool XesamQLParser::parse(const string &xesam_query,
     LIBXML_TEST_VERSION
 
     // FIXME: encoding may not be UTF-8
-    xmlParserInputBufferPtr pBuffer = xmlParserInputBufferCreateMem(xesam_query.c_str(),
-        xesam_query.length(), XML_CHAR_ENCODING_UTF8);
+    xmlParserInputBufferPtr pBuffer = xmlParserInputBufferCreateMem(
+            xesam_query.c_str(), (int)xesam_query.length(),
+            XML_CHAR_ENCODING_UTF8);
     if (pBuffer == NULL)
     {
         STRIGI_LOG_ERROR ("XesamQLParser.parse", "could not create input buffer")

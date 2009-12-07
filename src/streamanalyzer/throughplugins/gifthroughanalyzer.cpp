@@ -113,7 +113,7 @@ GifThroughAnalyzer::connectInputStream(InputStream* in) {
     analysisResult->addValue(factory->heightField, (uint32_t)height);
 
     if (buf[4] == 7) {
-        uint8_t colorDepth = (buf[9] & 0x07) + 1;
+        uint8_t colorDepth = (uint8_t)((buf[9] & 0x07) + 1);
         analysisResult->addValue(factory->colorDepthField, (uint32_t)colorDepth);
     }
 

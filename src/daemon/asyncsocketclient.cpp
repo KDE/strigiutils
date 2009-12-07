@@ -103,7 +103,7 @@ AsyncSocketClient::handleQueryResponse() {
         h.uri = response[i++];
         h.fragment = response[i++];
         h.mimetype = response[i++];
-        h.score = atof(response[i++].c_str());
+        h.score = (float)atof(response[i++].c_str());
         h.size = atoi(response[i++].c_str());
         h.mtime = atoi(response[i++].c_str());
         while (i < response.size()) {

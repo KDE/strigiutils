@@ -85,7 +85,7 @@ AuThroughAnalyzer::connectInputStream(InputStream* in) {
 
     // we skip 8 bytes: 4 for the magic number + 4 for data pointer
     uint32_t dataSize = readBigEndianUInt32(buf+8);
-    uint32_t encoding = readBigEndianUInt32(buf+12);
+    //uint32_t encoding = readBigEndianUInt32(buf+12);
     uint32_t sampleRate = readBigEndianUInt32(buf+16);
     uint32_t channels = readBigEndianUInt32(buf+20);
 

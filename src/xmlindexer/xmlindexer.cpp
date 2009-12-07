@@ -87,7 +87,7 @@ main(int argc, char **argv) {
                 return usage(argc, argv);
             }
             char* end;
-            nthreads = strtol(argv[i], &end, 10);
+            nthreads = (int)strtol(argv[i], &end, 10);
             if (end == argv[i] || nthreads < 1) {
                 return usage(argc, argv);
             }
@@ -129,7 +129,9 @@ main(int argc, char **argv) {
 
     if (dirs.size() == 0) {
         char buf[1024];
-        getcwd(buf, 1023);
+        if (getcwd(buf, 1023) == NULL) {
+            return -1;
+        }
         dirs.push_back(buf);
     }
 

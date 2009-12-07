@@ -104,7 +104,7 @@ SocketServer::readRequest(int sd) {
     string line;
     char c;
     while (true) {
-        int r = recv(sd, &c, 1, 0);
+        ssize_t r = recv(sd, &c, 1, 0);
         if (r < 0) {
             error = "Error reading from socket: ";
             error += strerror(errno);

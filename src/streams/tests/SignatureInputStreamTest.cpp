@@ -48,7 +48,7 @@ SignatureInputStreamTest(int argc, char* argv[]) {
     // test on stream of known size with read
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-            StringInputStream str(s.c_str(), s.length(), false);
+            StringInputStream str(s.c_str(), (int32_t)s.length(), false);
             SignatureInputStream sig(&str, i);
             const char* data;
             while (sig.read(data, j, j) > 0) {}
@@ -58,7 +58,7 @@ SignatureInputStreamTest(int argc, char* argv[]) {
     // test on stream of known size with skip
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-            StringInputStream str(s.c_str(), s.length(), false);
+            StringInputStream str(s.c_str(), (int32_t)s.length(), false);
             SignatureInputStream sig(&str, i);
             while (sig.skip(j) > 0) {}
             VERIFY(sig.signature() == s.substr(s.length()-i));
@@ -67,7 +67,7 @@ SignatureInputStreamTest(int argc, char* argv[]) {
     // test on stream of unknown size with read
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-            StringInputStream str(s.c_str(), s.length(), false);
+            StringInputStream str(s.c_str(), (int32_t)s.length(), false);
             UnknownSizeInputStream ui(&str);
             SignatureInputStream sig(&ui, i);
             const char* data;
@@ -79,7 +79,7 @@ SignatureInputStreamTest(int argc, char* argv[]) {
     // test on stream of unknown size with skip
     for (uint32_t i=0; i<s.length(); ++i) {
         for (int32_t j=1; j<(int32_t)s.length(); ++j) {
-            StringInputStream str(s.c_str(), s.length(), false);
+            StringInputStream str(s.c_str(), (int32_t)s.length(), false);
             UnknownSizeInputStream ui(&str);
             SignatureInputStream sig(&ui, i);
             while (sig.skip(j) > 0) {}

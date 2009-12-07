@@ -53,7 +53,9 @@ XesamLiveSearch::NewSession() {
     ostringstream str;
     str << "strigisession" << random();
     string name(str.str());
-    mkstemp((char*)name.c_str());
+    if (mkstemp((char*)name.c_str()) == -1) {
+        return name; // TODO add error handling
+    }
     XesamSession session(*this);
     p->sessions.insert(make_pair(name, session));
     return name;

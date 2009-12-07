@@ -47,7 +47,7 @@ char XesamUlFileScanner::getCh()
 
 char XesamUlFileScanner::peekCh()
 {
-  return m_ifstream.peek();
+  return (char)m_ifstream.peek();
 }
 
 bool XesamUlFileScanner::eof()

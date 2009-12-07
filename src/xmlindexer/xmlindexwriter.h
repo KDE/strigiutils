@@ -135,7 +135,7 @@ private:
         std::string ov(value);
         p = ov.c_str();
         end = p + ov.size();
-        int newsize = value.size()+4*namp+3*(nlt+ngt)+5*napos+3*nexcept;
+        int newsize = (int)value.size()+4*namp+3*(nlt+ngt)+5*napos+3*nexcept;
         value.clear();
         value.reserve(newsize);
         while (p < end) {

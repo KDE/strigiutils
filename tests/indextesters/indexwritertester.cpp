@@ -54,7 +54,7 @@ IndexWriterTest::testAddText() {
     {
         Strigi::AnalysisResult result( path, 1, *m_writer, *m_streamAnalyzer );
         std::string text( "Some dummy text for testing." );
-        m_writer->addText( &result, text.c_str(), text.length() );
+        m_writer->addText( &result, text.c_str(), (int32_t)text.length() );
     }
     m_writer->commit();
     // at this point the new document is most likely not yet visible

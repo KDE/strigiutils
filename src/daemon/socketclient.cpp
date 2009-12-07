@@ -60,7 +60,7 @@ SocketClient::open() {
     // set the address
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sun_family = AF_UNIX;
-    uint len = socketpath.length();
+    size_t len = socketpath.length();
     len = (len > sizeof(serv_addr.sun_path)) ?sizeof(serv_addr.sun_path) :len;
     strncpy(serv_addr.sun_path, socketpath.c_str(), len);
     serv_addr.sun_path[len] = '\0';
@@ -82,7 +82,7 @@ SocketClient::readResponse(int sd) {
     char c;
     while (true) {
         // read characters one by one
-        int r = recv(sd, &c, 1, 0);
+        ssize_t r = recv(sd, &c, 1, 0);
         if (r < 0) {
             error = "Error reading from socket: ";
             error += strerror(errno);
@@ -112,8 +112,8 @@ SocketClient::sendRequest(int sd) {
         string line = request[i];
         assert(line.find('\n') == string::npos);
         line += '\n';
-        int p = 0;
-        int len = line.length();
+        size_t p = 0;
+        size_t len = line.length();
         do {
             r = send(sd, line.c_str()+p, len-p, SOCKET_NOSIGNAL);
             if (r < 0) {
@@ -174,7 +174,7 @@ SocketClient::getHits(const string &query, uint32_t max, uint32_t off) {
         h.uri = response[i++];
         h.fragment = response[i++];
         h.mimetype = response[i++];
-        h.score = atof(response[i++].c_str());
+        h.score = (float)atof(response[i++].c_str());
         h.size = atoi(response[i++].c_str());
         h.mtime = atoi(response[i++].c_str());
         while (i < response.size()) {

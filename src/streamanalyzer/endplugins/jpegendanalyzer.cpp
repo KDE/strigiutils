@@ -320,7 +320,7 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
 #endif
     data = (const char*)thumbnail.pData_;
     if (data) {
-        StringInputStream thumbstream(data, thumbnail.size_, false);
+        StringInputStream thumbstream(data, (int32_t)thumbnail.size_, false);
         string thumbname("thumbnail");
 #if (EXIV2_TEST_VERSION(0,17,91))
         ar.indexChild(thumbname + thumb.extension(), ar.mTime(),

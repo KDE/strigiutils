@@ -137,7 +137,7 @@ Interface::indexFile(const string &path, uint64_t mtime,
     writer->deleteEntries(paths);
     AnalyzerConfiguration ic;
     StreamAnalyzer streamindexer(ic);
-    StringInputStream sr(&content[0], content.size(), false);
+    StringInputStream sr(&content[0], (int32_t)content.size(), false);
     AnalysisResult idx(path, mtime, *writer, streamindexer);
     idx.index(&sr);
 }

@@ -31,11 +31,11 @@ StringStreamTest(int argc, char** argv) {
     founderrors = 0;
     std::string s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (int i=0; i<ninputstreamtests; ++i) {
-        StringStream<char> s1(s.c_str(), s.length());
+        StringStream<char> s1(s.c_str(), (int32_t)s.length());
         charinputstreamtests[i](&s1);
     }
     for (int i=0; i<ninputstreamtests; ++i) {
-        StringStream<char> s1(s.c_str(), s.length());
+        StringStream<char> s1(s.c_str(), (int32_t)s.length());
         UnknownSizeInputStream s2(&s1);
         charinputstreamtests[i](&s2);
     }

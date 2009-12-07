@@ -58,7 +58,7 @@ AsyncSocket::open() {
     // set the address
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sun_family = AF_UNIX;
-    uint len = socketpath.length();
+    size_t len = socketpath.length();
     len = (len > sizeof(serv_addr.sun_path)) ?sizeof(serv_addr.sun_path) :len;
     strncpy(serv_addr.sun_path, socketpath.c_str(), len);
     serv_addr.sun_path[len] = '\0';
@@ -111,7 +111,7 @@ AsyncSocket::write() {
     ssize_t r = send(socket, request.c_str()+writepos,
         request.length()-writepos, SOCKET_NOSIGNAL);
     if (r != -1) {
-        writepos += r;
+        writepos += (unsigned)r;
         if (writepos == request.length()) {
             status = Reading;
         }
@@ -130,7 +130,7 @@ void
 AsyncSocket::read() {
     char c;
     while (true) {
-        int r = recv(socket, &c, 1, MSG_DONTWAIT|SOCKET_NOSIGNAL);
+        ssize_t r = recv(socket, &c, 1, MSG_DONTWAIT|SOCKET_NOSIGNAL);
         switch (r) {
         case 0:
             close();

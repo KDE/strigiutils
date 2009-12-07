@@ -111,7 +111,8 @@ void
 IndexSearchTest::tearDown() {
     // clean up data (does not work on windows)
     string cmd = "rm -r '" + filedir + "'";
-    system(cmd.c_str());
+    int r = system(cmd.c_str());
+    CPPUNIT_ASSERT_MESSAGE ("command failed", r == 0);
 
     IndexTest::tearDown();
 }
@@ -136,7 +137,7 @@ IndexSearchTest::testSystemLocationSearchIndexedFile() {
     Strigi::Query query = parser.buildQuery("fileName:'testfile01'");
     vector<Strigi::IndexedDocument> matches = m_reader->query(query, 0, 10);
 
-    int nhits = matches.size();
+    int nhits = (int)matches.size();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of hits is wrong.", 1, nhits);
 }
 
@@ -147,7 +148,7 @@ IndexSearchTest::testSystemLocationSearchUnindexedFile() {
     Strigi::Query query = parser.buildQuery(
         Strigi::FieldRegister::pathFieldName+":'unindexed'");
     vector<Strigi::IndexedDocument> matches = m_reader->query(query, 0, 10);
-    int nhits = matches.size();
+    int nhits = (int)matches.size();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of hits is wrong.", 0, nhits);
 }
 

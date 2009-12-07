@@ -25,16 +25,18 @@
 
 using namespace Strigi;
 
+namespace {
 void
 testSearch(const KmpSearcher& searcher, const char* haystack, int32_t len,
         int32_t pos) {
-    if (len < 0) len = std::strlen(haystack);
+    if (len < 0) len = (int32_t)std::strlen(haystack);
     const char *p = searcher.search(haystack, len);
     if (pos < 0) {
         VERIFY(p==0);
     } else {
         VERIFY(p-haystack==pos);
     }
+}
 }
 
 int
