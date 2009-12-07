@@ -345,7 +345,7 @@ namespace {
 int
 strigi_xmlFileRead(void* context, char* buffer, int len) {
     FILE* f = (FILE*)context;
-    return fread(buffer, 1, len, f);
+    return (int)fread(buffer, 1, len, f);
 }
 int
 strigi_xmlFileClose(void*) {
@@ -414,7 +414,7 @@ FieldPropertiesDb::Private::xmlSAX2EntityDecl(void * ctx, const xmlChar * name,
         newEntity.type = XML_ENTITY_DECL;
         newEntity.name = (xmlChar*)new char[stdname.size()+1];
         strcpy((char*)newEntity.name, stdname.c_str());
-        newEntity.length = strlen((const char*)content);
+        newEntity.length = (int)strlen((const char*)content);
         newEntity.orig = (xmlChar*)new char[newEntity.length+1];
         strcpy((char*)newEntity.orig, (const char*)content);
         newEntity.content = newEntity.orig;

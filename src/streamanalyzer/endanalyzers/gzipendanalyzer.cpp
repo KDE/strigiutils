@@ -60,7 +60,7 @@ GZipEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
         std::string file = idx.fileName();
-        int len = file.length();
+        size_t len = file.length();
         if (len > 3 && file.substr(len-3) == ".gz") {
             file = file.substr(0, len-3);
         }

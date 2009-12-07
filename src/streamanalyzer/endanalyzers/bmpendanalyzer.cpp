@@ -65,12 +65,14 @@ BmpEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 signed char
 BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     // read BMP file type and ensure it is not damaged
+    /*
     const char * bmptype_bm = "BM";
     const char * bmptype_ba = "BA";
     const char * bmptype_ci = "CI";
     const char * bmptype_cp = "CP";
     const char * bmptype_ic = "IC";
     const char * bmptype_pt = "PT";
+    */
 
     const char* bmp_id;
     in->read(bmp_id, 2, 2);
@@ -104,8 +106,8 @@ BmpEndAnalyzer::analyze(AnalysisResult& rs, InputStream* in) {
     rs.addValue(factory->heightField, height);
     uint32_t colorDepth = readLittleEndianUInt16(h+28);
     rs.addValue(factory->colorDepthField, colorDepth);
+/* //FIXME: either get rid of this or replace with NIE equivalent
     uint32_t bmpi_compression = readLittleEndianUInt32(h+30);
-/* //FIXME: either get rid of this or replace with NIE equivalent    
     switch (bmpi_compression) {
     case 0 :
         rs.addValue(factory->compressionField, "None");

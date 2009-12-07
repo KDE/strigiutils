@@ -190,7 +190,7 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
                 fprintf(stderr, "'%s' ended unexpectedly.\n", file.c_str());
                 return;
             }
-            rule.offset = atol(lpos);
+            rule.offset = (uint32_t)atol(lpos);
             lpos = ++pos;
             if (end-pos < 2) {
                 fprintf(stderr, "'%s' ended unexpectedly.\n", file.c_str());
@@ -215,7 +215,8 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
                 rule.mask = (unsigned char*)malloc(len);
                 memcpy(rule.mask, pos, len);
                 for (uint16_t i = 0; i < len; ++i) {
-                    rule.value[i] = rule.mask[i] & rule.value[i];
+                    rule.value[i] =
+                            (unsigned char)(rule.mask[i] & rule.value[i]);
                 }
                 pos += len;
             } else {
@@ -250,7 +251,7 @@ MimeEventAnalyzer::Private::parseFile(const string& file) {
                     fprintf(stderr, "'%s' ended unexpectedly.\n", file.c_str());
                     return;
                 }
-                rule.range = atol(lpos);
+                rule.range = (uint32_t)atol(lpos);
                 if (rule.range < rule.offset) {
                     rule.range = rule.offset;
                 }

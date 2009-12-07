@@ -57,7 +57,7 @@ TextEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
             idx.addText(b, nread);
         } else if (nb) {
             retval = 0;
-            idx.addText(b, last-b);
+            idx.addText(b, (uint32_t)(last-b));
         }
     }
     if (in->status() == Error) {

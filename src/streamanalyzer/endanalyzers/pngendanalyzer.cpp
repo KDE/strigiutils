@@ -32,6 +32,7 @@
 using namespace std;
 using namespace Strigi;
 
+/*
 // and for the colors
 static const char* colors[] = {
   "Grayscale",
@@ -42,6 +43,7 @@ static const char* colors[] = {
   "Unknown",
   "RGB/Alpha"
 };
+*/
 
 static const char* interlaceModes[] = {
   "None",
@@ -173,10 +175,10 @@ PngEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     // the channel count
     switch (type) {
         case 0: break;           // Grayscale
-        case 2: bpp *= 3; break; // RGB
+        case 2: bpp = (uint16_t)(3*bpp); break; // RGB
         case 3: break;           // palette
-        case 4: bpp *= 2; break; // grayscale w. alpha
-        case 6: bpp *= 4; break; // RGBA
+        case 4: bpp = (uint16_t)(2*bpp); break; // grayscale w. alpha
+        case 6: bpp = (uint16_t)(4*bpp); break; // RGBA
 
         default: // we don't get any sensible value here
             bpp = 0;
@@ -314,7 +316,7 @@ PngEndAnalyzer::analyzeTime(Strigi::AnalysisResult& as,
     // FIXME the chunck is UTC but mktime use the local timezone :-(
     // so i have to add the offset of the local time zone
     // If someone has a better solution...
-    uint32_t time = sinceEpoch + timeZoneOffset;
+    time_t time = sinceEpoch + timeZoneOffset;
     as.addValue(factory->lastModificationTimeField, (uint32_t)time);
 
     return 0;

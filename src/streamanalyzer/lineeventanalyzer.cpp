@@ -42,7 +42,7 @@ using namespace std;
 #define CONVBUFSIZE 65536
 
 LineEventAnalyzer::LineEventAnalyzer(vector<StreamLineAnalyzer*>& l)
-        :line(l), converter((iconv_t)-1), numAnalyzers(l.size()),
+        :line(l), converter((iconv_t)-1), numAnalyzers((uint)l.size()),
          convBuffer(new char[CONVBUFSIZE]), ready(true), initialized(false) {
     started = new bool[l.size()];
     for (uint i=0; i<numAnalyzers; ++i) {
@@ -99,7 +99,7 @@ void
 LineEventAnalyzer::endAnalysis(bool complete) {
     // flush the last line if it did not end with a newline character
     if(complete && lineBuffer.size() > 0) {
-        emitData(lineBuffer.c_str(), lineBuffer.size());
+        emitData(lineBuffer.c_str(), (uint32_t)lineBuffer.size());
         lineBuffer.assign("");
     }
 
@@ -124,7 +124,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
     if (iMissingBytes) {
         if (iMissingBytes > length) {
             ibyteBuffer.append(data, length);
-            iMissingBytes -= length;
+            iMissingBytes = (unsigned char)(iMissingBytes - length);
             return;
         } else {
             ibyteBuffer.append(data, iMissingBytes);
@@ -139,7 +139,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
                 ready = true;
                 return;
             }
-            handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+            handleUtf8Data(convBuffer, (uint32_t)(CONVBUFSIZE-outbytesleft));
         }
     }
     do {
@@ -149,17 +149,18 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
         outbytesleft = CONVBUFSIZE;
         r = iconv(converter, &inbuf, &inbytesleft, &outbuf,
             &outbytesleft);
+        int32_t left = (uint32_t)(CONVBUFSIZE-outbytesleft);
         if (r == (size_t)-1) {
             uint32_t read;
             switch (errno) {
             case EINVAL: // last character is incomplete
-                handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+                handleUtf8Data(convBuffer, left);
                 ibyteBuffer.assign(inbuf, inbytesleft);
-                iMissingBytes = length - (inbuf-data);
+                iMissingBytes = (unsigned char)(length - (inbuf-data));
                 return;
             case E2BIG: // output buffer is full
-                handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
-                read = inbuf-data;
+                handleUtf8Data(convBuffer, left);
+                read = (uint32_t)(inbuf-data);
                 data += read;
                 length -= read;
                 break;
@@ -169,7 +170,7 @@ LineEventAnalyzer::handleData(const char* data, uint32_t length) {
                 return;
             }
         } else { //input sequence was completely converted
-            handleUtf8Data(convBuffer, CONVBUFSIZE-outbytesleft);
+            handleUtf8Data(convBuffer, left);
             return;
         }
     } while (true);
@@ -207,7 +208,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
         } else {
             // not enough data, store it and wait for the next round
             byteBuffer.append(data, length);
-            missingBytes -= length;
+            missingBytes = (unsigned char)(missingBytes - length);
             return;
         }
     }
@@ -217,12 +218,12 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
     if (p) {
         // the data ends in an incomplete character
         if (missingBytes > 0) {
-            int32_t charStartSize = length - (p - data);
+            string::size_type charStartSize = length - (p - data);
             // store the start of the character
             byteBuffer.assign(p, charStartSize);
             // do not consider this incomplete character in the rest of this
             // function
-            length -= charStartSize;
+            length = (uint32_t)(length - charStartSize);
         } else {
             // not valid
             ready = true;
@@ -256,10 +257,10 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
     // handle the first line from this call
     if (lineBuffer.size()) {
         lineBuffer.append(data, lineend-data);
-        emitData(lineBuffer.c_str(), lineBuffer.size());
+        emitData(lineBuffer.c_str(), (uint32_t)lineBuffer.size());
         lineBuffer.assign("");
     } else {
-        emitData(data, p-data);
+        emitData(data, (uint32_t)(p-data));
     }
     if (ready) return;
 
@@ -284,7 +285,7 @@ LineEventAnalyzer::handleUtf8Data(const char* data, uint32_t length) {
                 sawCarriageReturn = true;
             }
         }
-        emitData(data, lineend-data);
+        emitData(data, (uint32_t)(lineend-data));
         if (ready) return;
     }
 }

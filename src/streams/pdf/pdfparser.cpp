@@ -33,8 +33,8 @@ PdfParser::PdfParser() :streamhandler(0), texthandler(0) {
 
 StreamStatus
 PdfParser::read(int32_t min, int32_t max) {
-    int32_t off = pos-start;
-    int32_t d = stream->position() - objdefstart;
+    int32_t off = (int32_t)(pos-start);
+    int32_t d = (int32_t)(stream->position() - objdefstart);
     min += d;
     if (max > 0) max += d;
     stream->reset(objdefstart);
@@ -183,13 +183,15 @@ PdfParser::parseNumber() {
     StreamStatus n = skipDigits();
     if (n != Ok) return n;
     if (pos < end && *pos == '.') {
+        // a '.' so this is a float
         pos++;
         n = skipDigits();
         const char *s = start + p;
         lastNumber = strtod(s, 0);
     } else {
+        // no dot so this is a long
         const char *s = start + p;
-        lastNumber = strtol(s, 0, 10);
+        lastNumber = (double)strtol(s, 0, 10);
     }
     // parse a number
     lastObject = &lastNumber;

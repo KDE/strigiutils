@@ -251,7 +251,7 @@ bool MpegEndAnalyzer::parse_seq_ext(InputStream* in)
     if(nread < 4) return false;
     dword = readBigEndianUInt32(buf);
     
-    uint8_t type = dword >> 28;
+    uint8_t type = (uint8_t)(dword >> 28);
     if(type == 1 )
     {
         this->mpeg_version = 2;
@@ -275,7 +275,7 @@ bool MpegEndAnalyzer::parse_private(InputStream* in)
     if(nread < 1) return false;
     subtype = (uint8_t)*buf;
     
-    subtype = subtype >> 4;
+    subtype = (uint8_t)(subtype >> 4);
     if (subtype == 8)   // AC3
         this->audio_type = 5;
     else

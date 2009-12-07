@@ -412,8 +412,8 @@ StreamAnalyzerPrivate::analyze(AnalysisResult& idx, StreamBase<char>* input) {
         headersize = -1;
         finished = true;
     }
-    int es = 0;
-    int itersize = eIter->size();
+    size_t es = 0;
+    size_t itersize = eIter->size();
     while (!finished && es != itersize) {
         StreamEndAnalyzer* sea = (*eIter)[es];
         if (sea->checkHeader(header, headersize)) {

@@ -137,9 +137,9 @@ OggThroughAnalyzer::connectInputStream(InputStream* in) {
             if (size > eq) {
                 string name(p2, eq);
                 // convert field name to lower case
-                const int length = name.length();
-                for(int k=0; k!=length; ++k) {
-                    name[k] = std::tolower(name[k]);
+                const string::size_type length = name.length();
+                for(string::size_type k=0; k!=length; ++k) {
+                    name[k] = (char)std::tolower(name[k]);
                 }
                 // check if we can handle this field and if so handle it
                 map<string, const RegisteredField*>::const_iterator iter

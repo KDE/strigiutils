@@ -34,7 +34,7 @@ ZipExeEndAnalyzerFactory::registerFields(FieldRegister& reg) {
 
 bool
 ZipExeEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
-    static const char magic[] = {0x4d, 0x5a, 0x90, 0x00};
+    static const unsigned char magic[] = {0x4d, 0x5a, 0x90, 0x00};
     if (headersize < 4) return false;
     bool ok = std::memcmp(header, magic, 4) == 0;
     return ok;
@@ -69,7 +69,7 @@ ZipExeEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
                 // zip analyzer has read too much, we cannot recover
                 return -1;
             }
-            offset = in->reset(i);
+            offset = (uint32_t)in->reset(i);
             if (offset != i) {
                 return r;
             }
@@ -78,7 +78,7 @@ ZipExeEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
             if (nread <= 0 || in->status() == Error) {
                 return -1;
             }
-            offset = in->reset(i);
+            offset = (uint32_t)in->reset(i);
         }
     }
     return -1;

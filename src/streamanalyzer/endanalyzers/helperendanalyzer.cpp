@@ -213,7 +213,7 @@ HelperEndAnalyzer::writeToTempFile(InputStream *in) const {
                 unlink(p);
                 return "";
             }
-            nread -= n;
+            nread -= (int32_t)n;
         } while (nread > 0);
         nread = in->read(b, 1, 0);
     }

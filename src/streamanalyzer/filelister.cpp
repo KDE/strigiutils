@@ -87,9 +87,9 @@ public:
     DIR** dirs;
     DIR** dirsEnd;
     DIR** curDir;
-    int* len;
-    int* lenEnd;
-    int* curLen;
+    string::size_type* len;
+    string::size_type* lenEnd;
+    string::size_type* curLen;
     time_t mtime;
     struct dirent* subdir;
     struct stat dirstat;
@@ -119,7 +119,7 @@ FileLister::Private::Private(
     int nOpenDirs = 100;
     dirs = (DIR**)malloc(sizeof(DIR*)*nOpenDirs);
     dirsEnd = dirs + nOpenDirs;
-    len = (int*)malloc(sizeof(int)*nOpenDirs);
+    len = (string::size_type*)malloc(sizeof(string::size_type)*nOpenDirs);
     lenEnd = len + nOpenDirs;
     curDir = dirs - 1;
 }
@@ -128,7 +128,7 @@ FileLister::Private::startListing(const string& dir){
     listedDirs.clear();
     curDir = dirs;
     curLen = len;
-    int len = dir.length();
+    string::size_type len = dir.length();
     *curLen = len;
     strcpy(path, dir.c_str());
     if (len) {
@@ -164,7 +164,7 @@ FileLister::Private::nextFile() {
 
     while (curDir >= dirs) {
         DIR* dir = *curDir;
-        int l = *curLen;
+        string::size_type l = *curLen;
         subdir = readdir(dir);
         while (subdir) {
             // skip the directories '.' and '..'
@@ -177,12 +177,12 @@ FileLister::Private::nextFile() {
                 }
             }
             strcpy(path + l, subdir->d_name);
-            int sl = l + strlen(subdir->d_name);
+            string::size_type sl = l + strlen(subdir->d_name);
             if (strigi_lstat(path, &dirstat) == 0) {
                 if (S_ISREG(dirstat.st_mode)) {
                     if (config == 0 || config->indexFile(path, path+l)) {
                         mtime = dirstat.st_mtime;
-                        return sl;
+                        return (int)sl;
                     }
                 } else if (dirstat.st_mode & S_IFDIR && (config == 0
                         || config->indexDir(path, path+l))) {

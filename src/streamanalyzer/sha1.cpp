@@ -88,8 +88,8 @@ SHA1::~SHA1() {
 
 
 void SHA1::transform(void *data) {
-	unsigned int a, b, c, d, e, tm;
-	unsigned int x[16];
+        long a, b, c, d, e, tm;
+        long x[16];
 	unsigned char *_data = (unsigned char *)data;
 
 	a = _h0;
@@ -265,7 +265,7 @@ const unsigned char *SHA1::hash() {
 	process(0, 0);
 
 	msb = 0;
-	t = _nblocks;
+        t = (unsigned int)_nblocks;
 
 	if ((lsb = t << 6) < t) {
 		msb++;
@@ -300,14 +300,14 @@ const unsigned char *SHA1::hash() {
 		memset(_buf, 0, 56);
 	}
 
-	_buf[56] = msb >> 24;
-	_buf[57] = msb >> 16;
-	_buf[58] = msb >>  8;
-	_buf[59] = msb;
-	_buf[60] = lsb >> 24;
-	_buf[61] = lsb >> 16;
-	_buf[62] = lsb >>  8;
-	_buf[63] = lsb;
+        _buf[56] = (unsigned char)(msb >> 24);
+        _buf[57] = (unsigned char)(msb >> 16);
+        _buf[58] = (unsigned char)(msb >>  8);
+        _buf[59] = (unsigned char)(msb);
+        _buf[60] = (unsigned char)(lsb >> 24);
+        _buf[61] = (unsigned char)(lsb >> 16);
+        _buf[62] = (unsigned char)(lsb >>  8);
+        _buf[63] = (unsigned char)(lsb);
 
 	transform(_buf);
 
@@ -316,8 +316,12 @@ const unsigned char *SHA1::hash() {
 #ifdef __BIG_ENDIAN__
 #define X(a) do { *(uint32_t *)p = _h##a; p += 4; } while (0)
 #else
-#define X(a) do { *p++ = _h##a >> 24;  *p++ = _h##a >> 16;             \
-			*p++ = _h##a >>  8;  *p++ = _h##a;        } while (0)
+#define X(a) do { \
+        *p++ = (unsigned char)(_h##a >> 24); \
+        *p++ = (unsigned char)(_h##a >> 16); \
+        *p++ = (unsigned char)(_h##a >>  8); \
+        *p++ = (unsigned char)(_h##a); \
+} while (0)
 #endif
 
 	X(0);

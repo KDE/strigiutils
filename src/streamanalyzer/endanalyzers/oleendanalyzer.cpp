@@ -90,7 +90,8 @@ WordText::cleanText() {
     char* c = out;
     char* end = out+len;
     while (c < end && *c) {
-        switch (*c) {
+        int cvalue = *c;
+        switch (cvalue) {
         case 1: // ?
         case 2: // ?
         case 7: // cell/row end
@@ -130,12 +131,14 @@ WordText::cleanText() {
 }
 void
 OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
-    static const char summaryKey[] = {0xE0,0x85,0x9F,0xF2,0xF9,0x4F,0x68,0x10,
+    static const unsigned char summaryKey[] = {
+        0xE0,0x85,0x9F,0xF2,0xF9,0x4F,0x68,0x10,
         0xAB,0x91,0x08,0x00,0x2B,0x27,0xB3,0xD9};
-    static const char docSummaryKey[]= {0x02,0xD5,0xCD,0xD5,0x9C,0x2E,0x1B,0x10,
+    static const unsigned char docSummaryKey[]= {
+        0x02,0xD5,0xCD,0xD5,0x9C,0x2E,0x1B,0x10,
         0x93,0x97,0x08,0x00,0x2B,0x2C,0xF9,0xAE};
     string key;
-    key.assign(summaryKey, 16);
+    key.assign((const char*)summaryKey, 16);
     map<int,const RegisteredField*>* m = &fieldsMaps[key];
 
     // register the fields for the Summary Information Stream
@@ -158,7 +161,7 @@ OleEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     addField((*m)[6]);
 
     // register the fields for the Document Summary Information Stream
-    key.assign(docSummaryKey, 16);
+    key.assign((const char*)docSummaryKey, 16);
     m = &fieldsMaps[key];
     /* //FIXME: either get rid of this or replace with NIE equivalent
     (*m)[2] = reg.registerField("http://strigi.sf.net/ontologies/homeless#oleCategory");
@@ -225,7 +228,7 @@ OleEndAnalyzer::tryFIB(AnalysisResult& ar, InputStream* in) {
         wordtext.addText(d+dp, size);
     }
     wordtext.cleanText();
-    ar.addText(wordtext.text(), wordtext.length());
+    ar.addText(wordtext.text(), (int32_t)wordtext.length());
     wordtext.reset();
     return true;
 }
@@ -273,7 +276,7 @@ tryPictures(AnalysisResult& ar, InputStream* in) {
 bool
 OleEndAnalyzer::tryPropertyStream(AnalysisResult& idx,
         InputStream* in) {
-    static const char magic[] = {0xfe, 0xff, 0, 0};
+    static const unsigned char magic[] = {0xfe, 0xff, 0, 0};
     const char* d;
     uint32_t nread = in->read(d, 28, 28);
     in->reset(0);
@@ -281,7 +284,7 @@ OleEndAnalyzer::tryPropertyStream(AnalysisResult& idx,
         return false;
     }
     // read all the data
-    nread = in->read(d, in->size(), in->size());
+    nread = in->read(d, (uint32_t)in->size(), (uint32_t)in->size());
     if (nread != in->size()) {
         return false;
     }

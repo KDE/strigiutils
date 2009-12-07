@@ -63,7 +63,7 @@ Bz2EndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
         std::string name = idx.fileName();
-        int len = name.length();
+        size_t len = name.length();
         if (len > 4 && name.substr(len-4)==".bz2") {
             name = name.substr(0, len-4);
         }

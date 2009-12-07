@@ -398,14 +398,15 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 
 	    if (strncmp("APIC", p, 4) == 0) {
 		size_t mimelen = strnlen(p+11, size-1);
-		if (mimelen<size-1-3) {
+                if ((int32_t)mimelen < size-1-3) {
 		    const char *desc = p+11+mimelen+1+1;
 //		    uint8_t pictype = p[11+mimelen+1];
 		    size_t desclen = strnlen(desc,size-1-mimelen-2-1);
 		    const char *content = desc + desclen + 1 + (enc == 0 || enc == 3 ? 0:1) ;
 
 		    if(content<p+10+size) {
-			StringInputStream picstream(content, p+10+size-content, false);
+                        StringInputStream picstream(content,
+                                          (uint32_t)(p+10+size-content), false);
 			string picname;
 			picname = (char)('0'+albumArtNum++);
 			indexable.indexChild(picname, indexable.mTime(), &picstream);

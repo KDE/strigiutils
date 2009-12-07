@@ -111,7 +111,7 @@ StringStream<T>::read(const T*& start, int32_t min, int32_t max) {
         return -1;
     }
     if (min < 0) min = 0;
-    int32_t nread = (int32_t)(max > left || max < 1) ?left :max;
+    int32_t nread = (max > left || max < 1) ?(int32_t)left :max;
     start = data + StreamBase<T>::m_position;
     StreamBase<T>::m_position += nread;
     if (StreamBase<T>::m_position == StreamBase<T>::m_size) {
@@ -124,7 +124,7 @@ int64_t
 StringStream<T>::skip(int64_t ntoskip) {
     if (ntoskip == 0) return 0;
     const T* start;
-    return read(start, ntoskip, ntoskip);
+    return read(start, (int32_t)ntoskip, (int32_t)ntoskip);
 }
 template <class T>
 int64_t

@@ -170,7 +170,7 @@ VariantPrivate::i() const {
     case Variant::s_val:
          return atoi(s_value.c_str());
     case Variant::as_val:
-         return as_value.size();
+         return (int32_t)as_value.size();
     default:
          return -1;
     }
@@ -189,7 +189,7 @@ VariantPrivate::u() const {
     case Variant::s_val:
          return atoi(s_value.c_str());
     case Variant::as_val:
-         return as_value.size();
+         return (int32_t)as_value.size();
     default:
          return ~0U;
     }

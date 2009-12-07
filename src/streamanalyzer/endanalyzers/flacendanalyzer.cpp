@@ -206,9 +206,9 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 		  
 		    string name(p2, eq);
 		    // convert field name to lower case
-		    const int length = name.length();
-		    for(int k=0; k!=length; ++k) {
-			name[k] = std::tolower(name[k]);
+                    const size_t length = name.length();
+                    for(size_t k=0; k!=length; ++k) {
+                        name[k] = (char)std::tolower(name[k]);
 		    }
 		    
 		    // check if we can handle this field and if so handle it
@@ -225,7 +225,8 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 			indexable.addTriplet(artistUri, typePropertyName, contactClassName);
 			indexable.addTriplet(artistUri, fullnamePropertyName, value);
 		    } else if(name=="lyrics") {
-			indexable.addText(value.c_str(), value.length());
+                        indexable.addText(value.c_str(),
+                                          (int32_t)value.length());
 		    } else if(name=="albumartist") {
 			const string albumArtistUri( indexable.newAnonymousUri() );
 			addStatement(indexable, albumUri, albumArtistPropertyName, albumArtistUri);

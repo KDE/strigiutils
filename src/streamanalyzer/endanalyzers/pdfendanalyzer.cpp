@@ -48,7 +48,7 @@ PdfEndAnalyzer::handle(InputStream* s) {
 }
 StreamStatus
 PdfEndAnalyzer::handle(const std::string& s) {
-    analysisresult->addText(s.c_str(), s.length());
+    analysisresult->addText(s.c_str(), (uint32_t)s.length());
     return Ok;
 }
 bool
@@ -63,5 +63,5 @@ PdfEndAnalyzer::analyze(AnalysisResult& as, InputStream* in) {
     if (r != Eof) m_error.assign(parser.error());
     analysisresult->addValue(factory->typeField,
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#PaginatedTextDocument");
-    return (r == Eof) ?0 :-1;
+    return (r == Eof) ?(signed char)0 :(signed char)-1;
 }

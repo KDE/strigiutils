@@ -60,7 +60,7 @@ LzmaEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         return TarEndAnalyzer::staticAnalyze(idx, &stream);
     } else {
         std::string name = idx.fileName();
-        int len = name.length();
+        string::size_type len = name.length();
         if (len > 5 && name.substr(len-5)==".lzma") {
             name = name.substr(0, len-5);
         }

@@ -90,7 +90,7 @@ Latin1Converter::_fromLatin1(char*& o, const char* data, size_t len) {
     ICONV_CONST char* inp = (char*)data;
     char* outp = out;
     iconv(conv, &inp, &len, &outp, &l);
-    return (len == 0) ?outlen-l :0;
+    return (len == 0) ?(int32_t)(outlen-l) :0;
 }
 
 class AnalysisResult::Private {
@@ -139,7 +139,7 @@ AnalysisResult::AnalysisResult(const std::string& path, const char* name,
         time_t mt, AnalysisResult& parent)
         :p(new Private(path, name, mt, *this, parent)) {
     p->m_writer.startAnalysis(this);
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 }
 AnalysisResult::Private::Private(const std::string& p, time_t mt,
         IndexWriter& w, StreamAnalyzer& indexer, const string& parentpath,
@@ -157,7 +157,7 @@ AnalysisResult::Private::Private(const std::string& p, time_t mt,
             // protocol, which means the parent must be "" and the string must
             // end in a colon followed by up to three slashes
             assert(m_parentpath == "");
-            int i = m_path.size();
+            size_t i = m_path.size();
             while (--i > 0 && m_path[i] == '/') {}
             assert(i > 0 && m_path[i] == ':');
         }
@@ -219,7 +219,7 @@ const string& AnalysisResult::parentPath() const {
     return (p->m_parent) ?p->m_parent->path() :p->m_parentpath;
 }
 time_t AnalysisResult::mTime() const { return p->m_mtime; }
-signed char AnalysisResult::depth() const { return p->m_depth; }
+signed char AnalysisResult::depth() const { return (signed char)p->m_depth; }
 int64_t AnalysisResult::id() const { return p->m_id; }
 void AnalysisResult::setId(int64_t i) { p->m_id = i; }
 void AnalysisResult::setEncoding(const char* enc) { p->m_encoding = enc; }
@@ -262,7 +262,7 @@ AnalysisResult::addText(const char* text, int32_t length) {
     } else {
         Latin1Converter::lock();
         char* d;
-        size_t len = Latin1Converter::fromLatin1(d, text, length);
+        int32_t len = Latin1Converter::fromLatin1(d, text, length);
         if (len && checkUtf8(d, len)) {
             p->m_writer.addText(this, d, len);
         } else {
@@ -312,7 +312,8 @@ AnalysisResult::addValue(const RegisteredField* field, const std::string& val) {
     } else {
         Latin1Converter::lock();
         char* d;
-        size_t len = Latin1Converter::fromLatin1(d, val.c_str(), val.length());
+        int32_t len = Latin1Converter::fromLatin1(d, val.c_str(),
+                                                    (int32_t)val.length());
         if (len && checkUtf8(d, len)) {
             p->m_writer.addValue(this, field, (const unsigned char*)d, len);
         } else {
@@ -334,7 +335,7 @@ AnalysisResult::addValue(const RegisteredField* field,
     } else {
         Latin1Converter::lock();
         char* d;
-        size_t len = Latin1Converter::fromLatin1(d, data, length);
+        int32_t len = Latin1Converter::fromLatin1(d, data, length);
         if (len && checkUtf8(d, len)) {
             p->m_writer.addValue(this, field, (const unsigned char*)d, len);
         } else {

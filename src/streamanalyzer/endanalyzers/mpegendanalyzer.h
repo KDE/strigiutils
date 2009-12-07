@@ -62,14 +62,14 @@ public:
     {
         this->frame_rate_table[0] = 0.0;   /* Pad */
         //Official frame rates
-        this->frame_rate_table[1] = (float)24000.0/1001.0;
-        this->frame_rate_table[2] = (float)24.0;
-        this->frame_rate_table[3] = (float)25.0;
-        this->frame_rate_table[4] = (float)30000.0/1001.0;
-        this->frame_rate_table[5] = (float)30.0;
-        this->frame_rate_table[6] = (float)50.0;
-        this->frame_rate_table[7] = (float)60000.0/1001.0;
-        this->frame_rate_table[8] = (float)60.0;
+        this->frame_rate_table[1] = 24000.0f/1001.0f;
+        this->frame_rate_table[2] = 24.0f;
+        this->frame_rate_table[3] = 25.0f;
+        this->frame_rate_table[4] = 30000.0f/1001.0f;
+        this->frame_rate_table[5] = 30.0f;
+        this->frame_rate_table[6] = 50.0f;
+        this->frame_rate_table[7] = 60000.0f/1001.0f;
+        this->frame_rate_table[8] = 60.0f;
         
         // Unofficial economy rates
         this->frame_rate_table[9] = 1;
