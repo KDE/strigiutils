@@ -32,7 +32,7 @@ set(streams_SRCS
 	oleinputstream.cpp
 	rpminputstream.cpp
 	sdfinputstream.cpp
-	signatureinputstream.cpp
+#	signatureinputstream.cpp # not done yet
 	skippingfileinputstream.cpp
 	skippingfileinputstream2.cpp
 	stringterminatedsubstream.cpp
