@@ -265,7 +265,7 @@ ArchiveReader::ArchiveReaderPrivate::positionedProvider(const string& url) {
                            e.filename.length()) == 0) {
                 nextstream = true;
                 // skip the number of entries that are matched
-                uint end = *i + e.filename.length();
+                size_t end = *i + e.filename.length();
                 do {
                     ++i;
                 } while (i != partpos.rend() && *i < end);

@@ -61,7 +61,7 @@ initialize() {
         for (int i=64; i<256; ++i) {
             inalphabet[i] = 0;
         }
-        for (int i=0; i<64; ++i) {
+        for (unsigned char i=0; i<64; ++i) {
             inalphabet[alphabet[i]] = true;
             decoder[alphabet[i]] = i;
         }
@@ -114,13 +114,13 @@ Base64InputStream::Private::fillBuffer(char* start, int32_t space) {
     if (bytestodo) {
         switch (bytestodo) {
         case 3:
-            *start = bits >> 16;
+            *start = (char)(bits >> 16);
             break;
         case 2:
-            *start = (bits >> 8) & 0xff;
+            *start = (char)((bits >> 8) & 0xff);
             break;
         case 1:
-            *start = bits & 0xff;
+            *start = (char)(bits & 0xff);
             bits = 0;
             char_count = 0;
             break;
@@ -156,19 +156,19 @@ Base64InputStream::Private::fillBuffer(char* start, int32_t space) {
                 bytestodo = 3;
                 break;
             }
-            *p++ = bits >> 16;
+            *p++ = (char)(bits >> 16);
             if (p >= end) {
                 bytestodo = 2;
                 nwritten++;
                 break;
             }
-            *p++ = (bits >> 8) & 0xff;
+            *p++ = (char)((bits >> 8) & 0xff);
             if (p >= end) {
                 bytestodo = 1;
                 nwritten += 2;
                 break;
             }
-            *p++ = bits & 0xff;
+            *p++ = (char)(bits & 0xff);
             bits = 0;
             char_count = 0;
             nwritten += 3;
@@ -188,7 +188,7 @@ Base64InputStream::decode(const char* in, string::size_type length) {
     string d;
     if (length%4) return d;
     initialize();
-    int32_t words = length/4;
+    string::size_type words = length/4;
     d.reserve(words*3);
     const unsigned char* c = (const unsigned char*)in;
     const unsigned char* e = c + length;
@@ -201,9 +201,9 @@ Base64InputStream::decode(const char* in, string::size_type length) {
              && inalphabet[c[3]]) {
             k = decoder[c[1]];
             l = decoder[c[2]];
-            b[0] = (decoder[c[0]] << 2) + (k >> 4);
-            b[1] = (k             << 4) + (l >> 2);
-            b[2] = (l             << 6) + (decoder[c[3]]);
+            b[0] = (char)((decoder[c[0]] << 2) + (k >> 4));
+            b[1] = (char)((k             << 4) + (l >> 2));
+            b[2] = (char)((l             << 6) + (decoder[c[3]]));
             d.append(b, 3);
          } else {
              return string();
@@ -211,7 +211,7 @@ Base64InputStream::decode(const char* in, string::size_type length) {
     }
     if (in[length-2] == '=') {
         if (inalphabet[c[0]]  && inalphabet[c[1]]) {
-            b[0] = (decoder[c[0]] << 2)+((decoder[c[1]] >> 4));
+            b[0] = (char)((decoder[c[0]] << 2)+((decoder[c[1]] >> 4)));
             d.append(b, 1);
         } else {
             return string();
@@ -219,8 +219,8 @@ Base64InputStream::decode(const char* in, string::size_type length) {
     } else if (in[length-1] == '=') {
         if (inalphabet[c[0]]  && inalphabet[c[1]] && inalphabet[c[2]]) {
             k = decoder[c[1]];
-            b[0] = (decoder[c[0]] << 2) + (k >> 4);
-            b[1] = (k             << 4) + (decoder[c[2]] >> 2);
+            b[0] = (char)((decoder[c[0]] << 2) + (k >> 4));
+            b[1] = (char)((k             << 4) + (decoder[c[2]] >> 2));
             d.append(b, 2);
         } else {
             return string();
