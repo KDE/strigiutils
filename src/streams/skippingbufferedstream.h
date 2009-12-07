@@ -183,7 +183,7 @@ SkippingBufferedStream<T>::skip(int64_t ntoskip) {
     assert(ntoskip >= 0);
     if (ntoskip == 0) return 0;
     if (buffer.avail > ntoskip) {
-        buffer.avail -= ntoskip;
+        buffer.avail -= (int32_t)ntoskip;
         buffer.readPos += ntoskip;
         StreamBase<T>::m_position += ntoskip;
         return ntoskip;

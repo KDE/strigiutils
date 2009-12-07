@@ -67,7 +67,7 @@ Strigi::checkUtf8(const char* p, int32_t length) {
 }
 bool
 Strigi::checkUtf8(const std::string& p) {
-    return checkUtf8(p.c_str(), p.size());
+    return checkUtf8(p.c_str(), (int32_t)p.size());
 }
 
 // http://www.w3.org/TR/REC-xml/#charsetsa
@@ -125,7 +125,7 @@ Strigi::checkUtf8(const char* p, int32_t length, char& nb) {
 }
 const char*
 Strigi::checkUtf8(const std::string& p, char& nb) {
-    return checkUtf8(p.c_str(), p.size(), nb);
+    return checkUtf8(p.c_str(), (int32_t)p.size(), nb);
 }
 
 /**
@@ -133,8 +133,8 @@ Strigi::checkUtf8(const std::string& p, char& nb) {
  **/
 void
 Strigi::convertNewLines(char* p) {
-    int32_t len = std::strlen(p);
-    bool ok = checkUtf8(p, len);
+    size_t len = std::strlen(p);
+    bool ok = checkUtf8(p, (int32_t)len);
     if (!ok) fprintf(stderr, "string is not valid utf8\n");
 
     const char* end = p+len;
@@ -178,7 +178,7 @@ Strigi::convertNewLines(char* p) {
 #ifdef __BIG_ENDIAN__
 int16_t
 Strigi::readLittleEndianInt16(const char* c) {
-    return swap16(*reinterpret_cast<const int16_t*>(c));
+    return (int16_t)swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
 Strigi::readLittleEndianUInt16(const char* c) {
@@ -203,11 +203,11 @@ Strigi::readLittleEndianUInt64(const char* c) {
 #else
 int16_t
 Strigi::readBigEndianInt16(const char* c) {
-    return swap16(*reinterpret_cast<const int16_t*>(c));
+    return (int16_t)swap16(*reinterpret_cast<const int16_t*>(c));
 }
 uint16_t
 Strigi::readBigEndianUInt16(const char* c) {
-    return swap16(*reinterpret_cast<const uint16_t*>(c));
+    return (uint16_t)swap16(*reinterpret_cast<const uint16_t*>(c));
 }
 int32_t
 Strigi::readBigEndianInt32(const char* c) {

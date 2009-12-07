@@ -90,7 +90,7 @@ TarInputStream::parseHeader() {
         return;
     }
 
-    int32_t len = std::strlen(hb);
+    size_t len = std::strlen(hb);
     if (len == 0) {
         // ready
         m_status = Eof;
@@ -119,7 +119,7 @@ TarInputStream::parseHeader() {
     m_entryinfo.mtime = readOctalField(hb, 136);
     if (m_status) return;
 
-    numPaddingBytes = 512 - m_entryinfo.size%512;
+    numPaddingBytes = (int32_t)(512 - m_entryinfo.size%512);
     if (numPaddingBytes == 512) {
         numPaddingBytes = 0;
     }

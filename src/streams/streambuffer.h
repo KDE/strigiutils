@@ -121,7 +121,7 @@ template <class T>
 void
 StreamBuffer<T>::setSize(int32_t size) {
     // store pointer information
-    int32_t offset = readPos - start;
+    int32_t offset = (int32_t)(readPos - start);
 
     // allocate memory in the buffer
     start = (T*)std::realloc(start, size*sizeof(T));
@@ -134,18 +134,18 @@ template <class T>
 int32_t
 StreamBuffer<T>::makeSpace(int32_t needed) {
     // determine how much space is available for writing
-    int32_t space = size - (readPos - start) - avail;
+    int32_t offset = (int32_t)(readPos - start);
+    int32_t space = size - offset - avail;
     if (space >= needed) {
         // there's enough space
         return space;
     }
 
     if (avail) {
-        if (readPos != start) {
-//            printf("moving\n");
+        if (offset != 0) {
             // move data to the start of the buffer
             std::memmove(start, readPos, avail*sizeof(T));
-            space += readPos - start;
+            space += offset;
             readPos = start;
         }
     } else {

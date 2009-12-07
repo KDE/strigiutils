@@ -89,12 +89,12 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
             // the buffer
             std::memmove(charbuf.start, inbuf, inbytesleft);
             charbuf.readPos = charbuf.start;
-            charbuf.avail = inbytesleft;
-            nwritten = ((wchar_t*)outbuf) - start;
+            charbuf.avail = (int32_t)inbytesleft;
+            nwritten = (int32_t)(((wchar_t*)outbuf) - start);
             break;
         case E2BIG: // output buffer is full
             charbuf.readPos += charbuf.avail - inbytesleft;
-            charbuf.avail = inbytesleft;
+            charbuf.avail = (int32_t)inbytesleft;
             nwritten = space;
             break;
         default:
@@ -109,7 +109,7 @@ InputStreamReader::decode(wchar_t* start, int32_t space) {
     } else { //input sequence was completely converted
         charbuf.readPos = charbuf.start;
         charbuf.avail = 0;
-        nwritten = ((wchar_t*)outbuf) - start;
+        nwritten = (int32_t)(((wchar_t*)outbuf) - start);
         if (input == 0) {
             finishedDecoding = true;
         }

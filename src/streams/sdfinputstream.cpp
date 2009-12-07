@@ -70,11 +70,11 @@ SdfInputStream::checkHeader(const char* data, int32_t datasize) {
     const char* nextLine = data;
     for (int i=0; i<4 && nextLine != 0; ++i) {
         thisLine = nextLine;
-        nextLine = skip80Line(thisLine, datasize - (thisLine - data));
+        nextLine = skip80Line(thisLine, datasize - (int32_t)(thisLine - data));
     }
     static const KmpSearcher searcher(label);
     if (nextLine != 0) {
-        nextLine = searcher.search(thisLine, nextLine - thisLine);
+        nextLine = searcher.search(thisLine, (int32_t)(nextLine - thisLine));
     }
     return nextLine != 0;
 }

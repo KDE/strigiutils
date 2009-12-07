@@ -101,7 +101,7 @@ OleEntryStream::fillBuffer(char* start, int32_t space) {
     int32_t n = space;
     int32_t avail = blocksize-blockoffset;
     if (avail > m_size-done) {
-        avail = m_size-done;
+        avail = (int32_t)(m_size-done);
     }
     if (n > avail) {
         n = avail;
@@ -190,7 +190,7 @@ OleInputStream::Private::Private(OleInputStream* s, InputStream* input)
         stream->m_error = "File is incomplete.";
         return;
     }
-    toread = (input->size() > 0) ?input->size() :10000000;
+    toread = (input->size() > 0) ?(int32_t)input->size() :10000000;
     size = input->read(data, toread, toread);
     input->reset(0);
     if (size != input->size()) {
@@ -249,7 +249,7 @@ OleInputStream::Private::Private(OleInputStream* s, InputStream* input)
         sbatbIndex.push_back(currentDataBlock);
         currentDataBlock = nextBlock(currentDataBlock);
     }
-    maxsindex = sbatbIndex.size()*8;
+    maxsindex = (int32_t)sbatbIndex.size()*8;
 
     currentTableBlock = ptOffset;
     currentTableIndex = 0;

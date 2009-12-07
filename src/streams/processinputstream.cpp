@@ -91,7 +91,7 @@ ProcessInputStream::writeToPipe() {
         fdin = -1;
     } else {
         // write into the pipe
-        int32_t m = write(fdin, b, n);
+        ssize_t m = write(fdin, b, n);
         if (m < 0) {
             m_error = strerror(errno);
             m_status = Error;
@@ -117,16 +117,19 @@ ProcessInputStream::fillBuffer(char* start, int32_t space) {
         close(fdout);
         fdout = 0;
     }
-    return n;
+    return (int32_t)n;
 }
 void
 ProcessInputStream::runCmd() {
     int p[2];
-    pipe(p);
+    if (pipe(p) == -1) {
+        fprintf(stderr,"ProcessInputStream::runCmd: %s\n", strerror(errno));
+        return;
+    }
     
     if( (pid=fork()) == -1) {
         /* something went wrong */
-        fprintf(stderr,"ProcessInputStream::runCmd: fork error\n");
+        fprintf(stderr,"ProcessInputStream::runCmd: %s\n", strerror(errno));
         close (p[0]);
         close (p[1]);
         return;
@@ -151,8 +154,10 @@ void
 ProcessInputStream::runCmdWithInput() {
     int pin[2];
     int pout[2];
-    pipe(pin);
-    pipe(pout);
+    if (pipe(pin) == -1 || pipe(pout) == -1) {
+        fprintf(stderr,"ProcessInputStream::runCmd: %s\n", strerror(errno));
+        return;
+    }
     
     if( (pid=fork()) == -1) {
         /* something went wrong */

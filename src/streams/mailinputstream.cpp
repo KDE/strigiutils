@@ -47,9 +47,9 @@ using namespace Strigi;
 
 char
 decodeHex(char h) {
-    if (h >= 'A' && h <= 'F') return 10+h-'A';
-    if (h >= 'a' && h <= 'f') return 10+h-'a';
-    return h - '0';
+    if (h >= 'A' && h <= 'F') return (char)(10+h-'A');
+    if (h >= 'a' && h <= 'f') return (char)(10+h-'a');
+    return (char)(h - '0');
 }
 
 class Decoder {
@@ -119,7 +119,7 @@ QuotedPrintableDecoder::decodeQuotedPrintable(const char* v, uint32_t len) {
     while (v < end) {
         if (*v == '=' && end - v > 2 && isxdigit(v[1]) && isxdigit(v[2])) {
             decoded.append(pos, v - pos);
-            c = decodeHex(v[1])*16 + decodeHex(v[2]);
+            c = (char)(decodeHex(v[1])*16 + decodeHex(v[2]));
             decoded.append(&c, 1);
             pos = v = v + 3;
         } else if (*v == '_') {
@@ -175,7 +175,7 @@ HeaderDecoder::decodedHeaderValue(const char* v, uint32_t len) {
                 }
                 decoded.append(str);
             } else if (*q1 == 'q' || *q1 =='Q') {
-                string& str(decodeQuotedPrintable(q2, end-q2));
+                string& str(decodeQuotedPrintable(q2, (char)(end-q2)));
                 if (strncasecmp("utf-8", s, 5) != 0) {
                     string encoding(s, q1-s-1);
                     decode(encoding, str);
@@ -449,9 +449,9 @@ void
 MailInputStream::Private::scanBody() {
     while (m->m_status == Ok) {
         readHeaderLine();
-        int32_t len = lineend - linestart;
+        int32_t len = (int32_t)(lineend - linestart);
         if (len > 2 && strncmp("--", linestart, 2) == 0) {
-            int32_t blen = boundary.top().length();
+            int32_t blen = (int32_t)boundary.top().length();
             if (len == blen + 4 && strncmp(linestart + 2 + blen, "--", 2) == 0
                     && strncmp(linestart + 2, boundary.top().c_str(), blen)
                         == 0) {
@@ -483,7 +483,7 @@ MailInputStream::Private::handleHeaderLine() {
     static const char* references = "References:";
     static const char* contenttransferencoding = "Content-Transfer-Encoding:";
     static const char* contentdisposition = "Content-Disposition:";
-    int32_t len = lineend - linestart;
+    int32_t len = (int32_t)(lineend - linestart);
     if (len < 2) return;
     if (len < 8) {
         return;

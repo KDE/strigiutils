@@ -59,7 +59,7 @@ SignatureInputStream::read(const char*& start, int32_t min, int32_t max) {
 }
 int64_t
 SignatureInputStream::reset(int64_t newpos) {
-    int32_t r = p->input->reset(newpos);
+    int64_t r = p->input->reset(newpos);
     m_status = p->input->status();
     m_position = p->input->position();
     m_size = p->input->size();
@@ -67,7 +67,7 @@ SignatureInputStream::reset(int64_t newpos) {
 }
 int64_t
 SignatureInputStream::skip(int64_t ntoskip) {
-    int32_t r = p->input->skip(ntoskip);
+    int64_t r = p->input->skip(ntoskip);
     m_status = p->input->status();
     m_position = p->input->position();
     m_size = p->input->size();

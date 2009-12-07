@@ -103,12 +103,12 @@ EncodingInputStream::Private::decode(char* start, int32_t space) {
             // the buffer
             std::memmove(charbuf.start, inbuf, inbytesleft);
             charbuf.readPos = charbuf.start;
-            charbuf.avail = inbytesleft;
-            nwritten = outbuf - start;
+            charbuf.avail = (int32_t)inbytesleft;
+            nwritten = (int32_t)(outbuf - start);
             break;
         case E2BIG: // output buffer is full
             charbuf.readPos += charbuf.avail - inbytesleft;
-            charbuf.avail = inbytesleft;
+            charbuf.avail = (int32_t)inbytesleft;
             nwritten = space;
             break;
         default:
@@ -123,7 +123,7 @@ EncodingInputStream::Private::decode(char* start, int32_t space) {
     } else { //input sequence was completely converted
         charbuf.readPos = charbuf.start;
         charbuf.avail = 0;
-        nwritten = outbuf - start;
+        nwritten = (int32_t)(outbuf - start);
         if (input == 0) {
             finishedEncoding = true;
         }

@@ -74,7 +74,7 @@ MMapFileInputStream::read(const char*& start, int32_t _min, int32_t _max) {
     int32_t n = max(_min, _max);
     if (n >= m_size - m_position) {
         m_status = Eof;
-        n = m_size - m_position;
+        n = (int32_t)(m_size - m_position);
     }
     start = buffer + m_position;
     m_position += n;

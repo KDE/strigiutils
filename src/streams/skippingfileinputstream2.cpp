@@ -81,7 +81,7 @@ SkippingFileInputStream2::open(FILE* f, const char* path, int32_t buffersize) {
     }
 
     // allocate memory in the buffer
-    int32_t bufsize = (m_size <= buffersize) ?m_size+1 :buffersize;
+    int32_t bufsize = (m_size <= buffersize) ?(int32_t)m_size+1 :buffersize;
     setMinBufSize(bufsize);
 }
 SkippingFileInputStream2::~SkippingFileInputStream2() {
@@ -96,7 +96,7 @@ int32_t
 SkippingFileInputStream2::fillBuffer(char* start, int32_t space) {
     if (file == 0) return -1;
     // read into the buffer
-    int32_t nwritten = fread(start, 1, space, file);
+    int32_t nwritten = (int32_t)fread(start, 1, space, file);
     // check the file stream status
     if (ferror(file)) {
         m_error = "Could not read from file '" + filepath + "'.";

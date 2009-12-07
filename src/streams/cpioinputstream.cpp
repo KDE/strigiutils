@@ -104,10 +104,10 @@ CpioInputStream::readHeader() {
         m_error = "Error parsing entry field.";
         return;
     }
-    char namepadding = (filenamesize+2) % 4;
-    if (namepadding) namepadding = 4 - namepadding;
-    padding = m_entryinfo.size % 4;
-    if (padding) padding = 4 - padding;
+    char namepadding = (char)((filenamesize+2) % 4);
+    if (namepadding) namepadding = (char)(4 - namepadding);
+    padding = (char)(m_entryinfo.size % 4);
+    if (padding) padding = (char)(4 - padding);
 
     // read filename
     toread = filenamesize + namepadding;

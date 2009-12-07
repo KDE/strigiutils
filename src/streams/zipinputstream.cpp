@@ -239,7 +239,7 @@ ZipInputStream::readFileName(int32_t len) {
 
     // temporary hack for determining if this is a directory:
     // does the filename end in '/'?
-    len = m_entryinfo.filename.length();
+    len = (int32_t)m_entryinfo.filename.length();
     if (m_entryinfo.filename[len-1] == '/') {
         m_entryinfo.filename.resize(len-1);
         m_entryinfo.type = EntryInfo::Dir;

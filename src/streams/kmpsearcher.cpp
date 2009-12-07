@@ -96,7 +96,7 @@ KmpSearcher::KmpSearcher(const std::string& query) :table(0) {
 void
 KmpSearcher::setQuery(const string& query) {
     m_query = query;
-    len = query.length();
+    len = (int32_t)query.length();
     const char* p = query.c_str();
     int32_t tablesize = 4 * (257+len);
     if (table) {

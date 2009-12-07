@@ -60,7 +60,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
 
     // check if we already read enough
     const int64_t pos = p->m_input->position();
-    nread = p->furthest - pos;
+    nread = (int32_t)(p->furthest - pos);
     if (min <= nread) {
         if (max <= 0 || max > nread) {
             max = nread;
@@ -103,7 +103,7 @@ StringTerminatedSubStream::read(const char*& start, int32_t min, int32_t max) {
     const char* end = p->m_searcher.search(start, nread);
     if (end) {
         // the end signature was found
-        nread = end - start;
+        nread = (int32_t)(end - start);
         // signal the end of stream at the next call
         m_status = Eof;
         // set input stream to point after the terminator

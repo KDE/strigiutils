@@ -138,15 +138,15 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
     SizeT inProcessed = avail_in;
     ELzmaFinishMode finishMode = LZMA_FINISH_ANY;
     int64_t bytesTodo = p->m_size - bytesDecompressed;
-    if (p->m_size != -1 && outProcessed > bytesTodo) {
+    if (p->m_size != -1 && outProcessed > (SizeT)bytesTodo) {
         outProcessed = (SizeT)bytesTodo;
         finishMode = LZMA_FINISH_END;
     }
     ELzmaStatus status;
     SRes res = LzmaDec_DecodeToBuf(&state, (Byte*)start, &outProcessed,
         (const Byte*)next_in, &inProcessed, finishMode, &status);
-    avail_in -= inProcessed;
-    next_in += inProcessed;
+    avail_in -= (int32_t)inProcessed;
+    next_in += (int32_t)inProcessed;
     bytesDecompressed += outProcessed;
     if (res != SZ_OK) {
         ostringstream str;
@@ -167,5 +167,5 @@ LZMAInputStream::Private::fillBuffer(char* start, int32_t space) {
     } else if (status == LZMA_STATUS_FINISHED_WITH_MARK) {
         p->m_size = bytesDecompressed;
     }
-    return outProcessed;
+    return (int32_t)outProcessed;
 }
