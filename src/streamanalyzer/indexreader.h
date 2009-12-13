@@ -78,8 +78,8 @@ public:
      * @param children A map in which the uri and mtime of the children of
      *                 @p parent will be placed.
      **/
-    virtual void getChildren(const std::string& parent,
-            std::map<std::string, time_t>& children) {};
+    virtual void getChildren(const std::string& /*parent*/,
+            std::map<std::string, time_t>& /*children*/) {}
     /**
      * Count the number of documents indexed in the index.
      *
