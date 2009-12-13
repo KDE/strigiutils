@@ -24,11 +24,19 @@ OPTION(ENABLE_REGENERATEXSD
   "regenerate xsd parser from *.xsd files(not normally required)" ON)
 find_package(Java)
 if (JAVA_COMPILE)
-  execute_process(COMMAND ${JAVA_COMPILE} "-version" ERROR_VARIABLE
-    JAVAC_VERSION)
+  execute_process(COMMAND ${JAVA_COMPILE} "-version"
+    OUTPUT_VARIABLE JAVAC_VERSION
+    ERROR_VARIABLE JAVAC_VERSION)
   if (JAVAC_VERSION MATCHES " 1\\.[56]" AND NOT JAVAC_VERSION MATCHES "g[ci]j")
     set(JAVAC5_FOUND TRUE)
   endif (JAVAC_VERSION MATCHES " 1\\.[56]" AND NOT JAVAC_VERSION MATCHES "g[ci]j")
+  # test that java runtime is not gij either
+  execute_process(COMMAND ${JAVA_RUNTIME} "-version"
+    OUTPUT_VARIABLE JAVA_VERSION
+    ERROR_VARIABLE JAVA_VERSION)
+  if (JAVA_VERSION MATCHES "g[ci]j")
+    set(JAVAC5_FOUND FALSE)
+  endif (JAVA_VERSION MATCHES "g[ci]j")
   MESSAGE("Java5 found ${JAVAC5_FOUND}")
 endif (JAVA_COMPILE)
 
