@@ -235,9 +235,11 @@ DirAnalyzer::Private::analyzeDir(const string& dir, int nthreads,
         retval = stat(path.c_str(), &s);
     }
     time_t mtime = (retval == -1) ?0 :s.st_mtime;
-    retval = analyzeFile(path, mtime, S_ISREG(s.st_mode));
+    bool isfile = (retval == -1) ?false :S_ISREG(s.st_mode);
+    bool isdir = (retval == -1) ?false :S_ISDIR(s.st_mode);
+    retval = analyzeFile(path, mtime, isfile);
     // if the path does not point to a directory, return
-    if (!S_ISDIR(s.st_mode)) {
+    if (!isdir) {
         manager.indexWriter()->commit();
         return retval;
     }
