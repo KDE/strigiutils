@@ -184,8 +184,9 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
 	string picname;
 	picname = (char)('0'+albumArtNum++);
 	indexable.indexChild(picname,indexable.mTime(), &picstream);
-	if(desclen)
-	  indexable.child()->addValue(factory->descriptionField, description);
+        if (desclen && indexable.child()) {
+          indexable.child()->addValue(factory->descriptionField, description);
+        }
 	
       } else if ((blocktype&0x7F)==4) { // Vorbis Comment block
 	const char *p2 = buf + 4 + readLittleEndianUInt32(buf); //skip vendor string. maybe put it into metadata as soon as there's some place for it

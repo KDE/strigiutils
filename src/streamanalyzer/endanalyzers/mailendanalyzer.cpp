@@ -199,7 +199,9 @@ MailEndAnalyzer::analyze(AnalysisResult& idx, InputStream* in) {
         }
         // maybe use the date of sending the mail here
         idx.indexChild(file, idx.mTime(), s);
-	idx.child()->addValue(factory->typeField, mimePartClassName);
+        if (idx.child()) {
+            idx.child()->addValue(factory->typeField, mimePartClassName);
+        }
 
         s = mail.nextEntry();
         n++;

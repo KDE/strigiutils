@@ -411,7 +411,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 			picname = (char)('0'+albumArtNum++);
 			indexable.indexChild(picname, indexable.mTime(), &picstream);
 
-			if(desclen) {
+			if (desclen && indexable.child()) {
 			    if (enc == 0 || enc == 3) {
 				indexable.child()->addValue(factory->descriptionField, string(desc, desclen) );
 			    } else {
