@@ -1,5 +1,8 @@
 include_directories( ..  ${strigi_BINARY_DIR}/src/streams )
-CREATE_TEST_SOURCELIST(Tests streamanalyzertests.cpp querytests.cpp)
+CREATE_TEST_SOURCELIST(Tests streamanalyzertests.cpp
+    querytests.cpp
+    indextests.cpp
+)
 
 ADD_EXECUTABLE(streamanalyzertest ${Tests})
 target_link_libraries(streamanalyzertest streamanalyzer)
