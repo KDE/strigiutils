@@ -43,7 +43,9 @@ TarInputStream::nextEntry() {
     }
     parseHeader();
     if (m_status) return 0;
-    m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
+    if (m_entryinfo.size >= 0) {
+        m_entrystream = new SubInputStream(m_input, m_entryinfo.size);
+    }
     return m_entrystream;
 }
 const char*
