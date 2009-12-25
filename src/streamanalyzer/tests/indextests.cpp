@@ -27,7 +27,11 @@
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
-#include <unistd.h>
+#ifndef WIN32
+	#include <unistd.h>
+#else
+	#include <direct.h>
+#endif
 
 /*
  * Test if having directories that are not accessible influences the indexing.
