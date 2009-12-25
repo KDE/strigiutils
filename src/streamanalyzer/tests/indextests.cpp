@@ -41,10 +41,17 @@
 int
 testScanWithUnreadableDir() {
     // setup
+#ifdef WIN32
+    if (mkdir("testScanWithUnreadableDir") != 0
+            || mkdir("testScanWithUnreadableDir/a") != 0
+            || mkdir("testScanWithUnreadableDir/b") != 0
+            || mkdir("testScanWithUnreadableDir/c") != 0) {
+#else
     if (mkdir("testScanWithUnreadableDir", 0700) != 0
             || mkdir("testScanWithUnreadableDir/a", 0700) != 0
             || mkdir("testScanWithUnreadableDir/b", 0700) != 0
             || mkdir("testScanWithUnreadableDir/c", 0700) != 0) {
+#endif
         fprintf(stderr, "%s\n", strerror(errno));
         return -1;
     }
