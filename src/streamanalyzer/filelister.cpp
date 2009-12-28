@@ -275,19 +275,21 @@ DirLister::Private::nextDir(std::string& path,
     string entrypath;
     size_t entrypathlength;
     // check if there are more directories to work on
-    bool end = false;
     // open the directory
     STRIGI_MUTEX_LOCK(&mutex);
+    if (todoPaths.empty()) {
+        STRIGI_MUTEX_UNLOCK(&mutex);
+        return -1;
+    }
+    path.assign(todoPaths.front());
+    todoPaths.pop_front();
+    // Only unlock of the todo list is not empty.
+    // If the list is empty, other threads must wait for this thread to populate
+    // the list.
+    bool mutexLocked = true;
     if (!todoPaths.empty()) {
-      path.assign(todoPaths.front());
-      todoPaths.pop_front();
-    }
-    else {
-      end = true;
-    }
-    STRIGI_MUTEX_UNLOCK(&mutex);
-    if (end) {
-      return -1;
+        STRIGI_MUTEX_UNLOCK(&mutex);
+        mutexLocked = false;
     }
     entrypathlength = path.length()+1;
     entrypath.assign(path);
@@ -314,10 +316,13 @@ DirLister::Private::nextDir(std::string& path,
                 if (S_ISDIR(entrystat.st_mode)) {
                     if (config == 0 ||
                             config->indexDir(
-                                entrypath.c_str(), entryname.c_str())){
-                        STRIGI_MUTEX_LOCK(&mutex);
+                                entrypath.c_str(), entryname.c_str())) {
+                        if (!mutexLocked) {
+                            STRIGI_MUTEX_LOCK(&mutex);
+                        }
                         todoPaths.push_back(entrypath);
                         STRIGI_MUTEX_UNLOCK(&mutex);
+                        mutexLocked = false;
                         dirs.push_back(make_pair<string,struct stat>(
                             entrypath, entrystat));
                     }
@@ -331,6 +336,9 @@ DirLister::Private::nextDir(std::string& path,
         entry = readdir(dir);
     }
     closedir(dir);
+    if (mutexLocked) {
+        STRIGI_MUTEX_UNLOCK(&mutex);
+    }
     return 0;
 }
 int
