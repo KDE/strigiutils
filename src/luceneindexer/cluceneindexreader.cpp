@@ -37,6 +37,8 @@
 #include "fieldtypes.h"
 #include <sstream>
 #include <iostream>
+#include <cassert>
+#include <climits>
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;

@@ -19,10 +19,11 @@
  */
 #include <CLucene.h>
 #include <CLucene/search/QueryFilter.h>
-#include <sstream>
-#include <iostream>
 #include "cluceneindexmanager.h"
 #include "../tcharutils.h"
+#include <sstream>
+#include <iostream>
+#include <cassert>
 
 using lucene::search::Hits;
 using lucene::search::IndexSearcher;
