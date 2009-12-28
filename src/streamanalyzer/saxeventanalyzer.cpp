@@ -26,6 +26,10 @@
 #include <cassert>
 #include <cstring>
 
+#ifndef LIBXML_THREAD_ENABLED
+#error Strigi needs a thread safe version of libxml2
+#endif
+
 using namespace Strigi;
 using namespace std;
 
