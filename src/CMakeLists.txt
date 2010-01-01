@@ -43,7 +43,7 @@ endif(BUILD_DAEMON AND NOT WIN32)
 
 if (NOT CLucene_FOUND)
   message("** No CLucene libraries were found, so Strigi cannot use indexes.")
-  message("** It is recommended to install CLucene >= 0.9.16a.")
+  message("** It is required to install CLucene >= ${CLUCENE_MIN_VERSION}.")
   message("** You will still be able to use deepfind, deepgrep and xmlindexer.")
 endif (NOT CLucene_FOUND)
 
