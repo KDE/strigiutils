@@ -1,4 +1,4 @@
-include_directories( ..  ${strigi_BINARY_DIR}/src/streams )
+include_directories( .. ../../streams ${strigi_BINARY_DIR}/src/streams )
 CREATE_TEST_SOURCELIST(Tests streamanalyzertests.cpp
     querytests.cpp
     indextests.cpp
