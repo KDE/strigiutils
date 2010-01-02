@@ -38,6 +38,9 @@ set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
 set (LIB_DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE STRING "Library directory name" FORCE)
 set (MIMEINSTALLDIR "${CMAKE_INSTALL_PREFIX}/share/mime")
 
+# due to a bug in libxml2, we only get thread support if _REENTRANT is defined
+add_definitions(-D_REENTRANT)
+
 # Always include srcdir and builddir in include path
 # This saves typing ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY} in about every subdir
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -57,8 +60,6 @@ if(APPLE)
    set(CPACK_SET_DESTDIR ON)
    set(CPACK_PACKAGE_RELOCATABLE OFF)
    set(CMAKE_INSTALL_NAME_DIR ${LIB_DESTINATION})
-   # due to a bug in libxml2, we only get thread support if _REENTRANT is defined
-   add_definitions(-D_REENTRANT)
 endif(APPLE)
 
 if(MSVC)
