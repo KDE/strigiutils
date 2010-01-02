@@ -303,7 +303,12 @@ DirLister::Private::nextDir(std::string& path,
         dir = opendir("/");
     }
     if (!dir) {
-        return -1;
+        int e = errno;
+        if (mutexLocked) {
+            STRIGI_MUTEX_UNLOCK(&mutex);
+        }
+        // if permission is denied, this is not an error
+        return (e == EACCES) ?0 :-1;
     }
     struct dirent* entry = readdir(dir);
     struct stat entrystat;
