@@ -1,3 +1,15 @@
+0.7.1
+ - Support more fields from ODF documents
+ - Improved skipping behavior on streams for large files.
+ - Added album art support.
+ - Added support for ID3v1 tags.
+ - Added MP3 stream metadata extraction, UTF-16 support in tags.
+ - Extended the range of metadata extracted by ID3 analyzer.
+ - Added a FLAC audio file analyzer.
+ - Significantly unbreak the PDF analyzer.
+ - Fix scanning trees where permissions are insufficient to read some parts
+ - Check for multithreaded version of libxml2
+ - Require newer CLucene version (0.9.21)
 0.7.0
  - Change to Nepomuk ontologies (Evgeny Egorochkin)
  - Set file property for embedded ar streams. This fixes the opening of these streams in archivereader.
