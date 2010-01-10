@@ -266,6 +266,8 @@ UTF8Convertor::~UTF8Convertor() {
 }
 const string
 UTF8Convertor::convert(const char *data, size_t len) {
+  if (!len)
+      return string();
   if ( capacity<len*3 ||	// is the buffer too small or too large?
       (capacity>10000 && capacity>len*8) ) {
       capacity = len*3;
