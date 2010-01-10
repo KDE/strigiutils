@@ -28,7 +28,7 @@ class GZipInputStream::Private {
 public:
     GZipInputStream* const p;
     InputStream* input;
-    z_stream_s* zstream;
+    z_stream_s zstream;
 
     Private(GZipInputStream* gi, InputStream* input, ZipFormat format);
     ~Private();
@@ -41,7 +41,7 @@ GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format)
         :p(new Private(this, input, format)) {
 }
 GZipInputStream::Private::Private(GZipInputStream* gi,
-        InputStream* i, ZipFormat format) :p(gi), input(i), zstream(0) {
+        InputStream* i, ZipFormat format) :p(gi), input(i) {
     // initialize values that signal state
     p->m_status = Ok;
 
@@ -53,25 +53,24 @@ GZipInputStream::Private::Private(GZipInputStream* gi,
     }
 
     // initialize the z_stream
-    zstream = (z_stream_s*)malloc(sizeof(z_stream_s));
-    zstream->zalloc = Z_NULL;
-    zstream->zfree = Z_NULL;
-    zstream->opaque = Z_NULL;
-    zstream->avail_in = 0;
-    zstream->next_in = Z_NULL;
+    zstream.zalloc = Z_NULL;
+    zstream.zfree = Z_NULL;
+    zstream.opaque = Z_NULL;
+    zstream.avail_in = 0;
+    zstream.next_in = Z_NULL;
     // initialize for reading gzip streams
     // for reading libz streams, you need inflateInit(zstream)
     int r;
     switch(format) {
     case ZLIBFORMAT:
-        r = inflateInit(zstream);
+        r = inflateInit(&zstream);
         break;
     case GZIPFORMAT:
-        r = inflateInit2(zstream, 15+16);
+        r = inflateInit2(&zstream, 15+16);
         break;
     case ZIPFORMAT:
     default:
-        r = inflateInit2(zstream, -MAX_WBITS);
+        r = inflateInit2(&zstream, -MAX_WBITS);
         break;
     }
     if (r != Z_OK) {
@@ -82,7 +81,7 @@ GZipInputStream::Private::Private(GZipInputStream* gi,
     }
 
     // signal that we need to read into the buffer
-    zstream->avail_out = 1;
+    zstream.avail_out = 1;
 
     // initialize the buffer
     p->setMinBufSize(262144);
@@ -95,11 +94,8 @@ GZipInputStream::Private::~Private() {
 }
 void
 GZipInputStream::Private::dealloc() {
-    if (zstream) {
-        inflateEnd(zstream);
-        free(zstream);
-        zstream = 0;
-    }
+    inflateEnd(&zstream);
+    input = NULL;
 }
 bool
 GZipInputStream::Private::checkMagic() {
@@ -130,16 +126,16 @@ GZipInputStream::Private::readFromStream() {
         p->m_status = Error;
         p->m_error.assign("unexpected end of stream");
     } else {
-        zstream->next_in = (Bytef*)inStart;
-        zstream->avail_in = nread;
+        zstream.next_in = (Bytef*)inStart;
+        zstream.avail_in = nread;
     }
 }
 int32_t
 GZipInputStream::fillBuffer(char* start, int32_t space) {
-    z_stream_s* zstream = p->zstream;
-    if (zstream == 0) return -1;
+    if (p->input == NULL) return -1;
+    z_stream_s& zstream = p->zstream;
     // make sure there is data to decompress
-    if (zstream->avail_out) {
+    if (zstream.avail_out) {
         p->readFromStream();
         if (m_status == Error) {
             // no data was read
@@ -147,12 +143,12 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
         }
     }
     // make sure we can write into the buffer
-    zstream->avail_out = space;
-    zstream->next_out = (Bytef*)start;
+    zstream.avail_out = space;
+    zstream.next_out = (Bytef*)start;
     // decompress
-    int r = inflate(zstream, Z_SYNC_FLUSH);
+    int r = inflate(&zstream, Z_SYNC_FLUSH);
     // inform the buffer of the number of bytes that was read
-    int32_t nwritten = space - zstream->avail_out;
+    int32_t nwritten = space - zstream.avail_out;
     switch (r) {
     case Z_NEED_DICT:
         m_error.assign("Z_NEED_DICT while inflating stream.");
@@ -167,8 +163,8 @@ GZipInputStream::fillBuffer(char* start, int32_t space) {
         m_status = Error;
         break;
     case Z_STREAM_END:
-        if (zstream->avail_in) {
-            p->input->reset(p->input->position()-zstream->avail_in);
+        if (zstream.avail_in) {
+            p->input->reset(p->input->position()-zstream.avail_in);
         }
         // we are finished decompressing,
         // (but this stream is not yet finished)
