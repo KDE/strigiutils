@@ -167,7 +167,7 @@ static const string genres[148] = {
   "National Folk",
   "Swing",
   "Fusion",
-  "Bebob",
+  "Bebop",
   "Latin",
   "Revival",
   "Celtic",
