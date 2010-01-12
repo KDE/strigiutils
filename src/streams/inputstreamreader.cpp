@@ -25,6 +25,7 @@
 #include "inputstreamreader.h"
 #include <strigi/strigiconfig.h>
 #include <cerrno>
+#include <iconv.h>
 
 #ifdef ICONV_SECOND_ARGUMENT_IS_CONST
      #define ICONV_CONST const
@@ -42,7 +43,7 @@ InputStreamReader::InputStreamReader(InputStream* i, const char* enc) {
 #ifdef _LIBICONV_H
     if (sizeof(wchar_t) == 4) {
         converter = iconv_open("UCS-4-INTERNAL", enc);
-    } if (sizeof(wchar_t) == 2) {
+    } else if (sizeof(wchar_t) == 2) {
         converter = iconv_open("UCS-2-INTERNAL", enc);
 #else
     if (sizeof(wchar_t) > 1) {
