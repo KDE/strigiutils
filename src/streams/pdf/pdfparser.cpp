@@ -334,7 +334,7 @@ PdfParser::parseDictionaryOrStream() {
             return Error;
         }
         lastObject = 0;
-        if (parseObjectStreamObject() != Ok) {
+        if (parseObjectStreamObject(0) != Ok) {
             m_error.assign("Error parsing dictionary value.");
             return Error;
         }
@@ -405,12 +405,12 @@ PdfParser::parseDictionaryOrStream() {
     return Ok;
 }
 StreamStatus
-PdfParser::parseArray() {
+PdfParser::parseArray(int nestDepth) {
     lastString.resize(0);
     pos++;
     if (skipWhitespaceOrComment() != Ok) return Error;
     while (*pos != ']') {
-        if (parseObjectStreamObject() != Ok) return Error;
+        if (parseObjectStreamObject(nestDepth+1) != Ok) return Error;
         if (skipWhitespaceOrComment() != Ok) return Error;
     }
     pos++;
@@ -422,10 +422,11 @@ PdfParser::parseNull() {
     return skipKeyword("null", 4);
 }
 StreamStatus
-PdfParser::parseObjectStreamObject() {
-//    printf("parseObjectStreamObject %.*s\n", (5>end-pos)?end-pos:5, pos);
+PdfParser::parseObjectStreamObject(int nestDepth) {
+    //printf("parseObjectStreamObject %.*s\n", (5>end-pos)?end-pos:5, pos);
     StreamStatus r = checkForData(2);
     if (r != Ok) return r;
+    if (nestDepth > 1000) return Error; // treat nesting 1000 levels as an error
 
     char ch = *pos;
     if (ch == 't' || ch == 'f') {
@@ -443,7 +444,7 @@ PdfParser::parseObjectStreamObject() {
             r = parseHexString();
         }
     } else if (ch == '[') {
-        r = parseArray();
+        r = parseArray(nestDepth+1);
     } else if (ch == 'n') {
         r = parseNull();
     } else {
@@ -475,7 +476,7 @@ PdfParser::parseContentStreamObject() {
             r = parseHexString();
         }
     } else if (ch == '[') {
-        r = parseArray();
+        r = parseArray(0);
     } else if (isalpha(ch)) {
         r = parseOperator();
     } else {
@@ -494,7 +495,7 @@ PdfParser::parseObjectStream(StreamBase<char>* s, int32_t offset, int32_t n) {
     stream->skip(offset);
     StreamStatus r = Ok;
     for (int32_t i=0; r == Ok && i<n; ++i) {
-        r = parseObjectStreamObject();
+        r = parseObjectStreamObject(0);
     }
     while (r == Ok) {
         s->skip(1000);
@@ -565,7 +566,7 @@ PdfParser::parseObjectStreamObjectDef() {
     if (parseNumber() != Ok || skipWhitespaceOrComment() != Ok
         || parseNumber() != Ok || skipWhitespaceOrComment() != Ok
         || skipKeyword("obj", 3) != Ok || skipWhitespaceOrComment() != Ok
-        || parseObjectStreamObject() != Ok || skipWhitespaceOrComment() != Ok
+        || parseObjectStreamObject(0) != Ok || skipWhitespaceOrComment() != Ok
         || skipKeyword("endobj", 6) != Ok) {
         return Error;
     }

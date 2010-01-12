@@ -76,7 +76,7 @@ private:
     Strigi::StreamStatus skipDigits();
     Strigi::StreamStatus skipStartXRef();
     Strigi::StreamStatus skipNumber();
-    Strigi::StreamStatus parseObjectStreamObject();
+    Strigi::StreamStatus parseObjectStreamObject(int nestDepth);
     Strigi::StreamStatus parseContentStreamObject();
     Strigi::StreamStatus parseComment();
     Strigi::StreamStatus parseBoolean();
@@ -87,7 +87,7 @@ private:
     Strigi::StreamStatus parseName();
     Strigi::StreamStatus parseOperator();
     Strigi::StreamStatus parseDictionaryOrStream();
-    Strigi::StreamStatus parseArray();
+    Strigi::StreamStatus parseArray(int nestDepth);
     Strigi::StreamStatus parseNull();
     Strigi::StreamStatus parseObjectStreamObjectDef();
 
