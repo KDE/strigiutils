@@ -22,6 +22,7 @@
 #include <strigi/strigiconfig.h>
 #include "analysisresult.h"
 #include "fieldtypes.h"
+#include <cstring>
 
 using namespace std;
 using namespace Strigi;
@@ -37,8 +38,6 @@ CppLineAnalyzerFactory::registerFields(FieldRegister& reg) {
         "http://strigi.sf.net/ontologies/0.9#codeLineCount");
     commentLinesField = reg.registerField(
         "http://strigi.sf.net/ontologies/0.9#commentLineCount");
-    totalLinesField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#lineCount");
     programmingLanguageField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage");
 // Include count not required. Include list length is easy to obtain.
@@ -53,17 +52,18 @@ CppLineAnalyzer::startAnalysis(AnalysisResult* i) {
     ready = false;
     codeLines     = 0;
     commentLines  = 0;
-    totalLines    = 0;
     includes      = 0;
     inComment = false;
+    // only use this analyzer if the file has been deterined to be c/c++
+    // this is not accurate at all but better than what we had before
+    ready = i->mimeType() != "text/x-csrc";
 }
 void
 CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
-    totalLines++;
-    
     bool shortComment = false;
-    bool mayHaveInclude = false;
+    int macroStart = -1;
     bool endOfComment = false;
+    bool onlyWhitespace = true;
 
     for (unsigned int i=0;i<length;i++ ) {
         if (data[i]=='/') {
@@ -71,7 +71,10 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
             if (i<(length-1) && data[i+1]=='/') shortComment = true;
             if (i>0 && data[i-1]=='*') endOfComment = true;
         }
-        if (data[i]=='#') mayHaveInclude=true;
+        if (onlyWhitespace && data[i] == '#' && macroStart == -1) {
+            macroStart = i;
+        }
+        onlyWhitespace = onlyWhitespace && isspace(data[i]);
     }
 
     if (!inComment){
@@ -80,14 +83,12 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
         
         if (shortComment) commentLines++;
 
-        if (mayHaveInclude) {
-        
-        string line(data, length);
-        //TODO Add code here for counting strings.
-        //Look for included files.
-        size_t pos1 = line.find("#include",0);
-        if(pos1 != string::npos){
-            string include1 = line.substr(8+pos1,line.size());
+        if (macroStart != -1
+                && strncmp("include", data + macroStart + 1, 7) == 0) {
+
+            //TODO Add code here for counting strings.
+            //Look for included files.
+            string include1(data + macroStart + 8, length - macroStart - 8);
             size_t pos2 = include1.find("<",0);
             size_t pos3 = include1.find(">",0);
             if((pos2 != string::npos) && (pos3 != string::npos)){
@@ -100,7 +101,6 @@ CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
                 analysisResult->addValue(factory->includeField, include1.substr(1+pos4,((pos5-1)-pos4)));
                 includes++;
             }
-        }
         }
     }
     else
@@ -115,13 +115,11 @@ CppLineAnalyzer::endAnalysis(bool complete) {
 	//FIXME: either get rid of this or replace with NIE equivalent
         //analysisResult->addValue(factory->codeLinesField, (int32_t)codeLines);
         //analysisResult->addValue(factory->commentLinesField, (int32_t)commentLines);
-        analysisResult->addValue(factory->totalLinesField, (int32_t)totalLines);
         analysisResult->addValue(factory->programmingLanguageField, "C++");
         analysisResult->addValue(factory->typeField,
             "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode");
 //        analysisResult->addValue(factory->includesField, includes);
     }
-    ready = true;
 }
 bool
 CppLineAnalyzer::isReadyWithStream() {

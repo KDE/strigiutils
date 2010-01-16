@@ -35,10 +35,10 @@ private:
     const CppLineAnalyzerFactory* factory;
     int codeLines;
     int commentLines;
-    int totalLines;
     int includes;
     bool inComment;
     bool ready;
+    bool isCpp;
 public:
     CppLineAnalyzer(const CppLineAnalyzerFactory* f) :factory(f) {}
     ~CppLineAnalyzer() {}
