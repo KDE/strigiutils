@@ -56,7 +56,10 @@ CppLineAnalyzer::startAnalysis(AnalysisResult* i) {
     inComment = false;
     // only use this analyzer if the file has been deterined to be c/c++
     // this is not accurate at all but better than what we had before
-    ready = i->mimeType() != "text/x-csrc";
+    ready = i->mimeType() != "text/x-csrc"
+        && i->mimeType() != "text/x-chrd"
+        && i->mimeType() != "text/x-c++src"
+        && i->mimeType() != "text/x-c++hrd";
 }
 void
 CppLineAnalyzer::handleLine(const char* data, uint32_t length) {
