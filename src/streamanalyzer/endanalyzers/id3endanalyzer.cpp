@@ -57,7 +57,7 @@ const string
 	NMM_DRAFT "setNumber"),
     discCountPropertyName(
 	NMM_DRAFT "setCount"),
-    
+
     musicClassName(
 	NMM_DRAFT "MusicPiece"),
     audioClassName(
@@ -279,7 +279,7 @@ UTF8Convertor::convert(const char *data, size_t len) {
 
   ICONV_CONST char *input = (char *)data;
   iconv(conv, &input, &len, &result, &reslen);
-  
+
   return string(out,capacity-reslen);
 }
 
@@ -302,7 +302,7 @@ ID3EndAnalyzerFactory::registerFields(FieldRegister& r) {
     trackNumberField	= r.registerField(NMM_DRAFT "trackNumber");
     durationField	= r.registerField(NFO "duration");
     typeField		= r.typeField;
-    
+
     bitrateField	= r.registerField(NFO "averageBitrate");
     samplerateField	= r.registerField(NFO "sampleRate");
     codecField		= r.registerField(NFO "codec");
@@ -321,7 +321,7 @@ inline
 int32_t readAsyncSize(const unsigned char* b) {
     return (((int32_t)b[0])<<21) + (((int32_t)b[1])<<14)
 	    + (((int32_t)b[2])<<7) + ((int32_t)b[3]);
-}  
+}
 
 int32_t
 readSize(const unsigned char* b, bool async) {
@@ -352,14 +352,14 @@ signed char
 ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* in) {
     if(!in)
         return -1;
-    
+
     bool found_title = false, found_artist = false,
 	  found_album = false, found_comment = false,
 	  found_year = false, found_track = false,
 	  found_genre = false, found_tag = false;
     string albumUri;
     char albumArtNum = '\0';
-    
+
     // read 10 byte header
     const char* buf;
     int32_t nread = in->read(buf, 10, 10);
@@ -427,7 +427,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    if (enc == 0 || enc == 3) {
 		value = string(p+11, strnlen(p+11, size-1));
 	    } else {
-		value = conv.convert(p+11,size-1); // FIXME: add similar workaround 
+		value = conv.convert(p+11,size-1); // FIXME: add similar workaround
 	    }
 
 	    if (!value.empty()) {
@@ -517,7 +517,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 			    ostringstream outs;
 			    outs << dcount;
 			    addStatement(indexable, albumUri, discCountPropertyName, outs.str());
-			}		    
+			}
 		    }
 		}
 	    }
@@ -530,18 +530,18 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
     if (((unsigned char)buf[0] == 0xff) && (((unsigned char)buf[1]&0xfe) == 0xfa)
       && ((bitrateindex = ((unsigned char)buf[2]>>4)) != 0xf)
       && ((samplerateindex = (((unsigned char)buf[2]>>2)&3)) != 3 )) { // is this MP3?
-	
+
 	indexable.addValue(factory->typeField, audioClassName);
 	// FIXME: no support for VBR :(
 	// ideas: compare bitrate from the frame with stream size/duration from ID3 tags
 	// check several consecutive frames to see if bitrate is different
 	// in neither case you can be sure to properly detected VBR :(
-	indexable.addValue(factory->bitrateField, bitrate[bitrateindex]); 
+	indexable.addValue(factory->bitrateField, bitrate[bitrateindex]);
 	indexable.addValue(factory->samplerateField, samplerate[samplerateindex]);
 	indexable.addValue(factory->codecField, "MP3");
 	indexable.addValue(factory->channelsField, ((buf[3]>>6) == 3 ? 1:2 ) );
     }
-    
+
     // Parse ID3v1 tag
 
     int64_t insize;
@@ -552,9 +552,9 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	if (nskip == in->skip(nskip))
 	if (in->read(buf, 128, 128)==128)
 	if (!strncmp("TAG", buf, 3)) {
-	  
+
 	    found_tag = true;
-	    
+
 	    if (!found_title && buf[3])
 		indexable.addValue(factory->titleField, string(buf+3, strnlen(buf+3, 30)));
 	    if (!found_artist && buf[33])
@@ -566,9 +566,7 @@ ID3EndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream* 
 	    if (!found_comment && buf[97])
 		indexable.addValue(factory->commentField, string(buf+97, strnlen(buf+97, 30)));
 	    if (!found_track && !buf[125] && buf[126]) {
-		ostringstream out;
-		out << (int)(buf[126]);
-		indexable.addValue(factory->trackNumberField, out.str());
+		indexable.addValue(factory->trackNumberField, (int)(buf[126]));
 	    }
 	    if (!found_genre && (unsigned char)(buf[127]) < 148)
 		indexable.addValue(factory->genreField, genres[(uint8_t)buf[127]]);
