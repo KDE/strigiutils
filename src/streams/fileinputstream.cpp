@@ -18,6 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "fileinputstream.h"
+#include "mmapfileinputstream.h"
+#include "skippingfileinputstream.h"
+#include "skippingfileinputstream2.h"
 #include <config.h>
 #include <strigi/strigiconfig.h>
 #include <iostream>
@@ -111,4 +114,20 @@ FileInputStream::fillBuffer(char* start, int32_t space) {
     }
     //cerr << "read " << nwritten << " bytes of\t" << filepath << endl;
     return nwritten;
+}
+InputStream*
+FileInputStream::open(const char* filepath, StreamTypeHint hint,
+        int32_t buffersize) {
+    switch (hint) {
+    case Buffered:
+        return new FileInputStream(filepath, buffersize);
+    case MMap:
+#ifndef _WIN32
+        return new MMapFileInputStream(filepath);
+#endif
+    case Unbuffered:
+    case Automatic:
+    default:
+        return new SkippingFileInputStream(filepath);
+    }
 }

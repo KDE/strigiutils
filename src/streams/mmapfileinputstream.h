@@ -27,10 +27,8 @@ namespace Strigi {
 /**
  * @brief Provides buffered access to a file
  */
-class STREAMS_EXPORT MMapFileInputStream : public InputStream {
+class MMapFileInputStream : public InputStream {
 private:
-    class Private;
-    Private * const p;
     const char *buffer;
 
     void open(FILE* f, const char* path);

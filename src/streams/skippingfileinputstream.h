@@ -25,12 +25,10 @@
 namespace Strigi {
 
 /**
- * @brief Provides buffered access to a file
+ * @brief Private class that provides buffered access to a file
  */
-class STREAMS_EXPORT SkippingFileInputStream : public InputStream {
+class SkippingFileInputStream : public InputStream {
 private:
-    class Private;
-    Private * const p;
     FILE *file;
     char *buffer;
     std::string filepath;

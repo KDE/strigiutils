@@ -51,6 +51,31 @@ public:
     FileInputStream(FILE* file, const char* filepath,
         int32_t buffersize=defaultBufferSize);
     ~FileInputStream();
+
+    enum StreamTypeHint {
+        /** let the system choose the most appropriate type **/
+        Automatic,
+        /** use an internal buffer, can be slow when skipping in large files **/
+        Buffered,
+        /** do not use an internal buffer, faster for most use cases **/
+        Unbuffered,
+        /** use mmap for reading the files, falls back to unbuffered when not
+            available **/
+        MMap
+    };
+
+    /**
+     * @brief Create an InputStream to access a file
+     *
+     * @param filepath the name of the file to open
+     * @param buffersize the size of the buffer to use, if applicable
+     * @param hint preferred type of stream
+     * @return opened input stream to the file, caller has responsibility to
+     *         delete it
+     */
+    static InputStream* open(const char* filepath,
+        StreamTypeHint hint = Automatic,
+        int32_t buffersize = defaultBufferSize);
 };
 
 } // end namespace Strigi

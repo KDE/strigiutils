@@ -29,8 +29,9 @@ MMapFileInputStreamTest(int argc, char* argv[]) {
     VERIFY(chdir(argv[1]) == 0);
 
     for (int i=0; i<ninputstreamtests; ++i) {
-        MMapFileInputStream file("a.zip");
-        charinputstreamtests[i](&file);
+        InputStream* file = FileInputStream::open("a.zip", FileInputStream::MMap);
+        charinputstreamtests[i](file);
+        delete file;
     }
     return founderrors;
 }

@@ -32,7 +32,7 @@ ZipInputStreamTest(int argc, char* argv[]) {
     TESTONARCHIVE(ZipInputStream, "a.zip");
 
     // should have at least one stream
-    InputStream* file = new SkippingFileInputStream("a.zip");
+    InputStream* file = FileInputStream::open("a.zip");
     const char* data;
     file->read(data, 500, 500);
     file->reset(0);

@@ -30,7 +30,7 @@
 using namespace Strigi;
 using namespace std;
 
-MMapFileInputStream::MMapFileInputStream(const char* filepath) :p(0) {
+MMapFileInputStream::MMapFileInputStream(const char* filepath) {
     int fd = ::open(filepath, O_RDONLY);
     struct stat sb;
     if (fd == -1 || fstat(fd, &sb) == -1) {

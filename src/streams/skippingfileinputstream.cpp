@@ -30,7 +30,7 @@
 using namespace Strigi;
 using namespace std;
 
-SkippingFileInputStream::SkippingFileInputStream(const char* filepath) :p(0) {
+SkippingFileInputStream::SkippingFileInputStream(const char* filepath) {
     buffer = 0;
     buffersize = 0;
     if (filepath == 0) {
@@ -48,6 +48,7 @@ SkippingFileInputStream::open(FILE* f, const char* path) {
     file = f;
     filepath.assign(path);
     if (file == 0) {
+        cerr << "ohoh" << endl;
         // handle error
         m_error = "Could not read file '";
         m_error += filepath;
@@ -71,10 +72,6 @@ SkippingFileInputStream::open(FILE* f, const char* path) {
             if (n == 1) {
                 m_size = -1;
                 fseeko(file, 0, SEEK_SET);
-            } else {
-                fclose(file);
-                file = 0;
-                return;
             }
         }
     }
@@ -90,6 +87,10 @@ SkippingFileInputStream::~SkippingFileInputStream() {
 }
 int32_t
 SkippingFileInputStream::read(const char*& start, int32_t _min, int32_t _max) {
+    if (!file) {
+         m_status = Error;
+         return -2; // error
+    }
     int32_t n = max(_min, _max);
     if (n > buffersize) {
         buffer = (char*)realloc(buffer, n);
@@ -117,6 +118,10 @@ SkippingFileInputStream::skip(int64_t ntoskip) {
 }
 int64_t
 SkippingFileInputStream::reset(int64_t pos) {
+    if (!file) {
+         m_status = Error;
+         return -2; // error
+    }
     if (m_size >= 0 && pos > m_size) pos = m_size;
     if (fseek(file, pos, SEEK_SET)) {
         m_status = Error;

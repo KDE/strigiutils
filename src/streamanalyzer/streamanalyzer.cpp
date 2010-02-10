@@ -202,12 +202,15 @@ StreamAnalyzer::indexFile(const string& filepath) {
     // ensure a decent buffer size
     string name;
     AnalysisResult analysisresult(filepath, s.st_mtime, *p->writer, *this);
-    FileInputStream file(filepath.c_str());
-    if (file.status() == Ok) {
-        return analysisresult.index(&file);
+    InputStream* file = FileInputStream::open(filepath.c_str());
+    signed char r;
+    if (file->status() == Ok) {
+        r = analysisresult.index(file);
     } else {
-        return analysisresult.index(0);
+        r = analysisresult.index(0);
     }
+    delete file;
+    return r;
 }
 void
 StreamAnalyzerPrivate::addFactory(StreamThroughAnalyzerFactory* f) {

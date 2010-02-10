@@ -93,8 +93,10 @@ DirAnalyzer::Private::analyzeFile(const string& path, time_t mtime,
     AnalysisResult analysisresult(path, mtime, *manager.indexWriter(),
         analyzer, "");
     if (realfile) {
-        FileInputStream file(path.c_str());
-        return analysisresult.index(&file);
+        InputStream* file = FileInputStream::open(path.c_str());
+        int r = analysisresult.index(file);
+        delete file;
+        return r;
     } else {
         return analysisresult.index(0);
     }
@@ -117,8 +119,9 @@ DirAnalyzer::Private::analyze(StreamAnalyzer* analyzer) {
                 AnalysisResult analysisresult(filepath, s.st_mtime,
                     indexWriter, *analyzer, parentpath);
                 if (S_ISREG(s.st_mode)) {
-                    FileInputStream file(filepath.c_str());
-                    analysisresult.index(&file);
+                    InputStream* file = FileInputStream::open(filepath.c_str());
+                    analysisresult.index(file);
+                    delete file;
                 } else {
                     analysisresult.index(0);
                 }
@@ -191,8 +194,9 @@ DirAnalyzer::Private::update(StreamAnalyzer* analyzer) {
                 AnalysisResult analysisresult(i->first, i->second.st_mtime,
                     *manager.indexWriter(), *analyzer, path);
                 if (S_ISREG(i->second.st_mode)) {
-                    FileInputStream file(i->first.c_str());
-                    analysisresult.index(&file);
+                    InputStream* file = FileInputStream::open(i->first.c_str());
+                    analysisresult.index(file);
+                    delete file;
                 } else {
                     analysisresult.index(0);
                 }

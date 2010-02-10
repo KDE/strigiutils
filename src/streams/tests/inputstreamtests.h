@@ -54,75 +54,80 @@ extern int founderrors;
 
 #include "unknownsizestream.h"
 #include "../fileinputstream.h"
-#include "../skippingfileinputstream.h"
-#include "../skippingfileinputstream2.h"
-#ifdef _WIN32
-#define MMapFileInputStream FileInputStream
-#else
-#include "../mmapfileinputstream.h"
-#endif
 
 #define TESTONFILE(CLASS, FILE)  \
     for (int i=0; i<ninputstreamtests; ++i) { \
-        FileInputStream f1(FILE); \
-        CLASS s1(&f1); \
+        InputStream* f = FileInputStream::open(FILE); \
+        CLASS s1(f); \
         charinputstreamtests[i](&s1); \
+        delete f; \
 \
-        MMapFileInputStream f2(FILE); \
-        CLASS s2(&f2); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        CLASS s2(f); \
         charinputstreamtests[i](&s2); \
+        delete f; \
 \
-        FileInputStream f3(FILE); \
-        UnknownSizeInputStream u3(&f3); \
+        f = FileInputStream::open(FILE); \
+        UnknownSizeInputStream u3(f); \
         CLASS s3(&u3); \
         charinputstreamtests[i](&s3); \
+        delete f; \
 \
-        MMapFileInputStream f4(FILE); \
-        UnknownSizeInputStream u4(&f4); \
-        CLASS s4(&f4); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        UnknownSizeInputStream u4(f); \
+        CLASS s4(&u4); \
         charinputstreamtests[i](&s4); \
+        delete f; \
     }
 
 #define TESTONFILE2(CLASS, ARG, FILE)  \
     for (int i=0; i<ninputstreamtests; ++i) { \
-        FileInputStream f1(FILE); \
-        CLASS s1(&f1, ARG); \
+        InputStream* f = FileInputStream::open(FILE); \
+        CLASS s1(f, ARG); \
         charinputstreamtests[i](&s1); \
+        delete f; \
 \
-        MMapFileInputStream f2(FILE); \
-        CLASS s2(&f2, ARG); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        CLASS s2(f, ARG); \
         charinputstreamtests[i](&s2); \
+        delete f; \
 \
-        FileInputStream f3(FILE); \
-        UnknownSizeInputStream u3(&f3); \
+        f = FileInputStream::open(FILE); \
+        UnknownSizeInputStream u3(f); \
         CLASS s3(&u3, ARG); \
         charinputstreamtests[i](&s3); \
+        delete f; \
 \
-        MMapFileInputStream f4(FILE); \
-        UnknownSizeInputStream u4(&f4); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        UnknownSizeInputStream u4(f); \
         CLASS s4(&u4, ARG); \
         charinputstreamtests[i](&s4); \
+        delete f; \
     }
 
 #define TESTONARCHIVE(CLASS, FILE)  \
     for (int i=0; i<nstreamprovidertests; ++i) { \
-        FileInputStream f1(FILE); \
-        CLASS s1(&f1); \
+        InputStream* f = FileInputStream::open(FILE); \
+        CLASS s1(f); \
         streamprovidertests[i](&s1); \
+        delete f; \
 \
-        MMapFileInputStream f2(FILE); \
-        CLASS s2(&f2); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        CLASS s2(f); \
         streamprovidertests[i](&s2); \
+        delete f; \
 \
-        FileInputStream f3(FILE); \
-        UnknownSizeInputStream u3(&f3); \
+        f = FileInputStream::open(FILE); \
+        UnknownSizeInputStream u3(f); \
         CLASS s3(&u3); \
         streamprovidertests[i](&s3); \
+        delete f; \
 \
-        MMapFileInputStream f4(FILE); \
-        UnknownSizeInputStream u4(&f4); \
-        CLASS s4(&f4); \
+        f = FileInputStream::open(FILE, FileInputStream::Buffered); \
+        UnknownSizeInputStream u4(f); \
+        CLASS s4(&u4); \
         streamprovidertests[i](&s4); \
+        delete f; \
     }
 
 #endif
