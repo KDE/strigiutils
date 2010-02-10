@@ -315,7 +315,7 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new TarEndAnalyzerFactory());
     addFactory(new ArEndAnalyzerFactory());
     addFactory(new MailEndAnalyzerFactory());
-    addFactory(new MpegEndAnalyzerFactory());
+//    addFactory(new MpegEndAnalyzerFactory()); //Xine fallback works so much better now
     addFactory(new OdfEndAnalyzerFactory());
     addFactory(new ZipEndAnalyzerFactory());
     addFactory(new ZipExeEndAnalyzerFactory());
