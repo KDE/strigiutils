@@ -95,7 +95,9 @@ option(ENABLE_LOG4CXX "enable log4cxx support for advanced logging" OFF)
 option(ENABLE_CPPUNIT "enable CppUnit for unit tests" ON)
 option(ENABLE_QT4 "enable Qt4 GUI" ON)
 option(ENABLE_XINE
-       "enable Xine support. This add support for a larger number of media formats(highly unstable)." OFF)
+       "enable Xine support. This adds support for a larger number of media formats(highly unstable)." OFF)
+option(ENABLE_FFMPEG
+       "enable FFMPEG support. This adds support for a larger number of media formats(testing)." ON)
 option(ENABLE_EXIV2
        "enable exiv2 support. This allows you to index EXIF/IPTC metadata." ON)
 
@@ -131,6 +133,7 @@ find_optional_dep(HyperEstraier ENABLE_HYPERESTRAIER HyperEstraier_FOUND "HyperE
 find_optional_dep(SQLite ENABLE_SQLITE SQLite_FOUND "SQLite backend")
 
 find_optional_dep(Xine ENABLE_XINE XINE_FOUND "a larger number of media formats")
+find_optional_dep(FFMPEG ENABLE_FFMPEG FFMPEG_FOUND "a larger number of media formats")
 find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
 if(EXIV2_FOUND)
     include_directories(${EXIV2_INCLUDE_DIR})
