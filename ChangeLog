@@ -1,3 +1,7 @@
+0.7.2
+ - Improve cpp analyzer speed and output
+ - Fix crash due to deep nesting of calls in pdf analyzer
+ - Fix iconv use on Mac OS X
 0.7.1
  - Support more fields from ODF documents
  - Improved skipping behavior on streams for large files.

@@ -2,7 +2,7 @@ project (strigi)
 
 set(STRIGI_VERSION_MAJOR 0 CACHE INT "Major Strigi version number" FORCE)
 set(STRIGI_VERSION_MINOR 7 CACHE INT "Minor Strigi version number" FORCE)
-set(STRIGI_VERSION_PATCH 1 CACHE INT "Release Strigi version number" FORCE)
+set(STRIGI_VERSION_PATCH 2 CACHE INT "Release Strigi version number" FORCE)
 set(STRIGI_VERSION_STRING "${STRIGI_VERSION_MAJOR}.${STRIGI_VERSION_MINOR}.${STRIGI_VERSION_PATCH}" CACHE STRING "Strigi version string" FORCE)
 
 cmake_minimum_required(VERSION 2.6)
