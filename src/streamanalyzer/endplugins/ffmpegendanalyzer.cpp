@@ -156,7 +156,7 @@ FFMPEGEndAnalyzerFactory::registerFields(FieldRegister& r) {
   createdProperty = r.registerField(createdPropertyName);
 }
 
-// Input format is probed twice, but compared to expense of stream metadata extraction this isn't a huge deal.
+// Input format is probed twice, but compared to the expense of stream metadata extraction this isn't a huge deal.
 // Unfortunately you can't save probe results in checkHeader because it's const
 bool
 FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
@@ -165,14 +165,26 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
   pd.buf_size = headersize;
   pd.filename ="";
 
-  return av_probe_input_format(&pd, 1);
+  // Probe all input formats and obtain score.
+  // Evil FFMPEG hid av_probe_input_format2, the function that does just this.
+  int max_score = 0;
+  for (AVInputFormat *fmt = av_iformat_next(NULL); fmt != NULL; fmt = av_iformat_next(fmt))
+    // test only formats that are file-based and can detect the byte stream
+    if (!(fmt->flags & AVFMT_NOFILE) && fmt->read_probe) {
+         int score = fmt->read_probe(&pd);
+         if (score > max_score)
+            max_score = score;
+    }
+  cout<<"Detection score:"<<max_score<<endl<<flush;
+  // Most of formats return either 100 or nothing
+  // MPG, however, can go as low as 25 while still being a real video
+  return max_score >=25;
 }
+
 /*FIXME
 make it produce the same data in stream and file mode when possible.
 make sure it reports both duration and bitrate
 report stream sizes
-make sure there are no misdetections(something along the lines of av_prob_input_format2:
-    .log files in albums are often confused with media.
 */
 
 extern "C" {
