@@ -183,8 +183,8 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 
 /*FIXME
 make it produce the same data in stream and file mode when possible.
-make sure it reports both duration and bitrate
-report stream sizes
+stream duration,size and bitrate reporting seem to be mostly nonexistent in ffmpeg
+handle subtitles
 */
 
 extern "C" {
@@ -228,6 +228,8 @@ int64_t seek_data(void *opaque, int64_t offset, int whence) {
 }
 }
 
+int64_t const no_bitrate = 0x8000000000000000ULL;
+
 signed char
 FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   string filename;
@@ -236,9 +238,8 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   else
     filename = ar.path();
 
-  #define IO_BUFFER_SIZE 32768
-  uint8_t pDataBuffer[IO_BUFFER_SIZE];//65536];
-  long lSize = IO_BUFFER_SIZE;
+  uint8_t pDataBuffer[32768];//65536];
+  long lSize = 32768;
 
   ByteIOContext ByteIOCtx;
   if(init_put_byte(&ByteIOCtx, pDataBuffer, lSize, 0, in, read_data, NULL, seek_data) < 0)
@@ -265,14 +266,22 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   // Dump information about file onto standard error
   dump_format(fc, 0, filename.c_str(), false);
 
-  //FIXME if bitrate is not extracted, try estimating it as size/duration
   if(fc->bit_rate)
     ar.addValue(factory->bitrateProperty, fc->bit_rate);
-  
-  //FIXME if duration is not extracted, try estimating it as size/bitrate
-  if(fc->duration)
-    ar.addValue(factory->durationProperty,(uint32_t)(fc->duration / AV_TIME_BASE));
-  
+  else if (fc->duration!= no_bitrate) {
+    cout<<"Trying to estimate bitrate\n";
+    int64_t size;
+    if ((size = in->size()) >= 0)
+      ar.addValue(factory->bitrateProperty, (uint32_t)((size/(fc->duration/AV_TIME_BASE))*8) );
+  }
+  if(fc->duration!= no_bitrate)
+    ar.addValue(factory->durationProperty, (uint32_t)(fc->duration / AV_TIME_BASE));
+  else if(fc->bit_rate) {
+    cout<<"Trying to estimate duration\n";
+    int64_t size;
+    if ((size = in->size()) >= 0)
+      ar.addValue(factory->durationProperty, (uint32_t)(size/(fc->bit_rate/8)));
+  }
   if(fc->nb_streams==1 && fc->streams[0]->codec->codec_type == CODEC_TYPE_AUDIO) {
     ar.addValue(factory->typeProperty, NFO "Audio");
     ar.addValue(factory->typeProperty, NMM_DRAFT "MusicPiece");
@@ -286,7 +295,7 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     
     if (codec.codec_type == CODEC_TYPE_AUDIO || codec.codec_type == CODEC_TYPE_VIDEO) {
       const string streamuri = ar.newAnonymousUri();
-      if (stream.duration && stream.time_base.num && stream.time_base.den) {
+      if ((stream.duration != no_bitrate) && stream.time_base.num && stream.time_base.den) {
         ostringstream outs;
         outs << (stream.duration * stream.time_base.num / stream.time_base.den);
         ar.addTriplet(streamuri, durationPropertyName,outs.str());
