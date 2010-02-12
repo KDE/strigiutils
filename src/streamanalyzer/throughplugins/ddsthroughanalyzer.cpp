@@ -132,7 +132,7 @@ namespace {// Private.
     readPixelFormat ( InputStream* in, DDSPixelFormat & pf )
     {
         const char* c;
-        
+
         if (4 != in->read(c, 4, 4))
             return false;
         pf.size = readLittleEndianUInt32(c);
@@ -191,7 +191,7 @@ namespace {// Private.
 
         return true;
     }
-    
+
     bool
     readHeader(InputStream* in, DDSHeader& header)
     {
@@ -233,7 +233,7 @@ namespace {// Private.
 
         if (!readPixelFormat( in, header.pf))
             return false;
-    
+
 
         if (!readCaps ( in, header.caps))
             return false;
@@ -257,7 +257,7 @@ DdsThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     volumeDepthField = reg.registerField( "http://strigi.sf.net/ontologies/homeless#ddsVolumeDepth");
     bitDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     mipmapCountField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsMipmapCount");
     typeField = reg.registerField("http://strigi.sf.net/ontologies/homeless#ddsImageType");
     colorModeField = reg.registerField(
@@ -290,7 +290,7 @@ DdsThroughAnalyzer::connectInputStream(InputStream* in) {
 
     //Remember: dds files are little-endian
     //read the beginning of the stream and make sure it looks ok
-    
+
     if (4 != in->read(c, 4, 4)) {
        in->reset(0);   // rewind to the start of the stream
        return in;

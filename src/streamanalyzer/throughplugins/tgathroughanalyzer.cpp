@@ -34,7 +34,7 @@ TgaThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     compressionField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#compressionAlgorithm");
     colorDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     widthField = reg.registerField(

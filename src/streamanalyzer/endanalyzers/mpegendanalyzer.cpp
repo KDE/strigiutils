@@ -33,7 +33,7 @@ using namespace std;
 
 const string
     videoClassName(
-	NMM_DRAFT "Video");
+	"http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video");
 
 void MpegEndAnalyzerFactory::registerFields(FieldRegister& r) {
     fields["length"] = r.registerField(

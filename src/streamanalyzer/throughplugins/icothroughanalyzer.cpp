@@ -41,7 +41,7 @@ IcoThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     numberField = reg.registerField(
         "http://strigi.sf.net/ontologies/homeless#documentImageCount");
     bitsPerPixelField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     colorCountField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorCount");
 
@@ -65,10 +65,10 @@ IcoThroughAnalyzer::connectInputStream(InputStream* in) {
 
     const char *c;
     int32_t n;
-    
+
     // Remember: ICO files are little-endian
     // read the beginning of the stream and make sure it looks ok
-    
+
     n = in->read(c, 6, 6);
     if (n != 6) {
        in->reset(0);   // rewind to the start of the stream
@@ -154,7 +154,7 @@ IcoThroughAnalyzer::connectInputStream(InputStream* in) {
         analysisResult->addValue( factory->colorCountField, icoe_colorcount );
     else if (icoe_bitcount > 0)
         analysisResult->addValue( factory->colorCountField, 2 ^ icoe_bitcount );
-    
+
     in->reset(0);   // rewind to the start of the stream
     return in;
 }

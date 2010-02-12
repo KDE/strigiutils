@@ -44,7 +44,7 @@ RgbThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     heightField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     bitDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     imageNameField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#title");
     sharedRowsField = reg.registerField(
@@ -111,7 +111,7 @@ RgbThroughAnalyzer::connectInputStream(InputStream* in) {
     if (dimension == 1)
         ysize = 1;
 
-    // report analysis 
+    // report analysis
     analysisResult->addValue( factory->widthField, xsize );
     analysisResult->addValue( factory->heightField, ysize );
     analysisResult->addValue( factory->bitDepthField, zsize * 8 * bpc );

@@ -41,7 +41,7 @@ PcxThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     vResolutionField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#verticalResolution");
     colorDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     typeField = reg.typeField;
 
     addField(compressionField);
@@ -70,11 +70,11 @@ PcxThroughAnalyzer::connectInputStream(InputStream* in) {
     in->reset(0);
     if (nread < nreq) return in;
     // check header for some magic bytes and determine if it is valid pcx file
-    if (header[0]!=10 || header[1]>5 || header[1]==1 || header[2]>1 || 
+    if (header[0]!=10 || header[1]>5 || header[1]==1 || header[2]>1 ||
 	header[3]>8 || header[3]==3 || (header[3]>4 && header[3]<8) || header[64]!=0) return in;
     // header should be padded to 128 bytes with zeros
     for (int i=74;i<128;i++) if (header[i]!=0) return in;
-    
+
     int w = ( readLittleEndianUInt16(header+8)-readLittleEndianUInt16(header+4) ) + 1;
     int h = ( readLittleEndianUInt16(header+10)-readLittleEndianUInt16(header+6) ) + 1;
     int bpp = header[3]*header[65];

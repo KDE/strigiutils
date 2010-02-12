@@ -38,7 +38,7 @@ BmpEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     heightField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     colorDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     rdftypeField = reg.typeField;
 
     addField(typeField);

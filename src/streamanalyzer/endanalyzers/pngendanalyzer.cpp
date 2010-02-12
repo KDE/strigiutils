@@ -66,7 +66,7 @@ PngEndAnalyzerFactory::registerFields(FieldRegister& reg) {
     heightField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#height");
     colorDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     colorModeField = reg.registerField(
         "http://freedesktop.org/standards/xesam/1.0/core#colorSpace");
     compressionField = reg.registerField(
@@ -337,7 +337,7 @@ PngEndAnalyzer::addMetaData(const string& key,
             as.addValue(factory->titleField, value);
         } else if ("Author" == key) {
 	    string authorUri = as.newAnonymousUri();
-	    
+
             as.addValue(factory->authorField, authorUri);
 	    as.addTriplet(authorUri, typeFieldName, contactClassName);
 	    as.addTriplet(authorUri, fullnameFieldName, value);
