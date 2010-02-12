@@ -76,7 +76,7 @@ private:
 void
 GifThroughAnalyzerFactory::registerFields(FieldRegister& reg) {
     colorDepthField = reg.registerField(
-        "http://www.semanticdesktop.org/ontologies/nfo#colorDepth");
+        "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#colorDepth");
     widthField = reg.registerField(
         "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#width");
     heightField = reg.registerField(
