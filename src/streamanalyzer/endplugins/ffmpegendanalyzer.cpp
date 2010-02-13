@@ -82,6 +82,7 @@ private:
     const RegisteredField* trackProperty;
     const RegisteredField* createdProperty;
     const RegisteredField* typeProperty;
+    const RegisteredField* hasPartProperty;
 };
 
 const string
@@ -93,9 +94,15 @@ const string
     NMM_DRAFT "MusicPiece",
   albumClassName =
     NMM_DRAFT "MusicAlbum",
+  embeddedClassName = 
+   NFO "EmbeddedFileDataObject",
 
-  typePropertyName = 
+  typePropertyName =
     RDF "type",
+  hasPartPropertyName =
+    NIE "hasPart",
+  partOfPropertyName =
+    NIE "isPartOf",
 
   titlePropertyName = 
     NIE "title",
@@ -154,6 +161,7 @@ FFMPEGEndAnalyzerFactory::registerFields(FieldRegister& r) {
   genreProperty = r.registerField(genrePropertyName);
   trackProperty = r.registerField(trackPropertyName);
   createdProperty = r.registerField(createdPropertyName);
+  hasPartProperty = r.registerField(hasPartPropertyName);
 }
 
 // Input format is probed twice, but compared to the expense of stream metadata extraction this isn't a huge deal.
@@ -295,6 +303,10 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     
     if (codec.codec_type == CODEC_TYPE_AUDIO || codec.codec_type == CODEC_TYPE_VIDEO) {
       const string streamuri = ar.newAnonymousUri();
+      ar.addValue(factory->hasPartProperty, streamuri);
+      ar.addTriplet(streamuri, partOfPropertyName, ar.path());
+      ar.addTriplet(streamuri, typePropertyName, embeddedClassName);
+      
       if ((stream.duration != no_bitrate) && stream.time_base.num && stream.time_base.den) {
         ostringstream outs;
         outs << (stream.duration * stream.time_base.num / stream.time_base.den);
