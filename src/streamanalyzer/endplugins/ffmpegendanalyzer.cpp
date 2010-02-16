@@ -96,6 +96,8 @@ const string
     NMM_DRAFT "MusicAlbum",
   embeddedClassName = 
    NFO "EmbeddedFileDataObject",
+  contactClassName =
+    NCO "Contact",
 
   typePropertyName =
     RDF "type",
@@ -106,6 +108,8 @@ const string
 
   titlePropertyName = 
     NIE "title",
+  fullnamePropertyName =
+    NCO "fullname",
   commentPropertyName = 
     NIE "comment",
   languagePropertyName = 
@@ -252,12 +256,6 @@ int64_t const no_bitrate = 0x8000000000000000ULL;
 
 signed char
 FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
-  string filename;
-  if ((ar.depth()==0) && (ar.path().substr(0,7) == "file://")) 
-    filename = ar.path().substr(7);
-  else
-    filename = ar.path();
-
   uint8_t pDataBuffer[32768];//65536];
   long lSize = 32768;
 
@@ -418,7 +416,10 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     ar.addValue(factory->titleProperty, string(fc->title, len) );
   }
   if (int32_t len = strlen(fc->author)) {
-    ar.addValue(factory->creatorProperty, string(fc->author, len) );
+    const string creatoruri = ar.newAnonymousUri();
+    ar.addValue(factory->creatorProperty, creatoruri);
+    ar.addTriplet(creatoruri, typePropertyName, contactClassName);
+    ar.addTriplet(creatoruri, fullnamePropertyName, string(fc->author, len) );
   }
   if (int32_t len = strlen(fc->copyright)) {
     ar.addValue(factory->copyrightProperty, string(fc->copyright, len) );
