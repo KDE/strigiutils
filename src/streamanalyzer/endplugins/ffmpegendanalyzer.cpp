@@ -164,6 +164,25 @@ FFMPEGEndAnalyzerFactory::registerFields(FieldRegister& r) {
   hasPartProperty = r.registerField(hasPartPropertyName);
 }
 
+// Probe all input formats and obtain score.
+// Evil FFMPEG hid av_probe_input_format2, the function that does just this.
+AVInputFormat *probe_format(AVProbeData *pd, int *max_score) {
+  AVInputFormat *result = NULL;
+  *max_score = 0;
+  
+  for (AVInputFormat *fmt = av_iformat_next(NULL); fmt != NULL; fmt = av_iformat_next(fmt))
+    // test only formats that are file-based and can detect the byte stream
+    if (!(fmt->flags & AVFMT_NOFILE) && fmt->read_probe) {
+         int score = fmt->read_probe(pd);
+         if (score > *max_score) {
+            *max_score = score;
+            result = fmt;
+         }
+    }
+    
+  return result;
+}
+
 // Input format is probed twice, but compared to the expense of stream metadata extraction this isn't a huge deal.
 // Unfortunately you can't save probe results in checkHeader because it's const
 bool
@@ -172,17 +191,10 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
   pd.buf = (unsigned char*)header;
   pd.buf_size = headersize;
   pd.filename ="";
+  int max_score;
 
-  // Probe all input formats and obtain score.
-  // Evil FFMPEG hid av_probe_input_format2, the function that does just this.
-  int max_score = 0;
-  for (AVInputFormat *fmt = av_iformat_next(NULL); fmt != NULL; fmt = av_iformat_next(fmt))
-    // test only formats that are file-based and can detect the byte stream
-    if (!(fmt->flags & AVFMT_NOFILE) && fmt->read_probe) {
-         int score = fmt->read_probe(&pd);
-         if (score > max_score)
-            max_score = score;
-    }
+  probe_format(&pd, &max_score);
+
   cout<<"Detection score:"<<max_score<<endl<<flush;
   // Most of formats return either 100 or nothing
   // MPG, however, can go as low as 25 while still being a real video
@@ -259,11 +271,12 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   AVProbeData pd;
   const char *buf;
   pd.filename ="";
-  pd.buf_size = in->read(buf, 1024,1024);
+  pd.buf_size = in->read(buf,262144,262144);
   pd.buf = (unsigned char*)buf;
   in->reset(0);
 
-  AVInputFormat* fmt = av_probe_input_format(&pd, 1);
+  int score;
+  AVInputFormat* fmt = probe_format(&pd, &score);
   
   AVFormatContext *fc = NULL;
   if(av_open_input_stream(&fc, &ByteIOCtx, "", fmt, NULL) < 0)
