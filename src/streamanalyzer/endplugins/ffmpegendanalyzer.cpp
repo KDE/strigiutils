@@ -283,7 +283,7 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   av_find_stream_info(fc);
   
   // Dump information about file onto standard error
-  dump_format(fc, 0, filename.c_str(), false);
+  dump_format(fc, 0, ar.path().c_str(), false);
 
   if(fc->bit_rate)
     ar.addValue(factory->bitrateProperty, fc->bit_rate);
