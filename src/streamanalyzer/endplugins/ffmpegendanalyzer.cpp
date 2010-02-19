@@ -224,9 +224,9 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
   
   // A workaround to let internal MP3, OGG and FLAC analyzers take priority
   if ((headersize>=64) && (
-          (strncmp("ID3", header, 3) == 0 && ((unsigned char)header[3]) <= 4 && header[5] == 0))
+          (strncmp("ID3", header, 3) == 0 && ((unsigned char)header[3]) <= 4 && header[5] == 0)
        || ((readLittleEndianUInt32(header) == 0x43614c66) && ((readLittleEndianUInt32(header+4) & 0xFFFFFF7F) == 0x22000000))
-       || (!strcmp("OggS", header) && !strcmp("vorbis", header+29) && !strcmp("OggS", header+58)))
+       || (!strcmp("OggS", header) && !strcmp("vorbis", header+29) && !strcmp("OggS", header+58))) )
     return false;
   
   AVProbeData pd;
