@@ -1,4 +1,4 @@
-include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
+include_directories( ..  ../../streams ../../streams/strigi ${strigi_BINARY_DIR}/src/streams)
 
 MACRO(ADD_STRIGIEA libname files)
   if(WIN32)

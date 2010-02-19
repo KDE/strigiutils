@@ -25,6 +25,7 @@
 #include "fieldtypes.h"
 #include "textutils.h"
 #include "rdfnamespaces.h"
+#include "strigi_thread.h"
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -33,6 +34,7 @@ extern "C" {
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include <cassert>
 using namespace Strigi;
 using namespace std;
 
@@ -53,11 +55,39 @@ public:
     signed char analyze(AnalysisResult& idx, ::InputStream* in);
 };
 
+STRIGI_MUTEX_DEFINE(mutex);
+
+static int
+lockmgr(void **mtx, enum AVLockOp op) {
+  // pre-allocating a single mutex is the only way to get it to work without changing strigi_thread.h
+  assert( (*mtx == &mutex) || (op == AV_LOCK_CREATE) );
+  switch(op) {
+  case AV_LOCK_CREATE:
+    *mtx = &mutex;
+    return !!STRIGI_MUTEX_INIT(&mutex);
+  case AV_LOCK_OBTAIN:
+    return !!STRIGI_MUTEX_LOCK(&mutex);
+  case AV_LOCK_RELEASE:
+    return !!STRIGI_MUTEX_UNLOCK(&mutex);
+  case AV_LOCK_DESTROY:
+    STRIGI_MUTEX_DESTROY(&mutex);
+    return 0;
+  }
+  return 1;
+}
+
 class STRIGI_PLUGIN_API FFMPEGEndAnalyzerFactory : public StreamEndAnalyzerFactory {
 friend class FFMPEGEndAnalyzer;
-private:
-    StreamEndAnalyzer* newInstance() const {
+public:
+    FFMPEGEndAnalyzerFactory() {
+        av_lockmgr_register(lockmgr);
         av_register_all();
+    }
+private:
+    ~FFMPEGEndAnalyzerFactory() {
+        av_lockmgr_register(NULL);
+    }
+    StreamEndAnalyzer* newInstance() const {
         return new FFMPEGEndAnalyzer(this);
     }
     const char* name() const {
@@ -219,7 +249,6 @@ stream duration,size and bitrate reporting seem to be mostly nonexistent in ffmp
 handle subtitles
 */
 
-extern "C" {
 int read_data(void *opaque, uint8_t *buf, int buf_size) {
   cout<<"READ";
   InputStream *s = (InputStream *) opaque;
@@ -257,7 +286,6 @@ int64_t seek_data(void *opaque, int64_t offset, int whence) {
   int64_t t= s->reset(target);
   cout<<t<<"\n"<<flush;
   return (t == target ? target : -1);
-}
 }
 
 int64_t const no_bitrate = 0x8000000000000000ULL;
