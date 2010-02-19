@@ -22,6 +22,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <cassert>
 
 namespace Strigi {
 
@@ -122,6 +123,10 @@ void
 StreamBuffer<T>::setSize(int32_t size) {
     // store pointer information
     int32_t offset = (int32_t)(readPos - start);
+    assert(size >= 0);
+    assert(avail >= 0);
+    assert(offset >= 0);    
+    assert(avail+offset <= size); // catch broken offset and avail values when shrinking the buffer
 
     // allocate memory in the buffer
     start = (T*)std::realloc(start, size*sizeof(T));
@@ -136,6 +141,12 @@ StreamBuffer<T>::makeSpace(int32_t needed) {
     // determine how much space is available for writing
     int32_t offset = (int32_t)(readPos - start);
     int32_t space = size - offset - avail;
+
+    assert(offset >= 0);
+    assert(size >= 0);
+    assert(avail >= 0);
+    assert(avail+offset <= size);
+    
     if (space >= needed) {
         // there's enough space
         return space;
@@ -166,6 +177,11 @@ StreamBuffer<T>::makeSpace(int32_t needed) {
 template <class T>
 int32_t
 StreamBuffer<T>::read(const T*& start, int32_t max) {
+    assert(size >= 0);
+    assert(avail >= 0);
+    assert(readPos >= this->start);
+    assert(avail+(readPos-this->start) <= size);
+    
     start = readPos;
     if (max <= 0 || max > avail) {
         max = avail;
