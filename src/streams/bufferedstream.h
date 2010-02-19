@@ -167,7 +167,7 @@ BufferedStream<T>::reset(int64_t newpos) {
     if (StreamBase<T>::m_status == Error) return -2;
     // check to see if we have this position
     int64_t d = StreamBase<T>::m_position - newpos;
-    if (buffer.readPos - d >= buffer.start && -d < buffer.avail) {
+    if (buffer.readPos >= buffer.start + d && -d < buffer.avail) {
         StreamBase<T>::m_position -= d;
         buffer.avail += (int32_t)d;
         buffer.readPos -= d;
