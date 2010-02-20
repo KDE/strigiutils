@@ -26,6 +26,7 @@
 #include "analysisresult.h"
 #include "fieldtypes.h"
 #include "stringstream.h"
+#include "textutils.h"
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
@@ -252,7 +253,7 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
     if (!ok) {
         // read the entire input stream
         int32_t nread = in->read(data, 1, 0);
-        while (nread > 0 && nread > 0 && in->status() != Eof) {
+        while (nread > 0 && in->status() != Eof) {
             in->reset(0);
             nread = in->read(data, 2*nread, 0);
         }
@@ -292,6 +293,37 @@ JpegEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
         ar.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#Photo");
     } else {
         ar.addValue(factory->typeField, "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#RasterImage");
+
+        // no exif data is available, read at least the width and height of the image
+        in->reset(0);
+        int32_t nread = in->read(data, 1, 0);
+        if (nread < 6) {
+            m_error.assign("file is too small to be a jpeg file");
+            return -1;
+        }
+
+        int i = 4; // skip header, it has been verified already
+        unsigned short blockSize = readBigEndianUInt16(data + i);
+        while (i < nread) {
+            i += blockSize;
+            if (i + 8 >= nread || (unsigned char)data[i] != 0xFF) {
+                m_error.assign("no valid jpeg");
+                return -1;
+            }
+
+            if ((unsigned char)data[i + 1] == 0xC0) {
+                unsigned short height = readBigEndianUInt16(data + i + 5);
+                unsigned short width  = readBigEndianUInt16(data + i + 7);
+                ar.addValue(factory->exifFields.find("Exif.Photo.PixelYDimension")->second,
+                            height);
+                ar.addValue(factory->exifFields.find("Exif.Photo.PixelXDimension")->second,
+                            width);
+                return 0;
+            } else {
+                i += 2;
+                blockSize = readBigEndianUInt16(data + i);
+            }
+        }
     }
 
     for (Exiv2::ExifData::const_iterator i = exif.begin(); i != exif.end();++i){
