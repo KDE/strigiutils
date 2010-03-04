@@ -95,6 +95,7 @@ GZipInputStream::Private::~Private() {
 void
 GZipInputStream::Private::dealloc() {
     inflateEnd(&zstream);
+    memset( &zstream, 0, sizeof( z_stream_s ) );
     input = NULL;
 }
 bool
