@@ -1,2 +1,0 @@
-* seek and replace getFoo() functions with foo() in daemon/client
-* replace the AnalyzerConfiguration* with AnalyzerConfiguration& in diranalyzer

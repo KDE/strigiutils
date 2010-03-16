@@ -1,1 +1,0 @@
-type:image size>=1mb tag:flower africa

@@ -1,1 +1,0 @@
-type:music creator="James Marshall Hendrix"
