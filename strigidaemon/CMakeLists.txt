@@ -1,111 +1,104 @@
-set(DIRS eventlistener events xesam queue)
+project (strigidaemon)
 
-IF(ENABLE_DBUS)
-  set(DIRS ${DIRS} dbus)
-ENDIF(ENABLE_DBUS)
+##### cmake settings #####
 
-subdirs(${DIRS})
+cmake_minimum_required(VERSION 2.6)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(MacroFindOptionalDep)
+enable_testing()
 
-include_directories( ../streamanalyzer ../combinedindexer ../streams ../xsd dbus
-	${strigi_BINARY_DIR}/src/streams ../streams/strigi xesam)
 
-IF(ENABLE_INOTIFY)
-  add_definitions(-DHAVE_INOTIFY)
-  MESSAGE(STATUS "inotify support enabled")
-ENDIF(ENABLE_INOTIFY)
+##### global variables #####
 
-IF(FAM_FOUND AND ENABLE_FAM)
-  include_directories(${FAM_INCLUDE_DIR})
-  add_definitions(-DHAVE_FAM)
-  IF (GAMIN_LIBRARIES)
-    MESSAGE(STATUS "FAM support enabled (using Gamin)")
-  ELSE (GAMIN_LIBRARIES)
-    MESSAGE(STATUS "FAM support enabled")
-  ENDIF (GAMIN_LIBRARIES)
-ENDIF(FAM_FOUND AND ENABLE_FAM)
+option(ENABLE_DBUS "enable dbus support in the daemon" ON)
+option(ENABLE_INOTIFY "enable monitoring the filesystem with inotify" ON)
+option(ENABLE_FAM "enable monitoring the filesystem with FAM" ON)
+option(ENABLE_POLLING "enable monitoring the filesystem via polling" ON)
+option(ENABLE_LOG4CXX "enable use of the logging framework Log4CXX" ON)
 
-IF(ENABLE_POLLING)
-  add_definitions(-DHAVE_POLLING)
-  MESSAGE(STATUS "polling support enabled")
-ENDIF(ENABLE_POLLING)
+# definition of LIB_DESTINATION which is the path where the lib is installed
+set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
+set (LIB_DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE STRING "Library directory name" FORCE)
 
-IF(ENABLE_DBUS)
-  add_definitions(-DHAVE_DBUS)
-  MESSAGE(STATUS "dbus support enabled")
-  set(strigidaemon_LIBS ${strigidaemon_LIBS} dbusserver)
-ENDIF(ENABLE_DBUS)
+if(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
+	add_definitions(-fPIC)
+endif(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
 
-IF (ICONV_FOUND)
-  add_definitions(-DLIBXML_ICONV_ENABLED)
-ENDIF (ICONV_FOUND)
+##### environment inspection #####
 
+# check for required packages
+if(STRIGI_VERSION_STRING)
+	# if STRIGI_VERSION_STRING is defined, we are compiling the meta-package
+	set(LIBSTREAMS_INCLUDE_DIRS
+		../libstreams/include
+		${CMAKE_CURRENT_BINARY_DIR}/../libstreams/include)
+	set(LIBSTREAMANALYZER_INCLUDE_DIRS
+		../libstreamanalyzer/include
+		${CMAKE_CURRENT_BINARY_DIR}/../libstreamanalyzer/include)
+	set(LIBSTREAMS_LIBRARIES streams)
+	set(LIBSTREAMANALYZER_LIBRARIES streamanalyzer)
+else(STRIGI_VERSION_STRING)
+	find_package(LibStreams REQUIRED)
+	find_package(LibStreamAnalyzer REQUIRED)
+endif(STRIGI_VERSION_STRING)
+find_package(Threads REQUIRED)
+find_package(LibXml2 REQUIRED)
+find_optional_dep(LibDBus ENABLE_DBUS DBUS_FOUND "dbus inter-process communication")
+find_optional_dep(FAM ENABLE_FAM FAM_FOUND "efficient file change monitoring system")
+find_optional_dep(Log4cxx ENABLE_LOG4CXX LOG4CXX_FOUND "advanced logging")
+#find_optional_dep(CLucene ENABLE_CLUCENE CLucene_FOUND "CLucene backend")
+#find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
+find_package(CppUnit)
+include(ConfigureChecks.cmake)
+configure_file(LibSearchClient.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibSearchClientConfig.cmake @ONLY )
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY )
 IF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
     add_definitions(-DHAVE_LOG4CXX)
-    set(strigidaemon_LIBS ${strigidaemon_LIBS} ${LOG4CXX_LIBRARIES})
-    set(strigiconfupdater_LIBS ${strigiconfupdater_LIBS} ${LOG4CXX_LIBRARIES})
-    include_directories( ${LOG4CXX_INCLUDE_DIR} )
-    MESSAGE(STATUS "log4cxx support enabled")
 ENDIF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
-IF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
-    MESSAGE(STATUS "log4cxx WONT be enabled")
-ENDIF (ENABLE_LOG4CXX AND NOT LOG4CXX_FOUND)
 
-include_directories(eventlistener .)
+##### building and testing #####
 
-SET(strigidaemon_SRCS 
-	daemon.cpp
-	indexscheduler.cpp
-	interface.cpp
-	socketserver.cpp
-	strigilogging.h
-	strigithread.cpp)
+configure_file(${strigidaemon_SOURCE_DIR}/strigi_thread.h.cmake
+	${strigidaemon_BINARY_DIR}/include/strigi/strigi_thread.h)
 
-IF(NOT WIN32)
-  SET(strigidaemon_SRCS ${strigidaemon_SRCS} queue/jobqueue.cpp)
-ELSE(NOT WIN32)
-  SET(strigidaemon_SRCS ${strigidaemon_SRCS} queue/jobqueue.cpp)
-ENDIF(NOT WIN32)
-
-add_executable(strigidaemon ${strigidaemon_SRCS})
-
-IF (CMAKE_LIB_SOCKET_HAS_CONNECT)
-    target_link_libraries(strigidaemon socket nsl)
-ENDIF (CMAKE_LIB_SOCKET_HAS_CONNECT)
-
-#add_executable(strigiconfupdater configupdater.cpp strigilogging.h)
-
-set(strigidaemon_LIBS
-	combinedindex
-	eventlistener
-	streamanalyzer
-	xesam
-	${CMAKE_THREAD_LIBS_INIT}
-	${strigidaemon_LIBS}
+include_directories(${LIBSTREAMS_INCLUDE_DIRS}
+	${LIBSTREAMANALYZER_INCLUDE_DIRS}
+	${strigidaemon_SOURCE_DIR}/include
+	${strigidaemon_BINARY_DIR}
+	${strigidaemon_BINARY_DIR}/bin/daemon/dbus
+	${DBUS_INCLUDE_DIRS}
+	${ICONV_INCLUDE_DIR}
+	${LIBXML2_INCLUDE_DIR}
+	bin/combinedindex
+	bin/daemon
 )
-target_link_libraries(strigidaemon ${strigidaemon_LIBS} daemonconfigurator)
+if(LOG4CXX_FOUND)
+	include_directories(${LOG4CXX_INCLUDE_DIR})
+endif(LOG4CXX_FOUND)
+link_directories(${LIBSTREAMS_LIBRARY_DIRS})
+link_directories(${LIBSTREAMANALYZER_LIBRARY_DIRS})
 
-#target_link_libraries(strigiconfupdater ${strigiconfupdater_LIBS} filters
-#                      daemonconfigurator streamanalyzer)
+add_subdirectory(lib)
+add_subdirectory(bin)
+if(CppUnit_FOUND)
+	add_subdirectory(tests)
+endif(CppUnit_FOUND)
 
-add_library(searchclient SHARED socketclient.cpp asyncsocket.cpp
-	asyncsocketclient.cpp)
-set_target_properties(searchclient PROPERTIES
-    VERSION ${STRIGI_VERSION_STRING}
-    SOVERSION ${STRIGI_VERSION_MAJOR}
-    DEFINE_SYMBOL MAKE_SEARCHCLIENT_LIB
+##### installing #####
+
+# all installed files are listed here
+# headers
+file(GLOB STRIGI_HEADERS include/strigi/*.h)
+install(FILES
+	${STRIGI_HEADERS}
+	DESTINATION include/strigi
 )
-
-IF(CMAKE_LIB_SOCKET_HAS_CONNECT)
-    target_link_libraries(searchclient socket nsl)
-ENDIF(CMAKE_LIB_SOCKET_HAS_CONNECT)
-
-install(TARGETS strigidaemon searchclient #strigiconfupdater
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION ${LIB_DESTINATION})
-install(FILES asyncsocketclient.h asyncsocket.h clientinterface.h
-	DESTINATION include/strigi)
-
-# create a library from the xml io files
-add_library(daemonconfigurator STATIC daemonconfigurator.cpp)
-target_link_libraries( daemonconfigurator strigidaemonconfiguration)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibSearchClientConfig.cmake
+	DESTINATION ${LIB_DESTINATION}/libsearchclient)
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "")
+add_executable(strigidaemon dummy.cpp)
+target_link_libraries(strigidaemon libstrigidaemon)
+install(TARGETS strigidaemon
+	RUNTIME DESTINATION bin)
+# library

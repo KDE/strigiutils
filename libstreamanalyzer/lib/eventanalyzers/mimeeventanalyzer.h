@@ -22,7 +22,7 @@
 #define STRIGI_MIMEEVENTANALYZER
 
 #include <strigi/strigiconfig.h>
-#include "streameventanalyzer.h"
+#include <strigi/streameventanalyzer.h>
 #include <vector>
 
 namespace Strigi {

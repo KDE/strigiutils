@@ -21,9 +21,9 @@
 
 #include "pcxthroughanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "fieldtypes.h"
-#include "analysisresult.h"
-#include "textutils.h"
+#include <strigi/fieldtypes.h>
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
 
 using namespace Strigi;
 using namespace std;

@@ -21,7 +21,7 @@
 #include "xesamlivesearch.h"
 #include "xesamsession.h"
 #include "xesamsearch.h"
-#include "query.h"
+#include <strigi/query.h>
 #include "queue/jobqueue.h"
 #include <iostream>
 #include <stdexcept>

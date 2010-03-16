@@ -1,22 +1,27 @@
-include_directories(
-    ../combinedindexer
-    ../streamanalyzer
-    ../streamanalyzer/xesam
-	${strigi_BINARY_DIR}/src/streams
-    ${strigi_SOURCE_DIR}/src/streams/strigi
-    ${LIBXML2_INCLUDE_DIR}
-)
+if(NOT HAVE_REGEX_H)
+  set(REGEX_INCLUDE_DIR ${strigi_SOURCE_DIR}/src/streams/strigi/regex)
+  set(REGEX_SOURCES ${REGEX_INCLUDE_DIR}/regex.c)
+  # TODO: install copyright file !
+endif(NOT HAVE_REGEX_H)
 
-set(strigicmd_LIBS streamanalyzer combinedindex strigi_xesam)
+add_executable(dummyindexer dummyindexer.cpp)
+target_link_libraries(dummyindexer ${LIBSTREAMANALYZER_LIBRARIES})
 
-IF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
-    add_definitions(-DHAVE_LOG4CXX)
-    set(strigicmd_LIBS ${strigicmd_LIBS} ${LOG4CXX_LIBRARIES})
-    include_directories( ${LOG4CXX_INCLUDE_DIR} )
-ENDIF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
+add_library(libdeepfind STATIC deepfind.cpp)
+target_link_libraries(libdeepfind ${LIBSTREAMANALYZER_LIBRARIES})
 
-add_executable(strigicmd strigicmd.cpp)
+add_library(grepindexer STATIC grepindexreader.cpp grepindexmanager.cpp
+    grepindexwriter.cpp ${REGEX_SOURCES})
 
-target_link_libraries(strigicmd ${strigicmd_LIBS})
+add_library(libdeepgrep STATIC deepgrep.cpp)
+target_link_libraries(libdeepgrep grepindexer ${LIBSTREAMANALYZER_LIBRARIES} ${REGEX_LIBRARIES})
 
-install(TARGETS strigicmd RUNTIME DESTINATION bin)
+add_executable(greptest grepindexreader.cpp)
+target_link_libraries(greptest streamanalyzer)
+
+if(NOT MSVC)
+  add_executable(analyzerlatencytester analyzerlatencytester.cpp)
+  target_link_libraries(analyzerlatencytester ${LIBSTREAMANALYZER_LIBRARIES})
+endif(NOT MSVC)
+
+add_library(grepindex STATIC grepindexmanager.cpp)

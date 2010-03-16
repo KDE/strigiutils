@@ -20,8 +20,8 @@
 #ifndef STRIGI_NAMESPACEHARVESTERSAXANALYZER
 #define STRIGI_NAMESPACEHARVESTERSAXANALYZER
 
-#include "streamsaxanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamsaxanalyzer.h>
+#include <strigi/analyzerplugin.h>
 #include <iostream>
 #include <set>
 #include <string>

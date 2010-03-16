@@ -18,18 +18,18 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "indexpluginloader.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "indexwriter.h"
-#include "indexeddocument.h"
-#include "analyzerconfiguration.h"
-#include "diranalyzer.h"
+#include <strigi/indexpluginloader.h>
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexeddocument.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/diranalyzer.h>
 #include <strigi/strigiconfig.h>
-#include "query.h"
-#include "queryparser.h"
-#include "xesam2strigi.h"
-#include "../daemon/strigilogging.h"
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
+//#include "xesam2strigi.h"
+//#include "../daemon/strigilogging.h"
 #include <algorithm>
 #include <string>
 #include <set>
@@ -38,7 +38,8 @@
 #include <cstdarg>
 #include <cstring>
 #include <time.h>
-#include "stgdirent.h" //dirent replacement (includes native if available)
+#include <dirent.h>
+//#include "stgdirent.h" //dirent replacement (includes native if available)
 
 using namespace std;
 using namespace Strigi;
@@ -99,8 +100,8 @@ usage(int argc, char** argv) {
     pe("  %s listFields -t backend -d indexdir\n", cmd);
     //TODO: find a better definition for query?
     pe("  %s query -t backend -d indexdir queries\n", cmd);
-    pe("  %s xesamquery -t backend -d indexdir [-u xesam_user_language_file] ",
-        cmd);
+//    pe("  %s xesamquery -t backend -d indexdir [-u xesam_user_language_file] ",
+//        cmd);
     pe("[-q xesam_query_language_file]\n");
     pe("  %s update [-j num] -t backend -d indexdir [-i include] [-x exclude] ",
       cmd);
@@ -464,6 +465,7 @@ query(int argc, char** argv) {
     IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
+/*
 int
 xesamquery(int argc, char** argv) {
     // parse arguments
@@ -558,6 +560,7 @@ xesamquery(int argc, char** argv) {
     IndexPluginLoader::deleteIndexManager(manager);
     return 0;
 }
+*/
 int
 deindex(int argc, char** argv) {
     // parse arguments
@@ -664,7 +667,7 @@ main(int argc, char** argv) {
         return usage(argc, argv);
     }
 
-    STRIGI_LOG_INIT_BASIC()
+    //STRIGI_LOG_INIT_BASIC()
     
     const char* cmd = argv[1];
     if (!strcmp(cmd,"create")) {
@@ -681,8 +684,8 @@ main(int argc, char** argv) {
         return deindex(argc, argv);
     } else if (!strcmp(cmd,"query")) {
         return query(argc, argv);
-    } else if (!strcmp(cmd,"xesamquery")) {
-        return xesamquery(argc, argv);
+//    } else if (!strcmp(cmd,"xesamquery")) {
+//        return xesamquery(argc, argv);
     } else {
         return usage(argc, argv);
     }

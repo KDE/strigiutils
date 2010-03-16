@@ -20,9 +20,8 @@
 #ifndef STRIGI_TARINPUTSTREAM_H
 #define STRIGI_TARINPUTSTREAM_H
 
-#include <strigi/strigiconfig.h>
-#include "streambase.h"
-#include "substreamprovider.h"
+#include <strigi/streambase.h>
+#include <strigi/substreamprovider.h>
 
 namespace Strigi {
 

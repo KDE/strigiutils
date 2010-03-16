@@ -18,23 +18,19 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include "cluceneindexreader.h"
 #include <strigi/strigiconfig.h>
-#include "query.h"
-#include "queryparser.h"
-#include "variant.h"
-#include "textutils.h"
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
+#include <strigi/variant.h>
+#include <strigi/textutils.h>
 #include "cluceneindexmanager.h"
 #include "timeofday.h"
 #include "tcharutils.h"
 #include <CLucene/search/QueryFilter.h>
 #include <CLucene/index/Terms.h>
 #include <CLucene/store/RAMDirectory.h>
-#include "fieldtypes.h"
+#include <strigi/fieldtypes.h>
 #include <sstream>
 #include <iostream>
 #include <cassert>

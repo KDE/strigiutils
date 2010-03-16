@@ -20,14 +20,14 @@
  */
 
 #include "odfcontenthelperanalyzer.h"
-#include "analysisresult.h"
+#include <strigi/analysisresult.h>
 #include <cassert>
 #include <cstring>
 #include <string>
 
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "rdfnamespaces.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/rdfnamespaces.h>
 
 using namespace Strigi;
 using namespace std;

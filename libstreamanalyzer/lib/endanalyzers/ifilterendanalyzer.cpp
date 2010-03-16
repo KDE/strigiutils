@@ -27,7 +27,7 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odc_SP2003_ta/h
 
 #include "IFilterEndAnalyzer.h"
 #include "streamanalyzer.h"
-#include "analysisresult.h"
+#include <strigi/analysisresult.h>
 #include "indexwriter.h"
 #include <filter.h>
 #include <ntquery.h>

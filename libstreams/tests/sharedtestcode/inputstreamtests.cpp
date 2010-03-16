@@ -19,7 +19,7 @@
  */
 #include <strigi/strigiconfig.h>
 #include "inputstreamtests.h"
-#include "../substreamprovider.h"
+#include <strigi/substreamprovider.h>
 #include <iostream>
 
 using namespace Strigi;

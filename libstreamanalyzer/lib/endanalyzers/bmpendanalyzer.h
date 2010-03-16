@@ -20,8 +20,8 @@
 #ifndef BMPENDANALYZER
 #define BMPENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class BmpEndAnalyzerFactory;
 class BmpEndAnalyzer : public Strigi::StreamEndAnalyzer {

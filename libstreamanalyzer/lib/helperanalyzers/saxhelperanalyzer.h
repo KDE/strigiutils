@@ -24,8 +24,8 @@
 
 #include <strigi/strigiconfig.h>
 #include <libxml/SAX2.h>
-#include "streambase.h"
-#include "analysisresult.h"
+#include <strigi/streambase.h>
+#include <strigi/analysisresult.h>
 namespace Strigi {
 
 /**

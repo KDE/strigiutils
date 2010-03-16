@@ -1,6 +1,3 @@
-include_directories(${QT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/..
-	qtdbus ${strigi_BINARY_DIR}/src/streams)
-
 include(${QT_USE_FILE})
 
 # strigiclient

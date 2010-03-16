@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "asyncsocket.h"
+#include <strigi/asyncsocket.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>

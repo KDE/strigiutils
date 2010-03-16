@@ -21,10 +21,10 @@
 #include "xesamsession.h"
 #include "xesamlivesearch.h"
 #include "xesamclass.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "queryparser.h"
-#include "variant.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/queryparser.h>
+#include <strigi/variant.h>
 #include "queue/jobqueue.h"
 #include "queue/job.h"
 #include <iostream>

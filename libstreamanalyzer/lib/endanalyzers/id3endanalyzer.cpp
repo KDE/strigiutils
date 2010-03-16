@@ -24,11 +24,11 @@
 #endif
 
 #include "id3endanalyzer.h"
-#include "rdfnamespaces.h"
+#include <strigi/rdfnamespaces.h>
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "textutils.h"
-#include "stringstream.h"
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
+#include <strigi/stringstream.h>
 #include <iostream>
 #include <sstream>
 #include <cstring>

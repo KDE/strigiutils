@@ -20,8 +20,8 @@
 #ifndef STRIGI_PROCESSINPUTSTREAM_H
 #define STRIGI_PROCESSINPUTSTREAM_H
 
-#include "streambase.h"
-#include "bufferedstream.h"
+#include <strigi/streambase.h>
+#include <strigi/bufferedstream.h>
 #include <vector>
 
 namespace Strigi {

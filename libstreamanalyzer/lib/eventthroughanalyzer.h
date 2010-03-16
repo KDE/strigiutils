@@ -22,8 +22,8 @@
 #define STRIGI_EVENTTHROUGHANALYZER
 
 #include <strigi/strigiconfig.h>
-#include "dataeventinputstream.h"
-#include "streamthroughanalyzer.h"
+#include <strigi/dataeventinputstream.h>
+#include <strigi/streamthroughanalyzer.h>
 #include <vector>
 
 namespace Strigi {

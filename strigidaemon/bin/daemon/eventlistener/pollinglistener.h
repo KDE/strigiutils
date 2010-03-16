@@ -21,10 +21,10 @@
 #define POLLINGLISTENER_H
 
 #include "eventlistener.h"
-#include "diranalyzer.h"
+#include <strigi/diranalyzer.h>
 
 #include <map>
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 
 class Event;
 

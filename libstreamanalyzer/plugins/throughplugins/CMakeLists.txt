@@ -1,5 +1,3 @@
-include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
-
 MACRO(ADD_STRIGITA libname files)
   if(WIN32)
     # this is needed to have mingw, cygwin and msvc libs installed in one directory
@@ -20,9 +18,7 @@ MACRO(ADD_STRIGITA libname files)
   install(TARGETS ${libname} LIBRARY DESTINATION ${LIB_DESTINATION}/strigi)
 ENDMACRO(ADD_STRIGITA)
 
-
 if (XATTR_FOUND)
-  include_directories(${XATTR_INCLUDE_DIR})
   ADD_STRIGITA(xattr xattrthroughanalyzer.cpp)
 endif (XATTR_FOUND)
 

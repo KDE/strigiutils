@@ -17,12 +17,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "substreamproviderprovider.h"
+#include <strigi/substreamproviderprovider.h>
 #include <strigi/strigiconfig.h>
-#include "mailinputstream.h"
-#include "tarinputstream.h"
-#include "zipinputstream.h"
-#include "sdfinputstream.h"
+#include <strigi/mailinputstream.h>
+#include <strigi/tarinputstream.h>
+#include <strigi/zipinputstream.h>
+#include <strigi/sdfinputstream.h>
 
 using namespace Strigi;
 

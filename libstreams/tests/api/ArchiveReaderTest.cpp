@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "../archivereader.h"
+#include <strigi/archivereader.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>

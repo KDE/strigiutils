@@ -20,7 +20,7 @@
 #ifndef COMBINEDINDEXMANAGER_H
 #define COMBINEDINDEXMANAGER_H
 
-#include "indexmanager.h"
+#include <strigi/indexmanager.h>
 #include <map>
 #include <vector>
 #include <string>

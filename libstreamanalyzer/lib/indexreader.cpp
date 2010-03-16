@@ -1,4 +1,4 @@
-#include "indexreader.h"
-#include "variant.h"
+#include <strigi/indexreader.h>
+#include <strigi/variant.h>
 using namespace Strigi;
 

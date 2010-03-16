@@ -22,7 +22,7 @@
 # include "config.h"
 #endif
 
-#include "inputstreamreader.h"
+#include <strigi/inputstreamreader.h>
 #include <strigi/strigiconfig.h>
 #include <cerrno>
 #include <iconv.h>

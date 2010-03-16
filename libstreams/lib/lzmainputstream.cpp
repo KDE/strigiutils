@@ -17,11 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "lzmainputstream.h"
+#include <strigi/lzmainputstream.h>
 extern "C" {
   #include "lzma/LzmaDec.h"
 }
-#include "textutils.h"
+#include <strigi/textutils.h>
 #include <iostream>
 #include <sstream>
 

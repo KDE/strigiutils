@@ -22,7 +22,7 @@
 
 #include <string>
 #include <list>
-#include "variant.h"
+#include <strigi/variant.h>
 
 class XesamLiveSearch;
 class XesamSearch;

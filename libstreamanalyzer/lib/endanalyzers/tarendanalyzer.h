@@ -20,8 +20,8 @@
 #ifndef TARENDANALYZER
 #define TARENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class TarEndAnalyzerFactory;
 class TarEndAnalyzer : public Strigi::StreamEndAnalyzer {

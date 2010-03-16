@@ -20,10 +20,10 @@
 #ifndef DUMMYINDEXWRITER_H
 #define DUMMYINDEXWRITER_H
 
-#include "analysisresult.h"
-#include "indexwriter.h"
-#include "indexmanager.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexmanager.h>
+#include <strigi/fieldtypes.h>
 #include <cstring>
 
 class DummyIndexWriter : public Strigi::IndexWriter {

@@ -20,8 +20,8 @@
 #ifndef HELPERENDANALYZER
 #define HELPERENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 #include <vector>
 
 class HelperProgramConfig {

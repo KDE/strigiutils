@@ -23,9 +23,9 @@
 #endif
 
 #include "lineeventanalyzer.h"
-#include "streamlineanalyzer.h"
-#include "analysisresult.h"
-#include "textutils.h"
+#include <strigi/streamlineanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
 #include <cstring>
 #include <cassert>
 #include <cerrno>

@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "digesteventanalyzer.h"
-#include "streambase.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/streambase.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 using namespace std;
 using namespace Strigi;
 

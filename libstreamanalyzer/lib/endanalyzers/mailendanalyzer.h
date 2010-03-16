@@ -20,8 +20,8 @@
 #ifndef MAILENDANALYZER
 #define MAILENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class MailEndAnalyzerFactory;
 class MailEndAnalyzer : public Strigi::StreamEndAnalyzer {

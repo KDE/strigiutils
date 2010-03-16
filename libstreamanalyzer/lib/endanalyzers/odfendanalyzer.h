@@ -21,10 +21,10 @@
 #ifndef ODFENDANALYZER
 #define ODFENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
-#include "helperanalyzers/odfmetahelperanalyzer.h"
-#include "helperanalyzers/odfcontenthelperanalyzer.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
+#include "../helperanalyzers/odfmetahelperanalyzer.h"
+#include "../helperanalyzers/odfcontenthelperanalyzer.h"
 
 
 class OdfEndAnalyzerFactory;

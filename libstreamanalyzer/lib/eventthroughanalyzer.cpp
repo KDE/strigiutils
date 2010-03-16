@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "eventthroughanalyzer.h"
-#include "streamsaxanalyzer.h"
-#include "streameventanalyzer.h"
+#include <strigi/streamsaxanalyzer.h>
+#include <strigi/streameventanalyzer.h>
 #include "saxeventanalyzer.h"
 #include "lineeventanalyzer.h"
-#include "streamlineanalyzer.h"
+#include <strigi/streamlineanalyzer.h>
 #include <iostream>
 
 using namespace std;

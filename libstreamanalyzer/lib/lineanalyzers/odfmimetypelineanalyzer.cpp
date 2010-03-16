@@ -23,8 +23,8 @@
 #include <cassert>
 #include <cstring>
 
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 
 using namespace Strigi;
 

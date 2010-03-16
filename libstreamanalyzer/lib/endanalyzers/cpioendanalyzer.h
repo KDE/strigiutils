@@ -20,8 +20,8 @@
 #ifndef CPIOENDANALYZER
 #define CPIOENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class CpioEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

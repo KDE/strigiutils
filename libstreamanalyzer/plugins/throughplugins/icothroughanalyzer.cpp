@@ -21,10 +21,10 @@
  */
 
 #include "icothroughanalyzer.h"
-#include "textutils.h"
+#include <strigi/textutils.h>
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 #include <cstring>
 
 using namespace std;

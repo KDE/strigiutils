@@ -20,13 +20,13 @@
 #ifndef XMLINDEXWRITER_H
 #define XMLINDEXWRITER_H
 
-#include "indexwriter.h"
-#include "indexmanager.h"
-#include "analysisresult.h"
 #include "tagmapping.h"
-#include "fieldtypes.h"
-#include "analyzerconfiguration.h"
-#include "strigi_thread.h"
+#include <strigi/indexwriter.h>
+#include <strigi/indexmanager.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/strigi_thread.h>
 #include <iostream>
 #include <sstream>
 #include <map>

@@ -1,5 +1,3 @@
-include_directories(.. ../../indexertests)
-
 CREATE_TEST_SOURCELIST(Tests testrunner.cpp CLuceneTest.cpp)
 
 ADD_EXECUTABLE(testrunner-lucene ${Tests} )

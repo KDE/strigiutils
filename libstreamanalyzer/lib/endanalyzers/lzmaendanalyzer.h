@@ -20,8 +20,8 @@
 #ifndef LZMAENDANALYZER
 #define LZMAENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class LzmaEndAnalyzerFactory;
 class LzmaEndAnalyzer : public Strigi::StreamEndAnalyzer {

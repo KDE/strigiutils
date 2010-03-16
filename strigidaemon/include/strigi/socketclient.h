@@ -21,7 +21,7 @@
 #define SOCKETCLIENT_H
 
 #include <strigi/strigiconfig.h>
-#include "clientinterface.h"
+#include <strigi/clientinterface.h>
 
 class SEARCHCLIENT_EXPORT SocketClient : public ClientInterface {
 private:

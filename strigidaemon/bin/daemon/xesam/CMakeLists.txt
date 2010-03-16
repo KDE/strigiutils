@@ -1,5 +1,3 @@
-include_directories(.. ../../streamanalyzer)
-
 add_library(xesam STATIC xesamlivesearchinterface.cpp xesamlivesearch.cpp
 	xesamsession.cpp xesamsearch.cpp)
 

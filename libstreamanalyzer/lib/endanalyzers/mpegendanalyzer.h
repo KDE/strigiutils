@@ -20,8 +20,8 @@
 #ifndef MPEGENDANALYZER_H
 #define MPEGENDANALYZER_H
 
-#include "streamendanalyzer.h"
-#include "fieldtypes.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/fieldtypes.h>
 #include <map>
 
 class MpegEndAnalyzerFactory;

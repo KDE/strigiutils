@@ -27,12 +27,12 @@
 #endif
 
 #include <strigi/strigiconfig.h>
-#include "compat.h"
+//#include "compat.h"
 #if !defined(_WIN32) && !defined(_WIN64)
- #include "processinputstream.h"
+ #include <strigi/processinputstream.h>
 #endif
 #include "textendanalyzer.h"
-#include "analysisresult.h"
+#include <strigi/analysisresult.h>
 #include <iostream>
 #include <fcntl.h>
 #include <errno.h>

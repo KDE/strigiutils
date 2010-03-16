@@ -21,8 +21,8 @@
 #include <cstdlib>
 
 #include "indextest.h"
-#include "indexmanager.h"
-#include "indexpluginloader.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexpluginloader.h>
 
 using namespace std;
 using namespace Strigi;

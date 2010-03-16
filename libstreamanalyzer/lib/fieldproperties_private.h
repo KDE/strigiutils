@@ -21,8 +21,8 @@
 #ifndef STRIGI_FIELDPROPERTIES_PRIVATE_H
 #define STRIGI_FIELDPROPERTIES_PRIVATE_H
 
-#include "fieldproperties.h"
-#include "fieldtypes.h"
+#include <strigi/fieldproperties.h>
+#include <strigi/fieldtypes.h>
 
 namespace {
     const std::string& empty() {

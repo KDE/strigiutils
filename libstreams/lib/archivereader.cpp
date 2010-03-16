@@ -17,13 +17,13 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "archivereader.h"
-#include "sdfinputstream.h"
-#include "tarinputstream.h"
-#include "mailinputstream.h"
-#include "rpminputstream.h"
-#include "arinputstream.h"
-#include "zipinputstream.h"
+#include <strigi/archivereader.h>
+#include <strigi/sdfinputstream.h>
+#include <strigi/tarinputstream.h>
+#include <strigi/mailinputstream.h>
+#include <strigi/rpminputstream.h>
+#include <strigi/arinputstream.h>
+#include <strigi/zipinputstream.h>
 #include "archiveentrycache.h"
 #include "listinginprogress.h"
 #include <iostream>

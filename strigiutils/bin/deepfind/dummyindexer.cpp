@@ -17,10 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include <strigi/strigiconfig.h>
-#include "diranalyzer.h"
 #include "dummyindexwriter.h"
-#include "analyzerconfiguration.h"
+#include <strigi/strigiconfig.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/analyzerconfiguration.h>
 
 #include <stdlib.h>
 

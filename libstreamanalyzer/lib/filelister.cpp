@@ -19,10 +19,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "filelister.h"
+#include <strigi/filelister.h>
 #include <strigi/strigiconfig.h>
-#include "strigi_thread.h"
-#include "analyzerconfiguration.h"
+#include <strigi/strigi_thread.h>
+#include <strigi/analyzerconfiguration.h>
 #include <set>
 #include <list>
 #include <iostream>

@@ -22,7 +22,7 @@
 
 #include <set>
 #include <string>
-#include "strigithread.h"
+#include "../strigithread.h"
 
 class EventListenerQueue;
 

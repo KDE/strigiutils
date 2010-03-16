@@ -20,7 +20,7 @@
 #ifndef CLIENTINTERFACE_H
 #define CLIENTINTERFACE_H
 
-#include "indexeddocument.h"
+#include <strigi/indexeddocument.h>
 #include <map>
 #include <vector>
 #include <set>

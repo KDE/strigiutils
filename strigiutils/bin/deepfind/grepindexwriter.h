@@ -20,7 +20,7 @@
 #ifndef GREPINDEXWRITER_H
 #define GREPINDEXWRITER_H
 
-#include "indexwriter.h"
+#include <strigi/indexwriter.h>
 
 class GrepIndexWriter : public Strigi::IndexWriter {
 private:

@@ -20,9 +20,8 @@
 #ifndef STRIGI_MAILINPUTSTREAM_H
 #define STRIGI_MAILINPUTSTREAM_H
 
-#include <strigi/strigiconfig.h>
-#include "streambase.h"
-#include "substreamprovider.h"
+#include <strigi/streambase.h>
+#include <strigi/substreamprovider.h>
 #include <stack>
 
 namespace Strigi {

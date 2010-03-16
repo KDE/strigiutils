@@ -19,17 +19,17 @@
  */
 
 #include "indexsearchtester.h"
-#include "analyzerconfiguration.h"
-#include "diranalyzer.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "indexwriter.h"
-#include "query.h"
-#include "queryparser.h"
-#include "unittestfunctions.h"
-#include "indexpluginloader.h"
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/indexwriter.h>
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
+#include "utils/unittestfunctions.h"
+#include <strigi/indexpluginloader.h>
 
-#include  <errno.h>
+#include <errno.h>
 #include <fstream>
 #include <sstream>
 #include <cstring>

@@ -22,8 +22,8 @@
 #include "combinedindexmanager.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filelister.h"
-#include "indexreader.h"
+#include <strigi/filelister.h>
+#include <strigi/indexreader.h>
 #include "pollinglistener.h"
 #include "../strigilogging.h"
 

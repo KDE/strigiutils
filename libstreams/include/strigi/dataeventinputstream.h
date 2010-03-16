@@ -20,7 +20,7 @@
 #ifndef STRIGI_DATAEVENTINPUTSTREAM_H
 #define STRIGI_DATAEVENTINPUTSTREAM_H
 #include <strigi/strigiconfig.h>
-#include "streambase.h"
+#include <strigi/streambase.h>
 
 namespace Strigi {
 

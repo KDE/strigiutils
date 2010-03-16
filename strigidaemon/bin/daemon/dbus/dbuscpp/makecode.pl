@@ -358,9 +358,9 @@ print FH "#include \"$headerfile\"\n";
 if (defined $extrainclude && length($extrainclude)) {
     print FH "#include \"$extrainclude\"\n";
 }
-print FH "#include <dbusobjectinterface.h>\n";
-print FH "#include <dbusmessagereader.h>\n";
-print FH "#include <dbusmessagewriter.h>\n";
+print FH "#include \"dbus/dbuscpp/dbusobjectinterface.h\"\n";
+print FH "#include \"dbus/dbuscpp/dbusmessagereader.h\"\n";
+print FH "#include \"dbus/dbuscpp/dbusmessagewriter.h\"\n";
 print FH "#include <sstream>\n";
 print FH "class Private$classname : public DBusObjectInterface {\n";
 print FH "private:\n";

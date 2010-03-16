@@ -104,36 +104,7 @@ MACRO_BOOL_TO_01(HAVE_STDDEF_H     STRIGI_HAVE_STDDEF_H)
 #now write out our configuration....
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 CONFIGURE_FILE(
-  ${strigi_SOURCE_DIR}/config.h.cmake
-  ${strigi_BINARY_DIR}/config.h
+  ${libstreamanalyzer_SOURCE_DIR}/lib/config.h.cmake
+  ${libstreamanalyzer_BINARY_DIR}/lib/config.h
 )
 
-# this is needed to be able to build a combined mingw/msvc strigi package
-if(WIN32)
-  if(MINGW)
-    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_mingw.h)
-  elseif(CYGWIN)
-    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_cygwin.h)
-  else(MINGW)
-    SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig_msvc.h)
-  endif(MINGW)
-  SET(strigi_extra_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig.h)
-
-  CONFIGURE_FILE(
-    ${strigi_SOURCE_DIR}/src/streams/strigi/strigiconfig.h.win32.cmake
-    ${strigi_extra_config_output}
-  )
-else(WIN32)
-  SET(strigi_config_output ${strigi_BINARY_DIR}/src/streams/strigi/strigiconfig.h)
-endif(WIN32)
-
-CONFIGURE_FILE(
-  ${strigi_SOURCE_DIR}/src/streams/strigi/strigiconfig.h.cmake
-  ${strigi_config_output}
-)
-
-install(FILES
-  ${strigi_config_output}
-  ${strigi_extra_config_output}
-  DESTINATION include/strigi
-)

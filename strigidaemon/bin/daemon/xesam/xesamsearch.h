@@ -23,8 +23,8 @@
 #include <string>
 #include <vector>
 #include <list>
-#include "query.h"
-#include "strigi_thread.h"
+#include <strigi/query.h>
+#include "strigi/strigi_thread.h"
 
 namespace Strigi {
 class Variant;

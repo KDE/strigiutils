@@ -20,11 +20,11 @@
  */
 
 #include "m3ustreamanalyzer.h"
-#include <string.h>
-#include <fieldtypes.h>
-#include <analysisresult.h>
-#include <streamlineanalyzer.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/analysisresult.h>
+#include <strigi/streamlineanalyzer.h>
 #include <string>
+#include <cstring>
 
 // AnalyzerFactory
 void M3uLineAnalyzerFactory::registerFields(Strigi::FieldRegister& reg) 

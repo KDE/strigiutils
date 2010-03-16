@@ -17,13 +17,13 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "indexpluginloader.h"
-#include "indexmanager.h"
+#include <strigi/indexpluginloader.h>
+#include <strigi/indexmanager.h>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stgdirent.h>
+#include "stgdirent.h"
 #include <sys/stat.h>
 using namespace std;
 using namespace Strigi;

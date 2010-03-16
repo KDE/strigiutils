@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigithread.h"
-#include "strigi_thread.h"
+#include <strigi/strigi_thread.h>
 #include "strigilogging.h"
 
 #include <string>

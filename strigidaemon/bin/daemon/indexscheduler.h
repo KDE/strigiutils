@@ -26,8 +26,8 @@
 #include <vector>
 #include <cstdlib>
 #include "strigithread.h"
-#include "diranalyzer.h"
-#include "analyzerconfiguration.h"
+#include <strigi/diranalyzer.h>
+#include <strigi/analyzerconfiguration.h>
 
 class Event;
 class EventListenerQueue;

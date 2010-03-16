@@ -1,5 +1,5 @@
-#include "streamthroughanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/analyzerplugin.h>
 
 #include <list>
 

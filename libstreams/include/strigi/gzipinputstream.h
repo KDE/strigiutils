@@ -20,7 +20,7 @@
 #ifndef STRIGI_GZIPINPUTSTREAM_H
 #define STRIGI_GZIPINPUTSTREAM_H
 
-#include "bufferedstream.h"
+#include <strigi/bufferedstream.h>
 
 namespace Strigi {
 

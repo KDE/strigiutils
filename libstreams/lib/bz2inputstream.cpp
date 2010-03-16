@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "bz2inputstream.h"
+#include <strigi/bz2inputstream.h>
 #include <bzlib.h>
 #include <stdlib.h>
 #include <cstring>

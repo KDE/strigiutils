@@ -17,9 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../processinputstream.h"
-#include "../fileinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/processinputstream.h>
+#include <strigi/fileinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 #include <vector>
 
 using namespace std;
@@ -28,7 +28,9 @@ using namespace Strigi;
 int
 ProcessInputStreamTest(int argc, char* argv[]) {
     if (argc < 2) return 1;
-    VERIFY(chdir(argv[1]) == 0);
+    if (chdir(argv[1]) != 0) {
+        return 1;
+    }
 
     vector<string> args;
     args.push_back("/bin/cat");

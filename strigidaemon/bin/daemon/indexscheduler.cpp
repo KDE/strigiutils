@@ -18,17 +18,17 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexscheduler.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "indexwriter.h"
-#include "diranalyzer.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/indexwriter.h>
+#include <strigi/diranalyzer.h>
 
 #include <strigi/strigiconfig.h>
 #include "eventlistener/event.h"
-#include "eventlistenerqueue.h"
-#include "analyzerconfiguration.h"
+#include "eventlistener/eventlistenerqueue.h"
+#include <strigi/analyzerconfiguration.h>
 
-#include "streamanalyzer.h"
+#include <strigi/streamanalyzer.h>
 #include <cerrno>
 #include <sys/resource.h>
 

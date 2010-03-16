@@ -21,8 +21,8 @@
 #ifndef DAEMONCONFIGURATOR_H
 #define DAEMONCONFIGURATOR_H
 
-#include "strigidaemonconfiguration.h"
-#include "analyzerconfiguration.h"
+#include "xsd/strigidaemonconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 
 #include <set>
 

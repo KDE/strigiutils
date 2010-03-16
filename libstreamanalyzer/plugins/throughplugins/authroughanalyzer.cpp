@@ -20,10 +20,10 @@
 
 #include "authroughanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "textutils.h"
-#include "rdfnamespaces.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
+#include <strigi/rdfnamespaces.h>
 
 using namespace std;
 using namespace Strigi;

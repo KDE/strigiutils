@@ -1,6 +1,3 @@
-include_directories(../streamanalyzer ../htmlgui ../streams ../daemon
-	qtdbus ${strigi_BINARY_DIR}/src/streams filterwidget)
-
 add_subdirectory(qtdbus)
 # disable searchclient for now
 if(NOT WIN32)

@@ -18,13 +18,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "zipinputstream.h"
+#include <strigi/zipinputstream.h>
 #include <strigi/strigiconfig.h>
-#include "gzipinputstream.h"
-#include "subinputstream.h"
+#include <strigi/gzipinputstream.h>
+#include <strigi/subinputstream.h>
 
 #include "dostime.h"
-#include "textutils.h"
+#include <strigi/textutils.h>
 #include <cstring>
 
 

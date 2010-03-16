@@ -21,11 +21,11 @@
 #include "interface.h"
 #include "daemonconfigurator.h"
 #include "combinedindexmanager.h"
-#include "indexpluginloader.h"
+#include <strigi/indexpluginloader.h>
 
 #include "indexscheduler.h"
-#include "analyzerconfiguration.h"
-#include "xesamlivesearch.h"
+#include <strigi/analyzerconfiguration.h>
+#include "xesam/xesamlivesearch.h"
 #include "queue/jobqueue.h"
 
 #if defined (HAVE_FAM)
@@ -33,14 +33,14 @@
 #elif defined (HAVE_INOTIFY)
 #include "inotifylistener.h"
 #else
-#include "pollinglistener.h"
-#include "eventlistener.h"
+#include "eventlistener/pollinglistener.h"
+#include "eventlistener/eventlistener.h"
 #endif
-#include "eventlistenerqueue.h"
+#include "eventlistener/eventlistenerqueue.h"
 #include "strigilogging.h"
 
 #ifdef HAVE_DBUS
-#include "dbusserver.h"
+#include "dbus/dbusserver.h"
 #endif
 #include "socketserver.h"
 

@@ -25,9 +25,9 @@
 #include <algorithm>
 #include <unistd.h>
 #include <getopt.h>
-#include "fieldpropertiesdb.h"
-#include "streamanalyzer.h"
-#include "analyzerconfiguration.h"
+#include <strigi/fieldpropertiesdb.h>
+#include <strigi/streamanalyzer.h>
+#include <strigi/analyzerconfiguration.h>
 using namespace std;
 using namespace Strigi;
 

@@ -20,7 +20,7 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "clientinterface.h"
+#include <strigi/clientinterface.h>
 
 class CombinedIndexManager;
 class IndexScheduler;

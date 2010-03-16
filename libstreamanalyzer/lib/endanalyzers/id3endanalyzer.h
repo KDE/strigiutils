@@ -20,8 +20,8 @@
 #ifndef ID3ENDANALYZER_H
 #define ID3ENDANALYZER_H
 
-#include "streamendanalyzer.h"
-#include "fieldtypes.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/fieldtypes.h>
 
 // id3v2 according to http://www.id3.org/id3v2.4.0-structure.txt
 

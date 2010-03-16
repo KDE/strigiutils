@@ -20,8 +20,8 @@
 #ifndef BZ2ENDANALYZER
 #define BZ2ENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class Bz2EndAnalyzerFactory;
 class Bz2EndAnalyzer : public Strigi::StreamEndAnalyzer {

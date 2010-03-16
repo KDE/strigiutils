@@ -20,9 +20,9 @@
 #ifndef DEBLINEANALYZER
 #define DEBLINEANALYZER
 
-#include "analysisresult.h"
-#include "analyzerplugin.h"
-#include "streamlineanalyzer.h"
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerplugin.h>
+#include <strigi/streamlineanalyzer.h>
 
 class DebLineAnalyzerFactory;
 class DebLineAnalyzer : public Strigi::StreamLineAnalyzer {

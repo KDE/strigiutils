@@ -17,9 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../fileinputstream.h"
-#include "../mailinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/fileinputstream.h>
+#include <strigi/mailinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 
 using namespace Strigi;
 

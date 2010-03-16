@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "dbusserialization.h"
-#include "variant.h"
-#include "dbusmessagewriter.h"
-#include "dbusmessagereader.h"
-#include "textutils.h"
+#include <strigi/variant.h>
+#include "dbuscpp/dbusmessagewriter.h"
+#include "dbuscpp/dbusmessagereader.h"
+#include <strigi/textutils.h>
 #include <iostream>
 using namespace std;
 using namespace Strigi;

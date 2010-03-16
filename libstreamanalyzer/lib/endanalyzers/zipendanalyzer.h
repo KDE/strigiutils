@@ -20,8 +20,8 @@
 #ifndef ZIPENDANALYZER
 #define ZIPENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class ZipEndAnalyzerFactory;
 class ZipEndAnalyzer : public Strigi::StreamEndAnalyzer {

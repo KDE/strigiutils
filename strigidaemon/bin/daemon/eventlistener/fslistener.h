@@ -21,7 +21,7 @@
 #define FSLISTENER_H
 
 #include "eventlistener.h"
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 #include <map>
 #include <vector>
 

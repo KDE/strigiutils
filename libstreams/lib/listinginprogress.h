@@ -21,7 +21,7 @@
 #define LISTINGINPROGRESS_H
 
 #include "archiveentrycache.h"
-#include "archivereader.h"
+#include <strigi/archivereader.h>
 #include <list>
 #include <vector>
 

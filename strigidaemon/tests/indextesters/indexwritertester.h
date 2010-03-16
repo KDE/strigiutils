@@ -22,8 +22,8 @@
 
 #include "indextest.h"
 
-#include "analyzerconfiguration.h"
-#include "fieldtypes.h"
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/fieldtypes.h>
 
 namespace Strigi {
     class StreamAnalyzer;

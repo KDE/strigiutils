@@ -20,7 +20,7 @@
 #ifndef STRIGI_MMAPFILEINPUTSTREAM_H
 #define STRIGI_MMAPFILEINPUTSTREAM_H
 
-#include "streambase.h"
+#include <strigi/streambase.h>
 
 namespace Strigi {
 

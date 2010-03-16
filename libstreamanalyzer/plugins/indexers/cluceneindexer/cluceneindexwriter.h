@@ -22,9 +22,9 @@
 
 #include <CLucene.h>
 #include <strigi/strigiconfig.h>
-#include "indexwriter.h"
-#include "analysisresult.h"
-#include "analyzerconfiguration.h"
+#include <strigi/indexwriter.h>
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerconfiguration.h>
 
 class CLuceneIndexManager;
 class CLuceneIndexWriter : public Strigi::IndexWriter {

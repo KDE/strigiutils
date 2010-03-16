@@ -21,7 +21,7 @@
 #define CLUCENEINDEXREADER_H
 
 #include <strigi/strigiconfig.h>
-#include "indexreader.h"
+#include <strigi/indexreader.h>
 
 #include <map>
 #include <time.h>

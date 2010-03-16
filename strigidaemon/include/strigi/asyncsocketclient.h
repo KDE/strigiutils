@@ -20,8 +20,8 @@
 #ifndef ASYNCSOCKETCLIENT_H
 #define ASYNCSOCKETCLIENT_H
 
-#include "asyncsocket.h"
-#include "clientinterface.h"
+#include <strigi/asyncsocket.h>
+#include <strigi/clientinterface.h>
 
 class SEARCHCLIENT_EXPORT AsyncSocketClient {
 private:

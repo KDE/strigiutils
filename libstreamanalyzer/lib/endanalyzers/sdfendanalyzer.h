@@ -20,9 +20,9 @@
 #ifndef SDFENDANALYZER
 #define SDFENDANALYZER
 
-#include "analysisresult.h"
-#include "analyzerplugin.h"
-#include "streamendanalyzer.h"
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerplugin.h>
+#include <strigi/streamendanalyzer.h>
 
 class SdfEndAnalyzerFactory;
 class SdfEndAnalyzer : public Strigi::StreamEndAnalyzer {

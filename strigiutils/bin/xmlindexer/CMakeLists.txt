@@ -1,51 +1,33 @@
-include_directories(
-        ../streamanalyzer
-        ../streams
-	../streams/strigi
-	${strigi_BINARY_DIR}/src/streams
-	${BZIP2_INCLUDE_DIR}
-)
-
-add_executable(rdfindexer
+add_library(librdfindexer
         rdfindexer.cpp
         tagmapping.cpp
 	rdfindexwriter.cpp
 )
+target_link_libraries(librdfindexer streamanalyzer)
 
-target_link_libraries(rdfindexer streamanalyzer)
-
-install(TARGETS rdfindexer RUNTIME DESTINATION bin)
-
-add_executable(xmlindexer
+add_library(libxmlindexer
         xmlindexer.cpp
         tagmapping.cpp
 	xmlindexwriter.cpp
 )
-
-target_link_libraries(xmlindexer streamanalyzer)
+target_link_libraries(libxmlindexer streamanalyzer)
 
 add_executable(cgixmlindexer
         tagmapping.cpp
 	xmlindexwriter.cpp
 	cgixmlindexer.cpp)
-
 target_link_libraries(cgixmlindexer streamanalyzer)
 
-install(TARGETS xmlindexer RUNTIME DESTINATION bin)
-
-add_executable(peranalyzerxml peranalyzerxml.cpp xmlindexwriter.cpp
-    tagmapping.cpp)
-target_link_libraries(peranalyzerxml streamanalyzer)
+#add_executable(peranalyzerxml peranalyzerxml.cpp xmlindexwriter.cpp
+#    tagmapping.cpp)
+#target_link_libraries(peranalyzerxml streamanalyzer)
 
 add_executable(perfieldxml perfieldxml.cpp xmlindexwriter.cpp
     tagmapping.cpp)
 target_link_libraries(perfieldxml streamanalyzer)
 
-# is this still broken on win32?
-if(NOT WIN32)
-  add_executable(ontoprint ontoprint.cpp)
-  target_link_libraries(ontoprint streamanalyzer)
-endif(NOT WIN32)
+add_executable(ontoprint ontoprint.cpp)
+target_link_libraries(ontoprint streamanalyzer)
 
 # register all tests based on the data in the testdata directory
 #FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)

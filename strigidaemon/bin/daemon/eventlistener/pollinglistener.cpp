@@ -25,14 +25,14 @@
 #include <algorithm>
 #include <cassert>
 
-#include "diranalyzer.h"
+#include <strigi/diranalyzer.h>
 #include "combinedindexmanager.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filelister.h"
-#include "indexreader.h"
+#include <strigi/filelister.h>
+#include <strigi/indexreader.h>
 #include "../strigilogging.h"
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 #include <unistd.h>
 
 using namespace std;

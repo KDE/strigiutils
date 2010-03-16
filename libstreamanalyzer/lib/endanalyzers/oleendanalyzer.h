@@ -20,8 +20,8 @@
 #ifndef OLEENDANALYZER
 #define OLEENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 #include <map>
 #include <set>
 #include <iconv.h>

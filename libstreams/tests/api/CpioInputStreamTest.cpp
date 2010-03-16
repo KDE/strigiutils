@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "../cpioinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/cpioinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 
 using namespace Strigi;
 

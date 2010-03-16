@@ -19,12 +19,12 @@
  */
 #include "indexreadertester.h"
 
-#include "analysisresult.h"
-#include "indexwriter.h"
-#include "indexreader.h"
-#include "fieldtypes.h"
-#include "query.h"
-#include "queryparser.h"
+#include <strigi/analysisresult.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexreader.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
 
 #include <sstream>
 #include <ostream>

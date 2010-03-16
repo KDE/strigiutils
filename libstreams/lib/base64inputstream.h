@@ -20,7 +20,7 @@
 #ifndef STRIGI_BASE64INPUTSTREAM_H
 #define STRIGI_BASE64INPUTSTREAM_H
 
-#include "bufferedstream.h"
+#include <strigi/bufferedstream.h>
 
 namespace Strigi {
 

@@ -22,8 +22,8 @@
 
 #include <map>
 #include <vector>
-#include <strigithread.h>
-#include <strigi_thread.h>
+#include "../strigithread.h"
+#include <strigi/strigi_thread.h>
 #include <time.h>
 
 class Event;

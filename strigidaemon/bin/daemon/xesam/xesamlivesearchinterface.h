@@ -20,7 +20,7 @@
 #ifndef XESAMLIVESEARCHINTERFACE_H
 #define XESAMLIVESEARCHINTERFACE_H
 
-#include "variant.h"
+#include <strigi/variant.h>
 #include <map>
 
 class XesamLiveSearchInterface {

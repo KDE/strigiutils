@@ -20,8 +20,8 @@
 #ifndef ARENDANALYZER
 #define ARENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class ArEndAnalyzerFactory;
 class ArEndAnalyzer : public Strigi::StreamEndAnalyzer {

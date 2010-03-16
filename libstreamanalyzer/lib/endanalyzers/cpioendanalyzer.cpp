@@ -19,9 +19,9 @@
  */
 #include "cpioendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "cpioinputstream.h"
-#include "subinputstream.h"
-#include "analysisresult.h"
+#include <strigi/cpioinputstream.h>
+#include <strigi/subinputstream.h>
+#include <strigi/analysisresult.h>
 using namespace Strigi;
 
 void

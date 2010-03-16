@@ -20,8 +20,8 @@
 
 #include "namespaceharvestersaxanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 
 #include <cassert>
 #include <cstring>

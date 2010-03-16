@@ -18,15 +18,16 @@
  * Boston, MA 02110-1301, USA.
  */
 #include <strigi/strigiconfig.h>
-#include "diranalyzer.h"
-#include "indexpluginloader.h"
-#include "analyzerconfiguration.h"
+#include <strigi/diranalyzer.h>
+#include <strigi/indexpluginloader.h>
+#include <strigi/analyzerconfiguration.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <sys/types.h>
-#include <stgdirent.h>
+#include <CLucene.h>
+#include <CLucene/util/dirent.h>
 
 using namespace std;
 

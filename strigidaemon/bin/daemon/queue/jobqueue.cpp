@@ -19,7 +19,8 @@
  */
 #include "jobqueue.h"
 #include "job.h"
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
+#include <strigi/strigiconfig.h>
 #include <iostream>
 #include <list>
 #include <errno.h>

@@ -22,8 +22,8 @@
 #ifndef FLACENDANALYZER_H
 #define FLACENDANALYZER_H
 
-#include "streamendanalyzer.h"
-#include "fieldtypes.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/fieldtypes.h>
 #include <map>
 
 // flac according to http://flac.sourceforge.net/format.html

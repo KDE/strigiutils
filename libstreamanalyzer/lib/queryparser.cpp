@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "queryparser.h"
-#include "fieldpropertiesdb.h"
+#include <strigi/queryparser.h>
+#include <strigi/fieldpropertiesdb.h>
 #include <iostream>
 #include <cstring>
 using namespace std;

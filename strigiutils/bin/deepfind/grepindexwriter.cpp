@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "grepindexwriter.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 #include <regex.h>
 using namespace std;
 

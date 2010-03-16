@@ -19,7 +19,7 @@
  */
 #include "combinedindexmanager.h"
 #include <strigi/strigiconfig.h>
-#include "variant.h"
+#include <strigi/variant.h>
 
 /*
 #include "grepindexmanager.h"
@@ -38,10 +38,10 @@
 */
 
 #include "tssptr.h"
-#include "query.h"
-#include "indexeddocument.h"
-#include "indexreader.h"
-#include "indexpluginloader.h"
+#include <strigi/query.h>
+#include <strigi/indexeddocument.h>
+#include <strigi/indexreader.h>
+#include <strigi/indexpluginloader.h>
 #include <string>
 #include <set>
 #include <map>

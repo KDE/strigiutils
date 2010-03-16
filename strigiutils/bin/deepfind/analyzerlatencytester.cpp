@@ -19,10 +19,10 @@
  */
 
 #include <strigi/strigiconfig.h>
-#include "indexmanager.h"
-#include "indexwriter.h"
-#include "diranalyzer.h"
-#include "analyzerconfiguration.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexwriter.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/analyzerconfiguration.h>
 #include <iostream>
 #include <map>
 #include <cassert>

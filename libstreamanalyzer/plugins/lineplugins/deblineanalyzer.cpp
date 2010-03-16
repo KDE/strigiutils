@@ -19,10 +19,10 @@
  */
 
 #include "deblineanalyzer.h"
-#include "analysisresult.h"
-#include "streamendanalyzer.h"
+#include <strigi/analysisresult.h>
+#include <strigi/streamendanalyzer.h>
 #include <strigi/strigiconfig.h>
-#include "fieldtypes.h"
+#include <strigi/fieldtypes.h>
 #include <iostream> 
 #include <cstring>
 

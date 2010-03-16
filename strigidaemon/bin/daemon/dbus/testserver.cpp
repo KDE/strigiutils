@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "dbushandler.h"
+#include "dbuscpp/dbushandler.h"
 #include "dbustestinterface.h"
 
 int

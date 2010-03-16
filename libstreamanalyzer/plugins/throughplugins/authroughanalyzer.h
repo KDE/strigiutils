@@ -20,8 +20,8 @@
 #ifndef STRIGI_AUTHROUGHANALYZER
 #define STRIGI_AUTHROUGHANALYZER
 
-#include "streamthroughanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/analyzerplugin.h>
 #include "string.h"
 #include <string>
 

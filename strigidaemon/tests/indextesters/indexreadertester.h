@@ -21,7 +21,7 @@
 #define UNIT_TEST_INDEX_READER_TESTER_H
 
 #include "indextest.h"
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 
 namespace Strigi {
     class StreamAnalyzer;

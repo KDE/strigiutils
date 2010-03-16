@@ -1,5 +1,3 @@
-include_directories( ..  ../../streams ${strigi_BINARY_DIR}/src/streams)
-
 MACRO(ADD_STRIGIEA libname files)
   if(WIN32)
     # this is needed to have mingw, cygwin and msvc libs installed in one directory

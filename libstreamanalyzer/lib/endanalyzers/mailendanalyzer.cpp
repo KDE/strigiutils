@@ -19,11 +19,11 @@
  */
 #include "mailendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "mailinputstream.h"
-#include "encodinginputstream.h"
-#include "analysisresult.h"
+#include <strigi/mailinputstream.h>
+#include <strigi/encodinginputstream.h>
+#include <strigi/analysisresult.h>
 #include "textendanalyzer.h"
-#include "fieldtypes.h"
+#include <strigi/fieldtypes.h>
 #include <iostream>
 using namespace Strigi;
 using namespace std;

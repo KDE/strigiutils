@@ -22,14 +22,14 @@
 # include "config.h"
 #endif
 
-#include "analysisresult.h"
+#include <strigi/analysisresult.h>
 #include <strigi/strigiconfig.h>
-#include "indexwriter.h"
-#include "analyzerconfiguration.h"
-#include "streamanalyzer.h"
-#include "streambase.h"
-#include "textutils.h"
-#include "strigi_thread.h"
+#include <strigi/indexwriter.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/streamanalyzer.h>
+#include <strigi/streambase.h>
+#include <strigi/textutils.h>
+#include <strigi/strigi_thread.h>
 #include <time.h>
 #include <string>
 #include <cstdlib>

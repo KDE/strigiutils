@@ -17,9 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "sdfinputstream.h"
-#include "subinputstream.h"
-#include "kmpsearcher.h"
+#include <strigi/sdfinputstream.h>
+#include <strigi/subinputstream.h>
 #include <iostream>
 #include <sstream>
 #include <cstring>

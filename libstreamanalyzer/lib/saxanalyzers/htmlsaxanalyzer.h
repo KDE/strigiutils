@@ -22,7 +22,7 @@
 #define STRIGI_HTMLSAXANALYZER
 
 #include <strigi/strigiconfig.h>
-#include "streamsaxanalyzer.h"
+#include <strigi/streamsaxanalyzer.h>
 #include <vector>
 
 namespace Strigi {

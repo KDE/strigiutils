@@ -21,7 +21,7 @@
 #define INOTIFYLISTENER_H
 
 #include "fslistener.h"
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 #include <map>
 #include <vector>
 

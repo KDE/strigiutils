@@ -20,8 +20,8 @@
 #ifndef RPMENDANALYZER
 #define RPMENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class RpmEndAnalyzerFactory;
 class RpmEndAnalyzer : public Strigi::StreamEndAnalyzer {

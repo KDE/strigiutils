@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "indexmanagertester.h"
-#include "indexmanager.h"
-#include "indexwriter.h"
-#include "indexpluginloader.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexpluginloader.h>
 
 #include <stdlib.h>
 

@@ -23,8 +23,8 @@
 #define M3USTREAMANALYZER_H
 
 #define STRIGI_IMPORT_API
-#include <analyzerplugin.h>
-#include <streamlineanalyzer.h>
+#include <strigi/analyzerplugin.h>
+#include <strigi/streamlineanalyzer.h>
 
 class M3uLineAnalyzerFactory;
 

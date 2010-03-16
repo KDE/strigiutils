@@ -20,7 +20,7 @@
 #ifndef ARCHIVEENTRYCACHE_H
 #define ARCHIVEENTRYCACHE_H
 
-#include "substreamprovider.h"
+#include <strigi/substreamprovider.h>
 
 /**
  * @brief A cache for entries that have already been found.

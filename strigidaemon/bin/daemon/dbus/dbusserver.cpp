@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "dbusserver.h"
-#include "dbushandler.h"
+#include "dbuscpp/dbushandler.h"
 #include "dbusclientinterface.h"
 #include "dbusxesamlivesearchinterface.h"
-#include "xesamlivesearch.h"
+#include "../xesam/xesamlivesearch.h"
 #include <iostream>
 #include <sys/select.h>
 #include <sys/time.h>

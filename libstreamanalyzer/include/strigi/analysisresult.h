@@ -23,7 +23,7 @@
 #include <string>
 
 #include <strigi/strigiconfig.h>
-#include "streambase.h"
+#include <strigi/streambase.h>
 
 #if defined(__GNUC__) && __GNUC__ >= 3 && __GNUC_MINOR__ >= 2
 #define STRIGI_DEPRECATED __attribute__((deprecated))

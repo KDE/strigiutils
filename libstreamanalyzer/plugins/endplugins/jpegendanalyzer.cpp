@@ -21,12 +21,12 @@
  Include the strigi specific headers.
 */
 #define STRIGI_IMPORT_API
-#include "analyzerplugin.h"
-#include "streamendanalyzer.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "stringstream.h"
-#include "textutils.h"
+#include <strigi/analyzerplugin.h>
+#include <strigi/streamendanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/stringstream.h>
+#include <strigi/textutils.h>
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>

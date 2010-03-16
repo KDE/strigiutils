@@ -108,7 +108,7 @@ public class xsdparser {
 		header.println("/* This file is generated from " + xsdfile + " */");
 		header.println("#ifndef " + base.toUpperCase() + "_H");
 		header.println("#define " + base.toUpperCase() + "_H");
-                header.println("#include \"xsdparser/xmlstream.h\"");
+                header.println("#include \"xsd/xsdparser/xmlstream.h\"");
 		header.println("#include <string>");
 		header.println("#include <list>");
 		PrintWriter impl = new PrintWriter(new FileWriter(base + ".cpp"));

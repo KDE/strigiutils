@@ -18,7 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "analyzerloader.h"
-#include "analyzerplugin.h"
+#include <strigi/analyzerplugin.h>
 #include <string>
 #include <iostream>
 #include <cstdio>
@@ -26,7 +26,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stgdirent.h>
+#include "stgdirent.h"
 
 #ifndef _WIN32
 #include <dlfcn.h>

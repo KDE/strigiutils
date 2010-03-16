@@ -23,12 +23,12 @@
 #include <strigi/strigiconfig.h>
 #include <time.h>
 
-#include "analysisresult.h"
+#include <strigi/analysisresult.h>
 #include "textendanalyzer.h"
-#include "subinputstream.h"
-#include "fieldtypes.h"
-#include "gzipinputstream.h"
-#include "textutils.h"
+#include <strigi/subinputstream.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/gzipinputstream.h>
+#include <strigi/textutils.h>
 using namespace std;
 using namespace Strigi;
 

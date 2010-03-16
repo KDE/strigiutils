@@ -17,8 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../dataeventinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/dataeventinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 
 using namespace Strigi;
 

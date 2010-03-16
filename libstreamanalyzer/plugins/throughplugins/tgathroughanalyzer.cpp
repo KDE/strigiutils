@@ -20,9 +20,9 @@
 
 #include "tgathroughanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "textutils.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
 
 using namespace std;
 using namespace Strigi;

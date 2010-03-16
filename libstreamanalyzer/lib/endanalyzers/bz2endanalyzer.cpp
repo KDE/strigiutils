@@ -19,12 +19,12 @@
  */
 #include "bz2endanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "bz2inputstream.h"
+#include <strigi/bz2inputstream.h>
 #include "tarendanalyzer.h"
-#include "tarinputstream.h"
-#include "streamanalyzer.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/tarinputstream.h>
+#include <strigi/streamanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 
 using namespace std;
 using namespace Strigi;

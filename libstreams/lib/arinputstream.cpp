@@ -17,9 +17,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "arinputstream.h"
-#include <strigi/strigiconfig.h>
-#include "subinputstream.h"
+#include <strigi/arinputstream.h>
+#include <strigi/subinputstream.h>
 
 #include <stdlib.h>
 #include <cstring>

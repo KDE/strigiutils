@@ -19,9 +19,9 @@
  */
 #include "bmpendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "textutils.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
 #include <sstream>
 #include <cstring>
 using namespace std;

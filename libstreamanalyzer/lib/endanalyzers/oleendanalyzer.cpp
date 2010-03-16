@@ -24,11 +24,11 @@
 
 #include "oleendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "oleinputstream.h"
-#include "subinputstream.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "textutils.h"
+#include <strigi/oleinputstream.h>
+#include <strigi/subinputstream.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
 #include <sstream>
 #include <cstring>
 #include <cstdlib>

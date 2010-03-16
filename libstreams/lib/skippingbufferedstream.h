@@ -20,8 +20,8 @@
 #ifndef STRIGI_SKIPPINGBUFFEREDSTREAM_H
 #define STRIGI_SKIPPINGBUFFEREDSTREAM_H
 
-#include "streambase.h"
-#include "streambuffer.h"
+#include <strigi/streambase.h>
+#include <strigi/streambuffer.h>
 #include <cassert>
 #include <iostream>
 

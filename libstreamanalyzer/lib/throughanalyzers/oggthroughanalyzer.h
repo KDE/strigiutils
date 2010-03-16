@@ -21,8 +21,8 @@
 #ifndef OGGTHROUGHANALYZER_H
 #define OGGTHROUGHANALYZER_H
 
-#include "streamthroughanalyzer.h"
-#include "fieldtypes.h"
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/fieldtypes.h>
 #include <map>
 
 // ogg according to http://tools.ietf.org/html/rfc3533

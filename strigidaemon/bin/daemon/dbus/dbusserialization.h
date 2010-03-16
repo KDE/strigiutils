@@ -20,7 +20,7 @@
 #ifndef STRIGI_DBUSSERIALIZATION_H
 #define STRIGI_DBUSSERIALIZATION_H
 
-#include "clientinterface.h"
+#include <strigi/clientinterface.h>
 
 class DBusMessageReader;
 class DBusMessageWriter;

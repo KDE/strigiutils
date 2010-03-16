@@ -20,7 +20,7 @@
 #ifndef IFILTERENDANALYZER
 #define IFILTERENDANALYZER
 
-#include "streamendanalyzer.h"
+#include <strigi/streamendanalyzer.h>
 #include <set>
 
 class IFilterEndAnalyzer : public Strigi::StreamEndAnalyzer {

@@ -21,7 +21,7 @@
 #define GREPINDEXMANAGER_H
 
 #include <strigi/strigiconfig.h>
-#include "indexmanager.h"
+#include <strigi/indexmanager.h>
 
 class GrepIndexManager : public Strigi::IndexManager {
 private:

@@ -19,17 +19,17 @@
  */
 #include "interface.h"
 #include "combinedindexmanager.h"
-#include "indexreader.h"
-#include "indexwriter.h"
-#include "indexpluginloader.h"
+#include <strigi/indexreader.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexpluginloader.h>
 #include "indexscheduler.h"
-#include "eventlistener.h"
-#include "streamanalyzer.h"
-#include "analysisresult.h"
-#include "analyzerconfiguration.h"
-#include "stringstream.h"
-#include "query.h"
-#include "queryparser.h"
+#include "eventlistener/eventlistener.h"
+#include <strigi/streamanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/stringstream.h>
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
 #include <sstream>
 #include <iostream>
 #include <vector>

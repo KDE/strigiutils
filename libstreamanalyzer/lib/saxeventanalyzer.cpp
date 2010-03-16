@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "saxeventanalyzer.h"
-#include "streamsaxanalyzer.h"
-#include "analysisresult.h"
-#include "textutils.h"
+#include <strigi/streamsaxanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
 #include <libxml/SAX2.h>
 #include <iostream>
 #include <cassert>

@@ -20,7 +20,7 @@
  */
 
 #include "daemonconfigurator.h"
-#include "../strigilogging.h"
+#include "strigilogging.h"
 
 #include <algorithm>
 #include <fstream>

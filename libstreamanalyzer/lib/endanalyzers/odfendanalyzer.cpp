@@ -20,12 +20,12 @@
  */
 #include "odfendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "zipinputstream.h"
-#include "subinputstream.h"
-#include "analysisresult.h"
-#include "analyzerconfiguration.h"
-#include "fieldtypes.h"
-#include "rdfnamespaces.h"
+#include <strigi/zipinputstream.h>
+#include <strigi/subinputstream.h>
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/rdfnamespaces.h>
 using namespace Strigi;
 
 /* TODO:

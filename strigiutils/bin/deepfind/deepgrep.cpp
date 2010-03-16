@@ -21,8 +21,8 @@
 
 #include <strigi/strigiconfig.h>
 #include "grepindexmanager.h"
-#include "diranalyzer.h"
-#include "analyzerconfiguration.h"
+#include <strigi/diranalyzer.h>
+#include <strigi/analyzerconfiguration.h>
 #include <iostream>
 #include <cstring>
 using namespace Strigi;

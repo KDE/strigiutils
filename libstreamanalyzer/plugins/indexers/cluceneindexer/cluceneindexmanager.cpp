@@ -18,23 +18,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include "cluceneindexmanager.h"
 #include <strigi/strigiconfig.h>
 #include <CLucene.h>
 #include <CLucene/store/RAMDirectory.h>
 #include "cluceneindexwriter.h"
 #include "cluceneindexreader.h"
-#include "indexplugin.h"
+#include <strigi/indexplugin.h>
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
 #include "timeofday.h"
-#include "stgdirent.h" //our dirent compatibility header... uses native if available
+#include <CLucene/util/dirent.h>
+//"stgdirent.h" //our dirent compatibility header... uses native if available
 
 using namespace std;
 

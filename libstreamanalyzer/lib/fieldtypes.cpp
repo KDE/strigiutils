@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fieldtypes.h"
-#include "fieldpropertiesdb.h"
+#include <strigi/fieldtypes.h>
+#include <strigi/fieldpropertiesdb.h>
 #include <iostream>
 #include <stdio.h>
 using namespace Strigi;

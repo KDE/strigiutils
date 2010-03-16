@@ -23,9 +23,9 @@
 
 #include <strigi/strigiconfig.h>
 #include "xmlindexwriter.h"
-#include "analyzerconfiguration.h"
-#include "diranalyzer.h"
-#include "fileinputstream.h"
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/fileinputstream.h>
 #include <iostream>
 #include <cstring>
 #ifdef HAVE_UNISTD_H

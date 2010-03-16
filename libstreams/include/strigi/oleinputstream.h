@@ -21,8 +21,8 @@
 #define STRIGI_OLEINPUTSTREAM_H
 
 #include <strigi/strigiconfig.h>
-#include "streambase.h"
-#include "substreamprovider.h"
+#include <strigi/streambase.h>
+#include <strigi/substreamprovider.h>
 #include <vector>
 
 namespace Strigi {

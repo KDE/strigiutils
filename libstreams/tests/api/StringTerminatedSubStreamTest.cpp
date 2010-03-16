@@ -17,10 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "../fileinputstream.h"
-#include "../stringstream.h"
-#include "../stringterminatedsubstream.h"
-#include "inputstreamtests.h"
+#include <strigi/fileinputstream.h>
+#include <strigi/stringstream.h>
+#include <strigi/stringterminatedsubstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 #include <iostream>
 
 using namespace std;

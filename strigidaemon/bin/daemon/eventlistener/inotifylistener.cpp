@@ -19,12 +19,12 @@
  */
 #include "inotifylistener.h"
 
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 #include "combinedindexmanager.h"
 #include "event.h"
 #include "eventlistenerqueue.h"
-#include "filelister.h"
-#include "indexreader.h"
+#include <strigi/filelister.h>
+#include <strigi/indexreader.h>
 #include "../strigilogging.h"
 
 #include <cerrno>

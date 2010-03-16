@@ -20,8 +20,8 @@
 #ifndef STRIGI_DIGESTEVENTANALYZER_H
 #define STRIGI_DIGESTEVENTANALYZER_H
 
-#include "streameventanalyzer.h"
-#include "sha1.h"
+#include <strigi/streameventanalyzer.h>
+#include "../sha1.h"
 
 namespace Strigi {
     class RegisteredField;

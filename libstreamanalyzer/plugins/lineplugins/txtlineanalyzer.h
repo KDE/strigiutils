@@ -20,8 +20,8 @@
 #ifndef STRIGI_TXTLINEANALYZER
 #define STRIGI_TXTLINEANALYZER
 
-#include "streamlineanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamlineanalyzer.h>
+#include <strigi/analyzerplugin.h>
 
 namespace Strigi {
     class RegisteredField;

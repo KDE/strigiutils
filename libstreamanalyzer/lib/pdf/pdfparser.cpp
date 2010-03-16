@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "pdfparser.h"
-#include "stringterminatedsubstream.h"
-#include "gzipinputstream.h"
-#include "subinputstream.h"
+#include <strigi/stringterminatedsubstream.h>
+#include <strigi/gzipinputstream.h>
+#include <strigi/subinputstream.h>
 #include <ctype.h>
 
 using namespace std;

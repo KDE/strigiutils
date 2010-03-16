@@ -23,7 +23,7 @@
 #include <signal.h>
 #include <string.h>
 #include <sys/select.h>
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 
 bool keeprunning;
 STRIGI_THREAD_DEFINE(thread);

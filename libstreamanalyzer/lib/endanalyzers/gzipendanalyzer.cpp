@@ -19,11 +19,11 @@
  */
 #include "gzipendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "gzipinputstream.h"
+#include <strigi/gzipinputstream.h>
 #include "tarendanalyzer.h"
-#include "tarinputstream.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/tarinputstream.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 
 using namespace Strigi;
 using namespace std;

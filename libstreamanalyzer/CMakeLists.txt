@@ -1,125 +1,113 @@
-add_subdirectory(throughplugins)
-add_subdirectory(lineplugins)
-add_subdirectory(saxplugins)
-add_subdirectory(endplugins)
+project (libstreamanalyzer)
+
+
+##### cmake settings #####
+
+cmake_minimum_required(VERSION 2.6)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(MacroCheckGccVisibility)
+include(MacroFindOptionalDep)
+enable_testing()
+
+
+##### global variables #####
+
+set(LIBSTREAMANALYZER_VERSION 0.7.2)
+set(LIBSTREAMANALYZER_SOVERSION 0.7)
+option(BUILD_UTILS "build luceneindexer, xmlindexer, rdfindexer, ontoprint utilities" ON)
+option(BUILD_DEEPTOOLS "build deep find and deepgrep tools" ON)
+option(ENABLE_XINE
+       "enable Xine support. This adds support for a larger number of media formats(highly unstable)." OFF)
+option(ENABLE_FFMPEG
+       "enable FFMPEG support. This adds support for a larger number of media formats(testing)." ON)
+option(ENABLE_EXIV2
+       "enable exiv2 support. This allows you to index EXIF/IPTC metadata." ON)
+set(CLUCENE_MIN_VERSION "0.9.21")
+option(ENABLE_CLUCENE "enable CLucene support (recommended)" ON)
+
+# definition of LIB_DESTINATION which is the path where the lib is installed
+set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
+set (LIB_DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE STRING "Library directory name" FORCE)
+
+if(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
+	add_definitions(-fPIC)
+endif(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
+
+
+##### environment inspection #####
+
+# check for visibility support
+macro_check_gcc_visibility(__STRIGI_HAVE_GCC_VISIBILITY)
+
+# check for required packages
+if(STRIGI_VERSION_STRING)
+	# libstreams is being compiled now too
+	set(LIBSTREAMS_INCLUDE_DIRS
+		../libstreams/include
+		${CMAKE_CURRENT_BINARY_DIR}/../libstreams/include)
+	set(LIBSTREAMS_LIBRARIES streams)
+else(STRIGI_VERSION_STRING)
+	find_package(LibStreams REQUIRED)
+endif(STRIGI_VERSION_STRING)
+find_package(Threads REQUIRED)
+find_package(LibXml2 REQUIRED)
+find_optional_dep(CLucene ENABLE_CLUCENE CLucene_FOUND "CLucene backend")
+find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
+find_package(XAttr)
+include(ConfigureChecks.cmake)
+configure_file(LibStreamAnalyzer.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibStreamAnalyzerConfig.cmake @ONLY )
+
+##### building and testing #####
+
+configure_file(${libstreamanalyzer_SOURCE_DIR}/strigi_thread.h.cmake
+	${libstreamanalyzer_BINARY_DIR}/include/strigi/strigi_thread.h)
+
+# every directory needs the headers that will be installed
+include_directories(${LIBSTREAMS_INCLUDE_DIRS}
+	${libstreamanalyzer_SOURCE_DIR}/include
+	${libstreamanalyzer_BINARY_DIR}/include
+	${ICONV_INCLUDE_DIR}
+	${LIBSTREAMS_LIBRARY_DIRS}
+  	${EXIV2_INCLUDEDIR}
+	${XINE_INCLUDE_DIR}
+	${FFMPEG_INCLUDE_DIRS}
+	${MAGIC_INCLUDE_DIR}
+	${LIBXML2_INCLUDE_DIR}
+	${libstreamanalyzer_BINARY_DIR}/lib
+)
+if(${CLucene_FOUND})
+	include_directories(${CLUCENE_INCLUDE_DIR}
+		${CLUCENE_LIBRARY_DIR})
+endif(${CLucene_FOUND})
+if(${XATTR_FOUND})
+	include_directories(${XATTR_INCLUDE_DIR})
+endif(${XATTR_FOUND})
+
+add_subdirectory(lib)
+add_subdirectory(plugins)
 add_subdirectory(tests)
-add_subdirectory(fieldproperties)
-add_subdirectory(xesam)
 
-include_directories( ./ ../streams ../streams/pdf ${BZIP2_INCLUDE_DIR}
-	endanalyzers ${LIBXML2_INCLUDE_DIR} ${ICONV_INCLUDE_DIR}
-	${strigi_BINARY_DIR}/src/streams
-	${strigi_SOURCE_DIR}/src/streams/strigi ${CMAKE_BINARY_DIR} )
 
-set(streamanalyzer_SRCS
-	analysisresult.cpp
-	analyzerconfiguration.cpp
-	analyzerloader.cpp
-	classproperties.cpp
-	diranalyzer.cpp
-	eventthroughanalyzer.cpp
-	fieldproperties.cpp
-	fieldpropertiesdb.cpp
-	fieldtypes.cpp
-	filelister.cpp
-        indexreader.cpp
-	indexpluginloader.cpp
-	lineeventanalyzer.cpp
-	query.cpp
-	queryparser.cpp
-	saxeventanalyzer.cpp
-	sha1.cpp
-	streamanalyzer.cpp
-	streamanalyzerfactory.cpp
-	streamsaxanalyzer.cpp
-	variant.cpp
-	endanalyzers/arendanalyzer.cpp
-	endanalyzers/bmpendanalyzer.cpp
-	endanalyzers/bz2endanalyzer.cpp
-	endanalyzers/cpioendanalyzer.cpp
-	endanalyzers/flacendanalyzer.cpp
-	endanalyzers/gzipendanalyzer.cpp
-	endanalyzers/helperendanalyzer.cpp
-	endanalyzers/lzmaendanalyzer.cpp
-	endanalyzers/mailendanalyzer.cpp
-	endanalyzers/mpegendanalyzer.cpp   
-	endanalyzers/oleendanalyzer.cpp
-	endanalyzers/pdfendanalyzer.cpp
-	endanalyzers/pngendanalyzer.cpp
-	endanalyzers/rpmendanalyzer.cpp
-	endanalyzers/sdfendanalyzer.cpp
-	endanalyzers/tarendanalyzer.cpp
-	endanalyzers/textendanalyzer.cpp
-	endanalyzers/zipendanalyzer.cpp
-	endanalyzers/odfendanalyzer.cpp
-	endanalyzers/zipexeendanalyzer.cpp
-	endanalyzers/id3endanalyzer.cpp
-	eventanalyzers/digesteventanalyzer.cpp
-	eventanalyzers/mimeeventanalyzer.cpp
-	lineanalyzers/m3ustreamanalyzer.cpp
-	saxanalyzers/htmlsaxanalyzer.cpp
-	helperanalyzers/saxhelperanalyzer.cpp
-	helperanalyzers/odfmetahelperanalyzer.cpp
-	helperanalyzers/odfcontenthelperanalyzer.cpp
-	throughanalyzers/oggthroughanalyzer.cpp
-)
+##### installing #####
 
-add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
-install(TARGETS streamanalyzer ARCHIVE DESTINATION ${LIB_DESTINATION}
-                               LIBRARY DESTINATION ${LIB_DESTINATION}
-                               RUNTIME DESTINATION bin)
-
-set_target_properties(streamanalyzer PROPERTIES
-    VERSION ${STRIGI_VERSION_STRING}
-    SOVERSION ${STRIGI_VERSION_MAJOR} DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
-)
-
-set(streamanalyzer_libs streams ${streamindex_LIBS} ${LIBXML2_LIBRARIES} )
-if(HAVE_LIBDL)
-        set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
-endif(HAVE_LIBDL)
-target_link_libraries(streamanalyzer ${streamanalyzer_libs} pdfstream
-	${CMAKE_THREAD_LIBS_INIT})
-
-if(NOT WIN32)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libstreamanalyzer.pc.cmake
-  	${CMAKE_CURRENT_BINARY_DIR}/libstreamanalyzer.pc)
-
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libstreamanalyzer.pc
-  	DESTINATION ${LIB_DESTINATION}/pkgconfig )
-endif(NOT WIN32)
-
+# all installed files are listed here
+# headers
+file(GLOB STRIGI_HEADERS include/strigi/*.h)
 install(FILES
-	analysisresult.h
-	analyzerconfiguration.h
-	analyzerplugin.h
-	classproperties.h
-	diranalyzer.h
-	fieldproperties.h
-	fieldpropertiesdb.h
-	fieldtypes.h
-	indexeddocument.h
-	indexreader.h
-	indexmanager.h
-	indexplugin.h
-	indexpluginloader.h
-	indexwriter.h
-	variant.h
-	query.h
-	queryparser.h
-	streamanalyzer.h
-	streamanalyzerfactory.h
-	streamendanalyzer.h
-	streameventanalyzer.h
-	streamlineanalyzer.h
-	streamsaxanalyzer.h
-	streamthroughanalyzer.h
+	${STRIGI_HEADERS}
+	${libstreamanalyzer_BINARY_DIR}/include/strigi/strigi_thread.h
 	DESTINATION include/strigi
 )
-
-
-# test executable
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibStreamAnalyzerConfig.cmake
+	DESTINATION ${LIB_DESTINATION}/libstreamanalyzer)
+# ontologies
+file (GLOB STRIGI_ONTOLOGIES share/strigi/fieldproperties/*.rdfs)
+install(FILES
+	${STRIGI_ONTOLOGIES}
+	DESTINATION share/strigi/fieldproperties/
+)
+# library
 if(NOT WIN32)
-        add_executable(filelister filelistertest.cpp)
-        target_link_libraries(filelister streamanalyzer)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib/libstreamanalyzer.pc
+		DESTINATION ${LIB_DESTINATION}/pkgconfig)
 endif(NOT WIN32)

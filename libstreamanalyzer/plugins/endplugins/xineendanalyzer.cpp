@@ -19,12 +19,12 @@
  */
 
 #define STRIGI_IMPORT_API
-#include "analyzerplugin.h"
-#include "streamendanalyzer.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "textutils.h"
-#include "rdfnamespaces.h"
+#include <strigi/analyzerplugin.h>
+#include <strigi/streamendanalyzer.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
+#include <strigi/rdfnamespaces.h>
 #include <xine.h>
 #include <cstring>
 #include <iostream>

@@ -22,7 +22,7 @@
 #define TSSPTR_H
 
 #include "strigi/strigi_thread.h"
-#include "indexpluginloader.h"
+#include <strigi/indexpluginloader.h>
 
 // thread safe smart pointer
 template <class T>

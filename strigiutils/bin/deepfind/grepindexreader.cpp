@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "grepindexreader.h"
-#include "analyzerconfiguration.h"
-#include "query.h"
-#include "variant.h"
-#include "indexwriter.h"
-#include "filelister.h"
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/query.h>
+#include <strigi/variant.h>
+#include <strigi/indexwriter.h>
+#include <strigi/filelister.h>
 #include <set>
 using namespace std;
 using namespace Strigi;

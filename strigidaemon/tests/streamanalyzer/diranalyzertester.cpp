@@ -19,12 +19,12 @@
  */
 
 #include "diranalyzertester.h"
-#include "analyzerconfiguration.h"
-#include "diranalyzer.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "indexpluginloader.h"
-#include "unittestfunctions.h"
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/indexpluginloader.h>
+#include "utils/unittestfunctions.h"
 
 #include <errno.h>
 #include <sys/stat.h>

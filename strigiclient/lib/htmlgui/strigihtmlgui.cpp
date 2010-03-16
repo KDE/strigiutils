@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "strigihtmlgui.h"
-#include "socketclient.h"
-#include "indexreader.h"
-#include "query.h"
-#include "queryparser.h"
+#include <strigi/socketclient.h>
+#include <strigi/indexreader.h>
+#include <strigi/query.h>
+#include <strigi/queryparser.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>

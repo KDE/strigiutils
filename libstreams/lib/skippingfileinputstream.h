@@ -20,7 +20,7 @@
 #ifndef STRIGI_SKIPPINGFILEINPUTSTREAM_H
 #define STRIGI_SKIPPINGFILEINPUTSTREAM_H
 
-#include "streambase.h"
+#include <strigi/streambase.h>
 
 namespace Strigi {
 

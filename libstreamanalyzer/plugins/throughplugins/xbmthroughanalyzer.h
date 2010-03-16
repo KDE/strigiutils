@@ -20,8 +20,8 @@
 #ifndef STRIGI_XBMTHROUGHANALYZER
 #define STRIGI_XBMTHROUGHANALYZER
 
-#include "streamthroughanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/analyzerplugin.h>
 
 #include <string>
 

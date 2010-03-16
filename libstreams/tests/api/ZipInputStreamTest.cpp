@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "../zipinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/zipinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 
 using namespace Strigi;
 

@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "../arinputstream.h"
-#include "inputstreamtests.h"
+#include <strigi/arinputstream.h>
+#include "../sharedtestcode/inputstreamtests.h"
 
 using namespace Strigi;
 

@@ -17,11 +17,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 #include <strigi/strigiconfig.h>
 #include "strigi_fnmatch.h"
-#include "fieldproperties.h"
-#include "fieldpropertiesdb.h"
+#include <strigi/fieldproperties.h>
+#include <strigi/fieldpropertiesdb.h>
 using namespace std;
 using namespace Strigi;
 

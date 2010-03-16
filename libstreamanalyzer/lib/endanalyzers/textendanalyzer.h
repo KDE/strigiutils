@@ -20,8 +20,8 @@
 #ifndef TEXTENDANALYZER
 #define TEXTENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class TextEndAnalyzer : public Strigi::StreamEndAnalyzer {
 public:

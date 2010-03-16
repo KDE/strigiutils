@@ -20,9 +20,9 @@
 #ifndef PDFENDANALYZER
 #define PDFENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
-#include "pdfparser.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
+#include "../pdf/pdfparser.h"
 
 class PdfEndAnalyzerFactory;
 class PdfEndAnalyzer : public Strigi::StreamEndAnalyzer,

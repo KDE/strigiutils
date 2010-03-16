@@ -1,11 +1,4 @@
 subdirs(dbuscpp)
-include_directories(.. dbuscpp ${CMAKE_CURRENT_BINARY_DIR})
-
-IF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
-    add_definitions(-DHAVE_LOG4CXX)
-    set(test_LIBS ${LOG4CXX_LIBRARIES})
-    include_directories( ${LOG4CXX_INCLUDE_DIR} )
-ENDIF (ENABLE_LOG4CXX AND LOG4CXX_FOUND)
 
 # if available, use Perl for generating the dbus interfaces.
 # otherwise, just copy them into the build directory
@@ -17,7 +10,7 @@ MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
             OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.h"
                     "${CMAKE_CURRENT_BINARY_DIR}/dbus${INAME}.cpp"
             COMMAND ${PERL_EXECUTABLE}
-            ARGS    "${strigi_SOURCE_DIR}/src/daemon/dbus/dbuscpp/makecode.pl"
+            ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/dbuscpp/makecode.pl"
                     ${INTERFACE} 
                     ${HEADERFILE}
                     ${EXTRAINCLUDE}
@@ -55,15 +48,15 @@ MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
         PROPERTIES GENERATED true)
 ENDMACRO(CreateDBusBinding)
 
-CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/clientinterface.h"
+CreateDBusBinding("${CMAKE_CURRENT_SOURCE_DIR}/../../../include/strigi/clientinterface.h"
         "clientinterface" "vandenoever.strigi"
-        "dbusserialization.h")
-CreateDBusBinding("${strigi_SOURCE_DIR}/src/daemon/dbus/testinterface.h"
+        "dbus/dbusserialization.h")
+CreateDBusBinding("${CMAKE_CURRENT_SOURCE_DIR}/testinterface.h"
         "testinterface" "vandenoever.strigi" "")
 CreateDBusBinding(
-        "${strigi_SOURCE_DIR}/src/daemon/xesam/xesamlivesearchinterface.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../xesam/xesamlivesearchinterface.h"
         "xesamlivesearchinterface" "org.freedesktop.xesam.Search"
-        "dbusserialization.h")
+        "dbus/dbusserialization.h")
 
 add_library(dbusserver STATIC testinterface.cpp dbusserver.cpp
     dbusserialization.cpp
@@ -72,14 +65,14 @@ add_library(dbusserver STATIC testinterface.cpp dbusserver.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/dbusclientinterface.cpp"
 )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DBUS_CFLAGS}")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DBUS_CFLAGS}")
 target_link_libraries(dbusserver dbuscpp)
 
 add_executable(testserver testserver.cpp ../strigithread.cpp)
-target_link_libraries(testserver dbusserver ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS} streamanalyzer)
+target_link_libraries(testserver dbusserver ${CMAKE_THREAD_LIBS_INIT} ${DBUS_LIBRARIES} ${LOG4CXX_LIBRARIES} streamanalyzer)
 
 add_executable(dbustest dbustest.cpp)
-target_link_libraries(dbustest ${DBUS_LDFLAGS} ${CMAKE_THREAD_LIBS_INIT} ${test_LIBS})
+target_link_libraries(dbustest  ${CMAKE_THREAD_LIBS_INIT} ${LOG4CXX_LIBRARIES} ${DBUS_LIBRARIES})
 
 configure_file(vandenoever.strigi.service.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/vandenoever.strigi.service)

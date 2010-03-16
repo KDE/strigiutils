@@ -17,9 +17,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "oleinputstream.h"
-#include "textutils.h"
-#include "bufferedstream.h"
+#include <strigi/oleinputstream.h>
+#include <strigi/textutils.h>
+#include <strigi/bufferedstream.h>
 #include <iostream>
 #include <set>
 using namespace Strigi;

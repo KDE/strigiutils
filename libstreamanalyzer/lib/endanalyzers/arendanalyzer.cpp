@@ -19,11 +19,11 @@
  */
 #include "arendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "arinputstream.h"
-#include "analysisresult.h"
-#include "fieldtypes.h"
-#include "subinputstream.h"
-#include "analyzerconfiguration.h"
+#include <strigi/arinputstream.h>
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
+#include <strigi/subinputstream.h>
+#include <strigi/analyzerconfiguration.h>
 using namespace Strigi;
 
 void

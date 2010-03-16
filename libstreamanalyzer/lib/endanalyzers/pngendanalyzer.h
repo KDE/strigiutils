@@ -20,8 +20,8 @@
 #ifndef PNGENDANALYZER
 #define PNGENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class PngEndAnalyzerFactory;
 class PngEndAnalyzer : public Strigi::StreamEndAnalyzer {

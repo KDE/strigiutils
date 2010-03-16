@@ -22,16 +22,16 @@
 #endif
 
 #include <strigi/strigiconfig.h>
-#include "compat.h"
-#include "fileinputstream.h"
-#include "bz2inputstream.h"
-#include "diranalyzer.h"
-#include "analyzerconfiguration.h"
-#include "streamendanalyzer.h"
-#include "streamthroughanalyzer.h"
-#include "streamlineanalyzer.h"
-#include "streamsaxanalyzer.h"
-#include "streameventanalyzer.h"
+//#include "compat.h"
+#include <strigi/fileinputstream.h>
+#include <strigi/bz2inputstream.h>
+#include <strigi/diranalyzer.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/streamlineanalyzer.h>
+#include <strigi/streamsaxanalyzer.h>
+#include <strigi/streameventanalyzer.h>
 #include "xmlindexwriter.h"
 
 #include <cstdio>

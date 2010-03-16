@@ -21,8 +21,8 @@
 #define CLUCENEINDEXMANAGER_H
 
 #include <strigi/strigiconfig.h>
-#include "indexmanager.h"
-#include <strigi_thread.h>
+#include <strigi/indexmanager.h>
+#include <strigi/strigi_thread.h>
 #include <string>
 #include <map>
 

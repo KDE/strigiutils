@@ -22,7 +22,7 @@
 #define STRIGI_LINEEVENTANALYZER
 
 #include <strigi/strigiconfig.h>
-#include "streameventanalyzer.h"
+#include <strigi/streameventanalyzer.h>
 #include <vector>
 #include <string>
 #include <iconv.h>

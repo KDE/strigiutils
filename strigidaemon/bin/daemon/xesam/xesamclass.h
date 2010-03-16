@@ -21,7 +21,7 @@
 #ifndef XESAMCLASS_H
 #define XESAMCLASS_H
 
-#include "strigi_thread.h"
+#include "strigi/strigi_thread.h"
 #include <iostream>
 
 class XesamClass {

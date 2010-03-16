@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "stringstream.h"
-#include "stringterminatedsubstream.h"
-#include "subinputstream.h"
 #include "xmlindexwriter.h"
+#include <strigi/stringstream.h>
+#include <strigi/stringterminatedsubstream.h>
+#include <strigi/subinputstream.h>
 #include <time.h>
 #include <iostream>
 #include <cstdlib>

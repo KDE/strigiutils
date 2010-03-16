@@ -21,8 +21,8 @@
 #define STRIGI_GZIPCOMPRESSSTREAM_H
 
 #include <strigi/strigiconfig.h>
-#include "streambase.h"
-#include "bufferedstream.h"
+#include <strigi/streambase.h>
+#include <strigi/bufferedstream.h>
 
 struct z_stream_s;
 

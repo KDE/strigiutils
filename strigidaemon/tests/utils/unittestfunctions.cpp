@@ -20,8 +20,8 @@
 
 #include "unittestfunctions.h"
 
-#include "indexmanager.h"
-#include "indexpluginloader.h"
+#include <strigi/indexmanager.h>
+#include <strigi/indexpluginloader.h>
 #include <vector>
 #include <algorithm>
 

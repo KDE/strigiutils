@@ -19,10 +19,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "mimeeventanalyzer.h"
-#include "fieldtypes.h"
-#include "textutils.h"
-#include "fileinputstream.h"
-#include "analysisresult.h"
+#include <strigi/fieldtypes.h>
+#include <strigi/textutils.h>
+#include <strigi/fileinputstream.h>
+#include <strigi/analysisresult.h>
 #include <config.h>
 
 // http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.12.html

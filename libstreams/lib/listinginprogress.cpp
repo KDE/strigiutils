@@ -18,9 +18,9 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "listinginprogress.h"
-#include "gzipinputstream.h"
-#include "bz2inputstream.h"
-#include "lzmainputstream.h"
+#include <strigi/gzipinputstream.h>
+#include <strigi/bz2inputstream.h>
+#include <strigi/lzmainputstream.h>
 #include <iostream>
 
 using namespace Strigi;

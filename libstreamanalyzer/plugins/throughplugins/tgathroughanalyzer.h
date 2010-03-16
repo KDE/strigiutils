@@ -20,8 +20,8 @@
 #ifndef STRIGI_TGATHROUGHANALYZER
 #define STRIGI_TGATHROUGHANALYZER
 
-#include "streamthroughanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/analyzerplugin.h>
 
 namespace Strigi {
     class RegisteredField;

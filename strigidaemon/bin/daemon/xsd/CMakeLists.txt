@@ -1,22 +1,11 @@
-
 # create a library with the shared code for parsing xml files
-include_directories(xsdparser ${ICONV_INCLUDE_DIR})
 
 if (LIBXML2_FOUND)
-  include_directories(${LIBXML2_INCLUDE_DIR})
   add_library(xmlstream STATIC
 	xsdparser/libxmlstream.cpp
 	xsdparser/xmlstream.cpp
   )
   target_link_libraries(xmlstream ${LIBXML2_LIBRARIES})
-else (LIBXML2_FOUND)
-  # we use expat
-  include_directories(${EXPAT_INCLUDE_DIR})
-  add_library(xmlstream STATIC
-	xsdparser/expatxmlstream.cpp
-	xsdparser/xmlstream.cpp
-  )
-  target_link_libraries(xmlstream ${EXPAT_LIBRARY})
 endif (LIBXML2_FOUND)
 
 # javac >= 1.5 is required to compile the xsd parser

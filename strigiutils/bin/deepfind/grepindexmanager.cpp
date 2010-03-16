@@ -20,7 +20,7 @@
 #include "grepindexmanager.h"
 #include "grepindexreader.h"
 #include "grepindexwriter.h"
-#include "indexwriter.h"
+#include <strigi/indexwriter.h>
 using namespace Strigi;
 
 GrepIndexManager::GrepIndexManager(const char* regex)

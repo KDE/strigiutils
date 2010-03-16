@@ -21,7 +21,7 @@
 # include "config.h"
 #endif
 
-#include "encodinginputstream.h"
+#include <strigi/encodinginputstream.h>
 #include <iconv.h>
 #include <cerrno>
 using namespace Strigi;

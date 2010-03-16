@@ -21,8 +21,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "streameventanalyzer.h"
-#include "analyzerplugin.h"
+#include <strigi/streameventanalyzer.h>
+#include <strigi/analyzerplugin.h>
 #include <stack>
 #include <iostream>
 
@@ -98,11 +98,12 @@ private:
     }
 };
 
-#include "textutils.h"
+#include <strigi/textutils.h>
 #include <strigi/strigiconfig.h>
-#include "analysisresult.h"
-#include "fieldtypes.h"
+#include <strigi/analysisresult.h>
+#include <strigi/fieldtypes.h>
 #include <cstring>
+#include <cstdlib>
 
 using namespace std;
 using namespace Strigi;

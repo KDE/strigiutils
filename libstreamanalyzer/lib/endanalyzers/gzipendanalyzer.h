@@ -20,8 +20,8 @@
 #ifndef GZIPENDANALYZER
 #define GZIPENDANALYZER
 
-#include "streamendanalyzer.h"
-#include "streambase.h"
+#include <strigi/streamendanalyzer.h>
+#include <strigi/streambase.h>
 
 class GZipEndAnalyzerFactory;
 class GZipEndAnalyzer : public Strigi::StreamEndAnalyzer {

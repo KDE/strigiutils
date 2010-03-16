@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "saxhelperanalyzer.h"
-#include "analysisresult.h"
-#include "textutils.h"
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
 #include <iostream>
 #include <cassert>
 #include <cstring>

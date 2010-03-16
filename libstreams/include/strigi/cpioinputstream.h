@@ -20,8 +20,8 @@
 #ifndef STRIGI_CPIOINPUTSTREAM_H
 #define STRIGI_CPIOINPUTSTREAM_H
 
-#include "substreamprovider.h"
-#include "gzipinputstream.h"
+#include <strigi/substreamprovider.h>
+#include <strigi/gzipinputstream.h>
 
 namespace Strigi {
 

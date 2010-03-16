@@ -19,8 +19,8 @@
  */
 #include <stdio.h>
 
-#include "../kmpsearcher.h"
-#include "inputstreamtests.h"
+#include <strigi/kmpsearcher.h>
+#include "../sharedtestcode/inputstreamtests.h"
 #include <cstring>
 
 using namespace Strigi;

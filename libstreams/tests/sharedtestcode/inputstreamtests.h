@@ -53,7 +53,7 @@ extern int founderrors;
 }
 
 #include "unknownsizestream.h"
-#include "../fileinputstream.h"
+#include <strigi/fileinputstream.h>
 
 #define TESTONFILE(CLASS, FILE)  \
     for (int i=0; i<ninputstreamtests; ++i) { \

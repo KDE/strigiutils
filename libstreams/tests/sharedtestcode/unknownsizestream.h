@@ -21,7 +21,7 @@
 #define STRIGI_UNKNOWNSIZEINPUTSTREAM
 
 #include <strigi/strigiconfig.h>
-#include "../streambase.h"
+#include <strigi/streambase.h>
 
 namespace Strigi {
 

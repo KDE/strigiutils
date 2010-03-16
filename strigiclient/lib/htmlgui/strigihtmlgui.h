@@ -21,7 +21,7 @@
 #define STRIGIHTMLGUI_H
 
 #include <strigi/strigiconfig.h>
-#include "clientinterface.h"
+#include <strigi/clientinterface.h>
 #include <ostream>
 #include <map>
 #include <string>

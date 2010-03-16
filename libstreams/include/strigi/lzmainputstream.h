@@ -20,7 +20,7 @@
 #ifndef STRIGI_LZMAINPUTSTREAM_H
 #define STRIGI_LZMAINPUTSTREAM_H
 
-#include "bufferedstream.h"
+#include <strigi/bufferedstream.h>
 
 namespace Strigi {
 

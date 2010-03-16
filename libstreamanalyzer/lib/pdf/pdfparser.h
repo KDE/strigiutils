@@ -20,7 +20,7 @@
 #ifndef PDFPARSER_H
 #define PDFPARSER_H
 
-#include "streambase.h"
+#include <strigi/streambase.h>
 
 class PdfParser {
 public:

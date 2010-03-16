@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 #include "sdfendanalyzer.h"
-#include "sdfinputstream.h"
-#include "fieldtypes.h"
+#include <strigi/sdfinputstream.h>
+#include <strigi/fieldtypes.h>
 #include <iostream>
 using namespace Strigi;
 using namespace std;

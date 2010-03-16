@@ -19,10 +19,10 @@
  */
 #include "textendanalyzer.h"
 #include <strigi/strigiconfig.h>
-#include "streamanalyzer.h"
-#include "inputstreamreader.h"
-#include "analysisresult.h"
-#include "textutils.h"
+#include <strigi/streamanalyzer.h>
+#include <strigi/inputstreamreader.h>
+#include <strigi/analysisresult.h>
+#include <strigi/textutils.h>
 #include <iostream>
 using namespace Strigi;
 using namespace std;

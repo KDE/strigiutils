@@ -6,6 +6,6 @@ includedir=${CMAKE_INSTALL_PREFIX}/include
 Name: libstreamanalyzer
 Description: C++ library for extracting text and metadata from files and streams
 Requires: libstreams
-Version: ${STRIGI_VERSION_MAJOR}.${STRIGI_VERSION_MINOR}.${STRIGI_VERSION_PATCH}
+Version: ${LIBSTREAMANALYZER_VERSION}
 Libs: -L${LIB_DESTINATION} -lstreamanalyzer
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include

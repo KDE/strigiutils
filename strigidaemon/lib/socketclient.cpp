@@ -17,7 +17,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "socketclient.h"
+#include <strigi/socketclient.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>

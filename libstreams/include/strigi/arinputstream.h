@@ -20,7 +20,7 @@
 #ifndef STRIGI_ARINPUTSTREAM_H
 #define STRIGI_ARINPUTSTREAM_H
 
-#include "substreamprovider.h"
+#include <strigi/substreamprovider.h>
 
 namespace Strigi {
 

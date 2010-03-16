@@ -17,15 +17,15 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include "diranalyzer.h"
-#include "indexwriter.h"
-#include "indexmanager.h"
-#include "indexreader.h"
-#include "filelister.h"
-#include "analysisresult.h"
-#include "analyzerconfiguration.h"
-#include "strigi_thread.h"
-#include "fileinputstream.h"
+#include <strigi/diranalyzer.h>
+#include <strigi/indexwriter.h>
+#include <strigi/indexmanager.h>
+#include <strigi/indexreader.h>
+#include <strigi/filelister.h>
+#include <strigi/analysisresult.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/strigi_thread.h>
+#include <strigi/fileinputstream.h>
 #include <map>
 #include <iostream>
 #include <sys/stat.h>

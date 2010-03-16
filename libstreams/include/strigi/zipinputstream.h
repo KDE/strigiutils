@@ -20,8 +20,8 @@
 #ifndef STRIGI_ZIPINPUTSTREAM_H
 #define STRIGI_ZIPINPUTSTREAM_H
 
-#include "substreamprovider.h"
-#include "gzipinputstream.h"
+#include <strigi/substreamprovider.h>
+#include <strigi/gzipinputstream.h>
 
 namespace Strigi {
 

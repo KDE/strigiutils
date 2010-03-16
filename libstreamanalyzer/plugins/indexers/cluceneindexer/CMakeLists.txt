@@ -1,15 +1,5 @@
 include (CheckCXXCompilerFlag)
 
-include_directories(
-    ${strigi_SOURCE_DIR}/src/streamanalyzer
-    ${strigi_SOURCE_DIR}/src/streams
-    ${strigi_BINARY_DIR}/src/streams
-    ${strigi_SOURCE_DIR}/src/streams/strigi
-    ${CLUCENE_LIBRARY_DIR}
-    ${CLUCENE_INCLUDE_DIR}
-    ${ICONV_INCLUDE_DIR}
-)
-
 IF(WIN32)
     # why only here and not for the complete project?
     ADD_DEFINITIONS(-D_UNICODE)

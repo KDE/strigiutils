@@ -23,9 +23,9 @@
 #endif
 
 
-#include "mailinputstream.h"
-#include "subinputstream.h"
-#include "stringterminatedsubstream.h"
+#include <strigi/mailinputstream.h>
+#include <strigi/subinputstream.h>
+#include <strigi/stringterminatedsubstream.h>
 #include "base64inputstream.h"
 #include "iconv.h"
 #include <cstring>

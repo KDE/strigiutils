@@ -19,10 +19,10 @@
  */
 #include <strigi/strigiconfig.h>
 #include "dummyindexwriter.h"
-#include "streamanalyzer.h"
-#include "analyzerconfiguration.h"
-#include "streamendanalyzer.h"
-#include "diranalyzer.h"
+#include <strigi/streamanalyzer.h>
+#include <strigi/analyzerconfiguration.h>
+#include <strigi/streamendanalyzer.h>
+#include <strigi/diranalyzer.h>
 using namespace Strigi;
 using namespace std;
 
