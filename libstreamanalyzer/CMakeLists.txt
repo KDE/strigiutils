@@ -74,16 +74,13 @@ include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${FFMPEG_INCLUDE_DIRS}
 	${MAGIC_INCLUDE_DIR}
 	${LIBXML2_INCLUDE_DIR}
-	${CLUCENE_INCLUDE_DIR}
-	${CLUCENE_LIBRARY_DIR}
 )
-if(${CLucene_FOUND})
-	include_directories(${CLUCENE_INCLUDE_DIR}
-		${CLUCENE_LIBRARY_DIR})
-endif(${CLucene_FOUND})
-if(${XATTR_FOUND})
+if(CLucene_FOUND)
+	include_directories(${CLUCENE_INCLUDE_DIR} ${CLUCENE_LIBRARY_DIR})
+endif(CLucene_FOUND)
+if(XATTR_FOUND)
 	include_directories(${XATTR_INCLUDE_DIR})
-endif(${XATTR_FOUND})
+endif(XATTR_FOUND)
 
 add_subdirectory(lib)
 add_subdirectory(plugins)
