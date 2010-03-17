@@ -30,8 +30,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include "timeofday.h"
-#include <CLucene/util/dirent.h>
-//"stgdirent.h" //our dirent compatibility header... uses native if available
+#include "../../../lib/stgdirent.h"
 
 using namespace std;
 
