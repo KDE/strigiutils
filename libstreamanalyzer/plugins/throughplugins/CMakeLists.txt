@@ -19,7 +19,7 @@ MACRO(ADD_STRIGITA libname files)
 ENDMACRO(ADD_STRIGITA)
 
 if (XATTR_FOUND)
-  ADD_STRIGITA(xattr xattrthroughanalyzer.cpp)
+#  ADD_STRIGITA(xattr xattrthroughanalyzer.cpp)
 endif (XATTR_FOUND)
 
 ADD_STRIGITA(pcx pcxthroughanalyzer.cpp)
