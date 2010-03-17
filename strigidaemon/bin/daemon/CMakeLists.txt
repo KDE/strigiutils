@@ -18,6 +18,7 @@ set(strigidaemon_LIBS
 	xesam
 	strigidaemonconfiguration
 	streamanalyzer
+	${LOG4CXX_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 )
 if(ENABLE_DBUS)
