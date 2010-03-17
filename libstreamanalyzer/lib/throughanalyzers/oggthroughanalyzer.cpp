@@ -23,7 +23,7 @@
 #include <strigi/strigiconfig.h>
 #include <strigi/analysisresult.h>
 #include <strigi/textutils.h>
-#include <strigi/rdfnamespaces.h>
+#include "../rdfnamespaces.h"
 #include <iostream>
 #include <cctype>
 #include <cstring>

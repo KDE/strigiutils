@@ -66,6 +66,7 @@ configure_file(${libstreamanalyzer_SOURCE_DIR}/strigi_thread.h.cmake
 include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${libstreamanalyzer_SOURCE_DIR}/include
 	${libstreamanalyzer_BINARY_DIR}/include
+	${libstreamanalyzer_BINARY_DIR}/lib
 	${ICONV_INCLUDE_DIR}
 	${LIBSTREAMS_LIBRARY_DIRS}
   	${EXIV2_INCLUDEDIR}
@@ -75,7 +76,6 @@ include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIR}
 	${CLUCENE_INCLUDE_DIR}
 	${CLUCENE_LIBRARY_DIR}
-	${libstreamanalyzer_BINARY_DIR}/lib
 )
 if(${CLucene_FOUND})
 	include_directories(${CLUCENE_INCLUDE_DIR}

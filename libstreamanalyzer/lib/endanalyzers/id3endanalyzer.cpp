@@ -24,7 +24,7 @@
 #endif
 
 #include "id3endanalyzer.h"
-#include <strigi/rdfnamespaces.h>
+#include "../rdfnamespaces.h"
 #include <strigi/strigiconfig.h>
 #include <strigi/analysisresult.h>
 #include <strigi/textutils.h>

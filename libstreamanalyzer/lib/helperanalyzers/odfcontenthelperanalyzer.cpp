@@ -27,7 +27,7 @@
 
 #include <strigi/analysisresult.h>
 #include <strigi/fieldtypes.h>
-#include <strigi/rdfnamespaces.h>
+#include "../rdfnamespaces.h"
 
 using namespace Strigi;
 using namespace std;

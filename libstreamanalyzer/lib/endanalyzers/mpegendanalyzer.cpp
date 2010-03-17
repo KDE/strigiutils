@@ -25,7 +25,7 @@
 #include "mpegendanalyzer.h"
 #include <strigi/strigiconfig.h>
 #include <strigi/analysisresult.h>
-#include <strigi/rdfnamespaces.h>
+#include "../rdfnamespaces.h"
 #include <strigi/textutils.h>
 #include <iostream>
 using namespace Strigi;

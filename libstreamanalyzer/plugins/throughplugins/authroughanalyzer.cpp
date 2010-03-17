@@ -23,7 +23,7 @@
 #include <strigi/analysisresult.h>
 #include <strigi/fieldtypes.h>
 #include <strigi/textutils.h>
-#include <strigi/rdfnamespaces.h>
+#include "../../lib/rdfnamespaces.h"
 
 using namespace std;
 using namespace Strigi;
