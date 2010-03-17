@@ -28,27 +28,27 @@
 #include <strigi/strigiconfig.h>
 
 #ifndef HAVE_ISBLANK
-STREAMS_EXPORT int isblank(char c);
+int isblank(char c);
 #endif
 
 #ifndef HAVE_SETENV
-STREAMS_EXPORT int setenv(const char *name, const char *value, int overwrite);
+int setenv(const char *name, const char *value, int overwrite);
 #endif
 
 #ifndef HAVE_STRCASECMP
-STREAMS_EXPORT int strcasecmp(const char *s1, const char *s2);
+int strcasecmp(const char *s1, const char *s2);
 #endif
 
 #ifndef HAVE_STRNCASECMP
-STREAMS_EXPORT int strncasecmp(const char *s1, const char *s2, int l);
+int strncasecmp(const char *s1, const char *s2, int l);
 #endif
 
 #ifndef HAVE_STRCASESTR
-STREAMS_EXPORT const char *strcasestr(const char *big, const char *little);
+const char *strcasestr(const char *big, const char *little);
 #endif
 
 #ifndef HAVE_MKSTEMP
-STREAMS_EXPORT int mkstemp(char *tmpl);
+int mkstemp(char *tmpl);
 #endif
 
 #endif // _STRIGI_COMPAT_H

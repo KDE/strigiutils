@@ -27,7 +27,7 @@ namespace Strigi {
 /**
  * @brief Provides buffered access to a file
  */
-class STREAMS_EXPORT SkippingFileInputStream2 : public SkippingBufferedInputStream {
+class SkippingFileInputStream2 : public SkippingBufferedInputStream {
 private:
     FILE *file;
     std::string filepath;

@@ -28,7 +28,7 @@ struct z_stream_s;
 
 namespace Strigi {
 
-class STREAMS_EXPORT GZipCompressInputStream : public BufferedInputStream {
+class GZipCompressInputStream : public BufferedInputStream {
 private:
     z_stream_s* zstream;
     InputStream* input;

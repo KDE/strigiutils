@@ -24,7 +24,7 @@
 
 namespace Strigi {
 
-class STREAMS_EXPORT Base64InputStream : public BufferedInputStream {
+class Base64InputStream : public BufferedInputStream {
 private:
     class Private;
     Private* const p;

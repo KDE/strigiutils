@@ -73,20 +73,20 @@ struct DIR
 * Returns a pointer to a DIR structure appropriately filled in to begin
 * searching a directory.
 */
-STREAMS_EXPORT DIR* strigi_opendir (const char* filespec);
+DIR* strigi_opendir (const char* filespec);
 #define opendir strigi_opendir
 
 /**
 * Return a pointer to a dirent structure filled with the information on the
 * next entry in the directory.
 */
-STREAMS_EXPORT struct dirent* strigi_readdir (DIR* dir);
+struct dirent* strigi_readdir (DIR* dir);
 #define readdir strigi_readdir
 
 /**
 * Frees up resources allocated by opendir.
 */
-STREAMS_EXPORT int32_t strigi_closedir (DIR* dir);
+int32_t strigi_closedir (DIR* dir);
 #define closedir strigi_closedir
 
 

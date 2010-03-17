@@ -32,7 +32,7 @@ namespace Strigi {
  * underlying stream is reacher, or a given terminator is encountered
  * in the the stream.
  */
-class STREAMS_EXPORT SignatureInputStream : public InputStream {
+class SignatureInputStream : public InputStream {
 private:
     class Private;
     Private* const p;
