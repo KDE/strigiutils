@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 #define STRIGI_IMPORT_API //todo: could also define this in cmake...
-#include <strigiconfig.h>
-#include <streamthroughanalyzer.h>
-#include <analyzerplugin.h>
-#include <analysisresult.h>
+#include <strigi/strigiconfig.h>
+#include <strigi/streamthroughanalyzer.h>
+#include <strigi/analyzerplugin.h>
+#include <strigi/analysisresult.h>
 #include <sys/types.h>
 #include <attr/xattr.h>
 #include <errno.h>
