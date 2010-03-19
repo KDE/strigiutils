@@ -11,6 +11,15 @@ enable_testing()
 
 ##### global variables #####
 
+# Set up RPATH handling, so the libs are found if they are installed to a non-standard location.
+# By default cmake builds the targets with full RPATH to everything in the build directory,
+# but then removes the RPATH when installing.
+# These two options below make it set the RPATH of the installed targets to all
+# RPATH directories outside the current CMAKE_BINARY_DIR and also the library
+# install directory. Alex
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE)
+set(CMAKE_INSTALL_RPATH                ${LIB_DESTINATION} )
+
 # libstreams defines the definitions shared by the Strigi projects
 set(STRIGI_VERSION_MAJOR 0 CACHE INT "Major Strigi version number" FORCE)
 set(STRIGI_VERSION_MINOR 7 CACHE INT "Minor Strigi version number" FORCE)

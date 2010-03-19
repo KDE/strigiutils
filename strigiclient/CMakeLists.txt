@@ -17,6 +17,15 @@ set(QT_MIN_VERSION "4.3.0")
 set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
 set (LIB_DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE STRING "Library directory name" FORCE)
 
+# Set up RPATH handling, so the libs are found if they are installed to a non-standard location.
+# By default cmake builds the targets with full RPATH to everything in the build directory,
+# but then removes the RPATH when installing.
+# These two options below make it set the RPATH of the installed targets to all
+# RPATH directories outside the current CMAKE_BINARY_DIR and also the library
+# install directory. Alex
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE)
+set(CMAKE_INSTALL_RPATH                ${LIB_DESTINATION} )
+
 
 ##### environment inspection #####
 find_optional_dep(Qt4 ENABLE_QT4 QT4_FOUND "Qt4 GUI client")
