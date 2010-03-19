@@ -93,7 +93,7 @@ endif(XATTR_FOUND)
 
 add_subdirectory(lib)
 add_subdirectory(plugins)
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 
 ##### installing #####
