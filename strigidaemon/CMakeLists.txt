@@ -74,6 +74,7 @@ configure_file(${strigidaemon_SOURCE_DIR}/strigi_thread.h.cmake
 include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${LIBSTREAMANALYZER_INCLUDE_DIRS}
 	${strigidaemon_SOURCE_DIR}/include
+	${strigidaemon_SOURCE_DIR}/bin/daemon/xsd
 	${strigidaemon_BINARY_DIR}
 	${strigidaemon_BINARY_DIR}/bin/daemon/dbus
 	${DBUS_INCLUDE_DIRS}
