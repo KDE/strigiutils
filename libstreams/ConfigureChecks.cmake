@@ -120,7 +120,7 @@ if(WIN32)
   SET(strigi_extra_config_output ${libstreams_BINARY_DIR}/include/strigi/strigiconfig.h)
 
   CONFIGURE_FILE(
-    ${libstreams_SOURCE_DIR}/strigiconfig.h.win32.cmake
+    ${libstreams_SOURCE_DIR}/strigiconfig.h.cmake
     ${strigi_extra_config_output}
   )
 else(WIN32)
