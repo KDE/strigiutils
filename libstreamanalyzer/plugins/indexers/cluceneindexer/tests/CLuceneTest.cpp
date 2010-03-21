@@ -5,7 +5,7 @@
 #include "indexmanagertests.h"
 #include "indexwritertests.h"
 #include "indexreadertests.h"
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>

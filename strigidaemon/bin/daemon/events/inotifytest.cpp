@@ -43,7 +43,7 @@ public:
 };
 
 #include "filelister.h"
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 #include <errno.h>
 using namespace std;
 using namespace Strigi;

@@ -23,7 +23,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "analyzerconfiguration.h"
+#include <strigi/analyzerconfiguration.h>
 
 #include <set>
 #include <string>
