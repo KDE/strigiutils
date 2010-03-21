@@ -20,10 +20,14 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE)
 set(CMAKE_INSTALL_RPATH                ${LIB_DESTINATION} )
 
 option(ENABLE_DBUS "enable dbus support in the daemon" ON)
-option(ENABLE_INOTIFY "enable monitoring the filesystem with inotify" ON)
+option(ENABLE_INOTIFY "enable monitoring the filesystem with inotify" OFF)
 option(ENABLE_FAM "enable monitoring the filesystem with FAM" ON)
 option(ENABLE_POLLING "enable monitoring the filesystem via polling" ON)
 option(ENABLE_LOG4CXX "enable use of the logging framework Log4CXX" ON)
+
+if(CMAKE_SYSTEM MATCHES "Linux")
+    set(ENABLE_INOTIFY ON)
+endif(CMAKE_SYSTEM MATCHES "Linux")
 
 # definition of LIB_DESTINATION which is the path where the lib is installed
 set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
