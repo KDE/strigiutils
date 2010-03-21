@@ -62,7 +62,7 @@ if(HAVE_LIBDL)
         set(streamanalyzer_libs ${streamanalyzer_libs} ${LIBDL} )
 endif(HAVE_LIBDL)
 target_link_libraries(streamanalyzerstatic ${streamanalyzer_libs}
-	${CMAKE_THREAD_LIBS_INIT} dl)
+	${CMAKE_THREAD_LIBS_INIT})
 
 add_library(streamanalyzer SHARED ${streamanalyzer_SRCS})
 set_target_properties(streamanalyzer PROPERTIES

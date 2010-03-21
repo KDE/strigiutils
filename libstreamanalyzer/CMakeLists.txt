@@ -42,6 +42,31 @@ if(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
 	add_definitions(-fPIC)
 endif(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
 
+#
+# AC_CHECK_LIB(dl, dlopen, DL_LIBRARY="-ldl", DL_LIBRARY="") for cmake by
+# alexander neundorf
+#
+# on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
+if(NOT WIN32)
+  include(CheckFunctionExists)
+  check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
+  check_function_exists(dlopen DLOPEN_IN_LIBC)
+  set(LIBDL)
+
+  if (DLOPEN_IN_LIBC)
+   set(HAVE_LIBDL TRUE)
+  endif (DLOPEN_IN_LIBC)
+
+  if (DLOPEN_IN_LIBDL)
+   set(LIBDL dl)
+   set(HAVE_LIBDL TRUE)
+  endif (DLOPEN_IN_LIBDL)
+
+  if (NOT HAVE_LIBDL)
+   message(FATAL_ERROR "dlopen support is required.")
+  endif (NOT HAVE_LIBDL)
+endif(NOT WIN32)
+
 
 ##### environment inspection #####
 
