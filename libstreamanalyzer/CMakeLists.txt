@@ -12,6 +12,9 @@ enable_testing()
 
 ##### global variables #####
 
+# due to a bug in libxml2, we only get thread support if _REENTRANT is defined      
+add_definitions(-D_REENTRANT)
+
 # Set up RPATH handling, so the libs are found if they are installed to a non-standard location.
 # By default cmake builds the targets with full RPATH to everything in the build directory,
 # but then removes the RPATH when installing.

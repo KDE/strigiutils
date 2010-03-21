@@ -1,8 +1,5 @@
 project (strigi)
 
-# due to a bug in libxml2, we only get thread support if _REENTRANT is defined      
-add_definitions(-D_REENTRANT)
-
 # This is the aggregate build file. It serves only to call the build in the
 # subdirectories. Each of the projects in the subdirectories is buildable
 # separately.
