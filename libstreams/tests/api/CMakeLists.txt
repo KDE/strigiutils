@@ -20,13 +20,13 @@ set(streamtests
 	SubInputStreamTest.cpp
 	TarInputStreamTest.cpp
 	ZipInputStreamTest.cpp
-	stat64bitTest.cpp
 )
 if(NOT WIN32)
         set(streamtests ${streamtests}
                 ArchiveReaderTest.cpp
                 ProcessInputStreamTest.cpp
                 StringStreamTest.cpp    # this maybe works with mingw
+                stat64bitTest.cpp
         )
 endif(NOT WIN32)
 

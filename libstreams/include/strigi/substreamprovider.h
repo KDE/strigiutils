@@ -29,7 +29,7 @@ namespace Strigi {
 /**
  * @brief Provides information about the current substream
  */
-struct EntryInfo {
+struct STREAMS_EXPORT EntryInfo {
     /**
      * @brief Name of the substream
      *

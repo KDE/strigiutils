@@ -1,5 +1,5 @@
 # allow use of internal api from shared test code
-add_definitions(-DSTRIGI_INTERNAL_TEST)
+add_definitions(-DSTRIGI_INTERNAL_TEST -DSTREAMS_EXPORT=)
 
 set(streamtests
 	testrunner.cpp
