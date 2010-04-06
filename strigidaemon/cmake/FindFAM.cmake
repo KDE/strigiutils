@@ -17,7 +17,7 @@ IF (NOT GAMIN_LIBRARIES AND FAM_LIBRARIES)
 ENDIF (NOT GAMIN_LIBRARIES AND FAM_LIBRARIES)
 
 if (GAMIN_LIBRARIES)
-  message(STATUS "Found Gamin: good choice, it's better then FAM")
+  message(STATUS "Found Gamin: good choice, it's better than FAM")
 endif (GAMIN_LIBRARIES)
 
 IF(FAM_INCLUDE_DIR AND FAM_LIBRARIES)
