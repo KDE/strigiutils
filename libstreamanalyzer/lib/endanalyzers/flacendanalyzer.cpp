@@ -284,7 +284,7 @@ FlacEndAnalyzer::analyze(Strigi::AnalysisResult& indexable, Strigi::InputStream*
     } while( !(blocktype & 0x80) );
 
     int64_t in_size = in->size();
-    if(in_size>=0)
+    if(in_size>=0 && duration>0)
       indexable.addValue(factory->bitRateField,(uint32_t)(8*((in_size-in->position())/duration)));
 
     return 0;
