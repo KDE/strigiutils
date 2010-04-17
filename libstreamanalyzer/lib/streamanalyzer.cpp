@@ -59,7 +59,7 @@
 #include <strigi/indexpluginloader.h>
 #include <sys/stat.h>
 #ifdef WIN32
- #include "ifilterendanalyzer.h"
+ //#include "ifilterendanalyzer.h"
 #endif
 #include <iostream>
 #include <config.h>

@@ -147,14 +147,14 @@ AnalyzerLoader::Private::loadModule(const char* lib) {
     }
     // cerr << lib << endl;
     StgModuleType handle;
-#ifdef HAVE_DLFCN_H
+#if defined(HAVE_DLFCN_H) && !defined(_WIN32)
     // do not use RTLD_GLOBAL here
     handle = dlopen(lib, RTLD_LAZY); //note: If neither RTLD_GLOBAL nor RTLD_LOCAL are specified, the default is RTLD_LOCAL.
 #else
     handle = LoadLibrary(lib);
 #endif
     if (!handle) {
-#ifdef HAVE_DLFCN_H
+#if defined(HAVE_DLFCN_H) && !defined(_WIN32)
         cerr << "Could not load '" << lib << "':" << dlerror() << endl;
 #else
         cerr << "Could not load '" << lib << "': GetLastError(): " << GetLastError() << endl;
