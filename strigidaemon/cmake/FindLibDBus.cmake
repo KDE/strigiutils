@@ -23,6 +23,10 @@ if(WIN32)
       ${CMAKE_LIBRARY_PATH}
   )
 
+if( DBUS_LIBRARIES AND DBUS_INCLUDE_DIRS )
+  set( DBUS_FOUND 1 )
+endif( DBUS_LIBRARIES AND DBUS_INCLUDE_DIRS )
+
 else(WIN32)
 
   find_package(PkgConfig REQUIRED)
