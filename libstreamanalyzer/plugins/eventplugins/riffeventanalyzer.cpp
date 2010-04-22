@@ -41,7 +41,7 @@ private:
         uint64_t start;
     };
     enum State {
-        StartOfChunkHeader, StartOfChunkList, ChunkBody 
+        StartOfChunkHeader, StartOfChunkList, ChunkBody
     };
 
     Strigi::AnalysisResult* analysisresult;
@@ -141,7 +141,7 @@ RiffEventAnalyzer::processStrh() {
     AnalysisResult* a = analysisresult;
     const char* c = chunkBuffer;
     const RiffEventAnalyzerFactory* f = factory;
-    
+
     inAudioStream = false;
     uint32_t type = readLittleEndianUInt32(c);
     if (type == 0x73646976) { // vids
@@ -345,7 +345,8 @@ RiffEventAnalyzer::handleData(const char* data, uint32_t length) {
                     && fp == chunks.top().start + chunks.top().size);
                 state = StartOfChunkHeader;
             }
-            if (state != StartOfChunkHeader) {
+            if (state != StartOfChunkHeader ||
+                pos > length ) {
                 pos = length;
             }
         }
