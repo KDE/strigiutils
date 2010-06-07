@@ -138,14 +138,23 @@ prependXesamNamespace(Query& query) {
 string
 removeXML(const std::string& q) {
     string::size_type tagstart = q.find("<userQuery");
-    string::size_type tagend = q.find(">", tagstart);
-    while (tagend+1 < q.size() && isspace(q[tagend+1])) tagend++;
-    string::size_type queryend = q.find("<", tagend);
-    while (queryend-1 > tagend && isspace(q[queryend-1])) queryend--;
-    if (queryend != string::npos) {
-        return q.substr(tagend+1, queryend-tagend-1);
+    string::size_type tagend = -1;
+    string::size_type queryend = q.size();
+    if (tagstart != string::npos) {
+        // the query is enclosed in a tag
+        tagend = q.find(">", tagstart);
+        if (tagend != string::npos) {
+            queryend = q.find("<", tagend);
+            if (queryend == string::npos) {
+                queryend = q.size();
+            }
+        } else {
+            tagend = -1;
+        }
     }
-    return q;
+    while (tagend+1 < q.size() && isspace(q[tagend+1])) tagend++;
+    while (queryend-1 > tagend && isspace(q[queryend-1])) queryend--;
+    return q.substr(tagend+1, queryend-tagend-1);
 }
 Query
 QueryParser::buildQuery(const std::string& xmlq) {
