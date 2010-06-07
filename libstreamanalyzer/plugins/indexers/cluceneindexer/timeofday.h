@@ -18,6 +18,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "config.h"
 #include <errno.h>
 
 #if defined(_MSC_VER) || defined(__BORLANDC__)
@@ -59,8 +60,7 @@ __inline int gettimeofday(struct timeval *tv, struct timezone *tz)
     return 0;
 
 #else /* !defined(_WINDOWS) */
-    errno = ENOSYS;
-    return -1;
+#error No gettimeofday function was found.
 #endif /* _WINDOWS */
 }
 #else /* HAVE_GETTIMEOFDAY */
