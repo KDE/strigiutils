@@ -24,7 +24,7 @@
 #include <strigi/analysisresult.h>
 #include <strigi/fieldtypes.h>
 #include <strigi/textutils.h>
-#include <strigi/rdfnamespaces.h>
+#include <rdfnamespaces.h>
 #include <strigi/strigi_thread.h>
 extern "C" {
 #include <libavcodec/avcodec.h>

@@ -90,6 +90,7 @@ find_package(Threads REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_optional_dep(CLucene ENABLE_CLUCENE CLucene_FOUND "CLucene backend")
 find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
+find_optional_dep(FFMPEG ENABLE_FFMPEG FFMPEG_FOUND "indexing FFMPEG")
 find_package(XAttr)
 include(ConfigureChecks.cmake)
 configure_file(LibStreamAnalyzer.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibStreamAnalyzerConfig.cmake @ONLY )
@@ -103,6 +104,7 @@ configure_file(${libstreamanalyzer_SOURCE_DIR}/strigi_thread.h.cmake
 include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${libstreamanalyzer_SOURCE_DIR}/include
 	${libstreamanalyzer_BINARY_DIR}/include
+        ${libstreamanalyzer_SOURCE_DIR}/lib
 	${libstreamanalyzer_BINARY_DIR}/lib
 	${ICONV_INCLUDE_DIR}
 	${LIBSTREAMS_LIBRARY_DIRS}
