@@ -31,6 +31,7 @@ if(XINE_FOUND)
 endif(XINE_FOUND)
 
 if(FFMPEG_FOUND)
+  add_definitions(-D__STDC_CONSTANT_MACROS)
   ADD_STRIGIEA(ffmpeg ffmpegendanalyzer.cpp)
   #set_target_properties( ffmpeg PROPERTIES COMPILE_FLAGS "${FFMPEG_DEFINITIONS}" )
   target_link_libraries(ffmpeg ${FFMPEG_LIBRARIES})
