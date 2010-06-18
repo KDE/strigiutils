@@ -19,11 +19,10 @@ if (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIRS)
   set(FFMPEG_FOUND TRUE)
 else (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIRS)
 
-  include(FindPkgConfig)
-
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
   if (NOT WIN32)
+    include(FindPkgConfig)
     pkg_check_modules(_AVCODEC libavcodec)
     pkg_check_modules(_AVFORMAT libavformat)
     pkg_check_modules(_AVUTIL libavutil)
