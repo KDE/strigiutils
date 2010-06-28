@@ -7,9 +7,7 @@ IF(FAM_FOUND AND ENABLE_FAM)
     set (eventlistener_LIBS ${eventlistener_LIBS} ${FAM_LIBRARIES})
 ENDIF(FAM_FOUND AND ENABLE_FAM)
 
-INCLUDE_DIRECTORIES ( ../../streams/strigi ..
-    ${strigi_BINARY_DIR}/src/streams/strigi
-    ${strigi_SOURCE_DIR}/src/streams/strigi)
+INCLUDE_DIRECTORIES ( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
 add_library(eventlistener STATIC
     event.cpp
