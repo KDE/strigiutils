@@ -175,7 +175,7 @@ HeaderDecoder::decodedHeaderValue(const char* v, uint32_t len) {
                 }
                 decoded.append(str);
             } else if (*q1 == 'q' || *q1 =='Q') {
-                string& str(decodeQuotedPrintable(q2, (char)(end-q2)));
+                string& str(decodeQuotedPrintable(q2, end-q2));
                 if (strncasecmp("utf-8", s, 5) != 0) {
                     string encoding(s, q1-s-1);
                     decode(encoding, str);
