@@ -48,7 +48,7 @@ RpmInputStream::checkHeader(const char* data, int32_t datasize) {
 }
 RpmInputStream::RpmInputStream(InputStream* input)
         : SubStreamProvider(input), headerinfo(0) {
-    uncompressionStream = 0;
+    uncompressionStream = NULL;
     cpio = 0;
 
     // skip the header
@@ -132,9 +132,14 @@ RpmInputStream::RpmInputStream(InputStream* input)
         uncompressionStream = new BZ2InputStream(m_input);
     } else if (LZMAInputStream::checkHeader(b, 16)) {
         uncompressionStream = new LZMAInputStream(m_input);
-    } else {
+    } else if (GZipInputStream::checkHeader(b, 16)) {
         uncompressionStream = new GZipInputStream(m_input);
-    }
+    } else {
+        m_error = "Unknown compressed stream type";
+        m_status = Error;
+        return;
+    };
+    
     if (uncompressionStream->status() == Error) {
         m_error = uncompressionStream->error();
         m_status = Error;
