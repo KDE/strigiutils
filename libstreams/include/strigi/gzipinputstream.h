@@ -33,6 +33,7 @@ public:
     enum ZipFormat { ZLIBFORMAT, GZIPFORMAT, ZIPFORMAT};
     explicit GZipInputStream(InputStream* input,
         ZipFormat format=GZIPFORMAT);
+    static bool checkHeader(const char* data, int32_t datasize);
     ~GZipInputStream();
 };
 

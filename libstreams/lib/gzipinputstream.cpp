@@ -41,6 +41,11 @@ public:
 GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format)
         :p(new Private(this, input, format)) {
 }
+bool
+GZipInputStream::checkHeader(const char* data, int32_t datasize) {
+    return datasize>2 && data[0]==0x1f && data[1] == 0x8b;
+}
+
 GZipInputStream::Private::Private(GZipInputStream* gi,
         InputStream* i, ZipFormat format) :p(gi), input(i), started(false) {
     // initialize values that signal state
