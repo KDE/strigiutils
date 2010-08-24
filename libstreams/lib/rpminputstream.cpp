@@ -50,12 +50,12 @@ RpmInputStream::RpmInputStream(InputStream* input)
         : SubStreamProvider(input), headerinfo(0) {
     uncompressionStream = NULL;
     cpio = 0;
+    m_status = Error;
 
     // skip the header
     const char* b;
     // lead:96 bytes
     if (m_input->read(b, 96, 96) != 96) {
-        m_status = Error;
         m_error = "File is too small to be an RPM file.";
         return;
     }
@@ -64,7 +64,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
     const unsigned char headmagic[] = {0x8e,0xad,0xe8,0x01};
     if (m_input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
         m_error = "m_error in signature\n";
-        m_status = Error;
         return;
     }
     int32_t nindex = readBigEndianInt32(b+8);
@@ -74,7 +73,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
         sz+=8-sz%8;
     }
     if (m_input->read(b, sz, sz) != sz) {
-        m_status = Error;
         m_error = "RPM seems to be truncated or corrupted.";
         return;
     }
@@ -82,7 +80,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
     // read header
     if (m_input->read(b, 16, 16) != 16 || memcmp(b, headmagic, 4)!=0) {
         m_error = "m_error in header\n";
-        m_status = Error;
         return;
     }
     nindex = readBigEndianInt32(b+8);
@@ -90,7 +87,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
     int32_t size = nindex*16+hsize;
     if (m_input->read(b, size, size) != size) {
         m_error = "could not read header\n";
-        m_status = Error;
         return;
     }
     for (int32_t i=0; i<nindex; ++i) {
@@ -100,7 +96,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
         int32_t offset = readBigEndianInt32(e+8);
         if (offset < 0 || offset >= hsize) {
             m_error = "invalid offset in header\n";
-            m_status = Error;
             return;
         }
         /*int32_t count =*/ readBigEndianInt32(e+12);
@@ -124,7 +119,6 @@ RpmInputStream::RpmInputStream(InputStream* input)
     int64_t pos = m_input->position();
     if (m_input->read(b, 16, 16) != 16) {
         m_error =  "could not read payload\n";
-        m_status = Error;
         return;
     }
     m_input->reset(pos);
@@ -136,13 +130,11 @@ RpmInputStream::RpmInputStream(InputStream* input)
         uncompressionStream = new GZipInputStream(m_input);
     } else {
         m_error = "Unknown compressed stream type";
-        m_status = Error;
         return;
     };
     
     if (uncompressionStream->status() == Error) {
         m_error = uncompressionStream->error();
-        m_status = Error;
         return;
     }
     cpio = new CpioInputStream(uncompressionStream);
