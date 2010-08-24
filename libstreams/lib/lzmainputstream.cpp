@@ -58,7 +58,7 @@ LZMAInputStream::checkHeader(const char* data, int32_t datasize) {
     CLzmaProps props;
     SRes res = LzmaProps_Decode(&props, (const Byte*)data, LZMA_PROPS_SIZE);
     int64_t size = readLittleEndianInt64(data + LZMA_PROPS_SIZE);
-    return res == SZ_OK && props.dicSize <= 8388608 && (size == -1 ||
+    return res == SZ_OK && props.dicSize <= 0x2000000 && (size == -1 ||
         (props.dicSize < size && size < 1099511627776LL)); // only support < 1Tb 
 }
 LZMAInputStream::LZMAInputStream(InputStream* input)
