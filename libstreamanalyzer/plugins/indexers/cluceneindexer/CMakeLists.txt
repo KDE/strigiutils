@@ -23,6 +23,7 @@ set(cluceneindex_SRCS
     jsgzipcompressstream.cpp
     tcharutils.cpp
 )
+include_directories(${CLUCENE_INCLUDE_DIR} ${CLUCENE_LIBRARY_DIR})
 
 if(WIN32)
   # this is needed to have mingw, cygwin and msvc libs installed in one directory

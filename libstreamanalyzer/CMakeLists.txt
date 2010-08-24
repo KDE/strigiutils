@@ -12,7 +12,7 @@ enable_testing()
 
 ##### global variables #####
 
-# due to a bug in libxml2, we only get thread support if _REENTRANT is defined      
+# due to a bug in libxml2, we only get thread support if _REENTRANT is defined
 add_definitions(-D_REENTRANT)
 
 # Set up RPATH handling, so the libs are found if they are installed to a non-standard location.
@@ -36,6 +36,7 @@ option(ENABLE_EXIV2
        "enable exiv2 support. This allows you to index EXIF/IPTC metadata." ON)
 set(CLUCENE_MIN_VERSION "0.9.21")
 option(ENABLE_CLUCENE "enable CLucene support (recommended)" ON)
+option(ENABLE_CLUCENE_NG "enable clucene-ng (version 1+) support (testing)" ON)
 
 # definition of LIB_DESTINATION which is the path where the lib is installed
 set (LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
@@ -88,7 +89,9 @@ else(STRIGI_VERSION_STRING)
 endif(STRIGI_VERSION_STRING)
 find_package(Threads REQUIRED)
 find_package(LibXml2 REQUIRED)
+
 find_optional_dep(CLucene ENABLE_CLUCENE CLucene_FOUND "CLucene backend")
+find_optional_dep(CLucene1 ENABLE_CLUCENE_NG CLUCENE1_FOUND "CLucene Version 1+ backend")
 find_optional_dep(Exiv2 ENABLE_EXIV2 EXIV2_FOUND "indexing of EXIF/IPTC metadata")
 find_optional_dep(FFMPEG ENABLE_FFMPEG FFMPEG_FOUND "indexing FFMPEG")
 find_package(XAttr)
@@ -114,9 +117,6 @@ include_directories(${LIBSTREAMS_INCLUDE_DIRS}
 	${MAGIC_INCLUDE_DIR}
 	${LIBXML2_INCLUDE_DIR}
 )
-if(CLucene_FOUND)
-	include_directories(${CLUCENE_INCLUDE_DIR} ${CLUCENE_LIBRARY_DIR})
-endif(CLucene_FOUND)
 if(XATTR_FOUND)
 	include_directories(${XATTR_INCLUDE_DIR})
 endif(XATTR_FOUND)
