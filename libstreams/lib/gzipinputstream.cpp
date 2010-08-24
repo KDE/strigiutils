@@ -29,6 +29,7 @@ public:
     GZipInputStream* const p;
     InputStream* input;
     z_stream_s zstream;
+    bool started;
 
     Private(GZipInputStream* gi, InputStream* input, ZipFormat format);
     ~Private();
@@ -41,7 +42,7 @@ GZipInputStream::GZipInputStream(InputStream* input, ZipFormat format)
         :p(new Private(this, input, format)) {
 }
 GZipInputStream::Private::Private(GZipInputStream* gi,
-        InputStream* i, ZipFormat format) :p(gi), input(i) {
+        InputStream* i, ZipFormat format) :p(gi), input(i), started(false) {
     // initialize values that signal state
     p->m_status = Ok;
 
@@ -73,6 +74,7 @@ GZipInputStream::Private::Private(GZipInputStream* gi,
         r = inflateInit2(&zstream, -MAX_WBITS);
         break;
     }
+    started = true;
     if (r != Z_OK) {
         p->m_error = "Error initializing GZipInputStream.";
         dealloc();
@@ -94,7 +96,10 @@ GZipInputStream::Private::~Private() {
 }
 void
 GZipInputStream::Private::dealloc() {
-    inflateEnd(&zstream);
+    if (started) {
+      inflateEnd(&zstream);
+      started = false;
+    }
     memset( &zstream, 0, sizeof( z_stream_s ) );
     input = NULL;
 }
