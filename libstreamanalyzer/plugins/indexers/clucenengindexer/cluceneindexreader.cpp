@@ -86,6 +86,7 @@ public:
       if ( (*itr).compare(field) == 0 )
         return lucene::document::FieldSelector::LOAD;
     }
+    return false;
   }
 };
 

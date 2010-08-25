@@ -247,7 +247,7 @@ void
 CLuceneIndexWriter::deleteAllEntries() {
     lucene::index::IndexReader* reader = manager->checkReader();
     if ( reader != NULL ){
-      for ( size_t i=0;i<reader->maxDoc();i++ ){
+      for ( int32_t i=0;i<reader->maxDoc();i++ ){
         reader->deleteDocument(i);
       }
       reader->flush();
