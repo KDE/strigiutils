@@ -237,7 +237,7 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
 
   probe_format(&pd, &max_score);
 
-  cout<<"Detection score:"<<max_score<<endl<<flush;
+  //slog("Detection score:"<<max_score);
   // Most of formats return either 100 or nothing
   // MPG, however, can go as low as 25 while still being a real video
   return max_score >=25;
@@ -311,7 +311,9 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
 
   int score;
   AVInputFormat* fmt = probe_format(&pd, &score);
-  
+  if(fmt == NULL)
+    return 1;
+
   AVFormatContext *fc = NULL;
   if(av_open_input_stream(&fc, &ByteIOCtx, "", fmt, NULL) < 0)
     return -1;
