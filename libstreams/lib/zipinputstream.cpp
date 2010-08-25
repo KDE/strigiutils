@@ -52,7 +52,7 @@ ZipInputStream::~ZipInputStream() {
 }
 InputStream*
 ZipInputStream::nextEntry() {
-    if (m_status) return 0;
+    if (m_status) return NULL;
     // clean up the last stream(s)
     if (m_entrystream) {
 	// if this entry is a compressed entry of know size, we can skip to
@@ -109,10 +109,15 @@ ZipInputStream::nextEntry() {
     // are we at the end of the zip file?
     if (m_input->status() == Eof) {
         m_status = Eof;
-        return 0;
+        return NULL;
     }
     readHeader();
-    if (m_status) return 0;
+    if (m_status != Ok) return NULL;
+    if (m_entryinfo.filename.length()<=0) {
+        m_status = Error;
+        m_error = "Archived file name is empty";
+        return NULL;
+    }    
     if (compressionMethod == 8) {
         if (m_entryinfo.size >= 0) {
             compressedEntryStream
