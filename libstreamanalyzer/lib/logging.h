@@ -38,7 +38,7 @@
 //FIXME this doesn't compile for some obscure reason
 //ostream *log_stream = &cerr;
 
-#define slog(x) cerr << __LOGGING_FUNCTION << ": " << x << endl
+#define slog(x) std::cerr << __LOGGING_FUNCTION << ": " << x << std::endl
 
 #else
 #define slog(x) (void)
