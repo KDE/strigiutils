@@ -53,6 +53,9 @@ set(streamanalyzer_SRCS
 	helperanalyzers/saxhelperanalyzer.cpp
 	lineanalyzers/m3ustreamanalyzer.cpp
 	saxanalyzers/htmlsaxanalyzer.cpp
+	xmlparser/libxmlstream.cpp
+	xmlparser/xmlstream.cpp
+	xesamparser.cpp
 )
 
 add_library(streamanalyzerstatic STATIC ${streamanalyzer_SRCS})
@@ -71,6 +74,7 @@ set_target_properties(streamanalyzer PROPERTIES
 	DEFINE_SYMBOL MAKE_STREAMANALYZER_LIB
 )
 target_link_libraries(streamanalyzer streamanalyzerstatic)
+
 install(TARGETS streamanalyzer
 	LIBRARY DESTINATION ${LIB_DESTINATION}
 	RUNTIME DESTINATION bin

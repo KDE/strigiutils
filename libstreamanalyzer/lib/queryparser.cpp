@@ -21,6 +21,9 @@
 #include <strigi/fieldpropertiesdb.h>
 #include <iostream>
 #include <cstring>
+
+#include "xesamparser.h"
+
 using namespace std;
 using namespace Strigi;
 
@@ -158,24 +161,32 @@ removeXML(const std::string& q) {
 }
 Query
 QueryParser::buildQuery(const std::string& xmlq) {
-    const string q(removeXML(xmlq));
 
     Query query;
-    query.setType(Query::And);
-    query.subQueries().clear();
 
-    Query sub;
-    const char* p = q.c_str();
-    const char* pend = p + q.length();
-    while (p < pend) {
-        p = ::parse(p, sub);
-        query.subQueries().push_back(sub);
-        sub = Query();
-    }
-    // normalize
-    if (query.subQueries().size() == 1) {
-        Query q = query.subQueries()[0];
-        query = q;
+    string::size_type tagstart = xmlq.find("<query");
+    if (tagstart != string::npos) { // xesam language query
+        XesamParser parser;
+        parser.buildQuery(xmlq, query);
+    } else { // user language query
+        const string q(removeXML(xmlq));
+
+        query.setType(Query::And);
+        query.subQueries().clear();
+
+        Query sub;
+        const char* p = q.c_str();
+        const char* pend = p + q.length();
+        while (p < pend) {
+            p = ::parse(p, sub);
+            query.subQueries().push_back(sub);
+            sub = Query();
+        }
+        // normalize
+        if (query.subQueries().size() == 1) {
+            Query q = query.subQueries()[0];
+            query = q;
+        }
     }
     prependXesamNamespace(query);
 
