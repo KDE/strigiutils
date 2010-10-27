@@ -108,6 +108,19 @@ Interface::stopIndexing() {
     return "";
 }
 set<string>
+Interface::getIndexedFiles() {
+    std::map<std::string, time_t> children;
+    manager.indexReader()->getChildren("", children);
+
+    set<string> files;
+    std::map<std::string, time_t>::const_iterator it = children.begin();
+    std::map<std::string, time_t>::const_iterator end = children.end();
+    for (; it != end; ++it)
+      files.insert(it->first);
+
+    return files;
+}
+set<string>
 Interface::getIndexedDirectories() {
     return scheduler.getIndexedDirectories();
 }

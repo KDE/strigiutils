@@ -47,6 +47,7 @@ public:
     std::string stopDaemon();
     std::string startIndexing();
     std::string stopIndexing();
+    std::set<std::string> getIndexedFiles();
     std::set<std::string> getIndexedDirectories();
     std::string setIndexedDirectories(std::set<std::string>);
     std::multimap<int, std::string> getFilteringRules();
