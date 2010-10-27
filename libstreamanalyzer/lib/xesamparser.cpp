@@ -217,9 +217,70 @@ bool XesamParser::parseStartsWith(Query &query)
 
 bool XesamParser::parseInSet(Query &query)
 {
-    //TODO: implement me
-    m_errorMessage = "Handling of <inSet> tag is not implemented";
-    return false;
+    query.setType(Query::Or);
+    query.subQueries().clear();
+
+    bool negate = false;
+    m_xmlStream->setFromAttribute(negate, "negate");
+    query.setNegate(negate);
+
+    std::vector<std::string> fields;
+    std::vector<Term> terms;
+    const SimpleNode *node = m_xmlStream->firstChild();
+    while (node) {
+        Query dummyQuery;
+        if (m_xmlStream->getTagName() == "field") {
+            std::string fieldName;
+            m_xmlStream->setFromAttribute(fieldName, "name");
+            fields.push_back(fieldName);
+        } else if (m_xmlStream->getTagName() == "fullTextFields") {
+        } else if (m_xmlStream->getTagName() == "string") {
+            if (!parseString(dummyQuery))
+              return false;
+            terms.push_back(dummyQuery.term());
+        } else if (m_xmlStream->getTagName() == "integer") {
+            if (!parseInteger(dummyQuery))
+              return false;
+            terms.push_back(dummyQuery.term());
+        } else if (m_xmlStream->getTagName() == "date") {
+            if (!parseDate(dummyQuery))
+              return false;
+            terms.push_back(dummyQuery.term());
+        } else if (m_xmlStream->getTagName() == "float") {
+            if (!parseFloat(dummyQuery))
+              return false;
+            terms.push_back(dummyQuery.term());
+        } else if (m_xmlStream->getTagName() == "boolean") {
+            if (!parseBoolean(dummyQuery))
+              return false;
+            terms.push_back(dummyQuery.term());
+        } else {
+            m_errorMessage = "Unknown tag: " + m_xmlStream->getTagName();
+            return false;
+        }
+
+        node = m_xmlStream->nextSibling();
+    }
+
+    std::vector<Term>::const_iterator it = terms.begin();
+    std::vector<Term>::const_iterator endId = terms.end();
+    for (; it != endId; ++it) {
+        Query subQuery;
+        subQuery.setType(Query::Equals);
+        subQuery.setTerm(*it);
+        subQuery.fields() = fields;
+
+        query.subQueries().push_back(subQuery);
+    }
+
+    // normalize
+    if (query.subQueries().size() == 1) {
+        Query q = query.subQueries()[0];
+        query = q;
+    }
+
+    m_xmlStream->parentNode();
+    return true;
 }
 
 bool XesamParser::parseFullText(Query &query)
