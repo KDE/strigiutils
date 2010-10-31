@@ -229,13 +229,22 @@ FFMPEGEndAnalyzer::checkHeader(const char* header, int32_t headersize) const {
        || (!strcmp("OggS", header) && !strcmp("vorbis", header+29) && !strcmp("OggS", header+58))) )
     return false;
   
+  char* data_buffer = (char*)malloc(headersize + AVPROBE_PADDING_SIZE);
+  if (!data_buffer)
+    return false;
+
+  std::memcpy(data_buffer, header, headersize);
+  std::memset(data_buffer + headersize, 0, AVPROBE_PADDING_SIZE);
+
   AVProbeData pd;
-  pd.buf = (unsigned char*)header;
+  pd.buf = (unsigned char*)data_buffer;
   pd.buf_size = headersize;
   pd.filename ="";
   int max_score;
 
   probe_format(&pd, &max_score);
+
+  free(data_buffer);
 
   //slog("Detection score:"<<max_score);
   // Most of formats return either 100 or nothing
