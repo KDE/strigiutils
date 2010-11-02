@@ -24,7 +24,7 @@ add_definitions(-D_REENTRANT)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH  TRUE)
 set(CMAKE_INSTALL_RPATH                ${LIB_DESTINATION} )
 
-set(LIBSTREAMANALYZER_VERSION 0.7.2)
+set(LIBSTREAMANALYZER_VERSION 0.7.3)
 set(LIBSTREAMANALYZER_SOVERSION 0.7)
 option(BUILD_UTILS "build luceneindexer, xmlindexer, rdfindexer, ontoprint utilities" ON)
 option(BUILD_DEEPTOOLS "build deep find and deepgrep tools" ON)

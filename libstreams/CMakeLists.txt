@@ -23,7 +23,7 @@ set(CMAKE_INSTALL_RPATH                ${LIB_DESTINATION} )
 # libstreams defines the definitions shared by the Strigi projects
 set(STRIGI_VERSION_MAJOR 0 CACHE INT "Major Strigi version number" FORCE)
 set(STRIGI_VERSION_MINOR 7 CACHE INT "Minor Strigi version number" FORCE)
-set(STRIGI_VERSION_PATCH 2 CACHE INT "Release Strigi version number" FORCE)
+set(STRIGI_VERSION_PATCH 3 CACHE INT "Release Strigi version number" FORCE)
 set(STRIGI_VERSION_STRING "${STRIGI_VERSION_MAJOR}.${STRIGI_VERSION_MINOR}.${STRIGI_VERSION_PATCH}" CACHE STRING "Strigi version string" FORCE)
 set(LIBSTREAMS_VERSION ${STRIGI_VERSION_STRING})
 
