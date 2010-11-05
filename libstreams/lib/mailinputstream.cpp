@@ -201,16 +201,6 @@ HeaderDecoder::decodedHeaderValue(const char* v, uint32_t len) {
     }
     return decoded;
 }
-bool
-checkHeaderKey(const char* data, int32_t left) {
-    if (left >= 9 && strncasecmp("Received:", data, 9) == 0) {
-        return true;
-    }
-    if (left >= 5 && strncasecmp("From:", data, 5) == 0) {
-        return true;
-    }
-    return false;
-}
 
 /**
  * Validate a mail header. The header format is checked, but not the presence
@@ -219,59 +209,105 @@ checkHeaderKey(const char* data, int32_t left) {
  **/
 bool
 MailInputStream::checkHeader(const char* data, int32_t datasize) {
-    // the fileheader should contain a required header and have at least 5
-    // header lines
-    // 'Received' or 'From' (case insensitive)
-    int linecount = 1;
-    bool key = true;
-    bool slashr = false;
-    int32_t pos = 0;
-    bool reqheader = checkHeaderKey(data, datasize);
-    char prevc = 0;
+
+    /**
+     * Describes the possible states the parser can be in.
+     */
+    enum MessageParserState {
+        InHeaderNameField,       ///< The header name is parsed
+        InHeaderValueField,      ///< The header value is parsed
+        MaybeOnNewLine,          ///< A \r has been discovered while InHeaderValueField
+        PossibleHeaderNameField, ///< After a \r\n check if it is a new line or a folded line
+        MaybeEndOfHeaders,       ///< A \r has been discovered while in PossibleHeaderNameField
+        InBody                   ///< The body part is parsed
+    };
+
+    /**
+     * The state machine of the parser has the following structure:
+     *
+     * @dot
+     *   digraph MessageParser {
+     *     InHeaderNameField -> InHeaderValueField [label=":"]
+     *     InHeaderValueField -> MaybeNewLine [label="\\r"]
+     *     MaybeOnNewLine -> PossibleHeaderNameField [label="\\n"]
+     *     MaybeOnNewLine -> InHeaderValueField
+     *     PossibleHeaderNameField -> InHeaderValueField [label="<SPACE>"]
+     *     PossibleHeaderNameField -> MaybeEndOfHeaders [label="\\r"]
+     *     PossibleHeaderNameField -> InHeaderNameField
+     *     MaybeEndOfHeaders -> InBody [label="\\n"]
+     *   }
+     * @enddot
+     */
+
+    MessageParserState currentState = InHeaderNameField;
+
+    int pos = 0;
     while (pos < datasize) {
-        unsigned char c = data[pos++];
-        if (slashr) {
-            slashr = false;
-            if (c == '\n') {
-                if (!reqheader) {
-                    reqheader = checkHeaderKey(data+pos, datasize-pos);
-                }
-                continue;
-            }
-        }
-        if (key) {
-            if (c == ':' || (isblank(c) && isspace(prevc))) {
-                // ':' signals the end of the key, a line starting with space
-                // is a continuation of the previous line's value
-                key = false;
-            } else if ((c == '\n' || c == '\r') && reqheader && linecount >= 5
-                    && (prevc == '\n' || prevc == '\r')) {
-                // if at least 5 header lines were read and an empty line is
-                // encountered, the mail header is valid
-                return true;
-            } else if (c != '-' && c != '.' && c != '_' && !isalnum(c)
-			    && c != '#') {
-                // an invalid character in the key
+        char currentChar = data[pos];
+
+        switch(currentState) {
+        case InHeaderNameField: 
+            if (currentChar == ':') {
+                currentState = InHeaderValueField;
+            } else if (currentChar == ' ' || currentChar == '\t') {
+                // is SPACE
+                return false;
+            } else if (currentChar < 0 || currentChar >= 128) {
+                // is not CHAR
+                return false;
+            } else if ((currentChar >= 0 && currentChar <= 31) || currentChar == 127) {
+                // is CTRL
                 return false;
             }
-        } else {
-            // check that the text is 7-bit
-            if (c == '\n' || c == '\r') {
-                // a new line starts, so a new key
-                key = true;
-                linecount++;
-                // enable reading of \r\n line endings
-                if (c == '\r') {
-                    slashr = true;
-                } else if (!reqheader) {
-                    reqheader = checkHeaderKey(data+pos, datasize-pos);
-                }
+            break;
+        case InHeaderValueField:
+            if (currentChar == '\r') {
+                currentState = MaybeOnNewLine;
+            } else if (currentChar < 0 || currentChar >= 128) {
+                // is not CHAR
+                return false;
             }
+            break;
+        case MaybeOnNewLine:
+            if (currentChar == '\n') {
+                currentState = PossibleHeaderNameField;
+            } else {
+                currentState = InHeaderValueField;
+                continue; // re-evaluate this character in InHeaderValueField state
+            }
+            break;
+        case PossibleHeaderNameField:
+            if (currentChar == ' ' || currentChar == '\t') {
+                currentState = InHeaderValueField;
+            } else if (currentChar == '\r') {
+                currentState = MaybeEndOfHeaders;
+            } else {
+                currentState = InHeaderNameField;
+                continue; // re-evaluate this character in InHeaderNameField state
+            }
+            break;
+        case MaybeEndOfHeaders:
+            if (currentChar == '\n') {
+                currentState = InBody;
+            } else {
+                // the only alternative follow state would be InHeaderNameField, but this doesn't allow \r
+                return false;
+            }
+            break;
+        case InBody:
+            if (currentChar < 0 || currentChar >= 128) {
+                // is not CHAR
+                return false;
+            }
+            break;
         }
-        prevc = c;
+
+        pos++;
     }
-    return reqheader && linecount >= 5;
+
+    return true;
 }
+
 class MailInputStream::Private {
 public:
     MailInputStream* const m;
