@@ -3,6 +3,7 @@ subdirs(dbuscpp)
 # if available, use Perl for generating the dbus interfaces.
 # otherwise, just copy them into the build directory
 find_package(Perl)
+find_package(LibDBus)
 
 MACRO(CreateDBusBinding HEADERFILE INAME INTERFACE EXTRAINCLUDE)
     IF (PERL_FOUND)
