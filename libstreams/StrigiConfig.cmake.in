@@ -20,7 +20,6 @@ set(STRIGI_VERSION ${STRIGI_VERSION_MAJOR}.${STRIGI_VERSION_MINOR}.${STRIGI_VERS
 # No need to test for it, since here we know exactly what we have.
 set(STRIGI_NEEDS_SIGNED_CHAR TRUE)
 set(STRIGI_NEEDS_CHAR FALSE)
-message(STATUS "Strigi API needs 'signed char'")
 
 # get path of this file and go three levels up (this is equivalent to
 # the CMAKE_INSTALL_PREFIX if LIB_DESTINATION is not set)
