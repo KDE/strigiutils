@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <iterator>
 #include <set>
 #include <cstdlib>
 #include <cstring>
@@ -39,6 +40,10 @@
 #include <libxml/SAX2.h>
 #include <sys/stat.h>
 #include <config.h>
+
+#ifdef _MSC_VER
+# define strcasecmp stricmp
+#endif
 
 using namespace Strigi;
 using namespace std;

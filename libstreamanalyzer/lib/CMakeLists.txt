@@ -31,7 +31,6 @@ set(streamanalyzer_SRCS
 	endanalyzers/cpioendanalyzer.cpp
 	endanalyzers/flacendanalyzer.cpp
 	endanalyzers/gzipendanalyzer.cpp
-	endanalyzers/helperendanalyzer.cpp
 	endanalyzers/id3endanalyzer.cpp
 	endanalyzers/lzmaendanalyzer.cpp
 	endanalyzers/mailendanalyzer.cpp
@@ -57,6 +56,17 @@ set(streamanalyzer_SRCS
 	xmlparser/xmlstream.cpp
 	xesamparser.cpp
 )
+
+if(MSVC)
+	list(APPEND streamanalyzer_SRCS
+		stgdirent.cpp
+		stgdirent.h
+	)
+else(MSVC)
+	list(APPEND streamanalyzer_SRCS
+		endanalyzers/helperendanalyzer.cpp
+	)
+endif(MSVC)
 
 add_library(streamanalyzerstatic STATIC ${streamanalyzer_SRCS})
 

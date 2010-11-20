@@ -21,6 +21,7 @@
 #include <strigi/analyzerplugin.h>
 #include <string>
 #include <iostream>
+#include <iterator>
 #include <cstdio>
 #include <cstring>
 #include <assert.h>

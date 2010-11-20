@@ -47,6 +47,7 @@ set(streams_SRCS ${streams_SRCS} compat.cpp)
 
 add_library(streamsstatic STATIC ${streams_SRCS})
 set_target_properties(streamsstatic PROPERTIES DEFINE_SYMBOL MAKE_STREAMS_LIB)
+target_link_libraries(streamsstatic ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 
 add_library(streams SHARED ${streams_SRCS})
 set_target_properties(streams PROPERTIES
@@ -54,7 +55,7 @@ set_target_properties(streams PROPERTIES
 	SOVERSION ${STRIGI_VERSION_MAJOR}
 	DEFINE_SYMBOL MAKE_STREAMS_LIB
 )
-target_link_libraries(streams streamsstatic)
+target_link_libraries(streams ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 install(TARGETS streams
 	LIBRARY DESTINATION ${LIB_DESTINATION}
 	RUNTIME DESTINATION bin
@@ -62,7 +63,6 @@ install(TARGETS streams
 )
 
 
-target_link_libraries(streamsstatic ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} ${ICONV_LIBRARIES})
 if(NOT WIN32)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libstreams.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libstreams.pc)
 endif(NOT WIN32)

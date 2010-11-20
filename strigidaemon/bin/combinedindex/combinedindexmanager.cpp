@@ -45,6 +45,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <iterator>
 using namespace std;
 using namespace Strigi;
 

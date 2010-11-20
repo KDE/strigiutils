@@ -33,6 +33,16 @@
 using namespace Strigi;
 using namespace std;
 
+// MSVC doesn't define them
+#ifdef _MSC_VER
+# define _IFMT	0170000	// type of file 
+# define _IFDIR	0040000	// directory 
+# define _IFREG	0100000	// regular 
+# define S_ISDIR(m)	(((m)&_IFMT) == _IFDIR)
+# define S_ISREG(m)	(((m)&_IFMT) == _IFREG)
+#endif
+
+
 class DirAnalyzer::Private {
 public:
     DirLister dirlister;

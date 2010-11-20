@@ -331,13 +331,9 @@ StreamAnalyzerPrivate::initializeEndFactories() {
     addFactory(new PdfEndAnalyzerFactory());
     addFactory(new SdfEndAnalyzerFactory());
     addFactory(new LzmaEndAnalyzerFactory());
-#ifdef WIN32
-#ifdef __GNUC__
-#warning FIXME - IFilterEndAnalyzerFactory is pure virtual!
-//    addFactory(new IFilterEndAnalyzerFactory());
-#endif
-#endif
+#ifndef _MSC_VER
     addFactory(new HelperEndAnalyzerFactory());
+#endif
     addFactory(new TextEndAnalyzerFactory());
 }
 void

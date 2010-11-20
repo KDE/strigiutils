@@ -27,7 +27,11 @@
 #include <iostream>
 #include <sys/types.h>
 #include <CLucene.h>
-#include <CLucene/util/dirent.h>
+#ifdef _MSC_VER
+# include <stgdirent.h>
+#else
+# include <CLucene/util/dirent.h>
+#endif
 
 using namespace std;
 
