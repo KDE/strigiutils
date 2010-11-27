@@ -314,7 +314,7 @@ FFMPEGEndAnalyzer::analyze(AnalysisResult& ar, ::InputStream* in) {
   AVProbeData pd;
   const char *buf;
   pd.filename ="";
-  pd.buf_size = in->read(buf,262144,262144);
+  pd.buf_size = in->read(buf,262144,262144) - AVPROBE_PADDING_SIZE;
   pd.buf = (unsigned char*)buf;
   in->reset(0);
 
