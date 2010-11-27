@@ -53,6 +53,7 @@ endif(NOT MSVC AND NOT CMAKE_SYSTEM MATCHES "SunOS-5*.")
 # on FreeBSD dlopen is in libc, on GNU/Linux it's in libdl
 if(NOT WIN32)
   include(CheckFunctionExists)
+  include(CheckLibraryExists)
   check_library_exists(dl dlopen ""  DLOPEN_IN_LIBDL)
   check_function_exists(dlopen DLOPEN_IN_LIBC)
   set(LIBDL)
