@@ -56,9 +56,9 @@ PdfParser::read2(int32_t min, int32_t max) {
 }
 StreamStatus
 PdfParser::checkForData(int32_t m) {
-    StreamStatus n = Eof;
+    StreamStatus n = Ok;
     if (end - pos < m) {
-        n = read(m, 0);
+        n = read(m - (int32_t) (end-pos), 0);
     }
 //    fprintf(stderr, "checkForData %i\n", n);
     return n;
