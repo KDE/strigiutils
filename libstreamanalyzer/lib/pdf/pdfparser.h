@@ -45,7 +45,7 @@ private:
     const char* start;
     const char* end;
     const char* pos;
-    int64_t objdefstart;
+    int64_t bufferStart;
     Strigi::StreamBase<char>* stream;
     std::string m_error;
 
@@ -62,7 +62,6 @@ private:
 
     Strigi::StreamStatus read(int32_t min, int32_t max);
     void forwardStream(Strigi::StreamBase<char>* s);
-    Strigi::StreamStatus read2(int32_t min, int32_t max);
     Strigi::StreamStatus checkForData(int32_t m);
     bool isInString(char c, const char* s, int32_t n);
     Strigi::StreamStatus skipFromString(const char*str, int32_t n);

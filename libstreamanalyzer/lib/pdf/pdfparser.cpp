@@ -34,24 +34,15 @@ PdfParser::PdfParser() :streamhandler(0), texthandler(0) {
 StreamStatus
 PdfParser::read(int32_t min, int32_t max) {
     int32_t off = (int32_t)(pos-start);
-    int32_t d = (int32_t)(stream->position() - objdefstart);
+    int32_t d = (int32_t)(stream->position() - bufferStart);
     min += d;
     if (max > 0) max += d;
-    stream->reset(objdefstart);
+    stream->reset(bufferStart);
     int32_t n = stream->read(start, min, max);
 //    printf("objstart %i %i\n", d, n);
     if (n < min) return stream->status();
     pos = start + off;
     end = start + n;
-    return Ok;
-}
-StreamStatus
-PdfParser::read2(int32_t min, int32_t max) {
-//    printf("pos %lli\n", stream->position());
-    int32_t n = stream->read(start, min, max);
-    if (n < min) return stream->status();
-    pos = start;
-    end = pos + n;
     return Ok;
 }
 StreamStatus
@@ -369,7 +360,7 @@ PdfParser::parseDictionaryOrStream() {
         pos++;
 
         // read stream until 'endstream'
-        int64_t p = pos-start;
+        int64_t p = bufferStart + pos-start;
         if (p != stream->reset(p)) return Error;
 //        fprintf(stderr, "filter: %s\n", filter.c_str());
 //        fprintf(stderr, "type: %s %i\n", type.c_str(), streamcount);
@@ -380,20 +371,18 @@ PdfParser::parseDictionaryOrStream() {
                     filter) != Eof) {
                 return Error;
             }
-            p += sub.size();
         } else {
             SubInputStream sub(stream, length);
             if (handleSubStream(&sub, type, offset, numberofobjects, hasfilter,
                     filter) != Eof) {
                 return Error;
             }
-            p += sub.size();
         }
-        if (p != stream->reset(p)) return Error;
-        if (read(1, 0) != Ok) return Error;
-        pos = start + p;
-        //pos = start + (stream->position()-objdefstart);
-//        printf("hi %i\n", off+(pos-start));
+        // After reading the substream the pointers to the buffer are invalid.
+        // Reset the buffer to the current stream position
+        start = pos = end = 0;
+        bufferStart = stream->position();
+        //if (read(1, 0) != Ok) return Error;
         //printf("hi %i\n", *pos);
         if (skipWhitespaceOrComment() != Ok) return Error;
 //        printf("hi %i %.*s\n", pos-start, 10, pos);
@@ -490,7 +479,7 @@ StreamStatus
 PdfParser::parseObjectStream(StreamBase<char>* s, int32_t offset, int32_t n) {
     stream = s;
     end = pos = start = 0;
-    objdefstart = 0;
+    bufferStart = 0;
 
     stream->skip(offset);
     StreamStatus r = Ok;
@@ -510,7 +499,7 @@ StreamStatus
 PdfParser::parseContentStream(StreamBase<char>* s) {
     stream = s;
     end = pos = start = 0;
-    objdefstart = 0;
+    bufferStart = 0;
     StreamStatus r = skipWhitespaceOrComment();
 //    fprintf(stderr, "eh %i %i\n", r, Eof);
     if (r != Ok) return r;
@@ -557,7 +546,6 @@ PdfParser::skipStartXRef() {
 }
 StreamStatus
 PdfParser::parseObjectStreamObjectDef() {
-//    objdefstart = pos-start;
     if (*pos == 'x') return skipXRef();
     if (*pos == 't') return skipTrailer();
     if (*pos == 's') return skipStartXRef();
@@ -576,16 +564,13 @@ PdfParser::parseObjectStreamObjectDef() {
 }
 StreamStatus
 PdfParser::parse(StreamBase<char>* stream) {
-    // for now we need to load the entire stream in memory :(
-    // this is due to a sneaky bug somewhere, not a design issue
-    forwardStream(stream);
     stream->reset(0);
     StreamStatus r;
 
     // initialize the stream status
     this->stream = stream;
     end = pos = start = 0;
-    objdefstart = 0;
+    bufferStart = 0;
 
     // initialize the parsed field containers
     lastNumber = -1;
