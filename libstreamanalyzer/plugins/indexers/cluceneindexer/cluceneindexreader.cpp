@@ -309,6 +309,15 @@ CLuceneIndexReader::Private::createSingleFieldQuery(const string& field,
           t = createKeywordTerm(fieldname.c_str(), query.term().string());
           q = _CLNEW TermQuery(t);
           break;
+    case Strigi::Query::Contains:
+          t = createWildCardTerm(fieldname.c_str(), "*" + val + "*");
+          q = _CLNEW WildcardQuery(t);
+          break;
+    case Strigi::Query::StartsWith:
+          t = createWildCardTerm(fieldname.c_str(), val + "*");
+          q = _CLNEW WildcardQuery(t);
+          break;
+    case Strigi::Query::Equals:
     default:
           if (strpbrk(val.c_str(), "*?")) {
                t = createWildCardTerm(fieldname.c_str(), val);
