@@ -1,2 +1,0 @@
-# see http://techbase.kde.org/Development/Tutorials/Code_Checking#Controlling_Krazy_on_the_EBN for an explanation of this file
-EXCLUDE qclasses,typedefs,syscalls,strings,iconnames,validate

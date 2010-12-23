@@ -1,5 +1,0 @@
-- see how to support uninstall in the subprojects (cmake_uninstall.cmake.in)
-- FindCppUnit.cmake
-- Stop supporting expat and clean up remnants since we need libxml2 anyway, expat has no value anymore (is it faster?)
-- FindRegex.cmake
-
