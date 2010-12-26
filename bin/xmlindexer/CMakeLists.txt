@@ -3,20 +3,20 @@ add_library(librdfindexer
         tagmapping.cpp
 	rdfindexwriter.cpp
 )
-target_link_libraries(librdfindexer streamanalyzer)
+target_link_libraries(librdfindexer streamanalyzer streams)
 
 add_library(libxmlindexer
         xmlindexer.cpp
         tagmapping.cpp
 	xmlindexwriter.cpp
 )
-target_link_libraries(libxmlindexer streamanalyzer)
+target_link_libraries(libxmlindexer streamanalyzer streams)
 
 add_executable(cgixmlindexer
         tagmapping.cpp
 	xmlindexwriter.cpp
 	cgixmlindexer.cpp)
-target_link_libraries(cgixmlindexer streamanalyzer)
+target_link_libraries(cgixmlindexer streamanalyzer streams)
 
 #add_executable(peranalyzerxml peranalyzerxml.cpp xmlindexwriter.cpp
 #    tagmapping.cpp)
@@ -24,7 +24,7 @@ target_link_libraries(cgixmlindexer streamanalyzer)
 
 add_executable(perfieldxml perfieldxml.cpp xmlindexwriter.cpp
     tagmapping.cpp)
-target_link_libraries(perfieldxml streamanalyzer)
+target_link_libraries(perfieldxml streamanalyzer streams)
 
 add_executable(ontoprint ontoprint.cpp)
 target_link_libraries(ontoprint streamanalyzer)
