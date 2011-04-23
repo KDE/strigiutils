@@ -3,20 +3,20 @@ add_library(librdfindexer
         tagmapping.cpp
 	rdfindexwriter.cpp
 )
-target_link_libraries(librdfindexer streamanalyzer streams)
+target_link_libraries(librdfindexer ${LIBSTREAMANALYZER_LIBRARIES} ${LIBSTREAMS_LIBRARIES})
 
 add_library(libxmlindexer
         xmlindexer.cpp
         tagmapping.cpp
 	xmlindexwriter.cpp
 )
-target_link_libraries(libxmlindexer streamanalyzer streams)
+target_link_libraries(libxmlindexer ${LIBSTREAMANALYZER_LIBRARIES} ${LIBSTREAMS_LIBRARIES})
 
 add_executable(cgixmlindexer
         tagmapping.cpp
 	xmlindexwriter.cpp
 	cgixmlindexer.cpp)
-target_link_libraries(cgixmlindexer streamanalyzer streams)
+target_link_libraries(cgixmlindexer ${LIBSTREAMANALYZER_LIBRARIES} ${LIBSTREAMS_LIBRARIES})
 
 #add_executable(peranalyzerxml peranalyzerxml.cpp xmlindexwriter.cpp
 #    tagmapping.cpp)
@@ -24,10 +24,10 @@ target_link_libraries(cgixmlindexer streamanalyzer streams)
 
 add_executable(perfieldxml perfieldxml.cpp xmlindexwriter.cpp
     tagmapping.cpp)
-target_link_libraries(perfieldxml streamanalyzer streams)
+target_link_libraries(perfieldxml ${LIBSTREAMANALYZER_LIBRARIES} ${LIBSTREAMS_LIBRARIES})
 
 add_executable(ontoprint ontoprint.cpp)
-target_link_libraries(ontoprint streamanalyzer)
+target_link_libraries(ontoprint ${LIBSTREAMANALYZER_LIBRARIES})
 
 # register all tests based on the data in the testdata directory
 #FILE(GLOB_RECURSE allfiles ../../testdata/analyzers/*/config)
