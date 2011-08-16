@@ -1,11 +1,11 @@
-add_library(librdfindexer
+add_library(librdfindexer STATIC
         rdfindexer.cpp
         tagmapping.cpp
 	rdfindexwriter.cpp
 )
 target_link_libraries(librdfindexer ${LIBSTREAMANALYZER_LIBRARIES} ${LIBSTREAMS_LIBRARIES})
 
-add_library(libxmlindexer
+add_library(libxmlindexer STATIC
         xmlindexer.cpp
         tagmapping.cpp
 	xmlindexwriter.cpp
