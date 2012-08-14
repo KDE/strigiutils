@@ -136,8 +136,8 @@ main(int argc, char **argv) {
     }
 
     vector<pair<bool,string> >filters;
-    filters.push_back(make_pair<bool,string>(false,".*/"));
-    filters.push_back(make_pair<bool,string>(false,".*"));
+    filters.push_back(make_pair(false,".*/"));
+    filters.push_back(make_pair(false,".*"));
     AnalyzerConfiguration ic;
     ic.setFilters(filters);
 
